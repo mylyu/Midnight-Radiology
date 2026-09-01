@@ -1,0 +1,127 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
+    --radius: 0.625rem;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+.pixel { image-rendering: pixelated; }
+
+/* 选项延迟出现时的柔和淡入 */
+@keyframes choiceIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.choice-in { animation: choiceIn 0.25s ease-out; }
+
+/* 换步时文本柔和淡入，避免瞬间清空的闪烁感 */
+@keyframes textIn {
+  from { opacity: 0.35; }
+  to { opacity: 1; }
+}
+.text-in { animation: textIn 0.18s ease-out; }
+
+/* ===== v0.4 移动端适配 ===== */
+/* 真实可视高度：JS 实测 window.innerHeight 写入 --apph（兼容老 WebView/微信），现代浏览器走 100dvh */
+:root { --apph: 100vh; --apph: 100dvh; }
+html, body, #root { height: var(--apph); }
+body { overscroll-behavior: none; overflow: hidden; }
+
+/* 手机横屏矮视口（≈360px 高）紧凑模式 */
+@media (max-height: 480px) {
+  .compact-card { padding: 0.9rem !important; gap: 0.5rem !important; }
+  .compact-card .stamp-img { width: 4.5rem !important; height: 4.5rem !important; }
+  .compact-card h2 { font-size: 1.15rem !important; }
+}
+
+/* 矮视口（手机横屏 ≈350~610px 高）：立绘按高度收缩，对话框全面压扁 */
+@media (max-height: 620px) {
+  .sprite-l { height: 10.5rem !important; bottom: 6.6rem !important; left: 0.5rem !important; }
+  .sprite-r { height: 9.5rem !important; bottom: 6.6rem !important; right: 0.5rem !important; }
+  .dialog-wrap { padding: 0.5rem 0.75rem !important; }
+  .dialog-box { min-height: 4.2rem !important; padding: 0.55rem 0.9rem !important; max-height: 88vh !important; overflow-y: auto !important; }
+  .dialog-box p { font-size: 0.85rem !important; min-height: 2.4rem !important; line-height: 1.5 !important; }
+  .dialog-box button { padding: 0.28rem 0.6rem !important; font-size: 0.8rem !important; line-height: 1.35 !important; }
+  .dialog-box .mt-4 { margin-top: 0.5rem !important; }
+  /* 选人页:标题缩小、卡片立绘限高,整体不溢出 */
+  .select-wrap { gap: 0.75rem !important; }
+  .select-title { font-size: 1.1rem !important; }
+  .select-cards { gap: 1rem !important; }
+  .select-card { padding: 0.6rem 1rem !important; gap: 0.35rem !important; }
+  .select-img { height: 9.5rem !important; }
+}
+
+/* 竖屏：纵向空间充裕，对话框与字体加大一档，读着不费眼 */
+@media (orientation: portrait) {
+  .dialog-box { padding: 1.1rem 1.2rem !important; }
+  .dialog-box p { font-size: 1.08rem !important; min-height: 5.8rem !important; line-height: 1.75 !important; }
+  .dialog-box button { font-size: 1rem !important; padding: 0.7rem 1rem !important; }
+}
