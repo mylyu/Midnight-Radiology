@@ -5,7 +5,7 @@ import { freshState, loadState, saveState, wipeSave, applyEffect, condOk, dailyC
 
 type Screen = 'title' | 'select' | 'checkin' | 'night' | 'day' | 'badges' | 'quiz' | 'epilogue' | 'chapterEnd' | 'verify'
 
-const IMG = (n: string) => `/assets/${n}.png`
+const IMG = (n: string) => `${import.meta.env.BASE_URL}assets/${n}.png`
 const LAST_NIGHT = NIGHTS.length
 
 // 预加载全部素材，避免剧情推进时图片即需加载造成闪屏

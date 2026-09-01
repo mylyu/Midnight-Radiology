@@ -155,7 +155,7 @@ const SFX_VOLUME: Partial<Record<SfxName, number>> = {
 
 export function playSfx(name: SfxName) {
   try {
-    const src = `/audio/${name}.mp3`
+    const src = `${import.meta.env.BASE_URL}audio/${name}.mp3`
     if (!audioCache[name]) audioCache[name] = new Audio(src)
     const a = audioCache[name]
     a.currentTime = 0
@@ -165,4 +165,3 @@ export function playSfx(name: SfxName) {
     /* audio unsupported — silent */
   }
 }
-
