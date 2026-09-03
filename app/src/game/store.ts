@@ -165,3 +165,4 @@ export function playSfx(name: SfxName) {
     /* audio unsupported — silent */
   }
 }
+
