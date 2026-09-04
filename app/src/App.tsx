@@ -220,7 +220,7 @@ function RotateHint() {
 }
 
 function FullscreenBtn({ className = '' }: { className?: string }) {
-  if (typeof document === 'undefined' || !document.fullscreenEnabled) return null
+  if (typeof document !== 'undefined' && !document.fullscreenEnabled) return null
   return (
     <button
       onClick={e => {
@@ -245,7 +245,7 @@ function TitleScreen({ hasSave, onNew, onContinue, onBadges, onVerify }: { hasSa
         <h1 className="text-5xl md:text-6xl font-bold tracking-widest text-amber-100 drop-shadow-[0_4px_12px_rgba(251,191,36,0.4)] mb-2">深夜影像科</h1>
         <p className="text-slate-300 text-sm tracking-wider mb-6">Midnight Radiology · 第一章 老伙计</p>
         {hasSave && <MenuBtn onClick={onContinue} primary>▶ 继续夜班（自动存档）</MenuBtn>}
-        <MenuBtn onClick={onNew} primary={!hasSave}>{hasSave ? '↺ 重新开始' : '▶ 开始游戏'}</MenuBtn>}
+        <MenuBtn onClick={onNew} primary={!hasSave}>{hasSave ? '↺ 重新开始' : '▶ 开始游戏'}</MenuBtn>
         <MenuBtn onClick={onBadges}>🏅 勋章墙</MenuBtn>
         <p className="text-slate-500 text-xs mt-6">教学试玩版 v0.5.3 · 进度自动保存在本浏览器 · 随时退出随时续玩</p>
         <div className="flex items-center gap-4">
