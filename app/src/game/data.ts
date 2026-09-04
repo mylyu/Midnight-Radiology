@@ -265,7 +265,7 @@ export const NIGHTS: Night[] = [
       n2_s20: { speaker: 'sys', text: '【怎么办？】', sprite: 'char_tang', choices: [
         { text: '🔧 用自备工具箱检修（安全又专业）', next: 'n2_fix_tool', cond: { item: 'toolbox' }, tag: 'good' },
         { text: '🔧 徒手试试（免费，但可能修不好）', next: 'n2_fix_self', tag: 'neutral' },
-        { text: '📞 叫厂家工程师（-300金币，稳妥）', next: 'n2_fix_pro', effect: { gold: -300 }, tag: 'neutral' },
+        { text: '📞 叫厂家工程师（-300金币，稳妥）', next: 'n2_fix_pro', effect: { gold: -300 }, cond: { gold: 300 }, tag: 'neutral' },
       ]},
       n2_fix_tool: { speaker: 'me', text: '有工具箱就好办了。X光机不出射线，最常见的死法是球管那一路：灯丝烧电子、高压把电子加速撞到钨靶上，才有X光——灯丝就是机器里的灯泡，先测它的通断。', next: 'n2_fix_tool2' },
       n2_fix_tool2: { speaker: 'sys', text: '万用表一搭：灯丝回路断路。拆开侧板，一股焦味——灯丝保险丝烧了。换上备用的，重新上电……', next: 'n2_fix_tool3' },
@@ -520,9 +520,9 @@ export const NIGHTS: Night[] = [
       n5_bai0: { bg: 'bg_corridor', speaker: 'bai', sprite: 'char_bai', sfx: 'vox_bai', text: '小兄弟！鄙人老白，做配件生意的。你们这台老机器，球管快到寿了吧？原厂一根球管多少钱你知道不？我这儿同规格第三方件，半价！', next: 'n5_bai1' },
       n5_bai1: { speaker: 'bai', sprite: 'char_bai', text: '（压低声音）别听厂家吓唬人，什么质保协议，都是生意。我这管子装在隔壁县医院跑了两年了，啥事没有。今晚你点头，明天就发货，200金币，原厂要400！', next: 'n5_bai2' },
       n5_bai2: { speaker: 'sys', text: '【怎么答复？】', sprite: 'char_bai', choices: [
-        { text: '买！200金币一根，给科里省一半钱', next: 'n5_bai3a', effect: { gold: -200, durability: 25, flag: 'bai_tube' }, tag: 'neutral' },
+        { text: '买！200金币一根，给科里省一半钱', next: 'n5_bai3a', effect: { gold: -200, durability: 25, flag: 'bai_tube' }, cond: { gold: 200 }, tag: 'neutral' },
         { text: '「球管是整机的命门，第三方件没有原厂匹配测试，我不敢签。」', next: 'n5_bai3b', effect: { skill: 1, wealth: 1 }, tag: 'good' },
-        { text: '「150卖不卖？卖我就冒险试一根。」（需要人心够熟）', next: 'n5_bai3c', cond: { flag: 'he_friend' }, effect: { gold: -150, durability: 25, flag: 'bai_tube' }, tag: 'neutral' },
+        { text: '「150卖不卖？卖我就冒险试一根。」（需要人心够熟）', next: 'n5_bai3c', cond: { flag: 'he_friend', gold: 150 }, effect: { gold: -150, durability: 25, flag: 'bai_tube' }, tag: 'neutral' },
       ]},
       n5_bai3a: { speaker: 'bai', sprite: 'char_bai', text: '痛快！……（他走后，老周不知什么时候站在你身后，慢悠悠地说：「便宜件不是不能买，是坏了没人兜底——希望咱运气好吧。」）', next: 'n5_hub' },
       n5_bai3b: { speaker: 'bai', sprite: 'char_bai', text: '（讪笑）哟，还是个懂行的。得，买卖不成仁义在。（他背起皮包走了。老范在不远处朝你点了点头。）', next: 'n5_hub' },
