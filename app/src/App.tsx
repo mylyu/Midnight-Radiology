@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { NIGHTS, BADGES, CHARACTERS, SHOP_ITEMS, QUIZ, BOOK_PAGES } from './game/data'
-import type { GameState, Step, ShopItem, Choice } from './game/types'
+import { DLCS, getDlc, DLC_BADGES, CARDS, EVENTS, EVIDENCE, DR_QUEUE, queueWaits } from './game/dlc'
+import type { DlcDef, QueuePatient } from './game/dlc'
+import type { GameState, Step, ShopItem, Choice, DlcProgress } from './game/types'
 import { freshState, loadState, saveState, wipeSave, applyEffect, condOk, dailyCheckin, meterLevel, playSfx, makeCredCode, verifyCredCode } from './game/store'
 
-type Screen = 'title' | 'select' | 'checkin' | 'night' | 'day' | 'badges' | 'quiz' | 'epilogue' | 'chapterEnd' | 'verify'
+type Screen = 'title' | 'select' | 'checkin' | 'night' | 'day' | 'badges' | 'quiz' | 'epilogue' | 'chapterEnd' | 'verify' | 'dlcHall' | 'dlc'
 
 const IMG = (n: string) => `${import.meta.env.BASE_URL}assets/${n}.png`
 const LAST_NIGHT = NIGHTS.length
@@ -16,6 +18,9 @@ const ALL_ASSETS = [
   'machine_mammo', 'machine_mobile', 'machine_reader', 'item_film', 'item_photo', 'char_jiang',
   'item_tea', 'item_apple', 'item_glasses', 'item_notebook', 'item_screen', 'char_director', 'bg_morning', 'img_teaser',
   'xray_battery', 'xray_coin', 'xray_fog', 'xray_fracture', 'xray_ghost', 'xray_normal', 'xray_pneumo', 'stamp',
+  // DLC 番外篇素材
+  'bg_drroom', 'bg_waiting', 'bg_cathlab', 'char_shao', 'char_du', 'char_qin', 'char_liao', 'pat_ge',
+  'img_dsa_normal', 'img_dsa_stenosis', 'img_dsa_stent',
 ]
 let assetsPreloaded = false
 function preloadAssets() {
@@ -41,7 +46,32 @@ export default function App() {
   const [screen, setScreen] = useState<Screen>('title')
   const [state, setState] = useState<GameState | null>(null)
   const [checkinReward, setCheckinReward] = useState(0)
+  const [dlcId, setDlcId] = useState<string | null>(null)
   useEffect(preloadAssets, [])
+
+  // 隐藏入口（开发期不在首页暴露）：#/dlc 番外篇大厅；#/dlc/dr、#/dlc/dsa 直达对应 DLC
+  useEffect(() => {
+    const applyHash = () => {
+      const h = window.location.hash
+      if (!h.startsWith('#/dlc')) return
+      const id = h.split('/')[2] ?? ''
+      const s = loadState()
+      if (s) setState(s)
+      if (s && id && getDlc(id)) { setDlcId(id); setScreen('dlc') }
+      else setScreen('dlcHall')
+    }
+    applyHash()
+    window.addEventListener('hashchange', applyHash)
+    return () => window.removeEventListener('hashchange', applyHash)
+  }, [])
+
+  const enterDlc = (id: string, s: GameState) => {
+    saveState(s)
+    setState(s)
+    setDlcId(id)
+    window.location.hash = `#/dlc/${id}`
+    setScreen('dlc')
+  }
 
   const update = (fn: (s: GameState) => GameState) => {
     setState(prev => {
@@ -51,6 +81,44 @@ export default function App() {
       return next
     })
   }
+
+  // 勋章弹窗：全局监听 badges 差分——剧情中、结算时、考核后获得的勋章都会即时弹出
+  const [badgePop, setBadgePop] = useState<string[]>([])
+  const knownBadges = useRef<Set<string> | null>(null)
+  useEffect(() => {
+    if (!state) return
+    if (knownBadges.current === null) { knownBadges.current = new Set(state.badges); return }
+    const fresh = state.badges.filter(b => !knownBadges.current!.has(b))
+    if (fresh.length === 0) return
+    fresh.forEach(b => knownBadges.current!.add(b))
+    setBadgePop(fresh)
+    playSfx('badge')
+  }, [state])
+  // 弹窗自动消失：独立 effect 挂在弹窗内容本身上——state 每步都变，若计时器放在上面的 effect 里会被反复清理，导致弹窗永久挂住
+  useEffect(() => {
+    if (badgePop.length === 0) return
+    const t = setTimeout(() => setBadgePop([]), 2800)
+    return () => clearTimeout(t)
+  }, [badgePop])
+
+  // 知识卡片 toast：全局监听 cards 差分（NightScreen 每步重挂载，局部 state 存不住 toast，必须放在 App 层）
+  const [cardToast, setCardToast] = useState<string | null>(null)
+  const knownCards = useRef<Set<string> | null>(null)
+  useEffect(() => {
+    if (!state) return
+    const cards = state.cards ?? []
+    if (knownCards.current === null) { knownCards.current = new Set(cards); return }
+    const fresh = cards.filter(c => !knownCards.current!.has(c))
+    if (fresh.length === 0) return
+    fresh.forEach(c => knownCards.current!.add(c))
+    const title = CARDS[fresh[fresh.length - 1]]?.title
+    if (title) setCardToast(title)
+  }, [state])
+  useEffect(() => {
+    if (!cardToast) return
+    const t = setTimeout(() => setCardToast(null), 2600)
+    return () => clearTimeout(t)
+  }, [cardToast])
 
   const startGame = (gender: 'm' | 'f') => {
     const { state: s, reward } = dailyCheckin(freshState(gender))
@@ -119,7 +187,7 @@ export default function App() {
   return (
     <div className="w-full h-full bg-slate-950 text-slate-100 overflow-hidden select-none font-sans">
       <RotateHint />
-      {screen === 'title' && <TitleScreen hasSave={!!loadState()} onNew={() => setScreen('select')} onContinue={continueGame} onBadges={() => setScreen('badges')} onVerify={() => setScreen('verify')} />}
+      {screen === 'title' && <TitleScreen hasSave={!!loadState()} onNew={() => setScreen('select')} onContinue={continueGame} onBadges={() => setScreen('badges')} onVerify={() => setScreen('verify')} onDlc={() => { window.location.hash = '#/dlc' }} />}
       {screen === 'select' && <SelectScreen onPick={startGame} onBack={() => setScreen('title')} />}
       {screen === 'checkin' && state && <CheckinScreen state={state} reward={checkinReward} onDone={doCheckin} />}
       {screen === 'night' && state && (
@@ -143,8 +211,45 @@ export default function App() {
           onExit={() => setScreen('chapterEnd')}
         />
       )}
-      {screen === 'chapterEnd' && state && <ChapterEndScreen state={state} update={update} onBadges={() => setScreen('badges')} onRestart={() => { wipeSave(); setState(null); setScreen('title') }} />}
+      {screen === 'chapterEnd' && state && <ChapterEndScreen state={state} update={update} onBadges={() => setScreen('badges')} onRestart={() => { wipeSave(); setState(null); setScreen('title') }} onDlc={() => { window.location.hash = '#/dlc' }} onHome={() => setScreen('title')} />}
       {screen === 'verify' && <VerifyScreen onBack={() => setScreen('title')} />}
+      {screen === 'dlcHall' && (
+        <DlcHallScreen onEnter={enterDlc} onBack={() => { window.location.hash = ''; setScreen('title') }} />
+      )}
+      {screen === 'dlc' && state && dlcId && getDlc(dlcId) && (
+        <ScriptScreen
+          key={dlcId}
+          dlc={getDlc(dlcId)!}
+          state={state}
+          update={update}
+          onExit={() => { window.location.hash = '#/dlc'; setScreen('dlcHall') }}
+        />
+      )}
+
+      {/* 全局知识卡片 toast（第一章与 DLC 共用） */}
+      {cardToast && (
+        <div className="fixed top-14 left-1/2 -translate-x-1/2 z-[100] bg-slate-900/95 border-2 border-amber-400/70 rounded-xl px-4 py-2 shadow-2xl text-sm text-amber-200 pointer-events-none">
+          📖 知识卡片已收入夜班手册：{cardToast}
+        </div>
+      )}
+
+      {/* 全局勋章弹窗（第一章与 DLC 共用） */}
+      {badgePop.length > 0 && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none">
+          <div className="bg-slate-900/95 border-2 border-amber-400 rounded-2xl px-8 py-6 shadow-[0_0_40px_rgba(251,191,36,0.4)] flex flex-col items-center gap-2 rotate-[-1deg]">
+            <p className="text-amber-300 tracking-[0.3em] text-xs">获得勋章</p>
+            {badgePop.map(id => {
+              const b = BADGES[id] ?? DLC_BADGES[id]
+              return b ? (
+                <div key={id} className="flex items-center gap-3">
+                  <span className="text-4xl">{b.icon}</span>
+                  <span className="text-xl text-amber-100 font-bold">{b.name}</span>
+                </div>
+              ) : null
+            })}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -220,7 +325,7 @@ function RotateHint() {
 }
 
 function FullscreenBtn({ className = '' }: { className?: string }) {
-  if (typeof document !== 'undefined' && !document.fullscreenEnabled) return null
+  if (typeof document === 'undefined' || !document.fullscreenEnabled) return null
   return (
     <button
       onClick={e => {
@@ -236,7 +341,7 @@ function FullscreenBtn({ className = '' }: { className?: string }) {
 }
 
 /* ================= 标题画面 ================= */
-function TitleScreen({ hasSave, onNew, onContinue, onBadges, onVerify }: { hasSave: boolean; onNew: () => void; onContinue: () => void; onBadges: () => void; onVerify: () => void }) {
+function TitleScreen({ hasSave, onNew, onContinue, onBadges, onVerify, onDlc }: { hasSave: boolean; onNew: () => void; onContinue: () => void; onBadges: () => void; onVerify: () => void; onDlc: () => void }) {
   return (
     <div className="relative w-full h-full">
       <BgImg name="bg_title" />
@@ -247,10 +352,11 @@ function TitleScreen({ hasSave, onNew, onContinue, onBadges, onVerify }: { hasSa
         {hasSave && <MenuBtn onClick={onContinue} primary>▶ 继续夜班（自动存档）</MenuBtn>}
         <MenuBtn onClick={onNew} primary={!hasSave}>{hasSave ? '↺ 重新开始' : '▶ 开始游戏'}</MenuBtn>
         <MenuBtn onClick={onBadges}>🏅 勋章墙</MenuBtn>
-        <p className="text-slate-500 text-xs mt-6">教学试玩版 v0.5.3 · 进度自动保存在本浏览器 · 随时退出随时续玩</p>
+        <p className="text-slate-500 text-xs mt-6">教学试玩版 v0.6.0-dev · 进度自动保存在本浏览器 · 随时退出随时续玩</p>
         <div className="flex items-center gap-4">
           <FullscreenBtn />
           <button onClick={onVerify} className="text-slate-600 hover:text-slate-400 text-xs underline">教师验证入口</button>
+          <button onClick={e => { e.stopPropagation(); onDlc() }} className="text-slate-800 hover:text-slate-500 text-xs transition-colors" title="">▪</button>
         </div>
       </div>
     </div>
@@ -460,6 +566,7 @@ function NightScreen({ state, update, onFinish, onExit }: { state: GameState; up
   const prevTapAt = useRef(0)
   const [readout, setReadout] = useState<{ img: string; p: number } | null>(null)
   const [bookOpen, setBookOpen] = useState(false)
+  const [manualOpen, setManualOpen] = useState(false)
   // 读取流程门闩：pending=等待文本播完 → running=动画播放中 → done=播完；none=本步无读取
   const readoutGate = useRef<'none' | 'pending' | 'running' | 'done'>('none')
 
@@ -467,7 +574,8 @@ function NightScreen({ state, update, onFinish, onExit }: { state: GameState; up
 
   const step: Step = night.steps[stepId] ?? { end: true }
   const fullText = step.text ?? ''
-  const done = shown >= fullText.length
+  const plainLen = fullText.replaceAll('**', '').length
+  const done = shown >= plainLen
 
   // 换步时在渲染期同步重置打字机进度——避免第一帧用旧 shown 渲染出新文本的一大段残影再清空重打
   const [prevStepId, setPrevStepId] = useState(stepId)
@@ -504,6 +612,7 @@ function NightScreen({ state, update, onFinish, onExit }: { state: GameState; up
     }
     viewRef.current = newView
     setView(newView)
+    const newCard = step.card && !(state.cards ?? []).includes(step.card) ? step.card : undefined
     update(s => {
       let next = !already && step.effect ? applyEffect(s, step.effect) : s
       if (!already && freshVox.length > 0) {
@@ -511,6 +620,9 @@ function NightScreen({ state, update, onFinish, onExit }: { state: GameState; up
         freshVox.forEach(n => { f[heardKey(n)] = true })
         next = { ...next, flags: f }
       }
+      // 知识卡片/大事记触发（去重；与 DLC 引擎同一套机制）
+      if (newCard) next = { ...next, cards: [...(next.cards ?? []), newCard] }
+      if (step.event && !(next.events ?? []).includes(step.event)) next = { ...next, events: [...(next.events ?? []), step.event] }
       next = { ...next, screenHint: 'night' as const, stepId, viewBg: newView.bg, viewSprite: newView.sprite, viewSprite2: newView.sprite2, resumeKey: key }
       return next
     })
@@ -519,9 +631,9 @@ function NightScreen({ state, update, onFinish, onExit }: { state: GameState; up
 
   useEffect(() => {
     if (done) return
-    const t = setInterval(() => setShown(s => Math.min(s + 1, fullText.length)), 28)
+    const t = setInterval(() => setShown(s => Math.min(s + 1, plainLen)), 28)
     return () => clearInterval(t)
-  }, [stepId, done, fullText.length])
+  }, [stepId, done, plainLen])
 
   // 选项出现后设一段不可点击的缓冲，防止误触
   useEffect(() => {
@@ -566,9 +678,9 @@ function NightScreen({ state, update, onFinish, onExit }: { state: GameState; up
 
   const advance = () => {
     // 读取步骤在动画完整播完前（pending/running）一律禁止推进，防止连点跳过扫描动画
-    if (step.choices || step.end || shopOpen || bookOpen || readout) return
+    if (step.choices || step.end || shopOpen || bookOpen || manualOpen || readout) return
     if (readoutGate.current === 'pending' || readoutGate.current === 'running') return
-    if (!done) { setShown(fullText.length); return }
+    if (!done) { setShown(plainLen); return }
     if (step.next) { playSfx('click'); setStepId(step.next) }
   }
 
@@ -609,6 +721,10 @@ function NightScreen({ state, update, onFinish, onExit }: { state: GameState; up
           <span>💰 {state.gold}</span>
           <span>🔧 {state.durability}%</span>
           <span className={state.ap > 0 ? 'text-sky-300' : 'text-slate-600'}>⚡×{state.ap}</span>
+          <button onClick={e => { e.stopPropagation(); playSfx('click'); setManualOpen(true) }}
+            className="text-xs text-slate-400 hover:text-amber-300 border border-slate-700 rounded px-2 py-0.5">
+            📖 手册
+          </button>
           <FullscreenBtn />
           <button onClick={e => { e.stopPropagation(); playSfx('click'); onExit() }}
             className="text-xs text-slate-400 hover:text-amber-300 border border-slate-700 rounded px-2 py-0.5" title="进度已自动保存，可随时离开">
@@ -666,14 +782,14 @@ function NightScreen({ state, update, onFinish, onExit }: { state: GameState; up
               {speakerMeta.name === '我' ? (state.gender === 'f' ? '林小满' : '陈一帆') : speakerMeta.name}
             </span>
           )}
-          <p key={stepId} className="text-slate-100 leading-relaxed text-base md:text-lg whitespace-pre-wrap min-h-[4.9rem] md:min-h-[5.4rem] text-in">{fullText.slice(0, shown)}</p>
+          <p key={stepId} className="text-slate-100 leading-relaxed text-base md:text-lg whitespace-pre-wrap min-h-[4.9rem] md:min-h-[5.4rem] text-in"><RichText text={fullText} shown={shown} /></p>
           {!step.choices && !step.end && done && <span className="absolute bottom-3 right-4 text-amber-300 animate-bounce">▼</span>}
           {step.choices && done && !choicesLocked && (
             <div className="mt-4 flex flex-col gap-2 choice-in" onClick={e => e.stopPropagation()}>
               {visibleChoices.map((c, i) => (
                 <button key={i} onClick={() => pick(c)}
                   className="text-left px-4 py-2.5 rounded-lg bg-slate-800 border border-slate-600 hover:border-amber-400 hover:bg-slate-700 transition-all text-slate-100">
-                  {c.text}
+                  <RichText text={c.text} />
                 </button>
               ))}
             </div>
@@ -710,6 +826,7 @@ function NightScreen({ state, update, onFinish, onExit }: { state: GameState; up
 
       {shopOpen && <ShopOverlay state={state} update={update} onClose={() => setShopOpen(false)} />}
       {bookOpen && <BookOverlay state={state} update={update} onClose={() => setBookOpen(false)} />}
+      {manualOpen && <ManualOverlay state={state} onClose={() => setManualOpen(false)} />}
     </div>
   )
 }
@@ -719,6 +836,7 @@ function DayScreen({ state, update, onNextNight, onBadges }: { state: GameState;
   const [msg, setMsg] = useState('')
   const [penalty, setPenalty] = useState('')
   const [shopOpen, setShopOpen] = useState(false)
+  const [manualOpen, setManualOpen] = useState(false)
   // 昨夜机器状态太差被扣了废片成本，提示一次后清除
   useEffect(() => {
     if (state.flags['worn_penalty']) {
@@ -771,11 +889,13 @@ function DayScreen({ state, update, onNextNight, onBadges }: { state: GameState;
         <div className="flex gap-3 flex-wrap justify-center">
           <MenuBtn onClick={onNextNight} primary>🌙 进入第 {state.night} 夜</MenuBtn>
           <MenuBtn onClick={() => setShopOpen(true)}>🛒 小卖部</MenuBtn>
+          <MenuBtn onClick={() => setManualOpen(true)}>📖 夜班手册</MenuBtn>
           <MenuBtn onClick={onBadges}>🏅 勋章墙</MenuBtn>
         </div>
         <p className="text-slate-500 text-xs">进度已自动保存，随时可以从标题界面继续</p>
       </div>
       {shopOpen && <ShopOverlay state={state} update={update} onClose={() => setShopOpen(false)} />}
+      {manualOpen && <ManualOverlay state={state} onClose={() => setManualOpen(false)} />}
     </div>
   )
 }
@@ -796,7 +916,7 @@ function BadgeScreen({ state, onBack }: { state: GameState | null; onBack: () =>
     <div className="relative w-full h-full overflow-y-auto bg-amber-950">
       <div className="min-h-full flex flex-col items-center py-10 px-4 gap-6" style={{ background: 'radial-gradient(circle at 50% 30%, #78350f 0%, #451a03 70%)' }}>
         <h2 className="text-3xl text-amber-100 tracking-widest">🏅 勋章墙</h2>
-        <p className="text-amber-200/60 text-sm">科室墙上的软木板 · 已收集 {owned.length}/{Object.keys(BADGES).length}</p>
+        <p className="text-amber-200/60 text-sm">科室墙上的软木板 · 第一章 已收集 {owned.filter(id => BADGES[id]).length}/{Object.keys(BADGES).length}</p>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl">
           {Object.entries(BADGES).map(([id, b]) => {
             const has = owned.includes(id)
@@ -805,6 +925,19 @@ function BadgeScreen({ state, onBack }: { state: GameState | null; onBack: () =>
                 <span className={`text-4xl ${has ? '' : 'grayscale opacity-30'}`}>{b.icon}</span>
                 <span className={`font-bold text-sm ${has ? 'text-amber-900' : 'text-slate-500'}`}>{has ? b.name : '？？？'}</span>
                 <span className={`text-xs ${has ? 'text-amber-700' : 'text-slate-600'}`}>{has ? b.desc : '尚未解锁'}</span>
+              </div>
+            )
+          })}
+        </div>
+        <h3 className="text-amber-200/80 tracking-widest mt-4">📼 番外篇 · 已收集 {owned.filter(id => DLC_BADGES[id]).length}/{Object.keys(DLC_BADGES).length}</h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl">
+          {Object.entries(DLC_BADGES).map(([id, b]) => {
+            const has = owned.includes(id)
+            return (
+              <div key={id} className={`w-36 p-4 rounded-xl border-2 flex flex-col items-center gap-2 text-center transition-all ${has ? 'bg-sky-100/95 border-sky-300 shadow-lg -rotate-1' : 'bg-slate-900/70 border-slate-700'}`}>
+                <span className={`text-4xl ${has ? '' : 'grayscale opacity-30'}`}>{b.icon}</span>
+                <span className={`font-bold text-sm ${has ? 'text-sky-900' : 'text-slate-500'}`}>{has ? b.name : '？？？'}</span>
+                <span className={`text-xs ${has ? 'text-sky-700' : 'text-slate-600'}`}>{has ? b.desc : '尚未解锁'}</span>
               </div>
             )
           })}
@@ -934,7 +1067,7 @@ function QuizScreen({ state, update, onDone }: { state: GameState; update: (f: (
 }
 
 /* ================= 章末 + 通关凭证 ================= */
-function ChapterEndScreen({ state, update, onBadges, onRestart }: { state: GameState; update: (f: (s: GameState) => GameState) => void; onBadges: () => void; onRestart: () => void }) {
+function ChapterEndScreen({ state, update, onBadges, onRestart, onDlc, onHome }: { state: GameState; update: (f: (s: GameState) => GameState) => void; onBadges: () => void; onRestart: () => void; onDlc: () => void; onHome: () => void }) {
   const [name, setName] = useState(state.playerName ?? '')
   const [sid, setSid] = useState(state.playerId ?? '')
   const issued = !!(state.playerName && state.playerId)
@@ -1011,9 +1144,18 @@ function ChapterEndScreen({ state, update, onBadges, onRestart }: { state: GameS
 
         <p className="text-amber-200/80">🔒 第二章「快与狠」—— CT篇，开发中，敬请期待</p>
         <div className="flex gap-3 flex-wrap justify-center">
+          {/* 晨会考核 A/S 才解锁番外篇直达；否则只能回首页 */}
+          {(state.flags['quiz_grade'] === 'S' || state.flags['quiz_grade'] === 'A') ? (
+            <MenuBtn onClick={onDlc} primary>📼 番外篇放映厅</MenuBtn>
+          ) : (
+            <MenuBtn onClick={onHome} primary>🏠 返回首页</MenuBtn>
+          )}
           <MenuBtn onClick={onBadges}>🏅 查看勋章墙</MenuBtn>
           <MenuBtn onClick={onRestart}>↺ 重新开始</MenuBtn>
         </div>
+        {!(state.flags['quiz_grade'] === 'S' || state.flags['quiz_grade'] === 'A') && (
+          <p className="text-slate-500 text-xs">（晨会考核拿到 A 或 S，可解锁番外篇直达通道）</p>
+        )}
         <p className="text-slate-500 text-xs">试玩反馈入口：把bug或建议告诉老师即可 · 数据保存在本浏览器</p>
       </div>
     </div>
@@ -1054,6 +1196,670 @@ function VerifyScreen({ onBack }: { onBack: () => void }) {
         </div>
         <MenuBtn onClick={onBack}>← 返回标题</MenuBtn>
       </div>
+    </div>
+  )
+}
+
+
+/* ================= DLC 公用 · 富文本（**重点** 高亮，兼容打字机逐字截断） ================= */
+function RichText({ text, shown }: { text: string; shown?: number }) {
+  const segs: { t: string; b: boolean }[] = []
+  text.split('**').forEach((p, i) => { if (p) segs.push({ t: p, b: i % 2 === 1 }) })
+  let remain = shown ?? Number.MAX_SAFE_INTEGER
+  return (
+    <>
+      {segs.map((s, i) => {
+        if (remain <= 0) return null
+        const vis = s.t.slice(0, remain)
+        remain -= s.t.length
+        return s.b
+          ? <span key={i} className="text-amber-300 font-bold">{vis}</span>
+          : <span key={i}>{vis}</span>
+      })}
+    </>
+  )
+}
+
+/* ================= DLC 公用 · 夜班手册（知识卡片 / 证物回看 / 大事记） ================= */
+function ManualOverlay({ state, onClose }: { state: GameState; onClose: () => void }) {
+  const [tab, setTab] = useState<'cards' | 'evidence' | 'events'>('cards')
+  const cards = state.cards ?? []
+  const evList = Object.entries(EVIDENCE).filter(([, e]) => state.flags[e.flag])
+  const chronList = Object.entries(EVENTS).filter(([id, e]) =>
+    (e.flag && state.flags[e.flag]) || (state.events ?? []).includes(id) || (id === 'ch1_five_nights' && state.finished))
+  const tabBtn = (id: typeof tab, label: string, n: number) => (
+    <button onClick={() => { playSfx('click'); setTab(id) }}
+      className={`flex-1 py-2 rounded-lg text-sm tracking-wider border ${tab === id ? 'bg-amber-500/90 text-slate-950 border-amber-300 font-bold' : 'bg-slate-800 text-slate-300 border-slate-600 hover:border-amber-400'}`}>
+      {label} · {n}
+    </button>
+  )
+  return (
+    <div className="fixed inset-0 z-40 bg-slate-950/80 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-slate-900 border-2 border-amber-500/50 rounded-2xl p-5 max-w-lg w-full max-h-[85%] flex flex-col" onClick={e => e.stopPropagation()}>
+        <h3 className="text-xl text-amber-200 tracking-widest mb-3 shrink-0">📖 夜班手册</h3>
+        <div className="flex gap-2 mb-3 shrink-0">
+          {tabBtn('cards', '知识卡片', cards.length)}
+          {tabBtn('evidence', '证物回看', evList.length)}
+          {tabBtn('events', '大事记', chronList.length)}
+        </div>
+        <div className="overflow-y-auto min-h-0 flex flex-col gap-2 pr-1">
+          {tab === 'cards' && (cards.length === 0
+            ? <p className="text-slate-500 text-sm py-6 text-center">还没有收集到知识卡片——剧情里带标记的知识点会自动收入这里。</p>
+            : cards.map(id => {
+                const c = CARDS[id]
+                if (!c) return null
+                return (
+                  <div key={id} className="bg-slate-800/80 border border-slate-600 rounded-lg p-3">
+                    <p className="text-amber-200 text-sm font-bold mb-1">🎓 {c.title}</p>
+                    <p className="text-slate-300 text-xs leading-relaxed">{c.body}</p>
+                  </div>
+                )
+              }))}
+          {tab === 'evidence' && (evList.length === 0
+            ? <p className="text-slate-500 text-sm py-6 text-center">证物柜还空着。有些物件，要在故事里亲手拿到才会收进来。</p>
+            : evList.map(([id, e]) => (
+                <div key={id} className="bg-slate-800/80 border border-slate-600 rounded-lg p-3 flex gap-3 items-start">
+                  {e.image && <img src={IMG(e.image)} className="w-14 h-14 object-contain pixel shrink-0 rounded border border-slate-700 bg-slate-900" alt="" />}
+                  <div>
+                    <p className="text-sky-200 text-sm font-bold mb-1">🗂️ {e.title}</p>
+                    <p className="text-slate-300 text-xs leading-relaxed">{e.body}</p>
+                  </div>
+                </div>
+              )))}
+          {tab === 'events' && (chronList.length === 0
+            ? <p className="text-slate-500 text-sm py-6 text-center">大事记还没有落笔。</p>
+            : chronList.map(([id, e]) => (
+                <div key={id} className="bg-slate-800/80 border border-slate-600 rounded-lg p-3">
+                  <p className="text-xs text-emerald-300 tracking-wider mb-0.5">{e.time}</p>
+                  <p className="text-slate-100 text-sm font-bold mb-1">{e.title}</p>
+                  <p className="text-slate-400 text-xs leading-relaxed">{e.body}</p>
+                </div>
+              )))}
+        </div>
+        <button onClick={() => { playSfx('click'); onClose() }} className="mt-4 w-full py-2 rounded-lg bg-slate-800 border border-slate-600 hover:border-amber-400 text-slate-200 shrink-0">合上手册</button>
+      </div>
+    </div>
+  )
+}
+
+/* ================= DLC·DSA · 踩踏板时序配合 ================= */
+function PedalOverlay({ pedal, onResult }: { pedal: NonNullable<Step['pedal']>; onResult: (r: 'success' | 'early' | 'late') => void }) {
+  const [pos, setPos] = useState(0)
+  const firedRef = useRef(false)
+  const posRef = useRef(0)
+  useEffect(() => {
+    const start = performance.now()
+    let raf = 0
+    const tick = (t: number) => {
+      const p = (t - start) / pedal.durationMs
+      if (p >= 1) {
+        if (!firedRef.current) { firedRef.current = true; onResult('late') }
+        return
+      }
+      posRef.current = p
+      setPos(p)
+      raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+  const press = () => {
+    if (firedRef.current) return
+    firedRef.current = true
+    const p = posRef.current
+    if (p >= pedal.windowStart && p <= pedal.windowEnd) onResult('success')
+    else if (p < pedal.windowStart) onResult('early')
+    else onResult('late')
+  }
+  return (
+    <div className="absolute inset-0 z-40 bg-slate-950/85 flex flex-col items-center justify-center gap-6 px-6" onClick={e => e.stopPropagation()}>
+      <p className="text-cyan-300 tracking-[0.4em] text-sm animate-pulse">🦵 采集时机配合</p>
+      <p className="text-slate-300 text-sm">扫描条进入<span className="text-emerald-300 font-bold">绿色窗口</span>的瞬间踩下踏板——和术者的口令严丝合缝</p>
+      <div className="relative w-full max-w-xl h-8 rounded-full bg-slate-800 border-2 border-slate-600 overflow-hidden">
+        <div className="absolute top-0 bottom-0 bg-emerald-500/50 border-x-2 border-emerald-300"
+          style={{ left: `${pedal.windowStart * 100}%`, width: `${(pedal.windowEnd - pedal.windowStart) * 100}%` }} />
+        <div className="absolute top-0 bottom-0 w-1.5 bg-amber-300 shadow-[0_0_10px_3px_rgba(251,191,36,0.8)]"
+          style={{ left: `${pos * 100}%` }} />
+      </div>
+      <button onClick={press}
+        className="w-40 h-40 rounded-full bg-gradient-to-b from-slate-600 to-slate-800 border-4 border-slate-400 text-3xl tracking-widest text-slate-100 shadow-2xl hover:border-amber-300 active:scale-95 active:border-emerald-300 transition-all">
+        踩！
+      </button>
+      <p className="text-slate-500 text-xs">踩早、踩晚都要重采——重采意味着病人多吃一份剂量</p>
+    </div>
+  )
+}
+
+/* ================= DLC·DR · 候诊队列调度 ================= */
+function QueueGame({ state, update, onDone }: { state: GameState; update: (f: (s: GameState) => GameState) => void; onDone: () => void }) {
+  const prog = state.dlc?.['dr'] ?? {}
+  const [served, setServed] = useState<string[]>(prog.served ?? [])
+  const [gone, setGone] = useState<string[]>(prog.gone ?? [])
+  const [aiChoices, setAiChoices] = useState<Record<string, boolean>>(prog.aiChoices ?? {})
+  const [phase, setPhase] = useState<'pick' | 'exam' | 'outcome' | 'event'>('pick')
+  const [cur, setCur] = useState<QueuePatient | null>(null)
+  const [outcome, setOutcome] = useState('')
+  const [eventQueue, setEventQueue] = useState<string[]>([])
+
+  const patchDr = (s: GameState, patch: Partial<DlcProgress>): GameState => ({
+    ...s,
+    dlc: { ...(s.dlc ?? {}), dr: { ...(s.dlc?.['dr'] ?? {}), ...patch } },
+  })
+
+  const remaining = DR_QUEUE.filter(p => !served.includes(p.id) && !gone.includes(p.id))
+  const waits = queueWaits(served)
+
+  // 恢复存档时若队列已清空（上次在结算前离开），直接收尾
+  const emptyChecked = useRef(false)
+  useEffect(() => {
+    if (emptyChecked.current) return
+    emptyChecked.current = true
+    if (remaining.length === 0) onDone()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const decide = (trust: boolean) => {
+    if (!cur) return
+    playSfx('click')
+    const ns = [...served, cur.id]
+    const na = { ...aiChoices, [cur.id]: trust }
+    setServed(ns)
+    setAiChoices(na)
+    setOutcome(trust ? cur.exam.trustText : cur.exam.distrustText)
+    update(s => patchDr(s, { served: ns, aiChoices: na }))
+    setPhase('outcome')
+  }
+
+  const afterOutcome = () => {
+    playSfx('click')
+    // 检查等待过久导致的病情恶化
+    const w = queueWaits(served)
+    const incidents = DR_QUEUE.filter(p =>
+      !served.includes(p.id) && !gone.includes(p.id) && p.tolerance < 99 && w[p.id] > p.tolerance)
+    if (incidents.length > 0) {
+      const ng = [...gone, ...incidents.map(p => p.id)]
+      setGone(ng)
+      setEventQueue(incidents.map(p => p.deteriorate!.text))
+      const heartLoss = incidents.reduce((a, p) => a + (p.deteriorate?.heart ?? 0), 0)
+      update(s => applyEffect(patchDr(s, { gone: ng }), { flag: 'dr_incident', heart: heartLoss }))
+      setPhase('event')
+      return
+    }
+    if (remaining.length === 0) { onDone(); return }
+    setPhase('pick')
+  }
+
+  const afterEvent = () => {
+    playSfx('click')
+    if (eventQueue.length > 1) { setEventQueue(eventQueue.slice(1)); return }
+    setEventQueue([])
+    if (DR_QUEUE.filter(p => !served.includes(p.id) && !gone.includes(p.id)).length === 0) { onDone(); return }
+    setPhase('pick')
+  }
+
+  return (
+    <div className="absolute inset-0 z-40 bg-slate-950/90 flex flex-col items-center justify-center p-4" onClick={e => e.stopPropagation()}>
+      <div className="w-full max-w-3xl max-h-full overflow-y-auto bg-slate-900/95 border-2 border-amber-500/40 rounded-2xl p-4 md:p-6">
+        {phase === 'pick' && (
+          <>
+            <div className="flex items-center justify-between mb-1">
+              <h3 className="text-amber-200 tracking-widest">🪑 候诊队列 · 先做谁，你说了算</h3>
+              <span className="text-xs text-slate-400">已接诊 {served.length}/{DR_QUEUE.length}</span>
+            </div>
+            <p className="text-xs text-slate-500 mb-3">每台检查 15 分钟。有人等得起，有人等不起——申请单上都写着。</p>
+            <div className="flex flex-col gap-2">
+              {remaining.map(p => {
+                const w = waits[p.id]
+                const left = p.tolerance < 99 ? p.tolerance - w : null
+                const danger = left !== null && left <= 0
+                return (
+                  <button key={p.id} onClick={() => { playSfx('click'); setCur(p); setPhase('exam') }}
+                    className={`flex items-center gap-3 text-left rounded-lg border p-3 transition-all hover:scale-[1.01] ${danger ? 'bg-red-950/60 border-red-500 animate-pulse' : 'bg-slate-800/80 border-slate-600 hover:border-amber-400'}`}>
+                    <span className={`text-xs px-2 py-1 rounded font-bold shrink-0 ${p.tag === '急诊' ? 'bg-red-700/80 text-red-100' : p.tag === '加急' ? 'bg-orange-700/80 text-orange-100' : p.tag === '体检' ? 'bg-slate-600 text-slate-200' : 'bg-sky-800/80 text-sky-100'}`}>{p.tag}</span>
+                    <span className="flex-1 min-w-0">
+                      <span className="text-slate-100 text-sm">{p.name} · {p.age}</span>
+                      <span className="block text-xs text-slate-400 truncate">{p.info}</span>
+                    </span>
+                    {left !== null && (
+                      <span className={`text-xs shrink-0 ${danger ? 'text-red-300 font-bold' : left === 1 ? 'text-amber-300' : 'text-slate-500'}`}>
+                        {danger ? '⚠️ 等不起了' : `已等 ${w} 台 · 还能等 ${left} 台`}
+                      </span>
+                    )}
+                  </button>
+                )
+              })}
+            </div>
+          </>
+        )}
+
+        {phase === 'exam' && cur && (
+          <>
+            <p className="text-xs text-slate-400 mb-2">{cur.tag} · {cur.name} · {cur.age} · {cur.info}</p>
+            <div className="flex flex-col md:flex-row gap-4">
+              <img src={IMG(cur.exam.image)} className="w-44 h-44 md:w-52 md:h-52 object-contain pixel rounded-lg border-2 border-slate-600 bg-slate-950 shrink-0 mx-auto" alt="影像" />
+              <div className="flex-1 min-w-0">
+                <p className="text-slate-200 text-sm leading-relaxed mb-3">📝 你的判读：<RichText text={cur.exam.finding} /></p>
+                <div className="bg-indigo-950/70 border border-indigo-500/50 rounded-lg p-3 mb-3">
+                  <p className="text-indigo-300 text-xs tracking-widest mb-1">🤖 AI 辅诊 · 厂家试用版</p>
+                  <p className="text-slate-100 text-sm">{cur.exam.aiSuggestion}</p>
+                  <p className="text-indigo-400/80 text-xs mt-1">置信度 {cur.exam.aiConfidence}</p>
+                </div>
+                <p className="text-slate-500 text-xs mb-3">邵姐的话在耳边：它过筛，你把关。</p>
+                <div className="flex flex-col gap-2">
+                  <button onClick={() => decide(true)} className="px-4 py-2.5 rounded-lg bg-indigo-700/80 border border-indigo-400 text-slate-100 text-sm hover:bg-indigo-600">采纳 AI 初诊</button>
+                  <button onClick={() => decide(false)} className="px-4 py-2.5 rounded-lg bg-slate-800 border border-amber-400/70 text-amber-200 text-sm hover:bg-slate-700">信不过，按我自己的判读发报告</button>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+
+        {phase === 'outcome' && (
+          <>
+            <p className="text-slate-200 text-sm leading-relaxed whitespace-pre-wrap"><RichText text={outcome} /></p>
+            <button onClick={afterOutcome} className="mt-4 w-full py-2.5 rounded-lg bg-amber-500/90 text-slate-950 font-bold tracking-widest hover:bg-amber-400">继续 →</button>
+          </>
+        )}
+
+        {phase === 'event' && eventQueue.length > 0 && (
+          <>
+            <p className="text-red-400 text-xs tracking-widest mb-2">⚠️ 候诊区突发</p>
+            <p className="text-slate-200 text-sm leading-relaxed whitespace-pre-wrap"><RichText text={eventQueue[0]} /></p>
+            <button onClick={afterEvent} className="mt-4 w-full py-2.5 rounded-lg bg-red-700/80 text-red-50 font-bold tracking-widest hover:bg-red-600">继续 →</button>
+          </>
+        )}
+      </div>
+    </div>
+  )
+}
+
+
+/* ================= DLC 番外篇 · 剧情引擎（独立实现，不触碰第一章 NightScreen） ================= */
+function ScriptScreen({ dlc, state, update, onExit }: { dlc: DlcDef; state: GameState; update: (f: (s: GameState) => GameState) => void; onExit: () => void }) {
+  const prog = state.dlc?.[dlc.id] ?? {}
+  const resumeStep = !prog.done && prog.stepId && dlc.steps[prog.stepId] ? prog.stepId : dlc.start
+  const [stepId, setStepId] = useState(resumeStep)
+  const [view, setView] = useState<{ bg: string; sprite?: string; sprite2?: string }>({
+    bg: prog.viewBg ?? 'bg_control', sprite: prog.viewSprite, sprite2: prog.viewSprite2,
+  })
+  const viewRef = useRef(view)
+  const applied = useRef<Set<string>>(new Set())
+  const mountStep = useRef(resumeStep)
+  const skipDoseOnce = useRef(true)
+  const [shown, setShown] = useState(0)
+  const [choicesLocked, setChoicesLocked] = useState(false)
+  const [queueOpen, setQueueOpen] = useState(false)
+  const [manualOpen, setManualOpen] = useState(false)
+  const [badgeOpen, setBadgeOpen] = useState(false)
+  const lastTapAt = useRef(0)
+  const prevTapAt = useRef(0)
+  const finishFired = useRef(false)
+
+  const step: Step = dlc.steps[stepId] ?? { end: true }
+  const fullText = step.text ?? ''
+  const plainLen = fullText.replaceAll('**', '').length
+  const done = shown >= plainLen
+
+  const [prevStepId, setPrevStepId] = useState(stepId)
+  if (prevStepId !== stepId) {
+    setPrevStepId(stepId)
+    setShown(0)
+    if (step.choices) setChoicesLocked(true)
+  }
+
+  const updProg = (s: GameState, patch: Partial<DlcProgress>): GameState => ({
+    ...s,
+    dlc: { ...(s.dlc ?? {}), [dlc.id]: { ...(s.dlc?.[dlc.id] ?? {}), ...patch } },
+  })
+
+  // 进入某一步：视图 / 效果 / 语音 / 剂量 / 卡片 / 大事记 / 存档
+  useEffect(() => {
+    const key = `${dlc.id}-${stepId}`
+    const already = applied.current.has(key)
+    applied.current.add(key)
+    const heardKey = (n: string) => `heard_${n}`
+    const sfxList = [step.sfx, step.sfx2].filter((n): n is NonNullable<typeof n> => !!n)
+    const freshVox = sfxList.filter(n => n.startsWith('vox_') && !state.flags[heardKey(n)])
+    if (!already) sfxList.forEach(n => { if (!n.startsWith('vox_') || freshVox.includes(n)) playSfx(n as Parameters<typeof playSfx>[0]) })
+    const cur = viewRef.current
+    const impliedSprite =
+      step.sprite ??
+      (step.speaker === 'me'
+        ? 'me'
+        : step.speaker && cur.sprite === `char_${step.speaker}`
+          ? cur.sprite
+          : undefined)
+    const newView = { bg: step.bg ?? cur.bg, sprite: impliedSprite, sprite2: step.sprite2 }
+    viewRef.current = newView
+    setView(newView)
+    const isMountResume = skipDoseOnce.current && stepId === mountStep.current
+    skipDoseOnce.current = false
+    const newCard = step.card && !(state.cards ?? []).includes(step.card) ? step.card : undefined
+    update(s => {
+      let next = !already && step.effect ? applyEffect(s, step.effect) : s
+      if (!already && freshVox.length > 0) {
+        const f = { ...next.flags }
+        freshVox.forEach(n => { f[heardKey(n)] = true })
+        next = { ...next, flags: f }
+      }
+      // DSA 剂量累积：重采步骤会多次进入，每次都要计；仅跳过挂载时的恢复步避免读档重复加
+      if (step.dose && !isMountResume) {
+        const p = next.dlc?.[dlc.id] ?? {}
+        next = updProg(next, { dose: (p.dose ?? 0) + step.dose })
+      }
+      if (newCard) next = { ...next, cards: [...(next.cards ?? []), newCard] }
+      if (step.event && !(next.events ?? []).includes(step.event)) {
+        next = { ...next, events: [...(next.events ?? []), step.event] }
+      }
+      next = updProg(next, { stepId, viewBg: newView.bg, viewSprite: newView.sprite, viewSprite2: newView.sprite2 })
+      return next
+    })
+    // 卡片 toast 由 App 层全局监听 cards 差分统一弹出（NightScreen 每步重挂载，局部 toast 存不住）
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stepId])
+
+  // 打字机
+  useEffect(() => {
+    if (done) return
+    const t = setInterval(() => setShown(s => Math.min(s + 1, plainLen)), 28)
+    return () => clearInterval(t)
+  }, [stepId, done, plainLen])
+
+  // 选项缓冲，防误触
+  useEffect(() => {
+    if (!step.choices || !done) return
+    const t = setTimeout(() => setChoicesLocked(false), 900)
+    return () => clearTimeout(t)
+  }, [stepId, done, step.choices])
+
+  const advance = () => {
+    if (step.choices || step.end || queueOpen || manualOpen || badgeOpen || step.pedal) return
+    if (!done) { setShown(plainLen); return }
+    if (step.next === '@queue') { playSfx('click'); setQueueOpen(true); return }
+    if (step.next) { playSfx('click'); setStepId(step.next) }
+  }
+
+  const pick = (c: Choice) => {
+    if (choicesLocked) return
+    if (Date.now() - prevTapAt.current < 300) return
+    playSfx('click')
+    if (c.effect) update(s => applyEffect(s, c.effect))
+    if (c.risk && Math.random() < c.risk.chance) {
+      if (c.risk.effect) update(s => applyEffect(s, c.risk!.effect))
+      setStepId(c.risk.next)
+      return
+    }
+    setStepId(c.next)
+  }
+
+  // DSA 踏板结果
+  const pedalResult = (r: 'success' | 'early' | 'late') => {
+    const p = step.pedal!
+    playSfx(r === 'success' ? 'xray' : 'buzz')
+    update(s => {
+      const pr = s.dlc?.[dlc.id] ?? {}
+      const patch: Partial<DlcProgress> = { pedalTry: (pr.pedalTry ?? 0) + 1 }
+      if (r === 'success') {
+        patch.pedalOk = (pr.pedalOk ?? 0) + 1
+        patch.dose = (pr.dose ?? 0) + p.dose
+      }
+      return updProg(s, patch)
+    })
+    setStepId(r === 'success' ? p.success : r === 'early' ? p.tooEarly : p.tooLate)
+  }
+
+  // 本篇完结：结算条件勋章
+  const finish = () => {
+    if (finishFired.current) return
+    finishFired.current = true
+    update(s => {
+      let next = updProg(s, { done: true, stepId: undefined })
+      const pr = next.dlc?.[dlc.id] ?? {}
+      const add = (b: string) => { if (!next.badges.includes(b)) next = { ...next, badges: [...next.badges, b] } }
+      if (dlc.id === 'dr') {
+        if (!next.flags['dr_incident']) add('dlc_dr_zero')
+        const allCorrect = DR_QUEUE.every(p => pr.aiChoices && pr.aiChoices[p.id] !== undefined && pr.aiChoices[p.id] === p.exam.aiCorrect)
+        if (allCorrect) add('dlc_dr_ai')
+      }
+      if (dlc.id === 'dsa') {
+        if ((pr.dose ?? 0) <= 800) add('dlc_dsa_dose')
+        const trys = pr.pedalTry ?? 0, oks = pr.pedalOk ?? 0
+        if (trys > 0 && trys === oks) add('dlc_dsa_perfect')
+        if (trys - oks <= 1) add('dlc_dsa_time')
+      }
+      return next
+    })
+    playSfx('badge')
+    setTimeout(onExit, 1500)
+  }
+
+  const spriteOf = (key?: string) => {
+    if (!key) return null
+    if (key === 'me') return IMG(state.gender === 'f' ? 'char_f' : 'char_m')
+    return IMG(key)
+  }
+  const leftSprite = spriteOf(view.sprite)
+  const rightSprite = spriteOf(view.sprite2)
+  const speakerMeta = step.speaker ? CHARACTERS[step.speaker] : undefined
+  const visibleChoices = (step.choices ?? []).filter(c => condOk(state, c.cond))
+  const dose = state.dlc?.[dlc.id]?.dose ?? 0
+
+  return (
+    <div className="relative w-full h-full cursor-pointer" onClickCapture={() => { prevTapAt.current = lastTapAt.current; lastTapAt.current = Date.now() }} onClick={advance}>
+      <BgImg name={view.bg} />
+      <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-slate-950/80 to-transparent pointer-events-none" />
+
+      {/* 顶部信息条 */}
+      <div className="absolute top-0 inset-x-0 z-20 flex items-center justify-between flex-wrap gap-y-1 px-4 py-2 bg-slate-950/70 text-xs md:text-sm">
+        <span className="text-amber-200 tracking-widest whitespace-nowrap">{dlc.icon} {dlc.title}</span>
+        <span className="text-slate-300 flex items-center gap-2 md:gap-3 flex-wrap justify-end">
+          <span>💰 {state.gold}</span>
+          {dlc.id === 'dsa' && (
+            <span className={dose > 800 ? 'text-red-400 font-bold animate-pulse' : dose > 600 ? 'text-amber-300' : 'text-slate-300'}>
+              ☢️ {dose} mGy
+            </span>
+          )}
+          <button onClick={e => { e.stopPropagation(); playSfx('click'); setManualOpen(true) }}
+            className="text-xs text-slate-400 hover:text-amber-300 border border-slate-700 rounded px-2 py-0.5">
+            📖 手册
+          </button>
+          <button onClick={e => { e.stopPropagation(); playSfx('click'); setBadgeOpen(true) }}
+            className="text-xs text-slate-400 hover:text-amber-300 border border-slate-700 rounded px-2 py-0.5">
+            🏅 勋章
+          </button>
+          <FullscreenBtn />
+          <button onClick={e => { e.stopPropagation(); playSfx('click'); onExit() }}
+            className="text-xs text-slate-400 hover:text-amber-300 border border-slate-700 rounded px-2 py-0.5" title="进度已自动保存，可随时离开">
+            💾 回大厅
+          </button>
+        </span>
+      </div>
+
+      {/* 电话来电头像 */}
+      {step.phone && (
+        <div className="absolute top-12 right-4 portrait:top-[4.5rem] portrait:right-2 portrait:px-2 portrait:py-1 portrait:gap-2 z-30 flex items-center gap-3 bg-slate-900/90 border-2 border-emerald-600 rounded-xl px-3 py-2 shadow-2xl">
+          <div className="portrait:w-10 portrait:h-10 w-14 h-14 md:w-16 md:h-16 rounded-full overflow-hidden border-2 border-emerald-400 bg-slate-800 shrink-0">
+            <img src={IMG(step.phone)} className="w-full h-full object-cover object-top pixel" alt="来电" />
+          </div>
+          <div className="text-left">
+            <p className="text-emerald-300 text-xs md:text-sm tracking-widest animate-pulse">📞 通话中</p>
+            <p className="text-slate-400 text-xs">外线 · 院内电话</p>
+          </div>
+        </div>
+      )}
+
+      {/* 中央大图 */}
+      {step.image && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none pb-40">
+          <img src={IMG(step.image)} className="max-h-[45%] portrait:max-h-[38%] rounded-lg border-4 border-slate-700 shadow-2xl pixel" alt="影像" />
+        </div>
+      )}
+
+      {/* 立绘 */}
+      {leftSprite && <img src={leftSprite} className="sprite-l absolute bottom-48 portrait:bottom-44 left-4 md:left-24 portrait:h-44 h-64 md:h-96 object-contain pixel drop-shadow-2xl z-10" alt="" />}
+      {rightSprite && <img src={rightSprite} className="sprite-r absolute bottom-48 portrait:bottom-44 right-4 md:right-24 portrait:h-40 h-56 md:h-80 object-contain pixel opacity-80 drop-shadow-2xl z-10" alt="" />}
+
+      {/* 对话框 */}
+      <div className="dialog-wrap absolute bottom-0 inset-x-0 z-20 p-4 md:p-6">
+        <div className="dialog-box max-w-4xl mx-auto bg-slate-900/95 border-2 border-slate-600 rounded-xl p-4 md:p-5 min-h-32 relative">
+          {speakerMeta && speakerMeta.name && (
+            <span className="absolute -top-4 left-4 px-3 py-1 rounded-md text-sm font-bold bg-slate-800 border border-slate-600" style={{ color: speakerMeta.color }}>
+              {speakerMeta.name === '我' ? (state.gender === 'f' ? '林小满' : '陈一帆') : speakerMeta.name}
+            </span>
+          )}
+          <p key={stepId} className="text-slate-100 leading-relaxed text-base md:text-lg whitespace-pre-wrap min-h-[4.9rem] md:min-h-[5.4rem] text-in">
+            <RichText text={fullText} shown={shown} />
+          </p>
+          {!step.choices && !step.end && !step.pedal && done && <span className="absolute bottom-3 right-4 text-amber-300 animate-bounce">▼</span>}
+          {step.choices && done && !choicesLocked && (
+            <div className="mt-4 flex flex-col gap-2 choice-in" onClick={e => e.stopPropagation()}>
+              {visibleChoices.map((c, i) => (
+                <button key={i} onClick={() => pick(c)}
+                  className="text-left px-4 py-2.5 rounded-lg bg-slate-800 border border-slate-600 hover:border-amber-400 hover:bg-slate-700 transition-all text-slate-100">
+                  <RichText text={c.text} />
+                </button>
+              ))}
+            </div>
+          )}
+          {step.end && done && (
+            <div className="mt-4" onClick={e => e.stopPropagation()}>
+              <button onClick={finish}
+                className="w-full py-3 rounded-lg bg-amber-500/90 text-slate-950 font-bold tracking-widest hover:bg-amber-400 transition-all">
+                🏁 本篇完 · 结算并回大厅
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* DSA 踏板时序玩法 */}
+      {step.pedal && done && <PedalOverlay key={stepId + String(state.dlc?.[dlc.id]?.pedalTry ?? 0)} pedal={step.pedal} onResult={pedalResult} />}
+
+      {/* DR 队列调度玩法 */}
+      {queueOpen && (
+        <QueueGame state={state} update={update} onDone={() => { setQueueOpen(false); setStepId('dr_noon0') }} />
+      )}
+
+      {/* 夜班手册 */}
+      {manualOpen && <ManualOverlay state={state} onClose={() => setManualOpen(false)} />}
+
+      {/* 勋章墙 */}
+      {badgeOpen && (
+        <div className="fixed inset-0 z-50" onClick={e => e.stopPropagation()}>
+          <BadgeScreen state={state} onBack={() => setBadgeOpen(false)} />
+        </div>
+      )}
+    </div>
+  )
+}
+
+/* ================= DLC 番外篇大厅（隐藏入口 #/dlc） ================= */
+function DlcHallScreen({ onEnter, onBack }: { onEnter: (id: string, s: GameState) => void; onBack: () => void }) {
+  const [save, setSave] = useState<GameState | null>(() => loadState())
+  const [manualOpen, setManualOpen] = useState(false)
+  const [badgeOpen, setBadgeOpen] = useState(false)
+  const [confirmReset, setConfirmReset] = useState<string | null>(null)
+
+  const startTemplate = (g: 'm' | 'f') => {
+    const s = freshState(g)
+    saveState(s)
+    setSave(s)
+    playSfx('stamp')
+  }
+
+  const resetDlc = (id: string) => {
+    if (!save) return
+    const s: GameState = { ...save, dlc: { ...(save.dlc ?? {}), [id]: {} } }
+    saveState(s)
+    setSave(s)
+    setConfirmReset(null)
+    playSfx('click')
+  }
+
+  return (
+    <div className="relative w-full h-full overflow-y-auto">
+      <BgImg name="bg_corridor" fixed />
+      <div className="absolute inset-0 bg-slate-950/75" />
+      <div className="relative z-10 min-h-full flex flex-col items-center py-10 px-4 gap-5">
+        <p className="text-amber-300 tracking-[0.4em] text-sm">开发预览 · 隐藏入口</p>
+        <h2 className="text-3xl text-amber-100 tracking-widest">📼 番外篇放映厅</h2>
+
+        {save ? (
+          <div className="bg-slate-900/90 border border-slate-600 rounded-xl p-4 max-w-lg w-full text-sm">
+            <p className="text-slate-300">
+              已继承第一章存档：{save.gender === 'f' ? '林小满' : '陈一帆'} · 💰 {save.gold} · 🏅 {save.badges.length} 枚勋章
+              {save.finished ? ' · ✅ 第一章已通关' : ' · ⏳ 第一章进行中'}
+            </p>
+            {!save.finished && (
+              <p className="text-amber-300/90 text-xs mt-2">⚠️ 剧透提示：番外篇的故事发生在第一章之后，会提及老周退休等第一章结局信息。</p>
+            )}
+          </div>
+        ) : (
+          <div className="bg-slate-900/90 border border-amber-500/50 rounded-xl p-5 max-w-lg w-full">
+            <p className="text-amber-200 text-sm mb-1">检测不到本机的第一章存档</p>
+            <p className="text-slate-400 text-xs mb-4 leading-relaxed">
+              可以用模板身份直接体验番外篇（💰100 · 初始数值），之后回到首页仍可从第一章正常玩起；也可以先去通关第一章再来。
+            </p>
+            <p className="text-slate-300 text-sm mb-2">选择模板身份：</p>
+            <div className="flex gap-3">
+              <button onClick={() => startTemplate('f')} className="flex-1 py-2.5 rounded-lg bg-slate-800 border border-slate-600 hover:border-amber-400 text-slate-100">林小满（女）</button>
+              <button onClick={() => startTemplate('m')} className="flex-1 py-2.5 rounded-lg bg-slate-800 border border-slate-600 hover:border-amber-400 text-slate-100">陈一帆（男）</button>
+            </div>
+          </div>
+        )}
+
+        {save && (
+          <div className="grid md:grid-cols-2 gap-4 max-w-3xl w-full">
+            {DLCS.map(d => {
+              const p = save.dlc?.[d.id]
+              const started = !!p?.stepId
+              const doneIt = !!p?.done
+              return (
+                <div key={d.id} className="bg-slate-900/90 border-2 border-slate-600 hover:border-amber-400/70 rounded-2xl p-5 flex flex-col gap-2 transition-all">
+                  <div className="flex items-center gap-3">
+                    <span className="text-4xl">{d.icon}</span>
+                    <div>
+                      <p className="text-lg text-amber-100 font-bold">{d.title}</p>
+                      <p className="text-xs text-slate-400">{d.subtitle} · {d.minutes}</p>
+                    </div>
+                    <span className={`ml-auto text-xs px-2 py-1 rounded ${doneIt ? 'bg-emerald-800/70 text-emerald-200' : started ? 'bg-sky-800/70 text-sky-200' : 'bg-slate-700/70 text-slate-300'}`}>
+                      {doneIt ? '✅ 已完成' : started ? '▶ 进行中' : '未开始'}
+                    </span>
+                  </div>
+                  <p className="text-slate-300 text-sm leading-relaxed">{d.desc}</p>
+                  <div className="flex gap-2 mt-1">
+                    <button onClick={() => { playSfx('click'); onEnter(d.id, save) }}
+                      className="flex-1 py-2.5 rounded-lg bg-amber-500/90 text-slate-950 font-bold tracking-widest hover:bg-amber-400">
+                      {doneIt ? '再玩一遍' : started ? '继续 →' : '开始 →'}
+                    </button>
+                    {(started || doneIt) && (
+                      confirmReset === d.id ? (
+                        <button onClick={() => resetDlc(d.id)} className="px-3 py-2.5 rounded-lg bg-red-700/80 text-red-50 text-sm animate-pulse">确认重置</button>
+                      ) : (
+                        <button onClick={() => { playSfx('click'); setConfirmReset(d.id) }} className="px-3 py-2.5 rounded-lg bg-slate-800 border border-slate-600 text-slate-400 text-sm hover:border-red-400">重置</button>
+                      )
+                    )}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        )}
+
+        <div className="flex gap-3 flex-wrap justify-center">
+          {save && <MenuBtn onClick={() => setManualOpen(true)}>📖 夜班手册</MenuBtn>}
+          {save && <MenuBtn onClick={() => setBadgeOpen(true)}>🏅 勋章墙</MenuBtn>}
+          <MenuBtn onClick={onBack}>← 回标题</MenuBtn>
+        </div>
+        <p className="text-slate-500 text-xs">番外篇与第一章共用存档（金币/勋章/旗标互通）· 进度自动保存</p>
+      </div>
+      {manualOpen && save && <ManualOverlay state={save} onClose={() => setManualOpen(false)} />}
+      {badgeOpen && save && (
+        <div className="fixed inset-0 z-50">
+          <BadgeScreen state={save} onBack={() => setBadgeOpen(false)} />
+        </div>
+      )}
     </div>
   )
 }

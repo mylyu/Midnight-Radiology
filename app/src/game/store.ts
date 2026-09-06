@@ -34,6 +34,9 @@ export function loadState(): GameState | null {
       if (!Array.isArray(s.items)) s.items = []
       if (typeof s.ap !== 'number') s.ap = 0
       if (typeof s.buyCount !== 'number') s.buyCount = 0
+      if (!s.dlc || typeof s.dlc !== 'object') s.dlc = {}
+      if (!Array.isArray(s.cards)) s.cards = []
+      if (!Array.isArray(s.events)) s.events = []
       return s
     }
     return null
@@ -142,7 +145,7 @@ export function verifyCredCode(code: string, name: string, sid: string, gold: nu
 
 let audioCache: Record<string, HTMLAudioElement> = {}
 
-export type SfxName = 'stamp' | 'xray' | 'badge' | 'click' | 'ring' | 'radio' | 'buzz' | 'cry_child' | 'groan_man' | 'vox_mom' | 'vox_worker' | 'vox_mystery' | 'vox_thin' | 'vox_aunt' | 'vox_dad' | 'vox_tang' | 'vox_zhou' | 'vox_lei' | 'vox_fan' | 'vox_he' | 'vox_qian' | 'vox_kai' | 'vox_jiang' | 'vox_wen' | 'vox_bai' | 'vox_director'
+export type SfxName = 'stamp' | 'xray' | 'badge' | 'click' | 'ring' | 'radio' | 'buzz' | 'cry_child' | 'groan_man' | 'vox_mom' | 'vox_worker' | 'vox_mystery' | 'vox_thin' | 'vox_aunt' | 'vox_dad' | 'vox_tang' | 'vox_zhou' | 'vox_lei' | 'vox_fan' | 'vox_he' | 'vox_qian' | 'vox_kai' | 'vox_jiang' | 'vox_wen' | 'vox_bai' | 'vox_director' | 'vox_shao' | 'vox_du' | 'vox_qin' | 'vox_liao'
 
 /* 分档音量:哭闹声刻意压低,语音台词清晰但不炸耳 */
 const SFX_VOLUME: Partial<Record<SfxName, number>> = {
@@ -150,7 +153,7 @@ const SFX_VOLUME: Partial<Record<SfxName, number>> = {
   groan_man: 0.13,
   vox_mom: 0.45, vox_worker: 0.45, vox_mystery: 0.45, vox_thin: 0.45, vox_aunt: 0.45, vox_dad: 0.45,
   vox_tang: 0.45, vox_zhou: 0.45, vox_lei: 0.45, vox_fan: 0.45, vox_he: 0.45, vox_qian: 0.45,
-  vox_kai: 0.45, vox_jiang: 0.45, vox_wen: 0.45, vox_bai: 0.45, vox_director: 0.45,
+  vox_kai: 0.45, vox_jiang: 0.45, vox_wen: 0.45, vox_bai: 0.45, vox_director: 0.45, vox_shao: 0.45, vox_du: 0.45, vox_qin: 0.45, vox_liao: 0.45,
 }
 
 export function playSfx(name: SfxName) {
