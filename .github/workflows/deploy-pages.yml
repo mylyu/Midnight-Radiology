@@ -28,7 +28,10 @@ jobs:
           cache-dependency-path: app/package-lock.json
       - name: Install dependencies
         working-directory: app
-        run: npm ci
+        run: |
+          npm ci --include=dev
+          # Fail here if installation is incomplete; do not fall back to a global compiler.
+          node node_modules/typescript/bin/tsc --version
       - name: Build game
         working-directory: app
         run: npm run build
