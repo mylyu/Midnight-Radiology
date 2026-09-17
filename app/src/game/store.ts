@@ -82,6 +82,7 @@ export function condOk(s: GameState, c?: Cond): boolean {
   if (!c) return true
   if (c.flag && !s.flags[c.flag]) return false
   if (c.notFlag && s.flags[c.notFlag]) return false
+  if (c.notFlag2 && s.flags[c.notFlag2]) return false
   if (c.item && !s.items.includes(c.item)) return false
   if (c.gold !== undefined && s.gold < c.gold) return false
   if (c.ap !== undefined && s.ap < c.ap) return false
@@ -145,7 +146,7 @@ export function verifyCredCode(code: string, name: string, sid: string, gold: nu
 
 let audioCache: Record<string, HTMLAudioElement> = {}
 
-export type SfxName = 'stamp' | 'xray' | 'badge' | 'click' | 'ring' | 'radio' | 'buzz' | 'cry_child' | 'groan_man' | 'vox_mom' | 'vox_worker' | 'vox_mystery' | 'vox_thin' | 'vox_aunt' | 'vox_dad' | 'vox_tang' | 'vox_zhou' | 'vox_lei' | 'vox_fan' | 'vox_he' | 'vox_qian' | 'vox_kai' | 'vox_jiang' | 'vox_wen' | 'vox_bai' | 'vox_director' | 'vox_shao' | 'vox_du' | 'vox_qin' | 'vox_liao'
+export type SfxName = 'stamp' | 'xray' | 'badge' | 'click' | 'ring' | 'radio' | 'buzz' | 'cry_child' | 'groan_man' | 'vox_mom' | 'vox_worker' | 'vox_mystery' | 'vox_thin' | 'vox_aunt' | 'vox_dad' | 'vox_tang' | 'vox_zhou' | 'vox_lei' | 'vox_fan' | 'vox_he' | 'vox_qian' | 'vox_kai' | 'vox_jiang' | 'vox_wen' | 'vox_bai' | 'vox_director' | 'vox_shao' | 'vox_du' | 'vox_qin' | 'vox_liao' | 'vox_luzhou_m' | 'vox_luzhou_f' | 'vox_uncle' | 'vox_guy' | 'vox_grandpa' | 'vox_enh' | 'vox_kiddad' | 'vox_kidmom' | 'vox_kid' | 'vox2_tang' | 'vox2_zhou' | 'vox2_fan_a' | 'vox2_fan_b' | 'vox2_kai' | 'vox2_lei' | 'vox2_he' | 'vox2_director' | 'vox2_director_am' | 'vox2_wen' | 'vox2_mystery' | 'vox_duty'
 
 /* 分档音量:哭闹声刻意压低,语音台词清晰但不炸耳 */
 const SFX_VOLUME: Partial<Record<SfxName, number>> = {
@@ -154,11 +155,16 @@ const SFX_VOLUME: Partial<Record<SfxName, number>> = {
   vox_mom: 0.45, vox_worker: 0.45, vox_mystery: 0.45, vox_thin: 0.45, vox_aunt: 0.45, vox_dad: 0.45,
   vox_tang: 0.45, vox_zhou: 0.45, vox_lei: 0.45, vox_fan: 0.45, vox_he: 0.45, vox_qian: 0.45,
   vox_kai: 0.45, vox_jiang: 0.45, vox_wen: 0.45, vox_bai: 0.45, vox_director: 0.45, vox_shao: 0.45, vox_du: 0.45, vox_qin: 0.45, vox_liao: 0.45,
+  vox_luzhou_m: 0.45, vox_luzhou_f: 0.45, vox_uncle: 0.45, vox_guy: 0.45, vox_grandpa: 0.45,
+  vox_enh: 0.45, vox_kiddad: 0.45, vox_kidmom: 0.45, vox_kid: 0.45,
+  vox2_tang: 0.45, vox2_zhou: 0.45, vox2_fan_a: 0.45, vox2_fan_b: 0.45, vox2_kai: 0.45, vox2_lei: 0.45,
+  vox2_he: 0.45, vox2_director: 0.45, vox2_director_am: 0.45, vox2_wen: 0.45, vox2_mystery: 0.45, vox_duty: 0.45,
 }
 
 export function playSfx(name: SfxName) {
   try {
-    const src = `${import.meta.env.BASE_URL}audio/${name}.mp3`
+    // ?v=2：2025年11月 16 条配音重制后破除浏览器旧缓存（同名文件内容已变）
+    const src = `${import.meta.env.BASE_URL}audio/${name}.mp3?v=2`
     if (!audioCache[name]) audioCache[name] = new Audio(src)
     const a = audioCache[name]
     a.currentTime = 0

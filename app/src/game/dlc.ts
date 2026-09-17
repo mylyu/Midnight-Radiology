@@ -166,14 +166,14 @@ export const EVIDENCE: Record<string, Evidence> = {
   film1998: { title: '1998年无名胶片', body: '旧片库小铁柜里的胶片袋，没有登记，没有姓名。袋口的字迹已经褪色。', image: 'item_film', flag: 'archive_film' },
   old_photo: { title: '旧照片', body: '寻父男人出示的旧照片——和那个男人描述的父亲离开那年的样子。', image: 'item_photo', flag: 'archive_sealed' },
   screen_sample: { title: '增感屏残片', body: '屏片时代的暗盒配件，见 X 光就发荧光。老范说留着「给年轻人开开眼」。', image: 'item_screen', flag: 'archive_cab' },
-  wen_card_ev: { title: '雯雯的名片', body: '厂家销售的名片。第 4 夜她说过：「真到招标那天，懂行的人替科室把关。」', flag: 'wen_card' },
-  kai_survey: { title: '新 CT 机房勘测单', body: '小凯留下的勘测单复印件：电源容量、楼板承重、防护评价前期事项——原来他那么早就在为这台机器奔忙。', flag: 'kai_truth' },
+  wen_card_ev: { title: '雯雯的名片', body: '厂家销售的名片。第 4 夜她说过：「真到招标那天，懂行的人替科室把关。」', image: 'ev_wen_card', flag: 'wen_card' },
+  kai_survey: { title: '新 CT 机房勘测单', body: '小凯留下的勘测单复印件：电源容量、楼板承重、防护评价前期事项——原来他那么早就在为这台机器奔忙。', image: 'ev_kai_survey', flag: 'kai_truth' },
   /* ===== 第一章证物 ===== */
-  pacs_log_ev: { title: '凌晨三点的登录日志', body: '小雷截来的工作站日志：老周的账号，最近几个月凌晨三点多几次登录——只看片，不打印。', flag: 'pacs_log' },
-  mystery_sign: { title: '潦草的登记签名', body: '问片男人在登记本上留下的名字，笔迹潦草得像故意写乱——是不想被认出来，还是不想被找到？', flag: 'mystery_name' },
+  pacs_log_ev: { title: '凌晨三点的登录日志', body: '小雷截来的工作站日志：老周的账号，最近几个月凌晨三点多几次登录——只看片，不打印。', image: 'ev_pacs_log', flag: 'pacs_log' },
+  mystery_sign: { title: '潦草的登记签名', body: '问片男人在登记本上留下的名字，笔迹潦草得像故意写乱——是不想被认出来，还是不想被找到？', image: 'ev_mystery_sign', flag: 'mystery_name' },
   lead_glasses: { title: '1987 年的铅眼镜', body: '老范从报废柜里清出的老式铅橡胶眼镜，镜腿上刻着模糊的年份：1987。报废品，走不了账。', image: 'item_glasses', flag: 'n5_fan' },
   error_notebook: { title: '小雷的错题本', body: '信息科小雷整理的夜班病例错题本：双环征、正侧位、立位气胸……每页都配了示意图，PACS 里还有备份。', image: 'item_notebook', flag: 'n5_lei' },
-  zhou_note: { title: '手写的用药说明', body: '药名、剂量、吃法，字迹一笔一画。老周写给桥洞老人的那张纸条——和垃圾桶里那页草稿，是同一种字。', flag: 'n5_cover' },
+  zhou_note: { title: '手写的用药说明', body: '药名、剂量、吃法，字迹一笔一画。老周写给桥洞老人的那张纸条——和垃圾桶里那页草稿，是同一种字。', image: 'ev_zhou_note', flag: 'n5_cover' },
 }
 
 /* ================= DLC·DR：候诊队列配置 ================= */
@@ -436,6 +436,12 @@ export const DLC_DSA: DlcDef = {
 }
 
 export const DLCS: DlcDef[] = [DLC_DR, DLC_DSA]
+
+/* ===== 第二章注册表并入（卡片/大事记/证物与番外篇共用一本手册；勋章墙单列一节，见 App） ===== */
+import { CH2_CARDS, CH2_EVENTS, CH2_EVIDENCE } from './ch2'
+Object.assign(CARDS, CH2_CARDS)
+Object.assign(EVENTS, CH2_EVENTS)
+Object.assign(EVIDENCE, CH2_EVIDENCE)
 
 export function getDlc(id: string): DlcDef | undefined {
   return DLCS.find(d => d.id === id)

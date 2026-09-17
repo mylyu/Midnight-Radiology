@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { NIGHTS, BADGES, CHARACTERS, SHOP_ITEMS, QUIZ, BOOK_PAGES } from './game/data'
 import { DLCS, getDlc, DLC_BADGES, CARDS, EVENTS, EVIDENCE, DR_QUEUE, queueWaits } from './game/dlc'
+import { CH2_META, CH2_SHIFTS, CH2_BADGES, CH2_CARDS, CH2_BOOK_PAGES, QUIZ2, grayToHU, ch2Unlocked, tryUnlockCh2 } from './game/ch2'
 import type { DlcDef, QueuePatient } from './game/dlc'
 import type { GameState, Step, ShopItem, Choice, DlcProgress } from './game/types'
 import { freshState, loadState, saveState, wipeSave, applyEffect, condOk, dailyCheckin, meterLevel, playSfx, makeCredCode, verifyCredCode } from './game/store'
 
-type Screen = 'title' | 'select' | 'checkin' | 'night' | 'day' | 'badges' | 'quiz' | 'epilogue' | 'chapterEnd' | 'verify' | 'dlcHall' | 'dlc'
+type Screen = 'title' | 'select' | 'checkin' | 'night' | 'day' | 'badges' | 'quiz' | 'epilogue' | 'chapterEnd' | 'verify' | 'dlcHall' | 'dlc' | 'ch2'
 
 const IMG = (n: string) => `${import.meta.env.BASE_URL}assets/${n}.png`
 const LAST_NIGHT = NIGHTS.length
@@ -49,10 +50,19 @@ export default function App() {
   const [dlcId, setDlcId] = useState<string | null>(null)
   useEffect(preloadAssets, [])
 
-  // 隐藏入口（开发期不在首页暴露）：#/dlc 番外篇大厅；#/dlc/dr、#/dlc/dsa 直达对应 DLC
+  // 隐藏入口（教师验证入口右侧的 ▪）：#/dlc 或 #/hall → 内容大厅；#/dlc/dr、#/dlc/dsa 直达对应 DLC；#/ch2 直达第二章
   useEffect(() => {
     const applyHash = () => {
       const h = window.location.hash
+      if (h.startsWith('#/ch2')) {
+        const s = loadState()
+        if (s) setState(s)
+        // 第二章口令解锁：任何入口（大厅卡片/直达链接）都先过口令，与第一章进度无关
+        if (s && ch2Unlocked()) setScreen('ch2')
+        else setScreen('dlcHall')
+        return
+      }
+      if (h.startsWith('#/hall')) { const s = loadState(); if (s) setState(s); setScreen('dlcHall'); return }
       if (!h.startsWith('#/dlc')) return
       const id = h.split('/')[2] ?? ''
       const s = loadState()
@@ -71,6 +81,13 @@ export default function App() {
     setDlcId(id)
     window.location.hash = `#/dlc/${id}`
     setScreen('dlc')
+  }
+
+  const enterCh2 = (s: GameState) => {
+    saveState(s)
+    setState(s)
+    window.location.hash = '#/ch2'
+    setScreen('ch2')
   }
 
   const update = (fn: (s: GameState) => GameState) => {
@@ -214,7 +231,14 @@ export default function App() {
       {screen === 'chapterEnd' && state && <ChapterEndScreen state={state} update={update} onBadges={() => setScreen('badges')} onRestart={() => { wipeSave(); setState(null); setScreen('title') }} onDlc={() => { window.location.hash = '#/dlc' }} onHome={() => setScreen('title')} />}
       {screen === 'verify' && <VerifyScreen onBack={() => setScreen('title')} />}
       {screen === 'dlcHall' && (
-        <DlcHallScreen onEnter={enterDlc} onBack={() => { window.location.hash = ''; setScreen('title') }} />
+        <DlcHallScreen onEnter={enterDlc} onEnterCh2={enterCh2} onBack={() => { window.location.hash = ''; setScreen('title') }} />
+      )}
+      {screen === 'ch2' && state && (
+        <Ch2Screen
+          state={state}
+          update={update}
+          onExit={() => { window.location.hash = '#/dlc'; setScreen('dlcHall') }}
+        />
       )}
       {screen === 'dlc' && state && dlcId && getDlc(dlcId) && (
         <ScriptScreen
@@ -239,7 +263,7 @@ export default function App() {
           <div className="bg-slate-900/95 border-2 border-amber-400 rounded-2xl px-8 py-6 shadow-[0_0_40px_rgba(251,191,36,0.4)] flex flex-col items-center gap-2 rotate-[-1deg]">
             <p className="text-amber-300 tracking-[0.3em] text-xs">获得勋章</p>
             {badgePop.map(id => {
-              const b = BADGES[id] ?? DLC_BADGES[id]
+              const b = BADGES[id] ?? DLC_BADGES[id] ?? CH2_BADGES[id]
               return b ? (
                 <div key={id} className="flex items-center gap-3">
                   <span className="text-4xl">{b.icon}</span>
@@ -356,7 +380,10 @@ function TitleScreen({ hasSave, onNew, onContinue, onBadges, onVerify, onDlc }: 
         <div className="flex items-center gap-4">
           <FullscreenBtn />
           <button onClick={onVerify} className="text-slate-600 hover:text-slate-400 text-xs underline">教师验证入口</button>
-          <button onClick={e => { e.stopPropagation(); onDlc() }} className="text-slate-800 hover:text-slate-500 text-xs transition-colors" title="">▪</button>
+          {/* 隐蔽的通用入口：内容大厅（正篇后续章节 + 番外篇都从这里进） */}
+          <button onClick={e => { e.stopPropagation(); onDlc() }} className="text-slate-800 hover:text-slate-500 text-xs transition-colors" title="内容大厅">▪</button>
+          {/* 隐蔽的内部入口：配音试听页（开发调试用，正式上线前删除） */}
+          <button onClick={e => { e.stopPropagation(); window.location.href = '/voice-preview.html' }} className="text-slate-800 hover:text-slate-500 text-xs transition-colors" title="配音试听">▫</button>
         </div>
       </div>
     </div>
@@ -522,7 +549,9 @@ function ShopOverlay({ state, update, onClose }: { state: GameState; update: (f:
             const soldOut = item.id === 'lottery' && lotteryPlayed >= 5
             return (
               <div key={item.id} className="flex items-center gap-3 bg-slate-800/80 border border-slate-600 rounded-lg p-3">
-                <span className="text-2xl">{item.icon}</span>
+                {item.image
+                  ? <img src={IMG(item.image)} className="w-11 h-11 object-contain pixel shrink-0 rounded border border-slate-700 bg-slate-950" alt="" />
+                  : <span className="text-2xl">{item.icon}</span>}
                 <div className="flex-1 min-w-0">
                   <p className="text-slate-100 text-sm">{item.name}{owned && <span className="text-emerald-400 text-xs ml-2">已持有</span>}</p>
                   <p className="text-xs text-slate-400">{item.desc}</p>
@@ -592,10 +621,10 @@ function NightScreen({ state, update, onFinish, onExit }: { state: GameState; up
     const already = applied.current.has(key)
     applied.current.add(key)
     // 出场语音(vox_)全程只播一次:听过就写入存档标记,重进/读档都不再播
-    const heardKey = (n: string) => `heard_${n}`
+    const heardKey = (n: string) => `heard_vp3_${n}`
     const sfxList = [step.sfx, step.sfx2].filter((n): n is NonNullable<typeof n> => !!n)
     const freshVox = sfxList.filter(n => n.startsWith('vox_') && !state.flags[heardKey(n)])
-    if (!already) sfxList.forEach(n => { if (!n.startsWith('vox_') || freshVox.includes(n)) playSfx(n) })
+    if (!already) sfxList.forEach(n => { if (!n.startsWith('vox_') || freshVox.includes(n)) playSfx(n as Parameters<typeof playSfx>[0]) })
     const cur = viewRef.current
     // 立绘规则：显式指定 > 主角思考/发言 > 同一角色连续发言 > 其他情况一律清场（避免上一场景的角色滞留）
     const impliedSprite =
@@ -929,6 +958,19 @@ function BadgeScreen({ state, onBack }: { state: GameState | null; onBack: () =>
             )
           })}
         </div>
+        <h3 className="text-amber-200/80 tracking-widest mt-4">🌀 第二章 · 快与狠 · 已收集 {owned.filter(id => CH2_BADGES[id]).length}/{Object.keys(CH2_BADGES).length}</h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl">
+          {Object.entries(CH2_BADGES).map(([id, b]) => {
+            const has = owned.includes(id)
+            return (
+              <div key={id} className={`w-36 p-4 rounded-xl border-2 flex flex-col items-center gap-2 text-center transition-all ${has ? 'bg-teal-100/95 border-teal-300 shadow-lg rotate-1' : 'bg-slate-900/70 border-slate-700'}`}>
+                <span className={`text-4xl ${has ? '' : 'grayscale opacity-30'}`}>{b.icon}</span>
+                <span className={`font-bold text-sm ${has ? 'text-teal-900' : 'text-slate-500'}`}>{has ? b.name : '？？？'}</span>
+                <span className={`text-xs ${has ? 'text-teal-700' : 'text-slate-600'}`}>{has ? b.desc : '尚未解锁'}</span>
+              </div>
+            )
+          })}
+        </div>
         <h3 className="text-amber-200/80 tracking-widest mt-4">📼 番外篇 · 已收集 {owned.filter(id => DLC_BADGES[id]).length}/{Object.keys(DLC_BADGES).length}</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl">
           {Object.entries(DLC_BADGES).map(([id, b]) => {
@@ -1142,11 +1184,11 @@ function ChapterEndScreen({ state, update, onBadges, onRestart, onDlc, onHome }:
           </div>
         )}
 
-        <p className="text-amber-200/80">🔒 第二章「快与狠」—— CT篇，开发中，敬请期待</p>
+        <p className="text-amber-200/80">🌀 第二章「快与狠」CT篇已上线 —— 内容大厅内凭章节口令进入</p>
         <div className="flex gap-3 flex-wrap justify-center">
           {/* 晨会考核 A/S 才解锁番外篇直达；否则只能回首页 */}
           {(state.flags['quiz_grade'] === 'S' || state.flags['quiz_grade'] === 'A') ? (
-            <MenuBtn onClick={onDlc} primary>📼 番外篇放映厅</MenuBtn>
+            <MenuBtn onClick={onDlc} primary>🗂️ 内容大厅</MenuBtn>
           ) : (
             <MenuBtn onClick={onHome} primary>🏠 返回首页</MenuBtn>
           )}
@@ -1154,7 +1196,7 @@ function ChapterEndScreen({ state, update, onBadges, onRestart, onDlc, onHome }:
           <MenuBtn onClick={onRestart}>↺ 重新开始</MenuBtn>
         </div>
         {!(state.flags['quiz_grade'] === 'S' || state.flags['quiz_grade'] === 'A') && (
-          <p className="text-slate-500 text-xs">（晨会考核拿到 A 或 S，可解锁番外篇直达通道）</p>
+          <p className="text-slate-500 text-xs">（晨会考核拿到 A 或 S，可解锁内容大厅直达通道）</p>
         )}
         <p className="text-slate-500 text-xs">试玩反馈入口：把bug或建议告诉老师即可 · 数据保存在本浏览器</p>
       </div>
@@ -1249,9 +1291,12 @@ function ManualOverlay({ state, onClose }: { state: GameState; onClose: () => vo
                 const c = CARDS[id]
                 if (!c) return null
                 return (
-                  <div key={id} className="bg-slate-800/80 border border-slate-600 rounded-lg p-3">
-                    <p className="text-amber-200 text-sm font-bold mb-1">🎓 {c.title}</p>
-                    <p className="text-slate-300 text-xs leading-relaxed">{c.body}</p>
+                  <div key={id} className="bg-slate-800/80 border border-slate-600 rounded-lg p-3 flex gap-3 items-start">
+                    {c.image && <img src={IMG(c.image)} className="w-16 h-16 object-contain pixel shrink-0 rounded border border-slate-700 bg-slate-950" alt="" />}
+                    <div>
+                      <p className="text-amber-200 text-sm font-bold mb-1">🎓 {c.title}</p>
+                      <p className="text-slate-300 text-xs leading-relaxed">{c.body}</p>
+                    </div>
                   </div>
                 )
               }))}
@@ -1518,7 +1563,7 @@ function ScriptScreen({ dlc, state, update, onExit }: { dlc: DlcDef; state: Game
     const key = `${dlc.id}-${stepId}`
     const already = applied.current.has(key)
     applied.current.add(key)
-    const heardKey = (n: string) => `heard_${n}`
+    const heardKey = (n: string) => `heard_vp3_${n}`
     const sfxList = [step.sfx, step.sfx2].filter((n): n is NonNullable<typeof n> => !!n)
     const freshVox = sfxList.filter(n => n.startsWith('vox_') && !state.flags[heardKey(n)])
     if (!already) sfxList.forEach(n => { if (!n.startsWith('vox_') || freshVox.includes(n)) playSfx(n as Parameters<typeof playSfx>[0]) })
@@ -1754,12 +1799,596 @@ function ScriptScreen({ dlc, state, update, onExit }: { dlc: DlcDef; state: Game
   )
 }
 
+/* ================= 第二章「快与狠」· 剧情引擎（独立于 NightScreen / ScriptScreen） ================= */
+function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s: GameState) => GameState) => void; onExit: () => void }) {
+  const prog = state.dlc?.['ch2'] ?? {}
+  const shiftIdx0 = (() => { const i = CH2_SHIFTS.findIndex(s => s.id === prog.shift); return i >= 0 ? i : 0 })()
+  const [shiftIdx, setShiftIdx] = useState(shiftIdx0)
+  const shift = CH2_SHIFTS[shiftIdx]
+  const resumeStep = !prog.done && prog.shift === shift.id && prog.stepId && shift.steps[prog.stepId] ? prog.stepId : shift.start
+  const [stepId, setStepId] = useState(resumeStep)
+  const [view, setView] = useState<{ bg: string; sprite?: string; sprite2?: string }>({
+    bg: prog.viewBg ?? 'bg_ctcontrol', sprite: prog.viewSprite, sprite2: prog.viewSprite2,
+  })
+  const viewRef = useRef(view)
+  const applied = useRef<Set<string>>(new Set())
+  const [shown, setShown] = useState(0)
+  const [choicesLocked, setChoicesLocked] = useState(false)
+  const [manualOpen, setManualOpen] = useState(false)
+  const [badgeOpen, setBadgeOpen] = useState(false)
+  const [shopOpen, setShopOpen] = useState(false)
+  const [bookOpen, setBookOpen] = useState(false)
+  const [phase, setPhase] = useState<'story' | 'settle' | 'quiz' | 'done'>('story')
+  const lastTapAt = useRef(0)
+  const prevTapAt = useRef(0)
+  const windowTries = useRef<Record<number, number>>({})
+
+  const step: Step = shift.steps[stepId] ?? { end: true }
+  // hub 横幅的行动力跟随时实数值渲染，别再硬编码×3（否则玩家花了AP文本不变，像没扣）
+  const fullText = (step.text ?? '').replaceAll('行动力⚡×3', `行动力⚡×${state.ap}`)
+  const plainLen = fullText.replaceAll('**', '').length
+  const done = shown >= plainLen
+
+  const [prevStepId, setPrevStepId] = useState(stepId)
+  if (prevStepId !== stepId) {
+    setPrevStepId(stepId)
+    setShown(0)
+    if (step.choices) setChoicesLocked(true)
+  }
+
+  const updProg = (s: GameState, patch: Partial<DlcProgress>): GameState => ({
+    ...s,
+    dlc: { ...(s.dlc ?? {}), ch2: { ...(s.dlc?.['ch2'] ?? {}), ...patch } },
+  })
+
+  // 语音解析：vox_luzhou 按玩家性别选音轨；本章语音用章节级去重键 heard2_（第一章已播过的角色本章首登场仍播一次）
+  const resolveSfx = (n: string): { play: string; heard: string } =>
+    n === 'vox_luzhou'
+      ? { play: `vox_luzhou_${state.gender}`, heard: 'vox_luzhou' }
+      : { play: n, heard: n }
+
+  // 进入某一步：条件跳过 / 视图 / 效果 / 语音 / 卡片 / 大事记 / 存档
+  useEffect(() => {
+    if (step.skipUnlessFlag && !state.flags[step.skipUnlessFlag] && step.next) {
+      setStepId(step.next)
+      return
+    }
+    const key = `ch2-${stepId}`
+    const already = applied.current.has(key)
+    applied.current.add(key)
+    const heardKey = (n: string) => `heard2_vp3_${n}`
+    const isVox = (n: string) => n.startsWith('vox_') || n.startsWith('vox2_')  // vox2_* = 第二章专属场景语音
+    const sfxList = [step.sfx, step.sfx2].filter((n): n is NonNullable<typeof n> => !!n)
+    const freshVox = sfxList.filter(n => isVox(n) && !state.flags[heardKey(resolveSfx(n).heard)])
+    if (!already) sfxList.forEach(n => { if (!isVox(n) || freshVox.includes(n)) playSfx(resolveSfx(n).play as Parameters<typeof playSfx>[0]) })
+    const cur = viewRef.current
+    const speakerSprite = step.speaker === 'luzhou' ? 'luzhou' : step.speaker ? `char_${step.speaker}` : undefined
+    const impliedSprite =
+      step.sprite ??
+      (step.speaker === 'me' ? 'me' : speakerSprite && cur.sprite === speakerSprite ? cur.sprite : undefined)
+    const newView = { bg: step.bg ?? cur.bg, sprite: impliedSprite, sprite2: step.sprite2 }
+    viewRef.current = newView
+    setView(newView)
+    const newCard = step.card && !(state.cards ?? []).includes(step.card) ? step.card : undefined
+    update(s => {
+      let next = !already && step.effect ? applyEffect(s, step.effect) : s
+      if (!already && freshVox.length > 0) {
+        const f = { ...next.flags }
+        freshVox.forEach(n => { f[heardKey(resolveSfx(n).heard)] = true })
+        next = { ...next, flags: f }
+      }
+      if (newCard) next = { ...next, cards: [...(next.cards ?? []), newCard] }
+      if (step.event && !(next.events ?? []).includes(step.event)) next = { ...next, events: [...(next.events ?? []), step.event] }
+      next = updProg(next, { shift: shift.id, stepId, viewBg: newView.bg, viewSprite: newView.sprite, viewSprite2: newView.sprite2 })
+      return next
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stepId])
+
+  // 打字机
+  useEffect(() => {
+    if (done) return
+    const t = setInterval(() => setShown(s => Math.min(s + 1, plainLen)), 28)
+    return () => clearInterval(t)
+  }, [stepId, done, plainLen])
+
+  // 选项缓冲，防误触
+  useEffect(() => {
+    if (!step.choices || !done) return
+    const t = setTimeout(() => setChoicesLocked(false), 900)
+    return () => clearTimeout(t)
+  }, [stepId, done, step.choices])
+
+  const blocked = !!(step.choices || step.end || step.windowTask || step.checklist) || shopOpen || bookOpen || manualOpen || badgeOpen || phase !== 'story'
+
+  const advance = () => {
+    if (blocked) return
+    if (!done) { setShown(plainLen); return }
+    playSfx('click')
+    if (step.next === '@shop') { setShopOpen(true); return }
+    if (step.next === '@book2') { setBookOpen(true); return }
+    if (step.next === '@quiz') { setPhase('quiz'); return }
+    if (step.next) setStepId(step.next)
+  }
+
+  const pick = (c: Choice) => {
+    if (choicesLocked) return
+    if (Date.now() - prevTapAt.current < 300) return
+    playSfx('click')
+    if (c.effect) update(s => applyEffect(s, c.effect))
+    if (c.risk && Math.random() < c.risk.chance) {
+      if (c.risk.effect) update(s => applyEffect(s, c.risk!.effect))
+      setStepId(c.risk.next)
+      return
+    }
+    if (c.next === '@shop') { setShopOpen(true); return }
+    if (c.next === '@book2') { setBookOpen(true); return }
+    setStepId(c.next)
+  }
+
+  const windowDone = (task: NonNullable<Step['windowTask']>, tries: number) => {
+    const stage = task.stage ?? 0
+    windowTries.current[stage] = tries
+    if (stage === 2 && (windowTries.current[1] ?? 99) <= 2 && tries <= 2) {
+      update(s => s.badges.includes('window_master') ? s : { ...s, badges: [...s.badges, 'window_master'] })
+    }
+    setStepId(task.success)
+  }
+
+  // 班次结束：结算画面 → 下一班；末班（晨会）结束 → 第二章完
+  const endShift = () => {
+    playSfx('stamp')
+    if (shift.id === 'c2d2') {
+      update(s => (!s.flags['queue_wait'] && !s.badges.includes('queue_tamer')) ? { ...s, badges: [...s.badges, 'queue_tamer'] } : s)
+    }
+    if (shiftIdx >= CH2_SHIFTS.length - 1) {
+      update(s => updProg(s, { done: true, stepId: undefined, shift: undefined }))
+      setPhase('done')
+      return
+    }
+    const ni = shiftIdx + 1
+    update(s => updProg(s, { shift: CH2_SHIFTS[ni].id, stepId: CH2_SHIFTS[ni].start, viewBg: undefined, viewSprite: undefined, viewSprite2: undefined }))
+    setPhase('settle')
+  }
+
+  const nextShift = () => {
+    playSfx('click')
+    const ni = shiftIdx + 1
+    setShiftIdx(ni)
+    setStepId(CH2_SHIFTS[ni].start)
+    setPhase('story')
+  }
+
+  const quizDone = () => {
+    setPhase('story')
+    setStepId('c2am_3')
+  }
+
+  const spriteOf = (key?: string) => {
+    if (!key) return null
+    if (key === 'me') return IMG(state.gender === 'f' ? 'char_f' : 'char_m')
+    if (key === 'luzhou') return IMG(state.gender === 'f' ? 'char_luzhou_f' : 'char_luzhou_m')
+    return IMG(key)
+  }
+  const leftSprite = spriteOf(view.sprite)
+  const rightSprite = spriteOf(view.sprite2)
+  const speakerMeta = step.speaker ? CHARACTERS[step.speaker] : undefined
+  const visibleChoices = (step.choices ?? []).filter(c => condOk(state, c.cond))
+  const nextShiftDef = CH2_SHIFTS[shiftIdx + 1]
+  const ch2CardsGot = (state.cards ?? []).filter(id => CH2_CARDS[id]).length
+
+  return (
+    <div className="relative w-full h-full cursor-pointer" onClickCapture={() => { prevTapAt.current = lastTapAt.current; lastTapAt.current = Date.now() }} onClick={advance}>
+      <BgImg name={view.bg} />
+      <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-slate-950/80 to-transparent pointer-events-none" />
+
+      {/* 顶部信息条 */}
+      <div className="absolute top-0 inset-x-0 z-20 flex items-center justify-between flex-wrap gap-y-1 px-4 py-2 bg-slate-950/70 text-xs md:text-sm">
+        <span className="text-teal-200 tracking-widest whitespace-nowrap">🌀 第二章 · {shift.icon} {shift.title}「{shift.subtitle}」</span>
+        <span className="text-slate-300 flex items-center gap-2 md:gap-3 flex-wrap justify-end">
+          <span>💰 {state.gold}</span>
+          {shift.kind === 'night' && <span className={state.ap > 0 ? 'text-sky-300' : 'text-slate-600'}>⚡×{state.ap}</span>}
+          <button onClick={e => { e.stopPropagation(); playSfx('click'); setManualOpen(true) }}
+            className="text-xs text-slate-400 hover:text-teal-300 border border-slate-700 rounded px-2 py-0.5">📖 手册</button>
+          <button onClick={e => { e.stopPropagation(); playSfx('click'); setBadgeOpen(true) }}
+            className="text-xs text-slate-400 hover:text-teal-300 border border-slate-700 rounded px-2 py-0.5">🏅 勋章</button>
+          <FullscreenBtn />
+          <button onClick={e => { e.stopPropagation(); playSfx('click'); onExit() }}
+            className="text-xs text-slate-400 hover:text-teal-300 border border-slate-700 rounded px-2 py-0.5" title="进度已自动保存，可随时离开">💾 回大厅</button>
+        </span>
+      </div>
+
+      {/* DNT 计时角标（演出用） */}
+      {step.dnt !== undefined && (
+        <div className={`absolute top-11 left-1/2 -translate-x-1/2 z-20 px-3 py-1 rounded-full border text-xs font-mono tracking-widest ${step.dnt >= 45 ? 'bg-red-950/80 border-red-500 text-red-300 animate-pulse' : 'bg-slate-900/80 border-teal-600 text-teal-200'}`}>
+          ⏱ DNT {step.dnt}′00″ {step.dnt >= 60 ? '· 超时' : step.dnt >= 45 ? '· 最后15分钟' : '· 目标60分钟'}
+        </div>
+      )}
+
+      {/* 白班候诊队列侧栏 */}
+      {step.queue && (
+        <div className="absolute left-2 top-12 z-10 flex flex-col gap-1.5 pointer-events-none max-w-[38%]">
+          <p className="text-[10px] text-teal-300/80 tracking-widest">🪑 候诊队列</p>
+          {step.queue.map((q, i) => (
+            <div key={i} className={`flex items-center gap-1.5 rounded px-2 py-1 text-[10px] md:text-xs border ${q.note ? 'bg-teal-950/80 border-teal-500 text-teal-100' : q.tag === '急诊' || q.tag === '加急' ? 'bg-red-950/70 border-red-600/60 text-red-200' : 'bg-slate-900/80 border-slate-700 text-slate-300'}`}>
+              <span className="font-bold shrink-0">{q.tag}</span>
+              <span className="truncate">{q.name}{q.note ? ` · ${q.note}` : ''}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* 电话来电头像 */}
+      {step.phone && (
+        <div className="absolute top-12 right-4 portrait:top-[4.5rem] portrait:right-2 portrait:px-2 portrait:py-1 portrait:gap-2 z-30 flex items-center gap-3 bg-slate-900/90 border-2 border-emerald-600 rounded-xl px-3 py-2 shadow-2xl">
+          <div className="portrait:w-10 portrait:h-10 w-14 h-14 md:w-16 md:h-16 rounded-full overflow-hidden border-2 border-emerald-400 bg-slate-800 shrink-0">
+            <img src={IMG(step.phone)} className="w-full h-full object-cover object-top pixel" alt="来电" />
+          </div>
+          <div className="text-left">
+            <p className="text-emerald-300 text-xs md:text-sm tracking-widest animate-pulse">📞 通话中</p>
+            <p className="text-slate-400 text-xs">外线 · 院内电话</p>
+          </div>
+        </div>
+      )}
+
+      {/* 中央大图 */}
+      {step.image && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none pb-40">
+          <img src={IMG(step.image)} className="max-h-[45%] portrait:max-h-[38%] rounded-lg border-4 border-slate-700 shadow-2xl pixel" alt="影像" />
+        </div>
+      )}
+
+      {/* 立绘 */}
+      {leftSprite && <img src={leftSprite} className="sprite-l absolute bottom-48 portrait:bottom-44 left-4 md:left-24 portrait:h-44 h-64 md:h-96 object-contain pixel drop-shadow-2xl z-10" alt="" />}
+      {rightSprite && <img src={rightSprite} className="sprite-r absolute bottom-48 portrait:bottom-44 right-4 md:right-24 portrait:h-40 h-56 md:h-80 object-contain pixel opacity-80 drop-shadow-2xl z-10" alt="" />}
+
+      {/* 对话框 */}
+      <div className="dialog-wrap absolute bottom-0 inset-x-0 z-20 p-4 md:p-6">
+        <div className="dialog-box max-w-4xl mx-auto bg-slate-900/95 border-2 border-slate-600 rounded-xl p-4 md:p-5 min-h-32 relative">
+          {speakerMeta && speakerMeta.name && (
+            <span className="absolute -top-4 left-4 px-3 py-1 rounded-md text-sm font-bold bg-slate-800 border border-slate-600" style={{ color: speakerMeta.color }}>
+              {speakerMeta.name === '我' ? (state.gender === 'f' ? '林小满' : '陈一帆') : speakerMeta.name}
+            </span>
+          )}
+          <p key={stepId} className="text-slate-100 leading-relaxed text-base md:text-lg whitespace-pre-wrap min-h-[4.9rem] md:min-h-[5.4rem] text-in">
+            <RichText text={fullText} shown={shown} />
+          </p>
+          {!step.choices && !step.end && !step.windowTask && !step.checklist && done && <span className="absolute bottom-3 right-4 text-teal-300 animate-bounce">▼</span>}
+          {step.choices && done && !choicesLocked && (
+            <div className="mt-4 flex flex-col gap-2 choice-in max-h-[38vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+              {visibleChoices.map((c, i) => (
+                <button key={i} onClick={() => pick(c)}
+                  className="text-left px-4 py-2.5 rounded-lg bg-slate-800 border border-slate-600 hover:border-teal-400 hover:bg-slate-700 transition-all text-slate-100">
+                  <RichText text={c.text} />
+                </button>
+              ))}
+            </div>
+          )}
+          {step.end && done && phase === 'story' && (
+            <div className="mt-4" onClick={e => e.stopPropagation()}>
+              <button onClick={endShift}
+                className="w-full py-3 rounded-lg bg-teal-500/90 text-slate-950 font-bold tracking-widest hover:bg-teal-400 transition-all">
+                {shiftIdx >= CH2_SHIFTS.length - 1 ? '🏁 第二章 · 完 —— 结算' : `🌅 本班结束 · 结算（下一班：${nextShiftDef?.icon} ${nextShiftDef?.title}「${nextShiftDef?.subtitle}」）`}
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* 窗宽窗位玩法 */}
+      {phase === 'story' && step.windowTask && done && (
+        <WindowGame key={stepId} task={step.windowTask} onDone={t => windowDone(step.windowTask!, t)} />
+      )}
+
+      {/* 增强前核对清单 */}
+      {phase === 'story' && step.checklist && done && (
+        <ChecklistGame key={stepId} checklist={step.checklist} onDone={() => { playSfx('click'); setStepId(step.checklist!.next) }} />
+      )}
+
+      {/* 晨会考核 */}
+      {phase === 'quiz' && <Ch2Quiz state={state} update={update} onDone={quizDone} />}
+
+      {/* 班次结算 */}
+      {phase === 'settle' && nextShiftDef && (
+        <div className="absolute inset-0 z-50 bg-slate-950/95 flex flex-col items-center justify-center gap-4 px-6" onClick={e => e.stopPropagation()}>
+          <p className="text-teal-300 tracking-[0.4em] text-sm">第二章 · 快与狠</p>
+          <h3 className="text-2xl text-slate-100">{shift.icon} {shift.title}「{shift.subtitle}」 · 完</h3>
+          <p className="text-slate-400 text-sm">进度已自动保存 · 💰 {state.gold} · 🏅 {state.badges.length} 枚勋章</p>
+          <button onClick={nextShift}
+            className="mt-2 px-8 py-3 rounded-lg bg-teal-500/90 text-slate-950 font-bold tracking-widest hover:bg-teal-400">
+            进入：{nextShiftDef.icon} {nextShiftDef.title}「{nextShiftDef.subtitle}」→
+          </button>
+          <button onClick={onExit} className="text-xs text-slate-500 hover:text-slate-300 underline">先回大厅，稍后再来</button>
+        </div>
+      )}
+
+      {/* 第二章完 */}
+      {phase === 'done' && (
+        <div className="absolute inset-0 z-50 bg-slate-950/95 flex flex-col items-center justify-center gap-4 px-6" onClick={e => e.stopPropagation()}>
+          <p className="text-teal-300 tracking-[0.4em] text-sm">🌀 第二章「快与狠」 · 完</p>
+          <h3 className="text-xl text-slate-100 text-center">新CT的第一周结束了。<br />下一周，市三甲质控组上门。</h3>
+          <p className="text-slate-400 text-sm">本章收集：📖 知识卡片 {ch2CardsGot}/{Object.keys(CH2_CARDS).length} · 🏅 勋章 {state.badges.filter(b => CH2_BADGES[b]).length}/{Object.keys(CH2_BADGES).length}</p>
+          <p className="text-slate-500 text-xs">彩蛋与钩子的落点，取决于你这一周做过的选择。</p>
+          <button onClick={onExit} className="mt-2 px-8 py-3 rounded-lg bg-teal-500/90 text-slate-950 font-bold tracking-widest hover:bg-teal-400">回大厅 →</button>
+        </div>
+      )}
+
+      {/* 小卖部 / 书 / 手册 / 勋章 */}
+      {shopOpen && <ShopOverlay state={state} update={update} onClose={() => setShopOpen(false)} />}
+      {bookOpen && <Book2Overlay onClose={() => setBookOpen(false)} />}
+      {manualOpen && <ManualOverlay state={state} onClose={() => setManualOpen(false)} />}
+      {badgeOpen && (
+        <div className="fixed inset-0 z-50" onClick={e => e.stopPropagation()}>
+          <BadgeScreen state={state} onBack={() => setBadgeOpen(false)} />
+        </div>
+      )}
+    </div>
+  )
+}
+
+/* ================= 第二章 · 窗宽窗位双滑块（canvas 实时映射） ================= */
+function WindowGame({ task, onDone }: { task: NonNullable<Step['windowTask']>; onDone: (tries: number) => void }) {
+  const SIZE = 512
+  const [W, setW] = useState(2000)
+  const [L, setL] = useState(500)
+  const [tries, setTries] = useState(0)
+  const [msg, setMsg] = useState('')
+  const [ready, setReady] = useState(false)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const srcGray = useRef<Uint8ClampedArray | null>(null)
+  const huLut = useRef<Int16Array | null>(null)
+  if (!huLut.current) {
+    const t = new Int16Array(256)
+    for (let g = 0; g < 256; g++) t[g] = Math.round(grayToHU(g))
+    huLut.current = t
+  }
+
+  useEffect(() => {
+    const img = new Image()
+    img.src = IMG(task.image)
+    img.onload = () => {
+      const c = document.createElement('canvas')
+      c.width = SIZE; c.height = SIZE
+      const ctx = c.getContext('2d')!
+      ctx.drawImage(img, 0, 0, SIZE, SIZE)
+      const d = ctx.getImageData(0, 0, SIZE, SIZE)
+      const gray = new Uint8ClampedArray(SIZE * SIZE)
+      for (let i = 0; i < gray.length; i++) gray[i] = d.data[i * 4]
+      srcGray.current = gray
+      setReady(true)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [task.image])
+
+  useEffect(() => {
+    if (!ready) return
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')!
+    const out = ctx.createImageData(SIZE, SIZE)
+    const gray = srcGray.current!
+    const lut = huLut.current!
+    const lo = L - W / 2
+    for (let i = 0; i < gray.length; i++) {
+      const hu = lut[gray[i]]
+      let v = ((hu - lo) / W) * 255
+      v = v < 0 ? 0 : v > 255 ? 255 : v
+      const o = i * 4
+      out.data[o] = v; out.data[o + 1] = v; out.data[o + 2] = v; out.data[o + 3] = 255
+    }
+    ctx.putImageData(out, 0, 0)
+  }, [W, L, ready])
+
+  const inTarget = Math.abs(W - task.targetW) <= task.tolW && Math.abs(L - task.targetL) <= task.tolL
+  const confirm = () => {
+    playSfx('click')
+    const t = tries + 1
+    setTries(t)
+    if (inTarget) { playSfx('badge'); onDone(t); return }
+    playSfx('buzz')
+    setMsg(t === 1 ? '不对——这幅窗里，该看的东西还没浮出来。再拖一拖。' : '还不是这扇窗。想想目标值，窗宽先定范围，窗位再对准中心。')
+  }
+
+  const PRESETS: [string, number, number][] = [['脑窗', 80, 30], ['硬膜下窗', 130, 65], ['骨窗', 4000, 250], ['肺窗', 1500, -500], ['腹窗', 350, 0], ['CTA窗', 450, 150]]
+
+  return (
+    <div className="absolute inset-0 z-40 bg-slate-950/90 flex flex-col items-center justify-center gap-3 px-4" onClick={e => e.stopPropagation()}>
+      <p className="text-teal-300 tracking-[0.4em] text-sm">🎚️ 窗宽 · 窗位</p>
+      <p className="text-slate-400 text-xs">拖动滑块，把「该看的东西」调出来{task.stage === 1 ? '——目标：脑窗（WW≈80 / WL≈30）' : '——目标：硬膜下窗（WW≈130 / WL≈65）'}</p>
+      <canvas ref={canvasRef} width={SIZE} height={SIZE}
+        className="max-h-[38vh] portrait:max-h-[30vh] aspect-square rounded-lg border-2 border-slate-600 bg-black pixel" />
+      <div className="w-full max-w-xl flex flex-col gap-2">
+        <label className="text-xs text-slate-300 flex items-center gap-3">
+          <span className="w-16 shrink-0">窗宽 WW</span>
+          <input type="range" min={20} max={4000} step={10} value={W} onChange={e => setW(+e.target.value)} className="flex-1 accent-teal-400" />
+          <span className="w-14 text-right text-teal-200 font-mono">{W}</span>
+        </label>
+        <label className="text-xs text-slate-300 flex items-center gap-3">
+          <span className="w-16 shrink-0">窗位 WL</span>
+          <input type="range" min={-1000} max={1500} step={10} value={L} onChange={e => setL(+e.target.value)} className="flex-1 accent-teal-400" />
+          <span className="w-14 text-right text-teal-200 font-mono">{L}</span>
+        </label>
+        <div className="flex flex-wrap gap-1.5 justify-center mt-1">
+          {PRESETS.map(([n, w, l]) => (
+            <button key={n} onClick={() => { playSfx('click'); setW(w); setL(l) }}
+              className="text-xs px-2.5 py-1 rounded bg-slate-800 border border-slate-600 text-slate-300 hover:border-teal-400">{n} {w}/{l}</button>
+          ))}
+        </div>
+        {msg && <p className="text-amber-300 text-xs text-center animate-pulse">{msg}</p>}
+        <button onClick={confirm}
+          className={`mt-1 w-full py-2.5 rounded-lg font-bold tracking-widest transition-all ${inTarget ? 'bg-teal-400 text-slate-950 hover:bg-teal-300' : 'bg-slate-800 border border-slate-600 text-slate-200 hover:border-teal-400'}`}>
+          就这个窗口 · 确认{tries > 0 ? `（已试 ${tries} 次）` : ''}
+        </button>
+      </div>
+    </div>
+  )
+}
+
+/* ================= 第二章 · 增强前六格核对清单 ================= */
+function ChecklistGame({ checklist, onDone }: { checklist: NonNullable<Step['checklist']>; onDone: () => void }) {
+  const [open, setOpen] = useState<Set<number>>(new Set())
+  const all = open.size === checklist.items.length
+  return (
+    <div className="absolute inset-0 z-40 bg-slate-950/90 flex flex-col items-center justify-center gap-4 px-4" onClick={e => e.stopPropagation()}>
+      <p className="text-teal-300 tracking-[0.4em] text-sm">💉 增强前核对清单</p>
+      <p className="text-slate-400 text-xs">逐项点开核对——漏一项，风险就找上门</p>
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-2 w-full max-w-2xl">
+        {checklist.items.map((it, i) => {
+          const isOpen = open.has(i)
+          return (
+            <button key={i} onClick={() => { playSfx('click'); setOpen(s => new Set(s).add(i)) }}
+              className={`rounded-lg border-2 p-3 text-left transition-all min-h-[4.5rem] ${isOpen
+                ? it.alert ? 'bg-red-950/70 border-red-400' : 'bg-emerald-950/60 border-emerald-500'
+                : 'bg-slate-800/80 border-slate-600 hover:border-teal-400'}`}>
+              <p className="text-xs text-slate-400">{it.label}</p>
+              <p className={`text-sm font-bold mt-1 ${isOpen ? (it.alert ? 'text-red-300' : 'text-emerald-300') : 'text-slate-500'}`}>
+                {isOpen ? `${it.alert ? '⚠️ ' : '✓ '}${it.value}` : '待核对'}
+              </p>
+            </button>
+          )
+        })}
+      </div>
+      <button disabled={!all} onClick={() => { playSfx('stamp'); onDone() }}
+        className={`w-full max-w-2xl py-3 rounded-lg font-bold tracking-widest transition-all ${all ? 'bg-teal-400 text-slate-950 hover:bg-teal-300' : 'bg-slate-800 text-slate-500 cursor-not-allowed'}`}>
+        {all ? '核对完毕 · 继续 →' : `还有 ${checklist.items.length - open.size} 项未核对`}
+      </button>
+    </div>
+  )
+}
+
+/* ================= 第二章 · 《CT夜班二十页》 ================= */
+function Book2Overlay({ onClose }: { onClose: () => void }) {
+  const [page, setPage] = useState(0)
+  const p = CH2_BOOK_PAGES[page]
+  return (
+    <div className="fixed inset-0 z-40 bg-slate-950/80 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-amber-50 border-2 border-amber-800 rounded-2xl p-5 max-w-lg w-full flex flex-col gap-3 text-slate-900" onClick={e => e.stopPropagation()}>
+        <h3 className="text-lg font-bold text-amber-900">📖 CT 夜班二十页</h3>
+        <div className="grid grid-cols-10 gap-1">
+          {CH2_BOOK_PAGES.map((_, i) => (
+            <button key={i} onClick={() => { playSfx('click'); setPage(i) }}
+              className={`py-1 rounded text-[10px] border ${page === i ? 'bg-amber-700 text-amber-50 border-amber-900 font-bold' : 'bg-amber-100 text-amber-900 border-amber-300'}`}>
+              {i + 1}
+            </button>
+          ))}
+        </div>
+        <p className="text-sm font-bold text-amber-950">{p.title}</p>
+        <p className="text-sm leading-relaxed">{p.body}</p>
+        <p className="text-xs text-amber-800/70 italic border-t border-amber-200 pt-2">{p.note}</p>
+        <button onClick={() => { playSfx('click'); onClose() }} className="mt-1 w-full py-2 rounded-lg bg-amber-800 text-amber-50 text-sm hover:bg-amber-700">合上书，回科室</button>
+      </div>
+    </div>
+  )
+}
+
+/* ================= 第二章 · 晨会考核（CT题库20抽5） ================= */
+function Ch2Quiz({ state, update, onDone }: { state: GameState; update: (f: (s: GameState) => GameState) => void; onDone: () => void }) {
+  const doneGrade = state.flags['quiz2_grade'] as string | undefined
+  const [qs] = useState(() => {
+    const shuffled = [...QUIZ2].sort(() => Math.random() - 0.5).slice(0, 5)
+    return shuffled.map(q => {
+      const order = q.options.map((_, i) => i).sort(() => Math.random() - 0.5)
+      return { q: q.q, explain: q.explain, options: order.map(i => q.options[i]), answer: order.indexOf(q.answer) }
+    })
+  })
+  const [idx, setIdx] = useState(0)
+  const [picked, setPicked] = useState<number | null>(null)
+  const [score, setScore] = useState(0)
+  const [finished, setFinished] = useState(!!doneGrade)
+  const rewarded = useRef(!!doneGrade)
+
+  const gradeOf = (n: number) => n >= 5 ? 'S' : n === 4 ? 'A' : n === 3 ? 'B' : 'C'
+  const gradeInfo: Record<string, { title: string; line: string; gold: number }> = {
+    S: { title: 'S级 · 满分', gold: 250, line: '主任把卷子放下：「全对？……市三甲的抽查，你去迎检，我放心。」老周在角落里哼了一声，嘴角是翘着的。' },
+    A: { title: 'A级 · 优秀', gold: 200, line: '主任点点头：「错一题，可以。迎检的时候照平时来，别紧张。」' },
+    B: { title: 'B级 · 合格', gold: 80, line: '「合格线上站着呢。」主任把卷子还给你，「窗口和重建那几块，回去对着课件再啃啃。」' },
+    C: { title: 'C级 · 待补考', gold: 0, line: '老周替你解了围：「实操没问题，理论我盯着他补。」……下周抽查之前，真得把书翻烂了。' },
+  }
+
+  const finish = (finalScore: number) => {
+    setFinished(true)
+    if (rewarded.current) return
+    rewarded.current = true
+    const g = gradeOf(finalScore)
+    update(s => {
+      if (s.flags['quiz2_grade']) return s
+      let next = { ...s, flags: { ...s.flags, quiz2_grade: g } }
+      if (gradeInfo[g].gold > 0) next = { ...next, gold: next.gold + gradeInfo[g].gold }
+      return next
+    })
+    playSfx('badge')
+  }
+
+  const pick = (i: number) => {
+    if (picked !== null) return
+    playSfx('click')
+    setPicked(i)
+    if (i === qs[idx].answer) setScore(s => s + 1)
+  }
+  const nextQ = () => {
+    playSfx('click')
+    if (idx + 1 >= qs.length) finish(score)
+    else { setIdx(idx + 1); setPicked(null) }
+  }
+  const grade = gradeOf(doneGrade ? (doneGrade === 'S' ? 5 : doneGrade === 'A' ? 4 : doneGrade === 'B' ? 3 : 0) : score)
+  const showGrade = doneGrade ?? grade
+
+  return (
+    <div className="absolute inset-0 z-40 bg-slate-950/90 flex flex-col items-center justify-center px-4 py-6 overflow-y-auto" onClick={e => e.stopPropagation()}>
+      <p className="text-teal-300 tracking-[0.4em] text-sm mb-3">晨会 · CT专场考核</p>
+      {!finished ? (
+        <div className="w-full max-w-2xl bg-slate-900/95 border-2 border-slate-600 rounded-xl p-6">
+          <p className="text-teal-200 text-xs mb-4 tracking-widest">第 {idx + 1} / {qs.length} 题 · 当前得分 {score}</p>
+          <h3 className="text-lg text-slate-100 leading-relaxed mb-4">{qs[idx].q}</h3>
+          <div className="flex flex-col gap-2">
+            {qs[idx].options.map((op, i) => {
+              const isAns = i === qs[idx].answer
+              const cls = picked === null
+                ? 'bg-slate-800 border-slate-600 hover:border-teal-400 hover:bg-slate-700'
+                : isAns ? 'bg-emerald-900/60 border-emerald-400' : i === picked ? 'bg-red-900/50 border-red-400' : 'bg-slate-800/50 border-slate-700 opacity-50'
+              return (
+                <button key={i} onClick={() => pick(i)} className={`text-left px-4 py-2.5 rounded-lg border transition-all text-slate-100 ${cls}`}>{op}</button>
+              )
+            })}
+          </div>
+          {picked !== null && (
+            <div className="mt-4 choice-in">
+              <p className={`text-sm leading-relaxed ${picked === qs[idx].answer ? 'text-emerald-300' : 'text-amber-300'}`}>
+                {picked === qs[idx].answer ? '✓ 答对了。' : '✗ 答错了。'}{qs[idx].explain}
+              </p>
+              <button onClick={nextQ} className="mt-3 w-full py-2.5 rounded-lg bg-teal-500 text-slate-950 font-bold tracking-widest hover:bg-teal-400">
+                {idx + 1 >= qs.length ? '查看成绩 →' : '下一题 →'}
+              </button>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="w-full max-w-md bg-slate-900/95 border-2 border-teal-500/50 rounded-xl p-8 text-center choice-in">
+          <p className="text-slate-400 text-sm mb-2">晨会考核 · CT专场 · 成绩</p>
+          <p className={`text-7xl font-black mb-2 ${showGrade === 'S' || showGrade === 'A' ? 'text-teal-300' : showGrade === 'B' ? 'text-sky-300' : 'text-slate-400'}`}>{showGrade}</p>
+          <p className="text-teal-200 mb-4">{gradeInfo[showGrade].title}</p>
+          <p className="text-slate-300 text-sm leading-relaxed text-left">{gradeInfo[showGrade].line}</p>
+          {gradeInfo[showGrade].gold > 0 && <p className="mt-3 text-emerald-300">💰 考核奖金 +{gradeInfo[showGrade].gold} 金币</p>}
+          {showGrade === 'C' && <p className="mt-3 text-slate-400 text-xs">（提示：答案都在《CT夜班二十页》和课件里——重置第二章可以重考）</p>}
+          <button onClick={() => { playSfx('click'); onDone() }}
+            className="mt-6 w-full py-3 rounded-lg bg-teal-500 text-slate-950 font-bold tracking-widest hover:bg-teal-400">
+            回到晨会 →
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
+
 /* ================= DLC 番外篇大厅（隐藏入口 #/dlc） ================= */
-function DlcHallScreen({ onEnter, onBack }: { onEnter: (id: string, s: GameState) => void; onBack: () => void }) {
+function DlcHallScreen({ onEnter, onEnterCh2, onBack }: { onEnter: (id: string, s: GameState) => void; onEnterCh2: (s: GameState) => void; onBack: () => void }) {
   const [save, setSave] = useState<GameState | null>(() => loadState())
   const [manualOpen, setManualOpen] = useState(false)
   const [badgeOpen, setBadgeOpen] = useState(false)
   const [confirmReset, setConfirmReset] = useState<string | null>(null)
+  const [ch2Ok, setCh2Ok] = useState(ch2Unlocked())
+  const [pwd, setPwd] = useState('')
+  const [pwdErr, setPwdErr] = useState(false)
 
   const startTemplate = (g: 'm' | 'f') => {
     const s = freshState(g)
@@ -1782,8 +2411,9 @@ function DlcHallScreen({ onEnter, onBack }: { onEnter: (id: string, s: GameState
       <BgImg name="bg_corridor" fixed />
       <div className="absolute inset-0 bg-slate-950/75" />
       <div className="relative z-10 min-h-full flex flex-col items-center py-10 px-4 gap-5">
-        <p className="text-amber-300 tracking-[0.4em] text-sm">开发预览 · 隐藏入口</p>
-        <h2 className="text-3xl text-amber-100 tracking-widest">📼 番外篇放映厅</h2>
+        <p className="text-amber-300 tracking-[0.4em] text-sm">隐藏入口 · 内容大厅</p>
+        <h2 className="text-3xl text-amber-100 tracking-widest">🗂️ 章节与番外</h2>
+        <p className="text-slate-500 text-xs -mt-3">正篇新章节与番外篇都会放进这个大厅</p>
 
         {save ? (
           <div className="bg-slate-900/90 border border-slate-600 rounded-xl p-4 max-w-lg w-full text-sm">
@@ -1810,7 +2440,79 @@ function DlcHallScreen({ onEnter, onBack }: { onEnter: (id: string, s: GameState
         )}
 
         {save && (
-          <div className="grid md:grid-cols-2 gap-4 max-w-3xl w-full">
+          <div className="max-w-3xl w-full flex flex-col gap-3">
+            <p className="text-teal-300/80 text-xs tracking-widest">—— 正篇章节 ——</p>
+            {(() => {
+              const p = save.dlc?.['ch2']
+              const started = !!p?.stepId && !p?.done
+              const doneIt = !!p?.done
+              const unlocked = ch2Ok
+              const tryPwd = () => {
+                if (tryUnlockCh2(pwd)) { setCh2Ok(true); setPwd(''); setPwdErr(false); playSfx('badge') }
+                else { setPwdErr(true); playSfx('buzz') }
+              }
+              return (
+                <div className={`bg-slate-900/90 border-2 rounded-2xl p-5 flex flex-col gap-2 transition-all ${unlocked ? 'border-teal-400/70 hover:border-teal-300' : 'border-slate-700'}`}>
+                  <div className="flex items-center gap-3">
+                    <span className="text-4xl">{unlocked ? CH2_META.icon : '🔒'}</span>
+                    <div>
+                      <p className="text-lg text-teal-100 font-bold">{CH2_META.title}</p>
+                      <p className="text-xs text-slate-400">{CH2_META.subtitle} · {CH2_META.minutes}</p>
+                    </div>
+                    <span className={`ml-auto text-xs px-2 py-1 rounded ${doneIt ? 'bg-emerald-800/70 text-emerald-200' : started ? 'bg-sky-800/70 text-sky-200' : 'bg-slate-700/70 text-slate-300'}`}>
+                      {doneIt ? '✅ 已完成' : started ? '▶ 进行中' : unlocked ? '未开始' : '口令锁定'}
+                    </span>
+                  </div>
+                  <p className="text-slate-300 text-sm leading-relaxed">{unlocked ? CH2_META.desc : '2025年11月 · 新CT启用的第一周。—— 输入老师公布的章节口令解锁（与第一章进度无关）。'}</p>
+                  {!unlocked && (
+                    <div className="flex gap-2 mt-1">
+                      <input
+                        value={pwd}
+                        onChange={e => { setPwd(e.target.value); setPwdErr(false) }}
+                        onKeyDown={e => { if (e.key === 'Enter') tryPwd() }}
+                        placeholder="章节口令"
+                        className={`flex-1 px-4 py-2.5 rounded-lg bg-slate-800 border text-slate-100 outline-none tracking-widest ${pwdErr ? 'border-red-400 animate-pulse' : 'border-slate-600 focus:border-teal-400'}`}
+                      />
+                      <button onClick={tryPwd} disabled={!pwd.trim()}
+                        className="px-5 py-2.5 rounded-lg bg-teal-500/90 text-slate-950 font-bold tracking-widest hover:bg-teal-400 disabled:opacity-40">
+                        解锁
+                      </button>
+                    </div>
+                  )}
+                  {pwdErr && !unlocked && <p className="text-red-300 text-xs">口令不对——问问老师，或者再想想。</p>}
+                  {unlocked && (
+                    <div className="flex gap-2 mt-1">
+                      <button onClick={() => { playSfx('click'); onEnterCh2(save) }}
+                        className="flex-1 py-2.5 rounded-lg bg-teal-500/90 text-slate-950 font-bold tracking-widest hover:bg-teal-400">
+                        {doneIt ? '再玩一遍' : started ? '继续 →' : '开始 →'}
+                      </button>
+                      {(started || doneIt) && (
+                        confirmReset === 'ch2' ? (
+                          <button onClick={() => resetDlc('ch2')} className="px-3 py-2.5 rounded-lg bg-red-700/80 text-red-50 text-sm animate-pulse">确认重置</button>
+                        ) : (
+                          <button onClick={() => { playSfx('click'); setConfirmReset('ch2') }} className="px-3 py-2.5 rounded-lg bg-slate-800 border border-slate-600 text-slate-400 text-sm hover:border-red-400">重置</button>
+                        )
+                      )}
+                    </div>
+                  )}
+                </div>
+              )
+            })()}
+            {/* 后续正篇章节入口位：开发中的章节以锁定卡片形式占位，做好一个解锁一个 */}
+            <div className="bg-slate-900/60 border-2 border-dashed border-slate-800 rounded-2xl p-5 flex items-center gap-3 opacity-60">
+              <span className="text-4xl">🔒</span>
+              <div>
+                <p className="text-lg text-slate-400 font-bold">第三章 · ？？？</p>
+                <p className="text-xs text-slate-600">开发中——做好之后会出现在这里</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {save && (
+          <div className="max-w-3xl w-full flex flex-col gap-3">
+            <p className="text-amber-300/70 text-xs tracking-widest">—— 番外篇 ——</p>
+            <div className="grid md:grid-cols-2 gap-4 w-full">
             {DLCS.map(d => {
               const p = save.dlc?.[d.id]
               const started = !!p?.stepId
@@ -1844,6 +2546,7 @@ function DlcHallScreen({ onEnter, onBack }: { onEnter: (id: string, s: GameState
                 </div>
               )
             })}
+            </div>
           </div>
         )}
 
@@ -1852,7 +2555,7 @@ function DlcHallScreen({ onEnter, onBack }: { onEnter: (id: string, s: GameState
           {save && <MenuBtn onClick={() => setBadgeOpen(true)}>🏅 勋章墙</MenuBtn>}
           <MenuBtn onClick={onBack}>← 回标题</MenuBtn>
         </div>
-        <p className="text-slate-500 text-xs">番外篇与第一章共用存档（金币/勋章/旗标互通）· 进度自动保存</p>
+        <p className="text-slate-500 text-xs">章节与番外共用第一章存档（金币/勋章/旗标互通）· 进度自动保存</p>
       </div>
       {manualOpen && save && <ManualOverlay state={save} onClose={() => setManualOpen(false)} />}
       {badgeOpen && save && (

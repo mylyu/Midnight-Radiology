@@ -27,6 +27,17 @@ export const CHARACTERS: Record<string, { name: string; color: string }> = {
   qin: { name: '秦放 · 心内科术者', color: '#60a5fa' },
   liao: { name: '小廖 · 导管室护士', color: '#e879f9' },
   ge: { name: '老葛', color: '#d4d4d8' },
+  // —— 第二章 · CT篇角色 ——
+  luzhou: { name: '陆舟 · 研究生同学', color: '#5eead4' },
+  uncle: { name: '复查大爷', color: '#d6d3d1' },
+  guy: { name: '腹痛小伙', color: '#c4b5fd' },
+  stone: { name: '肾绞痛小伙', color: '#c4b5fd' },
+  grandpa: { name: '老年患者', color: '#e7e5e4' },
+  enh: { name: '增强病人 · 大姐', color: '#f0abfc' },
+  kiddad: { name: '孩子父亲', color: '#a5b4fc' },
+  kidmom: { name: '孩子母亲', color: '#fda4af' },
+  kid: { name: '小男孩', color: '#fcd34d' },
+  duty: { name: '☎️ 值班医师', color: '#86efac' },
 }
 
 export const BADGES: Record<string, { name: string; icon: string; desc: string; hidden?: boolean }> = {
@@ -44,14 +55,14 @@ export const BADGES: Record<string, { name: string; icon: string; desc: string; 
 }
 
 export const SHOP_ITEMS: ShopItem[] = [
-  { id: 'coffee', icon: '☕', name: '速溶咖啡', price: 30, desc: '行动力 +1，夜班续命水' },
-  { id: 'milktea', icon: '🧋', name: '全科室奶茶', price: 200, desc: '请全科夜班同事喝一轮，人心 +2' },
-  { id: 'snack', icon: '🍪', name: '零食礼包', price: 40, desc: '送人好物，解锁「分享零食」选项' },
-  { id: 'book', icon: '📖', name: '二手《医学影像学》', price: 100, desc: '前任主人的笔记密密麻麻，医术 +2' },
-  { id: 'lottery', icon: '🎫', name: '刮刮乐', price: 50, desc: '夜班玄学：偶尔单车变摩托，久刮必亏' },
-  { id: 'toolbox', icon: '🔧', name: '工具箱', price: 150, desc: '万用表、绝缘胶带、备用保险丝——修理设备时更安全' },
-  { id: 'dosimeter', icon: '📟', name: '个人剂量计', price: 200, desc: '别在领口的辐射监测仪，解锁特殊的查看选项' },
-  { id: 'key', icon: '🗝️', name: '黄铜钥匙', price: 120, desc: '老板娘代收的旧货，据说能开旧片库角落里的小铁柜', minNight: 2 },
+  { id: 'coffee', icon: '☕', image: 'item_coffee', name: '速溶咖啡', price: 30, desc: '行动力 +1，夜班续命水' },
+  { id: 'milktea', icon: '🧋', image: 'item_milktea', name: '全科室奶茶', price: 200, desc: '请全科夜班同事喝一轮，人心 +2' },
+  { id: 'snack', icon: '🍪', image: 'item_snack', name: '零食礼包', price: 40, desc: '送人好物，解锁「分享零食」选项' },
+  { id: 'book', icon: '📖', image: 'item_book', name: '二手《医学影像学》', price: 100, desc: '前任主人的笔记密密麻麻，医术 +2' },
+  { id: 'lottery', icon: '🎫', image: 'item_lottery', name: '刮刮乐', price: 50, desc: '夜班玄学：偶尔单车变摩托，久刮必亏' },
+  { id: 'toolbox', icon: '🔧', image: 'item_toolbox', name: '工具箱', price: 150, desc: '万用表、绝缘胶带、备用保险丝——修理设备时更安全' },
+  { id: 'dosimeter', icon: '📟', image: 'item_dosimeter', name: '个人剂量计', price: 200, desc: '别在领口的辐射监测仪，解锁特殊的查看选项' },
+  { id: 'key', icon: '🗝️', image: 'item_key', name: '黄铜钥匙', price: 120, desc: '老板娘代收的旧货，据说能开旧片库角落里的小铁柜', minNight: 2 },
 ]
 
 export const NIGHTS: Night[] = [

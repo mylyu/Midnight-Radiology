@@ -20,6 +20,8 @@ export interface Cond {
   flag?: string
   /** 该旗标已置位时隐藏（用于一次性地点/事件） */
   notFlag?: string
+  /** 第二个「未置位」条件（与 notFlag 并存，第二章分支用） */
+  notFlag2?: string
   /** 需要持有道具 */
   item?: string
   /** 需要至少这么多金币（仅显示用，扣费在 effect 里） */
@@ -59,8 +61,18 @@ export interface Step {
   card?: string
   /** DLC：大事记条目 ID——进入本步即记入「夜班手册·大事记」 */
   event?: string
-  sfx?: 'stamp' | 'xray' | 'badge' | 'ring' | 'radio' | 'buzz' | 'cry_child' | 'groan_man' | 'vox_mom' | 'vox_worker' | 'vox_mystery' | 'vox_thin' | 'vox_aunt' | 'vox_dad' | 'vox_tang' | 'vox_zhou' | 'vox_lei' | 'vox_fan' | 'vox_he' | 'vox_qian' | 'vox_kai' | 'vox_jiang' | 'vox_wen' | 'vox_bai' | 'vox_director' | 'vox_shao' | 'vox_du' | 'vox_qin' | 'vox_liao'
-  sfx2?: 'stamp' | 'xray' | 'badge' | 'ring' | 'radio' | 'buzz' | 'cry_child' | 'groan_man' | 'vox_mom' | 'vox_worker' | 'vox_mystery' | 'vox_thin' | 'vox_aunt' | 'vox_dad' | 'vox_tang' | 'vox_zhou' | 'vox_lei' | 'vox_fan' | 'vox_he' | 'vox_qian' | 'vox_kai' | 'vox_jiang' | 'vox_wen' | 'vox_bai' | 'vox_director' | 'vox_shao' | 'vox_du' | 'vox_qin' | 'vox_liao'
+  sfx?: 'stamp' | 'xray' | 'badge' | 'click' | 'ring' | 'radio' | 'buzz' | 'cry_child' | 'groan_man' | 'vox_mom' | 'vox_worker' | 'vox_mystery' | 'vox_thin' | 'vox_aunt' | 'vox_dad' | 'vox_tang' | 'vox_zhou' | 'vox_lei' | 'vox_fan' | 'vox_he' | 'vox_qian' | 'vox_kai' | 'vox_jiang' | 'vox_wen' | 'vox_bai' | 'vox_director' | 'vox_shao' | 'vox_du' | 'vox_qin' | 'vox_liao' | 'vox_luzhou' | 'vox_uncle' | 'vox_guy' | 'vox_grandpa' | 'vox_enh' | 'vox_kiddad' | 'vox_kidmom' | 'vox_kid' | 'vox2_tang' | 'vox2_zhou' | 'vox2_fan_a' | 'vox2_fan_b' | 'vox2_kai' | 'vox2_lei' | 'vox2_he' | 'vox2_director' | 'vox2_director_am' | 'vox2_wen' | 'vox2_mystery' | 'vox_duty'
+  sfx2?: 'stamp' | 'xray' | 'badge' | 'click' | 'ring' | 'radio' | 'buzz' | 'cry_child' | 'groan_man' | 'vox_mom' | 'vox_worker' | 'vox_mystery' | 'vox_thin' | 'vox_aunt' | 'vox_dad' | 'vox_tang' | 'vox_zhou' | 'vox_lei' | 'vox_fan' | 'vox_he' | 'vox_qian' | 'vox_kai' | 'vox_jiang' | 'vox_wen' | 'vox_bai' | 'vox_director' | 'vox_shao' | 'vox_du' | 'vox_qin' | 'vox_liao' | 'vox_luzhou' | 'vox_uncle' | 'vox_guy' | 'vox_grandpa' | 'vox_enh' | 'vox_kiddad' | 'vox_kidmom' | 'vox_kid' | 'vox2_tang' | 'vox2_zhou' | 'vox2_fan_a' | 'vox2_fan_b' | 'vox2_kai' | 'vox2_lei' | 'vox2_he' | 'vox2_director' | 'vox2_director_am' | 'vox2_wen' | 'vox2_mystery' | 'vox_duty'
+  /** 第二章·CT：窗宽窗位调节玩法（双滑块 + canvas 实时映射） */
+  windowTask?: { image: string; targetW: number; targetL: number; tolW: number; tolL: number; success: string; stage?: number }
+  /** 第二章·CT：增强前六格核对清单（逐项点开核对后放行） */
+  checklist?: { items: { label: string; value: string; alert?: boolean }[]; next: string }
+  /** 第二章·CT：白班候诊队列侧栏（展示用，压「快」的氛围） */
+  queue?: { name: string; tag: string; note?: string }[]
+  /** 第二章·CT：DNT 计时角标（游戏内分钟数，演出用） */
+  dnt?: number
+  /** 条件步骤：指定旗标未置位时跳过本步直接走 next（彩蛋等条件剧情用） */
+  skipUnlessFlag?: string
   /** 曝光后的 CR 读取流程：值为要逐行扫描显示的影像素材名；'none' 表示只跑进度条不出图 */
   readout?: string
   /** 电话通话中：值为电话那端人物的立绘素材名，显示来电头像卡片 */
@@ -127,6 +139,8 @@ export interface DlcProgress {
   viewSprite?: string
   viewSprite2?: string
   done?: boolean
+  /** 第二章：当前班次 ID（c2n1…c2am） */
+  shift?: string
   /** DSA：全程累计剂量 mGy */
   dose?: number
   /** DSA：踏板尝试次数 / 成功次数 */
@@ -146,6 +160,8 @@ export interface ShopItem {
   name: string
   price: number
   desc: string
+  /** 像素图标素材名（public/assets 下，无需扩展名）；缺省用 emoji icon */
+  image?: string
   /** 第三章夜起才上架（如钥匙） */
   minNight?: number
 }

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>深夜影像科 · 全角色配音预览</title>
+<style>
+body{margin:0;background:#0d0d1a;color:#e0e0e0;font-family:"Microsoft YaHei",sans-serif;padding:24px}
+h1{font-size:20px;color:#7fd4ff}h2{font-size:16px;color:#ffd47f;margin:28px 0 10px;border-bottom:1px solid #333;padding-bottom:6px}
+.meta{color:#888;font-size:12px;margin-bottom:14px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+td,th{border:1px solid #2a2a44;padding:6px;vertical-align:middle;text-align:left}
+th{background:#16162e;color:#9fb8ff;position:sticky;top:0}
+tr:nth-child(even){background:#12122a}
+audio{width:240px;height:30px}
+.t{color:#ffe9b0}.n{color:#666;font-size:11px}
+</style></head><body>
+<h1>🎙️ 深夜影像科 · 全角色配音（正式版）</h1>
+<div class="meta">内部 TTS 原声 · 原始台词（超 12 字已缩短）· 共 42 条 · 线上播放的就是这些文件</div>
+<div id="app"></div>
+<script>
+const ROWS = [{"name": "vox2_director", "role": "主任（第二章）", "text": "白班要快，快就是医德。", "ch": "第二章"}, {"name": "vox2_director_am", "role": "主任（晨会）", "text": "零投诉，零差错，下面例行考核。", "ch": "第二章"}, {"name": "vox2_fan_a", "role": "老范（第二章A线）", "text": "第三天中午，球管就烧了。", "ch": "第二章"}, {"name": "vox2_fan_b", "role": "老范（第二章B线）", "text": "原厂货，撑到了最后一天。", "ch": "第二章"}, {"name": "vox2_he", "role": "小何（第二章）", "text": "老爷子夜里坠床，头颅CT，急！", "ch": "第二章"}, {"name": "vox2_kai", "role": "阿凯（第二章）", "text": "日检、预热，别偷懒。", "ch": "第二章"}, {"name": "vox2_lei", "role": "小雷（第二章）", "text": "新机器进PACS了，鸟枪换炮咯！", "ch": "第二章"}, {"name": "vox2_mystery", "role": "神秘病人（第二章）", "text": "医生，又是我。", "ch": "第二章"}, {"name": "vox2_tang", "role": "小唐（第二章）", "text": "我可什么都没说啊！", "ch": "第二章"}, {"name": "vox2_wen", "role": "雯雯（第二章）", "text": "加班加到十点的销售，您见过没？", "ch": "第二章"}, {"name": "vox2_zhou", "role": "老周（第二章）", "text": "新机器，新规矩，今晚你拍，我看着。", "ch": "第二章"}, {"name": "vox_aunt", "role": "大姨患者", "text": "医生，我来的不是时候吧？", "ch": "第一章"}, {"name": "vox_bai", "role": "老白 · 配件商", "text": "小兄弟，配件生意了解一下。", "ch": "第一章"}, {"name": "vox_dad", "role": "患儿父亲", "text": "孩子吞了个东西，没看清是啥！", "ch": "第一章"}, {"name": "vox_director", "role": "主任", "text": "你这周的夜班记录我都看了。", "ch": "第一章"}, {"name": "vox_du", "role": "小杜 · 登记处", "text": "没押金、没备案，系统开不出。", "ch": "DLC番外"}, {"name": "vox_duty", "role": "总值班", "text": "家长要求不是指征，先走流程。", "ch": "第一章"}, {"name": "vox_enh", "role": "增强大姐", "text": "热乎乎的，像喝了口白酒。", "ch": "DLC番外"}, {"name": "vox_fan", "role": "老范 · 设备科", "text": "设备科老范，送耗材来了。", "ch": "第一章"}, {"name": "vox_grandpa", "role": "老爷子患者", "text": "你们这医院，真较真。", "ch": "DLC番外"}, {"name": "vox_guy", "role": "青年男患者", "text": "哎呦，疼死我了。", "ch": "DLC番外"}, {"name": "vox_he", "role": "小何 · 急诊护士", "text": "不好意思，急诊小何，借过一下。", "ch": "第一章"}, {"name": "vox_jiang", "role": "老蒋 · 后勤处", "text": "影像科，影像科，后勤老蒋。", "ch": "第一章"}, {"name": "vox_kai", "role": "阿凯 · 厂家工程师", "text": "厂家阿凯，灯丝到寿了，换根新的。", "ch": "第一章"}, {"name": "vox_kid", "role": "小男孩", "text": "叔叔，有棒棒糖吗？", "ch": "DLC番外"}, {"name": "vox_kiddad", "role": "孩子父亲", "text": "再扫一次，出了事谁负责？", "ch": "DLC番外"}, {"name": "vox_kidmom", "role": "孩子母亲", "text": "三天前刚照过，还照。", "ch": "DLC番外"}, {"name": "vox_lei", "role": "小雷 · 信息科", "text": "哎哎，搭把手，信息科小雷。", "ch": "第一章"}, {"name": "vox_liao", "role": "小廖 · 导管室护士", "text": "我小廖。三件套，一件不能少。", "ch": "DLC番外"}, {"name": "vox_luzhou_f", "role": "陆舟·女", "text": "真的是你。", "ch": "DLC番外"}, {"name": "vox_luzhou_m", "role": "陆舟·男", "text": "真的是你。", "ch": "DLC番外"}, {"name": "vox_mom", "role": "患儿母亲", "text": "医生！我儿子好像吞了东西！", "ch": "第一章"}, {"name": "vox_mystery", "role": "神秘病人", "text": "医生，我这阵子总是不得劲儿。", "ch": "第一章"}, {"name": "vox_qian", "role": "小钱 · 医保办", "text": "影像科吗？医保办小钱。", "ch": "第一章"}, {"name": "vox_qin", "role": "秦放 · 导管室", "text": "秦放。角度、视野、时机，听我口令。", "ch": "DLC番外"}, {"name": "vox_shao", "role": "邵云 · 白班技师长", "text": "我邵云，白班技师长。", "ch": "DLC番外"}, {"name": "vox_tang", "role": "小唐 · 值班护士", "text": "新同事，我小唐，今晚的值班护士。", "ch": "第一章"}, {"name": "vox_thin", "role": "消瘦男患者", "text": "医生，胸口像针扎，喘不上气。", "ch": "第一章"}, {"name": "vox_uncle", "role": "大爷患者", "text": "去年说看不见了，敢情是没看着。", "ch": "DLC番外"}, {"name": "vox_wen", "role": "雯雯 · 厂家销售", "text": "技师老师，耽误您两分钟。", "ch": "第一章"}, {"name": "vox_worker", "role": "工人患者", "text": "哎呦医生，轻点，胳膊不敢动了。", "ch": "第一章"}, {"name": "vox_zhou", "role": "老周 · 放射科医师", "text": "新来的？我老周。", "ch": "第一章"}];
+let html = '';
+for (const g of ['第一章','DLC番外','第二章']) {
+  const rs = ROWS.filter(r=>r.ch===g);
+  html += `<h2>${g}（${rs.length}条）</h2><table><tr><th>角色</th><th>台词</th><th>试听</th></tr>`;
+  for (const r of rs) html += `<tr><td>${r.role}<div class="n">${r.name}</div></td><td class="t">${r.text}</td><td><audio controls preload="none" src="/audio/${r.name}.mp3"></audio></td></tr>`;
+  html += '</table>';
+}
+document.getElementById('app').innerHTML = html;
+</script></body></html>
