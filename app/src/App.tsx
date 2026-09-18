@@ -1819,8 +1819,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
   const [shopOpen, setShopOpen] = useState(false)
   const [bookOpen, setBookOpen] = useState(false)
   const [phase, setPhase] = useState<'story' | 'settle' | 'quiz' | 'done'>('story')
-  const lastTapAt = useRef(0)
-  const prevTapAt = useRef(0)
+  const pickedStep = useRef<string | null>(null)
   const windowTries = useRef<Record<number, number>>({})
 
   const step: Step = shift.steps[stepId] ?? { end: true }
@@ -1834,6 +1833,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
     setPrevStepId(stepId)
     setShown(0)
     if (step.choices) setChoicesLocked(true)
+    pickedStep.current = null
   }
 
   const updProg = (s: GameState, patch: Partial<DlcProgress>): GameState => ({
@@ -1856,7 +1856,8 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
     const key = `ch2-${stepId}`
     const already = applied.current.has(key)
     applied.current.add(key)
-    const heardKey = (n: string) => `heard2_vp3_${n}`
+    // Two different patients share this brief complaint recording, not an identity.
+    const heardKey = (n: string) => n === 'vox_guy' ? `heard2_vp4_${step.speaker}_${n}` : `heard2_vp3_${n}`
     const isVox = (n: string) => n.startsWith('vox_') || n.startsWith('vox2_')  // vox2_* = 第二章专属场景语音
     const sfxList = [step.sfx, step.sfx2].filter((n): n is NonNullable<typeof n> => !!n)
     const freshVox = sfxList.filter(n => isVox(n) && !state.flags[heardKey(resolveSfx(n).heard)])
@@ -1902,8 +1903,11 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
   const blocked = !!(step.choices || step.end || step.windowTask || step.checklist) || shopOpen || bookOpen || manualOpen || badgeOpen || phase !== 'story'
 
   const advance = () => {
-    if (blocked) return
+    if (shopOpen || bookOpen || manualOpen || badgeOpen || phase !== 'story') return
+    // Reveal text even on choices, tasks and settlement nodes. Those nodes must
+    // block navigation, not the user's attempt to finish the typewriter text.
     if (!done) { setShown(plainLen); return }
+    if (blocked) return
     playSfx('click')
     if (step.next === '@shop') { setShopOpen(true); return }
     if (step.next === '@book2') { setBookOpen(true); return }
@@ -1912,8 +1916,10 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
   }
 
   const pick = (c: Choice) => {
-    if (choicesLocked) return
-    if (Date.now() - prevTapAt.current < 300) return
+    // The visible-choice delay already prevents accidental selection. Do not
+    // extend a lock on every rejected tap: rapid taps could otherwise starve it.
+    if (choicesLocked || !done || pickedStep.current === stepId) return
+    if (c.next !== '@shop' && c.next !== '@book2') pickedStep.current = stepId
     playSfx('click')
     if (c.effect) update(s => applyEffect(s, c.effect))
     if (c.risk && Math.random() < c.risk.chance) {
@@ -1976,7 +1982,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
   const ch2CardsGot = (state.cards ?? []).filter(id => CH2_CARDS[id]).length
 
   return (
-    <div className="relative w-full h-full cursor-pointer" onClickCapture={() => { prevTapAt.current = lastTapAt.current; lastTapAt.current = Date.now() }} onClick={advance}>
+    <div className="relative w-full h-full cursor-pointer" data-ch2-step={stepId} onClick={advance}>
       <BgImg name={view.bg} />
       <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-slate-950/80 to-transparent pointer-events-none" />
 
@@ -2054,7 +2060,13 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
           <p key={stepId} className="text-slate-100 leading-relaxed text-base md:text-lg whitespace-pre-wrap min-h-[4.9rem] md:min-h-[5.4rem] text-in">
             <RichText text={fullText} shown={shown} />
           </p>
-          {!step.choices && !step.end && !step.windowTask && !step.checklist && done && <span className="absolute bottom-3 right-4 text-teal-300 animate-bounce">▼</span>}
+          {!step.choices && !step.end && !step.windowTask && !step.checklist && step.next && (
+            <div className="mt-2 flex justify-end" onClick={e => e.stopPropagation()}>
+              <button type="button" onClick={advance} className="min-h-10 px-4 py-1 rounded border border-teal-700/70 text-sm text-teal-200 hover:bg-teal-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-300">
+                {done ? '继续 →' : '显示全文'}
+              </button>
+            </div>
+          )}
           {step.choices && done && !choicesLocked && (
             <div className="mt-4 flex flex-col gap-2 choice-in max-h-[38vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
               {visibleChoices.map((c, i) => (
@@ -2196,7 +2208,6 @@ function WindowGame({ task, onDone }: { task: NonNullable<Step['windowTask']>; o
     <div className="absolute inset-0 z-40 bg-slate-950/90 flex flex-col items-center justify-center gap-3 px-4" onClick={e => e.stopPropagation()}>
       <p className="text-teal-300 tracking-[0.4em] text-sm">🎚️ 窗宽 · 窗位</p>
       <p className="text-slate-400 text-xs">拖动滑块，比较显示效果——目标：WW≈{task.targetW} / WL≈{task.targetL}</p>
-      {task.image === 'ct_wrist_simulated' && <p className="text-amber-200 text-xs text-center">AI生成腕部示意图 · 灰度映射模拟HU，非实测CT数据，不用于诊断</p>}
       <canvas ref={canvasRef} width={SIZE} height={SIZE}
         className="max-h-[38vh] portrait:max-h-[30vh] aspect-square rounded-lg border-2 border-slate-600 bg-black pixel" />
       <div className="w-full max-w-xl flex flex-col gap-2">

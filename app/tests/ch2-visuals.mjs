@@ -77,6 +77,7 @@ try {
     ['c2n5', 'c2n5_m2', 'ch2_pixel_pat_kidmom'],
     ['c2n5', 'c2n5_a2', 'item_zhou_key_fixed'],
     ['c2n5', 'c2n5_r0', 'ct_water_ring_teaching'],
+    ['c2n5', 'c2n5_m17', 'ct_head_child_followup'],
   ]) {
     const { context, page } = await scene(shift, node)
     const img = page.locator(`img[src$="/${asset}.png"]`).first()
@@ -91,5 +92,5 @@ try {
   assert.equal(ch2BookUnlocked('c2am'), 20)
   assert.equal(ch2BookUnlocked('c2n1', true), 20)
   assert.deepEqual(errors, [])
-  console.log('PASS: 21 mapped portraits rendered, five book unlock stages, locked next page, mobile fit, five scene images and teaching captions, no page errors. Screenshots: ' + output)
+  console.log('PASS: 21 mapped portraits rendered, five book unlock stages, locked next page, mobile fit, six scene images and teaching captions, no page errors. Screenshots: ' + output)
 } finally { await browser.close() }
