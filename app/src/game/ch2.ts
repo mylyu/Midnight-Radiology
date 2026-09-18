@@ -308,17 +308,25 @@ export const GRAY2HU: [number, number][] = [
 ]
 
 /** 灰度(0-255) → HU，分段线性插值 */
-export function grayToHU(g: number): number {
-  if (g <= GRAY2HU[0][0]) return GRAY2HU[0][1]
-  for (let i = 1; i < GRAY2HU.length; i++) {
-    const [x1, y1] = GRAY2HU[i]
+export function grayToHU(g: number, wristSimulation = false): number {
+  // Synthetic display values only: generated PNGs cannot recover measured HU.
+  // Wrist bone detail spans a wider gray range than the legacy brain assets.
+  const anchors = wristSimulation ? WRIST_GRAY2HU : GRAY2HU
+  if (g <= anchors[0][0]) return anchors[0][1]
+  for (let i = 1; i < anchors.length; i++) {
+    const [x1, y1] = anchors[i]
     if (g <= x1) {
-      const [x0, y0] = GRAY2HU[i - 1]
+      const [x0, y0] = anchors[i - 1]
       return y0 + ((g - x0) / (x1 - x0)) * (y1 - y0)
     }
   }
-  return GRAY2HU[GRAY2HU.length - 1][1]
+  return anchors[anchors.length - 1][1]
 }
+
+const WRIST_GRAY2HU: [number, number][] = [
+  [0, -1000], [35, -120], [65, -60], [100, 40],
+  [140, 180], [190, 700], [235, 1500], [255, 2000],
+]
 
 /* ================= 第1夜「新机」 ================= */
 const C2N1: Record<string, Step> = {
@@ -487,9 +495,9 @@ const C2D2: Record<string, Step> = {
   c2d2_t0: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: '第三例——车祸伤到了。颈托、止血带、床旁心电监护，一群人簇拥着推进机房。**头颅加全腹联合扫描，一步到位**，分诊台那边，你请小唐替你把大爷领到了下一个号。', queue: C2D2_QUEUE2, next: 'c2d2_t1' },
   c2d2_t1: { speaker: 'sys', text: '「嗡——」联合扫描完成。（腹窗阅片）肝脾实质密度均匀，未见破裂出血；腹腔无游离气体，肠管无扩张——**命保住了**，肋骨骨折归骨科。', image: 'ct_abdomen_trauma', sfx: 'xray', queue: C2D2_QUEUE2, next: 'c2d2_t2' },
   c2d2_t2: { speaker: 'sys', text: '抢救室来电话致谢：「多发伤十分钟出全图，这机器真是买值了。」候诊区的大爷也朝你竖了竖大拇指——投诉的事，再没人提。', effect: { heart: 1, gold: 60 }, queue: C2D2_QUEUE2, next: 'c2d2_11' },
-  c2d2_11: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: '第四例，手腕摔伤的学生。检查结束，图像交给医师判读。趁着空当，老周另调出一张颅骨教学图：「刚才说到骨窗，拿这张练练。注意，这不是刚才那位学生的片子。」', next: 'c2d2_w2' },
-  c2d2_w2: { speaker: 'sys', text: '【独立调窗练习 · 颅骨教学图，非手腕病例】试着调到本练习的骨窗设置，观察颅骨与颅内软组织的显示差别。', image: 'ct_bone', windowTask: { image: 'ct_bone', targetW: 4000, targetL: 250, tolW: 400, tolL: 80, success: 'c2d2_w2ok' }, next: 'c2d2_w2ok' },
-  c2d2_w2ok: { speaker: 'zhou', sprite: 'char_zhou', text: '这张颅骨教学图就用这组设置作比较。看骨和看脑，关注的细节不同，窗口也得跟着换。刚才那位学生的手腕，要看他自己的图，可不能拿这张下结论。', image: 'ct_bone', next: 'c2d2_n0' },
+  c2d2_11: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: '第四例，手腕摔伤的学生。老周把腕部的切面调出来：「先看骨头，试试骨窗。别一片白就以为看清楚了。」【画面为AI生成的腕部近端横断面教学模拟图，非真实患者数据。】', image: 'ct_wrist_simulated', next: 'c2d2_w2' },
+  c2d2_w2: { speaker: 'sys', text: '【腕部调窗 · 教学模拟】调整窗宽、窗位，比较尺桡骨与周围软组织的显示。这里只练习灰度显示，不据此诊断骨折。', image: 'ct_wrist_simulated', windowTask: { image: 'ct_wrist_simulated', targetW: 4000, targetL: 250, tolW: 400, tolL: 80, success: 'c2d2_w2ok' }, next: 'c2d2_w2ok' },
+  c2d2_w2ok: { speaker: 'zhou', sprite: 'char_zhou', text: '嗯，换成骨窗，骨头里面的灰度层次也能分开看了。记住，调窗换的是显示方式，不是把机器没扫到的细节变出来。完整图像交给医生看，别靠这一层就说没事。', image: 'ct_wrist_simulated', next: 'c2d2_n0' },
   // —— 中午 · 陆舟登场 ——
   c2d2_n0: { speaker: 'sys', text: '午休，机时难得空出来。一个抱着铝合金箱子的人探头进来，胸前挂着「田头技术大学」的访客牌。', next: 'c2d2_n1' },
   c2d2_n1: { speaker: 'luzhou', sprite: 'luzhou', sfx: 'vox_luzhou', text: '……真的是你？！我按申请单上的技师名字猜了半天——**老室友，本科睡你隔壁铺的陆舟**，四年不见，你都在县医院独当一面了！', next: 'c2d2_n2' },

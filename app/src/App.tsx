@@ -2139,7 +2139,7 @@ function WindowGame({ task, onDone }: { task: NonNullable<Step['windowTask']>; o
   const huLut = useRef<Int16Array | null>(null)
   if (!huLut.current) {
     const t = new Int16Array(256)
-    for (let g = 0; g < 256; g++) t[g] = Math.round(grayToHU(g))
+    for (let g = 0; g < 256; g++) t[g] = Math.round(grayToHU(g, task.image === 'ct_wrist_simulated'))
     huLut.current = t
   }
 
@@ -2194,7 +2194,8 @@ function WindowGame({ task, onDone }: { task: NonNullable<Step['windowTask']>; o
   return (
     <div className="absolute inset-0 z-40 bg-slate-950/90 flex flex-col items-center justify-center gap-3 px-4" onClick={e => e.stopPropagation()}>
       <p className="text-teal-300 tracking-[0.4em] text-sm">🎚️ 窗宽 · 窗位</p>
-      <p className="text-slate-400 text-xs">拖动滑块，把「该看的东西」调出来{task.stage === 1 ? '——目标：脑窗（WW≈80 / WL≈30）' : '——目标：硬膜下窗（WW≈130 / WL≈65）'}</p>
+      <p className="text-slate-400 text-xs">拖动滑块，比较显示效果——目标：WW≈{task.targetW} / WL≈{task.targetL}</p>
+      {task.image === 'ct_wrist_simulated' && <p className="text-amber-200 text-xs text-center">AI生成腕部示意图 · 灰度映射模拟HU，非实测CT数据，不用于诊断</p>}
       <canvas ref={canvasRef} width={SIZE} height={SIZE}
         className="max-h-[38vh] portrait:max-h-[30vh] aspect-square rounded-lg border-2 border-slate-600 bg-black pixel" />
       <div className="w-full max-w-xl flex flex-col gap-2">
