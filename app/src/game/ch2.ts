@@ -487,9 +487,9 @@ const C2D2: Record<string, Step> = {
   c2d2_t0: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: '第三例——车祸伤到了。颈托、止血带、床旁心电监护，一群人簇拥着推进机房。**头颅加全腹联合扫描，一步到位**，分诊台那边，你请小唐替你把大爷领到了下一个号。', queue: C2D2_QUEUE2, next: 'c2d2_t1' },
   c2d2_t1: { speaker: 'sys', text: '「嗡——」联合扫描完成。（腹窗阅片）肝脾实质密度均匀，未见破裂出血；腹腔无游离气体，肠管无扩张——**命保住了**，肋骨骨折归骨科。', image: 'ct_abdomen_trauma', sfx: 'xray', queue: C2D2_QUEUE2, next: 'c2d2_t2' },
   c2d2_t2: { speaker: 'sys', text: '抢救室来电话致谢：「多发伤十分钟出全图，这机器真是买值了。」候诊区的大爷也朝你竖了竖大拇指——投诉的事，再没人提。', effect: { heart: 1, gold: 60 }, queue: C2D2_QUEUE2, next: 'c2d2_11' },
-  c2d2_11: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: '第四例，手腕摔伤的学生。**骨窗把窗拉到最宽、窗位拉高，骨皮质的细节才纤毫毕现**；软组织？软组织全糊成一片，本来也不是给它看的。来，亲手调一个。', image: 'ct_bone', next: 'c2d2_w2' },
-  c2d2_w2: { speaker: 'sys', text: '【调窗】把窗口调到骨窗：让尺桡骨的皮质边缘锐利到能数清骨小梁。', image: 'ct_bone', windowTask: { image: 'ct_bone', targetW: 4000, targetL: 250, tolW: 400, tolL: 80, success: 'c2d2_w2ok' }, next: 'c2d2_w2ok' },
-  c2d2_w2ok: { speaker: 'sys', text: '窗宽拉到4000、窗位抬到250——软组织全部退成背景，尺桡骨对位良好，骨皮质光整无断裂。学生在旁边看得直咋舌：「这比我游戏里的血条清楚多了。」', image: 'ct_bone', next: 'c2d2_n0' },
+  c2d2_11: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: '第四例，手腕摔伤的学生。检查结束，图像交给医师判读。趁着空当，老周另调出一张颅骨教学图：「刚才说到骨窗，拿这张练练。注意，这不是刚才那位学生的片子。」', next: 'c2d2_w2' },
+  c2d2_w2: { speaker: 'sys', text: '【独立调窗练习 · 颅骨教学图，非手腕病例】试着调到本练习的骨窗设置，观察颅骨与颅内软组织的显示差别。', image: 'ct_bone', windowTask: { image: 'ct_bone', targetW: 4000, targetL: 250, tolW: 400, tolL: 80, success: 'c2d2_w2ok' }, next: 'c2d2_w2ok' },
+  c2d2_w2ok: { speaker: 'zhou', sprite: 'char_zhou', text: '这张颅骨教学图就用这组设置作比较。看骨和看脑，关注的细节不同，窗口也得跟着换。刚才那位学生的手腕，要看他自己的图，可不能拿这张下结论。', image: 'ct_bone', next: 'c2d2_n0' },
   // —— 中午 · 陆舟登场 ——
   c2d2_n0: { speaker: 'sys', text: '午休，机时难得空出来。一个抱着铝合金箱子的人探头进来，胸前挂着「田头技术大学」的访客牌。', next: 'c2d2_n1' },
   c2d2_n1: { speaker: 'luzhou', sprite: 'luzhou', sfx: 'vox_luzhou', text: '……真的是你？！我按申请单上的技师名字猜了半天——**老室友，本科睡你隔壁铺的陆舟**，四年不见，你都在县医院独当一面了！', next: 'c2d2_n2' },
