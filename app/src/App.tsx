@@ -1820,6 +1820,22 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
   const [bookOpen, setBookOpen] = useState(false)
   const [phase, setPhase] = useState<'story' | 'settle' | 'quiz' | 'done'>('story')
   const pickedStep = useRef<string | null>(null)
+  const heardVoices = useRef(new Set<string>())
+  const pendingVoices = useRef(new Map<string, string>())
+  const startingVoices = useRef(new Set<string>())
+  const retryVoices = () => {
+    pendingVoices.current.forEach((name, key) => {
+      if (startingVoices.current.has(key)) return
+      startingVoices.current.add(key)
+      void playSfx(name as Parameters<typeof playSfx>[0]).then(started => {
+        startingVoices.current.delete(key)
+        if (started) {
+          heardVoices.current.add(key)
+          pendingVoices.current.delete(key)
+        }
+      })
+    })
+  }
   const windowTries = useRef<Record<number, number>>({})
 
   const step: Step = shift.steps[stepId] ?? { end: true }
@@ -1860,8 +1876,16 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
     const heardKey = (n: string) => n === 'vox_guy' ? `heard2_vp4_${step.speaker}_${n}` : `heard2_vp3_${n}`
     const isVox = (n: string) => n.startsWith('vox_') || n.startsWith('vox2_')  // vox2_* = 第二章专属场景语音
     const sfxList = [step.sfx, step.sfx2].filter((n): n is NonNullable<typeof n> => !!n)
-    const freshVox = sfxList.filter(n => isVox(n) && !state.flags[heardKey(resolveSfx(n).heard)])
-    if (!already) sfxList.forEach(n => { if (!isVox(n) || freshVox.includes(n)) playSfx(resolveSfx(n).play as Parameters<typeof playSfx>[0]) })
+    // Session-only dedup: old saves must not permanently silence entrances.
+    // A rejected play() is retried on a gesture, never recorded as heard.
+    pendingVoices.current.clear()
+    sfxList.forEach(n => {
+      if (isVox(n)) {
+        const key = heardKey(resolveSfx(n).heard)
+        if (!heardVoices.current.has(key)) pendingVoices.current.set(key, resolveSfx(n).play)
+      } else if (!already) void playSfx(resolveSfx(n).play as Parameters<typeof playSfx>[0])
+    })
+    retryVoices()
     const cur = viewRef.current
     const speakerSprite = step.speaker === 'luzhou' ? 'luzhou' : step.speaker ? `char_${step.speaker}` : undefined
     const impliedSprite =
@@ -1873,11 +1897,6 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
     const newCard = step.card && !(state.cards ?? []).includes(step.card) ? step.card : undefined
     update(s => {
       let next = !already && step.effect ? applyEffect(s, step.effect) : s
-      if (!already && freshVox.length > 0) {
-        const f = { ...next.flags }
-        freshVox.forEach(n => { f[heardKey(resolveSfx(n).heard)] = true })
-        next = { ...next, flags: f }
-      }
       if (newCard) next = { ...next, cards: [...(next.cards ?? []), newCard] }
       if (step.event && !(next.events ?? []).includes(step.event)) next = { ...next, events: [...(next.events ?? []), step.event] }
       next = updProg(next, { shift: shift.id, stepId, viewBg: newView.bg, viewSprite: newView.sprite, viewSprite2: newView.sprite2 })
@@ -1982,7 +2001,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
   const ch2CardsGot = (state.cards ?? []).filter(id => CH2_CARDS[id]).length
 
   return (
-    <div className="relative w-full h-full cursor-pointer" data-ch2-step={stepId} onClick={advance}>
+    <div className="relative w-full h-full cursor-pointer" data-ch2-step={stepId} onClickCapture={retryVoices} onClick={advance}>
       <BgImg name={view.bg} />
       <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-slate-950/80 to-transparent pointer-events-none" />
 
@@ -2060,13 +2079,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
           <p key={stepId} className="text-slate-100 leading-relaxed text-base md:text-lg whitespace-pre-wrap min-h-[4.9rem] md:min-h-[5.4rem] text-in">
             <RichText text={fullText} shown={shown} />
           </p>
-          {!step.choices && !step.end && !step.windowTask && !step.checklist && step.next && (
-            <div className="mt-2 flex justify-end" onClick={e => e.stopPropagation()}>
-              <button type="button" onClick={advance} className="min-h-10 px-4 py-1 rounded border border-teal-700/70 text-sm text-teal-200 hover:bg-teal-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-300">
-                {done ? '继续 →' : '显示全文'}
-              </button>
-            </div>
-          )}
+          {!step.choices && !step.end && !step.windowTask && !step.checklist && done && <span className="absolute bottom-3 right-4 text-teal-300 animate-bounce">▼</span>}
           {step.choices && done && !choicesLocked && (
             <div className="mt-4 flex flex-col gap-2 choice-in max-h-[38vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
               {visibleChoices.map((c, i) => (

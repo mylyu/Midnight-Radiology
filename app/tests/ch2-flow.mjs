@@ -7,14 +7,23 @@ const browser = await chromium.launch({ headless: true, ...(process.env.CHROME_P
 const errors = []
 const url = process.env.GAME_URL || 'http://127.0.0.1:8798/'
 const current = page => page.evaluate(() => JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).dlc.ch2.stepId)
-async function open(shift, stepId, mobile = false) {
+async function open(shift, stepId, mobile = false, rejectVoice = false) {
   const context = await browser.newContext({ viewport: mobile ? { width: 390, height: 844 } : { width: 1280, height: 900 } })
-  await context.addInitScript(({ shift, stepId }) => {
+  await context.addInitScript(({ shift, stepId, rejectVoice }) => {
     window.__voiceCalls = []
-    HTMLMediaElement.prototype.play = function () { window.__voiceCalls.push(this.src); return Promise.resolve() }
+    HTMLMediaElement.prototype.play = function () {
+      window.__voiceCalls.push(this.src)
+      if (rejectVoice && window.__voiceCalls.length === 1) return Promise.reject(new DOMException('Blocked', 'NotAllowedError'))
+      return Promise.resolve()
+    }
     localStorage.setItem('mr-ch2-unlock', '1')
     if (!localStorage.getItem('midnight-radiology-save-v1')) localStorage.setItem('midnight-radiology-save-v1', JSON.stringify({ gender: 'm', night: 5, gold: 500, skill: 3, wealth: 3, heart: 3, durability: 70, badges: [], stamps: [], flags: {}, lastCheckin: '', streak: 0, finished: true, seed: 1234, items: [], ap: 3, buyCount: 0, cards: [], events: [], dlc: { ch2: { shift, stepId, viewBg: 'bg_archive' } } }))
-  }, { shift, stepId })
+    if (rejectVoice) {
+      const saved = JSON.parse(localStorage.getItem('midnight-radiology-save-v1'))
+      saved.flags.heard2_vp3_vox2_zhou = true
+      localStorage.setItem('midnight-radiology-save-v1', JSON.stringify(saved))
+    }
+  }, { shift, stepId, rejectVoice })
   const page = await context.newPage()
   page.on('pageerror', e => errors.push(e.message))
   await page.goto(url + '#/ch2')
@@ -22,11 +31,21 @@ async function open(shift, stepId, mobile = false) {
   return { context, page }
 }
 async function advance(page, expected) {
-  await page.getByRole('button', { name: '继续 →', exact: true }).waitFor({ timeout: 15000 })
-  await page.getByRole('button', { name: '继续 →', exact: true }).click()
+  await page.locator('.dialog-box > span.animate-bounce').waitFor({ timeout: 15000 })
+  await page.locator('.dialog-box > p').click()
   await page.waitForFunction(expected => JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).dlc.ch2.stepId === expected, expected, { timeout: 3000 })
 }
 try {
+  {
+    const { context, page } = await open('c2n1', 'c2n1_4', false, true)
+    await page.waitForFunction(() => window.__voiceCalls.length === 1)
+    assert.equal(await page.getByRole('button', { name: /显示全文|继续 →/ }).count(), 0)
+    await page.locator('.dialog-box > p').click()
+    await page.waitForFunction(() => window.__voiceCalls.length === 2)
+    assert.ok((await page.evaluate(() => window.__voiceCalls)).every(src => src.includes('vox2_zhou.mp3')))
+    await context.close()
+    console.log('PASS: old heard flag does not suppress entrance; rejected audio retries on click; original dialogue UI restored.')
+  }
   // Repro: the old guard uses every tap, including rejected ones. Repeated taps
   // after revealing a choice perpetually extend the 300 ms rejection window.
   {

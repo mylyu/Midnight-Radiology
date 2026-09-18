@@ -161,7 +161,7 @@ const SFX_VOLUME: Partial<Record<SfxName, number>> = {
   vox2_he: 0.45, vox2_director: 0.45, vox2_director_am: 0.45, vox2_wen: 0.45, vox2_mystery: 0.45, vox_duty: 0.45,
 }
 
-export function playSfx(name: SfxName) {
+export function playSfx(name: SfxName): Promise<boolean> {
   try {
     // ?v=2：2025年11月 16 条配音重制后破除浏览器旧缓存（同名文件内容已变）
     const src = `${import.meta.env.BASE_URL}audio/${name}.mp3?v=2`
@@ -169,9 +169,9 @@ export function playSfx(name: SfxName) {
     const a = audioCache[name]
     a.currentTime = 0
     a.volume = SFX_VOLUME[name] ?? 0.22
-    void a.play().catch(() => {})
+    return a.play().then(() => true, () => false)
   } catch {
-    /* audio unsupported — silent */
+    return Promise.resolve(false)
   }
 }
 
