@@ -28,6 +28,43 @@ export const CH2_META = {
 
 /* ================= 第二章口令解锁（与第一章进度脱钩；解锁状态存在本机，独立于存档） ================= */
 export const CH2_PASSWORD = 'ct2258'
+// Chapter-specific aliases preserve Chapter 1 assets and existing saved sprite keys.
+export const CH2_PORTRAITS: Record<string, string> = {
+  char_zhou: 'ch2_pixel_char_zhou',
+  char_director: 'ch2_pixel_char_director',
+  char_duty: 'ch2_pixel_char_duty',
+  char_fan: 'ch2_pixel_char_fan',
+  char_he: 'ch2_pixel_char_he',
+  char_kai: 'ch2_pixel_char_kai',
+  char_lei: 'ch2_pixel_char_lei',
+  char_tang: 'ch2_pixel_char_tang',
+  char_wen: 'ch2_pixel_char_wen',
+  char_m: 'ch2_pixel_char_m',
+  char_f: 'ch2_pixel_char_f',
+  char_luzhou_m: 'ch2_pixel_char_luzhou_m',
+  char_luzhou_f: 'ch2_pixel_char_luzhou_f',
+  pat_grandpa2: 'ch2_pixel_pat_grandpa2',
+  pat_gut: 'ch2_pixel_pat_gut',
+  pat_kiddad: 'ch2_pixel_pat_kiddad',
+  pat_mystery: 'ch2_pixel_pat_mystery',
+  pat_stone: 'ch2_pixel_pat_stone',
+  pat_uncle2: 'ch2_pixel_pat_uncle2',
+  pat_kid6: 'ch2_pixel_pat_kid6',
+  pat_kidmom: 'ch2_pixel_pat_kidmom',
+  pat_kidmom_holding: 'ch2_pixel_pat_kidmom',
+}
+
+export function ch2PortraitAsset(key: string, gender: 'm' | 'f'): string {
+  const resolved = key === 'me' ? `char_${gender}` : key === 'luzhou' ? `char_luzhou_${gender}` : key
+  return CH2_PORTRAITS[resolved] ?? resolved
+}
+
+export const CH2_IMAGE_CAPTIONS: Record<string, string> = {
+  ct_aortic_dissection_teaching: '主动脉夹层 · 局部结构示意（AI生成，非患者CT）',
+  ct_dental_metal_teaching: '牙科金属条纹伪影 · AI教学模拟，非患者CT',
+  ct_water_ring_teaching: '均匀水体模的环状伪影 · AI教学模拟',
+  ct_wrist_simulated: '腕部横断面 · AI教学模拟，非患者CT',
+}
 const CH2_UNLOCK_KEY = 'mr-ch2-unlock'
 
 export function ch2Unlocked(): boolean {
@@ -163,7 +200,7 @@ export const CH2_CARDS: Record<string, KnowledgeCard> = {
   ring_artifact: {
     title: '环状伪影：探测器的年轮',
     body: '均匀水箱体模上扫出一圈圈同心圆，圆心正好是机架旋转中心——这是环状伪影：某个探测器通道的校准值漂移了，它每转一圈，就在图像上画一个圆。体模是「标准答案」，标准答案答错了，就是机器出了问题。发现它靠每天两分钟的日检，定位它靠DAS日志——这正是日检体模存在的意义。',
-    image: 'ct_ring_artifact',
+    image: 'ct_water_ring_teaching',
   },
   old_book_note: {
     title: '图谱里的书签',
@@ -189,12 +226,19 @@ export const CH2_EVIDENCE: Record<string, Evidence> = {
   maintenance_draft: { title: '维保合同草案', body: '雯雯留下的草案页：球管按曝光次数阶梯计价、超支部分封顶。她说：球管是耗材，不是固定资产，不这么写你们迟早吃亏。', image: 'ev_maintenance_draft', flag: 'maintenance_draft' },
   phantom_log: { title: '体模实验记录', body: '陆舟留下的实验记录：水箱与线对卡体模、三组参数的扫描数据。「归你们科存档，说不定哪天质控用得上。」', image: 'ct_phantom', flag: 'phantom_log' },
   remote_proposal: { title: '远程质控服务方案', body: '厂家彩页：设备运行数据、图像质量参数自动回传云端，免费。附件三写着「乙方有权使用脱敏后数据」——「脱敏后」三个字，由他们自己定义。', image: 'ev_remote_proposal', flag: 'remote_proposal' },
-  old_register: { title: '老登记册（1978—1999）', body: '封条柜里的登记册，纸页脆黄，字迹一年一个样。1998年11月那一页被撕掉了——撕口整齐，像用尺子比着撕的。', image: 'ev_old_register', flag: 'old_register' },
-  nameless_films: { title: '一沓无名片袋', body: '袋子上没有姓名、没有登记号，只有日期：1978到1999，每年11月，一袋不少。', image: 'ev_nameless_films', flag: 'nameless_films' },
+  old_register: { title: '老登记册（1978—1999）', body: '封条柜里的登记册，纸页脆黄，字迹一年一个样。1998年11月那一页被撕掉了——撕口整齐，像用尺子比着撕的。', image: 'ev_old_register_fixed', flag: 'old_register' },
+  nameless_films: { title: '一沓无名片袋', body: '袋子上没有姓名、没有登记号，只有日期：1978到1999，每年11月，一袋不少。', image: 'ev_nameless_films_fixed', flag: 'nameless_films' },
   old_photo: { title: '1983年的合影', body: '封条柜暗屉里的老照片：1983年11月，放射科全体在老X光机前的合影，背面写着「科里添新机」。前排正中间那个人的脸，被人用指甲一点一点刮掉了。', image: 'ev_old_photo', flag: 'old_photo' },
 }
 
-/* ================= 值班室旧书 · 《CT夜班二十页》（二十页全可读） ================= */
+/** 每个剧情班次解锁4页；晨会/通关解锁全部。旧存档直接按班次推导。 */
+export function ch2BookUnlocked(shiftId?: string, completed = false): number {
+  const shifts = ['c2n1', 'c2d2', 'c2n3', 'c2d4', 'c2n5', 'c2am']
+  const index = Math.max(0, shifts.indexOf(shiftId ?? 'c2n1'))
+  return completed ? 20 : Math.min(20, (index + 1) * 4)
+}
+
+/* ================= 值班室旧书 · 《CT夜班二十页》（每班逐步解锁） ================= */
 export const CH2_BOOK_PAGES: { title: string; body: string; note: string }[] = [
   {
     title: '第1页 · 把水定为0的人——CT值与亨氏单位',
@@ -630,27 +674,27 @@ const C2D4: Record<string, Step> = {
   c2d4_6: {"speaker":"sys","text":"放射科医师与急诊团队确认检查方案。你跟着老周准备设备，核对扫描范围和重建设置；对比剂使用与监护由医护团队负责。","next":"c2d4_7"},
   c2d4_7: {"speaker":"me","text":"还是这台机器，换个协议，看见的东西就不一样了。","next":"c2d4_8"},
   c2d4_8: {"speaker":"zhou","sprite":"char_zhou","text":"要等血管强化起来，再把该扫的范围扫全。机器转得快有用，扫早了、漏了一段，快也白搭。","next":"c2d4_t1"},
-  c2d4_t1: {"speaker":"sys","text":"扫描结束，图像一层层铺开。主任拉过椅子，来回翻了几遍，又调出沿主动脉走向的重组图。","next":"c2d4_t1ok"},
-  c2d4_t1ok: {"speaker":"me","text":"这条细线……怎么把血管里面分成两边了？","next":"c2d4_t1no"},
-  c2d4_t1no: {"speaker":"director","sprite":"char_director","text":"是内膜片。这里形成了真腔和假腔，考虑主动脉夹层。把完整序列调出来，我看一下累及范围。","next":"c2d4_t2"},
-  c2d4_t2: {"speaker":"sys","text":"主任对照原始薄层图像和多个切面确认，随即给急诊打电话，说明发现并安排紧急专科评估。你没有再插话，把所需图像逐一传好。","next":"c2d4_t2ok"},
+  c2d4_t1: {"speaker":"sys","text":"扫描结束，图像一层层铺开。主任拉过椅子，来回翻了几遍，又调出沿主动脉走向的重组图。","image":"ct_aortic_dissection_teaching","next":"c2d4_t1ok"},
+  c2d4_t1ok: {"speaker":"me","text":"这条细线……怎么把血管里面分成两边了？","image":"ct_aortic_dissection_teaching","next":"c2d4_t1no"},
+  c2d4_t1no: {"speaker":"director","sprite":"char_director","text":"是内膜片。这里形成了真腔和假腔，考虑主动脉夹层。把完整序列调出来，我看一下累及范围。","image":"ct_aortic_dissection_teaching","next":"c2d4_t2"},
+  c2d4_t2: {"speaker":"sys","text":"主任对照原始薄层图像和多个切面确认，随即给急诊打电话，说明发现并安排紧急专科评估。你没有再插话，把所需图像逐一传好。","image":"ct_aortic_dissection_teaching","next":"c2d4_t2ok"},
   c2d4_t2ok: {"speaker":"me","text":"刚才换了好几个方向看，没有再扫吧？","next":"c2d4_t2no"},
   c2d4_t2no: {"speaker":"zhou","sprite":"char_zhou","text":"没再照。那一组容积数据还在，换个方向重组就行。别只盯着那张漂亮的立体图，原始层也得留好。","next":"c2d4_t3ok"},
   c2d4_t3ok: {"speaker":"sys","text":"推床离开时，妻子追上来问报告在哪里领。主任指了指同行的医生：「图像和结果已经联系好了，先跟医生走。」","next":"c2d4_9"},
   c2d4_9: {"speaker":"sys","text":"走廊安静下来。老周端起杯子，发现茶已经凉了。他看了眼时钟，把杯盖拧了回去。","next":"c2d4_10"},
   c2d4_10: {"speaker":"zhou","sprite":"char_zhou","text":"先别热。下一位到门口了。","next":"c2d4_11a"},
   c2d4_11a: {"speaker":"sys","text":"下午，一位头痛的老爷子在门口摸了摸口袋：「手机钥匙都交了。我这人没别的毛病，就是零碎多。」","next":"c2d4_12a"},
-  c2d4_12a: {"speaker":"sys","text":"头部图像出来后，颅底附近横着几道黑白条纹。你往下翻了一层，条纹更重，像有什么东西把画面扯开了。","next":"c2d4_13"},
-  c2d4_13: {"speaker":"me","text":"周师傅，机器又出问题了？上午还好好的。","next":"c2d4_14"},
-  c2d4_14: {"speaker":"zhou","sprite":"char_zhou","text":"先别给机器判刑。亮得最扎眼的那块在哪儿？","next":"c2d4_15"},
-  c2d4_15: {"speaker":"me","text":"嘴附近……是不是牙上的金属？","next":"c2d4_p0"},
+  c2d4_12a: {"speaker":"sys","text":"头部图像出来后，颅底附近横着几道黑白条纹。你往下翻了一层，条纹更重，像有什么东西把画面扯开了。","image":"ct_dental_metal_teaching","next":"c2d4_13"},
+  c2d4_13: {"speaker":"me","text":"周师傅，机器又出问题了？上午还好好的。","image":"ct_dental_metal_teaching","next":"c2d4_14"},
+  c2d4_14: {"speaker":"zhou","sprite":"char_zhou","text":"先别给机器判刑。亮得最扎眼的那块在哪儿？","image":"ct_dental_metal_teaching","next":"c2d4_15"},
+  c2d4_15: {"speaker":"me","text":"嘴附近……是不是牙上的金属？","image":"ct_dental_metal_teaching","next":"c2d4_p0"},
   c2d4_p0: {"speaker":"grandpa","sprite":"pat_grandpa2","text":"（听见老周问义齿，一拍腿）还有这副活动牙！你们问金属，我光惦记钥匙了。这牙天天戴，早当成自己的了。","next":"c2d4_p1"},
   c2d4_p1: {"speaker":"zhou","sprite":"char_zhou","text":"怪我们，刚才没问具体。能自己取下来吗？固定在嘴里的可别硬动。","next":"c2d4_p2a"},
   c2d4_p2a: {"speaker":"grandpa","sprite":"pat_grandpa2","text":"（取下活动义齿，接过收纳盒）人没修好，先把零件拆了。盒子可别丢，配这口牙比买手机还贵。","next":"c2d4_p3a"},
   c2d4_p3a: {"speaker":"me","text":"那刚才那些黑线，不是脑子里真的有裂缝？","next":"c2d4_p2b"},
-  c2d4_p2b: {"speaker":"zhou","sprite":"char_zhou","text":"不是那么回事。金属挡掉的射线太多，还把穿过去的射线能量分布改了。重建出来就可能拖出这些条纹，旁边的组织也跟着看不清。","next":"c2d4_p2c"},
-  c2d4_p2c: {"speaker":"me","text":"把窗调一调，能救回来吗？","next":"c2d4_p3b"},
-  c2d4_p3b: {"speaker":"zhou","sprite":"char_zhou","text":"可以试，但不能指望调窗把缺的信息补回来。先让医生看哪些地方受影响，再决定要不要补，别整套重扫。","next":"c2d4_m1"},
+  c2d4_p2b: {"speaker":"zhou","sprite":"char_zhou","text":"不是那么回事。金属挡掉的射线太多，还把穿过去的射线能量分布改了。重建出来就可能拖出这些条纹，旁边的组织也跟着看不清。","image":"ct_dental_metal_teaching","next":"c2d4_p2c"},
+  c2d4_p2c: {"speaker":"me","text":"把窗调一调，能救回来吗？","image":"ct_dental_metal_teaching","next":"c2d4_p3b"},
+  c2d4_p3b: {"speaker":"zhou","sprite":"char_zhou","text":"可以试，但不能指望调窗把缺的信息补回来。先让医生看哪些地方受影响，再决定要不要补，别整套重扫。","image":"ct_dental_metal_teaching","next":"c2d4_m1"},
   c2d4_m1: {"speaker":"sys","text":"医师确认颅底附近的图像不足以判断病情。去除活动义齿后，团队只补充了必要范围的扫描，条纹明显减轻。新旧图像一起保留，交由医师完成判读。","next":"c2d4_m2"},
   c2d4_m2: {"speaker":"sys","text":"老爷子拿回义齿盒，开盖数了数。老周乐了：「放心，一颗没扣。」老爷子把盒子揣好：「这可说不准，你们机器刚才照得那么狠。」","next":"c2d4_m3"},
   c2d4_m3: {"speaker":"me","text":"上午血管里那条线是真的，下午这些条纹倒是机器算出来的。光看着吓人，还真不能乱猜。","next":"c2d4_m4"},
@@ -684,7 +728,7 @@ const C2N5: Record<string, Step> = {
   c2n5_2: { speaker: 'zhou', sprite: 'char_zhou', text: '来了？今晚开始，**夜班你一个人扛**。我返聘到年底，但夜班排班，今晚是最后一班。', next: 'c2n5_3' },
   c2n5_3: { speaker: 'me', sprite: 'char_zhou', text: '（愣住）……为什么？', next: 'c2n5_4' },
   c2n5_4: { speaker: 'zhou', sprite: 'char_zhou', text: '（把纸箱封口）**机器换了，人也得换**。我在，你永远觉得背后有人。**从今晚起，这间CT室，夜班你说了算。**（他递过来一张门禁卡）主任批的。', next: 'c2n5_5' },
-  c2n5_5: { speaker: 'zhou', sprite: 'char_zhou', text: '（走到门口，又停下）对了——整理柜子翻出个东西。（他摊开手掌，一枚形状奇特的铜片，像某种图案的一半）**封条柜的钥匙，另一半**。当年我师父把钥匙掰成两半，一半留在科里，一半……原来在我柜子的夹层里。', image: 'item_zhou_key', next: 'c2n5_hub' },
+  c2n5_5: { speaker: 'zhou', sprite: 'char_zhou', text: '（走到门口，又停下）对了——整理柜子翻出个东西。（他摊开手掌，一枚形状奇特的铜片，像某种图案的一半）**封条柜的钥匙，另一半**。当年我师父把钥匙掰成两半，一半留在科里，一半……原来在我柜子的夹层里。', image: 'item_zhou_key_fixed', next: 'c2n5_hub' },
   c2n5_hub: { speaker: 'sys', text: '【自由行动 · 行动力⚡×3】', choices: [
     { text: '封条柜 · 开锁（⚡-1）', next: 'c2n5_a1', cond: { notFlag: 'c2n5_cabinet', ap: 1 }, tag: 'good' },
     { text: '小唐的送别礼（⚡-1）', next: 'c2n5_b1', cond: { notFlag: 'c2n5_b', ap: 1 } },
@@ -697,11 +741,11 @@ const C2N5: Record<string, Step> = {
   c2n5_lock: { speaker: 'sys', text: '你摸了摸口袋里那半枚铜片——先去旧片库，把那件三十年的事了了，再开诊。', next: 'c2n5_hub' },
   // —— A. 封条柜 ——
   c2n5_a1: { bg: 'bg_archive', speaker: 'sys', text: '老周陪你走进旧片库。月光从高窗照进来，封条柜上的两张封条依然交叉贴着，「……周……存」三个字在月光下泛黄。', effect: { ap: -1 }, next: 'c2n5_a2' },
-  c2n5_a2: { speaker: 'zhou', sprite: 'char_zhou', text: '（把两半铜片拼在一起——严丝合缝，一个完整的「周」字）……**原来是这儿**。', image: 'item_zhou_key', next: 'c2n5_a3' },
+  c2n5_a2: { speaker: 'zhou', sprite: 'char_zhou', text: '（把两半铜片拼在一起——严丝合缝，一个完整的「周」字）……**原来是这儿**。', image: 'item_zhou_key_fixed', next: 'c2n5_a3' },
   c2n5_a3: { speaker: 'sys', text: '铜片插入锁孔，转了两圈。「咔哒」——柜门开了。', sfx: 'click', next: 'c2n5_a4' },
   c2n5_a4: { speaker: 'me', sprite: 'char_zhou', text: '（屏住呼吸）里面没有金银财宝，只有：**一本更老的登记册**，和一沓**没有名字的片袋**。', next: 'c2n5_a5' },
-  c2n5_a5: { speaker: 'zhou', sprite: 'char_zhou', text: '（翻开登记册，手指停在某一页）1978年……1983年……1998年。（他忽然停住——**1998年11月的那一页，被撕掉了**。撕口整齐，像用尺子比着撕的。）', image: 'ev_old_register', next: 'c2n5_a6' },
-  c2n5_a6: { speaker: 'me', sprite: 'char_zhou', text: '（翻看那沓片袋）袋子上没有名字，没有登记号，只有日期——**从1978年到1999年，每年11月，一袋不少**。', image: 'ev_nameless_films', choices: [
+  c2n5_a5: { speaker: 'zhou', sprite: 'char_zhou', text: '（翻开登记册，手指停在某一页）1978年……1983年……1998年。（他忽然停住——**1998年11月的那一页，被撕掉了**。撕口整齐，像用尺子比着撕的。）', image: 'ev_old_register_fixed', next: 'c2n5_a6' },
+  c2n5_a6: { speaker: 'me', sprite: 'char_zhou', text: '（翻看那沓片袋）袋子上没有名字，没有登记号，只有日期——**从1978年到1999年，每年11月，一袋不少**。', image: 'ev_nameless_films_fixed', choices: [
     { text: '（把片袋放回去）', next: 'c2n5_a7' },
     { text: '（等等——柜壁内侧，好像还有个小抽屉）', next: 'c2n5_k1', cond: { item: 'key' }, tag: 'good' },
   ]},
@@ -735,11 +779,11 @@ const C2N5: Record<string, Step> = {
   // —— 开诊主线：复查单前的走廊战争 ——
   c2n5_m0: { bg: 'bg_corridor', speaker: 'sys', text: '晚上十一点，电梯口传来争吵声，由远及近。', sfx: 'ring', next: 'c2n5_m1' },
   c2n5_m1: { speaker: 'kiddad', sprite: 'pat_kiddad', sfx: 'vox_kiddad', text: '孩子今晚吐了两次！**再扫一次，立刻！漏了出血你负得起责吗？！**', next: 'c2n5_m2' },
-  c2n5_m2: { speaker: 'kidmom', sprite: 'pat_kidmom', sprite2: 'pat_kiddad', sfx: 'vox_kidmom', text: '（死死拽着孩子的手）不行！**三天前刚照过一次CT！网上都说这东西致癌，小孩子经不起这么照**——你们医院就知道让人做检查！', next: 'c2n5_m3' },
-  c2n5_m3: { speaker: 'sys', text: '6岁男孩夹在中间，哇一声哭了。三天前他们在外地旅游，孩子摔到头，当地医院做过一次头颅CT——**光盘就在父亲的包里**。', image: 'item_disc', sfx: 'cry_child', sprite: 'pat_kidmom', sprite2: 'pat_kiddad', next: 'c2n5_m4' },
+  c2n5_m2: { speaker: 'kidmom', sprite: 'pat_kidmom_holding', sprite2: 'pat_kiddad', sfx: 'vox_kidmom', text: '（把哭闹的孩子紧紧抱在怀里）不行！**三天前刚照过一次CT！网上都说这东西致癌，小孩子经不起这么照**——你们医院就知道让人做检查！', next: 'c2n5_m3' },
+  c2n5_m3: { speaker: 'sys', text: '6岁男孩趴在母亲肩上，哭得更厉害了。三天前他们在外地旅游，孩子摔到头，当地医院做过一次头颅CT——**光盘就在父亲的包里**。', image: 'item_disc', sfx: 'cry_child', sprite: 'pat_kidmom_holding', sprite2: 'pat_kiddad', next: 'c2n5_m4' },
   c2n5_m4: { speaker: 'kiddad', sprite: 'pat_kiddad', text: '（把光盘拍在分诊台上）你们机器新，看得清楚，再扫一次我们才放心！', next: 'c2n5_m5' },
-  c2n5_m5: { speaker: 'kidmom', sprite: 'pat_kidmom', text: '（声音劈了）放心？**照是你们说放心，不照也是你们说放心——你们到底哪句是真的？！**', next: 'c2n5_m6' },
-  c2n5_m6: { speaker: 'sys', text: '【怎么处理？】', sprite: 'pat_kidmom', sprite2: 'pat_kiddad', choices: [
+  c2n5_m5: { speaker: 'kidmom', sprite: 'pat_kidmom_holding', text: '（声音劈了）放心？**照是你们说放心，不照也是你们说放心——你们到底哪句是真的？！**', next: 'c2n5_m6' },
+  c2n5_m6: { speaker: 'sys', text: '【怎么处理？】', sprite: 'pat_kidmom_holding', sprite2: 'pat_kiddad', choices: [
     { text: '「都别吵了，扫！出了事我担着。」', next: 'c2n5_m7a', effect: { skill: -2, flag: 'c2n5_wrong' } },
     { text: '「先别急着决定扫不扫——光盘给我，三天前的图像能读出来，就先不扫。」', next: 'c2n5_m7b', effect: { skill: 2, badge: 'alara_guard' }, tag: 'good' },
     { text: '「辐射确实不好，别扫了，回家观察吧。」', next: 'c2n5_m7c', effect: { heart: -1 } },
@@ -749,25 +793,25 @@ const C2N5: Record<string, Step> = {
   c2n5_m7c: { speaker: 'kiddad', sprite: 'pat_kiddad', text: '（急了）观察？！**他吐了啊！**万一脑子里有血，观察能观察出来吗？！（母亲抱着孩子的手反而松了——**怕辐射和怕漏诊，在这一刻是同一种怕**。）', next: 'c2n5_m8' },
   c2n5_m8: { speaker: 'sys', text: '外院DICOM调阅成功：**左侧顶部头皮血肿，颅骨完整，颅内未见出血**。图像质量可用——但「呕吐两次」是三天前没有的新症状。', image: 'ct_head_child', next: 'c2n5_m9' },
   c2n5_m9: { speaker: 'duty', phone: 'char_duty', text: '症状有变化，符合复查指征。**范围只扫头颅，儿童协议，迭代重建**。你操作，我听着，正式报告明早我签。', next: 'c2n5_m10' },
-  c2n5_m10: { speaker: 'sys', text: '【进机房前，母亲拽住你的袖子】', sprite: 'pat_kidmom', next: 'c2n5_m11' },
-  c2n5_m11: { speaker: 'kidmom', sprite: 'pat_kidmom', text: '医生，你跟我说实话……这一扫，孩子要吃多少辐射？', next: 'c2n5_m12' },
-  c2n5_m12: { speaker: 'sys', text: '【怎么回答？】', sprite: 'pat_kidmom', choices: [
+  c2n5_m10: { speaker: 'sys', text: '【进机房前，母亲拽住你的袖子】', sprite: 'pat_kidmom_holding', next: 'c2n5_m11' },
+  c2n5_m11: { speaker: 'kidmom', sprite: 'pat_kidmom_holding', text: '医生，你跟我说实话……这一扫，孩子要吃多少辐射？', next: 'c2n5_m12' },
+  c2n5_m12: { speaker: 'sys', text: '【怎么回答？】', sprite: 'pat_kidmom_holding', choices: [
     { text: '「阿姨，我不会说『绝对没事』哄您。这次用儿童协议，机器按他的体重自动压输出，剂量报告我会打印给您收好；重建用迭代算法把噪声磨平——该省的一分不多给，该看的一层不能少。」', next: 'c2n5_m13a', effect: { skill: 1, heart: 1 }, tag: 'good' },
     { text: '（摘下胸前的个人剂量计递给她）「阿姨，干这行的人天天戴着它——数字在这儿，我不骗您。」', next: 'c2n5_m13d', cond: { item: 'dosimeter' }, effect: { skill: 1, heart: 1, badge: 'dose_guard' }, tag: 'good' },
     { text: '「放心，剂量很小的，跟坐趟飞机差不多。」', next: 'c2n5_m13b', effect: { skill: -1 } },
     { text: '「现在知道怕了？刚才不是你要扫的吗？」', next: 'c2n5_m13c', effect: { heart: -2, flag: 'c2n5_rude' } },
   ]},
-  c2n5_m13a: { speaker: 'me', sprite: 'pat_kidmom', text: '阿姨，我不会说「绝对没事」哄您。**这次用儿童协议，机器按他的体重自动压输出，剂量报告我会打印给您收好**；重建用迭代算法把噪声磨平，**该省的一分不多给，该看的一层不能少**。', card: 'dose_ct', next: 'c2n5_m14a' },
-  c2n5_m14a: { speaker: 'kidmom', sprite: 'pat_kidmom', text: '（盯着你的眼睛看了很久，终于点头）……好，我信你这一次。', card: 'child_ct', next: 'c2n5_m15' },
-  c2n5_m13b: { speaker: 'kidmom', sprite: 'pat_kidmom', text: '（反而更慌）「差不多」是多少？！你们就会说「差不多」！（值班医师在电话里叹气：「**下次把数字给她看，别给比方。**家属要的不是安慰，是能攥在手里的东西。」——你重新打印了剂量预估单，一项项指给她看。）', card: 'dose_ct', next: 'c2n5_m15' },
+  c2n5_m13a: { speaker: 'me', sprite: 'pat_kidmom_holding', text: '阿姨，我不会说「绝对没事」哄您。**这次用儿童协议，机器按他的体重自动压输出，剂量报告我会打印给您收好**；重建用迭代算法把噪声磨平，**该省的一分不多给，该看的一层不能少**。', card: 'dose_ct', next: 'c2n5_m14a' },
+  c2n5_m14a: { speaker: 'kidmom', sprite: 'pat_kidmom_holding', text: '（盯着你的眼睛看了很久，终于点头）……好，我信你这一次。', card: 'child_ct', next: 'c2n5_m15' },
+  c2n5_m13b: { speaker: 'kidmom', sprite: 'pat_kidmom_holding', text: '（反而更慌）「差不多」是多少？！你们就会说「差不多」！（值班医师在电话里叹气：「**下次把数字给她看，别给比方。**家属要的不是安慰，是能攥在手里的东西。」——你重新打印了剂量预估单，一项项指给她看。）', card: 'dose_ct', next: 'c2n5_m15' },
   c2n5_m13c: { speaker: 'sys', text: '走廊里的空气瞬间结冰。父亲把孩子往身后一拉，母亲眼圈红了。小唐赶来打圆场，才没闹到投诉。', next: 'c2n5_m15' },
-  c2n5_m13d: { speaker: 'kidmom', sprite: 'pat_kidmom', text: '（凑近看那枚小小的仪器，又抬头看看你）……你自己也天天被照着？（你点头。她忽然笑了，眼泪还挂在脸上）……行，**冲这个，我信你**。', image: 'item_dosimeter', card: 'dose_ct', next: 'c2n5_m14a' },
+  c2n5_m13d: { speaker: 'kidmom', sprite: 'pat_kidmom_holding', text: '（凑近看那枚小小的仪器，又抬头看看你）……你自己也天天被照着？（你点头。她忽然笑了，眼泪还挂在脸上）……行，**冲这个，我信你**。', image: 'item_dosimeter', card: 'dose_ct', next: 'c2n5_m14a' },
   c2n5_m15: { speaker: 'me', sprite: 'pat_kid6', text: '（蹲下来，跟孩子平视）小朋友，待会儿那个大圆圈给你拍张照，一下子就好——就当坐一回小火车，别动，行不行？', next: 'c2n5_m16' },
   c2n5_m16: { speaker: 'kid', sprite: 'pat_kid6', sfx: 'vox_kid', text: '（抽噎着点头）……有棒棒糖吗？', next: 'c2n5_m17' },
   c2n5_m17: { speaker: 'sys', text: '扫描一次成功，无重扫。结果：**与三天前一致，颅内未见新发出血**。呕吐更可能是肠胃闹的——值班医师建议留观到天亮。', sfx: 'xray', image: 'ct_head_child', next: 'c2n5_m18' },
   c2n5_m18: { speaker: 'kiddad', sprite: 'pat_kiddad', text: '（瘫在候诊椅上，半天）……刚才，对不起。', next: 'c2n5_m19' },
-  c2n5_m19: { speaker: 'kidmom', sprite: 'pat_kidmom', text: '（把那页剂量报告折得方方正正，收进贴身的口袋）医生，**那以后……还要来复查吗？**', next: 'c2n5_m20' },
-  c2n5_m20: { speaker: 'me', sprite: 'pat_kidmom', text: '孩子有任何不对劲，随时来；没有，就不用来了。', next: 'c2n5_m21' },
+  c2n5_m19: { speaker: 'kidmom', sprite: 'pat_kidmom_holding', text: '（把那页剂量报告折得方方正正，收进贴身的口袋）医生，**那以后……还要来复查吗？**', next: 'c2n5_m20' },
+  c2n5_m20: { speaker: 'me', sprite: 'pat_kidmom_holding', text: '孩子有任何不对劲，随时来；没有，就不用来了。', next: 'c2n5_m21' },
   c2n5_m21: { speaker: 'sys', text: '一家人进了留观室。孩子趴在爸爸背上，冲你挥了挥手。', next: 'c2n5_n1' },
   // —— 深夜 · 独立值守 ——
   c2n5_n1: { bg: 'bg_ctcontrol', speaker: 'sys', text: '凌晨两点，科室静得能听见机架待机的电流声。这是你**第一次独立守CT室的整夜**。', next: 'c2n5_n2' },
@@ -776,14 +820,14 @@ const C2N5: Record<string, Step> = {
   c2n5_n4: { speaker: 'sys', text: '【事件2】急诊电话——「有个病人投诉你们CT室空调太冷！」', next: 'c2n5_n5' },
   c2n5_n5: { speaker: 'me', text: '（哭笑不得）**机房恒温22度是设备要求，不是服务不周**——病人保暖毯我们有，马上送过去。', next: 'c2n5_r0' },
   // —— 事件2·续：体模上的年轮 ——
-  c2n5_r0: { speaker: 'sys', text: '送完保暖毯回来，你习惯性地翻出今天的体模日检图像复核——**瞳孔一缩：均匀的水箱体模上，一圈圈同心圆环，像树的年轮，像石头砸进水里**。', image: 'ct_ring_artifact', next: 'c2n5_r1' },
-  c2n5_r1: { speaker: 'sys', text: '【水箱是均匀的——均匀的东西扫出「年轮」，问题出在哪？】', image: 'ct_ring_artifact', choices: [
+  c2n5_r0: { speaker: 'sys', text: '送完保暖毯回来，你习惯性地翻出今天的体模日检图像复核——**瞳孔一缩：均匀的水箱体模上，一圈圈同心圆环，像树的年轮，像石头砸进水里**。', image: 'ct_water_ring_teaching', next: 'c2n5_r1' },
+  c2n5_r1: { speaker: 'sys', text: '【水箱是均匀的——均匀的东西扫出「年轮」，问题出在哪？】', image: 'ct_water_ring_teaching', choices: [
     { text: '「水放久了分层？换箱水重扫一次。」', next: 'c2n5_r2a', effect: { skill: -1 } },
     { text: '「环状伪影——某个探测器通道的校准漂移了，它每转一圈就画一个圆。报修，明早校准。」', next: 'c2n5_r2b', effect: { skill: 1 }, tag: 'good' },
     { text: '（拎出自己买的工具箱）「先别报修，我翻翻DAS日志。」', next: 'c2n5_r2c', cond: { item: 'toolbox' }, tag: 'good' },
   ]},
-  c2n5_r2a: { speaker: 'duty', phone: 'char_duty', text: '（电话那头笑出声）水？蒸馏水怎么分出一个一个的同心圆……**环状伪影，圆心在旋转中心，对应固定的探测器通道——是通道的校准值漂了**。体模就是「标准答案」，标准答案答错了，就是机器的问题。报修吧，明早工程师校准。', card: 'ring_artifact', image: 'ct_ring_artifact', next: 'c2n5_r3' },
-  c2n5_r2b: { speaker: 'sys', text: '你翻出体模记录对比——**环的圆心正好压在旋转中心，半径对应固定的探测器通道**。**环状伪影=某个通道的校准漂移**，它每转一圈，就在图像上画一个圆。水箱是标准答案，答错了就是机器的问题。', card: 'ring_artifact', image: 'ct_ring_artifact', next: 'c2n5_r3' },
+  c2n5_r2a: { speaker: 'duty', phone: 'char_duty', text: '（电话那头笑出声）水？蒸馏水怎么分出一个一个的同心圆……**环状伪影，圆心在旋转中心，对应固定的探测器通道——是通道的校准值漂了**。体模就是「标准答案」，标准答案答错了，就是机器的问题。报修吧，明早工程师校准。', card: 'ring_artifact', image: 'ct_water_ring_teaching', next: 'c2n5_r3' },
+  c2n5_r2b: { speaker: 'sys', text: '你翻出体模记录对比——**环的圆心正好压在旋转中心，半径对应固定的探测器通道**。**环状伪影=某个通道的校准漂移**，它每转一圈，就在图像上画一个圆。水箱是标准答案，答错了就是机器的问题。', card: 'ring_artifact', image: 'ct_water_ring_teaching', next: 'c2n5_r3' },
   c2n5_r2c: { speaker: 'sys', text: '你打开自己买的工具箱，按规程断电挂牌，用手电照着翻开DAS日志——**第217号通道，校准值漂了**。报修单上你写：「环状伪影，已定位至通道217，请携带该校准件。」第二天工程师愣了半天：「你们科技师……还自己看日志的？」', image: 'item_toolbox', card: 'ring_artifact', effect: { skill: 2, badge: 'wrench_night' }, next: 'c2n5_r3' },
   c2n5_r3: { speaker: 'sys', text: '报修单提交。你把最近一个月的体模日检图全部翻出来重看了一遍——从今往后，**这台机器的健康，是你一个人的事**。', next: 'c2n5_n6' },
   c2n5_n6: { speaker: 'sys', text: '【事件3】手机在口袋里震了一下。', choices: [

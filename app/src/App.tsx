@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { NIGHTS, BADGES, CHARACTERS, SHOP_ITEMS, QUIZ, BOOK_PAGES } from './game/data'
 import { DLCS, getDlc, DLC_BADGES, CARDS, EVENTS, EVIDENCE, DR_QUEUE, queueWaits } from './game/dlc'
-import { CH2_META, CH2_SHIFTS, CH2_BADGES, CH2_CARDS, CH2_BOOK_PAGES, QUIZ2, grayToHU, ch2Unlocked, tryUnlockCh2 } from './game/ch2'
+import { CH2_META, CH2_SHIFTS, CH2_BADGES, CH2_CARDS, CH2_BOOK_PAGES, CH2_IMAGE_CAPTIONS, QUIZ2, grayToHU, ch2Unlocked, tryUnlockCh2, ch2BookUnlocked, ch2PortraitAsset } from './game/ch2'
 import type { DlcDef, QueuePatient } from './game/dlc'
 import type { GameState, Step, ShopItem, Choice, DlcProgress } from './game/types'
 import { freshState, loadState, saveState, wipeSave, applyEffect, condOk, dailyCheckin, meterLevel, playSfx, makeCredCode, verifyCredCode } from './game/store'
@@ -1966,9 +1966,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
 
   const spriteOf = (key?: string) => {
     if (!key) return null
-    if (key === 'me') return IMG(state.gender === 'f' ? 'char_f' : 'char_m')
-    if (key === 'luzhou') return IMG(state.gender === 'f' ? 'char_luzhou_f' : 'char_luzhou_m')
-    return IMG(key)
+    return IMG(ch2PortraitAsset(key, state.gender))
   }
   const leftSprite = spriteOf(view.sprite)
   const rightSprite = spriteOf(view.sprite2)
@@ -1992,6 +1990,8 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
             className="text-xs text-slate-400 hover:text-teal-300 border border-slate-700 rounded px-2 py-0.5">📖 手册</button>
           <button onClick={e => { e.stopPropagation(); playSfx('click'); setBadgeOpen(true) }}
             className="text-xs text-slate-400 hover:text-teal-300 border border-slate-700 rounded px-2 py-0.5">🏅 勋章</button>
+          <button onClick={e => { e.stopPropagation(); setBookOpen(true) }}
+            className="text-xs text-slate-400 hover:text-teal-300 border border-slate-700 rounded px-2 py-0.5">📚 旧书</button>
           <FullscreenBtn />
           <button onClick={e => { e.stopPropagation(); playSfx('click'); onExit() }}
             className="text-xs text-slate-400 hover:text-teal-300 border border-slate-700 rounded px-2 py-0.5" title="进度已自动保存，可随时离开">💾 回大厅</button>
@@ -2022,7 +2022,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
       {step.phone && (
         <div className="absolute top-12 right-4 portrait:top-[4.5rem] portrait:right-2 portrait:px-2 portrait:py-1 portrait:gap-2 z-30 flex items-center gap-3 bg-slate-900/90 border-2 border-emerald-600 rounded-xl px-3 py-2 shadow-2xl">
           <div className="portrait:w-10 portrait:h-10 w-14 h-14 md:w-16 md:h-16 rounded-full overflow-hidden border-2 border-emerald-400 bg-slate-800 shrink-0">
-            <img src={IMG(step.phone)} className="w-full h-full object-cover object-top pixel" alt="来电" />
+            <img src={IMG(ch2PortraitAsset(step.phone, state.gender))} className="w-full h-full object-cover object-top pixel" alt="来电" />
           </div>
           <div className="text-left">
             <p className="text-emerald-300 text-xs md:text-sm tracking-widest animate-pulse">📞 通话中</p>
@@ -2033,8 +2033,9 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
 
       {/* 中央大图 */}
       {step.image && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none pb-40">
-          <img src={IMG(step.image)} className="max-h-[45%] portrait:max-h-[38%] rounded-lg border-4 border-slate-700 shadow-2xl pixel" alt="影像" />
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center pointer-events-none pb-40">
+          <img src={IMG(step.image)} className="max-h-[45%] portrait:max-h-[38%] max-w-[90%] object-contain rounded-lg border-4 border-slate-700 shadow-2xl pixel" alt={CH2_IMAGE_CAPTIONS[step.image] ?? '影像或证物'} />
+          {CH2_IMAGE_CAPTIONS[step.image] && <p className="mt-1 mx-2 px-2 py-1 rounded bg-slate-950/90 text-amber-100 text-[10px] md:text-xs text-center">{CH2_IMAGE_CAPTIONS[step.image]}</p>}
         </div>
       )}
 
@@ -2115,7 +2116,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
 
       {/* 小卖部 / 书 / 手册 / 勋章 */}
       {shopOpen && <ShopOverlay state={state} update={update} onClose={() => setShopOpen(false)} />}
-      {bookOpen && <Book2Overlay onClose={() => setBookOpen(false)} />}
+      {bookOpen && <Book2Overlay shiftId={shift.id} completed={!!prog.done} onClose={() => setBookOpen(false)} />}
       {manualOpen && <ManualOverlay state={state} onClose={() => setManualOpen(false)} />}
       {badgeOpen && (
         <div className="fixed inset-0 z-50" onClick={e => e.stopPropagation()}>
@@ -2258,25 +2259,31 @@ function ChecklistGame({ checklist, onDone }: { checklist: NonNullable<Step['che
 }
 
 /* ================= 第二章 · 《CT夜班二十页》 ================= */
-function Book2Overlay({ onClose }: { onClose: () => void }) {
-  const [page, setPage] = useState(0)
+function Book2Overlay({ shiftId, completed, onClose }: { shiftId: string; completed: boolean; onClose: () => void }) {
+  const unlocked = Math.min(CH2_BOOK_PAGES.length, ch2BookUnlocked(shiftId, completed))
+  const [page, setPage] = useState(Math.max(0, unlocked - 4))
   const p = CH2_BOOK_PAGES[page]
   return (
     <div className="fixed inset-0 z-40 bg-slate-950/80 flex items-center justify-center p-4" onClick={onClose}>
-      <div className="bg-amber-50 border-2 border-amber-800 rounded-2xl p-5 max-w-lg w-full flex flex-col gap-3 text-slate-900" onClick={e => e.stopPropagation()}>
-        <h3 className="text-lg font-bold text-amber-900">📖 CT 夜班二十页</h3>
-        <div className="grid grid-cols-10 gap-1">
-          {CH2_BOOK_PAGES.map((_, i) => (
-            <button key={i} onClick={() => { playSfx('click'); setPage(i) }}
-              className={`py-1 rounded text-[10px] border ${page === i ? 'bg-amber-700 text-amber-50 border-amber-900 font-bold' : 'bg-amber-100 text-amber-900 border-amber-300'}`}>
-              {i + 1}
-            </button>
-          ))}
+      <div className="bg-amber-50 border-2 border-amber-700/60 rounded-2xl p-5 md:p-6 max-w-lg w-full max-h-[88%] flex flex-col shadow-2xl" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-between gap-2 mb-1 shrink-0">
+          <h3 className="text-lg text-amber-900 tracking-widest font-bold">📖 CT 夜班二十页</h3>
+          <span className="text-amber-700/70 text-xs shrink-0">第 {page + 1} 页 / 共 {CH2_BOOK_PAGES.length} 页</span>
         </div>
-        <p className="text-sm font-bold text-amber-950">{p.title}</p>
-        <p className="text-sm leading-relaxed">{p.body}</p>
-        <p className="text-xs text-amber-800/70 italic border-t border-amber-200 pt-2">{p.note}</p>
-        <button onClick={() => { playSfx('click'); onClose() }} className="mt-1 w-full py-2 rounded-lg bg-amber-800 text-amber-50 text-sm hover:bg-amber-700">合上书，回科室</button>
+        <p className="text-amber-800/60 text-xs mb-3 shrink-0">封面内页写着：「夜班保命，闲时翻翻。」——每个班次多翻开四页，现已解锁 {unlocked} 页。</p>
+        <div className="border-t border-b border-amber-700/30 py-3 mb-3 overflow-y-auto min-h-0">
+          <h4 className="text-amber-950 font-bold mb-2 text-sm md:text-base">{p.title}</h4>
+          <p className="text-slate-800 text-sm leading-relaxed whitespace-pre-wrap">{p.body}</p>
+          <p className="text-amber-800/80 text-xs mt-3 italic">{p.note}</p>
+        </div>
+        <div className="flex items-center justify-between gap-2 shrink-0">
+          <button disabled={page <= 0} onClick={() => setPage(p => Math.max(0, p - 1))}
+            className="px-4 py-2 rounded-lg border border-amber-700/50 text-amber-900 text-sm disabled:opacity-30 hover:bg-amber-100">← 上一页</button>
+          {page < unlocked - 1 ? <button onClick={() => setPage(p => Math.min(unlocked - 1, p + 1))}
+            className="px-4 py-2 rounded-lg border border-amber-700/50 text-amber-900 text-sm hover:bg-amber-100">下一页 →</button>
+            : <span className="text-amber-700/60 text-xs">{unlocked < CH2_BOOK_PAGES.length ? '🔒 后续四页：下一班次解锁' : '—— 全书完 ——'}</span>}
+        </div>
+        <button onClick={onClose} className="mt-4 w-full py-2 rounded-lg bg-amber-800 text-amber-50 text-sm hover:bg-amber-700 shrink-0">合上书，回科室</button>
       </div>
     </div>
   )

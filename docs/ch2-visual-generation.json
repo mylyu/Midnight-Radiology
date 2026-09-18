@@ -1,0 +1,373 @@
+{
+  "date": "2026-09-18",
+  "tool": "Built-in image_gen (imagegen skill), not CLI",
+  "mode": "style-transfer / identity-preserve; scientific-educational and precise-object-edit for evidence",
+  "original_assets_preserved": true,
+  "portraits": [
+    {
+      "id": "char_zhou",
+      "output": "app/public/assets/ch2_pixel_char_zhou.png",
+      "prompt": "Use case: style-transfer. Asset: Chapter 2 game character sprite. Image 1 is the EDIT TARGET defining this person's identity, outfit, proportions and pose. Image 2 is STYLE ONLY: original Chapter 1 pixel-art Lao Zhou. \nRedraw Image 1 from scratch in the authentic coarse pixel drawing style of Image 2. Subject: Older Chinese man, balding with black side hair, stubble and wrinkles, relaxed wry grin, rolled-sleeve white lab coat, brown trousers and shoes, arms crossed holding brown tea cup.\nUse clearly visible large square pixel clusters, stair-step silhouette edges, dark chunky outlines, limited 3-5 tone shading per material, restrained warm rim light and cool shadows. Effective pixel canvas about 170 by 250 pixels enlarged crisply; intentional pixel placement, NOT smooth anime with a pixel noise/filter overlay. Preserve recognizable age, facial identity, clothing colors and held props. Portrait 1024x1536, full body including shoes and head with comfortable transparent margins; one character only.\nGenuinely transparent RGBA background outside silhouette, no painted checkerboard, no vignette, no glow background, no ground shadow, no scene, no labels or watermark. Do not copy the older man's face or clothing from style reference into this character.",
+      "reference_roles": "First = original identity; second = Chapter 1 char_zhou style; boy third = new mother/child",
+      "reference_files": [
+        "char_zhou.png",
+        "char_zhou.png"
+      ],
+      "generated_file": "exec-28ed0419-d5fd-4bbd-82f2-57fcbbae9db1.png",
+      "File": "ch2_pixel_char_zhou.png",
+      "Width": 1024,
+      "Height": 1536,
+      "TransparentSamplePercent": 64.7,
+      "SHA256": "F537B75BEB832AB260DFB6BB2F20603BE88AA53A4F3BDFFFA19D64C1653CB9C4"
+    },
+    {
+      "id": "char_director",
+      "output": "app/public/assets/ch2_pixel_char_director.png",
+      "prompt": "Use case: style-transfer. Asset: Chapter 2 game character sprite. Image 1 is the EDIT TARGET defining this person's identity, outfit, proportions and pose. Image 2 is STYLE ONLY: original Chapter 1 pixel-art Lao Zhou. \nRedraw Image 1 from scratch in the authentic coarse pixel drawing style of Image 2. Subject: Middle-aged Chinese male department director, swept-back salt-and-pepper hair, stern square face, white coat over black tie and dark trousers, hands behind back.\nUse clearly visible large square pixel clusters, stair-step silhouette edges, dark chunky outlines, limited 3-5 tone shading per material, restrained warm rim light and cool shadows. Effective pixel canvas about 170 by 250 pixels enlarged crisply; intentional pixel placement, NOT smooth anime with a pixel noise/filter overlay. Preserve recognizable age, facial identity, clothing colors and held props. Portrait 1024x1536, full body including shoes and head with comfortable transparent margins; one character only.\nGenuinely transparent RGBA background outside silhouette, no painted checkerboard, no vignette, no glow background, no ground shadow, no scene, no labels or watermark. Do not copy the older man's face or clothing from style reference into this character.",
+      "reference_roles": "First = original identity; second = Chapter 1 char_zhou style; boy third = new mother/child",
+      "reference_files": [
+        "char_director.png",
+        "char_zhou.png"
+      ],
+      "generated_file": "exec-23837605-1774-4159-86bb-c25b07070238.png",
+      "File": "ch2_pixel_char_director.png",
+      "Width": 1024,
+      "Height": 1536,
+      "TransparentSamplePercent": 69.9,
+      "SHA256": "DA557A79ED89F332D474249A1227D3AC17C7BD1284BC9C6282132EBE39AE723C"
+    },
+    {
+      "id": "char_duty",
+      "output": "app/public/assets/ch2_pixel_char_duty.png",
+      "prompt": "Use case: style-transfer. Asset: Chapter 2 game character sprite. Image 1 is the EDIT TARGET defining this person's identity, outfit, proportions and pose. Image 2 is STYLE ONLY: original Chapter 1 pixel-art Lao Zhou. \nRedraw Image 1 from scratch in the authentic coarse pixel drawing style of Image 2. Subject: Tired middle-aged Chinese male duty physician, short black hair, stubble, navy V-neck scrubs, white coat, stethoscope and pen. Square head-and-shoulders phone avatar, not full-body.\nUse clearly visible large square pixel clusters, stair-step silhouette edges, dark chunky outlines, limited 3-5 tone shading per material, restrained warm rim light and cool shadows. Effective pixel canvas about 170 by 250 pixels enlarged crisply; intentional pixel placement, NOT smooth anime with a pixel noise/filter overlay. Preserve recognizable age, facial identity, clothing colors and held props. Square 1024x1024 head-and-shoulders crop.\nGenuinely transparent RGBA background outside silhouette, no painted checkerboard, no vignette, no glow background, no ground shadow, no scene, no labels or watermark. Do not copy the older man's face or clothing from style reference into this character.",
+      "reference_roles": "First = original identity; second = Chapter 1 char_zhou style; boy third = new mother/child",
+      "reference_files": [
+        "char_duty.png",
+        "char_zhou.png"
+      ],
+      "generated_file": "exec-62c0af19-5a75-4cda-8cee-e9f41ae8a330.png",
+      "File": "ch2_pixel_char_duty.png",
+      "Width": 1254,
+      "Height": 1254,
+      "TransparentSamplePercent": 46.1,
+      "SHA256": "AE792A22551891A408C348FFD0B60445222B304FC79080EF4E8EF2215CD668D0"
+    },
+    {
+      "id": "char_fan",
+      "output": "app/public/assets/ch2_pixel_char_fan.png",
+      "prompt": "Use case: style-transfer. Asset: Chapter 2 game character sprite. Image 1 is the EDIT TARGET defining this person's identity, outfit, proportions and pose. Image 2 is STYLE ONLY: original Chapter 1 pixel-art Lao Zhou. \nRedraw Image 1 from scratch in the authentic coarse pixel drawing style of Image 2. Subject: Middle-aged Chinese male maintenance engineer, crew cut, slight stubble, navy work coveralls, tool belt, holding multimeter, relaxed stance.\nUse clearly visible large square pixel clusters, stair-step silhouette edges, dark chunky outlines, limited 3-5 tone shading per material, restrained warm rim light and cool shadows. Effective pixel canvas about 170 by 250 pixels enlarged crisply; intentional pixel placement, NOT smooth anime with a pixel noise/filter overlay. Preserve recognizable age, facial identity, clothing colors and held props. Portrait 1024x1536, full body including shoes and head with comfortable transparent margins; one character only.\nGenuinely transparent RGBA background outside silhouette, no painted checkerboard, no vignette, no glow background, no ground shadow, no scene, no labels or watermark. Do not copy the older man's face or clothing from style reference into this character.",
+      "reference_roles": "First = original identity; second = Chapter 1 char_zhou style; boy third = new mother/child",
+      "reference_files": [
+        "char_fan.png",
+        "char_zhou.png"
+      ],
+      "generated_file": "exec-fc752445-f8ef-4e71-84c1-7974aebecedd.png",
+      "File": "ch2_pixel_char_fan.png",
+      "Width": 1024,
+      "Height": 1536,
+      "TransparentSamplePercent": 68,
+      "SHA256": "2F6597852D77DC349EB57544F9DC0D99E8D66D8D22702AED16C87F9199B77FF9"
+    },
+    {
+      "id": "char_he",
+      "output": "app/public/assets/ch2_pixel_char_he.png",
+      "prompt": "Use case: style-transfer. Asset: Chapter 2 game character sprite. Image 1 is the EDIT TARGET defining this person's identity, outfit, proportions and pose. Image 2 is STYLE ONLY: original Chapter 1 pixel-art Lao Zhou. \nRedraw Image 1 from scratch in the authentic coarse pixel drawing style of Image 2. Subject: Young Chinese woman, black high ponytail, lively urgent expression, teal/navy scrubs under open white coat, stethoscope, hand on hip, dark shoes.\nUse clearly visible large square pixel clusters, stair-step silhouette edges, dark chunky outlines, limited 3-5 tone shading per material, restrained warm rim light and cool shadows. Effective pixel canvas about 170 by 250 pixels enlarged crisply; intentional pixel placement, NOT smooth anime with a pixel noise/filter overlay. Preserve recognizable age, facial identity, clothing colors and held props. Portrait 1024x1536, full body including shoes and head with comfortable transparent margins; one character only.\nGenuinely transparent RGBA background outside silhouette, no painted checkerboard, no vignette, no glow background, no ground shadow, no scene, no labels or watermark. Do not copy the older man's face or clothing from style reference into this character.",
+      "reference_roles": "First = original identity; second = Chapter 1 char_zhou style; boy third = new mother/child",
+      "reference_files": [
+        "char_he.png",
+        "char_zhou.png"
+      ],
+      "generated_file": "exec-d30de799-5156-452d-9339-0c5c07e6c2d2.png",
+      "File": "ch2_pixel_char_he.png",
+      "Width": 1024,
+      "Height": 1536,
+      "TransparentSamplePercent": 65.5,
+      "SHA256": "5CA62D0AA25D5A5312AFF0EDD3A53B8E27A11FDC00F49126513EB627664019A2"
+    },
+    {
+      "id": "char_kai",
+      "output": "app/public/assets/ch2_pixel_char_kai.png",
+      "prompt": "Use case: style-transfer. Asset: Chapter 2 game character sprite. Image 1 is the EDIT TARGET defining this person's identity, outfit, proportions and pose. Image 2 is STYLE ONLY: original Chapter 1 pixel-art Lao Zhou. \nRedraw Image 1 from scratch in the authentic coarse pixel drawing style of Image 2. Subject: Young Chinese man, short black crew cut, navy polo shirt and dark trousers, holding hard toolbox case, wristwatch.\nUse clearly visible large square pixel clusters, stair-step silhouette edges, dark chunky outlines, limited 3-5 tone shading per material, restrained warm rim light and cool shadows. Effective pixel canvas about 170 by 250 pixels enlarged crisply; intentional pixel placement, NOT smooth anime with a pixel noise/filter overlay. Preserve recognizable age, facial identity, clothing colors and held props. Portrait 1024x1536, full body including shoes and head with comfortable transparent margins; one character only.\nGenuinely transparent RGBA background outside silhouette, no painted checkerboard, no vignette, no glow background, no ground shadow, no scene, no labels or watermark. Do not copy the older man's face or clothing from style reference into this character.",
+      "reference_roles": "First = original identity; second = Chapter 1 char_zhou style; boy third = new mother/child",
+      "reference_files": [
+        "char_kai.png",
+        "char_zhou.png"
+      ],
+      "generated_file": "exec-f92ff4da-6a25-438b-b3c6-466ddceaddbc.png",
+      "File": "ch2_pixel_char_kai.png",
+      "Width": 1024,
+      "Height": 1536,
+      "TransparentSamplePercent": 68.8,
+      "SHA256": "C2CD78A3E5004200F04AAEE3A58FF6F5716B2192E1E1B527CE4F61960C4DB7BF"
+    },
+    {
+      "id": "char_lei",
+      "output": "app/public/assets/ch2_pixel_char_lei.png",
+      "prompt": "Use case: style-transfer. Asset: Chapter 2 game character sprite. Image 1 is the EDIT TARGET defining this person's identity, outfit, proportions and pose. Image 2 is STYLE ONLY: original Chapter 1 pixel-art Lao Zhou. \nRedraw Image 1 from scratch in the authentic coarse pixel drawing style of Image 2. Subject: Young Chinese male technician with rectangular glasses, messy short black hair, navy hoodie and trousers, blue ID lanyard, holding open laptop.\nUse clearly visible large square pixel clusters, stair-step silhouette edges, dark chunky outlines, limited 3-5 tone shading per material, restrained warm rim light and cool shadows. Effective pixel canvas about 170 by 250 pixels enlarged crisply; intentional pixel placement, NOT smooth anime with a pixel noise/filter overlay. Preserve recognizable age, facial identity, clothing colors and held props. Portrait 1024x1536, full body including shoes and head with comfortable transparent margins; one character only.\nGenuinely transparent RGBA background outside silhouette, no painted checkerboard, no vignette, no glow background, no ground shadow, no scene, no labels or watermark. Do not copy the older man's face or clothing from style reference into this character.",
+      "reference_roles": "First = original identity; second = Chapter 1 char_zhou style; boy third = new mother/child",
+      "reference_files": [
+        "char_lei.png",
+        "char_zhou.png"
+      ],
+      "generated_file": "exec-d6de43b4-313a-49a2-8949-a35a04bcd277.png",
+      "File": "ch2_pixel_char_lei.png",
+      "Width": 1024,
+      "Height": 1536,
+      "TransparentSamplePercent": 68.9,
+      "SHA256": "E60775EE87017EFD678B8D0290F726AD4023F767D72019E48ADEA9075229538B"
+    },
+    {
+      "id": "char_tang",
+      "output": "app/public/assets/ch2_pixel_char_tang.png",
+      "prompt": "Use case: style-transfer. Asset: Chapter 2 game character sprite. Image 1 is the EDIT TARGET defining this person's identity, outfit, proportions and pose. Image 2 is STYLE ONLY: original Chapter 1 pixel-art Lao Zhou. \nRedraw Image 1 from scratch in the authentic coarse pixel drawing style of Image 2. Subject: Young adult Chinese female nurse with two black braids, pink uniform, white apron and nurse cap, flashlight, pink shoes. Preserve adult identity, not a child.\nUse clearly visible large square pixel clusters, stair-step silhouette edges, dark chunky outlines, limited 3-5 tone shading per material, restrained warm rim light and cool shadows. Effective pixel canvas about 170 by 250 pixels enlarged crisply; intentional pixel placement, NOT smooth anime with a pixel noise/filter overlay. Preserve recognizable age, facial identity, clothing colors and held props. Portrait 1024x1536, full body including shoes and head with comfortable transparent margins; one character only.\nGenuinely transparent RGBA background outside silhouette, no painted checkerboard, no vignette, no glow background, no ground shadow, no scene, no labels or watermark. Do not copy the older man's face or clothing from style reference into this character.",
+      "reference_roles": "First = original identity; second = Chapter 1 char_zhou style; boy third = new mother/child",
+      "reference_files": [
+        "char_tang.png",
+        "char_zhou.png"
+      ],
+      "generated_file": "exec-d34c4a7a-02aa-4e7f-9b14-e04ba7034494.png",
+      "File": "ch2_pixel_char_tang.png",
+      "Width": 1024,
+      "Height": 1536,
+      "TransparentSamplePercent": 71.2,
+      "SHA256": "14DAA75DB03E7A92EF2A62D77F03EC9B85C2A28B61FA42DB150096E1AF11056A"
+    },
+    {
+      "id": "char_wen",
+      "output": "app/public/assets/ch2_pixel_char_wen.png",
+      "prompt": "Use case: style-transfer. Asset: Chapter 2 game character sprite. Image 1 is the EDIT TARGET defining this person's identity, outfit, proportions and pose. Image 2 is STYLE ONLY: original Chapter 1 pixel-art Lao Zhou. \nRedraw Image 1 from scratch in the authentic coarse pixel drawing style of Image 2. Subject: Young adult Chinese woman with black bob haircut, beige pantsuit over white blouse, holding blue brochures and dark equipment component, friendly smile.\nUse clearly visible large square pixel clusters, stair-step silhouette edges, dark chunky outlines, limited 3-5 tone shading per material, restrained warm rim light and cool shadows. Effective pixel canvas about 170 by 250 pixels enlarged crisply; intentional pixel placement, NOT smooth anime with a pixel noise/filter overlay. Preserve recognizable age, facial identity, clothing colors and held props. Portrait 1024x1536, full body including shoes and head with comfortable transparent margins; one character only.\nGenuinely transparent RGBA background outside silhouette, no painted checkerboard, no vignette, no glow background, no ground shadow, no scene, no labels or watermark. Do not copy the older man's face or clothing from style reference into this character.",
+      "reference_roles": "First = original identity; second = Chapter 1 char_zhou style; boy third = new mother/child",
+      "reference_files": [
+        "char_wen.png",
+        "char_zhou.png"
+      ],
+      "generated_file": "exec-919041f3-3cff-42af-884c-8b842cd8e6fd.png",
+      "File": "ch2_pixel_char_wen.png",
+      "Width": 1024,
+      "Height": 1536,
+      "TransparentSamplePercent": 74.5,
+      "SHA256": "3B0D98FA89E423FFBE4D392EDC1E42DA02E8B84D9CE2C5FBCC439D3FAA4087A4"
+    },
+    {
+      "id": "char_m",
+      "output": "app/public/assets/ch2_pixel_char_m.png",
+      "prompt": "Use case: style-transfer. Asset: Chapter 2 game character sprite. Image 1 is the EDIT TARGET defining this person's identity, outfit, proportions and pose. Image 2 is STYLE ONLY: original Chapter 1 pixel-art Lao Zhou. \nRedraw Image 1 from scratch in the authentic coarse pixel drawing style of Image 2. Subject: Young Chinese male BME protagonist, short side-parted black hair, blue scrubs, clipboard and folded dark lead apron, sneakers.\nUse clearly visible large square pixel clusters, stair-step silhouette edges, dark chunky outlines, limited 3-5 tone shading per material, restrained warm rim light and cool shadows. Effective pixel canvas about 170 by 250 pixels enlarged crisply; intentional pixel placement, NOT smooth anime with a pixel noise/filter overlay. Preserve recognizable age, facial identity, clothing colors and held props. Portrait 1024x1536, full body including shoes and head with comfortable transparent margins; one character only.\nGenuinely transparent RGBA background outside silhouette, no painted checkerboard, no vignette, no glow background, no ground shadow, no scene, no labels or watermark. Do not copy the older man's face or clothing from style reference into this character.",
+      "reference_roles": "First = original identity; second = Chapter 1 char_zhou style; boy third = new mother/child",
+      "reference_files": [
+        "char_m.png",
+        "char_zhou.png"
+      ],
+      "generated_file": "exec-22784baa-6a6d-4763-82fa-c5839bddcb78.png",
+      "File": "ch2_pixel_char_m.png",
+      "Width": 1024,
+      "Height": 1536,
+      "TransparentSamplePercent": 72.1,
+      "SHA256": "215141C29A256FB65413175F5B35D4433528F78BC757A41E1C83113DDB8046E9"
+    },
+    {
+      "id": "char_f",
+      "output": "app/public/assets/ch2_pixel_char_f.png",
+      "prompt": "Use case: style-transfer. Asset: Chapter 2 game character sprite. Image 1 is the EDIT TARGET defining this person's identity, outfit, proportions and pose. Image 2 is STYLE ONLY: original Chapter 1 pixel-art Lao Zhou. \nRedraw Image 1 from scratch in the authentic coarse pixel drawing style of Image 2. Subject: Young Chinese female BME protagonist, black ponytail, blue scrubs, clipboard and folded dark lead apron, sneakers.\nUse clearly visible large square pixel clusters, stair-step silhouette edges, dark chunky outlines, limited 3-5 tone shading per material, restrained warm rim light and cool shadows. Effective pixel canvas about 170 by 250 pixels enlarged crisply; intentional pixel placement, NOT smooth anime with a pixel noise/filter overlay. Preserve recognizable age, facial identity, clothing colors and held props. Portrait 1024x1536, full body including shoes and head with comfortable transparent margins; one character only.\nGenuinely transparent RGBA background outside silhouette, no painted checkerboard, no vignette, no glow background, no ground shadow, no scene, no labels or watermark. Do not copy the older man's face or clothing from style reference into this character.",
+      "reference_roles": "First = original identity; second = Chapter 1 char_zhou style; boy third = new mother/child",
+      "reference_files": [
+        "char_f.png",
+        "char_zhou.png"
+      ],
+      "generated_file": "exec-78f78a9d-2f2f-4883-8f66-e9bc66efe9fa.png",
+      "File": "ch2_pixel_char_f.png",
+      "Width": 1024,
+      "Height": 1536,
+      "TransparentSamplePercent": 70,
+      "SHA256": "7A87566508B4B00BB45545F5B6A59DBD00368137FCA491CB543BA97834611A0A"
+    },
+    {
+      "id": "char_luzhou_m",
+      "output": "app/public/assets/ch2_pixel_char_luzhou_m.png",
+      "prompt": "Use case: style-transfer. Asset: Chapter 2 game character sprite. Image 1 is the EDIT TARGET defining this person's identity, outfit, proportions and pose. Image 2 is STYLE ONLY: original Chapter 1 pixel-art Lao Zhou. \nRedraw Image 1 from scratch in the authentic coarse pixel drawing style of Image 2. Subject: Young Chinese male graduate student, messy black hair, round glasses, navy hoodie beneath white coat, jeans, backpack, holding tablet, friendly smile.\nUse clearly visible large square pixel clusters, stair-step silhouette edges, dark chunky outlines, limited 3-5 tone shading per material, restrained warm rim light and cool shadows. Effective pixel canvas about 170 by 250 pixels enlarged crisply; intentional pixel placement, NOT smooth anime with a pixel noise/filter overlay. Preserve recognizable age, facial identity, clothing colors and held props. Portrait 1024x1536, full body including shoes and head with comfortable transparent margins; one character only.\nGenuinely transparent RGBA background outside silhouette, no painted checkerboard, no vignette, no glow background, no ground shadow, no scene, no labels or watermark. Do not copy the older man's face or clothing from style reference into this character.",
+      "reference_roles": "First = original identity; second = Chapter 1 char_zhou style; boy third = new mother/child",
+      "reference_files": [
+        "char_luzhou_m.png",
+        "char_zhou.png"
+      ],
+      "generated_file": "exec-fadfb2bf-0a81-4ab3-9b71-66823b94c7de.png",
+      "File": "ch2_pixel_char_luzhou_m.png",
+      "Width": 1024,
+      "Height": 1536,
+      "TransparentSamplePercent": 70.1,
+      "SHA256": "CFD26B5B8DCC141D12C0128C7D961B991CF28B7AB792CF64C2F7FFEEE603D8C2"
+    },
+    {
+      "id": "char_luzhou_f",
+      "output": "app/public/assets/ch2_pixel_char_luzhou_f.png",
+      "prompt": "Use case: style-transfer. Asset: Chapter 2 game character sprite. Image 1 is the EDIT TARGET defining this person's identity, outfit, proportions and pose. Image 2 is STYLE ONLY: original Chapter 1 pixel-art Lao Zhou. \nRedraw Image 1 from scratch in the authentic coarse pixel drawing style of Image 2. Subject: Young Chinese female graduate student, black ponytail and round glasses, navy hoodie beneath white coat, jeans, dark red backpack, holding tablet, friendly smile.\nUse clearly visible large square pixel clusters, stair-step silhouette edges, dark chunky outlines, limited 3-5 tone shading per material, restrained warm rim light and cool shadows. Effective pixel canvas about 170 by 250 pixels enlarged crisply; intentional pixel placement, NOT smooth anime with a pixel noise/filter overlay. Preserve recognizable age, facial identity, clothing colors and held props. Portrait 1024x1536, full body including shoes and head with comfortable transparent margins; one character only.\nGenuinely transparent RGBA background outside silhouette, no painted checkerboard, no vignette, no glow background, no ground shadow, no scene, no labels or watermark. Do not copy the older man's face or clothing from style reference into this character.",
+      "reference_roles": "First = original identity; second = Chapter 1 char_zhou style; boy third = new mother/child",
+      "reference_files": [
+        "char_luzhou_f.png",
+        "char_zhou.png"
+      ],
+      "generated_file": "exec-0ccf9596-f7c3-4ce0-9338-74d414113879.png",
+      "File": "ch2_pixel_char_luzhou_f.png",
+      "Width": 1024,
+      "Height": 1536,
+      "TransparentSamplePercent": 68.5,
+      "SHA256": "CC2B38E67691325E4243A79EEEA29FA7629C53C6A9438C9E9CCAAC223A17F1B3"
+    },
+    {
+      "id": "pat_grandpa2",
+      "output": "app/public/assets/ch2_pixel_pat_grandpa2.png",
+      "prompt": "Use case: style-transfer. Asset: Chapter 2 game character sprite. Image 1 is the EDIT TARGET defining this person's identity, outfit, proportions and pose. Image 2 is STYLE ONLY: original Chapter 1 pixel-art Lao Zhou. \nRedraw Image 1 from scratch in the authentic coarse pixel drawing style of Image 2. Subject: Thin elderly Chinese man, tousled silver hair and moustache/beard, weathered gentle face, gray-brown four-pocket Mao jacket, dark trousers and shoes, cream cloth bag.\nUse clearly visible large square pixel clusters, stair-step silhouette edges, dark chunky outlines, limited 3-5 tone shading per material, restrained warm rim light and cool shadows. Effective pixel canvas about 170 by 250 pixels enlarged crisply; intentional pixel placement, NOT smooth anime with a pixel noise/filter overlay. Preserve recognizable age, facial identity, clothing colors and held props. Portrait 1024x1536, full body including shoes and head with comfortable transparent margins; one character only.\nGenuinely transparent RGBA background outside silhouette, no painted checkerboard, no vignette, no glow background, no ground shadow, no scene, no labels or watermark. Do not copy the older man's face or clothing from style reference into this character.",
+      "reference_roles": "First = original identity; second = Chapter 1 char_zhou style; boy third = new mother/child",
+      "reference_files": [
+        "pat_grandpa2.png",
+        "char_zhou.png"
+      ],
+      "generated_file": "exec-34c45133-c117-4153-ae7c-92bafabc8492.png",
+      "File": "ch2_pixel_pat_grandpa2.png",
+      "Width": 1024,
+      "Height": 1536,
+      "TransparentSamplePercent": 66,
+      "SHA256": "202D120D4CE4956C9FC4D913015E1A1F38E858E48710CB3DA2C4E055F77B1914"
+    },
+    {
+      "id": "pat_gut",
+      "output": "app/public/assets/ch2_pixel_pat_gut.png",
+      "prompt": "Use case: style-transfer. Asset: Chapter 2 game character sprite. Image 1 is the EDIT TARGET defining this person's identity, outfit, proportions and pose. Image 2 is STYLE ONLY: original Chapter 1 pixel-art Lao Zhou. \nRedraw Image 1 from scratch in the authentic coarse pixel drawing style of Image 2. Subject: Young adult Chinese man, messy black hair, olive overshirt over black T-shirt, navy cargo trousers, black-white sneakers, bending and clutching abdomen in discomfort.\nUse clearly visible large square pixel clusters, stair-step silhouette edges, dark chunky outlines, limited 3-5 tone shading per material, restrained warm rim light and cool shadows. Effective pixel canvas about 170 by 250 pixels enlarged crisply; intentional pixel placement, NOT smooth anime with a pixel noise/filter overlay. Preserve recognizable age, facial identity, clothing colors and held props. Portrait 1024x1536, full body including shoes and head with comfortable transparent margins; one character only.\nGenuinely transparent RGBA background outside silhouette, no painted checkerboard, no vignette, no glow background, no ground shadow, no scene, no labels or watermark. Do not copy the older man's face or clothing from style reference into this character.",
+      "reference_roles": "First = original identity; second = Chapter 1 char_zhou style; boy third = new mother/child",
+      "reference_files": [
+        "pat_gut.png",
+        "char_zhou.png"
+      ],
+      "generated_file": "exec-2a1fa52c-4921-4171-b346-5559aaad7a0b.png",
+      "cleanup_prompt": "Use case: precise-object-edit / background-extraction. Edit this already generated game sprite only to clean the transparent cutout: remove the tiny 'AI生成' writing at the bottom left and all isolated non-character pixels there. Make every pixel outside the person and their held prop fully alpha=0. Keep the character's coarse pixel art, exact face, clothes, colors, pose, silhouette, scale, full-body framing and image dimensions unchanged. No added letters, logos, watermark, vignette, glow or background. Transparent RGBA PNG. This remains AI-generated artwork, documented in project provenance.",
+      "File": "ch2_pixel_pat_gut.png",
+      "Width": 1024,
+      "Height": 1536,
+      "TransparentSamplePercent": 61.9,
+      "SHA256": "66C61A306C0515FA44A5D2B9FE3B6D2C87F86FE577AAFD29032FAC739E767978"
+    },
+    {
+      "id": "pat_kiddad",
+      "output": "app/public/assets/ch2_pixel_pat_kiddad.png",
+      "prompt": "Use case: style-transfer. Asset: Chapter 2 game character sprite. Image 1 is the EDIT TARGET defining this person's identity, outfit, proportions and pose. Image 2 is STYLE ONLY: original Chapter 1 pixel-art Lao Zhou. \nRedraw Image 1 from scratch in the authentic coarse pixel drawing style of Image 2. Subject: Adult Chinese father, short black hair, navy zip jacket over white T-shirt, dark trousers and sneakers, worried angry expression, extending arm holding CD case, watch.\nUse clearly visible large square pixel clusters, stair-step silhouette edges, dark chunky outlines, limited 3-5 tone shading per material, restrained warm rim light and cool shadows. Effective pixel canvas about 170 by 250 pixels enlarged crisply; intentional pixel placement, NOT smooth anime with a pixel noise/filter overlay. Preserve recognizable age, facial identity, clothing colors and held props. Portrait 1024x1536, full body including shoes and head with comfortable transparent margins; one character only.\nGenuinely transparent RGBA background outside silhouette, no painted checkerboard, no vignette, no glow background, no ground shadow, no scene, no labels or watermark. Do not copy the older man's face or clothing from style reference into this character.",
+      "reference_roles": "First = original identity; second = Chapter 1 char_zhou style; boy third = new mother/child",
+      "reference_files": [
+        "pat_kiddad.png",
+        "char_zhou.png"
+      ],
+      "generated_file": "exec-105d8bda-d3da-4b90-87fb-a0310b086a68.png",
+      "cleanup_prompt": "Use case: precise-object-edit / background-extraction. Edit this already generated game sprite only to clean the transparent cutout: remove the tiny 'AI生成' writing at the bottom left and all isolated non-character pixels there. Make every pixel outside the person and their held prop fully alpha=0. Keep the character's coarse pixel art, exact face, clothes, colors, pose, silhouette, scale, full-body framing and image dimensions unchanged. No added letters, logos, watermark, vignette, glow or background. Transparent RGBA PNG. This remains AI-generated artwork, documented in project provenance.",
+      "File": "ch2_pixel_pat_kiddad.png",
+      "Width": 1024,
+      "Height": 1536,
+      "TransparentSamplePercent": 63.7,
+      "SHA256": "B169AA3FFD49878F2CED3337FD3392EFA23E1371FF43AA93FA6409154161B661"
+    },
+    {
+      "id": "pat_mystery",
+      "output": "app/public/assets/ch2_pixel_pat_mystery.png",
+      "prompt": "Use case: style-transfer. Asset: Chapter 2 game character sprite. Image 1 is the EDIT TARGET defining this person's identity, outfit, proportions and pose. Image 2 is STYLE ONLY: original Chapter 1 pixel-art Lao Zhou. \nRedraw Image 1 from scratch in the authentic coarse pixel drawing style of Image 2. Subject: Elderly mysterious Chinese male patient, visibly old weathered face, slightly stooped, short graying dark hair, faded blue-gray coat, brown trousers and shoes, carrying tied yellow cloth bundle, somber.\nUse clearly visible large square pixel clusters, stair-step silhouette edges, dark chunky outlines, limited 3-5 tone shading per material, restrained warm rim light and cool shadows. Effective pixel canvas about 170 by 250 pixels enlarged crisply; intentional pixel placement, NOT smooth anime with a pixel noise/filter overlay. Preserve recognizable age, facial identity, clothing colors and held props. Portrait 1024x1536, full body including shoes and head with comfortable transparent margins; one character only.\nGenuinely transparent RGBA background outside silhouette, no painted checkerboard, no vignette, no glow background, no ground shadow, no scene, no labels or watermark. Do not copy the older man's face or clothing from style reference into this character.",
+      "reference_roles": "First = original identity; second = Chapter 1 char_zhou style; boy third = new mother/child",
+      "reference_files": [
+        "pat_mystery.png",
+        "char_zhou.png"
+      ],
+      "generated_file": "exec-bbf1d452-784b-4df4-b40d-333ca3ea1fc2.png",
+      "File": "ch2_pixel_pat_mystery.png",
+      "Width": 1024,
+      "Height": 1536,
+      "TransparentSamplePercent": 65.3,
+      "SHA256": "BDA300F5D1D2A2B9DE0F7371BDBC5AB0C5BACB0BD47EA91CD3DC76674B44BEEE"
+    },
+    {
+      "id": "pat_stone",
+      "output": "app/public/assets/ch2_pixel_pat_stone.png",
+      "prompt": "Use case: style-transfer. Asset: Chapter 2 game character sprite. Image 1 is the EDIT TARGET defining this person's identity, outfit, proportions and pose. Image 2 is STYLE ONLY: original Chapter 1 pixel-art Lao Zhou. \nRedraw Image 1 from scratch in the authentic coarse pixel drawing style of Image 2. Subject: Young Chinese man, short black hair, gray hoodie, blue jeans, white trainers, bending in pain, one hand on flank and other hand on knee.\nUse clearly visible large square pixel clusters, stair-step silhouette edges, dark chunky outlines, limited 3-5 tone shading per material, restrained warm rim light and cool shadows. Effective pixel canvas about 170 by 250 pixels enlarged crisply; intentional pixel placement, NOT smooth anime with a pixel noise/filter overlay. Preserve recognizable age, facial identity, clothing colors and held props. Portrait 1024x1536, full body including shoes and head with comfortable transparent margins; one character only.\nGenuinely transparent RGBA background outside silhouette, no painted checkerboard, no vignette, no glow background, no ground shadow, no scene, no labels or watermark. Do not copy the older man's face or clothing from style reference into this character.",
+      "reference_roles": "First = original identity; second = Chapter 1 char_zhou style; boy third = new mother/child",
+      "reference_files": [
+        "pat_stone.png",
+        "char_zhou.png"
+      ],
+      "generated_file": "exec-019b9102-bf17-4cc8-ab66-50904ec0ce78.png",
+      "File": "ch2_pixel_pat_stone.png",
+      "Width": 1024,
+      "Height": 1536,
+      "TransparentSamplePercent": 62.1,
+      "SHA256": "633B8DBFBB0C97B7018142F183FB49B22787731A72B04E3C78C3C12D0400281B"
+    },
+    {
+      "id": "pat_uncle2",
+      "output": "app/public/assets/ch2_pixel_pat_uncle2.png",
+      "prompt": "Use case: style-transfer. Asset: Chapter 2 game character sprite. Image 1 is the EDIT TARGET defining this person's identity, outfit, proportions and pose. Image 2 is STYLE ONLY: original Chapter 1 pixel-art Lao Zhou. \nRedraw Image 1 from scratch in the authentic coarse pixel drawing style of Image 2. Subject: Elderly clean-shaven Chinese man, neatly side-combed silver hair, brown zip jacket over light shirt, dark trousers, brown shoes, carrying white bag with film prints.\nUse clearly visible large square pixel clusters, stair-step silhouette edges, dark chunky outlines, limited 3-5 tone shading per material, restrained warm rim light and cool shadows. Effective pixel canvas about 170 by 250 pixels enlarged crisply; intentional pixel placement, NOT smooth anime with a pixel noise/filter overlay. Preserve recognizable age, facial identity, clothing colors and held props. Portrait 1024x1536, full body including shoes and head with comfortable transparent margins; one character only.\nGenuinely transparent RGBA background outside silhouette, no painted checkerboard, no vignette, no glow background, no ground shadow, no scene, no labels or watermark. Do not copy the older man's face or clothing from style reference into this character.",
+      "reference_roles": "First = original identity; second = Chapter 1 char_zhou style; boy third = new mother/child",
+      "reference_files": [
+        "pat_uncle2.png",
+        "char_zhou.png"
+      ],
+      "generated_file": "exec-195c9500-5a66-41d8-8f32-02fbb4e92362.png",
+      "File": "ch2_pixel_pat_uncle2.png",
+      "Width": 1024,
+      "Height": 1536,
+      "TransparentSamplePercent": 62.1,
+      "SHA256": "9A6219E8D35DBCB00441DAA5677AF97DACBB38894093CACB538B5F85BC29831B"
+    },
+    {
+      "id": "pat_kid6",
+      "output": "app/public/assets/ch2_pixel_pat_kid6.png",
+      "prompt": "Use case: style-transfer. Asset: Chapter 2 game character sprite. Image 1 is the EDIT TARGET defining this person's identity, outfit, proportions and pose. Image 2 is STYLE ONLY: original Chapter 1 pixel-art Lao Zhou. Image 3 shows the same boy held by his mother; match his face, hair, jacket and shoes, but draw only the boy standing alone.\nRedraw Image 1 from scratch in the authentic coarse pixel drawing style of Image 2. Subject: Six-year-old Chinese boy, tousled black hair, tearful face, blue varsity jacket with cream sleeves and rocket/star patch, cream shirt, dark navy cargo trousers, blue-white-red sneakers, hand near head. Exactly the same child identity and outfit as the third reference with mother.\nUse clearly visible large square pixel clusters, stair-step silhouette edges, dark chunky outlines, limited 3-5 tone shading per material, restrained warm rim light and cool shadows. Effective pixel canvas about 170 by 250 pixels enlarged crisply; intentional pixel placement, NOT smooth anime with a pixel noise/filter overlay. Preserve recognizable age, facial identity, clothing colors and held props. Portrait 1024x1536, full body including shoes and head with comfortable transparent margins; one character only.\nGenuinely transparent RGBA background outside silhouette, no painted checkerboard, no vignette, no glow background, no ground shadow, no scene, no labels or watermark. Do not copy the older man's face or clothing from style reference into this character.",
+      "reference_roles": "First = original identity; second = Chapter 1 char_zhou style; boy third = new mother/child",
+      "reference_files": [
+        "pat_kid6.png",
+        "char_zhou.png",
+        "exec-35b18d30-03ae-4cad-b6b5-620ef2166013.png"
+      ],
+      "generated_file": "exec-68924f43-c4dc-4664-8f9a-427b08e1adfa.png",
+      "File": "ch2_pixel_pat_kid6.png",
+      "Width": 1024,
+      "Height": 1536,
+      "TransparentSamplePercent": 63.3,
+      "SHA256": "7DACDF7B25B3A1C966B4819A444DBCFE85A48781A74335CB1FFF615CDDB63B31"
+    }
+  ],
+  "mother": {
+    "output": "app/public/assets/ch2_pixel_pat_kidmom.png",
+    "prompt": "Use case: style-transfer. Reference1 is the composition/identity edit target (mother carrying crying boy). Reference2 is the STRICT pixel-art style anchor from chapter one: copy its large chunky square color clusters, stair-stepped contours, low effective resolution around 180x270 pixels upscaled cleanly, limited palette with 3-5 flat shades per material, dark outlines and warm amber edges. Reference3 locks boy identity/outfit. Redraw reference1 in reference2's coarse retro game sprite style, NOT smooth anime illustration, NO soft gradients, NO airbrushing, NO fine knit/denim realistic texture, no thin curved vector lines. Keep mother's adult worried face, brown ponytail, cream vest, lavender sweater, jeans, sneakers; keep son's messy black hair, crying face, blue/cream rocket varsity jacket, navy cargo pants and blue white red sneakers. Mother carries boy securely with arms under thighs and behind back. Full body including shoes centered, 1024x1536 vertical, genuinely transparent alpha outside bodies, no background, NO glow surrounding sprite, no watermark or text. Faces must be built from clearly visible square pixel clusters like reference2. Do not include the old man or mug.",
+    "generated_file": "exec-35b18d30-03ae-4cad-b6b5-620ef2166013.png",
+    "File": "ch2_pixel_pat_kidmom.png",
+    "Width": 1024,
+    "Height": 1536,
+    "TransparentSamplePercent": 66.2,
+    "SHA256": "783E2E1797EDA16C1C26AF82BEA15E3E17DBAAEE6F8B7E6A57FD02CFD9E18ACA"
+  },
+  "other_assets": [
+    {
+      "output": "app/public/assets/ct_aortic_dissection_teaching.png",
+      "prompt": "Scientific educational illustration for a CT game. Grayscale tomographic CLOSE-UP SCHEMATIC of a dissected descending aorta, NOT full chest anatomy. One single large round blood vessel cross section fills center, surrounded by dark gray soft tissue on black. A thin curved smooth UNBRANCHED dark intimal flap runs from top-left vessel wall to bottom-left vessel wall, dividing the vessel into EXACTLY TWO regions: a smaller bright crescent TRUE lumen on left and larger medium-gray FALSE lumen on right. Absolutely no third pocket, no second flap, no horizontal crossing line, no branching, no complex anatomy, no side-by-side panels. Small natural image grain, thin light outer vessel wall, clear and simple for beginner BME students. No text or labels or arrows or watermark. Square image. It will be labeled outside image '局部结构示意，非患者CT' so favor unmistakable two-compartment topology over photorealism.",
+      "generated_file": "exec-5c261bf0-db58-4dd7-9c85-460b07da1e69.png"
+    },
+    {
+      "output": "app/public/assets/ct_dental_metal_teaching.png",
+      "prompt": "Use case: scientific-educational. Generate ONE square grayscale synthetic axial CT-like slice of lower head at dental/mandible level. Anatomically plausible skull base and jaw cross-section, teeth anterior, soft tissues inside, black outside. Several very bright small metal components on a removable partial dental prosthesis within dental arch. Prominent alternating dark and bright linear streak artifacts radiate across adjacent tissue from these bright dental metal components; artifact streaks obscure part of nearby anatomy, NOT concentric rings, NOT a fracture, NOT a visible ghost. Realistic tomographic look, no projection radiograph, no cartoon, no color, no text, no letters, no arrows, no patient metadata. Teaching simulation only, single slice, no before-after comparison or claim of bleeding.",
+      "generated_file": "exec-7ed572bb-dc25-4e70-8679-c2039b8be4af.png"
+    },
+    {
+      "output": "app/public/assets/ct_water_ring_teaching.png",
+      "prompt": "Scientific educational synthetic CT image: square grayscale axial scan of ONLY a uniform cylindrical water quality-control phantom, centered as a circular medium-gray disk on pure black background. Thin pale container wall, fine subtle CT noise, otherwise uniform homogeneous water. Several fine low-contrast concentric bright and dark rings centered exactly on disk center, depicting detector calibration ring artifacts. NO skull, NO brain, NO anatomy, NO radial streaks, NO target markings, NO resolution inserts, NO text. The rings should be clear enough to see but not a black-white bullseye. CT-like teaching simulation, not clinical data.",
+      "generated_file": "exec-0ec88172-bc7f-459a-8956-1d6729f0adab.png"
+    },
+    {
+      "output": "app/public/assets/item_zhou_key_fixed.png",
+      "prompt": "Use case: precise-object-edit. Redraw this game's two broken brass key halves, preserving rough pixel art style, old gold/brass patina, transparent background, square composition. CRITICAL replace all erroneous inscriptions with exactly ONE correct Chinese character 周 (Unicode U+5468), large simple upright standard kaishu strokes, on a single round key bow split vertically into two matching halves. Show the two halves closely aligned with a hairline fracture running down the middle of the ONE 周, so the complete character is clearly readable across the join; the stem and bit also align into one key, NOT two independent complete keys and NOT a separate character on each half. No additional letters, no captions, no pseudo-Chinese, no watermark. Genuine transparent alpha. Pixel inventory illustration.",
+      "generated_file": "exec-1dc468e0-60af-4aaa-8605-6287c9ab53b9.png"
+    },
+    {
+      "output": "app/public/assets/ev_old_register_fixed.png",
+      "prompt": "Pixel art game evidence item, open old Chinese county hospital radiology register from 1998, worn yellow pages and brown cloth cover, isolated on genuine transparent alpha background. Large legible heading on left page exactly 放射科登记簿 and date 1998年10月. Right page top date exactly 1998年12月. Between pages, at spine, clearly visible thin torn paper stub of a removed November page with a straight tear. Ruled ledger rows filled with faded tiny unreadable strokes, NO English patient names, NO real personal information, no extra readable text, no watermark. High resolution coarse pixel painting, dark outlines and warm amber light matching old inventory assets. Book fills square frame with margin, no hands.",
+      "generated_file": "exec-db32bd8f-4030-4113-81a9-8e0d3ba9cea8.png"
+    },
+    {
+      "output": "app/public/assets/ev_nameless_films_fixed.png",
+      "prompt": "Use case: precise-object-edit. Preserve this pixel art stack of worn brown radiology film envelopes, transparent background, same brass string fasteners and rough pixel shading. Change ONLY the visible date stamps. From top envelope to bottom visible envelope print exactly: 1999.11, 1998.11, 1997.11, 1996.11, 1995.11, 1994.11. All must be November. No patient names, no registration IDs, no other readable writing, no extra caption. Genuine transparent PNG, no background, no watermark. These dates are important mystery clues.",
+      "generated_file": "exec-c55b956d-c6cb-496b-b824-98d7e9ceb57b.png"
+    }
+  ]
+}
