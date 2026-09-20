@@ -698,8 +698,13 @@ function NightScreen({ state, update, onFinish, onExit }: { state: GameState; up
 
   useEffect(() => {
     if (step.end && !finishFired.current) {
-      finishFired.current = true
-      const t = setTimeout(() => onFinish(false), 600)
+      // StrictMode may run setup→cleanup→setup before the timer fires.
+      // Latch the actual transition, not a scheduled callback that cleanup can cancel.
+      const t = setTimeout(() => {
+        if (finishFired.current) return
+        finishFired.current = true
+        onFinish(false)
+      }, 600)
       return () => clearTimeout(t)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
