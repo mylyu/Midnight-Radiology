@@ -51,7 +51,6 @@ export function patientStep(id:string, step:Step):Step {
  // an unexplained staff portrait at the moment the admission is described.
  if (step.sprite && step.sprite.startsWith('char_')) next.sprite2=sprite
  else next.sprite=sprite
- if (id==='c2d2_q1a') next.sprite2='ch2_patient_waiting_elder'
  if (entrance && ![step.sfx,step.sfx2].includes(entrance.voice)) {
   if (!step.sfx) next.sfx=entrance.voice
   else next.sfx2=entrance.voice
