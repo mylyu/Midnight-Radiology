@@ -7,15 +7,51 @@ const js = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind
 const old = await import('data:text/javascript;base64,' + Buffer.from(js).toString('base64'))
 let changedText = 0
 let totalText = 0
+// Only these authored graph changes are allowed; all other old save nodes and rules stay frozen.
+const continuityNext = {
+  "c2n1_ab6": "c2n1_old_ct",
+  "c2n1_an4": "c2n1_old_ct",
+  "c2n1_p2a": "c2n1_p_scan",
+  "c2n1_p2b": "c2n1_p_scan",
+  "c2n1_p2c": "c2n1_p_scan",
+  "c2d2_3": "c2d2_lung_scan",
+  "c2d2_9a": "c2d2_gut_scan",
+  "c2d2_9b": "c2d2_gut_scan",
+  "c2d2_t0": "c2d2_trauma_scan",
+  "c2d2_11": "c2d2_wrist_scan",
+  "c2n3_m7a": "c2n3_repeat_scan",
+  "c2n3_m7b": "c2n3_repeat_scan",
+  "c2n3_m9": "c2n3_cta_scan",
+  "c2n3_h3a": "c2n3_coronary_scan",
+  "c2n3_h3b": "c2n3_coronary_scan",
+  "c2n3_h3c": "c2n3_coronary_scan",
+  "c2n3_x7a": "c2n3_mystery_scan",
+  "c2n3_x7b": "c2n3_mystery_scan",
+  "c2d4_8": "c2d4_aorta_scan",
+  "c2d4_11a": "c2d4_metal_scan",
+  "c2n5_m16": "c2n5_child_scan",
+  "c2d2_1": "c2d2_reg0",
+  "c2d4_e8": "c2d4_reg",
+  "c2n5_n5": "c2n5_ring_trigger"
+}
+const continuityFields = {
+  c2n5_a1: { effect: undefined }, // mainline cabinet must not be gated by spent AP
+  c2d4_e8: { event: 'ch2_data_showdown' }, // neutral chronicle for all three decisions
+}
 for (const shift of old.CH2_SHIFTS) {
   const now = CH2_SHIFTS.find(s => s.id === shift.id)
   assert(now)
   for (const [id, before] of Object.entries(shift.steps)) {
     const after = now.steps[id]
     assert(after, `Old save node removed: ${id}`)
-    for (const field of ['effect', 'card', 'event', 'end', 'windowTask', 'checklist', 'skipUnlessFlag']) assert.deepEqual(after[field], before[field], `${id}.${field}`)
-    if (id !== 'c2n1_p0') assert.equal(after.next, before.next, `${id}.next`)
-    assert.deepEqual(after.choices?.map(({ text, ...rules }) => rules), before.choices?.map(({ text, ...rules }) => rules), `${id}.choice rules`)
+    for (const field of ['effect', 'card', 'event', 'end', 'windowTask', 'checklist', 'skipUnlessFlag']) {
+      const allowed = continuityFields[id]
+      assert.deepEqual(after[field], allowed && Object.hasOwn(allowed, field) ? allowed[field] : before[field], `${id}.${field}`)
+    }
+    if (id !== 'c2n1_p0') assert.equal(after.next, continuityNext[id] ?? before.next, `${id}.next`)
+    const oldChoices = before.choices?.map(({ text, ...rules }) => rules)
+    if (id === 'c2n5_hub') delete oldChoices[0].cond.ap
+    assert.deepEqual(after.choices?.map(({ text, ...rules }) => rules), oldChoices, `${id}.choice rules`)
     if (before.text) { totalText++; if (after.text !== before.text) changedText++ }
   }
   for (const [id, step] of Object.entries(now.steps)) {
@@ -39,4 +75,4 @@ assert.equal(CH2_SHIFTS[2].steps.c2n3_h1.text.includes('肌钙蛋白阳性'), fa
 assert.equal(CH2_SHIFTS[2].steps.c2n3_h1.text.includes('中高危'), false)
 assert.equal(CH2_SHIFTS[2].steps.c2n3_h3a.text.includes('不支持高危'), true)
 assert.equal(Object.keys(CH2_IMAGE_CAPTIONS).length, 0)
-console.log(`PASS: ${changedText}/${totalText} existing text nodes refined; all old nodes, rewards, branches and task parameters preserved; no missing links.`)
+console.log(`PASS: ${changedText}/${totalText} existing text nodes refined; old nodes/rewards/tasks preserved with explicitly listed continuity links; no missing links.`)

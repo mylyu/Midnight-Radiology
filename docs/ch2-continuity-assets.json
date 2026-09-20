@@ -1,0 +1,26 @@
+{
+  "date": "2026-09-20",
+  "tool": "built-in image_gen",
+  "references": "Chapter 1 char_zhou.png identity/style; bg_archive.png style only",
+  "originalAssetsPreserved": true,
+  "assets": [
+    {
+      "path": "app/public/assets/ev_ch2_teaching_archive.png",
+      "sha256": "639315C60B958A22633FCBBF0BDB7CA3A050A10FAB3993F566BCE0E92795CBF7",
+      "prompt": "Use case: illustration-story. Create ONE landscape game evidence illustration, 1536x1024. Input image is STYLE and atmosphere reference only, not an edit target. Coarse high-resolution pixel art for a Chinese county hospital retro narrative game, visibly square pixel clusters, dark outlines, cool navy shadow and small warm lamp. Close-up of a dusty open wooden storage cabinet with a tidy stack of old teaching X-ray films inside brown envelopes and an open handwritten engineering notebook, simple tube and X-ray stand diagrams sketched on paper. Collection dates before January 1999. This is a modest teaching collection, NOT patient registers, not anonymous annually dated cases. Paper age natural, pages intact. Only visible legible text is the large envelope label '教学片' and notebook heading '笔记'. No names, no other dates, no ripped-out pages, no skull horror, no ghosts, no modern laptop, no watermark, no AI-generated label, no coffee or food. Close enough to understand objects at game thumbnail size. Match reference pixel medium, but show cabinet contents rather than broad archive room.",
+      "source": "exec-aa22f721-6f06-4df9-bae5-24cf0f27ebce.png"
+    },
+    {
+      "path": "app/public/assets/ev_ch2_team_1997.png",
+      "sha256": "808955AE4399CAE2847A0410A9E1944B2F02A3E2B05AE5828E267FD58B28CB98",
+      "prompt": "Use case: illustration-story historical-scene. Create ONE landscape 1536x1024 game evidence illustration: a slightly faded, physically intact 1997 hospital staff group photograph rendered entirely in COARSE PIXEL ART, not photorealism. White-bordered old paper photograph fills frame straight-on; six Chinese radiology staff in simple 1990s white coats stand in front of an old upright plain X-ray apparatus with tube stand and horizontal radiographic table, NOT a CT doughnut. Input1 is identity and coarse pixel style reference for fictional Lao Zhou in old age. Depict the same distinctive thick angled eyebrows, broad round nose, wide face and mischievous small grin as a 33-year-old man with full dark hair at the left end of group, one hand awkwardly holding a notebook. He is recognizable but naturally younger, no wrinkles or bald crown. Other staff faces all visible and intact. Narrative payoff warm modest nostalgia, not a new identity mystery. Sepia-cool-muted palette, blocky square pixel clusters and dark contours like reference, no smoothed anime gradients. Only legible text is '1997' centered on the bottom white border. No crossed out names, scratched faces, blood, hidden figures, modern devices, additional text or watermark. Use reference2 only as game pixel atmosphere guidance, no archive shelves in photo.",
+      "source": "exec-783cc75c-d8c5-4e6e-986f-c6489d5c87a2.png"
+    },
+    {
+      "path": "app/public/assets/ev_old_ct_retired.png",
+      "sha256": "2E9E237DFB5A87C9E80EA875022B8656666CA5B4106C1A6C5176BC2DE76FE5B6",
+      "prompt": "Use case: illustration-story. ONE 1536x1024 landscape game evidence asset, a clearly framed archival photograph of an OLD CT scanner BEFORE dismantling in a modest Chinese county hospital scanner room, early 2025. Reference image is only coarse pixel-art medium and muted hospital lighting, NOT scene contents. Old cream-colored chunky ring gantry with circular bore, attached narrow patient table pointing into bore, worn beige casing, screens and scanning indicator OFF, no patient, no staff. Plausible CT, NOT X-ray tube stand, MRI giant tunnel or CR reader. Cables neatly disconnected at wall by technicians before this photograph, quiet empty room; don't imply scanner was dragged intact into a corridor. Cool blue-gray room, small warm light outside lead-lined door, large obvious square pixel clusters with hard contour steps, retro high-resolution pixel painting, not photoreal or smooth anime. Photo has thin worn ivory border, placed on dark desk, fills nearly all canvas. No text, dates, badges, labels, signage, logos, watermarks or AI-generated stamp. It's obsolete hardware awaiting removal, not haunted broken geometry, no gore, no scary faces.",
+      "source": "exec-fe2e8450-e76b-4f47-b56d-9fa9b180586b.png"
+    }
+  ]
+}

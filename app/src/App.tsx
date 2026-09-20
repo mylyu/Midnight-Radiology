@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { NIGHTS, BADGES, CHARACTERS, SHOP_ITEMS, QUIZ, BOOK_PAGES } from './game/data'
 import { DLCS, getDlc, DLC_BADGES, CARDS, EVENTS, EVIDENCE, DR_QUEUE, queueWaits } from './game/dlc'
-import { CH2_META, CH2_SHIFTS, CH2_BADGES, CH2_ACTIVE_BADGES, CH2_BADGES_LEGACY, CH2_CARDS, CH2_ACTIVE_CARDS, CH2_CARDS_LEGACY, CH2_BOOK_PAGES, CH2_IMAGE_CAPTIONS, QUIZ2, grayToHU, ch2Unlocked, tryUnlockCh2, ch2BookUnlocked, ch2PortraitAsset } from './game/ch2'
+import { ch2StepForState, CH2_META, CH2_SHIFTS, CH2_BADGES, CH2_ACTIVE_BADGES, CH2_BADGES_LEGACY, CH2_CARDS, CH2_ACTIVE_CARDS, CH2_CARDS_LEGACY, CH2_BOOK_PAGES, CH2_IMAGE_CAPTIONS, QUIZ2, grayToHU, ch2Unlocked, tryUnlockCh2, ch2BookUnlocked, ch2PortraitAsset } from './game/ch2'
 import type { DlcDef, QueuePatient } from './game/dlc'
 import type { GameState, Step, ShopItem, Choice, DlcProgress } from './game/types'
 import { freshState, loadState, saveState, wipeSave, applyEffect, condOk, dailyCheckin, meterLevel, playSfx, makeCredCode, verifyCredCode } from './game/store'
@@ -1841,7 +1841,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
   }
   const windowTries = useRef<Record<number, number>>({})
 
-  const step: Step = shift.steps[stepId] ?? { end: true }
+  const step: Step = ch2StepForState(stepId, shift.steps[stepId] ?? { end: true }, state)
   // hub 横幅的行动力跟随时实数值渲染，别再硬编码×3（否则玩家花了AP文本不变，像没扣）
   const fullText = (step.text ?? '').replaceAll('行动力⚡×3', `行动力⚡×${state.ap}`)
   const plainLen = fullText.replaceAll('**', '').length
@@ -2138,10 +2138,10 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
       {phase === 'done' && (
         <div className="absolute inset-0 z-50 bg-slate-950/95 flex flex-col items-center justify-center gap-4 px-6" onClick={e => e.stopPropagation()}>
           <p className="text-teal-300 tracking-[0.4em] text-sm">🌀 第二章「快与狠」 · 完</p>
-          <h3 className="text-xl text-slate-100 text-center">新CT的第一周结束了。<br />下一周，市三甲质控组上门。</h3>
+          <h3 className="text-xl text-slate-100 text-center">夜班交接完成。<br />新机器要你看着，老周还在科里。</h3>
           <p className="text-slate-400 text-sm">本章收集：📖 知识卡片 {ch2CardsGot}/{CH2_ACTIVE_CARDS.length} · 🏅 勋章 {ch2BadgesGot}/{CH2_ACTIVE_BADGES.length}</p>
           {ch2LegacyCards + ch2LegacyBadges > 0 && <p className="text-slate-500 text-xs">旧版停颁内容不计入统计；你已保留的旧版卡片 {ch2LegacyCards} 张、徽章 {ch2LegacyBadges} 枚仍在夜班手册与勋章墙中。</p>}
-          <p className="text-slate-500 text-xs">彩蛋与钩子的落点，取决于你这一周做过的选择。</p>
+          <p className="text-slate-500 text-xs">彩蛋与钩子的落点，取决于你这一轮值班做过的选择。</p>
           <button onClick={onExit} className="mt-2 px-8 py-3 rounded-lg bg-teal-500/90 text-slate-950 font-bold tracking-widest hover:bg-teal-400">回大厅 →</button>
         </div>
       )}

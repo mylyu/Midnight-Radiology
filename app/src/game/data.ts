@@ -28,7 +28,7 @@ export const CHARACTERS: Record<string, { name: string; color: string }> = {
   liao: { name: '小廖 · 导管室护士', color: '#e879f9' },
   ge: { name: '老葛', color: '#d4d4d8' },
   // —— 第二章 · CT篇角色 ——
-  luzhou: { name: '陆舟 · 研究生同学', color: '#5eead4' },
+  luzhou: { name: '陆舟 · 本科室友', color: '#5eead4' },
   uncle: { name: '复查大爷', color: '#d6d3d1' },
   guy: { name: '腹痛小伙', color: '#c4b5fd' },
   stone: { name: '肾绞痛小伙', color: '#c4b5fd' },
