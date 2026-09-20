@@ -78,6 +78,16 @@ try {
    await page.screenshot({ path: output + '/' + asset + (mobile ? '-mobile' : '-desktop') + '.png' })
    await context.close()
   }
+  const morning = await open('c2am_0', {}, mobile)
+  await reveal(morning.page)
+  await morning.page.waitForFunction(() => [...document.images].some(i => i.src.endsWith('/bg_office_day.png') && i.complete && i.naturalWidth > 0))
+  assert.match(await morning.page.locator('.dialog-box > p').innerText(), /信息科今天接手查日志，周五反馈/)
+  assert(await morning.page.evaluate(() => document.documentElement.scrollWidth <= innerWidth))
+  await morning.page.locator('.dialog-box > span.animate-bounce').waitFor()
+  await morning.page.screenshot({ path: output + '/morning-handoff-' + (mobile ? 'mobile' : 'desktop') + '.png' })
+  await morning.page.locator('.dialog-box > p').click()
+  await morning.page.locator('[data-ch2-step="c2am_1"]').waitFor()
+  await morning.context.close()
  }
  for (const [id, removed] of [['c2d2_q1a','住院加急'], ['c2d2_q1b','候诊大爷'], ['c2d2_q1c',null]]) {
   // Opposite/old flags must not survive a new queue decision or be replayed.
@@ -108,5 +118,5 @@ try {
   await context.close()
  }
  assert.deepEqual(errors, [])
- console.log('PASS: 13 rendered acquisition/result transitions; zero-AP cabinet; three evidence assets and two ready backgrounds on desktop/mobile; six memories; three queue branches and real reload.')
+ console.log('PASS: 13 rendered acquisition/result transitions; zero-AP cabinet; three evidence assets, two ready backgrounds and morning handoff on desktop/mobile; six memories; three queue branches and real reload.')
 } finally { await browser.close() }

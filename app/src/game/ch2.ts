@@ -718,7 +718,7 @@ const C2N3: Record<string, Step> = {
   // —— 支线：神秘病人第二诊 ——
   c2n3_x0: { bg: 'bg_corridor', speaker: 'sys', text: '凌晨四点，胸痛病人收进心内科，科室静下来。候诊椅上，坐着一个安静得几乎透明的人。', next: 'c2n3_x1' },
   c2n3_x1: { speaker: 'mystery', sprite: 'pat_mystery', sfx: 'vox2_mystery', text: '医生，又是我。（他递上申请单：神经内科，头颅CT平扫，全自费）', next: 'c2n3_x2' },
-  c2n3_x2: { speaker: 'me', sprite: 'pat_mystery', text: "（认出是去年那位老人）……这次是头痛？门诊医师怎么说？", next: 'c2n3_x3' },
+  c2n3_x2: { speaker: 'me', sprite: 'pat_mystery', text: "（认出是去年那位来问旧片的人）……这次是头痛？门诊医师怎么说？", next: 'c2n3_x3' },
   c2n3_x3: { speaker: 'mystery', sprite: 'pat_mystery', text: '说不清。一睡着就疼，像有什么东西在脑子里翻。（他顿了顿）**你们换新机器了。……老机器的数据，还在吗？**', next: 'c2n3_x4' },
   c2n3_x4: { speaker: 'me', sprite: 'pat_mystery', text: "旧片和老机器不是一回事，档案还在。您是想调以前的检查，还是找家人的？", next: 'c2n3_x5' },
   c2n3_x5: { speaker: 'mystery', sprite: 'pat_mystery', text: "我父亲的。好多年了，能问的地方快问遍了。（他攥着单子）我最近也总头痛。医生，片子要是没事，我就真没事了吗？", next: 'c2n3_x6' },
@@ -899,14 +899,14 @@ const C2N5: Record<string, Step> = {
   c2n5_ring_trigger: { speaker: 'sys', text: '送完毯子，控制台又报了一次通道异常。开班时日检还是正常的。你暂停接检，通知值班医师，按故障复核流程把科里的水箱体模搬上床。', next: 'c2n5_ring_scan' },
   c2n5_ring_scan: { bg: 'bg_ctcontrol', speaker: 'sys', text: '体模扫描完成。那几秒低鸣停下来，屏幕开始刷新。', sfx: 'xray', next: 'c2n5_r0' },
   // —— 事件2·续：体模上的年轮 ——
-  c2n5_r0: { speaker: 'sys', text: "新扫的水箱图上，冒出了一圈圈同心圆环，像水面上的涟漪。你调出开班时的日检图并排看——早先那张没有。", image: 'ct_water_ring_teaching', next: 'c2n5_r1' },
+  c2n5_r0: { speaker: 'sys', text: "新扫的水箱图上，冒出了一圈圈同心圆环，像水面上的涟漪。你查过开班时的日检记录，再切回这张新图——早先没有这些圆环。", image: 'ct_water_ring_teaching', next: 'c2n5_r1' },
   c2n5_r1: { speaker: 'sys', text: '【水箱是均匀的——均匀的东西扫出「年轮」，问题出在哪？】', image: 'ct_water_ring_teaching', choices: [
     { text: '「水放久了分层？换箱水重扫一次。」', next: 'c2n5_r2a', effect: { skill: -1 } },
     { text: '「像环状伪影。把新旧体模图附上，报修查校准。」', next: 'c2n5_r2b', effect: { skill: 1 }, tag: 'good' },
     { text: '（拿出工具箱里的记录本）「先报修，我再把日志里的报警号找出来。」', next: 'c2n5_r2c', cond: { item: 'toolbox' }, tag: 'good' },
   ]},
   c2n5_r2a: { speaker: 'duty', phone: 'char_duty', text: "水没这么分层的。先看**探测器校准**，这种同心圆要查设备。报修单把体模图附上，受影响的检查先按停机预案安排。", card: 'ring_artifact', image: 'ct_water_ring_teaching', next: 'c2n5_r3' },
-  c2n5_r2b: { speaker: 'sys', text: "旧记录没有这些圆环。你把新旧体模图并排截好，报修栏填上：**环状伪影，疑似探测器校准异常**。", card: 'ring_artifact', image: 'ct_water_ring_teaching', next: 'c2n5_r3' },
+  c2n5_r2b: { speaker: 'sys', text: "旧记录没有这些圆环。你把新旧两次体模图附在报修单里，填上：**环状伪影，疑似探测器校准异常**。", card: 'ring_artifact', image: 'ct_water_ring_teaching', next: 'c2n5_r3' },
   c2n5_r2c: { speaker: 'sys', text: "你先报修，再打开用户端日志：**第217号通道反复报警**。截图发过去，工程师很快回复：「收到了，我带检测工具来，机柜先别拆。」", card: 'ring_artifact', effect: { skill: 2, badge: 'wrench_night' }, next: 'c2n5_r3' },
   c2n5_r3: { speaker: 'sys', text: "报修单提交，受影响的检查按停机预案分流。你把前几天的体模记录也打包发过去，省得工程师到场再找。", next: 'c2n5_n6' },
   c2n5_n6: { speaker: 'sys', text: '【事件3】手机在口袋里震了一下。', choices: [
@@ -943,7 +943,7 @@ const C2N5: Record<string, Step> = {
 
 /* ================= 晨会考核（第5夜后） ================= */
 const C2AM: Record<string, Step> = {
-  c2am_0: { bg: 'bg_office_day', speaker: 'sys', text: "周一早上八点，医生办公室。老周坐在角落，用笔勾着新排班表。你的名字已经排在夜班主值那一栏。", next: 'c2am_1' },
+  c2am_0: { bg: 'bg_office_day', speaker: 'sys', text: "周一早上八点，医生办公室。会上先过昨夜交班：CT仍停机，工程师负责复核；远程终端保持离线，信息科今天接手查日志，周五反馈。主任在交接记录上签了字。角落里，老周正把你的名字勾进夜班主值栏。", next: 'c2am_1' },
   c2am_1: { speaker: 'director', sprite: 'char_director', sfx: 'vox2_director_am', text: "年轻人不错啊，我出几道题考考你。五道，老规矩。答完再去吃饭。", next: 'c2am_2' },
   c2am_2: { speaker: 'sys', text: '【考核开始 · 5道随机题】', next: '@quiz' },
   c2am_3: { speaker: 'director', sprite: 'char_director', text: "成绩存档。老周今后不排整夜，带教和备班还在，返聘手续按年度办。该求助就求助，不是把名字写上去就不能喊人了。", sfx: 'badge', next: 'c2am_4' },
