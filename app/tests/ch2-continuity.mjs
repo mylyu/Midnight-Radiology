@@ -1,7 +1,7 @@
 // Pure continuity and visual-order checks. Browser tests cover rendered timing separately.
 import assert from 'node:assert/strict'
 import { readFileSync, existsSync } from 'node:fs'
-import { CH2_SHIFTS, CH2_EVIDENCE, CH2_EVENTS, ch2StepForState } from '../src/game/ch2.ts'
+import { CH2_SHIFTS, CH2_EVIDENCE, CH2_EVENTS, CH2_BOOK_PAGES, ch2StepForState } from '../src/game/ch2.ts'
 const steps = Object.assign({}, ...CH2_SHIFTS.map(s => s.steps))
 const base = { flags: {}, badges: [], gender: 'm', finished: true }
 const text = (id, patch = {}) => ch2StepForState(id, steps[id], { ...base, ...patch }).text
@@ -24,14 +24,34 @@ assert.doesNotMatch(CH2_EVENTS.ch2_luzhou.body, /这公平吗/)
 assert.match(CH2_EVENTS.ch2_stroke.body, /上级医院/)
 assert.doesNotMatch(CH2_EVENTS.ch2_mystery.body, /干干净净/)
 assert.doesNotMatch(CH2_EVIDENCE.ch2_team_photo.body, /旧存档/)
+assert.equal(steps.c2d2_8.queue.filter(p => p.name.includes('腹痛')).length, 1)
+assert(steps.c2d2_q0.queue.some(p => p.name.startsWith('候诊大爷')))
+assert(!steps.c2d2_q0.queue.some(p => p.name.includes('腹痛')))
+for (const flag of ['c2_queue_postop_done', 'c2_queue_routine_done']) {
+ const result = ch2StepForState('c2d2_t0', steps.c2d2_t0, { ...base, flags: { [flag]: true } }).queue
+ assert(!result.some(p => p.name.startsWith(flag === 'c2_queue_postop_done' ? '住院加急' : '候诊大爷')))
+ assert(result.some(p => p.name === '车祸伤患者'))
+}
+assert(!steps.c2d2_t2.queue.some(p => p.name === '车祸伤患者'))
+assert.match(CH2_BOOK_PAGES[1].body, /软组织偏亮/)
+assert.doesNotMatch(CH2_BOOK_PAGES[1].body, /死白|漆黑/)
+// Same linear display model used by WindowGame: 40 HU is near middle gray in
+// the wide bone window, but bright in the low-centered lung window.
+const gray = (hu, w, l) => Math.max(0, Math.min(1, (hu - (l - w / 2)) / w))
+assert(gray(40, 4000, 250) > 0.4 && gray(40, 4000, 250) < 0.5)
+assert(gray(40, 1500, -500) > 0.8)
 assert.doesNotMatch(steps.c2n5_n8b.text, /再抓一周/)
 assert.match(steps.c2n5_g0.text, /机器仍停着/)
 assert.doesNotMatch(steps.c2am_3.text, /返聘期满/)
 assert.match(steps.c2am_8.text, /2028年/)
+assert.match(steps.c2am_9.text, /回到2025年11月/)
 assert.equal(steps.c2n3_m11.dnt, 52)
 assert.equal(steps.c2n3_m12.dnt, 52)
 assert.doesNotMatch(steps.c2n3_h3c.text, /没有第三条路/)
 assert.equal(steps.c2n5_hub.choices[0].cond.ap, undefined)
+assert.match(steps.c2n5_hub.choices[0].text, /交接主线.*不耗行动力/)
+assert.doesNotMatch(steps.c2n3_m6.choices[1].text, /30秒/)
+assert.doesNotMatch(steps.c2d4_p3a.text, /脑子.*裂缝/)
 assert.equal(steps.c2n5_a1.effect, undefined)
 for (const id of ['c2n1_m3a', 'c2n1_m3b', 'c2d2_3', 'c2d2_11', 'c2d2_n4', 'c2n5_m7b', 'c2n5_5']) assert.equal(steps[id].image, undefined, id + ' must not reveal future result')
 for (const id of ['c2n1_c1', 'c2n1_c4b', 'c2n3_k1', 'c2n5_b1', 'c2n5_g1']) assert.equal(steps[id].image, undefined, id + ' food/ordinary prop should not cover actors')

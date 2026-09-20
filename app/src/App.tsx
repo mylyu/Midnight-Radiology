@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { NIGHTS, BADGES, CHARACTERS, SHOP_ITEMS, QUIZ, BOOK_PAGES } from './game/data'
 import { DLCS, getDlc, DLC_BADGES, CARDS, EVENTS, EVIDENCE, DR_QUEUE, queueWaits } from './game/dlc'
-import { ch2StepForState, CH2_META, CH2_SHIFTS, CH2_BADGES, CH2_ACTIVE_BADGES, CH2_BADGES_LEGACY, CH2_CARDS, CH2_ACTIVE_CARDS, CH2_CARDS_LEGACY, CH2_BOOK_PAGES, CH2_IMAGE_CAPTIONS, QUIZ2, grayToHU, ch2Unlocked, tryUnlockCh2, ch2BookUnlocked, ch2PortraitAsset } from './game/ch2'
+import { ch2StepForState, ch2BackgroundAsset, CH2_META, CH2_SHIFTS, CH2_BADGES, CH2_ACTIVE_BADGES, CH2_BADGES_LEGACY, CH2_CARDS, CH2_ACTIVE_CARDS, CH2_CARDS_LEGACY, CH2_BOOK_PAGES, CH2_IMAGE_CAPTIONS, QUIZ2, grayToHU, ch2Unlocked, tryUnlockCh2, ch2BookUnlocked, ch2PortraitAsset } from './game/ch2'
 import type { DlcDef, QueuePatient } from './game/dlc'
 import type { GameState, Step, ShopItem, Choice, DlcProgress } from './game/types'
 import { freshState, loadState, saveState, wipeSave, applyEffect, condOk, dailyCheckin, meterLevel, playSfx, makeCredCode, verifyCredCode } from './game/store'
@@ -1905,6 +1905,11 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
     const newCard = step.card && !(state.cards ?? []).includes(step.card) ? step.card : undefined
     update(s => {
       let next = !already && step.effect ? applyEffect(s, step.effect) : s
+      // These two flags describe this queue decision only, including on replay.
+      // They affect the displayed patients, never rewards or later choices.
+      if (['c2d2_q1a', 'c2d2_q1b', 'c2d2_q1c'].includes(stepId)) {
+        next = { ...next, flags: { ...next.flags, c2_queue_postop_done: stepId === 'c2d2_q1a', c2_queue_routine_done: stepId === 'c2d2_q1b' } }
+      }
       if (newCard) next = { ...next, cards: [...(next.cards ?? []), newCard] }
       if (step.event && !(next.events ?? []).includes(step.event)) next = { ...next, events: [...(next.events ?? []), step.event] }
       next = updProg(next, { shift: shift.id, stepId, viewBg: newView.bg, viewSprite: newView.sprite, viewSprite2: newView.sprite2 })
@@ -2013,7 +2018,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
 
   return (
     <div className="relative w-full h-full cursor-pointer" data-ch2-step={stepId} onClickCapture={retryVoices} onClick={advance}>
-      <BgImg name={view.bg} />
+      <BgImg name={ch2BackgroundAsset(view.bg)} />
       <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-slate-950/80 to-transparent pointer-events-none" />
 
       {/* 顶部信息条 */}

@@ -1,0 +1,26 @@
+{
+  "date": "2026-09-20",
+  "tool": "built-in image_gen",
+  "mode": "precise-object-edit",
+  "purpose": "Fix operating CT backgrounds that incorrectly depicted exposed internals and detached cover; original assets unchanged.",
+  "mapping": {
+    "bg_ctcontrol": "bg_ctcontrol_ready",
+    "bg_ctcontrol_day": "bg_ctcontrol_day_ready"
+  },
+  "assets": [
+    {
+      "file": "app/public/assets/bg_ctcontrol_day_ready.png",
+      "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-a47f45cc-6e83-4591-b1ab-b7016cef3df7.png",
+      "reference": "app/public/assets/bg_ctcontrol_day.png",
+      "sha256": "BD410E28D6C86E4D356510AF67D5A6B2125997900526EF1F29EDB5D0375F4C2F",
+      "prompt": "Use case: precise-object-edit. Input image is the edit target: the existing pixel-art CT control-room game background. Make one narrow continuity repair for a normally operating hospital scanner. Keep the 16:9 2048x1152 framing, every room wall, desk, monitor, window, plant, chair, viewpoint, existing daytime warm sunlight illumination, colors, and coarse crisp pixel-art texture unchanged. Through the observation glass, CLOSE THE CT GANTRY'S OPEN RIGHT SIDE: cover all exposed circuit boards, cables and internal parts with a correctly fitted intact off-white curved housing matching the opposite gantry side. Remove the detached cover leaning against the scanner, and remove the orange toolbox beside its base. The scanner must clearly be assembled and ready for normal scanning, not under repair. Preserve its circular bore, patient table and surrounding room. No new people, no new equipment, no new signs, no style modernization, no smooth painted surfaces. Do not brighten the nighttime version. Output one complete corrected background, same composition and aspect ratio."
+    },
+    {
+      "file": "app/public/assets/bg_ctcontrol_ready.png",
+      "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-af0f1286-2b74-4731-9ae2-0c5320a0536f.png",
+      "reference": "app/public/assets/bg_ctcontrol.png",
+      "sha256": "48730D3404620D834F2FEB2C13744D274E5134BD80AB8A65979B2CC64BA02D0B",
+      "prompt": "Use case: precise-object-edit. Input image is the edit target: the existing pixel-art CT control-room game background. Make one narrow continuity repair for a normally operating hospital scanner. Keep the 16:9 2048x1152 framing, every room wall, desk, monitor, window, plant, chair, viewpoint, existing dark blue nighttime with warm desk lamp illumination, colors, and coarse crisp pixel-art texture unchanged. Through the observation glass, CLOSE THE CT GANTRY'S OPEN RIGHT SIDE: cover all exposed circuit boards, cables and internal parts with a correctly fitted intact off-white curved housing matching the opposite gantry side. Remove the detached cover leaning against the scanner, and remove the orange toolbox beside its base. The scanner must clearly be assembled and ready for normal scanning, not under repair. Preserve its circular bore, patient table and surrounding room. No new people, no new equipment, no new signs, no style modernization, no smooth painted surfaces. Do not brighten the nighttime version. Output one complete corrected background, same composition and aspect ratio."
+    }
+  ]
+}

@@ -15,7 +15,7 @@ async function open(id, patch = {}, mobile = false) {
  await context.addInitScript(({ shift, id, patch }) => {
   localStorage.setItem('mr-ch2-unlock', '1')
   // Diagnostic fixture only. Independent playthroughs do not use these saves.
-  localStorage.setItem('midnight-radiology-save-v1', JSON.stringify({
+  if (!localStorage.getItem('midnight-radiology-save-v1')) localStorage.setItem('midnight-radiology-save-v1', JSON.stringify({
    gender: 'm', night: 5, gold: 500, skill: 3, wealth: 3, heart: 3, durability: 70,
    badges: [], stamps: [], flags: {}, lastCheckin: '', streak: 0, finished: true, seed: 1234,
    items: [], ap: 0, buyCount: 0, cards: [], events: [], ...patch,
@@ -53,9 +53,16 @@ try {
   await context.close()
  }
  for (const mobile of [false, true]) {
+  for (const [id, background] of [['c2n1_0','bg_ctcontrol_ready'], ['c2d2_0','bg_ctcontrol_day_ready']]) {
+   const { context, page } = await open(id, {}, mobile)
+   await reveal(page)
+   await page.waitForFunction(asset => [...document.images].some(i => i.src.endsWith('/' + asset + '.png') && i.complete && i.naturalWidth > 0), background)
+   await page.screenshot({ path: output + '/' + background + (mobile ? '-mobile' : '-desktop') + '.png' })
+   await context.close()
+  }
   const { context, page } = await open('c2n5_hub', {}, mobile)
   await reveal(page)
-  const openCabinet = page.getByRole('button', { name: '封条柜 · 和老周一起开锁', exact: true })
+  const openCabinet = page.getByRole('button', { name: '【交接主线·不耗行动力】封条柜 · 和老周一起开锁', exact: true })
   await openCabinet.waitFor()
   await openCabinet.click()
   await page.locator('[data-ch2-step="c2n5_a1"]').waitFor()
@@ -72,6 +79,20 @@ try {
    await context.close()
   }
  }
+ for (const [id, removed] of [['c2d2_q1a','住院加急'], ['c2d2_q1b','候诊大爷'], ['c2d2_q1c',null]]) {
+  // Opposite/old flags must not survive a new queue decision or be replayed.
+  const { context, page } = await open(id, { flags: { c2_queue_postop_done: true, c2_queue_routine_done: true } })
+  await reveal(page)
+  await page.locator('.dialog-box > span.animate-bounce').waitFor()
+  await page.locator('.dialog-box > p').click()
+  await page.locator('[data-ch2-step="c2d2_t0"]').waitFor()
+  await page.reload()
+  await page.locator('[data-ch2-step="c2d2_t0"]').waitFor()
+  assert.equal(await page.getByText('腹痛小伙', { exact: false }).count(), 0)
+  for (const name of ['住院加急', '候诊大爷']) assert.equal(await page.getByText(name + ' ·', { exact: false }).count(), name === removed ? 0 : 1)
+  await page.screenshot({ path: output + '/queue-after-' + id + '.png' })
+  await context.close()
+ }
  for (const [id, patch] of [
   ['c2n3_x4',{flags:{mystery_told:true}}], ['c2n3_x4',{flags:{}}],
   ['c2n1_b5b',{badges:['fixer']}], ['c2n1_b5b',{badges:[]}],
@@ -87,5 +108,5 @@ try {
   await context.close()
  }
  assert.deepEqual(errors, [])
- console.log('PASS: 13 rendered acquisition/result transitions; zero-AP cabinet; three new assets on desktop/mobile; six remembered-choice cases and reload.')
+ console.log('PASS: 13 rendered acquisition/result transitions; zero-AP cabinet; three evidence assets and two ready backgrounds on desktop/mobile; six memories; three queue branches and real reload.')
 } finally { await browser.close() }
