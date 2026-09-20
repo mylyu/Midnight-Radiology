@@ -84,7 +84,14 @@
   bottom: calc(var(--ch2-dialog-height, 13rem) + 0.5rem) !important;
 }
 [data-ch2-step] .ch2-patient-companion { width: min(52vw, 34rem); }
+[data-ch2-step] .ch2-patient-wheelchair {
+  height: min(43vh, 24rem) !important;
+  width: auto;
+  max-width: 60vw;
+  bottom: calc(var(--ch2-dialog-height, 13rem) + 0.5rem) !important;
+}
 @media (orientation: portrait) {
+  [data-ch2-step] .ch2-patient-wheelchair { height: min(30vh, 18rem) !important; }
   [data-ch2-step] .ch2-patient-bed { width: 92vw; left: 4vw; right: auto; max-height: 30vh; }
   [data-ch2-step] .ch2-patient-companion { width: 72vw; left: auto; right: 2vw; }
 }

@@ -1,0 +1,66 @@
+{
+  "date": "2026-09-20",
+  "tool": "Built-in image_gen; imagegen skill; identity-preserving edit",
+  "base": "117c97d",
+  "images": [
+    {
+      "id": "chest",
+      "refs": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/ch2_patient_chest_bed.png",
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/char_zhou.png"
+      ],
+      "output": "app/public/assets/ch2_patient_chest_wheelchair.png",
+      "prompt": "Use case: identity-preserve. Asset: transparent pixel-art character cutout for the existing Chinese narrative game Midnight Radiology. Image 1 is the EDIT TARGET and exact character identity reference; image 2 is first-chapter STYLE ONLY. Change the patient from lying on a transport trolley into sitting in an ordinary MANUAL WHEELCHAIR. Remove the entire trolley/bed, pillow and blanket. Keep the same person, recognizable face, age, hair, physique, and upper clothing from image 1. Same middle-aged Chinese man with receding short black hair, navy cardigan and cream shirt. Sitting upright, knees bent naturally, both feet on the wheelchair footplates, dark gray trousers and plain shoes. Alert but uncomfortable, one hand resting against upper chest, other on armrest; not screaming, not collapsing. Show whole wheelchair: two large rear wheels, small front casters, armrests, footplates. Three-quarter front view. Single character only.\nMatch original chapter-one coarse square pixel clusters and dark stair-step outlines; discrete flat shading, warm skin and cool shadows. Not smooth anime, not a photo with a pixel filter. No lettering from image 2: no AI label, no badges, no lettering anywhere. Genuine transparent RGBA backdrop, no black/white painted background, no glow/halo/floor. Portrait 1024x1536; entire person and wheelchair unclipped with small transparent margin.",
+      "source": "C:\\Users\\lvmen\\.codex\\generated_images\\01a03d87-f338-71d1-ac31-cfd37ee2d8bb\\exec-3d57b397-3755-4779-8126-07adc00f430d.png",
+      "sha256": "049835cf51b96c36972f63e23b305bd3d16c0ad3703cd1d4c0a81c1c0597088f",
+      "width": 1024,
+      "height": 1536,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "postop",
+      "refs": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/ch2_patient_postop_bed.png",
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/char_zhou.png"
+      ],
+      "output": "app/public/assets/ch2_patient_postop_wheelchair.png",
+      "prompt": "Use case: identity-preserve. Asset: transparent pixel-art character cutout for the existing Chinese narrative game Midnight Radiology. Image 1 is the EDIT TARGET and exact character identity reference; image 2 is first-chapter STYLE ONLY. Change the patient from lying on a transport trolley into sitting in an ordinary MANUAL WHEELCHAIR. Remove the entire trolley/bed, pillow and blanket. Keep the same person, recognizable face, age, hair, physique, and upper clothing from image 1. Same middle-aged Chinese woman with short dark-brown bob and lilac striped hospital pajamas. Sitting comfortably upright with knees bent and both feet on footplates, matching lilac pajama trousers and simple hospital slippers. Hands resting loosely in lap, mildly tired, closed mouth, calm; no invented bandages or medical equipment. Show whole wheelchair: two large rear wheels, small front casters, armrests, footplates. Three-quarter front view. Single character only.\nMatch original chapter-one coarse square pixel clusters and dark stair-step outlines; discrete flat shading, warm skin and cool shadows. Not smooth anime, not a photo with a pixel filter. No lettering from image 2: no AI label, no badges, no lettering anywhere. Genuine transparent RGBA backdrop, no black/white painted background, no glow/halo/floor. Portrait 1024x1536; entire person and wheelchair unclipped with small transparent margin.",
+      "source": "C:\\Users\\lvmen\\.codex\\generated_images\\01a03d87-f338-71d1-ac31-cfd37ee2d8bb\\exec-2cc24d7b-bdb5-4e54-b009-8d6a2ffcd7c6.png",
+      "sha256": "52c81229cc682f843d9c61f4e293522e840d5ed0904b43834bd09d548335f16b",
+      "width": 1024,
+      "height": 1536,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "retired_portraits": [
+    "ch2_patient_chest_bed",
+    "ch2_patient_postop_bed",
+    "ch2_patient_gut_bed"
+  ],
+  "retired_new_voices": [
+    "vox_ch2_fall",
+    "vox_ch2_stroke",
+    "vox_ch2_lung",
+    "vox_ch2_postop",
+    "vox_ch2_chest",
+    "vox_ch2_aorta",
+    "vox_ch2_trauma",
+    "vox_ch2_wrist",
+    "vox_ch2_denture"
+  ],
+  "retained_new_voices": [
+    "vox_ch2_gut",
+    "vox_ch2_waiting"
+  ],
+  "old_files_preserved": true
+}

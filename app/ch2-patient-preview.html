@@ -1,24 +1,24 @@
 <!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>第二章 · 患者素材试听</title>
 <style>body{margin:24px auto;padding:0 18px;max-width:1100px;background:#0b1220;color:#dfe8f3;font:16px/1.7 system-ui}h1{font-size:25px}a{color:#62ddd4}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:18px}article{padding:16px;border:1px solid #3c4b60;border-radius:12px;background:#121e30}img{width:100%;height:240px;object-fit:contain;image-rendering:pixelated}h2{font-size:18px;margin:0}audio{width:100%;margin-top:12px}p{color:#aabacc}small{display:block;color:#aabacc}</style></head>
-<body><h1>第二章 · 患者素材试听</h1><p>仅供本地检查，不读取或修改游戏存档。语音只在按播放时响，不自动播放、不循环。<a href="./#/ch2">返回游戏</a></p><main class="grid" id="gallery"></main>
+<body><h1>第二章 · 患者形象与出场声音</h1><p>普通患者站立或坐着，部分使用轮椅，明确的重症保留平车。仅保留两条有情境作用的新增声音。此页不读写游戏存档，声音不会自动播放。<a href="./#/ch2">返回游戏</a></p><main class="grid" id="gallery"></main>
 <script type="module">
 const rows=[
- ['坠床老人','ch2_patient_fall_bed','fall','短促呻吟'],
- ['卒中老人','ch2_patient_stroke_bed','stroke','短促呻吟'],
- ['胸背痛患者','ch2_patient_aorta_bed','aorta','呃……背也疼……'],
- ['车祸伤患者','ch2_patient_trauma_bed','trauma','短促呻吟'],
- ['胸闷患者','ch2_patient_chest_bed','chest','胸口……闷得慌。'],
- ['术后复查患者','ch2_patient_postop_bed','postop','慢一点，伤口有点疼。'],
- ['腹痛小伙','ch2_patient_gut_bed','gut','哎哟……肚子疼死了。'],
- ['腕伤学生','ch2_patient_wrist_student','wrist','嘶……这只手真不敢动。'],
+ ['腹痛小伙','ch2_pixel_pat_gut','gut','恢复原来的弯腰站姿 · 哎哟……肚子疼死了。'],
+ ['腕伤学生','ch2_patient_wrist_student',null,'站立 · 无新增出场音'],
  ['候诊大爷','ch2_patient_waiting_elder','waiting','哎，到我没有啊？'],
- ['肺部复查大爷','ch2_pixel_pat_uncle2','lung','上回的片子，我都带来了。'],
- ['戴活动义齿的老人','ch2_pixel_pat_grandpa2','denture','哎，这头疼好几天了。'],
+ ['肺部复查大爷','ch2_pixel_pat_uncle2',null,'站立 · 撤掉新增复查问候，原剧情配音保留'],
+ ['戴活动义齿的老人','ch2_pixel_pat_grandpa2',null,'原站姿 · 无新增出场音'],
+ ['术后复查患者','ch2_patient_postop_wheelchair',null,'轮椅 · 无新增出场音'],
+ ['胸痛患者','ch2_patient_chest_wheelchair',null,'轮椅 · 无新增出场音'],
+ ['坠床老人','ch2_patient_fall_bed',null,'原剧情：叫不太醒 · 平车 · 撤掉呻吟'],
+ ['卒中老人','ch2_patient_stroke_bed',null,'原剧情：偏瘫、失语 · 平车 · 撤掉呻吟'],
+ ['疑似夹层患者','ch2_patient_aorta_bed',null,'平车 · 无新增出场音'],
+ ['车祸多发伤患者','ch2_patient_trauma_bed',null,'平车 · 撤掉呻吟'],
 ];
 for(const [name,sprite,voice,line] of rows){
  const card=document.createElement('article');
- card.innerHTML=`<h2>${name}</h2><img src="./assets/${sprite}.png" alt="${name}" loading="lazy"><small>${line}</small><audio controls preload="none" src="./audio/vox_ch2_${voice}.mp3"></audio>`;
+ card.innerHTML=`<h2>${name}</h2><img src="./assets/${sprite}.png" alt="${name}" loading="lazy"><small>${line}</small>${voice?`<audio controls preload="none" src="./audio/vox_ch2_${voice}.mp3"></audio>`:''}`;
  document.querySelector('#gallery').append(card);
 }
 document.addEventListener('play',e=>{for(const a of document.querySelectorAll('audio'))if(a!==e.target)a.pause()},true);

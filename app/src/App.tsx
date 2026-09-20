@@ -4,7 +4,7 @@ import { DLCS, getDlc, DLC_BADGES, CARDS, EVENTS, EVIDENCE, DR_QUEUE, queueWaits
 import { ch2StepForState, ch2BackgroundAsset, CH2_META, CH2_SHIFTS, CH2_BADGES, CH2_ACTIVE_BADGES, CH2_BADGES_LEGACY, CH2_CARDS, CH2_ACTIVE_CARDS, CH2_CARDS_LEGACY, CH2_BOOK_PAGES, CH2_IMAGE_CAPTIONS, QUIZ2, grayToHU, ch2Unlocked, tryUnlockCh2, ch2BookUnlocked, ch2PortraitAsset } from './game/ch2'
 import type { DlcDef, QueuePatient } from './game/dlc'
 import { restartCh2 } from './game/ch2-exploration'
-import { isPatientBed } from './game/ch2-patients'
+import { isPatientBed, isPatientWheelchair } from './game/ch2-patients'
 import type { GameState, Step, ShopItem, Choice, DlcProgress } from './game/types'
 import { freshState, loadState, saveState, wipeSave, applyEffect, condOk, dailyCheckin, meterLevel, playSfx, makeCredCode, verifyCredCode } from './game/store'
 
@@ -2106,8 +2106,8 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
       )}
 
       {/* 立绘 */}
-      {leftSprite && <img src={leftSprite} className={`sprite-l absolute bottom-48 portrait:bottom-44 left-4 md:left-24 portrait:h-44 h-64 md:h-96 object-contain pixel drop-shadow-2xl z-10 pointer-events-none ${isPatientBed(view.sprite) ? 'ch2-patient-bed' : ''}`} alt={isPatientBed(view.sprite) ? '患者躺在转运平车上' : ''} />}
-      {rightSprite && <img src={rightSprite} className={`sprite-r absolute bottom-48 portrait:bottom-44 right-4 md:right-24 portrait:h-40 h-56 md:h-80 object-contain pixel opacity-80 drop-shadow-2xl z-10 pointer-events-none ${isPatientBed(view.sprite2) ? 'ch2-patient-bed ch2-patient-companion' : ''}`} alt={isPatientBed(view.sprite2) ? '患者躺在转运平车上' : ''} />}
+      {leftSprite && <img src={leftSprite} className={`sprite-l absolute bottom-48 portrait:bottom-44 left-4 md:left-24 portrait:h-44 h-64 md:h-96 object-contain pixel drop-shadow-2xl z-10 pointer-events-none ${isPatientBed(view.sprite) ? 'ch2-patient-bed' : isPatientWheelchair(view.sprite) ? 'ch2-patient-wheelchair' : ''}`} alt={isPatientBed(view.sprite) ? '患者躺在转运平车上' : isPatientWheelchair(view.sprite) ? '患者坐在轮椅上' : ''} />}
+      {rightSprite && <img src={rightSprite} className={`sprite-r absolute bottom-48 portrait:bottom-44 right-4 md:right-24 portrait:h-40 h-56 md:h-80 object-contain pixel opacity-80 drop-shadow-2xl z-10 pointer-events-none ${isPatientBed(view.sprite2) ? 'ch2-patient-bed ch2-patient-companion' : isPatientWheelchair(view.sprite2) ? 'ch2-patient-wheelchair' : ''}`} alt={isPatientBed(view.sprite2) ? '患者躺在转运平车上' : isPatientWheelchair(view.sprite2) ? '患者坐在轮椅上' : ''} />}
 
       {/* 对话框 */}
       <div ref={dialogRef} className="dialog-wrap absolute bottom-0 inset-x-0 z-20 p-4 md:p-6">
