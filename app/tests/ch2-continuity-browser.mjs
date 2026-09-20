@@ -19,7 +19,7 @@ async function open(id, patch = {}, mobile = false) {
    gender: 'm', night: 5, gold: 500, skill: 3, wealth: 3, heart: 3, durability: 70,
    badges: [], stamps: [], flags: {}, lastCheckin: '', streak: 0, finished: true, seed: 1234,
    items: [], ap: 0, buyCount: 0, cards: [], events: [], ...patch,
-   dlc: { ch2: { shift, stepId: id, viewBg: 'bg_ctcontrol' } },
+   dlc: { ch2: { shift, stepId: id, viewBg: id.startsWith('c2n5_a') ? 'bg_archive' : id === 'c2n1_old_ct' ? 'bg_corridor' : 'bg_ctcontrol' } },
   }))
  }, { shift: shift.id, id, patch })
  const page = await context.newPage()

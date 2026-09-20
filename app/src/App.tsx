@@ -2507,7 +2507,7 @@ function DlcHallScreen({ onEnter, onEnterCh2, onBack }: { onEnter: (id: string, 
                       {doneIt ? '✅ 已完成' : started ? '▶ 进行中' : unlocked ? '未开始' : '口令锁定'}
                     </span>
                   </div>
-                  <p className="text-slate-300 text-sm leading-relaxed">{unlocked ? CH2_META.desc : '2025年11月 · 新CT启用的第一周。—— 输入老师公布的章节口令解锁（与第一章进度无关）。'}</p>
+                  <p className="text-slate-300 text-sm leading-relaxed">{unlocked ? CH2_META.desc : '2025年11月 · 新CT启用初期。—— 输入老师公布的章节口令解锁（与第一章进度无关）。'}</p>
                   {!unlocked && (
                     <div className="flex gap-2 mt-1">
                       <input

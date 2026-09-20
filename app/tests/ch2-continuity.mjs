@@ -19,6 +19,11 @@ assert.equal(CH2_EVIDENCE.old_photo, undefined, 'must not overwrite chapter one 
 assert.equal(CH2_EVIDENCE.ch2_team_photo.flag, 'old_register')
 assert.match(CH2_EVIDENCE.ch2_team_photo.body, /年轻人是老周/)
 assert.match(CH2_EVENTS.ch2_registration.body, /2024/)
+assert.doesNotMatch(CH2_EVENTS.ch2_ct_open.body, /一页都不会少/)
+assert.doesNotMatch(CH2_EVENTS.ch2_luzhou.body, /这公平吗/)
+assert.match(CH2_EVENTS.ch2_stroke.body, /上级医院/)
+assert.doesNotMatch(CH2_EVENTS.ch2_mystery.body, /干干净净/)
+assert.doesNotMatch(CH2_EVIDENCE.ch2_team_photo.body, /旧存档/)
 assert.doesNotMatch(steps.c2n5_n8b.text, /再抓一周/)
 assert.match(steps.c2n5_g0.text, /机器仍停着/)
 assert.doesNotMatch(steps.c2am_3.text, /返聘期满/)
@@ -40,6 +45,7 @@ const acquisition = [
 for (const [scan, result] of acquisition) {
  assert.equal(steps[scan].image, undefined, scan)
  assert.equal(steps[scan].sfx, 'xray', scan)
+ assert.match(steps[scan].bg, /^bg_ctcontrol/, scan + ' must return to control room for acquisition')
  assert.equal(steps[scan].next, result)
  assert(steps[result].image, result)
  assert.notEqual(steps[result].sfx, 'xray', result + ' must not start scanning after result shown')
@@ -52,4 +58,5 @@ for (const step of Object.values(steps)) {
 }
 const app = readFileSync(new URL('../src/App.tsx', import.meta.url), 'utf8')
 assert.match(app, /const step: Step = ch2StepForState\(stepId/)
+assert.doesNotMatch(app, /新CT启用的第一周/)
 console.log('PASS: cross-chapter memories, evidence IDs, dates, cabinet AP, 13 acquisition/result pairs and asset existence.')
