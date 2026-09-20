@@ -108,12 +108,14 @@ try {
       const shift = CH2_SHIFTS.find(s => s.id === progress.shift)
       const step = shift.steps[progress.stepId]
       assert(step, progress.stepId)
-      // A click must reveal even choice/task/end text, without skipping a step.
-      await page.locator('.dialog-box > p').click()
       if (step.windowTask) {
+        // A click must reveal even task text, without skipping the step.
+        await page.locator('.dialog-box > p').click()
         await page.getByRole('button', { name: new RegExp(` ${step.windowTask.targetW}/${step.windowTask.targetL}$`) }).click()
         await page.getByRole('button', { name: /^就这个窗口 · 确认/ }).click()
       } else if (step.choices) {
+        // A click must reveal even choice text, without selecting anything.
+        await page.locator('.dialog-box > p').click()
         const buttons = page.locator('.choice-in button')
         await buttons.first().waitFor()
         const labels = await buttons.allTextContents()
@@ -123,10 +125,15 @@ try {
         if (pick < 0) pick = labels.findIndex(t => !['小卖部', '翻书'].some(s => t.includes(s)))
         await buttons.nth(Math.max(0, pick)).click()
       } else if (step.end) {
+        // A click must reveal even end text, without skipping settlement.
+        await page.locator('.dialog-box > p').click()
         await page.getByRole('button', { name: /本班结束 · 结算/ }).click()
         await page.getByRole('button', { name: /^进入：/ }).click()
       } else {
-        await page.getByRole('button', { name: '继续 →', exact: true }).click()
+        // Original (restored) UI: the ▼ appears once the text is done; clicking the
+        // dialogue then advances exactly one step.
+        await page.locator('.dialog-box > span.animate-bounce').waitFor({ timeout: 15000 })
+        await page.locator('.dialog-box > p').click()
       }
       await page.waitForFunction(before => {
         const now = JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).dlc.ch2

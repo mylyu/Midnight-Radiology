@@ -59,11 +59,9 @@ export function ch2PortraitAsset(key: string, gender: 'm' | 'f'): string {
   return CH2_PORTRAITS[resolved] ?? resolved
 }
 
-export const CH2_IMAGE_CAPTIONS: Record<string, string> = {
-  ct_aortic_dissection_teaching: '主动脉夹层 · 局部结构示意（AI生成，非患者CT）',
-  ct_dental_metal_teaching: '牙科金属条纹伪影 · AI教学模拟，非患者CT',
-  ct_water_ring_teaching: '均匀水体模的环状伪影 · AI教学模拟',
-}
+/* 剧情内不再重复显示AI/教学模拟来源图注（2026-09-20 裁定，与腕部口径统一；学生已知游戏由AI制作）。
+ * 生成来源、提示词与哈希仍保留在 docs/ch2-visual-generation.json 与 docs/ch2-visual-refresh.md。 */
+export const CH2_IMAGE_CAPTIONS: Record<string, string> = {}
 const CH2_UNLOCK_KEY = 'mr-ch2-unlock'
 
 export function ch2Unlocked(): boolean {
@@ -96,6 +94,10 @@ export const CH2_BADGES: Record<string, { name: string; icon: string; desc: stri
   dose_guard: { name: '剂量卫士', icon: '📟', desc: '摘下自己胸前的剂量计，让焦虑的母亲看见了「数字」' },
   phase_eye: { name: '期相之眼', icon: '👁️', desc: '三期增强图像连续两幅一眼认出期相' },
 }
+
+/* 旧版停颁（第四班病例替换后不再发放）：保留定义与老存档记录，不计入收集分母。 */
+export const CH2_BADGES_LEGACY: string[] = ['checklist_zero', 'allergy_save', 'phase_eye']
+export const CH2_ACTIVE_BADGES: string[] = Object.keys(CH2_BADGES).filter(id => !CH2_BADGES_LEGACY.includes(id))
 
 /* ================= 第二章知识卡片（22张） ================= */
 export const CH2_CARDS: Record<string, KnowledgeCard> = {
@@ -207,6 +209,10 @@ export const CH2_CARDS: Record<string, KnowledgeCard> = {
     image: 'item_book',
   },
 }
+
+/* 旧版停颁（增强专场被替换后不再发放）：保留定义与老存档记录，不计入收集分母。 */
+export const CH2_CARDS_LEGACY: string[] = ['contrast_agent', 'contrast_checklist', 'contrast_contra', 'contrast_emergency']
+export const CH2_ACTIVE_CARDS: string[] = Object.keys(CH2_CARDS).filter(id => !CH2_CARDS_LEGACY.includes(id))
 
 /* ================= 第二章大事记（8条） ================= */
 export const CH2_EVENTS: Record<string, ChronicleEvent> = {
@@ -631,14 +637,14 @@ const C2N3: Record<string, Step> = {
   c2n3_m12: { speaker: 'sys', text: '平车再次呼啸而去。你抬头看表——**从入院到给药，52分钟**。DNT达标。', effect: { badge: 'dnt_hero' }, event: 'ch2_stroke', dnt: 52, next: 'c2n3_m13' },
   c2n3_m13: { speaker: 'zhou', sprite: 'char_zhou', text: "（松开一直攥着的笔）图已经传过去了，转运那边也接上了。……我那杯茶呢，谁给挪了？", next: 'c2n3_h0' },
   // —— 第二例：凌晨的胸痛 ——
-  c2n3_h0: { speaker: 'sys', text: '刚喘口气，分诊铃又响。凌晨三点半，急诊推进来一个人：**52岁男性，突发胸痛两小时，胸口像压了块磨盘，疼得攥着衣襟说不出整话，一身冷汗**。心电图：下壁导联ST段压低。', sfx: 'ring', next: 'c2n3_h1' },
-  c2n3_h1: { speaker: 'he', sprite: 'char_he', text: '心内科值班已经到了。肌钙蛋白阳性——**急性冠脉综合征，危险分层中高危**。心内打电话问我们：先做冠脉CTA，还是直接推导管室上冠脉造影？**你们影像科拿个意见。**', next: 'c2n3_h2' },
+  c2n3_h0: { speaker: 'sys', text: '刚喘口气，分诊铃又响。凌晨三点半，急诊推进来一个人：**52岁男性，突发胸痛两小时，胸口像压了块磨盘，疼得攥着衣襟说不出整话，一身冷汗**。心电图：非特异性ST-T改变，没有动态演变。', sfx: 'ring', next: 'c2n3_h1' },
+  c2n3_h1: { speaker: 'he', sprite: 'char_he', text: '心内科值班已经到了。**肌钙蛋白复查阴性——急性冠脉综合征暂时定不下来，心内按中低危处理**。心内打电话问我们：先做冠脉CTA，还是直接推导管室上冠脉造影？**你们影像科拿个意见。**', next: 'c2n3_h2' },
   c2n3_h2: { speaker: 'sys', text: '【CTA还是造影？——这个纠结，全写在心内科值班医生的脸上】', sprite: 'char_he', choices: [
     { text: '「先冠脉CTA：无创、一支静脉针的事，几分钟出全图，三支冠脉加钙化一目了然——先摸清情况再定。」', next: 'c2n3_h3a', effect: { skill: 2 }, tag: 'good' },
     { text: '「直接冠脉造影：金标准，查到狭窄当场放支架，一步到位。」', next: 'c2n3_h3b' },
     { text: '「先拍张胸片看看，别上来就大检查。」', next: 'c2n3_h3c', effect: { skill: -1 } },
   ]},
-  c2n3_h3a: { speaker: 'me', sprite: 'char_he', text: '他血流动力学还稳、ST段是压低不是抬高——**这个分层，CTA是「先手」**：无创、快、看得全。真扫出重度狭窄，再进导管室不迟。**先无创摸底、再有创兜底，是顺序，不是重复。**', card: 'cta_vs_dsa', next: 'c2n3_h4' },
+  c2n3_h3a: { speaker: 'me', sprite: 'char_he', text: '他血流动力学还稳、化验和心电图都不支持高危——**这个分层，CTA是「先手」**：无创、快、看得全。真扫出重度狭窄，再进导管室不迟。**先无创摸底、再有创兜底，是顺序，不是重复。**', card: 'cta_vs_dsa', next: 'c2n3_h4' },
   c2n3_h3b: { speaker: 'zhou', sprite: 'char_zhou', text: '（摇头）金标准不假，可你想过没有——**造影要进导管室、要穿刺置管、要一团人围着**，他这情况还没到非上不可的分层。**CTA先扫一圈：无创，几分钟，三支血管全看见**；真重度狭窄，CTA不但不挡路，还顺便把钙化都标给导管室了。', card: 'cta_vs_dsa', next: 'c2n3_h4' },
   c2n3_h3c: { speaker: 'zhou', sprite: 'char_zhou', text: '胸片？**胸片看冠脉，等于隔着毛玻璃数头发**。胸痛要看的不是肺，是血管——要么CTA，要么造影，没有第三条路。', next: 'c2n3_h4' },
   c2n3_h4: { speaker: 'sys', text: '心内值班医生一拍板：「CTA！」控制心率、团注碘对比剂，球管追着药峰扫——「嗡——」图像上，**右冠状动脉中段，一段亮起来的血管里嵌着一块没亮的斑块，管腔窄了七成**。', sfx: 'xray', image: 'ct_coronary_cta', next: 'c2n3_h5' },
@@ -876,7 +882,7 @@ const C2AM: Record<string, Step> = {
   c2am_9: { speaker: 'sys', text: '澜江市禾川县人民医院 · 影像科。新CT的第一周结束了——下一周，市三甲质控组上门。', end: true },
 }
 
-/* ================= 第二章题库（23题 · 工科向，贴合课件） ================= */
+/* ================= 第二章题库（24题 · 工科向，贴合课件） ================= */
 export interface Quiz2Q { q: string; options: string[]; answer: number; explain: string }
 export const QUIZ2: Quiz2Q[] = [
   { q: 'CT值的单位是？', options: ['KW', 'HU', 'W', 'Tesla'], answer: 1, explain: 'CT值单位是亨氏单位HU，以水的衰减系数为基准：CT值=1000×(μ−μ水)/μ水。' },

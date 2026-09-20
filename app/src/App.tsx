@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { NIGHTS, BADGES, CHARACTERS, SHOP_ITEMS, QUIZ, BOOK_PAGES } from './game/data'
 import { DLCS, getDlc, DLC_BADGES, CARDS, EVENTS, EVIDENCE, DR_QUEUE, queueWaits } from './game/dlc'
-import { CH2_META, CH2_SHIFTS, CH2_BADGES, CH2_CARDS, CH2_BOOK_PAGES, CH2_IMAGE_CAPTIONS, QUIZ2, grayToHU, ch2Unlocked, tryUnlockCh2, ch2BookUnlocked, ch2PortraitAsset } from './game/ch2'
+import { CH2_META, CH2_SHIFTS, CH2_BADGES, CH2_ACTIVE_BADGES, CH2_BADGES_LEGACY, CH2_CARDS, CH2_ACTIVE_CARDS, CH2_CARDS_LEGACY, CH2_BOOK_PAGES, CH2_IMAGE_CAPTIONS, QUIZ2, grayToHU, ch2Unlocked, tryUnlockCh2, ch2BookUnlocked, ch2PortraitAsset } from './game/ch2'
 import type { DlcDef, QueuePatient } from './game/dlc'
 import type { GameState, Step, ShopItem, Choice, DlcProgress } from './game/types'
 import { freshState, loadState, saveState, wipeSave, applyEffect, condOk, dailyCheckin, meterLevel, playSfx, makeCredCode, verifyCredCode } from './game/store'
@@ -958,9 +958,9 @@ function BadgeScreen({ state, onBack }: { state: GameState | null; onBack: () =>
             )
           })}
         </div>
-        <h3 className="text-amber-200/80 tracking-widest mt-4">🌀 第二章 · 快与狠 · 已收集 {owned.filter(id => CH2_BADGES[id]).length}/{Object.keys(CH2_BADGES).length}</h3>
+        <h3 className="text-amber-200/80 tracking-widest mt-4">🌀 第二章 · 快与狠 · 已收集 {owned.filter(id => CH2_BADGES[id] && !CH2_BADGES_LEGACY.includes(id)).length}/{CH2_ACTIVE_BADGES.length}</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl">
-          {Object.entries(CH2_BADGES).map(([id, b]) => {
+          {Object.entries(CH2_BADGES).filter(([id]) => !CH2_BADGES_LEGACY.includes(id)).map(([id, b]) => {
             const has = owned.includes(id)
             return (
               <div key={id} className={`w-36 p-4 rounded-xl border-2 flex flex-col items-center gap-2 text-center transition-all ${has ? 'bg-teal-100/95 border-teal-300 shadow-lg rotate-1' : 'bg-slate-900/70 border-slate-700'}`}>
@@ -971,6 +971,9 @@ function BadgeScreen({ state, onBack }: { state: GameState | null; onBack: () =>
             )
           })}
         </div>
+        {owned.some(id => CH2_BADGES_LEGACY.includes(id)) && (
+          <p className="text-amber-200/50 text-xs">历史收藏（旧版停颁，不计入分母）：{owned.filter(id => CH2_BADGES_LEGACY.includes(id)).map(id => CH2_BADGES[id]?.name).join('、')}</p>
+        )}
         <h3 className="text-amber-200/80 tracking-widest mt-4">📼 番外篇 · 已收集 {owned.filter(id => DLC_BADGES[id]).length}/{Object.keys(DLC_BADGES).length}</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl">
           {Object.entries(DLC_BADGES).map(([id, b]) => {
@@ -1998,7 +2001,10 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
   const speakerMeta = step.speaker ? CHARACTERS[step.speaker] : undefined
   const visibleChoices = (step.choices ?? []).filter(c => condOk(state, c.cond))
   const nextShiftDef = CH2_SHIFTS[shiftIdx + 1]
-  const ch2CardsGot = (state.cards ?? []).filter(id => CH2_CARDS[id]).length
+  const ch2CardsGot = (state.cards ?? []).filter(id => CH2_CARDS[id] && !CH2_CARDS_LEGACY.includes(id)).length
+  const ch2BadgesGot = state.badges.filter(b => CH2_BADGES[b] && !CH2_BADGES_LEGACY.includes(b)).length
+  const ch2LegacyCards = (state.cards ?? []).filter(id => CH2_CARDS_LEGACY.includes(id)).length
+  const ch2LegacyBadges = state.badges.filter(b => CH2_BADGES_LEGACY.includes(b)).length
 
   return (
     <div className="relative w-full h-full cursor-pointer" data-ch2-step={stepId} onClickCapture={retryVoices} onClick={advance}>
@@ -2133,7 +2139,8 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
         <div className="absolute inset-0 z-50 bg-slate-950/95 flex flex-col items-center justify-center gap-4 px-6" onClick={e => e.stopPropagation()}>
           <p className="text-teal-300 tracking-[0.4em] text-sm">🌀 第二章「快与狠」 · 完</p>
           <h3 className="text-xl text-slate-100 text-center">新CT的第一周结束了。<br />下一周，市三甲质控组上门。</h3>
-          <p className="text-slate-400 text-sm">本章收集：📖 知识卡片 {ch2CardsGot}/{Object.keys(CH2_CARDS).length} · 🏅 勋章 {state.badges.filter(b => CH2_BADGES[b]).length}/{Object.keys(CH2_BADGES).length}</p>
+          <p className="text-slate-400 text-sm">本章收集：📖 知识卡片 {ch2CardsGot}/{CH2_ACTIVE_CARDS.length} · 🏅 勋章 {ch2BadgesGot}/{CH2_ACTIVE_BADGES.length}</p>
+          {ch2LegacyCards + ch2LegacyBadges > 0 && <p className="text-slate-500 text-xs">旧版停颁内容不计入统计；你已保留的旧版卡片 {ch2LegacyCards} 张、徽章 {ch2LegacyBadges} 枚仍在夜班手册与勋章墙中。</p>}
           <p className="text-slate-500 text-xs">彩蛋与钩子的落点，取决于你这一周做过的选择。</p>
           <button onClick={onExit} className="mt-2 px-8 py-3 rounded-lg bg-teal-500/90 text-slate-950 font-bold tracking-widest hover:bg-teal-400">回大厅 →</button>
         </div>
@@ -2313,7 +2320,7 @@ function Book2Overlay({ shiftId, completed, onClose }: { shiftId: string; comple
   )
 }
 
-/* ================= 第二章 · 晨会考核（CT题库20抽5） ================= */
+/* ================= 第二章 · 晨会考核（CT题库24抽5） ================= */
 function Ch2Quiz({ state, update, onDone }: { state: GameState; update: (f: (s: GameState) => GameState) => void; onDone: () => void }) {
   const doneGrade = state.flags['quiz2_grade'] as string | undefined
   const [qs] = useState(() => {

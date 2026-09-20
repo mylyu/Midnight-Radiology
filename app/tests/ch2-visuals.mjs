@@ -84,6 +84,9 @@ try {
     await img.waitFor()
     await page.waitForFunction(asset => [...document.images].some(i => i.src.endsWith('/' + asset + '.png') && i.complete && i.naturalWidth > 0), asset)
     if (CH2_IMAGE_CAPTIONS[asset]) await page.getByText(CH2_IMAGE_CAPTIONS[asset], { exact: true }).waitFor()
+    if (['ct_aortic_dissection_teaching', 'ct_dental_metal_teaching', 'ct_water_ring_teaching'].includes(asset)) {
+      assert(!/AI生成|教学模拟|非患者CT/.test(await page.locator('body').innerText()), `In-story caption should be retired: ${asset}`)
+    }
     await page.screenshot({ path: `${output}/${asset}.png` })
     await context.close()
   }
@@ -92,5 +95,5 @@ try {
   assert.equal(ch2BookUnlocked('c2am'), 20)
   assert.equal(ch2BookUnlocked('c2n1', true), 20)
   assert.deepEqual(errors, [])
-  console.log('PASS: 21 mapped portraits rendered, five book unlock stages, locked next page, mobile fit, six scene images and teaching captions, no page errors. Screenshots: ' + output)
+  console.log('PASS: 21 mapped portraits rendered, five book unlock stages, locked next page, mobile fit, six scene images, retired in-story captions, no page errors. Screenshots: ' + output)
 } finally { await browser.close() }
