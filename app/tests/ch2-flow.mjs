@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { CH2_SHIFTS } from '../src/game/ch2.ts'
 const require = createRequire(import.meta.url)
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright')
-const browser = await chromium.launch({ headless: true, ...(process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : {}) })
+const browser = await chromium.launch({ headless: true, ...(process.env.EDGE_TEST === '1' ? {channel:'msedge'} : process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : {}) })
 const errors = []
 const url = process.env.GAME_URL || 'http://127.0.0.1:8798/'
 const current = page => page.evaluate(() => JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).dlc.ch2.stepId)

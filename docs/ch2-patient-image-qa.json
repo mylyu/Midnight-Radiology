@@ -1,0 +1,128 @@
+[
+  {
+    "id": "fall_bed",
+    "file": "app/public/assets/ch2_patient_fall_bed.png",
+    "width": 1536,
+    "height": 1024,
+    "corner_alpha": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "transparent_sample_fraction": 0.5321,
+    "sha256": "a0556f4837905651bbe460fc52ec2584bbdc7df6c2f9da42fe2ab90e142eb846"
+  },
+  {
+    "id": "stroke_bed",
+    "file": "app/public/assets/ch2_patient_stroke_bed.png",
+    "width": 1536,
+    "height": 1024,
+    "corner_alpha": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "transparent_sample_fraction": 0.5378,
+    "sha256": "052189718b4725edad96a4a5f6b2db4eba90007b47f4ebde0c1db3a8ad185bd5"
+  },
+  {
+    "id": "aorta_bed",
+    "file": "app/public/assets/ch2_patient_aorta_bed.png",
+    "width": 1536,
+    "height": 1024,
+    "corner_alpha": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "transparent_sample_fraction": 0.5479,
+    "sha256": "d1ac0beca14b8fab8dd16a0b08ccb4f76cfa6017292d973689d351df51b012e6"
+  },
+  {
+    "id": "trauma_bed",
+    "file": "app/public/assets/ch2_patient_trauma_bed.png",
+    "width": 1536,
+    "height": 1024,
+    "corner_alpha": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "transparent_sample_fraction": 0.5521,
+    "sha256": "b723a425307b211fb83a0ebe2ed722beed56d824f5d2790cfde5e58975f142bd"
+  },
+  {
+    "id": "chest_bed",
+    "file": "app/public/assets/ch2_patient_chest_bed.png",
+    "width": 1536,
+    "height": 1024,
+    "corner_alpha": [
+      1,
+      0,
+      0,
+      0
+    ],
+    "transparent_sample_fraction": 0.5181,
+    "sha256": "f70de108dcf64021f14b7f506e925a7210e678a1f30b8af643b64ac0947c2a8f"
+  },
+  {
+    "id": "postop_bed",
+    "file": "app/public/assets/ch2_patient_postop_bed.png",
+    "width": 1536,
+    "height": 1024,
+    "corner_alpha": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "transparent_sample_fraction": 0.5477,
+    "sha256": "75847893cb04255970672b51f099bb3fc8a6430598421c53f2a401d6e2cbee99"
+  },
+  {
+    "id": "wrist_student",
+    "file": "app/public/assets/ch2_patient_wrist_student.png",
+    "width": 1024,
+    "height": 1536,
+    "corner_alpha": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "transparent_sample_fraction": 0.7012,
+    "sha256": "31e1132ccd113684fe118520fec54bf1bc323f8e1c3280a9b59b9e1d7879d821"
+  },
+  {
+    "id": "waiting_elder",
+    "file": "app/public/assets/ch2_patient_waiting_elder.png",
+    "width": 1024,
+    "height": 1536,
+    "corner_alpha": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "transparent_sample_fraction": 0.6037,
+    "sha256": "a00d345bb2e6d9e69786e2a40929db1487dcb0a7ad9340db17acf5cbd9e3846d"
+  },
+  {
+    "id": "gut_bed",
+    "file": "app/public/assets/ch2_patient_gut_bed.png",
+    "width": 1536,
+    "height": 1024,
+    "corner_alpha": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "transparent_sample_fraction": 0.4914,
+    "sha256": "c9f733aea37119001023c871ca53cf2b9b60cdb540f68d02e5603667fd37b24a"
+  }
+]

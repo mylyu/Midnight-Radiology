@@ -61,8 +61,8 @@ export interface Step {
   card?: string
   /** DLC：大事记条目 ID——进入本步即记入「夜班手册·大事记」 */
   event?: string
-  sfx?: 'stamp' | 'xray' | 'badge' | 'click' | 'ring' | 'radio' | 'buzz' | 'cry_child' | 'groan_man' | 'vox_mom' | 'vox_worker' | 'vox_mystery' | 'vox_thin' | 'vox_aunt' | 'vox_dad' | 'vox_tang' | 'vox_zhou' | 'vox_lei' | 'vox_fan' | 'vox_he' | 'vox_qian' | 'vox_kai' | 'vox_jiang' | 'vox_wen' | 'vox_bai' | 'vox_director' | 'vox_shao' | 'vox_du' | 'vox_qin' | 'vox_liao' | 'vox_luzhou' | 'vox_uncle' | 'vox_guy' | 'vox_grandpa' | 'vox_enh' | 'vox_kiddad' | 'vox_kidmom' | 'vox_kid' | 'vox2_tang' | 'vox2_zhou' | 'vox2_fan_a' | 'vox2_fan_b' | 'vox2_kai' | 'vox2_lei' | 'vox2_he' | 'vox2_director' | 'vox2_director_am' | 'vox2_wen' | 'vox2_mystery' | 'vox_duty'
-  sfx2?: 'stamp' | 'xray' | 'badge' | 'click' | 'ring' | 'radio' | 'buzz' | 'cry_child' | 'groan_man' | 'vox_mom' | 'vox_worker' | 'vox_mystery' | 'vox_thin' | 'vox_aunt' | 'vox_dad' | 'vox_tang' | 'vox_zhou' | 'vox_lei' | 'vox_fan' | 'vox_he' | 'vox_qian' | 'vox_kai' | 'vox_jiang' | 'vox_wen' | 'vox_bai' | 'vox_director' | 'vox_shao' | 'vox_du' | 'vox_qin' | 'vox_liao' | 'vox_luzhou' | 'vox_uncle' | 'vox_guy' | 'vox_grandpa' | 'vox_enh' | 'vox_kiddad' | 'vox_kidmom' | 'vox_kid' | 'vox2_tang' | 'vox2_zhou' | 'vox2_fan_a' | 'vox2_fan_b' | 'vox2_kai' | 'vox2_lei' | 'vox2_he' | 'vox2_director' | 'vox2_director_am' | 'vox2_wen' | 'vox2_mystery' | 'vox_duty'
+  sfx?: 'stamp' | 'xray' | 'badge' | 'click' | 'ring' | 'radio' | 'buzz' | 'cry_child' | 'groan_man' | 'vox_mom' | 'vox_worker' | 'vox_mystery' | 'vox_thin' | 'vox_aunt' | 'vox_dad' | 'vox_tang' | 'vox_zhou' | 'vox_lei' | 'vox_fan' | 'vox_he' | 'vox_qian' | 'vox_kai' | 'vox_jiang' | 'vox_wen' | 'vox_bai' | 'vox_director' | 'vox_shao' | 'vox_du' | 'vox_qin' | 'vox_liao' | 'vox_luzhou' | 'vox_uncle' | 'vox_guy' | 'vox_grandpa' | 'vox_enh' | 'vox_kiddad' | 'vox_kidmom' | 'vox_kid' | 'vox2_tang' | 'vox2_zhou' | 'vox2_fan_a' | 'vox2_fan_b' | 'vox2_kai' | 'vox2_lei' | 'vox2_he' | 'vox2_director' | 'vox2_director_am' | 'vox2_wen' | 'vox2_mystery' | 'vox_duty' | `vox_ch2_${string}`
+  sfx2?: 'stamp' | 'xray' | 'badge' | 'click' | 'ring' | 'radio' | 'buzz' | 'cry_child' | 'groan_man' | 'vox_mom' | 'vox_worker' | 'vox_mystery' | 'vox_thin' | 'vox_aunt' | 'vox_dad' | 'vox_tang' | 'vox_zhou' | 'vox_lei' | 'vox_fan' | 'vox_he' | 'vox_qian' | 'vox_kai' | 'vox_jiang' | 'vox_wen' | 'vox_bai' | 'vox_director' | 'vox_shao' | 'vox_du' | 'vox_qin' | 'vox_liao' | 'vox_luzhou' | 'vox_uncle' | 'vox_guy' | 'vox_grandpa' | 'vox_enh' | 'vox_kiddad' | 'vox_kidmom' | 'vox_kid' | 'vox2_tang' | 'vox2_zhou' | 'vox2_fan_a' | 'vox2_fan_b' | 'vox2_kai' | 'vox2_lei' | 'vox2_he' | 'vox2_director' | 'vox2_director_am' | 'vox2_wen' | 'vox2_mystery' | 'vox_duty' | `vox_ch2_${string}`
   /** 第二章·CT：窗宽窗位调节玩法（双滑块 + canvas 实时映射） */
   windowTask?: { image: string; targetW: number; targetL: number; tolW: number; tolL: number; success: string; stage?: number }
   /** 第二章·CT：增强前六格核对清单（逐项点开核对后放行） */
@@ -134,6 +134,8 @@ export interface GameState {
 }
 
 export interface DlcProgress {
+  /** CT: entered steps in this run; prevents repeat AP/rewards after reload. */
+  appliedSteps?: string[]
   stepId?: string
   viewBg?: string
   viewSprite?: string

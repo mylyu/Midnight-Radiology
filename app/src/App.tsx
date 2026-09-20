@@ -3,6 +3,8 @@ import { NIGHTS, BADGES, CHARACTERS, SHOP_ITEMS, QUIZ, BOOK_PAGES } from './game
 import { DLCS, getDlc, DLC_BADGES, CARDS, EVENTS, EVIDENCE, DR_QUEUE, queueWaits } from './game/dlc'
 import { ch2StepForState, ch2BackgroundAsset, CH2_META, CH2_SHIFTS, CH2_BADGES, CH2_ACTIVE_BADGES, CH2_BADGES_LEGACY, CH2_CARDS, CH2_ACTIVE_CARDS, CH2_CARDS_LEGACY, CH2_BOOK_PAGES, CH2_IMAGE_CAPTIONS, QUIZ2, grayToHU, ch2Unlocked, tryUnlockCh2, ch2BookUnlocked, ch2PortraitAsset } from './game/ch2'
 import type { DlcDef, QueuePatient } from './game/dlc'
+import { restartCh2 } from './game/ch2-exploration'
+import { isPatientBed } from './game/ch2-patients'
 import type { GameState, Step, ShopItem, Choice, DlcProgress } from './game/types'
 import { freshState, loadState, saveState, wipeSave, applyEffect, condOk, dailyCheckin, meterLevel, playSfx, makeCredCode, verifyCredCode } from './game/store'
 
@@ -84,6 +86,7 @@ export default function App() {
   }
 
   const enterCh2 = (s: GameState) => {
+    if (s.dlc?.ch2?.done) s = restartCh2(s)
     saveState(s)
     setState(s)
     window.location.hash = '#/ch2'
@@ -1809,6 +1812,15 @@ function ScriptScreen({ dlc, state, update, onExit }: { dlc: DlcDef; state: Game
 
 /* ================= 第二章「快与狠」· 剧情引擎（独立于 NightScreen / ScriptScreen） ================= */
 function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s: GameState) => GameState) => void; onExit: () => void }) {
+  const dialogRef = useRef<HTMLDivElement>(null)
+  const stageRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const dialog = dialogRef.current
+    if (!dialog) return
+    const observer = new ResizeObserver(() => stageRef.current?.style.setProperty('--ch2-dialog-height', `${dialog.getBoundingClientRect().height}px`))
+    observer.observe(dialog)
+    return () => observer.disconnect()
+  }, [])
   const prog = state.dlc?.['ch2'] ?? {}
   const shiftIdx0 = (() => { const i = CH2_SHIFTS.findIndex(s => s.id === prog.shift); return i >= 0 ? i : 0 })()
   const [shiftIdx, setShiftIdx] = useState(shiftIdx0)
@@ -1819,15 +1831,17 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
     bg: prog.viewBg ?? 'bg_ctcontrol', sprite: prog.viewSprite, sprite2: prog.viewSprite2,
   })
   const viewRef = useRef(view)
-  const applied = useRef<Set<string>>(new Set())
-  const [shown, setShown] = useState(0)
-  const [choicesLocked, setChoicesLocked] = useState(false)
+  const applied = useRef<Set<string>>(new Set(prog.appliedSteps ?? (prog.stepId ? [`ch2-${prog.stepId}`] : [])))
+  const [textProgress, setTextProgress] = useState({ id: resumeStep, shown: 0 })
+  const [choiceReadyStep, setChoiceReadyStep] = useState<string | null>(null)
+  const choiceReadyAt = useRef({ id: resumeStep, time: 0 })
   const [manualOpen, setManualOpen] = useState(false)
   const [badgeOpen, setBadgeOpen] = useState(false)
   const [shopOpen, setShopOpen] = useState(false)
   const [bookOpen, setBookOpen] = useState(false)
   const [phase, setPhase] = useState<'story' | 'settle' | 'quiz' | 'done'>('story')
-  const pickedStep = useRef<string | null>(null)
+  // A duplicate-tap guard must expire even if a transition was interrupted.
+  const pickedGate = useRef({ id: '', until: 0 })
   const heardVoices = useRef(new Set<string>())
   const pendingVoices = useRef(new Map<string, string>())
   const startingVoices = useRef(new Set<string>())
@@ -1850,15 +1864,11 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
   // hub 横幅的行动力跟随时实数值渲染，别再硬编码×3（否则玩家花了AP文本不变，像没扣）
   const fullText = (step.text ?? '').replaceAll('行动力⚡×3', `行动力⚡×${state.ap}`)
   const plainLen = fullText.replaceAll('**', '').length
+  const shown = textProgress.id === stepId ? textProgress.shown : 0
+  const setShown = (count: number) => setTextProgress({ id: stepId, shown: count })
   const done = shown >= plainLen
-
-  const [prevStepId, setPrevStepId] = useState(stepId)
-  if (prevStepId !== stepId) {
-    setPrevStepId(stepId)
-    setShown(0)
-    if (step.choices) setChoicesLocked(true)
-    pickedStep.current = null
-  }
+  const hasChoices = !!step.choices
+  const choicesLocked = hasChoices && (!done || choiceReadyStep !== stepId)
 
   const updProg = (s: GameState, patch: Partial<DlcProgress>): GameState => ({
     ...s,
@@ -1882,7 +1892,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
     applied.current.add(key)
     // Two different patients share this brief complaint recording, not an identity.
     const heardKey = (n: string) => n === 'vox_guy' ? `heard2_vp4_${step.speaker}_${n}` : `heard2_vp3_${n}`
-    const isVox = (n: string) => n.startsWith('vox_') || n.startsWith('vox2_')  // vox2_* = 第二章专属场景语音
+    const isVox = (n: string) => n.startsWith('vox_') || n.startsWith('vox2_') || n === 'cry_child' || n === 'groan_man'
     const sfxList = [step.sfx, step.sfx2].filter((n): n is NonNullable<typeof n> => !!n)
     // Session-only dedup: old saves must not permanently silence entrances.
     // A rejected play() is retried on a gesture, never recorded as heard.
@@ -1912,7 +1922,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
       }
       if (newCard) next = { ...next, cards: [...(next.cards ?? []), newCard] }
       if (step.event && !(next.events ?? []).includes(step.event)) next = { ...next, events: [...(next.events ?? []), step.event] }
-      next = updProg(next, { shift: shift.id, stepId, viewBg: newView.bg, viewSprite: newView.sprite, viewSprite2: newView.sprite2 })
+      next = updProg(next, { shift: shift.id, stepId, viewBg: newView.bg, viewSprite: newView.sprite, viewSprite2: newView.sprite2, appliedSteps: [...applied.current] })
       return next
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1921,16 +1931,30 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
   // 打字机
   useEffect(() => {
     if (done) return
-    const t = setInterval(() => setShown(s => Math.min(s + 1, plainLen)), 28)
+    const t = setInterval(() => setTextProgress(p => ({
+      id: stepId, shown: Math.min((p.id === stepId ? p.shown : 0) + 1, plainLen),
+    })), 28)
     return () => clearInterval(t)
   }, [stepId, done, plainLen])
 
   // 选项缓冲，防误触
   useEffect(() => {
-    if (!step.choices || !done) return
-    const t = setTimeout(() => setChoicesLocked(false), 900)
-    return () => clearTimeout(t)
-  }, [stepId, done, step.choices])
+    pickedGate.current = { id: stepId, until: 0 }
+    if (!hasChoices || !done) { setChoiceReadyStep(null); return }
+    const readyAt = performance.now() + 900
+    choiceReadyAt.current = { id: stepId, time: readyAt }
+    const unlock = () => {
+      if (performance.now() >= readyAt) setChoiceReadyStep(stepId)
+    }
+    const t = setTimeout(() => setChoiceReadyStep(stepId), 900)
+    window.addEventListener('focus', unlock)
+    document.addEventListener('visibilitychange', unlock)
+    return () => {
+      clearTimeout(t)
+      window.removeEventListener('focus', unlock)
+      document.removeEventListener('visibilitychange', unlock)
+    }
+  }, [stepId, done, hasChoices])
 
   const blocked = !!(step.choices || step.end || step.windowTask || step.checklist) || shopOpen || bookOpen || manualOpen || badgeOpen || phase !== 'story'
 
@@ -1939,6 +1963,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
     // Reveal text even on choices, tasks and settlement nodes. Those nodes must
     // block navigation, not the user's attempt to finish the typewriter text.
     if (!done) { setShown(plainLen); return }
+    if (hasChoices && choiceReadyAt.current.id === stepId && performance.now() >= choiceReadyAt.current.time) setChoiceReadyStep(stepId)
     if (blocked) return
     playSfx('click')
     if (step.next === '@shop') { setShopOpen(true); return }
@@ -1950,8 +1975,8 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
   const pick = (c: Choice) => {
     // The visible-choice delay already prevents accidental selection. Do not
     // extend a lock on every rejected tap: rapid taps could otherwise starve it.
-    if (choicesLocked || !done || pickedStep.current === stepId) return
-    if (c.next !== '@shop' && c.next !== '@book2') pickedStep.current = stepId
+    if (choicesLocked || !done || (pickedGate.current.id === stepId && performance.now() < pickedGate.current.until)) return
+    if (c.next !== '@shop' && c.next !== '@book2') pickedGate.current = { id: stepId, until: performance.now() + 250 }
     playSfx('click')
     if (c.effect) update(s => applyEffect(s, c.effect))
     if (c.risk && Math.random() < c.risk.chance) {
@@ -2017,7 +2042,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
   const ch2LegacyBadges = state.badges.filter(b => CH2_BADGES_LEGACY.includes(b)).length
 
   return (
-    <div className="relative w-full h-full cursor-pointer" data-ch2-step={stepId} onClickCapture={retryVoices} onClick={advance}>
+    <div ref={stageRef} className="relative w-full h-full cursor-pointer" data-ch2-step={stepId} onClickCapture={retryVoices} onClick={advance}>
       <BgImg name={ch2BackgroundAsset(view.bg)} />
       <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-slate-950/80 to-transparent pointer-events-none" />
 
@@ -2081,11 +2106,11 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
       )}
 
       {/* 立绘 */}
-      {leftSprite && <img src={leftSprite} className="sprite-l absolute bottom-48 portrait:bottom-44 left-4 md:left-24 portrait:h-44 h-64 md:h-96 object-contain pixel drop-shadow-2xl z-10" alt="" />}
-      {rightSprite && <img src={rightSprite} className="sprite-r absolute bottom-48 portrait:bottom-44 right-4 md:right-24 portrait:h-40 h-56 md:h-80 object-contain pixel opacity-80 drop-shadow-2xl z-10" alt="" />}
+      {leftSprite && <img src={leftSprite} className={`sprite-l absolute bottom-48 portrait:bottom-44 left-4 md:left-24 portrait:h-44 h-64 md:h-96 object-contain pixel drop-shadow-2xl z-10 pointer-events-none ${isPatientBed(view.sprite) ? 'ch2-patient-bed' : ''}`} alt={isPatientBed(view.sprite) ? '患者躺在转运平车上' : ''} />}
+      {rightSprite && <img src={rightSprite} className={`sprite-r absolute bottom-48 portrait:bottom-44 right-4 md:right-24 portrait:h-40 h-56 md:h-80 object-contain pixel opacity-80 drop-shadow-2xl z-10 pointer-events-none ${isPatientBed(view.sprite2) ? 'ch2-patient-bed ch2-patient-companion' : ''}`} alt={isPatientBed(view.sprite2) ? '患者躺在转运平车上' : ''} />}
 
       {/* 对话框 */}
-      <div className="dialog-wrap absolute bottom-0 inset-x-0 z-20 p-4 md:p-6">
+      <div ref={dialogRef} className="dialog-wrap absolute bottom-0 inset-x-0 z-20 p-4 md:p-6">
         <div className="dialog-box max-w-4xl mx-auto bg-slate-900/95 border-2 border-slate-600 rounded-xl p-4 md:p-5 min-h-32 relative">
           {speakerMeta && speakerMeta.name && (
             <span className="absolute -top-4 left-4 px-3 py-1 rounded-md text-sm font-bold bg-slate-800 border border-slate-600" style={{ color: speakerMeta.color }}>
@@ -2448,7 +2473,7 @@ function DlcHallScreen({ onEnter, onEnterCh2, onBack }: { onEnter: (id: string, 
 
   const resetDlc = (id: string) => {
     if (!save) return
-    const s: GameState = { ...save, dlc: { ...(save.dlc ?? {}), [id]: {} } }
+    const s: GameState = id === 'ch2' ? restartCh2(save) : { ...save, dlc: { ...(save.dlc ?? {}), [id]: {} } }
     saveState(s)
     setSave(s)
     setConfirmReset(null)

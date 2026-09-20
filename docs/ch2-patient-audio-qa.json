@@ -1,0 +1,123 @@
+[
+  {
+    "id": "vox_ch2_aorta",
+    "seconds": 2.72,
+    "sample_rate": 24000,
+    "mono": true,
+    "finite": true,
+    "peak": 0.5010128617286682,
+    "rms": 0.09359472231492479,
+    "expected": "呃……背也疼……",
+    "asr": "背也疼"
+  },
+  {
+    "id": "vox_ch2_chest",
+    "seconds": 2.599,
+    "sample_rate": 24000,
+    "mono": true,
+    "finite": true,
+    "peak": 0.4466381072998047,
+    "rms": 0.08794145763659779,
+    "expected": "胸口……闷得慌。",
+    "asr": "胸口闷得慌"
+  },
+  {
+    "id": "vox_ch2_denture",
+    "seconds": 2.675,
+    "sample_rate": 24000,
+    "mono": true,
+    "finite": true,
+    "peak": 0.44122007489204407,
+    "rms": 0.09030155959234974,
+    "expected": "哎，这头疼好几天了。",
+    "asr": "唉 这头疼好几天了"
+  },
+  {
+    "id": "vox_ch2_fall",
+    "seconds": 1.372,
+    "sample_rate": 24000,
+    "mono": true,
+    "finite": true,
+    "peak": 0.43671491742134094,
+    "rms": 0.08435826785998345,
+    "expected": "嗯……呃……",
+    "asr": "嗯 呃"
+  },
+  {
+    "id": "vox_ch2_gut",
+    "seconds": 2.195,
+    "sample_rate": 24000,
+    "mono": true,
+    "finite": true,
+    "peak": 0.39100953936576843,
+    "rms": 0.09491901710256427,
+    "expected": "哎哟……肚子疼死了。",
+    "asr": "哎呦 肚子疼死了"
+  },
+  {
+    "id": "vox_ch2_lung",
+    "seconds": 3.002,
+    "sample_rate": 24000,
+    "mono": true,
+    "finite": true,
+    "peak": 0.4336462616920471,
+    "rms": 0.09754962292406293,
+    "expected": "上回的片子，我都带来了。",
+    "asr": "上回的片子我都帶來了"
+  },
+  {
+    "id": "vox_ch2_postop",
+    "seconds": 2.676,
+    "sample_rate": 24000,
+    "mono": true,
+    "finite": true,
+    "peak": 0.499614417552948,
+    "rms": 0.08772184546043843,
+    "expected": "慢一点，伤口有点疼。",
+    "asr": "慢一点 伤口有点疼"
+  },
+  {
+    "id": "vox_ch2_stroke",
+    "seconds": 1.874,
+    "sample_rate": 24000,
+    "mono": true,
+    "finite": true,
+    "peak": 0.5467575192451477,
+    "rms": 0.0894064258301059,
+    "expected": "呃……唔……",
+    "asr": "呃喔喔"
+  },
+  {
+    "id": "vox_ch2_trauma",
+    "seconds": 1.381,
+    "sample_rate": 24000,
+    "mono": true,
+    "finite": true,
+    "peak": 0.42903149127960205,
+    "rms": 0.10465171847926157,
+    "expected": "呃……嗯……",
+    "asr": "呃...嗯"
+  },
+  {
+    "id": "vox_ch2_waiting",
+    "seconds": 2.354,
+    "sample_rate": 24000,
+    "mono": true,
+    "finite": true,
+    "peak": 0.6621133089065552,
+    "rms": 0.08158360018828685,
+    "expected": "哎，到我没有啊？",
+    "asr": "诶 倒 我没有啊"
+  },
+  {
+    "id": "vox_ch2_wrist",
+    "seconds": 2.8,
+    "sample_rate": 24000,
+    "mono": true,
+    "finite": true,
+    "peak": 0.5434603095054626,
+    "rms": 0.09011840689888012,
+    "expected": "嘶……这只手真不敢动。",
+    "asr": "這隻手真不敢動"
+  }
+]

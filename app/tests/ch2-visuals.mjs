@@ -51,7 +51,10 @@ try {
     const match = matches.find(({ step }) => [step.sprite ?? (step.speaker === 'me' ? 'me' : step.speaker === 'luzhou' ? 'luzhou' : undefined), step.sprite2, step.phone].filter(Boolean).some(value => ch2PortraitAsset(value, gender) === asset))
     assert(match, `No scene found for ${key}`)
     const { context, page } = await scene(match.shift.id, match.node, false, gender)
-    await page.waitForFunction(asset => [...document.images].some(i => i.src.endsWith('/' + asset + '.png') && i.complete && i.naturalWidth > 0), asset)
+    // The abdominal patient's old standing portrait stays in the archive, but
+    // his actual entrance now uses the requested transport-bed variant.
+    const renderedAsset=key==='pat_gut'?'ch2_patient_gut_bed':asset
+    await page.waitForFunction(asset => [...document.images].some(i => i.src.endsWith('/' + asset + '.png') && i.complete && i.naturalWidth > 0), renderedAsset)
     await context.close()
   }
   for (const [index, shift] of CH2_SHIFTS.slice(0, 5).entries()) {
@@ -95,5 +98,5 @@ try {
   assert.equal(ch2BookUnlocked('c2am'), 20)
   assert.equal(ch2BookUnlocked('c2n1', true), 20)
   assert.deepEqual(errors, [])
-  console.log('PASS: 21 mapped portraits rendered, five book unlock stages, locked next page, mobile fit, six scene images, retired in-story captions, no page errors. Screenshots: ' + output)
+  console.log('PASS: 21 portrait mappings preserved; active scenes render with the abdominal bed replacement; five book unlock stages, mobile fit, six scene images and retired captions. Screenshots: ' + output)
 } finally { await browser.close() }
