@@ -123,10 +123,35 @@ export function ch2StepForState(id: string, step: Step, state: Pick<GameState, '
     else if (state.finished) text = '您还在找父亲的旧片吧？换机器没有把档案丢掉。身份没核清的材料，我这边还不能直接交给您。'
     else if (flags.mystery_asked) text = '您去年问过旧片库，我记得。换机器没有把旧档案丢掉。您还是想找家人的片子？'
   }
-  if (id === 'c2n3_x5' && flags.mystery_told) text = '我知道，没认准，不能算找着了。（他松开捏皱的申请单）今天先看我的头痛吧……如果片子没事，是不是我就真没事了？'
+  if (id === 'c2n3_x5' && flags.mystery_told) text = '我知道，那张片子还没认准，不能算找着了。（他把旧袋口按紧）我不催。今天先看我的头痛吧……片子没事，我就真没事了吗？'
   if (id === 'c2n5_a1' && flags.archive_sealed) text = '去年你在书架后面看见的柜子还在。封条仍是1999年1月，「……周……存」的字更淡了。老周把纸袋搁在柜顶：「这次不用隔着门猜了。」'
   if (id === 'c2d2_n4' && state.gender === 'f') text = '你和陆舟把水箱体模、线对卡体模依次摆好，按实验单完成三组采集。检查床退了出来，她把箱子抱回推车。'
   if (id === 'c2n5_p2d' && state.gender === 'f') text = '她秒回了一个抱拳的表情。凌晨两点十七分，这座县城里还有两个没睡的人。'
+  // Narrative callbacks only: use existing memories, never create a choice,
+  // reward, new flag or recollection of an optional scene the player skipped.
+  if (id === 'c2d2_16a' && flags.remote_asked) {
+    text = flags.lei_cable
+      ? '小凯说回头给字段清单，小雷说那条线单走外网。两句话放在一起，还缺了中间那一截。「我去问清楚。你那份申请也别停。」'
+      : '小凯答应过要字段清单，到现在还没见着。「回头我去追一下。你别拿厂家的做法当批件，申请照走。」'
+  }
+  if (id === 'c2n3_x0' && flags.c2n3_d) text = '凌晨四点，声控灯熄了。黑处一声纸袋摩擦，灯又亮起。那个问旧片的人还坐着，旁边是小唐倒的水，杯口已经没了热气。刚才的平车来来去去，他一直给别人让着路。'
+  if (id === 'c2d4_e2' && flags.remote_asked) text = '小凯那晚答应给你的字段清单，拿到了没有？不能只有名片背面那一笔。小雷，先把你实际查到的摊开说。'
+  if (id === 'c2d4_e5' && flags.wen_remote) text = '确定。雯雯让咱们逐条看的附件三，就是这一条：使用「脱敏后数据」。可我对过原样本和导出结果，自动脱敏脚本没清DICOM头，姓名还在。证据已存本地，不往群里发。'
+  if (id === 'c2n5_a7' && (flags.archive_film || flags.mystery_told)) text = '是我，那会儿头发还够往后梳。（他看见你在找片袋上的年份）这一柜是教学片，不是你惦记的那只无名袋。那张的身份还得查。先把这些学会，笔记里我画错的地方也别跳过去。'
+  if (id === 'c2n5_g4' && flags.c2n5_b) text = '你跟着他往电梯走。小唐从后面追来，举着空保温盒：「两位，谁负责洗？」'
+  if (id === 'c2n5_g5' && flags.c2n5_b) text = '（老周已经按住电梯开门键）牛肉谁吃的谁洗。……别看我，咱仨一人一遍。'
+  if (id === 'c2am_0') {
+    const reply = flags.audit_evidence
+      ? '小雷把你让他保留的证据交了上去，主任在接收栏签名。'
+      : flags.data_audit
+        ? '小雷只报已核实的样本，待查项单列，主任逐项签收。'
+        : flags.data_oppose
+          ? '主任在「离线支持联系人」后写下自己的名字：「厂家这边我接着谈。」'
+          : flags.data_support
+            ? '主任扣住新增服务的签字页：「修过也得复核，不能他说好了就算好。」'
+            : '主任在交接记录上签了字。'
+    text = '周一早上八点，办公室先过昨夜交班：CT仍停机，工程师负责复核；远程终端保持离线。信息科今天接手查日志，周五反馈。' + reply + '老周把排班表推过来，你的名字在主值栏，他的在备班栏。'
+  }
   return text === step.text && queue === step.queue ? step : { ...step, text, queue }
 }
 
@@ -418,9 +443,9 @@ const C2N1: Record<string, Step> = {
   c2n1_0: { bg: 'bg_ctcontrol', speaker: 'sys', text: '2025年11月，晚上九点半。影像科走廊新刷了漆，CT室门口的红地垫还没踩脏。你在新打卡机前站了两秒——连打卡机都换了。', effect: { flag: 'c2_started' }, next: 'c2n1_1' },
   c2n1_1: { speaker: 'sys', text: '「咔哒」——打卡成功。', sfx: 'stamp', effect: { gold: 50, ap: 3 }, next: 'c2n1_2' },
   c2n1_2: { speaker: 'tang', sprite: 'char_tang', sfx: 'vox2_tang', text: '新同事！……哦不对，老员工！是我紧张——今晚是咱科新CT启用后第一个夜班，护士长叮嘱我三遍「别乌鸦嘴」。我什么都没说！', next: 'c2n1_3' },
-  c2n1_3: { speaker: 'tang', sprite: 'char_tang', text: "厂家今天下午撤场，设备科和信息科刚交完班。去年说下个月就到，结果机房改造、交货、验收一拖再拖……这回可真开起来了。", next: 'c2n1_4' },
+  c2n1_3: { speaker: 'tang', sprite: 'char_tang', text: "厂家下午刚撤场。机房改造、交货、验收，去年说「下个月到」的话，听了一年。真启用了，老周又把夜间报修电话挨个问了一遍——比问机器多少钱还仔细。", next: 'c2n1_4' },
   c2n1_4: { speaker: 'zhou', sprite: 'char_zhou', sfx: 'vox2_zhou', text: '（不知何时出现在门口）说谁不出来。……新机器，新规矩：**今晚你拍，我看着**。以后反过来的日子，不远了。', next: 'c2n1_5' },
-  c2n1_5: { speaker: 'me', sprite: 'char_zhou', text: '（顺着他目光看进CT室）机架的圆孔里亮着灯，像一只安静的眼睛。这就是批文走了一年、全院等了快两年的「大家伙」。', next: 'c2n1_6' },
+  c2n1_5: { speaker: 'me', sprite: 'char_zhou', text: "（顺着他的目光看进CT室）圆孔里亮着灯。老周伸手去摸旧操作台的位置，摸了个空，转而替你把椅子往前推了一点。", next: 'c2n1_6' },
   c2n1_6: { speaker: 'zhou', sprite: 'char_zhou', text: "老CT去年春天烧了球管，一直趴窝。停产配件没等来，倒等来这台新机。（他拍了拍你的肩）去年那张处置单，老范收着。开诊前去转转吧。", next: 'c2n1_hub' },
   c2n1_hub: { bg: 'bg_ctcontrol', speaker: 'sys', text: '【自由行动 · 行动力⚡×3】', choices: [
     { text: '看看角落里的老伙计（⚡-1）', next: 'c2n1_ab1', cond: { notFlag: 'c2n1_a', flag: 'bai_tube', ap: 1 } },
@@ -454,14 +479,14 @@ const C2N1: Record<string, Step> = {
     { text: '「好东西，以后省心。」', next: 'c2n1_b5b' },
     { text: '（帮他抬箱子上推车）', next: 'c2n1_b5b', effect: { gold: 30, heart: 1 }, risk: { chance: 0.3, next: 'c2n1_b5c', effect: { ap: -1 } } },
   ]},
-  c2n1_b5a: { speaker: 'kai', sprite: 'char_kai', text: '（笑）放心，走的是设备通道。……具体字段清单我回头让信息科拉一份，正规流程嘛。（他低头继续装箱，没有再展开。）', next: 'c2n1_b6' },
+  c2n1_b5a: { speaker: 'kai', sprite: 'char_kai', text: "设备通道，安装单上这么写的。你问到具体字段，我还真不能拍胸脯。（他在名片背面记了一笔）我找片区同事要清单，给你们信息科核，别光听我一句「放心」。", next: 'c2n1_b6' },
   c2n1_b5b: { speaker: 'kai', sprite: 'char_kai', text: "名片拿着，撤场后归片区同事管。有事先打电话。这台机柜先别碰，拆出一箱多余螺丝，我也没法交差。", next: 'c2n1_b6' },
   c2n1_b5c: { speaker: 'sys', text: '箱子一歪，里面的线材散了一地。你陪他重新理了二十分钟线，他直乐：「夜班大将，手上活儿不错，就是运气差点。」', next: 'c2n1_b5b' },
   c2n1_b6: { speaker: 'sys', text: '小凯推着最后一个纸箱走了。控制室彻底安静下来，只剩机架待机的低鸣。', effect: { flag: 'c2n1_b' }, next: 'c2n1_hub' },
   // —— E. 走廊转转 · 小雷 ——
   c2n1_e1: { speaker: 'lei', sprite: 'char_lei', sfx: 'vox2_lei', text: '新机器进PACS了，今晚的图直接上工作站，不用抱着板子跑了——你们科总算过上了二十一世纪的日子。', effect: { ap: -1 }, next: 'c2n1_e2' },
-  c2n1_e2: { speaker: 'lei', sprite: 'char_lei', text: '……对了，（压低声音）那台远程终端的网线是我接的，**单独走的一条外网**。主任签的字。我就一说，你就一听。', effect: { flag: 'lei_cable' }, next: 'c2n1_e3' },
-  c2n1_e3: { speaker: 'sys', text: '他贴完最后一张网线标签，拎着工具箱走了。你回头看了一眼那个黑盒子——天线一闪一闪。', effect: { flag: 'c2n1_e' }, next: 'c2n1_hub' },
+  c2n1_e2: { speaker: 'lei', sprite: 'char_lei', text: "那台远程终端的线是我接的，**单独走的一条外网**，有主任签字。线路我认得，里面传什么还得核字段。别到时候都来问我——插网线又不是盖章。", effect: { flag: 'lei_cable' }, next: 'c2n1_e3' },
+  c2n1_e3: { speaker: 'sys', text: "小雷把一张线号标签贴歪了，揭下来重贴。走到电梯口，他又折回去拍了张接口照片。黑盒子的网口灯还在闪。", effect: { flag: 'c2n1_e' }, next: 'c2n1_hub' },
   // —— C. 茶水间 · 小唐八卦 ——
   c2n1_c1: { bg: 'bg_breakroom', speaker: 'sys', text: '茶水间的灯坏了一半，小唐正踮着脚够橱柜顶上的速溶咖啡。', effect: { ap: -1 }, next: 'c2n1_c2' },
   c2n1_c2: { speaker: 'tang', sprite: 'char_tang', text: '哎，正好！帮我够一下——欸，听说没？新CT才用三天，白班预约已经排到下下周了。B超室眼红得不行，背地里管咱那台机器叫「**印钞机**」。', next: 'c2n1_c3' },
@@ -470,9 +495,9 @@ const C2N1: Record<string, Step> = {
     { text: '（把刚买的奶茶递过去）「茶话会入会费。」', next: 'c2n1_c4b', cond: { item: 'milktea' }, effect: { loseItem: 'milktea' }, tag: 'good' },
     { text: '（帮她踮脚够咖啡罐）', next: 'c2n1_c4c', risk: { chance: 0.35, next: 'c2n1_c4d', effect: { ap: -1 } } },
   ]},
-  c2n1_c4a: { speaker: 'tang', sprite: 'char_tang', text: '哈哈，那今晚喂机器的就是你！……说真的，主任跟院里提了，**照这个量，明年可能申请第二台**。到时候咱科就是全院最横的科室。', next: 'c2n1_c5' },
+  c2n1_c4a: { speaker: 'tang', sprite: 'char_tang', text: "可不！它吃电，咱吃剩饭。主任倒是提了，照这个量，明年可能申请第二台。我先问能不能多配两个人，护士长让我别做梦。", next: 'c2n1_c5' },
   c2n1_c4b: { speaker: 'tang', sprite: 'char_tang', text: '（接过奶茶，眼睛一亮）上道！……那我跟你说个真格的：**设备科老范跟老周是三十年的老搭档**，当年那台老X光机就是他俩一起装的。老白那批便宜球管的事，设备科盯了不是一天两天了——你就等着看吧。', effect: { heart: 1 }, next: 'c2n1_c5' },
-  c2n1_c4c: { speaker: 'tang', sprite: 'char_tang', text: '（接过咖啡罐）可以啊，身手不错。……欸，你说，老周今晚在CT室里站了一下午，一句话不说——他到底在看什么？', next: 'c2n1_c5' },
+  c2n1_c4c: { speaker: 'tang', sprite: 'char_tang', text: "（接过咖啡罐）欸，下午老周在机房里站了半天。我问他是不是舍不得老机器，他问我：夜里停机，病人往哪儿送？……你说这人，聊天都能聊出张排班表。", next: 'c2n1_c5' },
   c2n1_c4d: { speaker: 'sys', text: '罐子一歪，半罐咖啡粉撒进了水槽。你俩蹲着擦了十五分钟地，小唐笑得直不起腰：「这就算夜班开光的仪式感吧。」', next: 'c2n1_c5' },
   c2n1_c5: { speaker: 'sys', text: '纸杯见底，八卦听完。回CT室的路上，你的脚步轻快了些。', effect: { flag: 'c2n1_c' }, next: 'c2n1_hub' },
   // —— 开诊主线：坠床的老人 ——
@@ -503,8 +528,8 @@ const C2N1: Record<string, Step> = {
   c2n1_d1b: { speaker: 'zhou', sprite: 'char_zhou', text: "这个是新月形，硬膜下。硬膜外常是凸透镜样。两种长相，别记反了。", image: 'ct_head_hema', next: 'c2n1_d2' },
   c2n1_d1c: { speaker: 'zhou', sprite: 'char_zhou', text: "这片是偏白的血肿。早期脑梗不一定显得出来，不能只靠黑白猜。", image: 'ct_head_hema', next: 'c2n1_d2' },
   c2n1_d2: { speaker: 'he', phone: 'char_he', text: '（看完图像，已经在打电话）神外！硬膜下，中线移位，准备手术——', image: 'ct_head_hema', next: 'c2n1_d3' },
-  c2n1_d3: { speaker: 'sys', text: '平车呼啸而去。从进门到图像出来，十一分钟。', next: 'c2n1_d4' },
-  c2n1_d4: { speaker: 'zhou', sprite: 'char_zhou', text: '（望着平车，没头没尾地说）这台机器第一晚就派上用场了。……行了，第一扫，你及格了。', effect: { badge: 'first_ct' }, event: 'ch2_first_scan', next: 'c2n1_p0' },
+  c2n1_d3: { speaker: 'sys', text: "平车呼啸而去。从进门到图像出来，十一分钟。小何跑出几步又折回来，拎走了床边那双拖鞋：「老爷子的，别弄丢了。」", next: 'c2n1_d4' },
+  c2n1_d4: { speaker: 'zhou', sprite: 'char_zhou', text: "（朝电梯看了一眼）去年碰上这事，得先联系车，把人送出去查。……图传好了？行，第一扫，及格。那张报修电话表别收进抽屉，贴外头。", effect: { badge: 'first_ct' }, event: 'ch2_first_scan', next: 'c2n1_p0' },
   // —— 第二例：肾绞痛的年轻人 ——
   c2n1_p0: { speaker: 'sys', text: "凌晨一点半，一个小伙子被同事架进门，捂着腰，刚挨到椅子又弹了起来。", sfx: 'ring', sprite: 'pat_stone', next: 'c2n1_pain' },
   c2n1_pain: { speaker: 'stone', sprite: 'pat_stone', sfx: 'vox_guy', text: '哎呦，疼死我了。', next: 'c2n1_p1' },
@@ -523,7 +548,7 @@ const C2N1: Record<string, Step> = {
   c2n1_p5: { speaker: 'stone', sprite: 'pat_stone', text: "（缓过来一点，凑近屏幕）就这么一小粒？我还以为里面卡了块砖。", next: 'c2n1_p6' },
   c2n1_p6: { speaker: 'me', sprite: 'pat_stone', text: "（把图传回急诊）图和报告一起送过去了，小何带你回去接着处理。……这张放大了，别拿屏幕量石头。", effect: { gold: 80 }, next: 'c2n1_s1' },
   // —— 收束 ——
-  c2n1_s1: { bg: 'bg_ctcontrol', speaker: 'sys', text: '凌晨四点，收尾。你习惯性去拿登记本——桌上一台崭新的扫码枪，登记已经电子化。', next: 'c2n1_s2' },
+  c2n1_s1: { bg: 'bg_ctcontrol', speaker: 'sys', text: "凌晨四点，你顺手去拿登记本，摸到的是新扫码枪。老周正在填电子记录，光标停在姓名栏。他没催你收拾，先把这一条存好了。", next: 'c2n1_s2' },
   c2n1_s2: { speaker: 'zhou', sprite: 'char_zhou', text: "（听见「登记本」，老周手一顿）电子的，也得有人登记才算数。……去年少的那页，医务科这回要把后续核完。主任叫咱们周一早点到。", effect: { heart: 1, flag: 'paperless' }, event: 'ch2_ct_open', next: 'c2n1_s3' },
   c2n1_s3: { speaker: 'sys', text: '【今夜结算】诊疗收入 +300 金币。第1夜 ·「新机」——完。', effect: { gold: 300, ap: -99 }, end: true },
 }
@@ -560,18 +585,18 @@ const C2D2_QUEUE4 = [
 const C2D2: Record<string, Step> = {
   c2d2_0: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: '三天后，周一。主任把你从夜班临时调来支援白班：新CT的名声传开了，门诊开单量翻倍，候诊长队从CT室门口排到电梯间。', next: 'c2d2_1' },
   c2d2_1: { speaker: 'director', sprite: 'char_director', sfx: 'vox2_director', text: "年轻人，白班要快！队列交给你，急诊来了叫我。别光盯屏幕，门口那排人也盯着点。", effect: { flag: 'day_shift' }, queue: C2D2_QUEUE0, next: 'c2d2_reg0' },
-  c2d2_reg0: { bg: 'bg_office_day', speaker: 'director', sprite: 'char_director', text: '开诊前，两分钟。去年登记本少的那页，检查记录补齐了，后续办法却一直悬着。这次市里专项督查到院，医务科要把后续核清。老周，你来说。', next: 'c2d2_reg1' },
+  c2d2_reg0: { bg: 'bg_office_day', speaker: 'director', sprite: 'char_director', text: "开诊前，先说一件事。去年登记本少的那页，检查记录补齐了，后续办法却一直悬着。这次市里专项督查到院，医务科要核清。老周，材料你带来了吧？", next: 'c2d2_reg1' },
   c2d2_reg1: { speaker: 'zhou', sprite: 'char_zhou', text: '页是我撕的。老人没证件，也没钱，我先给他拍了，没走登记申请。后来怕查，又想把这事盖过去。……不是这孩子的主意。', next: 'c2d2_reg2' },
   c2d2_reg2: { speaker: 'sys', text: '主任转向你，等你把自己知道的说清楚。', choices: [
     { text: '「那晚我在，后来也帮着拍了。经过我可以补。」', next: 'c2d2_reg3', cond: { flag: 'n5_cover' } },
     { text: '「我只说自己能确认的部分，其他请周师傅补。」', next: 'c2d2_reg3', cond: { notFlag: 'n5_cover' } },
   ] },
   c2d2_reg3: { speaker: 'director', sprite: 'char_director', text: '照实写。不是追那几张片子的钱，是人没登记、申请没留、报告最后交给谁也没记。明天他再来，谁接得上？', next: 'c2d2_reg4' },
-  c2d2_reg4: { speaker: 'zhou', sprite: 'char_zhou', text: '我接得上，可我总有不在的时候。（他把笔帽拔下来）这回补全，别再让我拿记性当登记本。', next: 'c2d2_reg5' },
+  c2d2_reg4: { speaker: 'zhou', sprite: 'char_zhou', text: "（把折了几折的情况说明摊平）我认得他，别人不认得。我歇班那天，他要再来，总不能在门口等我。临时身份这栏，我跟急诊再核一遍。", next: 'c2d2_reg5' },
   c2d2_reg5: { speaker: 'director', sprite: 'char_director', text: '我当时没把后面的路落实，这个责任我认。急诊临时身份先建，检查和报告跟着走，手续后补；困难救助谁受理，也得写清。今天起按新办法办。', effect: { flag: 'ch2_registration_resolved' }, event: 'ch2_registration', next: 'c2d2_reg6' },
   c2d2_reg6: { speaker: 'sys', text: '门缝里探进小唐的脑袋：「两分钟到。外头大爷已经看了三遍挂钟了。」主任收起材料：「走，先接人。」', next: 'c2d2_2' },
   c2d2_2: { bg: 'bg_waiting', speaker: 'sys', text: '【白班队列】预约病人按号排，急诊/住院随时「插单」。让危重等太久，是要出事的。', queue: C2D2_QUEUE0, next: 'c2d2_3' },
-  c2d2_3: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: '第一例进机房。大爷，去年体检发现肺结节，医嘱半年复查。', queue: C2D2_QUEUE1, next: 'c2d2_lung_scan' },
+  c2d2_3: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: "第一位是来复查肺结节的大爷。去年体检发现，医嘱半年复查。旧片袋的口子用胶带补了三层，他递过来还不松手：「上回那张也看看，别光看新的。」", queue: C2D2_QUEUE1, next: 'c2d2_lung_scan' },
   c2d2_lung_scan: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: "大爷按提示屏住气。扫描完成，工作站收到胸部数据，你先打开了默认的厚层序列。", sfx: 'xray', next: 'c2d2_4' },
   c2d2_4: { speaker: 'me', text: '（阅片）肺窗上一枚6mm的磨玻璃结节……等等，今天的图像上，它**时有时无**，有几层根本看不见。', image: 'ct_lung', queue: C2D2_QUEUE1, next: 'c2d2_5' },
   c2d2_5: { speaker: 'sys', text: '【怎么回事？】', image: 'ct_lung', queue: C2D2_QUEUE1, choices: [
@@ -607,7 +632,7 @@ const C2D2: Record<string, Step> = {
   c2d2_trauma_scan: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: "医护完成准备，先后按头颅和腹部方案采集。数据送往工作站重建，抢救室的电话一直没有挂。", sfx: 'xray', next: 'c2d2_t1' },
   c2d2_t1: { speaker: 'sys', text: "联合扫描完成，图像传到工作站。值班医师拉过椅子逐层查看，电话另一头，抢救室还在等结果。", image: 'ct_abdomen_trauma', queue: C2D2_QUEUE4.map(patient => patient.name === '车祸伤患者' ? { ...patient, note: '图像已传出' } : patient), next: 'c2d2_t2' },
   c2d2_t2: { speaker: 'sys', text: '抢救室来电话致谢：「多发伤十分钟出全图，这机器真是买值了。」候诊区的大爷也朝你竖了竖大拇指——投诉的事，再没人提。', effect: { heart: 1, gold: 60 }, queue: C2D2_QUEUE4.filter(patient => patient.name !== '车祸伤患者'), next: 'c2d2_11' },
-  c2d2_11: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: "接下来轮到手腕摔伤的学生。普通片还有疑点，医师申请腕部CT。你把上一位的检查关掉，重新确认腕部协议。", next: 'c2d2_wrist_scan' },
+  c2d2_11: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: "手腕摔伤的学生终于叫到了号。他用左手收起没写完的作业：「明天还得交，能给我证明不是偷懒吗？」普通片仍有疑点，医师申请了腕部CT；你先把上一位的检查关掉，确认腕部协议。", next: 'c2d2_wrist_scan' },
   c2d2_wrist_scan: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: "学生把伤腕放稳。采集结束，工作站开始重建腕部切面。", sfx: 'xray', next: 'c2d2_wrist_result' },
   c2d2_wrist_result: { speaker: 'zhou', sprite: 'char_zhou', text: '图到了。先试骨窗，别把骨头调成一团白。', image: 'ct_wrist_simulated', next: 'c2d2_w2' },
   c2d2_w2: { speaker: 'sys', text: "【腕部调窗】调调窗宽和窗位，看看骨头里面的层次。", image: 'ct_wrist_simulated', windowTask: { image: 'ct_wrist_simulated', targetW: 4000, targetL: 250, tolW: 400, tolL: 80, success: 'c2d2_w2ok' }, next: 'c2d2_w2ok' },
@@ -616,27 +641,27 @@ const C2D2: Record<string, Step> = {
   c2d2_n0: { speaker: 'sys', text: '午休，机时难得空出来。一个抱着铝合金箱子的人探头进来，胸前挂着「田头技术大学」的访客牌。', next: 'c2d2_n1' },
   c2d2_n1: { speaker: 'luzhou', sprite: 'luzhou', sfx: 'vox_luzhou', text: "……真是你！老室友，你怎么瘦成这样？（陆舟把箱子往桌上一搁）行，夜班比读研还磨人。", next: 'c2d2_n2' },
   c2d2_n2: { speaker: 'me', sprite: 'luzhou', text: '陆舟？你不是读研去了——', next: 'c2d2_n3' },
-  c2d2_n3: { speaker: 'luzhou', sprite: 'luzhou', text: "导师又给我加活了，天天和低剂量重建的噪声较劲。今天批了体模机时——赶紧扫，下午病人一来我又得搬走。", next: 'c2d2_n4' },
+  c2d2_n3: { speaker: 'luzhou', sprite: 'luzhou', text: "硕博连读，没读出头呢，头发先少了。导师让我做低剂量重建，组会上翻来覆去都是水箱。今天批到一点体模机时，赶紧——下午病人来，我这箱水就得让床。", next: 'c2d2_n4' },
   c2d2_n4: { speaker: 'sys', text: "你和陆舟把水箱体模、线对卡体模依次摆好，按实验单完成三组采集。检查床退了出来，陆舟把箱子抱回推车。", sfx: 'xray', next: 'c2d2_n5' },
-  c2d2_n5: { speaker: 'luzhou', sprite: 'luzhou', text: "还认得这张**正弦图**吗？每个角度一排投影，排起来就这样。你当年还借我作业抄来着。", image: 'img_sinogram', next: 'c2d2_n6' },
+  c2d2_n5: { speaker: 'luzhou', sprite: 'luzhou', text: "认得这张**正弦图**吧？各个角度的投影排在一起。当年你借我抄作业，我把你画歪的坐标轴也抄过去了。（陆舟笑了一下）一块儿挨批，谁也别笑谁。", image: 'img_sinogram', next: 'c2d2_n6' },
   c2d2_n6: { speaker: 'luzhou', sprite: 'luzhou', text: '这张是**FBP**重建的体模。直接反投影容易糊，先滤波再反投影才把轮廓提起来。原理那本旧书第三、四页有，别让我现场推，我也得翻。', image: 'ct_phantom', next: 'c2d2_n7' },
   c2d2_n7: { speaker: 'me', sprite: 'luzhou', text: '那滤波器还有得选？', next: 'c2d2_n8' },
   c2d2_n8: { speaker: 'luzhou', sprite: 'luzhou', text: "有啊。锐利核看细节，噪声也显眼；平滑核看着顺，细节会让一点。你试试换一个，先别动扫描参数。", card: 'fbp_iterative', next: 'c2d2_n9' },
   c2d2_n9: { speaker: 'luzhou', sprite: 'luzhou', text: "我再开一组**迭代重建**对照。先估一幅图，再跟采集数据反复对、慢慢修。噪声少些，电脑得多干活——等结果够我泡碗面。", next: 'c2d2_n10' },
-  c2d2_n10: { speaker: 'luzhou', sprite: 'luzhou', text: "（放大图像，又缩回去）先别夸。噪声少了，细节有没有丢，还得比。体模这关过了，才轮得到临床数据。", next: 'c2d2_n11' },
-  c2d2_n11: { speaker: 'sys', text: '【实验结束。陆舟搓着手，进入正题——】', sprite: 'luzhou', next: 'c2d2_n12' },
-  c2d2_n12: { speaker: 'luzhou', sprite: 'luzhou', text: '那个……老同学，跟你打听个事。你们科能不能……给我们点**去标识化的临床数据**？几百例就行，训练验证用。伦理批件我们在办，就是慢，太慢了。', next: 'c2d2_n13' },
+  c2d2_n10: { speaker: 'luzhou', sprite: 'luzhou', text: "（放大，再缩回去）等等，右边这根细线呢？降噪以后反倒淡了。差点就拿这张去组会邀功了……原图留着，得对着查。", next: 'c2d2_n11' },
+  c2d2_n11: { speaker: 'sys', text: "陆舟把对照图编号抄好，笔在最后一行停了停。刚才还在拿旧作业逗你，这会儿倒先看了一眼办公室的门。", sprite: 'luzhou', next: 'c2d2_n12' },
+  c2d2_n12: { speaker: 'luzhou', sprite: 'luzhou', text: "老同学，你们科能不能给我们点**去标识化的临床数据**？几百例，训练验证用。伦理批件还在办。我知道得等，就是组会上问进度的时候……总不能回回都端出这一箱水。", next: 'c2d2_n13' },
   c2d2_n13: { speaker: 'sys', text: '【怎么回应？】', sprite: 'luzhou', choices: [
     { text: '「先补齐批件和协议，我帮你问小雷材料递哪儿。」', next: 'c2d2_14a', effect: { skill: 1, flag: 'luzhou_formal', badge: 'phantom_friend' }, tag: 'good' },
     { text: '「数据是病人的，我做不了主。你先做体模，临床数据的事咱按规矩来。」', next: 'c2d2_14b', effect: { flag: 'luzhou_wait' } },
     { text: '「我先帮你拷几百例？别外传就行。」', next: 'c2d2_14c', effect: { wealth: -1, flag: 'luzhou_gray' } },
   ]},
-  c2d2_14a: { speaker: 'luzhou', sprite: 'luzhou', text: "行，批件我催导师。你帮我问问小雷，上回那张申请表到底退在哪一栏了。", next: 'c2d2_15a' },
-  c2d2_15a: { speaker: 'luzhou', sprite: 'luzhou', text: '（忽然想起什么）对了，说起来气人——你们厂家那个远程终端，数据不是都回传厂家云了吗？**厂家拿数据一句话的事，我们做科研走流程走了半年**。这公平吗？', next: 'c2d2_16a' },
-  c2d2_16a: { speaker: 'me', sprite: 'luzhou', text: '（你想起小凯那个黑盒子，和小雷那句「单独走的一条外网」。）……这事，回头我帮你问问。', next: 'c2d2_n17' },
+  c2d2_14a: { speaker: 'luzhou', sprite: 'luzhou', text: "行，批件我催导师。你帮我问小雷，上回申请表退在哪一栏。别替我打包票，问清楚就够了——我不想把你也拖进去挨骂。", next: 'c2d2_15a' },
+  c2d2_15a: { speaker: 'luzhou', sprite: 'luzhou', text: "可厂家那个终端，不是说能回传数据吗？他们装个盒子就进来了，我连表往哪儿交都没弄明白。（陆舟把记录本一合）当然，人家到底传什么，我也不知道。", next: 'c2d2_16a' },
+  c2d2_16a: { speaker: 'me', sprite: 'luzhou', text: "「终端具体传什么，我也不清楚。你别拿厂家的做法当批件。」陆舟点点头，你把要问信息科的那一栏圈了出来。", next: 'c2d2_n17' },
   c2d2_14b: { speaker: 'luzhou', sprite: 'luzhou', text: "得，那今天先抱水箱回去。临床数据我接着跑申请，下回给你带食堂的烧饼。", next: 'c2d2_n17' },
   c2d2_14c: { speaker: 'luzhou', sprite: 'luzhou', text: "别拷！导师要问来源，我怎么交代？……你帮我找对递材料的人，比给我塞硬盘强。", next: 'c2d2_n17' },
-  c2d2_n17: { speaker: 'sys', text: '陆舟抱着体模走了，留下一本实验记录：「**体模实验数据归你们科存档，说不定哪天质控用得上**。」', effect: { flag: 'phantom_log' }, event: 'ch2_luzhou', next: 'c2d2_p1' },
+  c2d2_n17: { speaker: 'sys', text: "陆舟把箱扣压了两次才扣上，留下实验记录：「协议、参数和重建版本都在这儿，别只存那张好看的。下回得照着比。」最后一页那根变淡的细线，被圈了两道。", effect: { flag: 'phantom_log' }, event: 'ch2_luzhou', next: 'c2d2_p1' },
   // —— 下午收梢 ——
   c2d2_p1: { speaker: 'sys', text: "一下午，电话没停过。你刚排好三个号，小唐又从门缝里递进来一张加急单。", next: 'c2d2_p2' },
   c2d2_p2: { speaker: 'tang', sprite: 'char_tang', text: "（下班前探头）还坐着呢？我喊你两遍了。饭再不拿，微波炉都下班了。", next: 'c2d2_p3' },
@@ -645,9 +670,9 @@ const C2D2: Record<string, Step> = {
 
 /* ================= 第3夜「快」 ================= */
 const C2N3: Record<string, Step> = {
-  c2n3_0: { bg: 'bg_ctcontrol', speaker: 'sys', text: '晚上九点半。白班的喧嚣散尽，CT室只剩下机架待机的低鸣。', next: 'c2n3_1' },
+  c2n3_0: { bg: 'bg_ctcontrol', speaker: 'sys', text: "晚上九点半。白班的人走了，分诊台上的纸条倒越贴越多。新登记办法的联系人旁边，多了一张计时表；小唐正找地方贴，差点盖住报修电话。", next: 'c2n3_1' },
   c2n3_1: { speaker: 'sys', text: '「咔哒」——打卡成功。', sfx: 'stamp', effect: { gold: 50, ap: 3 }, next: 'c2n3_2' },
-  c2n3_2: { speaker: 'tang', sprite: 'char_tang', text: '今晚你可得盯紧点——护士长说，新CT启用后，**卒中绿道的DNT考核落到咱科头上了**。', next: 'c2n3_3' },
+  c2n3_2: { speaker: 'tang', sprite: 'char_tang', text: "（把计时表往旁边挪）这张也归咱们盯了：**卒中绿道，DNT**。护士长说不能让时间耗在咱这儿。我问她能不能先把这只慢两分钟的钟换了。", next: 'c2n3_3' },
   c2n3_3: { speaker: 'me', sprite: 'char_tang', text: 'DNT？', next: 'c2n3_4' },
   c2n3_4: { speaker: 'tang', sprite: 'char_tang', text: "就是进院到打上溶栓药用了多久。**DNT**。急诊那边一直计时，咱这儿得赶紧把图送过去，不能让人空等。", card: 'stroke_dnt', next: 'c2n3_hub' },
   c2n3_hub: { bg: 'bg_ctcontrol', speaker: 'sys', text: '【自由行动 · 行动力⚡×3】', choices: [
@@ -672,11 +697,11 @@ const C2N3: Record<string, Step> = {
   c2n3_a4c: { speaker: 'sys', text: '最上面一份文件滑进电梯缝，你俩趴地上捞了半天。她笑你：「影像科的腰也不行啊。」', next: 'c2n3_a4b' },
   c2n3_a5: { speaker: 'sys', text: '电梯门合上。你抱着手臂看了一会儿大厅的灯，回到CT室。', effect: { flag: 'c2n3_a' }, next: 'c2n3_hub' },
   // —— D. 小唐八卦 ——
-  c2n3_d1: { speaker: 'tang', sprite: 'char_tang', text: '今天神经内科门诊，我又看见那个「每年准时来报到」的神秘病人了——还是**全自费**，还是指征说得过去。今年主诉「头痛」，主任给开了个头颅CT平扫。', effect: { ap: -1 }, next: 'c2n3_d2' },
-  c2n3_d2: { speaker: 'tang', sprite: 'char_tang', text: "去年咳嗽，今年头痛。他记得咱们，连分诊台挪了位置都看出来了。……别跟人说我拿他当八卦啊。", effect: { flag: 'c2n3_d' }, next: 'c2n3_hub' },
+  c2n3_d1: { speaker: 'tang', sprite: 'char_tang', text: "今天神经内科那张头颅CT单，你看见没？去年问旧片的那个人，全自费。这回是头痛，神经内科医师开的平扫。单子都拿好了，他还在问片库有没有搬。", effect: { ap: -1 }, next: 'c2n3_d2' },
+  c2n3_d2: { speaker: 'tang', sprite: 'char_tang', text: "我说没搬，他才肯把外套脱下来。新机装了几天他不知道，分诊台挪过位置，他一眼就看出来了。……我给他倒了杯水，也不知道喝没喝。", effect: { flag: 'c2n3_d' }, next: 'c2n3_hub' },
   // —— K. 关东煮 · 小何（买了零食礼包） ——
   c2n3_k1: { bg: 'bg_breakroom', speaker: 'sys', text: '你把小卖部买的零食礼包拆开——里面正好有两盒自热关东煮。开水一冲，香气混着海带味漫开，你端着它走向急诊分诊台。小何的眼睛亮得像看见了亲人。', effect: { ap: -1, loseItem: 'snack' }, next: 'c2n3_k2' },
-  c2n3_k2: { speaker: 'he', sprite: 'char_he', text: "（烫得直哈气）夜班之神！……那个总来找旧片的病人，今晚又到了。站分诊台前半天，问我片库搬没搬。我说没搬，他才肯坐下。", next: 'c2n3_k3' },
+  c2n3_k2: { speaker: 'he', sprite: 'char_he', text: "（烫得直哈气）夜班之神！……丸子先放这儿。那个找旧片的人又来了，问完片库搬没搬，还问我「以前管片库的人呢」。我哪知道以前是谁，让他等门诊医生回话。", next: 'c2n3_k3' },
   c2n3_k3: { speaker: 'sys', text: "小何夹走最后一颗丸子，手机就响了。她指了指空盒子：「这个帮我扔一下，谢了！」", effect: { heart: 1, badge: 'night_snack', flag: 'c2n3_k' }, next: 'c2n3_hub' },
   // —— BK. 二手书的秘密（买了二手《医学影像学》） ——
   c2n3_bk1: { speaker: 'sys', text: '候诊间隙，你翻开自己买的那本二手《医学影像学》——书页间滑出一张旧书签，上面一行褪色的钢笔字。', next: 'c2n3_bk2' },
@@ -718,21 +743,21 @@ const C2N3: Record<string, Step> = {
   c2n3_h5: { speaker: 'zhou', sprite: 'char_zhou', text: "这套**CTA看管腔和斑块**，不能替人把血管打通。要不要进导管室处理，心内结合其他检查定。图传过去吧。", image: 'ct_coronary_cta', next: 'c2n3_h6' },
   c2n3_h6: { speaker: 'sys', text: "心内科接走病人和图像。你看了眼表，三点五十二分。小唐把刚泡好的茶推过来：「别问，新的。」", effect: { gold: 100 }, next: 'c2n3_x0' },
   // —— 支线：神秘病人第二诊 ——
-  c2n3_x0: { bg: 'bg_corridor', speaker: 'sys', text: '凌晨四点，胸痛病人收进心内科，科室静下来。候诊椅上，坐着一个安静得几乎透明的人。', next: 'c2n3_x1' },
+  c2n3_x0: { bg: 'bg_corridor', speaker: 'sys', text: "凌晨四点，走廊的声控灯熄了。你以为人已经走空，黑处却响了一声纸袋摩擦。灯重新亮起，候诊椅上那个人抬起头，膝上压着片袋。", next: 'c2n3_x1' },
   c2n3_x1: { speaker: 'mystery', sprite: 'pat_mystery', sfx: 'vox2_mystery', text: '医生，又是我。（他递上申请单：神经内科，头颅CT平扫，全自费）', next: 'c2n3_x2' },
   c2n3_x2: { speaker: 'me', sprite: 'pat_mystery', text: "（认出是去年那位来问旧片的人）……这次是头痛？门诊医师怎么说？", next: 'c2n3_x3' },
-  c2n3_x3: { speaker: 'mystery', sprite: 'pat_mystery', text: '说不清。一睡着就疼，像有什么东西在脑子里翻。（他顿了顿）**你们换新机器了。……老机器的数据，还在吗？**', next: 'c2n3_x4' },
+  c2n3_x3: { speaker: 'mystery', sprite: 'pat_mystery', text: "神经内科让我先查头痛。夜里老醒，醒了就想：我父亲那阵子，也总说不舒服。（他看看新机，又看你）**旧机器搬走了，老片子没一起搬走吧？**", next: 'c2n3_x4' },
   c2n3_x4: { speaker: 'me', sprite: 'pat_mystery', text: "旧片和老机器不是一回事，档案还在。您是想调以前的检查，还是找家人的？", next: 'c2n3_x5' },
-  c2n3_x5: { speaker: 'mystery', sprite: 'pat_mystery', text: "我父亲的。好多年了，能问的地方快问遍了。（他攥着单子）我最近也总头痛。医生，片子要是没事，我就真没事了吗？", next: 'c2n3_x6' },
+  c2n3_x5: { speaker: 'mystery', sprite: 'pat_mystery', text: "我父亲的。能问的地方快问遍了。我是怕……他的毛病，我也有。（他把申请单捏出一道折痕）今天先看我的吧。片子要是没事，我就真没事了吗？", next: 'c2n3_x6' },
   c2n3_x6: { speaker: 'sys', text: '【怎么回答？】', sprite: 'pat_mystery', choices: [
     { text: '「先做这次检查。结果出来，请医生跟您一起看看。」', next: 'c2n3_x7a', effect: { heart: 1 }, tag: 'good' },
     { text: '「CT很先进，多数问题都能查出来。」', next: 'c2n3_x7b' },
   ]},
-  c2n3_x7a: { speaker: 'mystery', sprite: 'pat_mystery', text: "好。（他松开了捏皱的申请单）先看我今天这个。找片子的事，不催你。", next: 'c2n3_mystery_scan' },
+  c2n3_x7a: { speaker: 'mystery', sprite: 'pat_mystery', text: "好，先查今天的。（他把旧片袋收回去，却没放进包里）找片子的事不催你。你要是听说片库要清东西，能不能先问一声？", next: 'c2n3_mystery_scan' },
   c2n3_x7b: { speaker: 'mystery', sprite: 'pat_mystery', text: '「多数」……那剩下的呢？（他摇摇头，走进了扫描间。）', next: 'c2n3_mystery_scan' },
   c2n3_mystery_scan: { bg: 'bg_ctcontrol', speaker: 'sys', text: "老人慢慢躺下，双手交叠在腹前。检查床驶过机架；采集结束，控制台开始重建。", sfx: 'xray', next: 'c2n3_x8' },
   c2n3_x8: { speaker: 'sys', text: "采集和重建完成。医师逐层查看，这次头颅平扫未见明确异常；头痛还需要回门诊继续评估。", image: 'ct_head_clean', next: 'c2n3_x9' },
-  c2n3_x9: { speaker: 'mystery', sprite: 'pat_mystery', text: '（接过片袋，指尖在「未见异常」四个字上摩挲了很久）……谢谢。明年11月，我可能还来。（他走进夜色，脚步比去年更慢。）', event: 'ch2_mystery', next: 'c2n3_s1' },
+  c2n3_x9: { speaker: 'mystery', sprite: 'pat_mystery', text: "（把新报告夹到旧片袋最里层）明年11月，我可能还来。\n你问怎么总挑11月。他低头把袋口压平：「……到这个时候，就忍不住想来问问。」临走还回头看了一眼片库的方向。", event: 'ch2_mystery', next: 'c2n3_s1' },
   c2n3_s1: { speaker: 'sys', text: '【今夜结算】诊疗收入 +280 金币。第3夜 ·「快」——完。', effect: { gold: 280, ap: -99 }, end: true },
 }
 
@@ -755,7 +780,7 @@ const C2D4: Record<string, Step> = {
   c2d4_t2: {"speaker":"sys","text":"主任对照原始薄层图像和多个切面确认，随即给急诊打电话，说明发现并安排紧急专科评估。你没有再插话，把所需图像逐一传好。","image":"ct_aortic_dissection_teaching","next":"c2d4_t2ok"},
   c2d4_t2ok: {"speaker":"me","text":"这些重组图和原始薄层都要留吧？","next":"c2d4_t2no"},
   c2d4_t2no: {"speaker":"zhou","sprite":"char_zhou","text":"都留。后面还要换方向看，用的也是这一组数据。别只导出那张漂亮的立体图。","next":"c2d4_t3ok"},
-  c2d4_t3ok: {"speaker":"sys","text":"推床离开时，妻子追上来问报告在哪里领。主任指了指同行的医生：「图像和结果已经联系好了，先跟医生走。」","next":"c2d4_9"},
+  c2d4_t3ok: {"speaker":"sys","text":"推床离开时，妻子追问报告去哪儿领。主任指着同行的医生：「已经联系好了，先跟他走。」她点点头，走了两步又回来拿外套——刚才叠了半天，还是落在椅子上了。","next":"c2d4_9"},
   c2d4_9: {"speaker":"sys","text":"走廊安静下来。老周端起杯子，发现茶已经凉了。他看了眼时钟，把杯盖拧了回去。","next":"c2d4_10"},
   c2d4_10: {"speaker":"zhou","sprite":"char_zhou","text":"先别热。下一位到门口了。","next":"c2d4_11a"},
   c2d4_11a: {"speaker":"sys","text":"下午，一位头痛的老爷子在门口摸了摸口袋：「手机钥匙都交了。我这人没别的毛病，就是零碎多。」",next: 'c2d4_metal_scan'},
@@ -773,18 +798,18 @@ const C2D4: Record<string, Step> = {
   c2d4_p3b: {"speaker":"zhou","sprite":"char_zhou",text: "不能包治。迭代重建和专门的金属伪影校正不是一回事，缺掉的测量信息也不是调个窗就有了。先看影响哪几层，别整套重扫。","image":"ct_dental_metal_teaching","next":"c2d4_m1"},
   c2d4_m1: {"speaker":"sys","text":"医师确认颅底附近的图像不足以判断病情。去除活动义齿后，团队只补充了必要范围的扫描，条纹明显减轻。新旧图像一起保留，交由医师完成判读。","next":"c2d4_m2"},
   c2d4_m2: {"speaker":"sys","text":"老爷子拿回义齿盒，开盖数了数。老周乐了：「放心，一颗没扣。」老爷子把盒子揣好：「这可说不准，你们机器刚才照得那么狠。」","next":"c2d4_m3"},
-  c2d4_m3: {"speaker":"me","text":"上午血管里那条线是真的，下午这些条纹倒是机器算出来的。光看着吓人，还真不能乱猜。","next":"c2d4_m4"},
-  c2d4_m4: {"speaker":"zhou","sprite":"char_zhou","text":"嗯。看不清就说看不清，别替图像把故事编完了。收拾一下，主任叫我们五点去开会。","next":"c2d4_e0"},
+  c2d4_m3: {"speaker":"me","text":"我把受影响的层面标出来。前一班那个人听见「未见异常」还不肯走，这位倒只惦记牙盒。老周接过鼠标，先把补扫前后的序列分开存好。","next":"c2d4_m4"},
+  c2d4_m4: {"speaker":"zhou","sprite":"char_zhou","text":"这位头痛还得接着查。受影响的层面、补扫后的图，交代清楚，别让接手的人重新猜一遍。……五点了，收拾一下，主任叫我们去开会。","next":"c2d4_e0"},
   // 旧选项分支落点：继续同一病例，不保留已撤掉的处置教学。
   c2d4_11b: { speaker: 'sys', text: '下一位病人已经来到检查室门口。', next: 'c2d4_11a' },
   c2d4_11c: { speaker: 'sys', text: '下一位病人已经来到检查室门口。', next: 'c2d4_11a' },
   // —— 傍晚 · 数据回传摊牌 ——
   c2d4_e0: { bg: 'bg_office_day', speaker: 'sys', text: '下午五点，医生办公室。主任召集临时小会：老周、你、小雷。桌上摊着一份厂家彩页：《**远程质控服务方案**》。', image: 'ev_remote_proposal', next: 'c2d4_e1' },
   c2d4_e1: { speaker: 'director', sprite: 'char_director', text: "现在那个终端只说做远程支持。厂家想再开「远程质控」，每月出报告，不加钱。先把已经在传什么弄清楚，再谈加功能。", next: 'c2d4_e2' },
-  c2d4_e2: { speaker: 'zhou', sprite: 'char_zhou', sprite2: 'char_director', text: "终端已经开着了，字段清单还没摊出来。「图像质量参数」到底是哪几个？小雷，你查到了吗？", next: 'c2d4_e3' },
+  c2d4_e2: { speaker: 'zhou', sprite: 'char_zhou', sprite2: 'char_director', text: "终端已经开着了，字段清单呢？彩页上这个「图像质量参数」到底装了什么？小雷，先说你实际看到的。", next: 'c2d4_e3' },
   c2d4_e3: { speaker: 'lei', sprite: 'char_lei', text: "我复核了试运行以来的留存数据。除了报错日志，终端还收了控制台导出的质控样本。样本的DICOM头里，患者ID、姓名、检查时间都还在。", effect: { flag: 'remote_proposal' }, next: 'c2d4_e4' },
-  c2d4_e4: { speaker: 'director', sprite: 'char_lei', sprite2: 'char_director', text: '（脸色沉下来）你确定？', next: 'c2d4_e5' },
-  c2d4_e5: { speaker: 'lei', sprite: 'char_lei', text: '确定。我截了图，存在本地。**厂家说「自动脱敏」，但脱敏脚本没清DICOM头。**（他顿了顿）而且，合同附件三写的是「为改进服务质量，乙方有权使用脱敏后数据」——**「脱敏后」三个字，是他们自己定义的**。', next: 'c2d4_e6' },
+  c2d4_e4: { speaker: 'director', sprite: 'char_lei', sprite2: 'char_director', text: "（把自己的签字页翻到最上面）这里批的是设备远程支持。你确定，留下的是带姓名的样本，不只是设备日志？", next: 'c2d4_e5' },
+  c2d4_e5: { speaker: 'lei', sprite: 'char_lei', text: "确定。原样本和导出后的我都比了，证据保存在本地。厂家说「自动脱敏」，**脚本却没清DICOM头**。附件三写「使用脱敏后数据」——可这一步根本没做好。", next: 'c2d4_e6' },
   c2d4_e6: { speaker: 'sys', text: '【你的表态？】', sprite: 'char_lei', choices: [
     { text: '「服务可以继续，先催厂家修脱敏脚本。」', next: 'c2d4_e7a', effect: { heart: -1, flag: 'data_support' } },
     { text: '「先停外传，维保改走离线支持。」', next: 'c2d4_e7b', effect: { skill: 1, flag: 'data_oppose' } },
@@ -793,7 +818,7 @@ const C2D4: Record<string, Step> = {
   c2d4_e7a: { speaker: 'zhou', sprite: 'char_zhou', text: "小雷刚把姓名那一栏指给你看了。至少先停质控样本外传，维保日志也得核清，不能混着放行。", next: 'c2d4_e8' },
   c2d4_e7b: { speaker: 'director', sprite: 'char_director', text: "那就先停外传。维保不能靠传病人姓名来做，我跟厂家谈离线支持，你把需要保留的日志列给我。", next: 'c2d4_e8' },
   c2d4_e7c: { speaker: 'director', sprite: 'char_director', text: "先断外网，院内PACS照常用。小雷查留存样本，老周跟我一起把字段和用途定清。结果报信息科，别自己悄悄处理了。", event: 'ch2_data_showdown', next: 'c2d4_e8' },
-  c2d4_e8: { speaker: 'sys', text: "散会时，陆舟的消息弹出来：「材料又退回来了，少一页导师签字。」你把输入框里的半句话删了，回了个「明天帮你问」。", event: 'ch2_data_showdown', effect: { flag: 'data_hook' }, next: 'c2d4_reg' },
+  c2d4_e8: { speaker: 'sys', text: "主任把核查单压在彩页上，拨通厂家的电话：「别再给我讲免费，先把谁负责写清楚。」陆舟的消息同时弹来：「材料退回来了，少一页导师签字。」你回：别省这页，明天一起问。", event: 'ch2_data_showdown', effect: { flag: 'data_hook' }, next: 'c2d4_reg' },
   c2d4_reg: { speaker: 'tang', sprite: 'char_tang', text: '对了，急诊那边困难患者的救助申请，今天有人接了。以前三通电话问一圈，今天我刚报临时号，对面就知道找哪份。', next: 'c2d4_reg2' },
   c2d4_reg2: { speaker: 'zhou', sprite: 'char_zhou', text: '那就好。小唐，把经办人的分机留一份——不是给我，贴值班室。省得换个人又从头问。', next: 'c2d4_e9' },
   c2d4_e9: { speaker: 'sys', text: '【本日结算】白班补贴 +250 金币。第4日 ·「狠」——完。', effect: { gold: 250, ap: -99 }, end: true },
@@ -821,7 +846,7 @@ const C2N5: Record<string, Step> = {
   c2n5_a1: { bg: 'bg_archive', speaker: 'sys', text: "老周陪你走进旧片库。高窗漏下一块月光，柜门上还是1999年1月的封条，「……周……存」的字迹已经褪了色。", next: 'c2n5_a2' },
   c2n5_a2: { speaker: 'zhou', sprite: 'char_zhou', text: "（打开纸袋，把两半铜片合好，图案拼成一个完整的「周」字）扶一下手电，别照我眼睛。", image: 'item_zhou_key_fixed', next: 'c2n5_a3' },
   c2n5_a3: { speaker: 'sys', text: '铜片插入锁孔，转了两圈。「咔哒」——柜门开了。', sfx: 'click', next: 'c2n5_a4' },
-  c2n5_a4: { speaker: 'me', sprite: 'char_zhou', text: "柜里是几摞教学片、一册手写笔记，还有一张压在玻璃下面的科室合影。没有新片，也没有登记本。", next: 'c2n5_a5' },
+  c2n5_a4: { speaker: 'me', sprite: 'char_zhou', text: "柜里摞着标有「教学片」的片袋，玻璃下压着科室合影。最上面那册手写笔记已经翻软，书脊缠了两道胶布。老周伸手就把它抽出来，没碰别的。", next: 'c2n5_a5' },
   c2n5_a5: { speaker: 'zhou', sprite: 'char_zhou', text: "（翻了两页，忽然笑了）原来这本搁这儿了。你看，这根线我当年画错了，师父硬让我重画三遍。擦得纸都快破了。", image: 'ev_ch2_teaching_archive', next: 'c2n5_a6' },
   c2n5_a6: { speaker: 'me', sprite: 'char_zhou', text: "片袋上写着「教学片」，笔记里夹着老设备的照片。合影的年份是1997；最边上那个头发还挺密、抱着本子的年轻人……我抬头看了眼老周。", image: 'ev_ch2_team_1997', choices: [
     { text: '「最边上那个，是您吧？」', next: 'c2n5_a7' },
@@ -830,8 +855,8 @@ const C2N5: Record<string, Step> = {
   // —— 柜中柜（买了黄铜钥匙） ——
   c2n5_k1: { speaker: 'sys', text: "你想起旁边那个小铁柜——去年在小卖部买的黄铜钥匙开的是它，不是封条柜。钥匙还合用。里面的借阅卡上，有同一套教学片的编号。", sfx: 'click', effect: { flag: 'old_photo' }, next: 'c2n5_k2' },
   c2n5_k2: { speaker: 'sys', text: "借阅卡的签名从工整写到潦草，同一个「周」。老周凑过来看：「最后几笔是下班前补的。别学这个，我自己都认了半天。」", next: 'c2n5_a7' },
-  c2n5_a7: { speaker: 'zhou', sprite: 'char_zhou', text: "对，是我。那会儿还没发福。（他把合影举近了点）片子可以拿出来学，顺序别打乱。笔记抄不明白的，白天来问我。", image: 'ev_ch2_team_1997', effect: { flag: 'old_register' }, event: 'ch2_cabinet', next: 'c2n5_a8' },
-  c2n5_a8: { speaker: 'sys', text: "走出片库，老周说：「下周市里来做质控，你跟陆舟做的体模记录先理好。到时候你讲，我在旁边补。」你问起合影里的其他人，他想了想：「改天慢慢认，先值班。」", effect: { flag: 'zhou_handover' }, next: 'c2n5_a9' },
+  c2n5_a7: { speaker: 'zhou', sprite: 'char_zhou', text: "是我，那会儿头发还够往后梳。师父拍片，我抱本子记，急了就画在手背上。（他把照片上的灰拂掉）这些教学片拿去学，顺序别乱。抄不明白的，白天来问我。", image: 'ev_ch2_team_1997', effect: { flag: 'old_register' }, event: 'ch2_cabinet', next: 'c2n5_a8' },
+  c2n5_a8: { speaker: 'sys', text: "走出片库，老周翻着笔记说：「下周市里来做质控，体模记录你理，你先讲，我补。」你问当年重画三遍后来对了没有。他伸手把书翻回那页：「你先看看。」", effect: { flag: 'zhou_handover' }, next: 'c2n5_a9' },
   c2n5_a9: { speaker: 'sys', text: "你把教学片和笔记的编号记进手册。老周把那页画错的线图展平，又折了回去：「这页也留着，别替我撕了。」", effect: { flag: 'nameless_films' }, next: 'c2n5_a10' },
   c2n5_a10: { speaker: 'sys', text: "你把两件钥匙装回纸袋，和老周一起签了归还记录。回到CT室，掌心还留着铜的凉意。", effect: { flag: 'c2n5_cabinet' }, next: 'c2n5_hub' },
   // —— B. 小唐的送别礼 ——
@@ -859,8 +884,8 @@ const C2N5: Record<string, Step> = {
   c2n5_m1: { speaker: 'kiddad', sprite: 'pat_kiddad', sfx: 'vox_kiddad', text: '孩子今晚吐了两次！**再扫一次，立刻！漏了出血你负得起责吗？！**', next: 'c2n5_m2' },
   c2n5_m2: { speaker: 'kidmom', sprite: 'pat_kidmom_holding', sprite2: 'pat_kiddad', sfx: 'vox_kidmom', text: '（把哭闹的孩子紧紧抱在怀里）不行！**三天前刚照过一次CT！网上都说这东西致癌，小孩子经不起这么照**——你们医院就知道让人做检查！', next: 'c2n5_m3' },
   c2n5_m3: { speaker: 'sys', text: '6岁男孩趴在母亲肩上，哭得更厉害了。三天前他们在外地旅游，孩子摔到头，当地医院做过一次头颅CT——**光盘就在父亲的包里**。', sfx: 'cry_child', sprite: 'pat_kidmom_holding', sprite2: 'pat_kiddad', next: 'c2n5_m4' },
-  c2n5_m4: { speaker: 'kiddad', sprite: 'pat_kiddad', text: '（把光盘拍在分诊台上）你们机器新，看得清楚，再扫一次我们才放心！', next: 'c2n5_m5' },
-  c2n5_m5: { speaker: 'kidmom', sprite: 'pat_kidmom_holding', text: '（声音劈了）放心？**照是你们说放心，不照也是你们说放心——你们到底哪句是真的？！**', next: 'c2n5_m6' },
+  c2n5_m4: { speaker: 'kiddad', sprite: 'pat_kiddad', text: "（把光盘放上分诊台，手还按着）车上他又吐，我真怕等到天亮就晚了。你们机器新，再看看不行吗？钱我们交。", next: 'c2n5_m5' },
+  c2n5_m5: { speaker: 'kidmom', sprite: 'pat_kidmom_holding', text: "（赶紧拍着孩子的背）你小声点，他一直听着呢！……医生，我也怕漏了。可三天前才照过，我不敢就这么点头。", next: 'c2n5_m6' },
   c2n5_m6: { speaker: 'sys', text: '【怎么处理？】', sprite: 'pat_kidmom_holding', sprite2: 'pat_kiddad', choices: [
     { text: '「都别吵了，扫！出了事我担着。」', next: 'c2n5_m7a', effect: { skill: -2, flag: 'c2n5_wrong' } },
     { text: '「光盘给我，先把旧图和新症状一起报给值班医师。」', next: 'c2n5_m7b', effect: { skill: 2, badge: 'alara_guard' }, tag: 'good' },
@@ -888,12 +913,12 @@ const C2N5: Record<string, Step> = {
   c2n5_m16: { speaker: 'kid', sprite: 'pat_kid6', sfx: 'vox_kid', text: '（抽噎着点头）……有棒棒糖吗？', next: 'c2n5_child_scan' },
   c2n5_child_scan: { bg: 'bg_ctcontrol', speaker: 'sys', text: "小唐答应等他回急诊问问糖的事。男孩躺稳，人员退出机房；按儿童协议完成采集，新的头颅序列开始重建。", sfx: 'xray', next: 'c2n5_m17' },
   c2n5_m17: { speaker: 'sys', text: "扫描完成，值班医师对照旧片：未见新发颅内出血。急诊继续查呕吐原因，安排孩子留观。你把结果传了过去。", image: 'ct_head_child_followup', next: 'c2n5_m18' },
-  c2n5_m18: { speaker: 'kiddad', sprite: 'pat_kiddad', text: '（瘫在候诊椅上，半天）……刚才，对不起。', next: 'c2n5_m19' },
-  c2n5_m19: { speaker: 'kidmom', sprite: 'pat_kidmom_holding', text: '（把那页剂量报告折得方方正正，收进贴身的口袋）医生，**那以后……还要来复查吗？**', next: 'c2n5_m20' },
+  c2n5_m18: { speaker: 'kiddad', sprite: 'pat_kiddad', text: "（坐在候诊椅边，搓了搓脸）刚才对不起。车上他一吐，我脑子里就只剩赶紧到医院……他妈妈让我慢点开，我还冲她发火。", next: 'c2n5_m19' },
+  c2n5_m19: { speaker: 'kidmom', sprite: 'pat_kidmom_holding', text: "（把剂量记录和旧报告放在一起）这两份我都留着。下次换个医生，也看得明白吧？……那以后，还要来复查吗？", next: 'c2n5_m20' },
   c2n5_m20: { speaker: 'me', sprite: 'pat_kidmom_holding', text: "今晚先在急诊留观，后面怎么复查，等医生评估后跟您交代。我把这次图也存进光盘。", next: 'c2n5_m21' },
-  c2n5_m21: { speaker: 'sys', text: '一家人进了留观室。孩子趴在爸爸背上，冲你挥了挥手。', next: 'c2n5_n1' },
+  c2n5_m21: { speaker: 'sys', text: "一家人去了急诊留观。男孩趴在爸爸背上，隔老远还冲小唐比划棒棒糖。小唐举起手：「记着呢，先听急诊医生的。」父亲也回头挥了一下，没再催。", next: 'c2n5_n1' },
   // —— 深夜 · 独立值守 ——
-  c2n5_n1: { bg: 'bg_ctcontrol', speaker: 'sys', text: '凌晨两点，科室静得能听见机架待机的电流声。这是你**第一次独立守CT室的整夜**。', next: 'c2n5_n2' },
+  c2n5_n1: { bg: 'bg_ctcontrol', speaker: 'sys', text: "凌晨两点。你在交班记录上写下时间，抬头时，玻璃里只有自己的倒影。老周的椅子空着，外套还在椅背上。值班室就在隔壁，你没过去，先看下一张单。", next: 'c2n5_n2' },
   c2n5_n2: { speaker: 'sys', text: '【事件1】住院部插单——术后发热，怀疑腹腔脓肿。', next: 'c2n5_n3' },
   c2n5_n3: { speaker: 'me', text: "申请单到了。我把今天的图像和扫描记录调出来，等值班医师确认方案。小唐已经去接病人了。", next: 'c2n5_n4' },
   c2n5_n4: { speaker: 'sys', text: '【事件2】急诊电话——「有个病人投诉你们CT室空调太冷！」', next: 'c2n5_n5' },
@@ -901,7 +926,7 @@ const C2N5: Record<string, Step> = {
   c2n5_ring_trigger: { speaker: 'sys', text: '送完毯子，控制台又报了一次通道异常。开班时日检还是正常的。你暂停接检，通知值班医师，按故障复核流程把科里的水箱体模搬上床。', next: 'c2n5_ring_scan' },
   c2n5_ring_scan: { bg: 'bg_ctcontrol', speaker: 'sys', text: '体模扫描完成。那几秒低鸣停下来，屏幕开始刷新。', sfx: 'xray', next: 'c2n5_r0' },
   // —— 事件2·续：体模上的年轮 ——
-  c2n5_r0: { speaker: 'sys', text: "新扫的水箱图上，冒出了一圈圈同心圆环，像水面上的涟漪。你查过开班时的日检记录，再切回这张新图——早先没有这些圆环。", image: 'ct_water_ring_teaching', next: 'c2n5_r1' },
+  c2n5_r0: { speaker: 'sys', text: "新扫的水箱图上，一圈圈圆环浮了出来。你下意识看了眼机房——床上只有水箱。切回开班日检，再看这张新图：早先没有这些圆环。**同一台机器，前后不一样了。**", image: 'ct_water_ring_teaching', next: 'c2n5_r1' },
   c2n5_r1: { speaker: 'sys', text: '【水箱是均匀的——均匀的东西扫出「年轮」，问题出在哪？】', image: 'ct_water_ring_teaching', choices: [
     { text: '「水放久了分层？换箱水重扫一次。」', next: 'c2n5_r2a', effect: { skill: -1 } },
     { text: '「像环状伪影。把新旧体模图附上，报修查校准。」', next: 'c2n5_r2b', effect: { skill: 1 }, tag: 'good' },
@@ -910,13 +935,13 @@ const C2N5: Record<string, Step> = {
   c2n5_r2a: { speaker: 'duty', phone: 'char_duty', text: "水没这么分层的。先看**探测器校准**，这种同心圆要查设备。报修单把体模图附上，受影响的检查先按停机预案安排。", card: 'ring_artifact', image: 'ct_water_ring_teaching', next: 'c2n5_r3' },
   c2n5_r2b: { speaker: 'sys', text: "旧记录没有这些圆环。你把新旧两次体模图附在报修单里，填上：**环状伪影，疑似探测器校准异常**。", card: 'ring_artifact', image: 'ct_water_ring_teaching', next: 'c2n5_r3' },
   c2n5_r2c: { speaker: 'sys', text: "你先报修，再打开用户端日志：**第217号通道反复报警**。截图发过去，工程师很快回复：「收到了，我带检测工具来，机柜先别拆。」", card: 'ring_artifact', effect: { skill: 2, badge: 'wrench_night' }, next: 'c2n5_r3' },
-  c2n5_r3: { speaker: 'sys', text: "报修单提交，受影响的检查按停机预案分流。你把前几天的体模记录也打包发过去，省得工程师到场再找。", next: 'c2n5_n6' },
+  c2n5_r3: { speaker: 'sys', text: "报修单提交，受影响的检查按停机预案分流。你翻出陆舟那本记录，把协议、参数和早先体模结果一并附上。那句「别只存好看的」这会儿派上了用场。", next: 'c2n5_n6' },
   c2n5_n6: { speaker: 'sys', text: '【事件3】手机在口袋里震了一下。', choices: [
     { text: '（掏出手机看一眼）', next: 'c2n5_p2a', cond: { flag: 'data_audit' } },
     { text: '（掏出手机看一眼）', next: 'c2n5_p2b', cond: { notFlag: 'data_audit' } },
     { text: '（半夜三更，私人消息先不看）', next: 'c2n5_g0' },
   ]},
-  c2n5_p2a: { speaker: 'sys', text: '屏幕上是小雷，连发三条，最后一条只有四个字：**「出事了。看图。」**', next: 'c2n5_n7' },
+  c2n5_p2a: { speaker: 'sys', text: "小雷连发三条。先是一句「你还在科里吧」，接着又撤回一张图，换成文字：**「别在微信看。留存样本有问题。」**", next: 'c2n5_n7' },
   c2n5_p2b: { speaker: 'sys', text: '屏幕上是陆舟：「**伦理批件下周提交！**批下来我带师弟师妹去你们科参观学习——顺便膜拜全县第一台新CT😄」', next: 'c2n5_p2c' },
   c2n5_p2c: { speaker: 'sys', text: '【回复什么？】', choices: [
     { text: '「欢迎。体模数据记得带上——老周念叨第二回了。」', next: 'c2n5_p2d', effect: { heart: 1 } },
@@ -924,7 +949,7 @@ const C2N5: Record<string, Step> = {
     { text: '（锁屏，继续干活）', next: 'c2n5_g0' },
   ]},
   c2n5_p2d: { speaker: 'sys', text: '他秒回了一个抱拳的表情。凌晨两点十七分，这座县城里还有两个没睡的人。', next: 'c2n5_g0' },
-  c2n5_n7: { speaker: 'lei', sprite: 'char_lei', text: "留存样本核完了，是试运行这几天的检查号。去掉姓名的那份，检查号和时间还在——拿院内记录一对就能找回人。终端离线了，我现在查的是旧样本。", next: 'c2n5_n8' },
+  c2n5_n7: { speaker: 'lei', sprite: 'char_lei', text: "终端没接回去，我查的是试运行留下的旧样本。有一份删了姓名，检查号和时间还在，拿院内记录一对，照样找得到人。（小雷停了停）不是画面上看不到名字，就算处理完了。", next: 'c2n5_n8' },
   c2n5_n8: { speaker: 'sys', text: '【怎么回复？】', sprite: 'char_lei', choices: [
     { text: '「保存证据，等周一主任会上摊牌。」', next: 'c2n5_n8a', effect: { flag: 'audit_evidence' }, tag: 'good' },
     { text: '「先别声张，我们再核实一轮。」', next: 'c2n5_n8b' },
@@ -932,14 +957,14 @@ const C2N5: Record<string, Step> = {
   ]},
   c2n5_n8a: { speaker: 'lei', sprite: 'char_lei', text: "收到。证据进信息科受控目录，另存离线备份。不给你微信发病人信息了，明早到办公室看。", next: 'c2n5_g0' },
   c2n5_n8b: { speaker: 'lei', sprite: 'char_lei', text: "行。外网不接回去，我拿留存日志再对一轮。明早先报已经确认的，别拖。", next: 'c2n5_g0' },
-  c2n5_n8c: { speaker: 'lei', sprite: 'char_lei', text: '算了？**病人的数据不是数据？**……当我没发。周一会上我自己说。', next: 'c2n5_g0' },
+  c2n5_n8c: { speaker: 'lei', sprite: 'char_lei', text: "线是我接的，查到这一步不能装没看见。你不想在会上说，我来说。……证据我照存，外网也不接回去。", next: 'c2n5_g0' },
   // —— 清晨 · 告别 ——
   c2n5_g0: { bg: 'bg_morning', speaker: 'sys', text: "早上六点，受影响的检查都已分流，机器仍停着等工程师。你交完班走出控制室，老周正从值班室出来，手里一新一旧两个保温杯。", next: 'c2n5_g1' },
   c2n5_g1: { speaker: 'zhou', sprite: 'char_zhou', text: "（把新的那个递给你）夜班茶，自己泡。旧的这个我还用呢，别惦记。", next: 'c2n5_g2' },
   c2n5_g2: { speaker: 'me', sprite: 'char_zhou', text: "我还以为您连杯子都交了，真不来了。", next: 'c2n5_g3' },
   c2n5_g3: { speaker: 'zhou', sprite: 'char_zhou', text: "想得美。下周还得带你迎检。（他拧开旧杯子）行了，先吃早饭，我请——只管包子，不管加肉。", next: 'c2n5_g4' },
-  c2n5_g4: { speaker: 'sys', text: "你跟着他往电梯走。小唐从后面追来，举着空保温盒：「两位，谁负责洗？」", next: 'c2n5_g5' },
-  c2n5_g5: { speaker: 'zhou', text: "（老周已经按住电梯开门键）牛肉谁吃的谁洗。……别看我，咱仨一人一遍。", effect: { badge: 'night_keeper2' }, event: 'ch2_solo', next: 'c2n5_g6' },
+  c2n5_g4: { speaker: 'sys', text: "你跟着他往电梯走。小唐从后面追来，拿笔点点你手里的新杯子：「先写名字。上回两只一样的，老周喝了半天我的奶茶。」", next: 'c2n5_g5' },
+  c2n5_g5: { speaker: 'zhou', text: "（按住电梯开门键）我就说那茶怎么一股甜味。……写杯底，别贴个条，洗一次又没了。", effect: { badge: 'night_keeper2' }, event: 'ch2_solo', next: 'c2n5_g6' },
   c2n5_g6: { speaker: 'sys', text: '【本章结算】诊疗收入 +350 金币。第5夜 ·「值守」——完。', effect: { gold: 350, ap: -99 }, end: true },
 }
 
@@ -952,9 +977,9 @@ const C2AM: Record<string, Step> = {
   c2am_4: { speaker: 'sys', text: "老周把改好的排班表递给你，笔还夹在指缝里。有人鼓了两下掌，他笑着压了压手：「留着，等机器修好再拍。」", next: 'c2am_5' },
   c2am_5: { speaker: 'zhou', sprite: 'char_zhou', text: "（看了你一眼）夜班有事照样找我。电话要是没接，再打一个，我可能在洗杯子。", next: 'c2am_6' },
   c2am_6: { speaker: 'sys', text: '【第二章「快与狠」——完。】', next: 'c2am_7' },
-  c2am_7: { speaker: 'sys', text: "【数月后】合规手续办妥，陆舟发来实验室的重建对照图。老周放大了好几遍：「噪声少了，边上那根细线呢？」陆舟回：「就知道您会问这个，还在查。」", effect: { flag: 'ai_hook' }, next: 'c2am_8' },
+  c2am_7: { speaker: 'sys', text: "【数月后】合规手续办妥，离线实验室里出了新的重建对照图。老周放大几遍：「噪声少了，边上那根细线呢？」陆舟回：「还在查。原图留着，这回没急着交差。」研究结果还不能拿来签临床报告。", effect: { flag: 'ai_hook' }, next: 'c2am_8' },
   c2am_8: { speaker: 'sys', text: "【2028年 · 预告】省医院AI工作站。你在训练数据来源清单里看见了熟悉的县医院设备编号，翻出当年留下的审计记录……", skipUnlessFlag: 'data_audit', next: 'c2am_9' },
-  c2am_9: { speaker: 'sys', text: "【回到2025年11月 · 值守后的下一周】澜江市禾川县人民医院 · 影像科。质控交流开始前，市里来的专家在门口站住，笑着喊了一声：「周老师，原来您还在这儿带人！」", end: true },
+  c2am_9: { speaker: 'sys', text: "【回到2025年11月 · 值守后的下一周】市里来的质控专家走到门口，先叫了一声：「周老师，原来您还在这儿带人！」老周把你让到前面：「今天先听年轻人讲。」小唐看看名单上那排头衔，悄悄把椅子往你这边挪了挪。", end: true },
 }
 
 /* ================= 第二章题库（24题 · 工科向，贴合课件） ================= */
