@@ -1,6 +1,5 @@
 import type { GameState, Step } from './types'
 import type { KnowledgeCard, ChronicleEvent, Evidence } from './dlc'
-import { explorationStep, revisitNodes } from './ch2-exploration.ts'
 import { patientStep } from './ch2-patients.ts'
 
 /* ================= 第二章「快与狠」· CT篇 =================
@@ -106,7 +105,6 @@ export function ch2BackgroundAsset(key: string): string {
 
 /** Align recollection and queue display with saved choices, without changing rewards or graph links. */
 export function ch2StepForState(id: string, step: Step, state: Pick<GameState, 'flags' | 'badges' | 'gender' | 'finished'> & Partial<Pick<GameState,'ap'|'items'>>): Step {
-  step = explorationStep(id, step, state)
   step = patientStep(id, step)
   const { flags, badges } = state
   let text = step.text
@@ -997,4 +995,3 @@ export const CH2_SHIFTS: Ch2Shift[] = [
   { id: 'c2n5', icon: '🌙', title: '第5夜', subtitle: '值守', kind: 'night', start: 'c2n5_0', steps: C2N5 },
   { id: 'c2am', icon: '🌅', title: '晨会', subtitle: '考核', kind: 'quiz', start: 'c2am_0', steps: C2AM },
 ]
-for (const shift of CH2_SHIFTS) Object.assign(shift.steps, revisitNodes(shift.id))

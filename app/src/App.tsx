@@ -3,7 +3,7 @@ import { NIGHTS, BADGES, CHARACTERS, SHOP_ITEMS, QUIZ, BOOK_PAGES } from './game
 import { DLCS, getDlc, DLC_BADGES, CARDS, EVENTS, EVIDENCE, DR_QUEUE, queueWaits } from './game/dlc'
 import { ch2StepForState, ch2BackgroundAsset, CH2_META, CH2_SHIFTS, CH2_BADGES, CH2_ACTIVE_BADGES, CH2_BADGES_LEGACY, CH2_CARDS, CH2_ACTIVE_CARDS, CH2_CARDS_LEGACY, CH2_BOOK_PAGES, CH2_IMAGE_CAPTIONS, QUIZ2, grayToHU, ch2Unlocked, tryUnlockCh2, ch2BookUnlocked, ch2PortraitAsset } from './game/ch2'
 import type { DlcDef, QueuePatient } from './game/dlc'
-import { restartCh2 } from './game/ch2-exploration'
+import { originalCh2Step, restartCh2 } from './game/ch2-exploration'
 import { isPatientBed, isPatientWheelchair } from './game/ch2-patients'
 import type { GameState, Step, ShopItem, Choice, DlcProgress } from './game/types'
 import { freshState, loadState, saveState, wipeSave, applyEffect, condOk, dailyCheckin, meterLevel, playSfx, makeCredCode, verifyCredCode } from './game/store'
@@ -1825,7 +1825,8 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
   const shiftIdx0 = (() => { const i = CH2_SHIFTS.findIndex(s => s.id === prog.shift); return i >= 0 ? i : 0 })()
   const [shiftIdx, setShiftIdx] = useState(shiftIdx0)
   const shift = CH2_SHIFTS[shiftIdx]
-  const resumeStep = !prog.done && prog.shift === shift.id && prog.stepId && shift.steps[prog.stepId] ? prog.stepId : shift.start
+  const savedStep = originalCh2Step(prog.stepId ?? '')
+  const resumeStep = !prog.done && prog.shift === shift.id && savedStep && shift.steps[savedStep] ? savedStep : shift.start
   const [stepId, setStepId] = useState(resumeStep)
   const [view, setView] = useState<{ bg: string; sprite?: string; sprite2?: string }>({
     bg: prog.viewBg ?? 'bg_ctcontrol', sprite: prog.viewSprite, sprite2: prog.viewSprite2,
@@ -1883,6 +1884,12 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
 
   // 进入某一步：条件跳过 / 视图 / 效果 / 语音 / 卡片 / 大事记 / 存档
   useEffect(() => {
+    // Also handles a mounted preview whose old revisit node was removed by HMR.
+    const originalStep = originalCh2Step(stepId)
+    if (originalStep !== stepId) {
+      setStepId(originalStep)
+      return
+    }
     if (step.skipUnlessFlag && !state.flags[step.skipUnlessFlag] && step.next) {
       setStepId(step.next)
       return

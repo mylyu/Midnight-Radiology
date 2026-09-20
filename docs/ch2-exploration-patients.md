@@ -1,5 +1,7 @@
 # 第二章：探索恢复、患者出场与输入路径加固
 
+> 后续裁定：用户已否决本文中的免费回访规则，现已撤销，见 `ch2-original-exploration.md`。本文件保留历史记录；重玩清理和输入修复仍保留。人物/声音减量以 `ch2-patient-restraint.md` 为准。
+
 日期：2026-09-20。分支 `codex/ch2-exploration-patients`，基点 `a133558`（标签 `ch2-continuity-reviewed-20260920`）。仅本地，不推送/部署。不要合并被否决的 `codex/ch2-rework`。
 
 ## 本轮范围与结论
