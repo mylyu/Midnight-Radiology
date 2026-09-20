@@ -42,7 +42,7 @@ try {
     assert.equal(await page.getByRole('button', { name: /显示全文|继续 →/ }).count(), 0)
     await page.locator('.dialog-box > p').click()
     await page.waitForFunction(() => window.__voiceCalls.length === 2)
-    assert.ok((await page.evaluate(() => window.__voiceCalls)).every(src => src.includes('vox2_zhou.mp3')))
+    assert.ok((await page.evaluate(() => window.__voiceCalls)).every(src => src.includes(`${CH2_SHIFTS[0].steps.c2n1_4.sfx}.mp3`)))
     await context.close()
     console.log('PASS: old heard flag does not suppress entrance; rejected audio retries on click; original dialogue UI restored.')
   }

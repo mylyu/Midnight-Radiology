@@ -4,7 +4,22 @@ import assert from 'node:assert/strict'
 import {execFileSync} from 'node:child_process'
 import {readFileSync} from 'node:fs'
 import ts from 'typescript'
-import * as current from '../src/game/ch2.ts'
+import * as live from '../src/game/ch2.ts'
+
+// The later, user-requested voice pass changes exactly 14 entrance texts/tracks.
+// Validate those explicit deltas before projecting them back out of this older
+// prose-only audit. ch2-natural-voices.mjs checks the live pass against 1d7342d.
+const voiceChanges=JSON.parse(readFileSync(new URL('../../docs/ch2-natural-voices-changes.json',import.meta.url),'utf8'))
+function beforeVoicePass(id,step) {
+ const edit=voiceChanges.find(r=>r.step===id)
+ if(!edit||step.sfx!==edit.afterSfx)return step
+ assert.equal(step.text,edit.afterText,id+' undocumented voice prose')
+ return {...step,text:edit.beforeText,sfx:edit.beforeSfx}
+}
+const current={...live,
+ CH2_SHIFTS:live.CH2_SHIFTS.map(s=>({...s,steps:Object.fromEntries(Object.entries(s.steps).map(([id,step])=>[id,beforeVoicePass(id,step)]))})),
+ ch2StepForState:(id,step,state)=>beforeVoicePass(id,live.ch2StepForState(id,step,state)),
+}
 
 const baseline='0cf2e68'
 const oldFile=path=>execFileSync('git',['show',`${baseline}:app/${path}`],{encoding:'utf8',maxBuffer:4*1024*1024})
@@ -32,7 +47,7 @@ for(const shift of old.CH2_SHIFTS) {
 }
 // These entire files are outside a prose-only round (including line endings).
 for(const path of ['src/App.tsx','src/game/data.ts','src/game/dlc.ts','src/game/store.ts','src/game/types.ts','src/game/ch2-exploration.ts','src/game/ch2-patients.ts','src/index.css']) {
- const normalize=s=>s.replaceAll('\r\n','\n')
+ const normalize=s=>s.replaceAll('\r\n','\n').replace("SFX_VOLUME[name] ?? (name.startsWith('vox_ch2_natural_') ? 0.45 : 0.22)","SFX_VOLUME[name] ?? 0.22")
  assert.equal(normalize(readFileSync(new URL('../'+path,import.meta.url),'utf8')),normalize(oldFile(path)),path+' must remain untouched')
 }
 const states=[]

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第二章 · 短句配音试听</title>
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#0c1421;color:#e5e9f0;font:16px/1.6 system-ui,sans-serif}main{max-width:1050px;margin:auto;padding:24px}h1{font-size:26px;margin-bottom:8px}p{color:#aebed1}.toolbar{display:flex;gap:12px;flex-wrap:wrap;margin:20px 0}button,a{font:inherit}button{background:#203248;border:1px solid #52738d;color:#e6f1fb;padding:8px 16px;border-radius:6px;cursor:pointer}a{color:#8bdad3}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:15px}.card{border:1px solid #31415a;border-radius:8px;background:#131e30;padding:18px}.card h2{font-size:18px;margin:0 0 12px}.new{font-size:21px;color:#a9ede2;margin:8px 0}.old{font-size:14px;color:#99a9bc;min-height:44px}.label{display:block;font-size:13px;color:#9aaab9}audio{width:100%;height:36px;margin:6px 0 12px}#status{min-height:26px;color:#edca86}.note{font-size:14px}
+</style>
+<main><h1>第二章 · 短句配音</h1>
+<p>14条新录音，4—7个字。保留角色声线，去掉口号和训话。此页不读取、修改游戏存档。</p>
+<div class="toolbar"><button id="all">连听新配音</button><button id="stop">停止</button><a href="./#/ch2">回到第二章</a></div>
+<div id="status" aria-live="polite"></div><div class="grid" id="grid"></div>
+<p class="note">新声用 AuK-Flash 和固定声音参考合成。识别与音频完整性已单独核查；是否自然、像这个人物，请以你的试听为准。游戏中的剧情正文没有压成短句。</p></main>
+<script>
+const rows=[{"role":"老周","key":"zhou","id":"vox_ch2_natural_zhou","old_id":"vox2_zhou","old_spoken":"新机器，新规矩，今晚你拍，我看着。","text":"有事叫我。"},{"role":"小唐","key":"tang","id":"vox_ch2_natural_tang","old_id":"vox2_tang","old_spoken":"我可什么都没说啊！","text":"哎，你来啦。"},{"role":"老范","key":"fan_a","id":"vox_ch2_natural_fan_a","old_id":"vox2_fan_a","old_spoken":"第三天中午，球管就烧了。","text":"才三天，就坏了。"},{"role":"老范","key":"fan_b","id":"vox_ch2_natural_fan_b","old_id":"vox2_fan_b","old_spoken":"原厂货，撑到了最后一天。","text":"这台先留着吧。"},{"role":"小凯","key":"kai","id":"vox_ch2_natural_kai","old_id":"vox2_kai","old_spoken":"日检、预热，别偷懒。","text":"有事打我电话。"},{"role":"小雷","key":"lei","id":"vox_ch2_natural_lei","old_id":"vox2_lei","old_spoken":"新机器进packs了，鸟枪换炮咯！","text":"图传过去了。"},{"role":"小何","key":"he","id":"vox_ch2_natural_he","old_id":"vox2_he","old_spoken":"老爷子夜里坠床，头颅CT，急！","text":"麻烦让一下！"},{"role":"主任","key":"director","id":"vox_ch2_natural_director","old_id":"vox2_director","old_spoken":"年轻人，白班要快！","text":"今天人不少啊。"},{"role":"主任","key":"director_am","id":"vox_ch2_natural_director_am","old_id":"vox2_director_am","old_spoken":"年轻人不错啊，我出几道题考考你。","text":"来，聊几个问题。"},{"role":"雯雯","key":"wen","id":"vox_ch2_natural_wen","old_id":"vox2_wen","old_spoken":"加班加到十点的销售，您见过没？","text":"还没下班啊？"},{"role":"复查大爷","key":"uncle","id":"vox_ch2_natural_uncle","old_id":"vox_uncle","old_spoken":"去年说看不见了，敢情是没看着。","text":"哦，这回看清了。"},{"role":"孩子父亲","key":"kiddad","id":"vox_ch2_natural_kiddad","old_id":"vox_kiddad","old_spoken":"再扫一次，出了事谁负责？","text":"他又吐了，您看看。"},{"role":"孩子母亲","key":"kidmom","id":"vox_ch2_natural_kidmom","old_id":"vox_kidmom","old_spoken":"三天前刚照过，还照。","text":"可前几天才查过。"},{"role":"值班医师","key":"duty","id":"vox_ch2_natural_duty","old_id":"vox_duty","old_spoken":"家长要求不是指征，先走流程。","text":"先把旧片发来。"}];
+let active=null,run=0;
+const audios=[];
+for(const r of rows){
+ const card=document.createElement('section');card.className='card';
+ const title=document.createElement('h2');title.textContent=r.role+(r.key==='fan_a'?' · 配件支线A':r.key==='fan_b'?' · 配件支线B':r.key==='director_am'?' · 晨会':'');card.append(title);
+ for(const kind of ['new','old']){
+  const line=document.createElement('div');line.className=kind;line.textContent=(kind==='new'?'新：':'原：')+(kind==='new'?r.text:r.old_spoken);card.append(line);
+  const audio=document.createElement('audio');audio.controls=true;audio.preload='none';audio.volume=.45;audio.src='./audio/'+(kind==='new'?r.id:r.old_id)+'.mp3?v=natural-20260920';
+  audio.setAttribute('aria-label',r.role+(kind==='new'?'新配音':'原配音'));
+  audio.addEventListener('play',()=>{if(active&&active!==audio)active.pause();active=audio});
+  card.append(audio);if(kind==='new')audios.push({audio,r});
+ }
+ document.querySelector('#grid').append(card);
+}
+document.querySelector('#stop').onclick=()=>{run++;if(active){active.pause();active.currentTime=0}document.querySelector('#status').textContent='已停止'};
+document.querySelector('#all').onclick=async()=>{
+ const token=++run;
+ for(const {audio,r} of audios){
+  if(token!==run)return;
+  document.querySelector('#status').textContent=r.role+'：'+r.text;audio.currentTime=0;
+  try{
+   await new Promise((resolve,reject)=>{
+    const cleanup=()=>{audio.removeEventListener('ended',end);audio.removeEventListener('pause',pause);audio.removeEventListener('error',error)};
+    const end=()=>{cleanup();resolve()};const pause=()=>{cleanup();resolve()};const error=()=>{cleanup();reject(new Error('音频读取失败'))};
+    audio.addEventListener('ended',end);audio.addEventListener('pause',pause);audio.addEventListener('error',error);
+    audio.play().catch(e=>{cleanup();reject(e)});
+   });
+  }catch(e){document.querySelector('#status').textContent=r.role+'：'+e.message;return}
+  await new Promise(resolve=>setTimeout(resolve,650));
+ }
+ if(token===run)document.querySelector('#status').textContent='试听完毕';
+};
+</script></html>

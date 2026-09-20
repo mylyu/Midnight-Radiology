@@ -442,9 +442,9 @@ const WRIST_GRAY2HU: [number, number][] = [
 const C2N1: Record<string, Step> = {
   c2n1_0: { bg: 'bg_ctcontrol', speaker: 'sys', text: '2025年11月，晚上九点半。影像科走廊新刷了漆，CT室门口的红地垫还没踩脏。你在新打卡机前站了两秒——连打卡机都换了。', effect: { flag: 'c2_started' }, next: 'c2n1_1' },
   c2n1_1: { speaker: 'sys', text: '「咔哒」——打卡成功。', sfx: 'stamp', effect: { gold: 50, ap: 3 }, next: 'c2n1_2' },
-  c2n1_2: { speaker: 'tang', sprite: 'char_tang', sfx: 'vox2_tang', text: '新同事！……哦不对，老员工！是我紧张——今晚是咱科新CT启用后第一个夜班，护士长叮嘱我三遍「别乌鸦嘴」。我什么都没说！', next: 'c2n1_3' },
+  c2n1_2: { speaker: 'tang', sprite: 'char_tang', sfx: 'vox_ch2_natural_tang', text: "哎，你来啦。（小唐把打卡机旁的纸箱挪开）今晚新CT头一回值夜班，护士长刚又打来电话问了一遍。", next: 'c2n1_3' },
   c2n1_3: { speaker: 'tang', sprite: 'char_tang', text: "厂家下午刚撤场。机房改造、交货、验收，去年说「下个月到」的话，听了一年。真启用了，老周又把夜间报修电话挨个问了一遍——比问机器多少钱还仔细。", next: 'c2n1_4' },
-  c2n1_4: { speaker: 'zhou', sprite: 'char_zhou', sfx: 'vox2_zhou', text: '（不知何时出现在门口）说谁不出来。……新机器，新规矩：**今晚你拍，我看着**。以后反过来的日子，不远了。', next: 'c2n1_5' },
+  c2n1_4: { speaker: 'zhou', sprite: 'char_zhou', sfx: 'vox_ch2_natural_zhou', text: "有事叫我。（老周站在操作台旁，朝你点点头）我今晚也在。", next: 'c2n1_5' },
   c2n1_5: { speaker: 'me', sprite: 'char_zhou', text: "（顺着他的目光看进CT室）圆孔里亮着灯。老周伸手去摸旧操作台的位置，摸了个空，转而替你把椅子往前推了一点。", next: 'c2n1_6' },
   c2n1_6: { speaker: 'zhou', sprite: 'char_zhou', text: "老CT去年春天烧了球管，一直趴窝。停产配件没等来，倒等来这台新机。（他拍了拍你的肩）去年那张处置单，老范收着。开诊前去转转吧。", next: 'c2n1_hub' },
   c2n1_hub: { bg: 'bg_ctcontrol', speaker: 'sys', text: '【自由行动 · 行动力⚡×3】', choices: [
@@ -459,19 +459,19 @@ const C2N1: Record<string, Step> = {
   ]},
   // —— A. 老伙计（买了老白球管的分支） ——
   c2n1_ab1: { bg: 'bg_corridor', speaker: 'sys', text: "走廊尽头的凹位里停着老CR的读片器和封存零件箱，没挡着通道。箱上贴着设备科封条：「停用待查」。老范蹲在旁边收拾。", effect: { ap: -1 }, next: 'c2n1_ab2' },
-  c2n1_ab2: { speaker: 'fan', sprite: 'char_fan', sfx: 'vox2_fan_a', text: '（蹲在旁边收拾零件，头也不抬）来看它？……上个月白班忙不过来，让它顶了两天班。**第三天中午，球管烧了**——就是老白那根「半价好管子」。', next: 'c2n1_ab3' },
+  c2n1_ab2: { speaker: 'fan', sprite: 'char_fan', sfx: 'vox_ch2_natural_fan_a', text: "才三天，就坏了。（老范蹲着收拾零件）上个月白班忙，让它顶了两天。第三天中午烧的，老白那根半价球管。", next: 'c2n1_ab3' },
   c2n1_ab3: { speaker: 'fan', sprite: 'char_fan', text: '靶面熔了个坑，连带着把高压发生器也撂倒了。老白？电话停机，人找不着。院里立了项，**设备科资质核查，这批第三方件的账，一笔一笔过**。', next: 'c2n1_ab4' },
   c2n1_ab4: { speaker: 'me', sprite: 'char_fan', text: "（摸出手机，翻到老白的聊天记录。最后一句还是「放心，用坏了找我」。）", next: 'c2n1_ab5' },
   c2n1_ab5: { speaker: 'fan', sprite: 'char_fan', text: "（把烧坏的零件放进盒子）聊天记录别删，设备科要留底。……搭把手，这箱挺沉。", effect: { skill: 1, flag: 'bai_echo' }, next: 'c2n1_ab6' },
   c2n1_ab6: { speaker: 'sys', text: "老范把箱子盖好：「别跟那台坏CT弄混了。旧CT已经拆机移交；CR停下来以后，普通拍片走楼上DR，夜间门禁和值班也都接上了。」你帮他把箱子推回库房。", effect: { flag: 'c2n1_a' }, next: 'c2n1_old_ct' },
   // —— A. 老伙计（没买的分支） ——
   c2n1_an1: { bg: 'bg_corridor', speaker: 'sys', text: "走廊尽头的凹位里，老CR读片器罩着防尘布。老范把它往里推了推，给通道腾出地方：「退役设备都得进库，主任还舍不得。」", effect: { ap: -1 }, next: 'c2n1_an2' },
-  c2n1_an2: { speaker: 'fan', sprite: 'char_fan', sfx: 'vox2_fan_b', text: '（正好路过）原厂球管撑到了最后一天，一个零件没掉链子。主任说了，不卖废铁，就封在这儿——给科里留个体面。', next: 'c2n1_an3' },
+  c2n1_an2: { speaker: 'fan', sprite: 'char_fan', sfx: 'vox_ch2_natural_fan_b', text: "这台先留着吧。（老范停下脚步）原厂那根管子一直用到停用。主任说先不卖废铁，封在这儿。", next: 'c2n1_an3' },
   c2n1_an3: { speaker: 'me', sprite: 'char_fan', text: "我指了指CT室：「那台坏CT呢？」老范说：「早拆机移交了。这台是拍平片的CR，两码事。楼上DR现在夜里也开了，才提前让它歇。」", effect: { heart: 1 }, next: 'c2n1_an4' },
   c2n1_an4: { speaker: 'sys', text: '你替它把防尘布的角掖好，回到CT室门口。', effect: { flag: 'c2n1_a' }, next: 'c2n1_old_ct' },
   c2n1_old_ct: { speaker: 'fan', sprite: 'char_fan', text: '（老范翻出拆机前的照片）这才是那台坏CT。去年春天坏了，后来一直等配件；最后按报废流程拆走，处置单设备科存着。你看，现在那间屋里亮的已经是新机了。', image: 'ev_old_ct_retired', next: 'c2n1_hub' },
   // —— B. 小凯交底 ——
-  c2n1_b1: { speaker: 'kai', sprite: 'char_kai', sfx: 'vox2_kai', text: "日检、预热，别偷懒。表贴这儿了，报警先看状态，别一个劲点确认。我的电话也在上面——希望你今晚用不上。", card: 'ct_tube_heat', effect: { ap: -1 }, next: 'c2n1_b2' },
+  c2n1_b1: { speaker: 'kai', sprite: 'char_kai', sfx: 'vox_ch2_natural_kai', text: "有事打我电话。（小凯指了指墙上的表）日检和预热的步骤都贴这儿了。报警看不明白，拍给我，别反复点确认。", card: 'ct_tube_heat', effect: { ap: -1 }, next: 'c2n1_b2' },
   c2n1_b2: { speaker: 'me', sprite: 'char_kai', text: '（指着纸箱旁一个黑色的、带天线的盒子）这是什么？', image: 'item_remote', next: 'c2n1_b3' },
   c2n1_b3: { speaker: 'kai', sprite: 'char_kai', text: "**远程支持终端**，往厂家传运行日志和报错码。哪儿快坏了，我们提前备件。免费装，省得你半夜举着手机给我念报错。", image: 'item_remote', next: 'c2n1_b4' },
   c2n1_b4: { speaker: 'sys', text: '【怎么接？】', sprite: 'char_kai', choices: [
@@ -484,7 +484,7 @@ const C2N1: Record<string, Step> = {
   c2n1_b5c: { speaker: 'sys', text: '箱子一歪，里面的线材散了一地。你陪他重新理了二十分钟线，他直乐：「夜班大将，手上活儿不错，就是运气差点。」', next: 'c2n1_b5b' },
   c2n1_b6: { speaker: 'sys', text: '小凯推着最后一个纸箱走了。控制室彻底安静下来，只剩机架待机的低鸣。', effect: { flag: 'c2n1_b' }, next: 'c2n1_hub' },
   // —— E. 走廊转转 · 小雷 ——
-  c2n1_e1: { speaker: 'lei', sprite: 'char_lei', sfx: 'vox2_lei', text: '新机器进PACS了，今晚的图直接上工作站，不用抱着板子跑了——你们科总算过上了二十一世纪的日子。', effect: { ap: -1 }, next: 'c2n1_e2' },
+  c2n1_e1: { speaker: 'lei', sprite: 'char_lei', sfx: 'vox_ch2_natural_lei', text: "图传过去了。PACS这边也通了，今晚直接在工作站看。（小雷松开鼠标，甩了甩手）我去把线号贴完。", effect: { ap: -1 }, next: 'c2n1_e2' },
   c2n1_e2: { speaker: 'lei', sprite: 'char_lei', text: "那台远程终端的线是我接的，**单独走的一条外网**，有主任签字。线路我认得，里面传什么还得核字段。别到时候都来问我——插网线又不是盖章。", effect: { flag: 'lei_cable' }, next: 'c2n1_e3' },
   c2n1_e3: { speaker: 'sys', text: "小雷把一张线号标签贴歪了，揭下来重贴。走到电梯口，他又折回去拍了张接口照片。黑盒子的网口灯还在闪。", effect: { flag: 'c2n1_e' }, next: 'c2n1_hub' },
   // —— C. 茶水间 · 小唐八卦 ——
@@ -502,7 +502,7 @@ const C2N1: Record<string, Step> = {
   c2n1_c5: { speaker: 'sys', text: '纸杯见底，八卦听完。回CT室的路上，你的脚步轻快了些。', effect: { flag: 'c2n1_c' }, next: 'c2n1_hub' },
   // —— 开诊主线：坠床的老人 ——
   c2n1_m0: { speaker: 'sys', text: '晚上十点，分诊铃响。急诊小何推着平车一路小跑。', sfx: 'ring', next: 'c2n1_m1' },
-  c2n1_m1: { speaker: 'he', sprite: 'char_he', sfx: 'vox2_he', text: '养老院打来的120：老爷子夜里起夜坠床，头磕在床头柜上，现在**叫不太醒，右侧瞳孔有点大**。怀疑颅内出血——头颅CT，急！', next: 'c2n1_m2' },
+  c2n1_m1: { speaker: 'he', sprite: 'char_he', sfx: 'vox_ch2_natural_he', text: "麻烦让一下！（小何跟着平车进门）养老院送来的，起夜摔下床，头磕在床头柜上。现在叫不太醒，右侧瞳孔有点大。急诊申请了头颅CT。", next: 'c2n1_m2' },
   c2n1_m2: { speaker: 'sys', text: '【开单科室问：做平扫还是直接增强？】', sprite: 'char_he', choices: [
     { text: '「先平扫，快。」', next: 'c2n1_m3a', effect: { skill: 1 }, tag: 'good' },
     { text: '「直接增强吧，看得更清楚。」', next: 'c2n1_m3b', effect: { skill: -1, flag: 'c2n1_wrong1' } },
@@ -584,7 +584,7 @@ const C2D2_QUEUE4 = [
 
 const C2D2: Record<string, Step> = {
   c2d2_0: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: '三天后，周一。主任把你从夜班临时调来支援白班：新CT的名声传开了，门诊开单量翻倍，候诊长队从CT室门口排到电梯间。', next: 'c2d2_1' },
-  c2d2_1: { speaker: 'director', sprite: 'char_director', sfx: 'vox2_director', text: "年轻人，白班要快！队列交给你，急诊来了叫我。别光盯屏幕，门口那排人也盯着点。", effect: { flag: 'day_shift' }, queue: C2D2_QUEUE0, next: 'c2d2_reg0' },
+  c2d2_1: { speaker: 'director', sprite: 'char_director', sfx: 'vox_ch2_natural_director', text: "今天人不少啊。（主任朝候诊区看了一眼）队列你先接着，急诊来了叫我。", effect: { flag: 'day_shift' }, queue: C2D2_QUEUE0, next: 'c2d2_reg0' },
   c2d2_reg0: { bg: 'bg_office_day', speaker: 'director', sprite: 'char_director', text: "开诊前，先说一件事。去年登记本少的那页，检查记录补齐了，后续办法却一直悬着。这次市里专项督查到院，医务科要核清。老周，材料你带来了吧？", next: 'c2d2_reg1' },
   c2d2_reg1: { speaker: 'zhou', sprite: 'char_zhou', text: '页是我撕的。老人没证件，也没钱，我先给他拍了，没走登记申请。后来怕查，又想把这事盖过去。……不是这孩子的主意。', next: 'c2d2_reg2' },
   c2d2_reg2: { speaker: 'sys', text: '主任转向你，等你把自己知道的说清楚。', choices: [
@@ -609,7 +609,7 @@ const C2D2: Record<string, Step> = {
   c2d2_6c: { speaker: 'zhou', sprite: 'char_zhou', text: "窗可以调，但这次先查层厚。薄层数据还在，重建一套再比。别急着按曝光键。", card: 'slice_partial', image: 'ct_lung', next: 'c2d2_w1' },
   c2d2_w1: { speaker: 'sys', text: '薄层重建完成。老周敲敲屏幕：「**窗口调到肺窗，亲手把那枚『消失』的结节给我找出来。**」', image: 'ct_lung', windowTask: { image: 'ct_lung', targetW: 1500, targetL: -500, tolW: 220, tolL: 60, success: 'c2d2_w1ok' }, next: 'c2d2_w1ok' },
   c2d2_w1ok: { speaker: 'sys', text: '窗宽拉开到1500、窗位压到-500——肺野瞬间透亮，那枚6mm的磨玻璃结节，清清白白地躺在那里。', image: 'ct_lung', next: 'c2d2_7' },
-  c2d2_7: { speaker: 'uncle', sprite: 'pat_uncle2', sfx: 'vox_uncle', text: '（拿着薄层重建出的片子，结节清清楚楚）去年说看不见了，敢情是没看着。', effect: { gold: 80 }, image: 'ct_lung', next: 'c2d2_8' },
+  c2d2_7: { speaker: 'uncle', sprite: 'pat_uncle2', sfx: 'vox_ch2_natural_uncle', text: "哦，这回看清了。（大爷凑近薄层重建的图，手指悬在屏幕前）去年说看不见，我还当它没了。", effect: { gold: 80 }, image: 'ct_lung', next: 'c2d2_8' },
   c2d2_8: { bg: 'bg_waiting', speaker: 'sys', text: '【队列事件】急诊插单：「腹痛待查，怀疑肠梗阻，加急！」——前面还有两位门诊病人在等。', queue: C2D2_QUEUE2, sfx: 'ring', choices: [
     { text: '按规矩，急重症优先，立刻插队。', next: 'c2d2_9a', effect: { heart: 1 }, tag: 'good' },
     { text: '让他按号排，先来后到。', next: 'c2d2_9b', effect: { heart: -1, flag: 'queue_wait' } },
@@ -685,7 +685,7 @@ const C2N3: Record<string, Step> = {
     { text: '【开诊】值守CT室', next: 'c2n3_m0', tag: 'good' },
   ]},
   // —— A. 雯雯 · 维保合同 ——
-  c2n3_a1: { bg: 'bg_corridor', speaker: 'wen', sprite: 'char_wen', sfx: 'vox2_wen', text: '哎，技师老师！加班加到十点的销售见过没？陪你们科主任磨了一下午**维保合同**——新机器第一年免费保，第二年开始，全保、半保、技保，价格差着好几万呢。', effect: { ap: -1 }, next: 'c2n3_a2' },
+  c2n3_a1: { bg: 'bg_corridor', speaker: 'wen', sprite: 'char_wen', sfx: 'vox_ch2_natural_wen', text: "还没下班啊？（雯雯把合同夹进包里）我跟你们主任磨了一下午维保。第一年免费，后面全保、半保、技保，差着好几万，他一条一条问。", effect: { ap: -1 }, next: 'c2n3_a2' },
   c2n3_a2: { speaker: 'wen', sprite: 'char_wen', text: "（抽出一页草案）球管这笔钱最容易吵架。我给你们加了**按曝光次数计价、超支封顶**，记得让设备科把适用条件看完，别只看总价。", image: 'ev_maintenance_draft', effect: { flag: 'maintenance_draft' }, next: 'c2n3_a3' },
   c2n3_a3: { speaker: 'sys', text: '【闲聊两句？】', sprite: 'char_wen', choices: [
     { text: '「你们那个远程终端，数据都回传什么？」', next: 'c2n3_a4a', effect: { flag: 'wen_remote' } },
@@ -881,8 +881,8 @@ const C2N5: Record<string, Step> = {
   c2n5_e4: { speaker: 'sys', text: "你带上设备间的门，顺手试了试锁，回控制室。", effect: { flag: 'c2n5_e' }, next: 'c2n5_hub' },
   // —— 开诊主线：复查单前的走廊战争 ——
   c2n5_m0: { bg: 'bg_corridor', speaker: 'sys', text: '晚上十一点，电梯口传来争吵声，由远及近。', sfx: 'ring', next: 'c2n5_m1' },
-  c2n5_m1: { speaker: 'kiddad', sprite: 'pat_kiddad', sfx: 'vox_kiddad', text: '孩子今晚吐了两次！**再扫一次，立刻！漏了出血你负得起责吗？！**', next: 'c2n5_m2' },
-  c2n5_m2: { speaker: 'kidmom', sprite: 'pat_kidmom_holding', sprite2: 'pat_kiddad', sfx: 'vox_kidmom', text: '（把哭闹的孩子紧紧抱在怀里）不行！**三天前刚照过一次CT！网上都说这东西致癌，小孩子经不起这么照**——你们医院就知道让人做检查！', next: 'c2n5_m3' },
+  c2n5_m1: { speaker: 'kiddad', sprite: 'pat_kiddad', sfx: 'vox_ch2_natural_kiddad', text: "他又吐了，您看看。（父亲扶着孩子的背，朝CT室张望）今晚两次了。能不能再查一下？", next: 'c2n5_m2' },
+  c2n5_m2: { speaker: 'kidmom', sprite: 'pat_kidmom_holding', sprite2: 'pat_kiddad', sfx: 'vox_ch2_natural_kidmom', text: "可前几天才查过。（母亲抱紧哭闹的孩子）就三天前，片子我们带了。你先让医生看一眼，别光催着再照。", next: 'c2n5_m3' },
   c2n5_m3: { speaker: 'sys', text: '6岁男孩趴在母亲肩上，哭得更厉害了。三天前他们在外地旅游，孩子摔到头，当地医院做过一次头颅CT——**光盘就在父亲的包里**。', sfx: 'cry_child', sprite: 'pat_kidmom_holding', sprite2: 'pat_kiddad', next: 'c2n5_m4' },
   c2n5_m4: { speaker: 'kiddad', sprite: 'pat_kiddad', text: "（把光盘放上分诊台，手还按着）车上他又吐，我真怕等到天亮就晚了。你们机器新，再看看不行吗？钱我们交。", next: 'c2n5_m5' },
   c2n5_m5: { speaker: 'kidmom', sprite: 'pat_kidmom_holding', text: "（赶紧拍着孩子的背）你小声点，他一直听着呢！……医生，我也怕漏了。可三天前才照过，我不敢就这么点头。", next: 'c2n5_m6' },
@@ -891,7 +891,7 @@ const C2N5: Record<string, Step> = {
     { text: '「光盘给我，先把旧图和新症状一起报给值班医师。」', next: 'c2n5_m7b', effect: { skill: 2, badge: 'alara_guard' }, tag: 'good' },
     { text: '「辐射确实不好，别扫了，回家观察吧。」', next: 'c2n5_m7c', effect: { heart: -1 } },
   ]},
-  c2n5_m7a: { speaker: 'duty', phone: 'char_duty', sfx: 'vox_duty', text: "家长要求不是指征，先走流程。旧片传我，今晚新出现的症状也说清楚，我跟急诊一起评估。", next: 'c2n5_m8' },
+  c2n5_m7a: { speaker: 'duty', phone: 'char_duty', sfx: 'vox_ch2_natural_duty', text: "先把旧片发来。今晚新出现的症状也说一下，我跟急诊一起看，再定要不要扫。", next: 'c2n5_m8' },
   c2n5_m7b: { speaker: 'me', sprite: 'pat_kiddad', text: "光盘给我，我调给值班医师看。今天新吐了两次，也得一起告诉他，不能只看三天前的图。", next: 'c2n5_m8' },
   c2n5_m7c: { speaker: 'kiddad', sprite: 'pat_kiddad', text: "观察？！他吐了啊！刚才在电梯里又干呕，你没看见！（母亲把孩子抱紧，没有再接话。）", next: 'c2n5_m8' },
   c2n5_m8: { speaker: 'sys', text: '外院DICOM调阅成功：**左侧顶部头皮血肿，颅骨完整，颅内未见出血**。图像质量可用——但「呕吐两次」是三天前没有的新症状。', image: 'ct_head_child', next: 'c2n5_m9' },
@@ -971,7 +971,7 @@ const C2N5: Record<string, Step> = {
 /* ================= 晨会考核（第5夜后） ================= */
 const C2AM: Record<string, Step> = {
   c2am_0: { bg: 'bg_office_day', speaker: 'sys', text: "周一早上八点，医生办公室。会上先过昨夜交班：CT仍停机，工程师负责复核；远程终端保持离线，信息科今天接手查日志，周五反馈。主任在交接记录上签了字。角落里，老周正把你的名字勾进夜班主值栏。", next: 'c2am_1' },
-  c2am_1: { speaker: 'director', sprite: 'char_director', sfx: 'vox2_director_am', text: "年轻人不错啊，我出几道题考考你。五道，老规矩。答完再去吃饭。", next: 'c2am_2' },
+  c2am_1: { speaker: 'director', sprite: 'char_director', sfx: 'vox_ch2_natural_director_am', text: "来，聊几个问题。（主任把椅子往桌边拉了拉）五道，老规矩。说完就散，别耽误大家吃早饭。", next: 'c2am_2' },
   c2am_2: { speaker: 'sys', text: '【考核开始 · 5道随机题】', next: '@quiz' },
   c2am_3: { speaker: 'director', sprite: 'char_director', text: "成绩存档。老周今后不排整夜，带教和备班还在，返聘手续按年度办。该求助就求助，不是把名字写上去就不能喊人了。", sfx: 'badge', next: 'c2am_4' },
   c2am_4: { speaker: 'sys', text: "老周把改好的排班表递给你，笔还夹在指缝里。有人鼓了两下掌，他笑着压了压手：「留着，等机器修好再拍。」", next: 'c2am_5' },

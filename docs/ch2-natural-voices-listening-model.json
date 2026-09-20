@@ -1,0 +1,86 @@
+[
+  {
+    "id": "vox_ch2_natural_director",
+    "sha256": "2759356af1c2415428b3356b839796b1483dc82f1f84f197d9af63ed5061728f",
+    "answer": "转写台词：今天人不少啊。\n\n音色：中性，没有明显的情绪波动。\n\n说话节奏：平稳，没有明显的停顿或加速。\n\n类型：日常对话。",
+    "method": "Local Qwen2.5-Omni-3B automated perception; fallible, not human listening or approval."
+  },
+  {
+    "id": "vox_ch2_natural_director_am",
+    "sha256": "c73c56cd5a2a5f55260cedab81d10b21cd4936a5af31ef03562fdb10fcd5cefa",
+    "answer": "转写台词：来，聊几个问题。\n\n音色：中性，没有明显的情绪波动。\n\n说话节奏：平稳，没有明显的停顿或加速。\n\n类型：日常对话。",
+    "method": "Local Qwen2.5-Omni-3B automated perception; fallible, not human listening or approval."
+  },
+  {
+    "id": "vox_ch2_natural_duty",
+    "sha256": "a421adf5e98489ccee9251dfb70345b719e2594d2207953c18abc8d91919d23d",
+    "answer": "请提供音频内容，以便我进行转写和分析。",
+    "method": "Local Qwen2.5-Omni-3B automated perception; fallible, not human listening or approval."
+  },
+  {
+    "id": "vox_ch2_natural_fan_a",
+    "sha256": "529c1c03cc55c4a316f847b589fe4a13a176e6c414e49754a08c8d91ec0ef3a6",
+    "answer": "台词：才三天就坏了。\n\n音色：中性。\n\n说话节奏：正常。\n\n没有重复、吞字、截断、异常笑声、音乐。",
+    "method": "Local Qwen2.5-Omni-3B automated perception; fallible, not human listening or approval."
+  },
+  {
+    "id": "vox_ch2_natural_fan_b",
+    "sha256": "fbb7b1c47eae74e159d12da0e5b4c1f59a62dd7680a82e877d3fe711a95d3500",
+    "answer": "先转写台词：这台先留着吧。\n\n音色：不确定，无法判断。\n\n说话节奏：不确定，无法判断。",
+    "method": "Local Qwen2.5-Omni-3B automated perception; fallible, not human listening or approval."
+  },
+  {
+    "id": "vox_ch2_natural_he",
+    "sha256": "fb668459c69fd1b8aab5e07e70deb2bfdf29e8aa6fcae42db876ef4895094479",
+    "answer": "转写台词：麻烦让一下。\n\n音色：不确定，无法判断。\n\n说话节奏：不确定，无法判断。\n\n语气：礼貌。",
+    "method": "Local Qwen2.5-Omni-3B automated perception; fallible, not human listening or approval."
+  },
+  {
+    "id": "vox_ch2_natural_kai",
+    "sha256": "eb1eb31da05e907aa52b77ee44a1820a2b9ed800b3ad70c677e39138e0ffa2dd",
+    "answer": "转写台词：有事打我电话。\n\n音色：不确定，无法判断。\n\n说话节奏：不确定，无法判断。\n\n语气：不确定，无法判断。",
+    "method": "Local Qwen2.5-Omni-3B automated perception; fallible, not human listening or approval."
+  },
+  {
+    "id": "vox_ch2_natural_kiddad",
+    "sha256": "35cac28936fbefcdeebd2e2d1f22dfdb3a078d86986d65bcfb155df03ec95e14",
+    "answer": "转写台词：他又吐了，您看看。\n\n音色：不确定，无法判断。\n\n说话节奏：不确定，无法判断。\n\n语气：不确定，无法判断。",
+    "method": "Local Qwen2.5-Omni-3B automated perception; fallible, not human listening or approval."
+  },
+  {
+    "id": "vox_ch2_natural_kidmom",
+    "sha256": "a27dc49852ff5111d73f9a98e46da6f162107055c6e3dd3fbcbf2ea81c61d39f",
+    "answer": "台词：可前几天才查过。\n\n音色：不确定，无法判断。\n\n说话节奏：不确定，无法判断。",
+    "method": "Local Qwen2.5-Omni-3B automated perception; fallible, not human listening or approval."
+  },
+  {
+    "id": "vox_ch2_natural_lei",
+    "sha256": "1095fcb721e130f2a3c20c47fe940110da8813ecdac9515c73e96a5962eebf0f",
+    "answer": "转写台词：图传过去了。\n\n音色：不确定，无法判断。\n\n说话节奏：不确定，无法判断。\n\n语气：不确定，无法判断。",
+    "method": "Local Qwen2.5-Omni-3B automated perception; fallible, not human listening or approval."
+  },
+  {
+    "id": "vox_ch2_natural_tang",
+    "sha256": "e55696ec9ff88200976ab5791d3cf39fdf4a4010fc81f72ff77feb87372d4194",
+    "answer": "转写台词：'哎，你来啦！'\n\n音色：不确定，无法判断。\n\n说话节奏：不确定，无法判断。\n\n语气：不确定，无法判断。",
+    "method": "Local Qwen2.5-Omni-3B automated perception; fallible, not human listening or approval."
+  },
+  {
+    "id": "vox_ch2_natural_uncle",
+    "sha256": "9b5e6365e0ddaa806ebc1969da16cd8771d4cab16c6bc2b9f6a66adacbdb8e48",
+    "answer": "台词：哦，这回看清了。\n\n音色：不确定，无法判断。\n\n说话节奏：不确定，无法判断。\n\n语气：不确定，无法判断。",
+    "method": "Local Qwen2.5-Omni-3B automated perception; fallible, not human listening or approval."
+  },
+  {
+    "id": "vox_ch2_natural_wen",
+    "sha256": "e8885973b3420005aac9ae19649700f11465444b6395461348342ab71b80bf35",
+    "answer": "转写台词：还没下班啊。\n\n音色：不确定，无法判断。\n\n说话节奏：不确定，无法判断。\n\n语气：不确定，无法判断。",
+    "method": "Local Qwen2.5-Omni-3B automated perception; fallible, not human listening or approval."
+  },
+  {
+    "id": "vox_ch2_natural_zhou",
+    "sha256": "5d3556cadb036e993102e6d1f27ea290b4347ca8fe74b354d4e294c0aa6791ea",
+    "answer": "转写台词：有事叫我。\n\n音色：不确定，无法判断。\n\n说话节奏：不确定，无法判断。\n\n语气：不确定，无法判断。",
+    "method": "Local Qwen2.5-Omni-3B automated perception; fallible, not human listening or approval."
+  }
+]

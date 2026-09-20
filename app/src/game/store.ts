@@ -171,7 +171,7 @@ export function playSfx(name: SfxName): Promise<boolean> {
     if (!audioCache[name]) audioCache[name] = new Audio(src)
     const a = audioCache[name]
     a.currentTime = 0
-    a.volume = SFX_VOLUME[name] ?? 0.22
+    a.volume = SFX_VOLUME[name] ?? (name.startsWith('vox_ch2_natural_') ? 0.45 : 0.22)
     return a.play().then(() => true, () => false)
   } catch {
     return Promise.resolve(false)

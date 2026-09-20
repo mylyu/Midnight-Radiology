@@ -1,0 +1,100 @@
+[
+  {
+    "step": "c2n1_2",
+    "beforeText": "新同事！……哦不对，老员工！是我紧张——今晚是咱科新CT启用后第一个夜班，护士长叮嘱我三遍「别乌鸦嘴」。我什么都没说！",
+    "afterText": "哎，你来啦。（小唐把打卡机旁的纸箱挪开）今晚新CT头一回值夜班，护士长刚又打来电话问了一遍。",
+    "beforeSfx": "vox2_tang",
+    "afterSfx": "vox_ch2_natural_tang"
+  },
+  {
+    "step": "c2n1_4",
+    "beforeText": "（不知何时出现在门口）说谁不出来。……新机器，新规矩：**今晚你拍，我看着**。以后反过来的日子，不远了。",
+    "afterText": "有事叫我。（老周站在操作台旁，朝你点点头）我今晚也在。",
+    "beforeSfx": "vox2_zhou",
+    "afterSfx": "vox_ch2_natural_zhou"
+  },
+  {
+    "step": "c2n1_ab2",
+    "beforeText": "（蹲在旁边收拾零件，头也不抬）来看它？……上个月白班忙不过来，让它顶了两天班。**第三天中午，球管烧了**——就是老白那根「半价好管子」。",
+    "afterText": "才三天，就坏了。（老范蹲着收拾零件）上个月白班忙，让它顶了两天。第三天中午烧的，老白那根半价球管。",
+    "beforeSfx": "vox2_fan_a",
+    "afterSfx": "vox_ch2_natural_fan_a"
+  },
+  {
+    "step": "c2n1_an2",
+    "beforeText": "（正好路过）原厂球管撑到了最后一天，一个零件没掉链子。主任说了，不卖废铁，就封在这儿——给科里留个体面。",
+    "afterText": "这台先留着吧。（老范停下脚步）原厂那根管子一直用到停用。主任说先不卖废铁，封在这儿。",
+    "beforeSfx": "vox2_fan_b",
+    "afterSfx": "vox_ch2_natural_fan_b"
+  },
+  {
+    "step": "c2n1_b1",
+    "beforeText": "日检、预热，别偷懒。表贴这儿了，报警先看状态，别一个劲点确认。我的电话也在上面——希望你今晚用不上。",
+    "afterText": "有事打我电话。（小凯指了指墙上的表）日检和预热的步骤都贴这儿了。报警看不明白，拍给我，别反复点确认。",
+    "beforeSfx": "vox2_kai",
+    "afterSfx": "vox_ch2_natural_kai"
+  },
+  {
+    "step": "c2n1_e1",
+    "beforeText": "新机器进PACS了，今晚的图直接上工作站，不用抱着板子跑了——你们科总算过上了二十一世纪的日子。",
+    "afterText": "图传过去了。PACS这边也通了，今晚直接在工作站看。（小雷松开鼠标，甩了甩手）我去把线号贴完。",
+    "beforeSfx": "vox2_lei",
+    "afterSfx": "vox_ch2_natural_lei"
+  },
+  {
+    "step": "c2n1_m1",
+    "beforeText": "养老院打来的120：老爷子夜里起夜坠床，头磕在床头柜上，现在**叫不太醒，右侧瞳孔有点大**。怀疑颅内出血——头颅CT，急！",
+    "afterText": "麻烦让一下！（小何跟着平车进门）养老院送来的，起夜摔下床，头磕在床头柜上。现在叫不太醒，右侧瞳孔有点大。急诊申请了头颅CT。",
+    "beforeSfx": "vox2_he",
+    "afterSfx": "vox_ch2_natural_he"
+  },
+  {
+    "step": "c2d2_1",
+    "beforeText": "年轻人，白班要快！队列交给你，急诊来了叫我。别光盯屏幕，门口那排人也盯着点。",
+    "afterText": "今天人不少啊。（主任朝候诊区看了一眼）队列你先接着，急诊来了叫我。",
+    "beforeSfx": "vox2_director",
+    "afterSfx": "vox_ch2_natural_director"
+  },
+  {
+    "step": "c2d2_7",
+    "beforeText": "（拿着薄层重建出的片子，结节清清楚楚）去年说看不见了，敢情是没看着。",
+    "afterText": "哦，这回看清了。（大爷凑近薄层重建的图，手指悬在屏幕前）去年说看不见，我还当它没了。",
+    "beforeSfx": "vox_uncle",
+    "afterSfx": "vox_ch2_natural_uncle"
+  },
+  {
+    "step": "c2n3_a1",
+    "beforeText": "哎，技师老师！加班加到十点的销售见过没？陪你们科主任磨了一下午**维保合同**——新机器第一年免费保，第二年开始，全保、半保、技保，价格差着好几万呢。",
+    "afterText": "还没下班啊？（雯雯把合同夹进包里）我跟你们主任磨了一下午维保。第一年免费，后面全保、半保、技保，差着好几万，他一条一条问。",
+    "beforeSfx": "vox2_wen",
+    "afterSfx": "vox_ch2_natural_wen"
+  },
+  {
+    "step": "c2n5_m1",
+    "beforeText": "孩子今晚吐了两次！**再扫一次，立刻！漏了出血你负得起责吗？！**",
+    "afterText": "他又吐了，您看看。（父亲扶着孩子的背，朝CT室张望）今晚两次了。能不能再查一下？",
+    "beforeSfx": "vox_kiddad",
+    "afterSfx": "vox_ch2_natural_kiddad"
+  },
+  {
+    "step": "c2n5_m2",
+    "beforeText": "（把哭闹的孩子紧紧抱在怀里）不行！**三天前刚照过一次CT！网上都说这东西致癌，小孩子经不起这么照**——你们医院就知道让人做检查！",
+    "afterText": "可前几天才查过。（母亲抱紧哭闹的孩子）就三天前，片子我们带了。你先让医生看一眼，别光催着再照。",
+    "beforeSfx": "vox_kidmom",
+    "afterSfx": "vox_ch2_natural_kidmom"
+  },
+  {
+    "step": "c2n5_m7a",
+    "beforeText": "家长要求不是指征，先走流程。旧片传我，今晚新出现的症状也说清楚，我跟急诊一起评估。",
+    "afterText": "先把旧片发来。今晚新出现的症状也说一下，我跟急诊一起看，再定要不要扫。",
+    "beforeSfx": "vox_duty",
+    "afterSfx": "vox_ch2_natural_duty"
+  },
+  {
+    "step": "c2am_1",
+    "beforeText": "年轻人不错啊，我出几道题考考你。五道，老规矩。答完再去吃饭。",
+    "afterText": "来，聊几个问题。（主任把椅子往桌边拉了拉）五道，老规矩。说完就散，别耽误大家吃早饭。",
+    "beforeSfx": "vox2_director_am",
+    "afterSfx": "vox_ch2_natural_director_am"
+  }
+]
