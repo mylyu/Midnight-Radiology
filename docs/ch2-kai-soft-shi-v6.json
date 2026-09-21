@@ -1,0 +1,56 @@
+{
+  "status": "audition only; game remains on unapproved v5; no commit or deployment",
+  "text": "跟你说个事儿。",
+  "method": "word-local gain attenuation and additional tail fade; not regenerated speech",
+  "source_record": "docs/ch2-kai-whisper-v4.json",
+  "source_wav": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-kai-whisper-v4-20260921\\wav\\vox_ch2_natural_kai_whisper_v4.a4.wav",
+  "source_wav_sha256": "2e24a975fd4159f08ad7d15b296e3cfba2b46993a5b703ae9dbebb76fed59331",
+  "output": "app/public/audio/vox_ch2_natural_kai_soft_shi_v6.mp3",
+  "sha256": "95e6989ccbdd747c42a01377feb443b2725359154d9bf258b3e011620d79fd06",
+  "wav": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-kai-soft-shi-v6-20260921\\vox_ch2_natural_kai_soft_shi_v6.wav",
+  "wav_sha256": "ac4088dc9335a56311320cddbcfc887bfc803a3b3388123af73f834cefba2702",
+  "gain": {
+    "attack_seconds": [
+      1.1,
+      1.18
+    ],
+    "word_db": -14,
+    "tail_seconds": [
+      1.42,
+      1.56
+    ],
+    "tail_db": -20,
+    "curve": "smoothstep in dB"
+  },
+  "qa": {
+    "sample_rate": 24000,
+    "mono": true,
+    "samples": 40990,
+    "exact_prefix_samples": 26400,
+    "word_measured_db": -13.99999994211003,
+    "extra_reduction_vs_v5_db": -8,
+    "word_rms_before": 0.1438417756311009,
+    "word_rms_after": 0.02870020761477643,
+    "transcript": "跟你说个事儿",
+    "finite": true,
+    "peak": 0.4049072265625
+  },
+  "no_pitch_shift": true,
+  "no_time_stretch": true,
+  "no_global_normalization": true,
+  "encode_command": [
+    "ffmpeg",
+    "-hide_banner",
+    "-loglevel",
+    "error",
+    "-i",
+    "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-kai-soft-shi-v6-20260921\\vox_ch2_natural_kai_soft_shi_v6.wav",
+    "-b:a",
+    "128k",
+    "C:\\Users\\lvmen\\Documents\\New project\\Midnight-Radiology\\app\\public\\audio\\vox_ch2_natural_kai_soft_shi_v6.mp3"
+  ],
+  "script": "scripts/ch2-kai-soft-shi-v6.py",
+  "script_sha256": "15b8963a3753a42aa8b689f1611f1005b4adb17d293e16a2103e77b26f87caa8",
+  "human_listened": false,
+  "user_approved": false
+}

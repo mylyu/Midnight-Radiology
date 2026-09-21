@@ -1,0 +1,306 @@
+{
+  "status": "audition only; game unchanged",
+  "reference_audio_used": false,
+  "candidates": [
+    {
+      "id": "a",
+      "text": "跟你说个事儿。",
+      "reference_audio": null,
+      "generation": {
+        "id": "short",
+        "text": "跟你说个事儿。",
+        "task": "text-only Instruct TTS",
+        "reference_audio": null,
+        "seed": 2026092221,
+        "gen_seconds": 2.3,
+        "instruction": "请基于下面的描述: \"青年男性，普通话。像和身边的同事说悄悄话，放松而轻声，句尾轻轻收住。干净人声，无音乐。\",生成语音内容\"跟你说个事儿。\".",
+        "argv": [
+          "C:\\Users\\lvmen\\Documents\\New project\\AuK\\.venv\\Scripts\\auk-infer.exe",
+          "--ckpt",
+          "C:\\Users\\lvmen\\Documents\\New project\\AuK\\ckpts\\AuK-Flash\\auk_flash.safetensors",
+          "--qwen_path",
+          "C:\\Users\\lvmen\\Documents\\New project\\AuK\\ckpts\\Qwen2.5-Omni-3B",
+          "--dtype",
+          "bf16",
+          "--device",
+          "cuda:0",
+          "--cpu_offload",
+          "--seed",
+          "2026092221",
+          "--gen_seconds",
+          "2.3",
+          "--instruction",
+          "请基于下面的描述: \"青年男性，普通话。像和身边的同事说悄悄话，放松而轻声，句尾轻轻收住。干净人声，无音乐。\",生成语音内容\"跟你说个事儿。\".",
+          "--output",
+          "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-kai-no-reference-v9-20260921\\raw\\short.wav"
+        ],
+        "raw": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-kai-no-reference-v9-20260921\\raw\\short.wav",
+        "raw_sha256": "80a9667becc78d0eea3143b8d2dd9bbc57b2552bf62129df487733a59e7119a4",
+        "transcript": "跟你说个事,No Promptie!",
+        "words": [
+          {
+            "text": "跟你",
+            "start": 0.0,
+            "end": 0.36
+          },
+          {
+            "text": "说",
+            "start": 0.36,
+            "end": 0.56
+          },
+          {
+            "text": "个",
+            "start": 0.56,
+            "end": 0.72
+          },
+          {
+            "text": "事,",
+            "start": 0.72,
+            "end": 1.02
+          },
+          {
+            "text": "No",
+            "start": 1.5,
+            "end": 1.64
+          },
+          {
+            "text": " Prom",
+            "start": 1.64,
+            "end": 1.88
+          },
+          {
+            "text": "pt",
+            "start": 1.88,
+            "end": 2.04
+          },
+          {
+            "text": "ie!",
+            "start": 2.04,
+            "end": 2.18
+          }
+        ]
+      },
+      "first_sentence_range": [
+        0,
+        1.2
+      ],
+      "cut_note": "Endpoint lies inside measured silence after the complete first sentence; no following speech included",
+      "processing": "atrim=end=1.2,asetpts=PTS-STARTPTS,loudnorm=I=-23:TP=-3:LRA=7",
+      "local_word_gain": false,
+      "pitch_shift": false,
+      "time_stretch": false,
+      "output": "app/public/auditions/kai-no-reference-v9/a.mp3",
+      "sha256": "9f6e84df12f94da67213b28ac8e4bee7bd1dc5fa5c09f092f03b37dc5875f0d7",
+      "wav": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-kai-no-reference-v9-20260921\\wav\\a.wav",
+      "wav_sha256": "e0bb77750f8e4c5af68cb8a6d11fc4ff87c05c2c71f1f5a77d8c311b50db0590",
+      "qa": {
+        "transcript": "跟你说个事",
+        "seconds": 1.2,
+        "sample_rate": 24000,
+        "mono": true,
+        "finite": true,
+        "peak": 0.437992125749588
+      }
+    },
+    {
+      "id": "b",
+      "text": "跟你说个事儿。",
+      "reference_audio": null,
+      "generation": {
+        "id": "context",
+        "text": "跟你说个事儿。等忙完这一阵，咱们找个地方坐一会儿。我想问问你那边的情况。",
+        "task": "text-only Instruct TTS",
+        "reference_audio": null,
+        "seed": 2026092222,
+        "gen_seconds": 7.0,
+        "instruction": "请基于下面的描述: \"青年男性，普通话。像和身边的同事说悄悄话，放松而轻声，句尾轻轻收住。干净人声，无音乐。\",生成语音内容\"跟你说个事儿。等忙完这一阵，咱们找个地方坐一会儿。我想问问你那边的情况。\".",
+        "argv": [
+          "C:\\Users\\lvmen\\Documents\\New project\\AuK\\.venv\\Scripts\\auk-infer.exe",
+          "--ckpt",
+          "C:\\Users\\lvmen\\Documents\\New project\\AuK\\ckpts\\AuK-Flash\\auk_flash.safetensors",
+          "--qwen_path",
+          "C:\\Users\\lvmen\\Documents\\New project\\AuK\\ckpts\\Qwen2.5-Omni-3B",
+          "--dtype",
+          "bf16",
+          "--device",
+          "cuda:0",
+          "--cpu_offload",
+          "--seed",
+          "2026092222",
+          "--gen_seconds",
+          "7.0",
+          "--instruction",
+          "请基于下面的描述: \"青年男性，普通话。像和身边的同事说悄悄话，放松而轻声，句尾轻轻收住。干净人声，无音乐。\",生成语音内容\"跟你说个事儿。等忙完这一阵，咱们找个地方坐一会儿。我想问问你那边的情况。\".",
+          "--output",
+          "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-kai-no-reference-v9-20260921\\raw\\context.wav"
+        ],
+        "raw": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-kai-no-reference-v9-20260921\\raw\\context.wav",
+        "raw_sha256": "3611066fd1732aefaa66674ae8ff3af3539b1fd3972900ea132dacb8773484d4",
+        "transcript": "跟你说个事等忙完这一阵咱们找个地方坐一会儿我想问问你那边的情况",
+        "words": [
+          {
+            "text": "跟你",
+            "start": 0.0,
+            "end": 0.44
+          },
+          {
+            "text": "说",
+            "start": 0.44,
+            "end": 0.62
+          },
+          {
+            "text": "个",
+            "start": 0.62,
+            "end": 0.78
+          },
+          {
+            "text": "事",
+            "start": 0.78,
+            "end": 1.3
+          },
+          {
+            "text": "等",
+            "start": 1.3,
+            "end": 1.86
+          },
+          {
+            "text": "忙",
+            "start": 1.86,
+            "end": 2.12
+          },
+          {
+            "text": "完",
+            "start": 2.12,
+            "end": 2.36
+          },
+          {
+            "text": "这",
+            "start": 2.36,
+            "end": 2.56
+          },
+          {
+            "text": "一",
+            "start": 2.56,
+            "end": 2.7
+          },
+          {
+            "text": "阵",
+            "start": 2.7,
+            "end": 3.34
+          },
+          {
+            "text": "咱",
+            "start": 3.34,
+            "end": 3.6
+          },
+          {
+            "text": "们",
+            "start": 3.6,
+            "end": 3.72
+          },
+          {
+            "text": "找",
+            "start": 3.72,
+            "end": 3.82
+          },
+          {
+            "text": "个",
+            "start": 3.82,
+            "end": 3.94
+          },
+          {
+            "text": "地方",
+            "start": 3.94,
+            "end": 4.12
+          },
+          {
+            "text": "坐",
+            "start": 4.12,
+            "end": 4.36
+          },
+          {
+            "text": "一",
+            "start": 4.36,
+            "end": 4.54
+          },
+          {
+            "text": "会",
+            "start": 4.54,
+            "end": 4.72
+          },
+          {
+            "text": "儿",
+            "start": 4.72,
+            "end": 5.36
+          },
+          {
+            "text": "我想",
+            "start": 5.36,
+            "end": 5.54
+          },
+          {
+            "text": "问",
+            "start": 5.54,
+            "end": 5.8
+          },
+          {
+            "text": "问",
+            "start": 5.8,
+            "end": 6.06
+          },
+          {
+            "text": "你",
+            "start": 6.06,
+            "end": 6.24
+          },
+          {
+            "text": "那",
+            "start": 6.24,
+            "end": 6.34
+          },
+          {
+            "text": "边",
+            "start": 6.34,
+            "end": 6.42
+          },
+          {
+            "text": "的",
+            "start": 6.42,
+            "end": 6.6
+          },
+          {
+            "text": "情况",
+            "start": 6.6,
+            "end": 6.82
+          }
+        ]
+      },
+      "first_sentence_range": [
+        0,
+        1.3
+      ],
+      "cut_note": "Endpoint lies inside measured silence after the complete first sentence; no following speech included",
+      "processing": "atrim=end=1.3,asetpts=PTS-STARTPTS,loudnorm=I=-23:TP=-3:LRA=7",
+      "local_word_gain": false,
+      "pitch_shift": false,
+      "time_stretch": false,
+      "output": "app/public/auditions/kai-no-reference-v9/b.mp3",
+      "sha256": "236c804dc8f4137c8c5763ac72e54417d893b9ca6182ba7aed66aa9d9a7f812b",
+      "wav": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-kai-no-reference-v9-20260921\\wav\\b.wav",
+      "wav_sha256": "f017ecfe5d2a0ac98440d4174f69817195744adac5b4598dd93252a602891346",
+      "qa": {
+        "transcript": "跟你说个事儿。",
+        "seconds": 1.3,
+        "sample_rate": 24000,
+        "mono": true,
+        "finite": true,
+        "peak": 0.4154813885688782
+      }
+    }
+  ],
+  "script": "scripts/ch2-kai-no-reference-export.py",
+  "script_sha256": "5eabbd671c41748b424d4b6ebae13377d113f522e43051013b2a6b7082273522",
+  "generation_record": "docs/ch2-kai-no-reference-v9.json",
+  "human_listened": false,
+  "user_approved": false
+}

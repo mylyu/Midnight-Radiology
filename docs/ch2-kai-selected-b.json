@@ -1,0 +1,21 @@
+{
+  "baseline": "a542af1",
+  "role": "小凯",
+  "text": "跟你说个事儿。",
+  "selected_candidate": "b",
+  "source": "app/public/auditions/kai-no-reference-v9/b.mp3",
+  "source_record": "docs/ch2-kai-no-reference-audition.json",
+  "output": "app/public/audio/vox_ch2_natural_kai_noref_b_v9.mp3",
+  "sha256": "236c804dc8f4137c8c5763ac72e54417d893b9ca6182ba7aed66aa9d9a7f812b",
+  "user_approved": true,
+  "user_request": "B更好，替换吧。",
+  "operation": "Byte-for-byte copy of approved B; no regeneration, re-encoding or additional sound processing",
+  "step": "c2n1_b1",
+  "reference_audio_used": false,
+  "duration_seconds": 1.3,
+  "sample_rate": 24000,
+  "channels": 1,
+  "playback_gain": 0.45,
+  "scope": "One Chapter 2 entrance audio alias only; shared player, Chapter 1, dialogue and old audio unchanged",
+  "release": "Local only; no push or deployment"
+}

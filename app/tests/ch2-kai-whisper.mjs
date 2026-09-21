@@ -20,7 +20,9 @@ const original = file => git('show', `${baseline}:${file}`).toString('utf8').rep
 const sha256 = data => createHash('sha256').update(data).digest('hex')
 
 // This round may not change dialogue, rewards, choices or any shared runtime.
-const story = read('app/src/game/ch2.ts')
+// Subsequent author request only lightens the final word; audit the preserved
+// v4 generation below after reversing that one explicitly allowed alias.
+const story = read('app/src/game/ch2.ts').replace("sfx: 'vox_ch2_natural_kai_noref_b_v9'", `sfx: '${alias}'`)
 assert.equal(story.split(`sfx: '${alias}'`).length - 1, 1, 'Exactly one new Kai entrance alias')
 assert.match(story, new RegExp(`c2n1_b1: \\{ speaker: 'kai', sprite: 'char_kai', sfx: '${alias}', text: "跟你说个事儿。`))
 assert.equal(story.replace(`sfx: '${alias}'`, `sfx: '${oldAlias}'`), original('app/src/game/ch2.ts'),

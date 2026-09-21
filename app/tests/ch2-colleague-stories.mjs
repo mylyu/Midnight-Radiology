@@ -45,6 +45,9 @@ const allowedLaterMedia = new Set([
   'app/public/assets/ch2_remote_rack.png', 'app/public/assets/ch2_remote_rack_offline.png',
   'app/public/audio/vox_ch2_natural_kai_light_v3.mp3',
   'app/public/audio/vox_ch2_natural_kai_whisper_v4.mp3',
+  'app/public/audio/vox_ch2_natural_kai_soft_shi_v5.mp3',
+  'app/public/audio/vox_ch2_natural_kai_soft_shi_v6.mp3', // Author-requested stronger attenuation audition only.
+  'app/public/audio/vox_ch2_natural_kai_noref_b_v9.mp3', // Author-selected no-reference candidate B.
 ])
 const newMedia = [
   execFileSync('git',['diff','--name-only','--diff-filter=A','4f70852','--','app/public/audio','app/public/assets'],{encoding:'utf8',cwd:root}),

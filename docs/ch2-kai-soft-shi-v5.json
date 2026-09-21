@@ -1,0 +1,53 @@
+{
+  "baseline": "a542af1",
+  "role": "小凯",
+  "text": "跟你说个事儿。",
+  "method": "local word gain envelope on an existing AuK performance; not regenerated TTS",
+  "source_record": "docs/ch2-kai-whisper-v4.json",
+  "source_wav": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-kai-whisper-v4-20260921\\wav\\vox_ch2_natural_kai_whisper_v4.a4.wav",
+  "source_wav_sha256": "2e24a975fd4159f08ad7d15b296e3cfba2b46993a5b703ae9dbebb76fed59331",
+  "source_mp3": "app/public/audio/vox_ch2_natural_kai_whisper_v4.mp3",
+  "source_mp3_sha256": "8e3c0317ad2581c6d6e008e1493a9637ef68d91d779f0431c2b91e5bf3e80837",
+  "output": "app/public/audio/vox_ch2_natural_kai_soft_shi_v5.mp3",
+  "sha256": "b81007181956bf831e8581da41d87be983196c272d4f7e81958958e5e5914c4c",
+  "wav": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-kai-soft-shi-v5-20260921\\vox_ch2_natural_kai_soft_shi_v5.wav",
+  "wav_sha256": "bb1e71570b1becfdf851c46b5d471b95b8279293aa7a81ef062284a74bb69234",
+  "gain": {
+    "start_seconds": 1.1,
+    "end_seconds": 1.24,
+    "db": -6.0,
+    "curve": "smoothstep in dB; hold to end"
+  },
+  "alignment_note": "Whisper word timestamps plus acoustic sh-frication onset; estimated boundary uncertainty 20–40 ms. Keep 个 body at 1.00–1.08 s untouched.",
+  "qa": {
+    "sample_rate": 24000,
+    "mono": true,
+    "samples": 40990,
+    "seconds": 1.7079166666666667,
+    "exactly_preserved_prefix_samples": 26400,
+    "word_rms_before": 0.1438417756311009,
+    "word_rms_after": 0.07209166168336922,
+    "word_change_db": -5.999999990989849,
+    "transcript": "跟你说个事儿",
+    "finite": true,
+    "peak": 0.4049072265625
+  },
+  "no_pitch_shift": true,
+  "no_time_stretch": true,
+  "no_global_normalization": true,
+  "encode_argv": [
+    "ffmpeg",
+    "-hide_banner",
+    "-loglevel",
+    "error",
+    "-i",
+    "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-kai-soft-shi-v5-20260921\\vox_ch2_natural_kai_soft_shi_v5.wav",
+    "-b:a",
+    "128k",
+    "C:\\Users\\lvmen\\Documents\\New project\\Midnight-Radiology\\app\\public\\audio\\vox_ch2_natural_kai_soft_shi_v5.mp3"
+  ],
+  "script": "scripts/ch2-kai-soft-shi.py",
+  "script_sha256": "33eb65014772b869b3e191fe0b78556c4844a3958534e12edc8c7cc02ac0dcae",
+  "human_listened": false,
+  "user_approved": false
+}

@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>小凯 · 无参考重新生成试听</title>
+  <style>
+    :root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#09111f;color:#dbe6ed;font:16px/1.7 system-ui,sans-serif}main{max-width:760px;padding:28px 20px;margin:auto}h1{font-size:24px}h2{font-size:19px;margin:0 0 12px}p{color:#aab8c8}article{margin:20px 0;padding:22px;background:#142033;border:1px solid #35445d;border-radius:12px}audio{display:block;width:100%}a{color:#7be0d5}.line{font-size:22px;color:#edf4fa}small{color:#96a9be}
+  </style>
+</head>
+<body><main>
+  <h1>小凯 · 无参考重新生成</h1>
+  <p class="line">“跟你说个事儿。”</p>
+  <p>两条均为 AuK 纯文字生成，再截取完整第一句。没有输入任何参考音频，也没有对“事儿”单独降音量。音色由模型重新生成，不锁定之前的小凯声音。</p>
+  <article><h2>A</h2><audio controls preload="metadata" aria-label="无参考候选A" src="auditions/kai-no-reference-v9/a.mp3"></audio></article>
+  <article><h2>B · 已选用</h2><audio controls preload="metadata" aria-label="已选用无参考B" src="audio/vox_ch2_natural_kai_noref_b_v9.mp3"></audio></article>
+  <p><small>作者已确认B，已替换本地第二章小凯这一句。这里播放的是游戏文件，与原试听B字节一致。未推送或部署；本页不读取或修改游戏存档。</small></p>
+  <a href="./#/ch2">进入第二章试玩</a>
+</main>
+<script>
+  const players=[...document.querySelectorAll('audio')];
+  for(const player of players)player.addEventListener('play',()=>{for(const other of players)if(other!==player)other.pause()});
+</script>
+</body></html>

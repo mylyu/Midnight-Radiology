@@ -1,5 +1,34 @@
 # 开发交接 · 2026-09-21
 
+## 最新已确认：第二章小凯替换为无 reference 的 B
+
+- 作者明确回复“B更好，替换吧。”已将试听 `auditions/kai-no-reference-v9/b.mp3` **逐字节复制**为正式游戏别名 `audio/vox_ch2_natural_kai_noref_b_v9.mp3`，SHA256 `236c804dc8f4137c8c5763ac72e54417d893b9ca6182ba7aed66aa9d9a7f812b`。不重新生成、不再压字、不重新编码。
+- 游戏源码只改 `c2n1_b1.sfx`。台词仍“跟你说个事儿。”，1.30秒、24kHz单声道。共享播放器保持原0.45增益；第一章、其余角色、剧情与流程不改。新文件名避免旧音频缓存。
+- 选用证据与来源见 `docs/ch2-kai-selected-b.json`，实际无参考命令与截取参数见`docs/ch2-kai-no-reference-audition.json`候选b。A及旧v2–v6保留作历史；下面“未替换/尚未提交”等段落是此前状态，以本段为准。
+- 本地分支 `codex/ch2-pacing-review`，基点`a542af1`；本轮收拢此前未提交的试听/参数记录，与已批准B接入一起独立提交为`fix(ch2): use approved no-reference Kai take B`，便于revert。未推送、未部署；不要清浏览器存档。
+- 本地试玩 `http://127.0.0.1:8798/#/ch2`；A/B页标明B已选用，旧配音页加更新入口。回归包括批准B哈希一致、原音频/共享代码冻结、第一章保护、第二章实际入场播放、历史审计与build/type。
+
+## 历史试听：小凯无 reference 重生成
+
+- 作者要求不用reference重新生成。最终试听A/B位于 `app/public/auditions/kai-no-reference-v9/a.mp3`、`b.mp3`，纯文字AuK Instruct TTS，实际命令无`--audio`/`--ref_text`；音色重新设计，未锁定旧小凯。没有单字音量包络、变调或变速。
+- A截取2.3秒短句生成的0–1.20秒；B截取7秒自然对话生成的0–1.30秒。两个截点都在首句后的实测静音内；只保留“跟你说个事儿”。末句后多余内容不交付。整句做−23 LUFS匹配。
+- 第一、二轮v7/v8出现重复/乱词，Whisper与Qwen复核不合格，已移出public到AuK对应outputs的`rejected-public/`，原始WAV/命令保留，可追溯恢复。最终片段Qwen均转写完整；Whisper A未写儿化的“儿”，B完整。自动听感仍为普通有声说话，**不据此宣称已达到理想悄悄话表演**，交作者试听。
+- 预览 `ch2-kai-no-reference-preview.html?v=no-reference-v9`；最终参数/哈希/实际无参考命令见 `docs/ch2-kai-no-reference-audition.json`，原始生成在`docs/ch2-kai-no-reference-v9.json`。Qwen输出在AuK `outputs/ch2-kai-no-reference-audition-20260921/review/qa/`。
+- 本轮游戏源码与存档完全没改，小凯游戏仍是此前未提交的v5。新A/B只是候选，不自动替换、提交或发布。
+
+## 历史试听：小凯 v6 更强末词减弱效果（未采用）
+
+- 作者仍认为v5的“事儿”过重，明确要求减弱效果。新v6对同一v4无损源的末词主体降14dB（比v5额外降8dB），1.42–1.56秒尾声平滑降至−20dB；0–1.10秒逐样本不变，无变调/变速/全句响度补偿。台词自动转写仍完整，但不当作用户听感认可。
+- 新文件 `vox_ch2_natural_kai_soft_shi_v6.mp3` 只放试听页主播放器，**没有接入游戏，也没有提交/部署**。游戏目前仍引用未经认可的v5；v5那轮改动也尚未提交，下文提交名只为当时拟定计划，不代表已经提交。不要擅自把候选当验收通过版本。
+- 参数与hash：`docs/ch2-kai-soft-shi-v6.json`；配方：`scripts/ch2-kai-soft-shi-v6.py`。页面v6/v5对照，v4/v3折叠保留。新音频名及`?v=kai-soft-shi-v6#kai-whisper`用于避免旧页命中，不清缓存、不清存档。
+
+## 最新：小凯末词“事儿”减重 v5
+
+- 作者仅要求“事”读轻一点。以 v4 同次 AuK 合成的无损 WAV 为源，1.10–1.24秒以平滑包络降至−6dB并保持至尾；“事”元音原比“个”重约5.1dB。前26400个样本（1.10秒）严格不变，不变调、不变速、不做全句归一化。**这是明确的局部后期，不声称重新合成表演。**
+- 新文件 `vox_ch2_natural_kai_soft_shi_v5.mp3`；游戏仅替换 `c2n1_b1.sfx`，其余对白和流程不改。旧v2/v3/v4及第一章声音都保留；新文件名避免旧MP3缓存。预览页面主播放v5，提供v4对照。
+- 基点 `a542af1`，同一 `codex/ch2-pacing-review` 分支，仅本地。单独 `fix(ch2): soften Kai final-word emphasis` 提交可revert。生成与样本校验脚本 `scripts/ch2-kai-soft-shi.py`，完整参数/源WAV/哈希/转写记录在 `docs/ch2-kai-soft-shi-v5.json`。
+- 完整转写仍为“跟你说个事儿”；PCM逐样本与末词−6dB校验通过。耳听是否满意由作者判断，不能以ASR代替表演认可。
+
 ## 最新：小凯改为低声私语 v4
 
 - 作者否决小凯 v3 的上扬句尾，要求“悄悄话的口吻”。同句“跟你说个事儿。”改用 AuK 耳语转换生成，五个候选选第4个；新文件 `vox_ch2_natural_kai_whisper_v4.mp3`，原v2/v3保留。不改变字幕、剧情、流程或共享播放器，第一章不动。
