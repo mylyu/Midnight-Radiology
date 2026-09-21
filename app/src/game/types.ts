@@ -47,6 +47,8 @@ export interface Step {
   sprite2?: string
   bg?: string
   image?: string
+  /** 第二章影像的拍摄时间/来源；不影响其他章节的图片界面。 */
+  imageLabel?: string
   choices?: Choice[]
   next?: string
   effect?: Effect
@@ -134,6 +136,11 @@ export interface GameState {
 }
 
 export interface DlcProgress {
+  /** 第二章专用；旧存档省略时按当前剧情节点恢复。 */
+  phase?: 'story' | 'settle' | 'quiz' | 'done'
+  quiz?: Ch2QuizProgress
+  shop?: { shift: string; lotteryCount: number; buyCount: number }
+  pendingCoffee?: boolean
   /** CT: entered steps in this run; prevents repeat AP/rewards after reload. */
   appliedSteps?: string[]
   stepId?: string
@@ -154,6 +161,14 @@ export interface DlcProgress {
   gone?: string[]
   /** DR：AI 初诊决策记录（patientId → 玩家是否采纳） */
   aiChoices?: Record<string, boolean>
+}
+
+export interface Ch2QuizProgress {
+  questions: { question: number; order: number[]; selected?: number }[]
+  index: number
+  completed: boolean
+  grade?: 'S' | 'A' | 'B' | 'C'
+  rewarded?: boolean
 }
 
 export interface ShopItem {

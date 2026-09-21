@@ -5,6 +5,8 @@ import { ch2StepForState, ch2BackgroundAsset, CH2_META, CH2_SHIFTS, CH2_BADGES, 
 import type { DlcDef, QueuePatient } from './game/dlc'
 import { originalCh2Step, restartCh2 } from './game/ch2-exploration'
 import { isPatientBed, isPatientWheelchair } from './game/ch2-patients'
+import { Ch2Shop, Ch2Backpack } from './components/Ch2Shop'
+import { patchCh2, ch2Phase, settleCh2, nextCh2Shift, redeemCh2Coffee, startCh2Quiz, answerCh2Quiz, nextCh2Question, ch2QuizScore } from './game/ch2-session'
 import type { GameState, Step, ShopItem, Choice, DlcProgress } from './game/types'
 import { freshState, loadState, saveState, wipeSave, applyEffect, condOk, dailyCheckin, meterLevel, playSfx, makeCredCode, verifyCredCode } from './game/store'
 
@@ -1840,7 +1842,8 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
   const [badgeOpen, setBadgeOpen] = useState(false)
   const [shopOpen, setShopOpen] = useState(false)
   const [bookOpen, setBookOpen] = useState(false)
-  const [phase, setPhase] = useState<'story' | 'settle' | 'quiz' | 'done'>('story')
+  const [backpackOpen, setBackpackOpen] = useState(false)
+  const phase = ch2Phase(state)
   // A duplicate-tap guard must expire even if a transition was interrupted.
   const pickedGate = useRef({ id: '', until: 0 })
   const heardVoices = useRef(new Set<string>())
@@ -1884,6 +1887,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
 
   // 进入某一步：条件跳过 / 视图 / 效果 / 语音 / 卡片 / 大事记 / 存档
   useEffect(() => {
+    if (phase !== 'story') return
     // Also handles a mounted preview whose old revisit node was removed by HMR.
     const originalStep = originalCh2Step(stepId)
     if (originalStep !== stepId) {
@@ -1929,6 +1933,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
       }
       if (newCard) next = { ...next, cards: [...(next.cards ?? []), newCard] }
       if (step.event && !(next.events ?? []).includes(step.event)) next = { ...next, events: [...(next.events ?? []), step.event] }
+      next = redeemCh2Coffee(next, stepId)
       next = updProg(next, { shift: shift.id, stepId, viewBg: newView.bg, viewSprite: newView.sprite, viewSprite2: newView.sprite2, appliedSteps: [...applied.current] })
       return next
     })
@@ -1963,10 +1968,10 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
     }
   }, [stepId, done, hasChoices])
 
-  const blocked = !!(step.choices || step.end || step.windowTask || step.checklist) || shopOpen || bookOpen || manualOpen || badgeOpen || phase !== 'story'
+  const blocked = !!(step.choices || step.end || step.windowTask || step.checklist) || shopOpen || bookOpen || manualOpen || badgeOpen || backpackOpen || phase !== 'story'
 
   const advance = () => {
-    if (shopOpen || bookOpen || manualOpen || badgeOpen || phase !== 'story') return
+    if (shopOpen || bookOpen || manualOpen || badgeOpen || backpackOpen || phase !== 'story') return
     // Reveal text even on choices, tasks and settlement nodes. Those nodes must
     // block navigation, not the user's attempt to finish the typewriter text.
     if (!done) { setShown(plainLen); return }
@@ -1975,7 +1980,10 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
     playSfx('click')
     if (step.next === '@shop') { setShopOpen(true); return }
     if (step.next === '@book2') { setBookOpen(true); return }
-    if (step.next === '@quiz') { setPhase('quiz'); return }
+    if (step.next === '@quiz') {
+      const quizSeed = Math.floor(Math.random() * 0xffffffff)
+      update(s => startCh2Quiz(s, quizSeed)); return
+    }
     if (step.next) setStepId(step.next)
   }
 
@@ -2008,29 +2016,21 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
   // 班次结束：结算画面 → 下一班；末班（晨会）结束 → 第二章完
   const endShift = () => {
     playSfx('stamp')
-    if (shift.id === 'c2d2') {
-      update(s => (!s.flags['queue_wait'] && !s.badges.includes('queue_tamer')) ? { ...s, badges: [...s.badges, 'queue_tamer'] } : s)
-    }
-    if (shiftIdx >= CH2_SHIFTS.length - 1) {
-      update(s => updProg(s, { done: true, stepId: undefined, shift: undefined }))
-      setPhase('done')
-      return
-    }
-    const ni = shiftIdx + 1
-    update(s => updProg(s, { shift: CH2_SHIFTS[ni].id, stepId: CH2_SHIFTS[ni].start, viewBg: undefined, viewSprite: undefined, viewSprite2: undefined }))
-    setPhase('settle')
+    update(s => settleCh2(s, shift.id))
   }
 
   const nextShift = () => {
     playSfx('click')
     const ni = shiftIdx + 1
+    if (phase !== 'settle' || !CH2_SHIFTS[ni]) return
+    update(nextCh2Shift)
     setShiftIdx(ni)
+    viewRef.current = { bg: 'bg_ctcontrol' }
     setStepId(CH2_SHIFTS[ni].start)
-    setPhase('story')
   }
 
   const quizDone = () => {
-    setPhase('story')
+    update(s => patchCh2(s, { phase: 'story', stepId: 'c2am_3' }))
     setStepId('c2am_3')
   }
 
@@ -2049,7 +2049,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
   const ch2LegacyBadges = state.badges.filter(b => CH2_BADGES_LEGACY.includes(b)).length
 
   return (
-    <div ref={stageRef} className="relative w-full h-full cursor-pointer" data-ch2-step={stepId} onClickCapture={retryVoices} onClick={advance}>
+    <div ref={stageRef} className="relative w-full h-full cursor-pointer" data-ch2-step={stepId} data-ch2-phase={phase} onClickCapture={retryVoices} onClick={advance}>
       <BgImg name={ch2BackgroundAsset(view.bg)} />
       <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-slate-950/80 to-transparent pointer-events-none" />
 
@@ -2109,6 +2109,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
         <div className="absolute inset-0 z-10 flex flex-col items-center justify-center pointer-events-none pb-40">
           <img src={IMG(step.image)} className="max-h-[45%] portrait:max-h-[38%] max-w-[90%] object-contain rounded-lg border-4 border-slate-700 shadow-2xl pixel" alt={CH2_IMAGE_CAPTIONS[step.image] ?? '影像或证物'} />
           {CH2_IMAGE_CAPTIONS[step.image] && <p className="mt-1 mx-2 px-2 py-1 rounded bg-slate-950/90 text-amber-100 text-[10px] md:text-xs text-center">{CH2_IMAGE_CAPTIONS[step.image]}</p>}
+          {step.imageLabel && <p className="mt-2 rounded border border-teal-600 bg-slate-950/95 px-3 py-1 text-xs md:text-sm text-teal-100">{step.imageLabel}</p>}
         </div>
       )}
 
@@ -2164,10 +2165,18 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
 
       {/* 班次结算 */}
       {phase === 'settle' && nextShiftDef && (
-        <div className="absolute inset-0 z-50 bg-slate-950/95 flex flex-col items-center justify-center gap-4 px-6" onClick={e => e.stopPropagation()}>
+        <div data-ch2-settlement className="absolute inset-0 z-30 bg-slate-950/95 overflow-y-auto flex flex-col items-center gap-4 px-4 py-6 md:py-12" onClick={e => e.stopPropagation()}>
           <p className="text-teal-300 tracking-[0.4em] text-sm">第二章 · 快与狠</p>
-          <h3 className="text-2xl text-slate-100">{shift.icon} {shift.title}「{shift.subtitle}」 · 完</h3>
+          <h3 className="text-xl md:text-2xl text-center text-slate-100">{shift.icon} {shift.title}「{shift.subtitle}」 · 完</h3>
           <p className="text-slate-400 text-sm">进度已自动保存 · 💰 {state.gold} · 🏅 {state.badges.length} 枚勋章</p>
+          <p className="max-w-lg text-sm text-slate-400 text-center">{shift.kind === 'night' ? '把工作交接完，先吃口东西。下个班不会自己跑过来。' : '终于能从椅子上起来了。先歇会儿，再看下一张排班表。'}</p>
+          <div className="grid grid-cols-2 gap-2 w-full max-w-lg">
+            <button onClick={() => setShopOpen(true)} className="rounded-lg border border-amber-600 bg-slate-800 px-3 py-3 text-amber-200">🛒 去小卖部</button>
+            <button onClick={() => setBackpackOpen(true)} className="rounded-lg border border-slate-600 bg-slate-800 px-3 py-3 text-slate-100">🎒 背包与分享</button>
+            <button onClick={() => setManualOpen(true)} className="rounded-lg border border-slate-600 bg-slate-800 px-3 py-3 text-slate-100">📖 夜班手册</button>
+            <button onClick={() => setBadgeOpen(true)} className="rounded-lg border border-slate-600 bg-slate-800 px-3 py-3 text-slate-100">🏅 勋章墙</button>
+            <button onClick={() => setBookOpen(true)} className="col-span-2 rounded-lg border border-slate-600 bg-slate-800 px-3 py-3 text-slate-100">📚 翻翻《CT夜班二十页》</button>
+          </div>
           <button onClick={nextShift}
             className="mt-2 px-8 py-3 rounded-lg bg-teal-500/90 text-slate-950 font-bold tracking-widest hover:bg-teal-400">
             进入：{nextShiftDef.icon} {nextShiftDef.title}「{nextShiftDef.subtitle}」→
@@ -2189,7 +2198,8 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
       )}
 
       {/* 小卖部 / 书 / 手册 / 勋章 */}
-      {shopOpen && <ShopOverlay state={state} update={update} onClose={() => setShopOpen(false)} />}
+      {shopOpen && <Ch2Shop state={state} update={update} onClose={() => setShopOpen(false)} />}
+      {backpackOpen && <Ch2Backpack state={state} update={update} onClose={() => setBackpackOpen(false)} />}
       {bookOpen && <Book2Overlay shiftId={shift.id} completed={!!prog.done} onClose={() => setBookOpen(false)} />}
       {manualOpen && <ManualOverlay state={state} onClose={() => setManualOpen(false)} />}
       {badgeOpen && (
@@ -2364,21 +2374,19 @@ function Book2Overlay({ shiftId, completed, onClose }: { shiftId: string; comple
 
 /* ================= 第二章 · 晨会考核（CT题库24抽5） ================= */
 function Ch2Quiz({ state, update, onDone }: { state: GameState; update: (f: (s: GameState) => GameState) => void; onDone: () => void }) {
-  const doneGrade = state.flags['quiz2_grade'] as string | undefined
-  const [qs] = useState(() => {
-    const shuffled = [...QUIZ2].sort(() => Math.random() - 0.5).slice(0, 5)
-    return shuffled.map(q => {
-      const order = q.options.map((_, i) => i).sort(() => Math.random() - 0.5)
-      return { q: q.q, explain: q.explain, options: order.map(i => q.options[i]), answer: order.indexOf(q.answer) }
-    })
+  const savedQuiz = state.dlc?.ch2?.quiz
+  // Only a persisted quiz from this run can show a result. A legacy grade flag
+  // alone is not proof that the player has answered this run's questions.
+  const quiz = savedQuiz ?? startCh2Quiz(state).dlc!.ch2.quiz!
+  useEffect(() => {
+    if (!savedQuiz) update(s => startCh2Quiz(s))
+  }, [savedQuiz, update])
+  const qs = quiz.questions.map(row => {
+    const q = QUIZ2[row.question]
+    return { q: q.q, explain: q.explain, options: row.order.map(i => q.options[i]), answer: row.order.indexOf(q.answer) }
   })
-  const [idx, setIdx] = useState(0)
-  const [picked, setPicked] = useState<number | null>(null)
-  const [score, setScore] = useState(0)
-  const [finished, setFinished] = useState(!!doneGrade)
-  const rewarded = useRef(!!doneGrade)
-
-  const gradeOf = (n: number) => n >= 5 ? 'S' : n === 4 ? 'A' : n === 3 ? 'B' : 'C'
+  const idx = quiz.index, picked = quiz.questions[idx].selected ?? null
+  const score = ch2QuizScore(quiz), finished = quiz.completed
   const gradeInfo: Record<string, { title: string; line: string; gold: number }> = {
     S: { title: 'S级 · 满分', gold: 250, line: '主任把卷子放下：「全对？……市三甲的抽查，你去迎检，我放心。」老周在角落里哼了一声，嘴角是翘着的。' },
     A: { title: 'A级 · 优秀', gold: 200, line: '主任点点头：「错一题，可以。迎检的时候照平时来，别紧张。」' },
@@ -2386,36 +2394,19 @@ function Ch2Quiz({ state, update, onDone }: { state: GameState; update: (f: (s: 
     C: { title: 'C级 · 待补考', gold: 0, line: '老周替你解了围：「实操没问题，理论我盯着他补。」……下周抽查之前，真得把书翻烂了。' },
   }
 
-  const finish = (finalScore: number) => {
-    setFinished(true)
-    if (rewarded.current) return
-    rewarded.current = true
-    const g = gradeOf(finalScore)
-    update(s => {
-      if (s.flags['quiz2_grade']) return s
-      let next = { ...s, flags: { ...s.flags, quiz2_grade: g } }
-      if (gradeInfo[g].gold > 0) next = { ...next, gold: next.gold + gradeInfo[g].gold }
-      return next
-    })
-    playSfx('badge')
-  }
-
   const pick = (i: number) => {
     if (picked !== null) return
     playSfx('click')
-    setPicked(i)
-    if (i === qs[idx].answer) setScore(s => s + 1)
+    update(s => answerCh2Quiz(s, i))
   }
   const nextQ = () => {
-    playSfx('click')
-    if (idx + 1 >= qs.length) finish(score)
-    else { setIdx(idx + 1); setPicked(null) }
+    playSfx(idx + 1 >= qs.length ? 'badge' : 'click')
+    update(nextCh2Question)
   }
-  const grade = gradeOf(doneGrade ? (doneGrade === 'S' ? 5 : doneGrade === 'A' ? 4 : doneGrade === 'B' ? 3 : 0) : score)
-  const showGrade = doneGrade ?? grade
+  const showGrade = quiz.grade ?? 'C'
 
   return (
-    <div className="absolute inset-0 z-40 bg-slate-950/90 flex flex-col items-center justify-center px-4 py-6 overflow-y-auto" onClick={e => e.stopPropagation()}>
+    <div data-ch2-quiz className="absolute inset-0 z-40 bg-slate-950/90 flex flex-col items-center justify-center px-4 py-6 overflow-y-auto" onClick={e => e.stopPropagation()}>
       <p className="text-teal-300 tracking-[0.4em] text-sm mb-3">晨会 · CT专场考核</p>
       {!finished ? (
         <div className="w-full max-w-2xl bg-slate-900/95 border-2 border-slate-600 rounded-xl p-6">

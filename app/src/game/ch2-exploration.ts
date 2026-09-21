@@ -62,7 +62,7 @@ export const CH2_DEFERRED_STEPS: Readonly<Record<string, string>> = {
  * historical cards/badges, possessions and first-chapter branches are retained. */
 export function restartCh2(s: GameState): GameState {
  // phantom_log is now historical evidence with no live earning path; retain it.
- const local=new Set(['day_shift','queue_wait','data_audit','data_support','data_oppose','data_hook','audit_evidence','luzhou_formal','luzhou_wait','luzhou_gray','maintenance_draft','remote_proposal','ch2_registration_resolved','old_register','nameless_films','ai_hook','dose_explained','zhou_handover','term_checked'])
+ const local=new Set(['quiz2_grade','day_shift','queue_wait','data_audit','data_support','data_oppose','data_hook','audit_evidence','luzhou_formal','luzhou_wait','luzhou_gray','maintenance_draft','remote_proposal','ch2_registration_resolved','old_register','nameless_films','ai_hook','dose_explained','zhou_handover','term_checked'])
  return {...s,ap:0,flags:Object.fromEntries(Object.entries(s.flags).filter(([key])=>!/^c2|^heard2_/.test(key)&&!local.has(key))),
   dlc:{...(s.dlc??{}),ch2:{}}}
 }
