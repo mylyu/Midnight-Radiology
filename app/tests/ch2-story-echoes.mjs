@@ -5,12 +5,15 @@ import {execFileSync} from 'node:child_process'
 import {readFileSync} from 'node:fs'
 import ts from 'typescript'
 import * as live from '../src/game/ch2.ts'
+import {beforeAuthorPass} from './ch2-voice-author-projection.mjs'
 
 // The later, user-requested voice pass changes exactly 14 entrance texts/tracks.
 // Validate those explicit deltas before projecting them back out of this older
 // prose-only audit. ch2-natural-voices.mjs checks the live pass against 1d7342d.
 const voiceChanges=JSON.parse(readFileSync(new URL('../../docs/ch2-natural-voices-changes.json',import.meta.url),'utf8'))
 function beforeVoicePass(id,step) {
+ // This helper is also called on already-projected old steps at runtime.
+ if(step.sfx!==voiceChanges.find(r=>r.step===id)?.beforeSfx)step=beforeAuthorPass(id,step)
  const edit=voiceChanges.find(r=>r.step===id)
  if(!edit||step.sfx!==edit.afterSfx)return step
  assert.equal(step.text,edit.afterText,id+' undocumented voice prose')

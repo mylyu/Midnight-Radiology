@@ -13,6 +13,11 @@ os.environ.pop('HF_TOKEN',None)
 ROOT=Path(__file__).resolve().parents[1]
 AUK=ROOT.parent/'AuK'
 OUT=AUK/'outputs/ch2-natural-voices-20260920'
+QA_REPORT=ROOT/'docs/ch2-natural-voices-qa.json'
+EXPECTED_COUNT=14
+GENERATION_REPORT=ROOT/'docs/ch2-natural-voices-generation.json'
+MODEL_REPORT=ROOT/'docs/ch2-natural-voices-listening-model.json'
+MODEL_QUESTION='仅根据实际听到的声音：先转写台词，然后简述音色、说话节奏。像日常对话还是戏剧化朗诵或喊口号？有无重复、吞字、截断、异常笑声、音乐？不要凭句子内容推断身份或人设；听不清就说不确定。简短回答。'
 
 def main():
     p=argparse.ArgumentParser()
@@ -27,7 +32,7 @@ def main():
     from faster_whisper import WhisperModel
     model=WhisperModel(str(AUK/'ckpts/faster-whisper-medium'),device='cpu',compute_type='int8',cpu_threads=6)
     seen={}
-    report=ROOT/'docs/ch2-natural-voices-qa.json'
+    report=QA_REPORT
     if report.exists():
         seen={r['id']:r for r in json.loads(report.read_text(encoding='utf-8'))}
     while True:
@@ -54,7 +59,7 @@ def main():
             seen[row['id']]=result
             report.write_text(json.dumps(list(seen.values()),ensure_ascii=False,indent=2),encoding='utf-8')
             print(json.dumps(result,ensure_ascii=False),flush=True)
-        if not args.watch or len(seen)==14:break
+        if not args.watch or len(seen)==EXPECTED_COUNT:break
         time.sleep(3)
 
 def model_review(only):
@@ -66,13 +71,14 @@ def model_review(only):
     model.visual=None
     model=model.to('cuda:0').eval()
     processor=Qwen2_5OmniProcessor.from_pretrained(str(AUK/'ckpts/Qwen2.5-Omni-3B'))
-    report=ROOT/'docs/ch2-natural-voices-listening-model.json'
+    report=MODEL_REPORT
     rows=json.loads(report.read_text(encoding='utf-8')) if report.exists() else []
-    for row in json.loads((ROOT/'docs/ch2-natural-voices-generation.json').read_text(encoding='utf-8')):
+    for row in json.loads(GENERATION_REPORT.read_text(encoding='utf-8')):
         if only and row['key'] not in only.split(','):continue
         if any(r['sha256']==row['sha256'] for r in rows):continue
-        question='仅根据实际听到的声音：先转写台词，然后简述音色、说话节奏。像日常对话还是戏剧化朗诵或喊口号？有无重复、吞字、截断、异常笑声、音乐？不要凭句子内容推断身份或人设；听不清就说不确定。简短回答。'
-        conversation=[{'role':'user','content':[{'type':'audio','audio':str(ROOT/row['output'])},{'type':'text','text':question}]}]
+        question=MODEL_QUESTION
+        conversation=[{'role':'system','content':[{'type':'text','text':'You are Qwen, a virtual human developed by the Qwen Team, Alibaba Group, capable of perceiving auditory and visual inputs, as well as generating text and speech.'}]},
+                      {'role':'user','content':[{'type':'audio','audio':str(ROOT/row['output'])},{'type':'text','text':question}]}]
         text=processor.apply_chat_template(conversation,add_generation_prompt=True,tokenize=False)
         audios,images,videos=process_mm_info(conversation,use_audio_in_video=True)
         inputs=processor(text=text,audio=audios,images=images,videos=videos,return_tensors='pt',padding=True,use_audio_in_video=True).to(model.device).to(model.dtype)

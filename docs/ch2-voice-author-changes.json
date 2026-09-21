@@ -1,0 +1,65 @@
+[
+  {
+    "step": "c2n1_4",
+    "beforeText": "有事叫我。（老周站在操作台旁，朝你点点头）我今晚也在。",
+    "afterText": "你来扫，我去泡杯茶。（老周朝值班室指了指）我就在隔壁，有事喊一声。",
+    "beforeSfx": "vox_ch2_natural_zhou",
+    "afterSfx": "vox_ch2_natural_zhou_v2"
+  },
+  {
+    "step": "c2n1_b1",
+    "beforeText": "有事打我电话。（小凯指了指墙上的表）日检和预热的步骤都贴这儿了。报警看不明白，拍给我，别反复点确认。",
+    "afterText": "跟你说个事儿。（小凯指了指墙上的表）日检和预热的步骤都贴这儿了。报警看不明白，拍给我，别反复点确认。",
+    "beforeSfx": "vox_ch2_natural_kai",
+    "afterSfx": "vox_ch2_natural_kai_v2"
+  },
+  {
+    "step": "c2n1_e1",
+    "beforeText": "图传过去了。PACS这边也通了，今晚直接在工作站看。（小雷松开鼠标，甩了甩手）我去把线号贴完。",
+    "afterText": "新机器接入PACS了。今晚直接在工作站看。（小雷松开鼠标，甩了甩手）我去把线号贴完。",
+    "beforeSfx": "vox_ch2_natural_lei",
+    "afterSfx": "vox_ch2_natural_lei_v2"
+  },
+  {
+    "step": "c2n1_m1",
+    "beforeText": "麻烦让一下！（小何跟着平车进门）养老院送来的，起夜摔下床，头磕在床头柜上。现在叫不太醒，右侧瞳孔有点大。急诊申请了头颅CT。",
+    "afterText": "老爷子夜里坠床，要拍头颅CT。（小何跟着平车进门）养老院送来的，头磕在床头柜上。现在叫不太醒，右侧瞳孔有点大，急诊那边催着呢。",
+    "beforeSfx": "vox_ch2_natural_he",
+    "afterSfx": "vox_ch2_natural_he_v2"
+  },
+  {
+    "step": "c2d2_1",
+    "beforeText": "今天人不少啊。（主任朝候诊区看了一眼）队列你先接着，急诊来了叫我。",
+    "afterText": "年轻人，动作快起来！（主任朝候诊区看了一眼）队列你先接着，急诊来了叫我。",
+    "beforeSfx": "vox_ch2_natural_director",
+    "afterSfx": "vox_ch2_natural_director_v2"
+  },
+  {
+    "step": "c2am_1",
+    "beforeText": "来，聊几个问题。（主任把椅子往桌边拉了拉）五道，老规矩。说完就散，别耽误大家吃早饭。",
+    "afterText": "年轻人不错啊，我出几道题考考你。五道，老规矩。答完再去吃饭。",
+    "beforeSfx": "vox_ch2_natural_director_am",
+    "afterSfx": "vox2_director_am"
+  },
+  {
+    "step": "c2n3_a1",
+    "beforeText": "还没下班啊？（雯雯把合同夹进包里）我跟你们主任磨了一下午维保。第一年免费，后面全保、半保、技保，差着好几万，他一条一条问。",
+    "afterText": "哎，技师老师！加班加到十点的销售见过没？陪你们科主任磨了一下午**维保合同**——新机器第一年免费保，第二年开始，全保、半保、技保，价格差着好几万呢。",
+    "beforeSfx": "vox_ch2_natural_wen",
+    "afterSfx": "vox2_wen"
+  },
+  {
+    "step": "c2n5_m7a",
+    "beforeText": "先把旧片发来。今晚新出现的症状也说一下，我跟急诊一起看，再定要不要扫。",
+    "afterText": "先把旧片发来。今晚新出现的症状也说一下，我跟急诊一起看，再定要不要扫。",
+    "beforeSfx": "vox_ch2_natural_duty",
+    "afterSfx": null
+  },
+  {
+    "step": "c2d2_7",
+    "beforeText": "哦，这回看清了。（大爷凑近薄层重建的图，手指悬在屏幕前）去年说看不见，我还当它没了。",
+    "afterText": "哦，这回看清了。（大爷凑近薄层重建的图，手指悬在屏幕前）去年说看不见，我还当它没了。",
+    "beforeSfx": "vox_ch2_natural_uncle",
+    "afterSfx": null
+  }
+]

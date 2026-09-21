@@ -1,0 +1,92 @@
+{
+  "baseline": "7032d58",
+  "lines": [
+    {
+      "key": "zhou",
+      "role": "老周",
+      "step": "c2n1_4",
+      "old_id": "vox_ch2_natural_zhou",
+      "text": "你来扫，我去泡杯茶。",
+      "reference": "selected:zhou",
+      "seconds": 2.8,
+      "max_han": 9,
+      "seed_base": 2026092100,
+      "id": "vox_ch2_natural_zhou_v2"
+    },
+    {
+      "key": "kai",
+      "role": "小凯",
+      "step": "c2n1_b1",
+      "old_id": "vox_ch2_natural_kai",
+      "text": "跟你说个事儿。",
+      "reference": "game:vox_kai",
+      "seconds": 1.9,
+      "max_han": 6,
+      "seed_base": 2026092110,
+      "id": "vox_ch2_natural_kai_v2"
+    },
+    {
+      "key": "lei",
+      "role": "小雷",
+      "step": "c2n1_e1",
+      "old_id": "vox_ch2_natural_lei",
+      "text": "新机器接入packs了。",
+      "reference": "selected:lei",
+      "seconds": 2.3,
+      "max_han": 6,
+      "seed_base": 2026092120,
+      "id": "vox_ch2_natural_lei_v2"
+    },
+    {
+      "key": "he",
+      "role": "小何",
+      "step": "c2n1_m1",
+      "old_id": "vox_ch2_natural_he",
+      "text": "老爷子夜里坠床，要拍头颅CT。",
+      "spoken_text": "老爷子夜里坠床，要拍头颅 C T。",
+      "reference": "selected:he",
+      "seconds": 2.9,
+      "max_han": 12,
+      "seed_base": 2026092130,
+      "id": "vox_ch2_natural_he_v2"
+    },
+    {
+      "key": "director",
+      "role": "主任",
+      "step": "c2d2_1",
+      "old_id": "vox_ch2_natural_director",
+      "text": "年轻人，动作快起来！",
+      "reference": "selected:director",
+      "seconds": 2.6,
+      "max_han": 8,
+      "seed_base": 2026092140,
+      "id": "vox_ch2_natural_director_v2"
+    }
+  ],
+  "restore": [
+    {
+      "key": "director_am",
+      "step": "c2am_1",
+      "id": "vox2_director_am",
+      "text": "年轻人不错啊，我出几道题考考你。",
+      "from": "1d7342d"
+    },
+    {
+      "key": "wen",
+      "step": "c2n3_a1",
+      "id": "vox2_wen",
+      "text": "加班加到十点的销售，您见过没？",
+      "from": "1d7342d"
+    }
+  ],
+  "mute": [
+    {
+      "key": "duty",
+      "step": "c2n5_m7a"
+    },
+    {
+      "key": "uncle",
+      "step": "c2d2_7"
+    }
+  ]
+}

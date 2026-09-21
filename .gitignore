@@ -1,0 +1,2 @@
+# Local bytecode from the audio generation/check scripts; not game assets.
+/scripts/__pycache__/

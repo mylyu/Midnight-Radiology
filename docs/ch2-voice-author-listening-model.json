@@ -1,0 +1,14 @@
+[
+  {
+    "id": "vox_ch2_natural_he_v2",
+    "sha256": "1615a7282f5da44f7c9413ccd732458371f0f4653e27cf2e42712804c9d14dd1",
+    "answer": "老爷子夜里坠床要拍头颅CT。英文部分是连读单词，没有漏音，额外词或重复。如果还有其他关于这段录音的问题，你可以随时告诉我哦。",
+    "method": "Local Qwen2.5-Omni-3B automated perception; fallible, not human listening or approval."
+  },
+  {
+    "id": "vox_ch2_natural_lei_v2",
+    "sha256": "ccd01be669e58851eca747e5797b93b647147fb2a1ccb5c364ed3da00887747a",
+    "answer": "新机器接入pax了。嗯，这个录音里没有明显的连读单词，也没有一个一个念字母的情况。也没有漏音，额外词或者重复。如果还有其他关于录音的问题，你可以再跟我说哦。",
+    "method": "Local Qwen2.5-Omni-3B automated perception; fallible, not human listening or approval."
+  }
+]

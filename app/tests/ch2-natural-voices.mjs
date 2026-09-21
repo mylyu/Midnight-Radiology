@@ -5,6 +5,7 @@ import {createHash} from 'node:crypto'
 import {fileURLToPath} from 'node:url'
 import ts from 'typescript'
 import * as live from '../src/game/ch2.ts'
+import {beforeAuthorPass} from './ch2-voice-author-projection.mjs'
 
 const baseline='1d7342d'
 const root=new URL('../../',import.meta.url)
@@ -18,6 +19,7 @@ const oldSource=execFileSync('git',['show',baseline+':app/src/game/ch2.ts'],{enc
 const js=ts.transpileModule(oldSource,{compilerOptions:{module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ES2022}}).outputText
 const old=await import('data:text/javascript;base64,'+Buffer.from(js).toString('base64'))
 const restore=(id,step)=>{
+ step=beforeAuthorPass(id,step)
  const row=edits.find(r=>r.step===id)
  if(!row)return step
  assert.equal(step.text,row.afterText)

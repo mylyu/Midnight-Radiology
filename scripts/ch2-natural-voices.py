@@ -17,6 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 AUK = ROOT.parent / 'AuK'
 OUT = AUK / 'outputs/ch2-natural-voices-20260920'
 PLAN = ROOT / 'docs/ch2-natural-voices-lines.json'
+RECORD = ROOT / 'docs/ch2-natural-voices-generation.json'
 ENV = {**os.environ, 'PYTHONUTF8': '1', 'HF_HUB_DISABLE_IMPLICIT_TOKEN': '1'}
 ENV.pop('HF_TOKEN', None)
 
@@ -38,7 +39,7 @@ def main():
     rows=json.loads(PLAN.read_text(encoding='utf-8'))['lines']
     for index,row in enumerate(rows):
         if args.only and row['key'] not in args.only.split(','): continue
-        assert 0 < len([c for c in row['text'] if '\u4e00'<=c<='\u9fff'])<=8
+        assert 0 < len([c for c in row['text'] if '\u4e00'<=c<='\u9fff'])<=row.get('max_han',8)
         kind, ref_id=row['reference'].split(':')
         source=(AUK/f'outputs/midnight-radiology-redub-20260916/references/selected/{ref_id}.wav'
                 if kind=='selected' else ROOT/f'app/public/audio/{ref_id}.mp3')
@@ -49,8 +50,9 @@ def main():
         raw=OUT/f'raw/{name}.a{args.attempt}.wav'
         meta=raw.with_suffix('.json')
         seconds=args.seconds or row['seconds']
-        seed=202609200+index*10+args.attempt
-        instruction=f'Say the following with the same voice: "{row["text"]}"'
+        seed=row.get('seed_base',202609200+index*10)+args.attempt
+        spoken=row.get('spoken_text',row['text'])
+        instruction=f'Say the following with the same voice: "{spoken}"'
         # The documented zero-shot template must remain exact. Appended acting
         # notes leaked into speech in attempt 1; direction is an audition rubric.
         argv=[str(AUK/'.venv/Scripts/auk-infer.exe'),
@@ -58,7 +60,7 @@ def main():
               '--qwen_path',str(AUK/'ckpts/Qwen2.5-Omni-3B'),
               '--dtype','bf16','--device','cuda:0','--cpu_offload',
               '--seed',str(seed),'--gen_seconds',str(seconds),
-              '--instruction',instruction,'--gen_text',row['text'],
+              '--instruction',instruction,'--gen_text',spoken,
               '--audio',str(reference),'--output',str(raw)]
         if not (raw.exists() and meta.exists()):
             print('GENERATE',name,'attempt',args.attempt,flush=True)
@@ -87,7 +89,7 @@ def main():
             write(OUT/f'{name}.json',record)
             print('EXPORTED',name,flush=True)
     if args.export:
-        write(ROOT/'docs/ch2-natural-voices-generation.json',
+        write(RECORD,
               [json.loads(f.read_text(encoding='utf-8')) for f in sorted(OUT.glob('vox_ch2_natural_*.json'))])
 
 if __name__=='__main__':
