@@ -465,7 +465,7 @@ const C2N1: Record<string, Step> = {
   c2n1_ab5: { speaker: 'fan', sprite: 'char_fan', text: "（把烧坏的零件放进盒子）聊天记录别删，设备科要留底。……搭把手，这箱挺沉。", effect: { skill: 1, flag: 'bai_echo' }, next: 'c2n1_ab6' },
   c2n1_ab6: { speaker: 'sys', text: "老范把箱子盖好：「别跟那台坏CT弄混了。旧CT已经拆机移交；CR停下来以后，普通拍片走楼上DR，夜间门禁和值班也都接上了。」你帮他把箱子推回库房。", effect: { flag: 'c2n1_a' }, next: 'c2n1_old_ct' },
   // —— A. 老伙计（没买的分支） ——
-  c2n1_an1: { bg: 'bg_corridor', speaker: 'sys', text: "走廊尽头的凹位里，老CR读片器罩着防尘布。老范把它往里推了推，给通道腾出地方：「退役设备都得进库，主任还舍不得。」", effect: { ap: -1 }, next: 'c2n1_an2' },
+  c2n1_an1: { bg: 'bg_corridor_cr_covered', speaker: 'sys', text: "走廊尽头的凹位里，老CR读片器罩着防尘布。老范把它往里推了推，给通道腾出地方：「退役设备都得进库，主任还舍不得。」", effect: { ap: -1 }, next: 'c2n1_an2' },
   c2n1_an2: { speaker: 'fan', sprite: 'char_fan', sfx: 'vox_ch2_natural_fan_b', text: "这台先留着吧。（老范停下脚步）原厂那根管子一直用到停用。主任说先不卖废铁，封在这儿。", next: 'c2n1_an3' },
   c2n1_an3: { speaker: 'me', sprite: 'char_fan', text: "我指了指CT室：「那台坏CT呢？」老范说：「早拆机移交了。这台是拍平片的CR，两码事。楼上DR现在夜里也开了，才提前让它歇。」", effect: { heart: 1 }, next: 'c2n1_an4' },
   c2n1_an4: { speaker: 'sys', text: '你替它把防尘布的角掖好，回到CT室门口。', effect: { flag: 'c2n1_a' }, next: 'c2n1_old_ct' },

@@ -1,0 +1,21 @@
+{
+  "date": "2026-09-21",
+  "branch": "codex/ch2-covered-cr-background",
+  "baseline": "64cd2f6",
+  "method": "Built-in image_gen; one referenced-image edit; generated PNG copied verbatim (no postprocessing).",
+  "input": "app/public/assets/bg_corridor.png",
+  "input_sha256": "2f76e25038eb69e569744315d2cac00f8ccdc8abcb5d64e5e4bf8fbd8eaad0f0",
+  "output": "app/public/assets/bg_corridor_cr_covered.png",
+  "output_sha256": "4165fab299c606050e513f96eee6a9af54f8be8ea81253b4edbe7e178de2a912",
+  "dimensions": [
+    1672,
+    941
+  ],
+  "generator_output": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-e8873b8e-6c27-4eb7-9625-9a328efa0afe.png",
+  "requested_dimensions": [
+    2048,
+    1152
+  ],
+  "prompt": "Use case: precise-object-edit.\nAsset type: existing pixel-art background for the Chinese narrative game Midnight Radiology, chapter two.\nInput image 1 is the EDIT TARGET, not just a style reference. Keep this exact hospital corridor, camera position, wide framing and pixel-art technique. Requested output landscape 2048x1152 PNG.\nPrimary request: add ONE retired old computed-radiography (CR) cassette reader in a shallow storage alcove at the FAR END of this corridor, just LEFT of the elevator. It is a narrow upright rectangular chest-high cabinet, plausible retired CR plate digitizer, standing on a small metal base/casters. Cover almost all of it with a dusty muted gray-beige protective cloth. The cloth has clear angular pixel-art folds, a slightly stepped box-shaped top, and a small lifted corner revealing old cream metal and the cabinet base. It must look like covered medical EQUIPMENT, not a person, not a corpse or a bed.\nComposition: tuck the machine into the wall recess left of the elevator (around 55-59 percent of image width), beneath the small wall directory, with convincing scale relative to the elevator and enough cabinet silhouette visible to recognize the covered machine. Make a shallow recess locally if necessary. Leave the central walking route, elevator doors and adjacent doorways unobstructed. Preserve the gurney in the foreground, windows, plant at right of elevator, all existing signs, architecture and lighting.\nStyle: EXACTLY match original chunky high-resolution pixel art with hard square pixel clusters, dark navy outlines, restrained cold blue-green hospital shadows and a warm overhead fluorescent highlight on the cloth. Use no smooth painting, no photorealism, no rendered 3D sheen. Match floor contact shadow and modest reflected light.\nConstraints: change only the small rear-left machine/alcove region and physically needed local shadow. Keep the rest of the original background unchanged. No characters, no additional equipment, no glowing lamps on the covered unpowered machine, no CT circular gantry, no X-ray tube arm, no dialogue box, no new labels or text, no watermark added. Do not redesign the corridor.",
+  "scope": "Change only c2n1_an1 background key. Later steps inherit it, hub restores CT control. Original shared background and failed-parts branch remain unchanged. No story, voice, UI or save-structure changes."
+}
