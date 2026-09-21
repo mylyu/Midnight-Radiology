@@ -1,5 +1,12 @@
 # 开发交接 · 2026-09-21
 
+## 最新：小凯改为低声私语 v4
+
+- 作者否决小凯 v3 的上扬句尾，要求“悄悄话的口吻”。同句“跟你说个事儿。”改用 AuK 耳语转换生成，五个候选选第4个；新文件 `vox_ch2_natural_kai_whisper_v4.mp3`，原v2/v3保留。不改变字幕、剧情、流程或共享播放器，第一章不动。
+- 基点 `d15e47b`，分支仍 `codex/ch2-pacing-review`；本轮单独 `fix(ch2): make Kai entrance a quiet aside` 提交，可单独revert。未推送、未部署。
+- 预览 `ch2-pacing-preview.html?v=kai-whisper-v4#kai-whisper` 提供v4/v3对照；新文件名避免命中旧MP3缓存。详细参数、SHA、来源与自动验证局限在 `docs/ch2-kai-whisper-v4.md/json`；生成脚本为 `scripts/ch2-kai-whisper-generate.py`。自动检查不是用户听感认可。
+- 相对本轮基点84个旧音频哈希、共享代码、单处sfx改动保护通过；第一章249份原媒体冻结、历史投影和相关剧情/声音测试通过，build/type通过。下文关于“小凯轻快v3”的内容为历史记录，以本段为准。
+
 ## 最新：第二章节奏、班后经营与考核修订（第一章冻结保护版）
 
 - 分支 `codex/ch2-pacing-review`，基点 `1452d78`。仅本地提交，**未推送、未部署**；本段优先于下文关于第二章商店/结算/小凯声音未改的历史描述。

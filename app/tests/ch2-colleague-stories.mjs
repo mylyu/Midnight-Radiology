@@ -44,6 +44,7 @@ const allowedLaterMedia = new Set([
   'app/public/assets/ch2_ct_coronary_slices.png', 'app/public/assets/ch2_patient_fall_bandaged_bed.png',
   'app/public/assets/ch2_remote_rack.png', 'app/public/assets/ch2_remote_rack_offline.png',
   'app/public/audio/vox_ch2_natural_kai_light_v3.mp3',
+  'app/public/audio/vox_ch2_natural_kai_whisper_v4.mp3',
 ])
 const newMedia = [
   execFileSync('git',['diff','--name-only','--diff-filter=A','4f70852','--','app/public/audio','app/public/assets'],{encoding:'utf8',cwd:root}),

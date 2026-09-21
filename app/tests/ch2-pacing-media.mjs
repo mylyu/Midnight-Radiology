@@ -26,7 +26,7 @@ const fixtures=[
  ['c2d4_t1','ch2_ct_aortic_wide'],['c2n3_coronary_slices','ch2_ct_coronary_slices'],
  ['c2n3_coronary_clear','ct_coronary_cta'],['c2n5_m8','ct_head_child','外院旧片｜3天前'],
  ['c2n5_m17','ct_head_child_followup','本院复查｜本次'],
- ['c2n1_b1',null,null,'vox_ch2_natural_kai_light_v3'],
+ ['c2n1_b1',null,null,'vox_ch2_natural_kai_whisper_v4'],
 ]
 try{
  for(const mobile of [false,true])for(const [id,asset,label,voice] of fixtures){

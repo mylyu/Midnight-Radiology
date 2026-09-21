@@ -479,7 +479,7 @@ const C2N1: Record<string, Step> = {
   c2n1_old_ct_price: { speaker: 'me', sprite: 'char_fan', text: '排数翻一倍，价钱呢？', next: 'c2n1_old_ct_reply' },
   c2n1_old_ct_reply: { speaker: 'fan', sprite: 'char_fan', text: '我翻过当年的采购单，跟这次成交价差不多。不过隔了这么多年，配置也不一样，别光拿排数除价钱。（他收起照片）这回备件多久到，我可是问了三遍。', next: 'c2n1_hub' },
   // —— B. 小凯交底 ——
-  c2n1_b1: { speaker: 'kai', sprite: 'char_kai', sfx: 'vox_ch2_natural_kai_light_v3', text: "跟你说个事儿。（小凯指了指墙上的表）日检和预热的步骤都贴这儿了。报警看不明白，拍给我，别反复点确认。", card: 'ct_tube_heat', effect: { ap: -1 }, next: 'c2n1_b2' },
+  c2n1_b1: { speaker: 'kai', sprite: 'char_kai', sfx: 'vox_ch2_natural_kai_whisper_v4', text: "跟你说个事儿。（小凯指了指墙上的表）日检和预热的步骤都贴这儿了。报警看不明白，拍给我，别反复点确认。", card: 'ct_tube_heat', effect: { ap: -1 }, next: 'c2n1_b2' },
   c2n1_b2: { speaker: 'me', sprite: 'char_kai', text: '（指着机架里那个黑色小盒子）这些线连着的，是干什么的？', image: 'ch2_remote_rack', next: 'c2n1_b3' },
   c2n1_b3: { speaker: 'kai', sprite: 'char_kai', text: "**远程支持终端**，往厂家传运行日志和报错码。哪儿快坏了，我们提前备件。免费装，省得你半夜举着手机给我念报错。", image: 'ch2_remote_rack', next: 'c2n1_b4' },
   c2n1_b4: { speaker: 'sys', text: '【怎么接？】', sprite: 'char_kai', choices: [
