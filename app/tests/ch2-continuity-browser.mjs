@@ -38,7 +38,7 @@ try {
   ['c2d2_trauma_scan','c2d2_t1'], ['c2d2_wrist_scan','c2d2_wrist_result'],
   ['c2n3_repeat_scan','c2n3_m8'], ['c2n3_cta_scan','c2n3_m10'], ['c2n3_coronary_scan','c2n3_h4'],
   ['c2n3_mystery_scan','c2n3_x8'], ['c2d4_aorta_scan','c2d4_t1'], ['c2d4_metal_scan','c2d4_12a'],
-  ['c2n5_child_scan','c2n5_m17'], ['c2n5_ring_scan','c2n5_r0'],
+  ['c2n5_child_scan','c2n5_m17'],
  ]
  for (const [scan, result] of pairs) {
   const { context, page, shift } = await open(scan)
@@ -118,5 +118,5 @@ try {
   await context.close()
  }
  assert.deepEqual(errors, [])
- console.log('PASS: 13 rendered acquisition/result transitions; zero-AP cabinet; three evidence assets, two ready backgrounds and morning handoff on desktop/mobile; six memories; three queue branches and real reload.')
+ console.log('PASS: 12 rendered acquisition/result transitions; zero-AP cabinet; three evidence assets, two ready backgrounds and morning handoff on desktop/mobile; six memories; three queue branches and real reload.')
 } finally { await browser.close() }

@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
 import ts from 'typescript'
+import { CH2_DEFERRED_STEPS } from '../src/game/ch2-exploration.ts'
 import { CH2_SHIFTS, CH2_IMAGE_CAPTIONS } from '../src/game/ch2.ts'
 const source = execFileSync('git', ['show', '5fea950:app/src/game/ch2.ts'], { encoding: 'utf8' })
 const js = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 } }).outputText
@@ -32,9 +33,13 @@ const continuityNext = {
   "c2n5_m16": "c2n5_child_scan",
   "c2d2_1": "c2d2_reg0",
   "c2d4_e8": "c2d4_reg",
-  "c2n5_n5": "c2n5_ring_trigger"
+  "c2n5_n5": "c2n5_n6",
+  c2n1_c4a: "c2n1_chat0", c2n1_c4b: "c2n1_chat0", c2n1_c4c: "c2n1_chat0", c2n1_c4d: "c2n1_chat0",
+  c2d2_w2ok: "c2d2_lunch0", c2n3_a4a: "c2n3_chat_wen_q", c2n3_a4b: "c2n3_chat_wen_q",
+  c2d4_reg2: "c2d4_chat0", c2am_6: "c2am_8"
 }
 const continuityFields = {
+  c2d4_p3b: { card: 'fbp_iterative' },
   c2n5_a1: { effect: undefined }, // mainline cabinet must not be gated by spent AP
   c2d4_e8: { event: 'ch2_data_showdown' }, // neutral chronicle for all three decisions
 }
@@ -42,6 +47,7 @@ for (const shift of old.CH2_SHIFTS) {
   const now = CH2_SHIFTS.find(s => s.id === shift.id)
   assert(now)
   for (const [id, before] of Object.entries(shift.steps)) {
+    if (CH2_DEFERRED_STEPS[id]) { assert(now.steps[CH2_DEFERRED_STEPS[id]]); assert(!now.steps[id]); continue }
     const after = now.steps[id]
     assert(after, `Old save node removed: ${id}`)
     for (const field of ['effect', 'card', 'event', 'end', 'windowTask', 'checklist', 'skipUnlessFlag']) {
@@ -51,7 +57,9 @@ for (const shift of old.CH2_SHIFTS) {
     if (id !== 'c2n1_p0') assert.equal(after.next, continuityNext[id] ?? before.next, `${id}.next`)
     const oldChoices = before.choices?.map(({ text, ...rules }) => rules)
     if (id === 'c2n5_hub') delete oldChoices[0].cond.ap
-    assert.deepEqual(after.choices?.map(({ text, ...rules }) => rules), oldChoices, `${id}.choice rules`)
+    const currentChoices = after.choices?.filter(c => !['c2n3_chat0','c2n5_chat0'].includes(c.next)).map(({ text, ...rules }) => rules)
+    if (id === 'c2n5_n6') oldChoices.find(c => c.next === 'c2n5_p2b').next = 'c2n5_phone_break'
+    assert.deepEqual(currentChoices, oldChoices, `${id}.choice rules`)
     if (before.text) { totalText++; if (after.text !== before.text) changedText++ }
   }
   for (const [id, step] of Object.entries(now.steps)) {
@@ -75,4 +83,4 @@ assert.equal(CH2_SHIFTS[2].steps.c2n3_h1.text.includes('肌钙蛋白阳性'), fa
 assert.equal(CH2_SHIFTS[2].steps.c2n3_h1.text.includes('中高危'), false)
 assert.equal(CH2_SHIFTS[2].steps.c2n3_h3a.text.includes('不支持高危'), true)
 assert.equal(Object.keys(CH2_IMAGE_CAPTIONS).length, 0)
-console.log(`PASS: ${changedText}/${totalText} existing text nodes refined; old nodes/rewards/tasks preserved with explicitly listed continuity links; no missing links.`)
+console.log(`PASS: ${changedText}/${totalText} existing text nodes refined; non-deferred nodes/rewards/tasks preserved with explicitly listed continuity links; no missing links.`)

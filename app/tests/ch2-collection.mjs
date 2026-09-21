@@ -1,5 +1,5 @@
 // Isolated browser contexts only; verifies the chapter two collection denominators
-// (12 badges / 18 cards after the QA round) and the legacy-entry display.
+// (12 badges / 17 cards after the QA round) and the legacy-entry display.
 import { createRequire } from 'node:module'
 import assert from 'node:assert/strict'
 const require = createRequire(import.meta.url)
@@ -32,7 +32,7 @@ try {
     await page.getByText('已收集 1/12', { exact: false }).waitFor()
     await page.getByText('历史收藏（旧版停颁，不计入分母）：零遗漏', { exact: true }).waitFor()
     const grid = page.locator('.grid').nth(1)
-    assert.equal(await grid.getByText('？？？').count(), 11, 'ch2 grid must exclude the 3 legacy badges')
+    assert.equal(await grid.getByText('？？？').count(), 11, 'ch2 grid must exclude the 5 legacy badges')
     assert.equal(await grid.getByText('零遗漏').count(), 0)
     await context.close()
     console.log('PASS: badge wall shows 1/12; legacy badge listed as history only.')
@@ -42,18 +42,18 @@ try {
     const { context, page } = await open({ badges: ['first_ct'], cards: ['ct_tube_heat'], shift: 'c2am', stepId: 'c2am_9' })
     await page.locator('.dialog-box > p').click()
     await page.getByRole('button', { name: '🏁 第二章 · 完 —— 结算' }).click()
-    await page.getByText('本章收集：📖 知识卡片 1/18 · 🏅 勋章 1/12', { exact: false }).waitFor()
+    await page.getByText('本章收集：📖 知识卡片 1/17 · 🏅 勋章 1/12', { exact: false }).waitFor()
     assert.equal(await page.getByText('旧版停颁内容').count(), 0)
     await context.close()
-    console.log('PASS: completion screen counts 1/18 and 1/12 without legacy note.')
+    console.log('PASS: completion screen counts 1/17 and 1/12 without legacy note.')
   }
   {
     // Completion screen: legacy holdings stay out of the counts and trigger the policy note.
-    const { context, page } = await open({ badges: ['checklist_zero'], cards: ['contrast_agent'], shift: 'c2am', stepId: 'c2am_9' })
+    const { context, page } = await open({ badges: ['phantom_friend', 'wrench_night'], cards: ['ring_artifact'], shift: 'c2am', stepId: 'c2am_9' })
     await page.locator('.dialog-box > p').click()
     await page.getByRole('button', { name: '🏁 第二章 · 完 —— 结算' }).click()
-    await page.getByText('本章收集：📖 知识卡片 0/18 · 🏅 勋章 0/12', { exact: false }).waitFor()
-    await page.getByText('旧版停颁内容不计入统计；你已保留的旧版卡片 1 张、徽章 1 枚仍在夜班手册与勋章墙中。', { exact: true }).waitFor()
+    await page.getByText('本章收集：📖 知识卡片 0/17 · 🏅 勋章 0/12', { exact: false }).waitFor()
+    await page.getByText('旧版停颁内容不计入统计；你已保留的旧版卡片 1 张、徽章 2 枚仍在夜班手册与勋章墙中。', { exact: true }).waitFor()
     await context.close()
     console.log('PASS: completion screen excludes legacy entries and explains the policy.')
   }

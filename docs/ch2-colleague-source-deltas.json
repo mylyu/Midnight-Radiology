@@ -1,0 +1,457 @@
+{
+  "baseline": "4f70852",
+  "purpose": "Explicit inverse of 2026-09-21 author-requested changes for historical frozen-round audits only. Live graph tested separately.",
+  "files": [
+    {
+      "path": "app/src/game/ch2.ts",
+      "edits": [
+        {
+          "afterStart": 3,
+          "before": [],
+          "after": [
+            "import { CH2_SOCIAL_STEPS, ch2SocialStep } from './ch2-social.ts'"
+          ]
+        },
+        {
+          "afterStart": 80,
+          "before": [
+            "/* ================= 第二章勋章（15枚） ================= */"
+          ],
+          "after": [
+            "/* ================= 第二章勋章（12枚现役，5枚旧版留档） ================= */"
+          ]
+        },
+        {
+          "afterStart": 97,
+          "before": [],
+          "after": [
+            "  c2_tea_regular: { name: '茶水间常客', icon: '☕', desc: '在至少三个班次里与同事聊过天，第五夜再碰个头' },",
+            "  c2_two_sides: { name: '两头都问过', icon: '🧩', desc: '分别听过小雷和雯雯的说法，第五夜再当面核实签字风波' },"
+          ]
+        },
+        {
+          "afterStart": 108,
+          "before": [
+            "/** Align recollection and queue display with saved choices, without changing rewards or graph links. */"
+          ],
+          "after": [
+            "/** Resolve patient staging, remembered choices and optional social branches from saved state. */"
+          ]
+        },
+        {
+          "afterStart": 130,
+          "before": [
+            "  if (id === 'c2d2_n4' && state.gender === 'f') text = '你和陆舟把水箱体模、线对卡体模依次摆好，按实验单完成三组采集。检查床退了出来，她把箱子抱回推车。'",
+            "  if (id === 'c2n5_p2d' && state.gender === 'f') text = '她秒回了一个抱拳的表情。凌晨两点十七分，这座县城里还有两个没睡的人。'"
+          ],
+          "after": [
+            "",
+            ""
+          ]
+        },
+        {
+          "afterStart": 134,
+          "before": [
+            "  if (id === 'c2d2_16a' && flags.remote_asked) {",
+            "    text = flags.lei_cable",
+            "      ? '小凯说回头给字段清单，小雷说那条线单走外网。两句话放在一起，还缺了中间那一截。「我去问清楚。你那份申请也别停。」'",
+            "      : '小凯答应过要字段清单，到现在还没见着。「回头我去追一下。你别拿厂家的做法当批件，申请照走。」'",
+            "  }"
+          ],
+          "after": []
+        },
+        {
+          "afterStart": 150,
+          "before": [
+            "    text = '周一早上八点，办公室先过昨夜交班：CT仍停机，工程师负责复核；远程终端保持离线。信息科今天接手查日志，周五反馈。' + reply + '老周把排班表推过来，你的名字在主值栏，他的在备班栏。'"
+          ],
+          "after": [
+            "    text = '周一早上八点，办公室先过昨夜交班：CT正常交接；远程终端保持离线。信息科今天接手查日志，周五反馈。' + reply + '老周把排班表推过来，你的名字在主值栏，他的在备班栏。'"
+          ]
+        },
+        {
+          "afterStart": 152,
+          "before": [
+            "  return text === step.text && queue === step.queue ? step : { ...step, text, queue }"
+          ],
+          "after": [
+            "  const rendered = text === step.text && queue === step.queue ? step : { ...step, text, queue }",
+            "  return ch2SocialStep(id, rendered, state)"
+          ]
+        },
+        {
+          "afterStart": 156,
+          "before": [
+            "/* 旧版停颁（第四班病例替换后不再发放）：保留定义与老存档记录，不计入收集分母。 */"
+          ],
+          "after": [
+            "/* 旧版停颁（病例替换及支线撤出）：保留定义与老存档记录，不计入收集分母。 */"
+          ]
+        },
+        {
+          "afterStart": 157,
+          "before": [
+            "export const CH2_BADGES_LEGACY: string[] = ['checklist_zero', 'allergy_save', 'phase_eye']"
+          ],
+          "after": [
+            "export const CH2_BADGES_LEGACY: string[] = ['checklist_zero', 'allergy_save', 'phase_eye', 'phantom_friend', 'wrench_night']"
+          ]
+        },
+        {
+          "afterStart": 271,
+          "before": [
+            "/* 旧版停颁（增强专场被替换后不再发放）：保留定义与老存档记录，不计入收集分母。 */"
+          ],
+          "after": [
+            "/* 旧版停颁（增强专场替换及水模线撤出）：保留定义与老存档记录，不计入收集分母。 */"
+          ]
+        },
+        {
+          "afterStart": 272,
+          "before": [
+            "export const CH2_CARDS_LEGACY: string[] = ['contrast_agent', 'contrast_checklist', 'contrast_contra', 'contrast_emergency']"
+          ],
+          "after": [
+            "export const CH2_CARDS_LEGACY: string[] = ['contrast_agent', 'contrast_checklist', 'contrast_contra', 'contrast_emergency', 'ring_artifact']"
+          ]
+        },
+        {
+          "afterStart": 276,
+          "before": [],
+          "after": [
+            "/** Deferred stories retain owned records, but cannot be newly earned in Chapter 2. */",
+            "export const CH2_EVENTS_LEGACY = ['ch2_luzhou']",
+            "export const CH2_EVIDENCE_LEGACY = ['phantom_log']",
+            ""
+          ]
+        },
+        {
+          "afterStart": 284,
+          "before": [
+            "  ch2_luzhou: { time: '2025年11月', title: '陆舟来院', body: '本科室友陆舟跟导师做低剂量重建科研，来院完成体模实验，留下记录。临床数据申请还在走流程，双方没有私下拷走患者数据。' },"
+          ],
+          "after": [
+            "  ch2_luzhou: { time: '2025年11月', title: '陆舟来院（旧版留档）', body: '本科室友陆舟跟导师做低剂量重建科研，来院完成体模实验，留下记录。临床数据申请还在走流程，双方没有私下拷走患者数据。' },"
+          ]
+        },
+        {
+          "afterStart": 295,
+          "before": [
+            "  phantom_log: { title: '体模实验记录', body: '陆舟留下的实验记录：水箱与线对卡体模、三组参数的扫描数据。「归你们科存档，说不定哪天质控用得上。」', image: 'ct_phantom', flag: 'phantom_log' },"
+          ],
+          "after": [
+            "  phantom_log: { title: '体模实验记录（旧版留档）', body: '陆舟留下的实验记录：水箱与线对卡体模、三组参数的扫描数据。「归你们科存档，说不定哪天质控用得上。」', image: 'ct_phantom', flag: 'phantom_log' },"
+          ]
+        },
+        {
+          "afterStart": 445,
+          "before": [],
+          "after": [
+            "  ...CH2_SOCIAL_STEPS.c2n1,"
+          ]
+        },
+        {
+          "afterStart": 501,
+          "before": [
+            "  c2n1_c4a: { speaker: 'tang', sprite: 'char_tang', text: \"可不！它吃电，咱吃剩饭。主任倒是提了，照这个量，明年可能申请第二台。我先问能不能多配两个人，护士长让我别做梦。\", next: 'c2n1_c5' },",
+            "  c2n1_c4b: { speaker: 'tang', sprite: 'char_tang', text: '（接过奶茶，眼睛一亮）上道！……那我跟你说个真格的：**设备科老范跟老周是三十年的老搭档**，当年那台老X光机就是他俩一起装的。老白那批便宜球管的事，设备科盯了不是一天两天了——你就等着看吧。', effect: { heart: 1 }, next: 'c2n1_c5' },",
+            "  c2n1_c4c: { speaker: 'tang', sprite: 'char_tang', text: \"（接过咖啡罐）欸，下午老周在机房里站了半天。我问他是不是舍不得老机器，他问我：夜里停机，病人往哪儿送？……你说这人，聊天都能聊出张排班表。\", next: 'c2n1_c5' },",
+            "  c2n1_c4d: { speaker: 'sys', text: '罐子一歪，半罐咖啡粉撒进了水槽。你俩蹲着擦了十五分钟地，小唐笑得直不起腰：「这就算夜班开光的仪式感吧。」', next: 'c2n1_c5' },"
+          ],
+          "after": [
+            "  c2n1_c4a: { speaker: 'tang', sprite: 'char_tang', text: \"可不！它吃电，咱吃剩饭。主任倒是提了，照这个量，明年可能申请第二台。我先问能不能多配两个人，护士长让我别做梦。\", next: 'c2n1_chat0' },",
+            "  c2n1_c4b: { speaker: 'tang', sprite: 'char_tang', text: '（接过奶茶，眼睛一亮）上道！……那我跟你说个真格的：**设备科老范跟老周是三十年的老搭档**，当年那台老X光机就是他俩一起装的。老白那批便宜球管的事，设备科盯了不是一天两天了——你就等着看吧。', effect: { heart: 1 }, next: 'c2n1_chat0' },",
+            "  c2n1_c4c: { speaker: 'tang', sprite: 'char_tang', text: \"（接过咖啡罐）欸，下午老周在机房里站了半天。我问他是不是舍不得老机器，他问我：夜里停机，病人往哪儿送？……你说这人，聊天都能聊出张排班表。\", next: 'c2n1_chat0' },",
+            "  c2n1_c4d: { speaker: 'sys', text: '罐子一歪，半罐咖啡粉撒进了水槽。你俩蹲着擦了十五分钟地，小唐笑得直不起腰：「这就算夜班开光的仪式感吧。」', next: 'c2n1_chat0' },"
+          ]
+        },
+        {
+          "afterStart": 589,
+          "before": [],
+          "after": [
+            "  ...CH2_SOCIAL_STEPS.c2d2,"
+          ]
+        },
+        {
+          "afterStart": 643,
+          "before": [
+            "  c2d2_w2ok: { speaker: 'zhou', sprite: 'char_zhou', text: \"嗯，这样层次出来了。把这组留着，我再翻翻相邻几层。\", image: 'ct_wrist_simulated', next: 'c2d2_n0' },",
+            "  // —— 中午 · 陆舟登场 ——",
+            "  c2d2_n0: { speaker: 'sys', text: '午休，机时难得空出来。一个抱着铝合金箱子的人探头进来，胸前挂着「田头技术大学」的访客牌。', next: 'c2d2_n1' },",
+            "  c2d2_n1: { speaker: 'luzhou', sprite: 'luzhou', sfx: 'vox_luzhou', text: \"……真是你！老室友，你怎么瘦成这样？（陆舟把箱子往桌上一搁）行，夜班比读研还磨人。\", next: 'c2d2_n2' },",
+            "  c2d2_n2: { speaker: 'me', sprite: 'luzhou', text: '陆舟？你不是读研去了——', next: 'c2d2_n3' },",
+            "  c2d2_n3: { speaker: 'luzhou', sprite: 'luzhou', text: \"硕博连读，没读出头呢，头发先少了。导师让我做低剂量重建，组会上翻来覆去都是水箱。今天批到一点体模机时，赶紧——下午病人来，我这箱水就得让床。\", next: 'c2d2_n4' },",
+            "  c2d2_n4: { speaker: 'sys', text: \"你和陆舟把水箱体模、线对卡体模依次摆好，按实验单完成三组采集。检查床退了出来，陆舟把箱子抱回推车。\", sfx: 'xray', next: 'c2d2_n5' },",
+            "  c2d2_n5: { speaker: 'luzhou', sprite: 'luzhou', text: \"认得这张**正弦图**吧？各个角度的投影排在一起。当年你借我抄作业，我把你画歪的坐标轴也抄过去了。（陆舟笑了一下）一块儿挨批，谁也别笑谁。\", image: 'img_sinogram', next: 'c2d2_n6' },",
+            "  c2d2_n6: { speaker: 'luzhou', sprite: 'luzhou', text: '这张是**FBP**重建的体模。直接反投影容易糊，先滤波再反投影才把轮廓提起来。原理那本旧书第三、四页有，别让我现场推，我也得翻。', image: 'ct_phantom', next: 'c2d2_n7' },",
+            "  c2d2_n7: { speaker: 'me', sprite: 'luzhou', text: '那滤波器还有得选？', next: 'c2d2_n8' },",
+            "  c2d2_n8: { speaker: 'luzhou', sprite: 'luzhou', text: \"有啊。锐利核看细节，噪声也显眼；平滑核看着顺，细节会让一点。你试试换一个，先别动扫描参数。\", card: 'fbp_iterative', next: 'c2d2_n9' },",
+            "  c2d2_n9: { speaker: 'luzhou', sprite: 'luzhou', text: \"我再开一组**迭代重建**对照。先估一幅图，再跟采集数据反复对、慢慢修。噪声少些，电脑得多干活——等结果够我泡碗面。\", next: 'c2d2_n10' },",
+            "  c2d2_n10: { speaker: 'luzhou', sprite: 'luzhou', text: \"（放大，再缩回去）等等，右边这根细线呢？降噪以后反倒淡了。差点就拿这张去组会邀功了……原图留着，得对着查。\", next: 'c2d2_n11' },",
+            "  c2d2_n11: { speaker: 'sys', text: \"陆舟把对照图编号抄好，笔在最后一行停了停。刚才还在拿旧作业逗你，这会儿倒先看了一眼办公室的门。\", sprite: 'luzhou', next: 'c2d2_n12' },",
+            "  c2d2_n12: { speaker: 'luzhou', sprite: 'luzhou', text: \"老同学，你们科能不能给我们点**去标识化的临床数据**？几百例，训练验证用。伦理批件还在办。我知道得等，就是组会上问进度的时候……总不能回回都端出这一箱水。\", next: 'c2d2_n13' },",
+            "  c2d2_n13: { speaker: 'sys', text: '【怎么回应？】', sprite: 'luzhou', choices: [",
+            "    { text: '「先补齐批件和协议，我帮你问小雷材料递哪儿。」', next: 'c2d2_14a', effect: { skill: 1, flag: 'luzhou_formal', badge: 'phantom_friend' }, tag: 'good' },",
+            "    { text: '「数据是病人的，我做不了主。你先做体模，临床数据的事咱按规矩来。」', next: 'c2d2_14b', effect: { flag: 'luzhou_wait' } },",
+            "    { text: '「我先帮你拷几百例？别外传就行。」', next: 'c2d2_14c', effect: { wealth: -1, flag: 'luzhou_gray' } },",
+            "  ]},",
+            "  c2d2_14a: { speaker: 'luzhou', sprite: 'luzhou', text: \"行，批件我催导师。你帮我问小雷，上回申请表退在哪一栏。别替我打包票，问清楚就够了——我不想把你也拖进去挨骂。\", next: 'c2d2_15a' },",
+            "  c2d2_15a: { speaker: 'luzhou', sprite: 'luzhou', text: \"可厂家那个终端，不是说能回传数据吗？他们装个盒子就进来了，我连表往哪儿交都没弄明白。（陆舟把记录本一合）当然，人家到底传什么，我也不知道。\", next: 'c2d2_16a' },",
+            "  c2d2_16a: { speaker: 'me', sprite: 'luzhou', text: \"「终端具体传什么，我也不清楚。你别拿厂家的做法当批件。」陆舟点点头，你把要问信息科的那一栏圈了出来。\", next: 'c2d2_n17' },",
+            "  c2d2_14b: { speaker: 'luzhou', sprite: 'luzhou', text: \"得，那今天先抱水箱回去。临床数据我接着跑申请，下回给你带食堂的烧饼。\", next: 'c2d2_n17' },",
+            "  c2d2_14c: { speaker: 'luzhou', sprite: 'luzhou', text: \"别拷！导师要问来源，我怎么交代？……你帮我找对递材料的人，比给我塞硬盘强。\", next: 'c2d2_n17' },",
+            "  c2d2_n17: { speaker: 'sys', text: \"陆舟把箱扣压了两次才扣上，留下实验记录：「协议、参数和重建版本都在这儿，别只存那张好看的。下回得照着比。」最后一页那根变淡的细线，被圈了两道。\", effect: { flag: 'phantom_log' }, event: 'ch2_luzhou', next: 'c2d2_p1' },"
+          ],
+          "after": [
+            "  c2d2_w2ok: { speaker: 'zhou', sprite: 'char_zhou', text: \"嗯，这样层次出来了。把这组留着，我再翻翻相邻几层。\", image: 'ct_wrist_simulated', next: 'c2d2_lunch0' },"
+          ]
+        },
+        {
+          "afterStart": 645,
+          "before": [
+            "  c2d2_p1: { speaker: 'sys', text: \"一下午，电话没停过。你刚排好三个号，小唐又从门缝里递进来一张加急单。\", next: 'c2d2_p2' },"
+          ],
+          "after": [
+            "  c2d2_p1: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: \"一下午，电话没停过。你刚排好三个号，小唐又从门缝里递进来一张加急单。\", next: 'c2d2_p2' },"
+          ]
+        },
+        {
+          "afterStart": 652,
+          "before": [],
+          "after": [
+            "  ...CH2_SOCIAL_STEPS.c2n3,"
+          ]
+        },
+        {
+          "afterStart": 663,
+          "before": [],
+          "after": [
+            "    { text: '工作站旁 · 找小雷聊两句（⚡-1）', next: 'c2n3_chat0', cond: { notFlag: 'c2n3_chat_done', ap: 1 } },"
+          ]
+        },
+        {
+          "afterStart": 676,
+          "before": [
+            "  c2n3_a4a: { speaker: 'wen', sprite: 'char_wen', text: '（笑）设备数据呗，球管、机架、报错码。……不过说实话，**合同里那条「数据服务」的条款，我们法务改了三版**，你们信息科要是较真，让他们把附件三逐条过一遍。我能说的就这么多。', next: 'c2n3_a5' },",
+            "  c2n3_a4b: { speaker: 'wen', sprite: 'char_wen', text: '设备进院只是开始，往后十年的维保、升级、扯皮，都是生意。……对了，你们科主任下午问「远程质控服务」的事，那可是我们今年主推的新业务。', next: 'c2n3_a5' },"
+          ],
+          "after": [
+            "  c2n3_a4a: { speaker: 'wen', sprite: 'char_wen', text: '（笑）设备数据呗，球管、机架、报错码。……不过说实话，**合同里那条「数据服务」的条款，我们法务改了三版**，你们信息科要是较真，让他们把附件三逐条过一遍。我能说的就这么多。', next: 'c2n3_chat_wen_q' },",
+            "  c2n3_a4b: { speaker: 'wen', sprite: 'char_wen', text: '设备进院只是开始，往后十年的维保、升级、扯皮，都是生意。……对了，你们科主任下午问「远程质控服务」的事，那可是我们今年主推的新业务。', next: 'c2n3_chat_wen_q' },"
+          ]
+        },
+        {
+          "afterStart": 747,
+          "before": [],
+          "after": [
+            "  ...CH2_SOCIAL_STEPS.c2d4,"
+          ]
+        },
+        {
+          "afterStart": 779,
+          "before": [
+            "  c2d4_p2c: {\"speaker\":\"me\",text: \"陆舟那天换重建方法，噪声能少些。这个也能靠算法补回来吗？\",\"image\":\"ct_dental_metal_teaching\",\"next\":\"c2d4_p3b\"},",
+            "  c2d4_p3b: {\"speaker\":\"zhou\",\"sprite\":\"char_zhou\",text: \"不能包治。迭代重建和专门的金属伪影校正不是一回事，缺掉的测量信息也不是调个窗就有了。先看影响哪几层，别整套重扫。\",\"image\":\"ct_dental_metal_teaching\",\"next\":\"c2d4_m1\"},"
+          ],
+          "after": [
+            "  c2d4_p2c: {\"speaker\":\"me\",text: \"那换个重建方法呢？能把这些条纹压下去吗？\",\"image\":\"ct_dental_metal_teaching\",\"next\":\"c2d4_p3b\"},",
+            "  c2d4_p3b: {card: 'fbp_iterative',\"speaker\":\"zhou\",\"sprite\":\"char_zhou\",text: \"不能包治。迭代重建和专门的金属伪影校正不是一回事，缺掉的测量信息也不是调个窗就有了。先看影响哪几层，别整套重扫。\",\"image\":\"ct_dental_metal_teaching\",\"next\":\"c2d4_m1\"},"
+          ]
+        },
+        {
+          "afterStart": 803,
+          "before": [
+            "  c2d4_e8: { speaker: 'sys', text: \"主任把核查单压在彩页上，拨通厂家的电话：「别再给我讲免费，先把谁负责写清楚。」陆舟的消息同时弹来：「材料退回来了，少一页导师签字。」你回：别省这页，明天一起问。\", event: 'ch2_data_showdown', effect: { flag: 'data_hook' }, next: 'c2d4_reg' },"
+          ],
+          "after": [
+            "  c2d4_e8: { speaker: 'sys', text: \"主任把核查单压在彩页上，拨通厂家的电话：「别再给我讲免费，先把谁负责写清楚。」小雷拉了把椅子坐到旁边，把两版签字单并排摊开。电话响了很久，两个人谁也没再催谁。\", event: 'ch2_data_showdown', effect: { flag: 'data_hook' }, next: 'c2d4_reg' },"
+          ]
+        },
+        {
+          "afterStart": 805,
+          "before": [
+            "  c2d4_reg2: { speaker: 'zhou', sprite: 'char_zhou', text: '那就好。小唐，把经办人的分机留一份——不是给我，贴值班室。省得换个人又从头问。', next: 'c2d4_e9' },"
+          ],
+          "after": [
+            "  c2d4_reg2: { speaker: 'zhou', sprite: 'char_zhou', text: '那就好。小唐，把经办人的分机留一份——不是给我，贴值班室。省得换个人又从头问。', next: 'c2d4_chat0' },"
+          ]
+        },
+        {
+          "afterStart": 811,
+          "before": [],
+          "after": [
+            "  ...CH2_SOCIAL_STEPS.c2n5,"
+          ]
+        },
+        {
+          "afterStart": 821,
+          "before": [],
+          "after": [
+            "    { text: '茶水间 · 几句话还没聊完（⚡-1）', next: 'c2n5_chat0', cond: { notFlag: 'c2n5_chat_done', ap: 1 } },"
+          ]
+        },
+        {
+          "afterStart": 909,
+          "before": [
+            "  c2n5_n5: { speaker: 'me', text: \"（夹着电话找毯子）有，有保暖毯。机房温度我也查一下。先别让大爷对着风口坐。\", next: 'c2n5_ring_trigger' },",
+            "  c2n5_ring_trigger: { speaker: 'sys', text: '送完毯子，控制台又报了一次通道异常。开班时日检还是正常的。你暂停接检，通知值班医师，按故障复核流程把科里的水箱体模搬上床。', next: 'c2n5_ring_scan' },",
+            "  c2n5_ring_scan: { bg: 'bg_ctcontrol', speaker: 'sys', text: '体模扫描完成。那几秒低鸣停下来，屏幕开始刷新。', sfx: 'xray', next: 'c2n5_r0' },",
+            "  // —— 事件2·续：体模上的年轮 ——",
+            "  c2n5_r0: { speaker: 'sys', text: \"新扫的水箱图上，一圈圈圆环浮了出来。你下意识看了眼机房——床上只有水箱。切回开班日检，再看这张新图：早先没有这些圆环。**同一台机器，前后不一样了。**\", image: 'ct_water_ring_teaching', next: 'c2n5_r1' },",
+            "  c2n5_r1: { speaker: 'sys', text: '【水箱是均匀的——均匀的东西扫出「年轮」，问题出在哪？】', image: 'ct_water_ring_teaching', choices: [",
+            "    { text: '「水放久了分层？换箱水重扫一次。」', next: 'c2n5_r2a', effect: { skill: -1 } },",
+            "    { text: '「像环状伪影。把新旧体模图附上，报修查校准。」', next: 'c2n5_r2b', effect: { skill: 1 }, tag: 'good' },",
+            "    { text: '（拿出工具箱里的记录本）「先报修，我再把日志里的报警号找出来。」', next: 'c2n5_r2c', cond: { item: 'toolbox' }, tag: 'good' },",
+            "  ]},",
+            "  c2n5_r2a: { speaker: 'duty', phone: 'char_duty', text: \"水没这么分层的。先看**探测器校准**，这种同心圆要查设备。报修单把体模图附上，受影响的检查先按停机预案安排。\", card: 'ring_artifact', image: 'ct_water_ring_teaching', next: 'c2n5_r3' },",
+            "  c2n5_r2b: { speaker: 'sys', text: \"旧记录没有这些圆环。你把新旧两次体模图附在报修单里，填上：**环状伪影，疑似探测器校准异常**。\", card: 'ring_artifact', image: 'ct_water_ring_teaching', next: 'c2n5_r3' },",
+            "  c2n5_r2c: { speaker: 'sys', text: \"你先报修，再打开用户端日志：**第217号通道反复报警**。截图发过去，工程师很快回复：「收到了，我带检测工具来，机柜先别拆。」\", card: 'ring_artifact', effect: { skill: 2, badge: 'wrench_night' }, next: 'c2n5_r3' },",
+            "  c2n5_r3: { speaker: 'sys', text: \"报修单提交，受影响的检查按停机预案分流。你翻出陆舟那本记录，把协议、参数和早先体模结果一并附上。那句「别只存好看的」这会儿派上了用场。\", next: 'c2n5_n6' },",
+            "  c2n5_n6: { speaker: 'sys', text: '【事件3】手机在口袋里震了一下。', choices: ["
+          ],
+          "after": [
+            "  c2n5_n5: { speaker: 'me', text: \"（夹着电话找毯子）有，有保暖毯。机房温度我也查一下。先别让大爷对着风口坐。\", next: 'c2n5_n6' },",
+            "  c2n5_n6: { bg: 'bg_ctcontrol', speaker: 'sys', text: '凌晨两点多，手机在口袋里震了一下。', choices: ["
+          ]
+        },
+        {
+          "afterStart": 912,
+          "before": [
+            "    { text: '（掏出手机看一眼）', next: 'c2n5_p2b', cond: { notFlag: 'data_audit' } },"
+          ],
+          "after": [
+            "    { text: '（掏出手机看一眼）', next: 'c2n5_phone_break', cond: { notFlag: 'data_audit' } },"
+          ]
+        },
+        {
+          "afterStart": 916,
+          "before": [
+            "  c2n5_p2b: { speaker: 'sys', text: '屏幕上是陆舟：「**伦理批件下周提交！**批下来我带师弟师妹去你们科参观学习——顺便膜拜全县第一台新CT😄」', next: 'c2n5_p2c' },",
+            "  c2n5_p2c: { speaker: 'sys', text: '【回复什么？】', choices: [",
+            "    { text: '「欢迎。体模数据记得带上——老周念叨第二回了。」', next: 'c2n5_p2d', effect: { heart: 1 } },",
+            "    { text: '「来可以，先帮我推一遍迭代重建的收敛证明。」', next: 'c2n5_p2d', effect: { skill: 1 } },",
+            "    { text: '（锁屏，继续干活）', next: 'c2n5_g0' },",
+            "  ]},",
+            "  c2n5_p2d: { speaker: 'sys', text: '他秒回了一个抱拳的表情。凌晨两点十七分，这座县城里还有两个没睡的人。', next: 'c2n5_g0' },"
+          ],
+          "after": []
+        },
+        {
+          "afterStart": 926,
+          "before": [
+            "  c2n5_g0: { bg: 'bg_morning', speaker: 'sys', text: \"早上六点，受影响的检查都已分流，机器仍停着等工程师。你交完班走出控制室，老周正从值班室出来，手里一新一旧两个保温杯。\", next: 'c2n5_g1' },"
+          ],
+          "after": [
+            "  c2n5_g0: { bg: 'bg_morning', speaker: 'sys', text: \"早上六点，白班的人到了。你交完班走出控制室，老周正从值班室出来，手里一新一旧两个保温杯。\", next: 'c2n5_g1' },"
+          ]
+        },
+        {
+          "afterStart": 937,
+          "before": [
+            "  c2am_0: { bg: 'bg_office_day', speaker: 'sys', text: \"周一早上八点，医生办公室。会上先过昨夜交班：CT仍停机，工程师负责复核；远程终端保持离线，信息科今天接手查日志，周五反馈。主任在交接记录上签了字。角落里，老周正把你的名字勾进夜班主值栏。\", next: 'c2am_1' },"
+          ],
+          "after": [
+            "  c2am_0: { bg: 'bg_office_day', speaker: 'sys', text: \"周一早上八点，医生办公室。会上先过昨夜交班：CT正常交接；远程终端保持离线，信息科今天接手查日志，周五反馈。主任在交接记录上签了字。角落里，老周正把你的名字勾进夜班主值栏。\", next: 'c2am_1' },"
+          ]
+        },
+        {
+          "afterStart": 941,
+          "before": [
+            "  c2am_4: { speaker: 'sys', text: \"老周把改好的排班表递给你，笔还夹在指缝里。有人鼓了两下掌，他笑着压了压手：「留着，等机器修好再拍。」\", next: 'c2am_5' },"
+          ],
+          "after": [
+            "  c2am_4: { speaker: 'sys', text: \"老周把改好的排班表递给你。有人鼓了两下掌，他摆摆手，又在上衣口袋里摸了摸：「别光拍手，谁把我那支笔顺走了？」\", next: 'c2am_5' },"
+          ]
+        },
+        {
+          "afterStart": 943,
+          "before": [
+            "  c2am_6: { speaker: 'sys', text: '【第二章「快与狠」——完。】', next: 'c2am_7' },",
+            "  c2am_7: { speaker: 'sys', text: \"【数月后】合规手续办妥，离线实验室里出了新的重建对照图。老周放大几遍：「噪声少了，边上那根细线呢？」陆舟回：「还在查。原图留着，这回没急着交差。」研究结果还不能拿来签临床报告。\", effect: { flag: 'ai_hook' }, next: 'c2am_8' },"
+          ],
+          "after": [
+            "  c2am_6: { speaker: 'sys', text: '【第二章「快与狠」——完。】', next: 'c2am_8' },",
+            ""
+          ]
+        },
+        {
+          "afterStart": 973,
+          "before": [
+            "  { q: '均匀水箱体模图像上出现同心圆环状伪影，最可能的原因是？', options: ['水箱里有杂质', '某探测器通道校准漂移', '病人动了', '管电压不稳'], answer: 1, explain: '环状伪影圆心固定在旋转中心，对应固定的探测器通道——体模是「标准答案」，答案错了就是机器的问题，报修校准即可。' },"
+          ],
+          "after": [
+            "  { q: '在已采集的CT容积数据上做冠状位、矢状位重建，是否需要再次曝光？', options: ['每换一个方向都要重扫', '不需要，可利用已有容积数据重建', '必须先提高管电压', '只能重新做一套增强扫描'], answer: 1, explain: '多平面重建利用已采集的容积数据换个方向看，不是让球管再照一遍；可用的细节仍受原始采集条件限制。' },"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/game/ch2-exploration.ts",
+      "edits": [
+        {
+          "afterStart": 19,
+          "before": [
+            " return Object.hasOwn(LEGACY_EXPLORATION_HUBS, id) ? LEGACY_EXPLORATION_HUBS[id] : id"
+          ],
+          "after": [
+            " if (Object.hasOwn(LEGACY_EXPLORATION_HUBS, id)) return LEGACY_EXPLORATION_HUBS[id]",
+            " return Object.hasOwn(CH2_DEFERRED_STEPS, id) ? CH2_DEFERRED_STEPS[id] : id"
+          ]
+        },
+        {
+          "afterStart": 23,
+          "before": [],
+          "after": [
+            "// Author deferred these scenes on 2026-09-21. Resume beyond the removed arc;",
+            "// never replay its rewards, clear historical collections or restart the shift.",
+            "export const CH2_DEFERRED_STEPS: Readonly<Record<string, string>> = {",
+            " c2d2_n0: 'c2d2_p1',",
+            " c2d2_n1: 'c2d2_p1',",
+            " c2d2_n2: 'c2d2_p1',",
+            " c2d2_n3: 'c2d2_p1',",
+            " c2d2_n4: 'c2d2_p1',",
+            " c2d2_n5: 'c2d2_p1',",
+            " c2d2_n6: 'c2d2_p1',",
+            " c2d2_n7: 'c2d2_p1',",
+            " c2d2_n8: 'c2d2_p1',",
+            " c2d2_n9: 'c2d2_p1',",
+            " c2d2_n10: 'c2d2_p1',",
+            " c2d2_n11: 'c2d2_p1',",
+            " c2d2_n12: 'c2d2_p1',",
+            " c2d2_n13: 'c2d2_p1',",
+            " c2d2_14a: 'c2d2_p1',",
+            " c2d2_15a: 'c2d2_p1',",
+            " c2d2_16a: 'c2d2_p1',",
+            " c2d2_14b: 'c2d2_p1',",
+            " c2d2_14c: 'c2d2_p1',",
+            " c2d2_n17: 'c2d2_p1',",
+            " c2n5_ring_trigger: 'c2n5_n6',",
+            " c2n5_ring_scan: 'c2n5_n6',",
+            " c2n5_r0: 'c2n5_n6',",
+            " c2n5_r1: 'c2n5_n6',",
+            " c2n5_r2a: 'c2n5_n6',",
+            " c2n5_r2b: 'c2n5_n6',",
+            " c2n5_r2c: 'c2n5_n6',",
+            " c2n5_r3: 'c2n5_n6',",
+            " c2n5_p2b: 'c2n5_phone_break',",
+            " c2n5_p2c: 'c2n5_phone_break',",
+            " c2n5_p2d: 'c2n5_phone_break',",
+            " c2am_7: 'c2am_8',",
+            "}",
+            ""
+          ]
+        },
+        {
+          "afterStart": 63,
+          "before": [
+            " const local=new Set(['day_shift','queue_wait','data_audit','data_support','data_oppose','data_hook','audit_evidence','luzhou_formal','luzhou_wait','luzhou_gray','phantom_log','maintenance_draft','remote_proposal','ch2_registration_resolved','old_register','nameless_films','ai_hook','dose_explained','zhou_handover','term_checked'])"
+          ],
+          "after": [
+            " // phantom_log is now historical evidence with no live earning path; retain it.",
+            " const local=new Set(['day_shift','queue_wait','data_audit','data_support','data_oppose','data_hook','audit_evidence','luzhou_formal','luzhou_wait','luzhou_gray','maintenance_draft','remote_proposal','ch2_registration_resolved','old_register','nameless_films','ai_hook','dose_explained','zhou_handover','term_checked'])"
+          ]
+        }
+      ]
+    }
+  ]
+}

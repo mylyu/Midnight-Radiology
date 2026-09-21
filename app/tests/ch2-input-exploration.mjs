@@ -32,7 +32,7 @@ async function advance(page) {
 }
 try {
  // Freshly resetting progress used to leave previous-run exploration flags set.
- const flags = {c2n1_a:true,c2n1_b:true,c2n1_c:true,c2n1_e:true,c2n3_a:true,c2n3_d:true,c2n3_k:true,c2n3_bk:true,c2n5_cabinet:true,c2n5_e:true,c2n5_b:true,bai_tube:true,mystery_told:true}
+ const flags = {c2n1_a:true,c2n1_b:true,c2n1_c:true,c2n1_e:true,c2n3_a:true,c2n3_d:true,c2n3_k:true,c2n3_bk:true,c2n3_chat_done:true,c2n5_cabinet:true,c2n5_e:true,c2n5_b:true,c2n5_chat_done:true,bai_tube:true,mystery_told:true}
  const {context, page} = await open({ flags, dlc:{ch2:{done:true,shift:'c2am',stepId:'c2am_9'}} }, '#/hall')
  await page.getByRole('button',{name:'再玩一遍',exact:true}).click()
  await page.locator('[data-ch2-step="c2n1_0"]').waitFor({timeout:5000})

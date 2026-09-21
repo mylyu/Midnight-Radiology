@@ -43,11 +43,11 @@ try{
  for(let count=0;count<500;count++){
   const s=await read(page),p=s.dlc.ch2
   if(!p.stepId){await page.waitForTimeout(50);continue}
-  const shift=CH2_SHIFTS.find(n=>n.id===p.shift),step=shift.steps[p.stepId]
-  const text=await show(page,p.stepId,step,s)
+  const shift=CH2_SHIFTS.find(n=>n.id===p.shift),step=ch2StepForState(p.stepId,shift.steps[p.stepId],s)
+  const text=await show(page,p.stepId,shift.steps[p.stepId],s)
   log.push({kind:'walk',step:p.stepId,text,ap:s.ap})
   visited.add(p.stepId)
-  if(['c2n3_x9','c2d4_e5','c2n5_a7','c2n5_r3','c2n5_g5','c2am_0'].includes(p.stepId))await capture(page,`${output}/walk-${p.stepId}.png`)
+  if(['c2n3_x9','c2d4_e5','c2n5_a7','c2n5_chat_both3','c2n5_g5','c2am_0'].includes(p.stepId))await capture(page,`${output}/walk-${p.stepId}.png`)
   if(p.shift==='c2am')break
   if(step.windowTask){
    await page.getByRole('button',{name:new RegExp(` ${step.windowTask.targetW}/${step.windowTask.targetL}$`)}).click()
@@ -81,19 +81,21 @@ try{
  }
  const result=await read(page)
  assert.equal(result.dlc.ch2.stepId,'c2am_0')
- for(const flag of ['c2n1_a','c2n1_b','c2n1_c','c2n1_e','c2n3_a','c2n3_d','c2n3_k','c2n3_bk','c2n5_cabinet','c2n5_b','c2n5_e','audit_evidence'])assert(result.flags[flag],flag)
+ for(const flag of ['c2n1_a','c2n1_b','c2n1_c','c2n1_e','c2n3_a','c2n3_d','c2n3_k','c2n3_bk','c2n5_cabinet','c2n5_b','c2n5_e','audit_evidence','c2n3_chat_done','c2n5_chat_done'])assert(result.flags[flag],flag)
+ assert(result.badges.includes('c2_tea_regular'))
+ assert(result.badges.includes('c2_two_sides'))
  log.push({kind:'summary',uniqueSteps:visited.size,flags:result.flags})
  console.log('PASS: five-shift story walk + all available exploration + audit reply, through morning:',visited.size)
  await context.close()
  // Independent display fixtures cover skipped optional memories, both sexes,
  // different meeting replies, and mobile text fit without clearing any real save.
  const scenes=[
-  ['c2d2_16a',{}],['c2d2_16a',{remote_asked:true,lei_cable:true}],
+  ['c2d2_chat_lei1',{}],['c2d2_chat_lei1',{c2n1_chat_sign:true}],
   ['c2n3_x0',{}],['c2n3_x0',{c2n3_d:true}],['c2n3_x9',{}],
   ['c2d4_e5',{wen_remote:true}],['c2n5_a7',{}],['c2n5_a7',{archive_film:true}],
   ['c2n5_g5',{}],['c2n5_g5',{c2n5_b:true}],
   ['c2am_0',{data_audit:true,audit_evidence:true}],['c2am_0',{data_audit:true}],
-  ['c2am_0',{data_oppose:true}],['c2am_0',{data_support:true}],['c2am_7',{}],['c2am_9',{}],
+  ['c2am_0',{data_oppose:true}],['c2am_0',{data_support:true}],['c2n5_chat_roster1',{c2d2_chat_fan:true}],['c2am_9',{}],
  ]
  for(const mobile of [false,true])for(const [index,[id,flags]] of scenes.entries()){
   const shift=CH2_SHIFTS.find(s=>s.steps[id])

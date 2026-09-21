@@ -4,7 +4,7 @@ import {readFileSync,existsSync} from 'node:fs'
 import {createHash} from 'node:crypto'
 import {fileURLToPath} from 'node:url'
 import ts from 'typescript'
-import * as live from '../src/game/ch2.ts'
+import {beforeSocial as live, beforeSocialSource} from './ch2-colleague-projection.mjs'
 import {beforeAuthorPass} from './ch2-voice-author-projection.mjs'
 
 const baseline='1d7342d'
@@ -49,7 +49,7 @@ for(const [i,shift] of live.CH2_SHIFTS.entries()){
 for(const path of ['app/src/App.tsx','app/src/game/data.ts','app/src/game/dlc.ts','app/src/game/types.ts',
  'app/src/game/store.ts','app/src/game/ch2-patients.ts','app/src/game/ch2-exploration.ts','app/src/index.css']){
  const was=execFileSync('git',['show',baseline+':'+path],{encoding:'utf8',maxBuffer:4e6})
- const normalized=read(path).replaceAll('\r\n','\n').replace("SFX_VOLUME[name] ?? (name.startsWith('vox_ch2_natural_') ? 0.45 : 0.22)","SFX_VOLUME[name] ?? 0.22")
+ const normalized=beforeSocialSource(path,read(path)).replaceAll('\r\n','\n').replace("SFX_VOLUME[name] ?? (name.startsWith('vox_ch2_natural_') ? 0.45 : 0.22)","SFX_VOLUME[name] ?? 0.22")
  assert.equal(normalized,was.replaceAll('\r\n','\n'),path+' must not change beyond new-clip volume')
 }
 assert.equal(execFileSync('git',['diff','--name-only','--diff-filter=DMRTUXB',baseline,'--','app/public/audio'],{encoding:'utf8'}).trim(),'','Never overwrite shared old voices')

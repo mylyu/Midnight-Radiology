@@ -3,7 +3,7 @@ import {execFileSync} from 'node:child_process'
 import {readFileSync} from 'node:fs'
 import {createHash} from 'node:crypto'
 import ts from 'typescript'
-import * as live from '../src/game/ch2.ts'
+import {beforeSocial as live, beforeSocialSource} from './ch2-colleague-projection.mjs'
 import {beforeAuthorPass} from './ch2-voice-author-projection.mjs'
 const root=new URL('../../',import.meta.url), baseline='7032d58'
 const read=p=>readFileSync(new URL(p,root),'utf8')
@@ -26,7 +26,7 @@ for(const [i,shift] of live.CH2_SHIFTS.entries()){
  }
 }
 for(const path of ['app/src/App.tsx','app/src/game/store.ts','app/src/game/data.ts','app/src/game/dlc.ts','app/src/game/types.ts','app/src/game/ch2-patients.ts','app/src/game/ch2-exploration.ts','app/src/index.css']){
- assert.equal(read(path).replaceAll('\r\n','\n'),execFileSync('git',['show',baseline+':'+path],{encoding:'utf8',maxBuffer:4e6}).replaceAll('\r\n','\n'),path)
+ assert.equal(beforeSocialSource(path,read(path)).replaceAll('\r\n','\n'),execFileSync('git',['show',baseline+':'+path],{encoding:'utf8',maxBuffer:4e6}).replaceAll('\r\n','\n'),path)
 }
 assert.equal(execFileSync('git',['diff','--name-only','--diff-filter=DMRTUXB',baseline,'--','app/public/audio'],{encoding:'utf8'}).trim(),'','Old/shared audio must remain intact')
 const steps=Object.assign({},...live.CH2_SHIFTS.map(s=>s.steps))

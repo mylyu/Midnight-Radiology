@@ -4,7 +4,7 @@ import assert from 'node:assert/strict'
 import {execFileSync} from 'node:child_process'
 import {readFileSync} from 'node:fs'
 import ts from 'typescript'
-import * as live from '../src/game/ch2.ts'
+import {beforeSocial as live, beforeSocialSource} from './ch2-colleague-projection.mjs'
 import {beforeAuthorPass} from './ch2-voice-author-projection.mjs'
 import {beforeCoveredCrPass} from './ch2-covered-cr-projection.mjs'
 
@@ -53,7 +53,7 @@ for(const shift of old.CH2_SHIFTS) {
 // These entire files are outside a prose-only round (including line endings).
 for(const path of ['src/App.tsx','src/game/data.ts','src/game/dlc.ts','src/game/store.ts','src/game/types.ts','src/game/ch2-exploration.ts','src/game/ch2-patients.ts','src/index.css']) {
  const normalize=s=>s.replaceAll('\r\n','\n').replace("SFX_VOLUME[name] ?? (name.startsWith('vox_ch2_natural_') ? 0.45 : 0.22)","SFX_VOLUME[name] ?? 0.22")
- assert.equal(normalize(readFileSync(new URL('../'+path,import.meta.url),'utf8')),normalize(oldFile(path)),path+' must remain untouched')
+ assert.equal(normalize(beforeSocialSource('app/'+path,readFileSync(new URL('../'+path,import.meta.url),'utf8'))),normalize(oldFile(path)),path+' must remain untouched')
 }
 const states=[]
 for(const gender of ['m','f'])for(const flags of [

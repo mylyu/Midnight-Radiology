@@ -6,7 +6,8 @@ import { CH2_SHIFTS, ch2BackgroundAsset } from '../src/game/ch2.ts'
 
 const root = new URL('../../', import.meta.url)
 const read = path => readFileSync(new URL(path, root))
-const source = read('app/src/game/ch2.ts').toString().replaceAll('\r\n', '\n')
+import {beforeSocialSource} from './ch2-colleague-projection.mjs'
+const source = beforeSocialSource('app/src/game/ch2.ts',read('app/src/game/ch2.ts').toString()).replaceAll('\r\n', '\n')
 const baseline = execFileSync('git', ['show', '64cd2f6:app/src/game/ch2.ts'], { encoding: 'utf8' }).replaceAll('\r\n', '\n')
 const before = "c2n1_an1: { bg: 'bg_corridor'"
 const after = "c2n1_an1: { bg: 'bg_corridor_cr_covered'"

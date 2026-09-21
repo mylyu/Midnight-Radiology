@@ -45,7 +45,7 @@ try {
   assert.equal(ch2PortraitAsset('me', 'f'), 'ch2_pixel_char_f')
   assert.equal(ch2PortraitAsset('luzhou', 'm'), 'ch2_pixel_char_luzhou_m')
   assert.equal(ch2PortraitAsset('pat_kidmom', 'm'), ch2PortraitAsset('pat_kidmom_holding', 'm'))
-  for (const [key, asset] of Object.entries(CH2_PORTRAITS).filter(([key]) => key !== 'pat_kidmom_holding')) {
+  for (const [key, asset] of Object.entries(CH2_PORTRAITS).filter(([key]) => !['pat_kidmom_holding', 'char_luzhou_m', 'char_luzhou_f'].includes(key))) {
     const gender = key.endsWith('_f') ? 'f' : 'm'
     const matches = CH2_SHIFTS.flatMap(shift => Object.entries(shift.steps).map(([node, step]) => ({ shift, node, step })))
     const match = matches.find(({ step }) => [step.sprite ?? (step.speaker === 'me' ? 'me' : step.speaker === 'luzhou' ? 'luzhou' : undefined), step.sprite2, step.phone].filter(Boolean).some(value => ch2PortraitAsset(value, gender) === asset))
@@ -76,7 +76,6 @@ try {
     ['c2d4', 'c2d4_12a', 'ct_dental_metal_teaching'],
     ['c2n5', 'c2n5_m2', 'ch2_pixel_pat_kidmom'],
     ['c2n5', 'c2n5_a2', 'item_zhou_key_fixed'],
-    ['c2n5', 'c2n5_r0', 'ct_water_ring_teaching'],
     ['c2n5', 'c2n5_m17', 'ct_head_child_followup'],
   ]) {
     const { context, page } = await scene(shift, node)
@@ -95,5 +94,5 @@ try {
   assert.equal(ch2BookUnlocked('c2am'), 20)
   assert.equal(ch2BookUnlocked('c2n1', true), 20)
   assert.deepEqual(errors, [])
-  console.log('PASS: 21 portrait mappings rendered, including restored standing abdominal patient; five book unlock stages, mobile fit, six scene images and retired captions. Screenshots: ' + output)
+  console.log('PASS: 19 live portrait mappings rendered, including restored standing abdominal patient; five book unlock stages, mobile fit, five scene images and retired captions. Screenshots: ' + output)
 } finally { await browser.close() }

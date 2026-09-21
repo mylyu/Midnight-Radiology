@@ -1,18 +1,18 @@
 // Static audit: every active (non-legacy) chapter two badge and card must be obtainable,
 // the legacy lists must stay accurate, and evidence/event links must stay wired.
-// Guards the collection denominators (12 badges / 18 cards) against future drift.
+// Guards the collection denominators (12 badges / 17 cards) against future drift.
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import ts from 'typescript'
 import {
   CH2_SHIFTS, CH2_BADGES, CH2_CARDS, CH2_EVENTS, CH2_EVIDENCE,
-  CH2_BADGES_LEGACY, CH2_CARDS_LEGACY, CH2_ACTIVE_BADGES, CH2_ACTIVE_CARDS,
+  CH2_BADGES_LEGACY, CH2_CARDS_LEGACY, CH2_ACTIVE_BADGES, CH2_ACTIVE_CARDS, CH2_EVENTS_LEGACY, CH2_EVIDENCE_LEGACY,
 } from '../src/game/ch2.ts'
 
-assert.deepEqual([...CH2_BADGES_LEGACY].sort(), ['allergy_save', 'checklist_zero', 'phase_eye'])
-assert.deepEqual([...CH2_CARDS_LEGACY].sort(), ['contrast_agent', 'contrast_checklist', 'contrast_contra', 'contrast_emergency'])
+assert.deepEqual([...CH2_BADGES_LEGACY].sort(), ['allergy_save', 'checklist_zero', 'phantom_friend', 'phase_eye', 'wrench_night'])
+assert.deepEqual([...CH2_CARDS_LEGACY].sort(), ['contrast_agent', 'contrast_checklist', 'contrast_contra', 'contrast_emergency', 'ring_artifact'])
 assert.equal(CH2_ACTIVE_BADGES.length, 12)
-assert.equal(CH2_ACTIVE_CARDS.length, 18)
+assert.equal(CH2_ACTIVE_CARDS.length, 17)
 for (const id of CH2_BADGES_LEGACY) assert(CH2_BADGES[id], `Legacy badge definition lost: ${id}`)
 for (const id of CH2_CARDS_LEGACY) assert(CH2_CARDS[id], `Legacy card definition lost: ${id}`)
 
@@ -63,7 +63,7 @@ for (const id of CH2_ACTIVE_BADGES) {
 for (const id of CH2_ACTIVE_CARDS) assert(grantedCards.has(id), `Active card not obtainable: ${id}`)
 for (const id of CH2_BADGES_LEGACY) assert(!grantedBadges.has(id), `Legacy badge unexpectedly granted: ${id}`)
 for (const id of CH2_CARDS_LEGACY) assert(!grantedCards.has(id), `Legacy card unexpectedly granted: ${id}`)
-for (const [key, e] of Object.entries(CH2_EVIDENCE)) assert(setFlags.has(e.flag), `Evidence flag never set: ${key}`)
-for (const id of Object.keys(CH2_EVENTS)) assert(grantedEvents.has(id), `Event never triggered: ${id}`)
+for (const [key, e] of Object.entries(CH2_EVIDENCE)) assert.equal(setFlags.has(e.flag), !CH2_EVIDENCE_LEGACY.includes(key), `Evidence policy: ${key}`)
+for (const id of Object.keys(CH2_EVENTS)) assert.equal(grantedEvents.has(id), !CH2_EVENTS_LEGACY.includes(id), `Event policy: ${id}`)
 
 console.log(`PASS: grant audit — ${CH2_ACTIVE_BADGES.length}/${Object.keys(CH2_BADGES).length} badges and ${CH2_ACTIVE_CARDS.length}/${Object.keys(CH2_CARDS).length} cards obtainable; legacy lists, evidence and events verified.`)
