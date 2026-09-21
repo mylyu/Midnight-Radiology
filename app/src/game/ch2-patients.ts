@@ -3,7 +3,7 @@ import type { Step } from './types'
 /** Entrance staging only: no diagnosis, reward or graph mutation. Sick patients
  * are seen before the staff discussion; transport-bed art is cleared on scan. */
 export const CH2_PATIENT_ENTRANCES = [
- {id:'fall',step:'c2n1_m0',sprite:'ch2_patient_fall_bed',voice:null},
+ {id:'fall',step:'c2n1_m0',sprite:'ch2_patient_fall_bandaged_bed',voice:null},
  {id:'stone',step:'c2n1_pain',sprite:'pat_stone',voice:'vox_guy'},
  {id:'lung',step:'c2d2_3',sprite:'pat_uncle2',voice:null},
  {id:'gut',step:'c2d2_8',sprite:'pat_gut',voice:'vox_ch2_gut'},
@@ -25,13 +25,13 @@ export const CH2_RETIRED_PATIENT_VOICES = ['fall','stroke','lung','postop','ches
 const entrances = Object.fromEntries(CH2_PATIENT_ENTRANCES.map(patient=>[patient.step,patient]))
 const beforeScan: Record<string,string> = {}
 function stage(sprite: string, ids: string[]) { for (const id of ids) beforeScan[id]=sprite }
-stage('ch2_patient_fall_bed',['c2n1_m1','c2n1_m2','c2n1_m3a','c2n1_m3b'])
+stage('ch2_patient_fall_bandaged_bed',['c2n1_m1','c2n1_m2','c2n1_m3a','c2n1_m3b'])
 stage('pat_stone',['c2n1_p1','c2n1_p2','c2n1_p2a','c2n1_p2b','c2n1_p2c'])
 stage('pat_gut',['c2d2_9a','c2d2_9b'])
 stage('ch2_patient_waiting_elder',['c2d2_q1b','c2d2_q1c'])
 stage('ch2_patient_stroke_bed',['c2n3_m3','c2n3_m4'])
 stage('ch2_patient_chest_wheelchair',['c2n3_h1','c2n3_h2','c2n3_h3a','c2n3_h3b','c2n3_h3c'])
-stage('ch2_patient_aorta_bed',['c2d4_3','c2d4_4','c2d4_5','c2d4_6','c2d4_7','c2d4_8'])
+stage('ch2_patient_aorta_bed',['c2d4_3','c2d4_aorta_resist','c2d4_aorta_wife','c2d4_aorta_doctor','c2d4_aorta_consent','c2d4_4','c2d4_5','c2d4_6','c2d4_7','c2d4_8'])
 stage('pat_grandpa2',['c2d4_m2'])
 
 const lines: Record<string,string> = {

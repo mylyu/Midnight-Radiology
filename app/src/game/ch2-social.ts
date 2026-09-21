@@ -18,7 +18,7 @@ export const CH2_SOCIAL_STEPS: Record<string, Record<string, Step>> = {
     c2n1_chat_roster2: { speaker: 'sys', text: '门外拖过一阵纸箱摩擦声。你俩一起住嘴，老周探进头：「聊我呢？聊完让让，我拿茶。」', sprite: 'char_zhou', next: 'c2n1_chat_q' },
   },
   c2d2: {
-    c2d2_lunch0: { bg: 'bg_breakroom', speaker: 'sys', text: '中午轮到你歇一会儿。小雷守着微波炉，老范坐在旁边，把盒饭里的青椒一根根挑出来。', next: 'c2d2_lunch_q' },
+    c2d2_lunch0: { bg: 'ch2_bg_breakroom_day', speaker: 'sys', text: '中午轮到你歇一会儿。小雷守着微波炉，老范坐在旁边，把盒饭里的青椒一根根挑出来。', next: 'c2d2_lunch_q' },
     c2d2_lunch_q: { speaker: 'sys', text: '午饭还热着。', choices: [
       { text: '问小雷：「你跟主任怎么了？」', next: 'c2d2_chat_lei1', cond: { notFlag: 'c2d2_chat_lei' } },
       { text: '问老范：「老周以后不值夜班了？」', next: 'c2d2_chat_fan1', cond: { notFlag: 'c2d2_chat_fan' } },
@@ -82,7 +82,7 @@ export const CH2_SOCIAL_STEPS: Record<string, Record<string, Step>> = {
     c2n5_chat_roster2: { speaker: 'zhou', sprite: 'char_zhou', text: '（老周从门口探头）谁惦记我椅子？坐了三十年，刚坐顺手。', next: 'c2n5_chat_roster3' },
     c2n5_chat_roster3: { speaker: 'tang', sprite: 'char_tang', text: '没人惦记，您连茶都还没喝完呢。杯子给我，添点热的。', next: 'c2n5_chat_q' },
     c2n5_chat_end: { speaker: 'sys', text: '你把凳子推回桌底。小唐随手把剩下两个纸杯扣好，关了茶水间的灯。', effect: { flag: 'c2n5_chat_done', badge: 'c2_tea_regular' }, next: 'c2n5_hub' },
-    c2n5_phone_break: { speaker: 'sys', text: '小何发来一句：「保暖毯找到了，给大爷盖上了。」过一会儿又补了一句：「你那边忙完也坐会儿。」你回了个好，把手机扣在桌上。', next: 'c2n5_g0' },
+    c2n5_phone_break: { speaker: 'sys', text: '小何发来一句：「保暖毯找到了，给大爷盖上了。」过一会儿又补了一句：「你那边忙完也坐会儿。」你回了个好，把手机扣在桌上。', next: 'c2n5_n6' },
   },
 }
 

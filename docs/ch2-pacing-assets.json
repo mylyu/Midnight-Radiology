@@ -1,0 +1,77 @@
+{
+  "date": "2026-09-21",
+  "baseline": "1452d78",
+  "tool": "built-in image_gen; no CLI fallback or image postprocessing",
+  "scope": "Six new chapter-two assets including online/offline rack states; all existing media retained unchanged.",
+  "provenance": "CT images are generated fictional teaching illustrations, not calibrated CT/HU data or real patient scans. This record stays in docs, not repetitive in-game AI captions.",
+  "references": [
+    "https://www.radiologyinfo.org/en/info/angiocoroct",
+    "https://www.jacc.org/doi/10.1016/j.jacc.2022.08.004"
+  ],
+  "assets": [
+    {
+      "alias": "ch2_remote_rack_offline",
+      "path": "app/public/assets/ch2_remote_rack_offline.png",
+      "sha256": "DC346877B21BDA86A1D8E4902EC1961063FD7B557844021A3EC0484660BDC34B",
+      "referenceImages": [
+        "app/public/assets/ch2_remote_rack.png"
+      ],
+      "prompt": "Use case: precise-object-edit. Edit target: the supplied pixel-art hospital network rack with black remote-support terminal on shelf. Change ONLY the connection state of the small terminal: unplug its blue Ethernet cable from the terminal's FRONT Ethernet socket. The socket must now be clearly empty and dark, with no green network/link indicator. The same blue cable remains routed toward the switch above but its loose RJ45 plug rests visibly on the shelf next to the terminal. Keep the terminal's separate green POWER indicator on: it has power but is disconnected from network. Preserve all equipment shapes, identity, framing, cables of other rack devices, room, camera, pixel painting style, lighting, colors, and dimensions 1536x1024 unchanged. No new labels, text, icon, overlay or people; only the terminal network disconnection. This is the offline-state variant of the exact same game scene, not a new room.",
+      "generatedLocation": "Generated images are saved to C:\\Users\\lvmen\\.codex\\generated_images\\01a03d87-f338-71d1-ac31-cfd37ee2d8bb as C:\\Users\\lvmen\\.codex\\generated_images\\01a03d87-f338-71d1-ac31-cfd37ee2d8bb\\exec-1e3c2fff-d36a-44d8-a56d-2f27580cbc27.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "inspection": "Same rack, power still on, Ethernet socket empty, loose plug on shelf; used after network disconnection in N5."
+    },
+    {
+      "alias": "ch2_patient_fall_bandaged_bed",
+      "path": "app/public/assets/ch2_patient_fall_bandaged_bed.png",
+      "sha256": "3F64F51B03470F368C1A1C9A4AA4F22D073F2B2577C39BF6CFB1FB0BAC39C592",
+      "referenceImages": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/ch2_patient_fall_bed.png"
+      ],
+      "prompt": "Use case: identity-preserve. Edit target: the supplied pixel art elderly hospital patient on a wheeled bed. Add ONLY a neat small white gauze dressing at the upper forehead, secured by white bandage wrapped around the head, for a minor scalp injury after a fall. No blood. Preserve exactly this man's identity, elderly face, closed eyes, gray hair, blue hospital pajamas, two hands, gray blanket, wheeled hospital bed, camera angle, full framing and coarse visible square pixels, strong dark pixel outlines, restricted shaded palette. Do not beautify or redesign. The entire man and entire bed stay visible with margin on all sides. Output 1536x1024 landscape PNG, genuinely TRANSPARENT background alpha around man and bed, no shadow halo, no black solid background, no checkerboard drawn into pixels, no text.",
+      "generatedLocation": "Generated images are saved to C:\\Users\\lvmen\\.codex\\generated_images\\01a03d87-f338-71d1-ac31-cfd37ee2d8bb as C:\\Users\\lvmen\\.codex\\generated_images\\01a03d87-f338-71d1-ac31-cfd37ee2d8bb\\exec-a1d510b1-61f9-478a-8262-b7d46ca614ab.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "inspection": "Same patient/bed/pose, forehead dressing, PNG alpha at outside samples = 0; kept _bed naming for sprite scale."
+    },
+    {
+      "alias": "ch2_bg_breakroom_day",
+      "path": "app/public/assets/ch2_bg_breakroom_day.png",
+      "sha256": "472EEC793F2A5408EA8E573494118500E49B14C82F72702886E76CCA9CFB0C14",
+      "referenceImages": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/bg_breakroom.png"
+      ],
+      "prompt": "Use case: lighting-weather. Edit target is the supplied hospital staff break room pixel-art background. Change time of day ONLY from night to daytime: visible pale blue daytime sky and sunlit buildings through exactly the same window; soft late-morning natural light from window illuminates the same worn sofas, table, cabinet, vending machine, kettle, microwave, bulletin board and chairs. Desk lamp switched off in daylight. Keep camera, geometry, placement, room identity, all furniture, pixel density and coarse crisp pixel-painted style unchanged. Muted hospital blue-green with warm daylight, bright enough to be unmistakably daytime but not glaring. 2048x1152 landscape game background, no people. Remove the bottom-left AI生成 watermark/overlay and do not add any watermark, subtitles, dialogue UI, logo or new signage.",
+      "generatedLocation": "Generated images are saved to C:\\Users\\lvmen\\.codex\\generated_images\\01a03d87-f338-71d1-ac31-cfd37ee2d8bb as C:\\Users\\lvmen\\.codex\\generated_images\\01a03d87-f338-71d1-ac31-cfd37ee2d8bb\\exec-4e39a63c-2ee4-42a6-8073-d101bbc13677.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "inspection": "Same layout and furniture, bright sky/daylight, no bottom-left overlay."
+    },
+    {
+      "alias": "ch2_remote_rack",
+      "path": "app/public/assets/ch2_remote_rack.png",
+      "sha256": "C4220E151C27730E4C9D929CE69E281475CECDCFE511AD822340FA9AA30A9EDE",
+      "referenceImages": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/item_remote.png"
+      ],
+      "prompt": "Use case: compositing. Supplied image is the identity/style reference for an old small black remote-service terminal with short antenna, front Ethernet jack and indicators. Create a wide 1536x1024 pixel-art game evidence illustration showing THIS recognizable little terminal installed on a shelf inside a hospital equipment-room 19-inch network rack, rather than floating alone. Include surrounding metal rack posts with mounting holes, patch panel, network switch with plugged Ethernet cables, modest green status LEDs, cable bundles neatly routed into a wall-mounted tray, power strip and an adjacent hospital equipment room wall. Front three-quarter view; terminal must remain visually easy to spot center-lower on shelf; Ethernet jack has a cable actually connected and routed to switch. Realistic physical rack scale, no CT scanner needed, no people. Coarse clearly visible square pixel brushwork, dark outlines, muted cold navy/cyan hospital-night palette and one subdued warm ceiling light; same game's high-resolution pixel painting. No text, logo, watermark, UI, giant terminals or cyberpunk holograms. Opaque scene background.",
+      "generatedLocation": "Generated images are saved to C:\\Users\\lvmen\\.codex\\generated_images\\01a03d87-f338-71d1-ac31-cfd37ee2d8bb as C:\\Users\\lvmen\\.codex\\generated_images\\01a03d87-f338-71d1-ac31-cfd37ee2d8bb\\exec-0bb9f61c-c2b5-4b28-a38e-0f6a7aa147ef.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "inspection": "Terminal recognizable, connected Ethernet, rack/switch/cable tray/power strip; pixel art."
+    },
+    {
+      "alias": "ch2_ct_aortic_wide",
+      "path": "app/public/assets/ch2_ct_aortic_wide.png",
+      "sha256": "6FDC416B3411D518F8018B99B352FD786ED3F822A291DAB3B23E49C993E097D3",
+      "referenceImages": [],
+      "prompt": "Use case: scientific-educational. Create a high quality grayscale fictional teaching CT angiography image for a BME engineering visual-novel game. Single axial thoracic CTA slice at the mid-heart / lower ascending aorta level, standard radiological viewing convention (patient right on image left, anterior top). Wide field of view includes the ENTIRE thorax skin contour with black border, both dark aerated lungs, ribs, cardiac chambers in mediastinum, descending aorta beside the vertebral body and posterior muscles. Contrast-enhanced descending thoracic aorta at image right just lateral to spine has a credible small curved intimal flap dividing an opacified true lumen and a somewhat less enhanced false lumen. The dissection must be visible IN ITS ANATOMIC CONTEXT at realistic vessel scale, not an isolated circle and not a vessel close-up. Ascending aorta and cardiac chambers distinguishable anatomically, natural chest proportions, bone white/soft tissue gray/air black, plausible CT grain. No outside-bodily gore, no labels, no arrows, no text, no patient data, no UI, no artistic colors, no simulated claims of real clinical provenance. 1536x1024 wide landscape including wholebody crosssection.",
+      "generatedLocation": "Generated images are saved to C:\\Users\\lvmen\\.codex\\generated_images\\01a03d87-f338-71d1-ac31-cfd37ee2d8bb as C:\\Users\\lvmen\\.codex\\generated_images\\01a03d87-f338-71d1-ac31-cfd37ee2d8bb\\exec-25d4b5f6-366f-4432-a3cd-a4836faa3932.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "inspection": "Whole thoracic context, lungs/heart/spine and descending-aorta flap; no vessel-only crop. Teaching approximation, not diagnostic image validation."
+    },
+    {
+      "alias": "ch2_ct_coronary_slices",
+      "path": "app/public/assets/ch2_ct_coronary_slices.png",
+      "sha256": "7AD04EA308F03E95A7BFEF1AC40B80518E0E5428902363943F851FF9F4BE0E5C",
+      "referenceImages": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/ct_coronary_cta.png"
+      ],
+      "prompt": "Use case: scientific-educational. The supplied image is a STYLE/CASE reference: an adult male coronary CTA grayscale volume-rendered heart with coronary arteries, NOT a target to repaint. Generate the preceding AXIAL CT slice montage for this same fictional game patient. Output a single landscape 1536x1024 image on black with six grayscale contrast-enhanced axial cardiac CT images in a tidy 3-column by 2-row grid, no UI borders except black gutters. They represent successive nearby levels from aortic root to ventricles, one coherent adult chest anatomy progressing superior to inferior, standard radiological orientation. Each slice has complete crosssectional chest outline, ribs, dark lungs, mediastinal heart with enhanced blood pool, vertebral body posterior, and small bright coronary artery crosssections within surrounding epicardial fat. Plausible subtle changes of heart shape and great vessel locations across levels, not six copies, not a 3D rendering. The educational effect is that coronary course is hard to follow from separate 2D crosssections before switching to the existing 3D heart. Matching adult build to reference, no gross unrelated pathology, no huge aneurysm or obvious dissection, avoid exaggerated invented vessel tangles. Natural CT grayscale texture, not pixelated character art. No text, numbers, labels, names, logos, arrows, color, watermark, diagnosis or actual patient provenance.",
+      "generatedLocation": "Generated images are saved to C:\\Users\\lvmen\\.codex\\generated_images\\01a03d87-f338-71d1-ac31-cfd37ee2d8bb as C:\\Users\\lvmen\\.codex\\generated_images\\01a03d87-f338-71d1-ac31-cfd37ee2d8bb\\exec-7a407445-069e-436b-a9d0-7cf396a9242c.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "inspection": "Six axial panels with changing cardiac levels before existing 3D rendering. A fictional paired-case presentation, not a reconstruction computed from these PNGs."
+    }
+  ]
+}
