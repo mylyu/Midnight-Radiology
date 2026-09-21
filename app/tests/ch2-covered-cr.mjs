@@ -24,4 +24,4 @@ assert.equal(hash('app/public/assets/bg_corridor_cr_covered.png'), '4165fab299c6
 const png = read('app/public/assets/bg_corridor_cr_covered.png')
 assert.equal(png.subarray(1, 4).toString(), 'PNG')
 assert(png.readUInt32BE(16) >= 1500 && png.readUInt32BE(20) >= 900)
-console.log('PASS: single background-only change, original/shared art intact, exact asset hash, unmodified dialogue/voice/interaction data.')
+console.log('PASS historical covered-CR round (validated later deltas projected out): single background change; live original/shared art hashes and covered-CR routing still intact.')

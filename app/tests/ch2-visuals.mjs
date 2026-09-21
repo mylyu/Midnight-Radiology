@@ -72,20 +72,30 @@ try {
     await context.close()
   }
   for (const [shift, node, asset] of [
-    ['c2d4', 'c2d4_t1no', 'ct_aortic_dissection_teaching'],
+    ['c2d4', 'c2d4_t1no', 'ch2_ct_aortic_wide'],
     ['c2d4', 'c2d4_12a', 'ct_dental_metal_teaching'],
     ['c2n5', 'c2n5_m2', 'ch2_pixel_pat_kidmom'],
     ['c2n5', 'c2n5_a2', 'item_zhou_key_fixed'],
     ['c2n5', 'c2n5_m17', 'ct_head_child_followup'],
+    ['c2n5', 'c2n5_m8', 'ct_head_child'],
+    ['c2n1', 'c2n1_m0', 'ch2_patient_fall_bandaged_bed'],
+    ['c2d2', 'c2d2_lunch0', 'ch2_bg_breakroom_day'],
+    ['c2n3', 'c2n3_coronary_slices', 'ch2_ct_coronary_slices'],
+    ['c2n3', 'c2n3_coronary_volume', 'ct_coronary_cta'],
+    ['c2n1', 'c2n1_b2', 'ch2_remote_rack'],
+    ['c2n5', 'c2n5_e1', 'ch2_remote_rack_offline'],
   ]) {
     const { context, page } = await scene(shift, node)
-    const img = page.locator(`img[src$="/${asset}.png"]`).first()
+    // BgImg has a hidden portrait-only blur layer before the visible backdrop.
+    const img = page.locator(`img[src$="/${asset}.png"]:visible`).first()
     await img.waitFor()
     await page.waitForFunction(asset => [...document.images].some(i => i.src.endsWith('/' + asset + '.png') && i.complete && i.naturalWidth > 0), asset)
     if (CH2_IMAGE_CAPTIONS[asset]) await page.getByText(CH2_IMAGE_CAPTIONS[asset], { exact: true }).waitFor()
-    if (['ct_aortic_dissection_teaching', 'ct_dental_metal_teaching', 'ct_water_ring_teaching'].includes(asset)) {
+    if (['ch2_ct_aortic_wide', 'ct_dental_metal_teaching', 'ch2_ct_coronary_slices'].includes(asset)) {
       assert(!/AI生成|教学模拟|非患者CT/.test(await page.locator('body').innerText()), `In-story caption should be retired: ${asset}`)
     }
+    if (node === 'c2n5_m8') await page.getByText('外院旧片｜3天前', { exact: true }).waitFor()
+    if (node === 'c2n5_m17') await page.getByText('本院复查｜本次', { exact: true }).waitFor()
     await page.screenshot({ path: `${output}/${asset}.png` })
     await context.close()
   }
@@ -94,5 +104,5 @@ try {
   assert.equal(ch2BookUnlocked('c2am'), 20)
   assert.equal(ch2BookUnlocked('c2n1', true), 20)
   assert.deepEqual(errors, [])
-  console.log('PASS: 19 live portrait mappings rendered, including restored standing abdominal patient; five book unlock stages, mobile fit, five scene images and retired captions. Screenshots: ' + output)
+  console.log('PASS: 19 live portrait mappings; five book unlock stages; mobile fit; 12 live scene images including bandage/day/rack/CTA; new/old child image labels and retired captions. Screenshots: ' + output)
 } finally { await browser.close() }

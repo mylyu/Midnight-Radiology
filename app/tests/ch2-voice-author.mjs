@@ -4,6 +4,7 @@ import {readFileSync} from 'node:fs'
 import {createHash} from 'node:crypto'
 import ts from 'typescript'
 import {beforeSocial as live, beforeSocialSource} from './ch2-colleague-projection.mjs'
+import {beforePacingPatientUrl} from './ch2-pacing-projection.mjs'
 import {beforeAuthorPass} from './ch2-voice-author-projection.mjs'
 const root=new URL('../../',import.meta.url), baseline='7032d58'
 const read=p=>readFileSync(new URL(p,root),'utf8')
@@ -13,7 +14,7 @@ const current=json('ch2-voice-current'), generated=json('ch2-voice-author-genera
 const perceptions=json('ch2-voice-author-listening-model')
 const oldGen=json('ch2-natural-voices-generation')
 const source=execFileSync('git',['show',baseline+':app/src/game/ch2.ts'],{encoding:'utf8',maxBuffer:4e6})
- .replace("'./ch2-patients.ts'",JSON.stringify(new URL('../src/game/ch2-patients.ts',import.meta.url).href))
+ .replace("'./ch2-patients.ts'",JSON.stringify(beforePacingPatientUrl))
 const old=await import('data:text/javascript;base64,'+Buffer.from(ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ES2022}}).outputText).toString('base64'))
 assert.deepEqual(plan.lines.map(r=>r.text),['你来扫，我去泡杯茶。','跟你说个事儿。','新机器接入packs了。','老爷子夜里坠床，要拍头颅CT。','年轻人，动作快起来！'])
 assert.equal(edits.length,9)
@@ -28,7 +29,7 @@ for(const [i,shift] of live.CH2_SHIFTS.entries()){
 for(const path of ['app/src/App.tsx','app/src/game/store.ts','app/src/game/data.ts','app/src/game/dlc.ts','app/src/game/types.ts','app/src/game/ch2-patients.ts','app/src/game/ch2-exploration.ts','app/src/index.css']){
  assert.equal(beforeSocialSource(path,read(path)).replaceAll('\r\n','\n'),execFileSync('git',['show',baseline+':'+path],{encoding:'utf8',maxBuffer:4e6}).replaceAll('\r\n','\n'),path)
 }
-assert.equal(execFileSync('git',['diff','--name-only','--diff-filter=DMRTUXB',baseline,'--','app/public/audio'],{encoding:'utf8'}).trim(),'','Old/shared audio must remain intact')
+assert.equal(execFileSync('git',['diff','--name-only','--diff-filter=DMRTUXB',baseline,'--','app/public/audio'],{encoding:'utf8',cwd:root}).trim(),'','Old/shared audio must remain intact')
 const steps=Object.assign({},...live.CH2_SHIFTS.map(s=>s.steps))
 assert.equal(current.filter(r=>r.id).length,12)
 for(const r of current){
@@ -60,4 +61,4 @@ for(const r of plan.lines){
 }
 const page=read('app/public/ch2-voice-preview.html')
 assert.deepEqual(JSON.parse(page.match(/const rows=(.*);/)[1]),current)
-console.log('PASS: exact 5 author lines, 2 original voices, 2 silent roles; references/hashes, unchanged graph/UI/save/shared audio. Xiao He ASR discrepancy retained with separate model transcript.')
+console.log('PASS historical author-voice round (validated later deltas projected out): exact 5 author lines, 2 original voices, 2 silent roles; references/hashes, historical graph/UI/save/shared audio. Xiao He ASR discrepancy retained.')

@@ -4,6 +4,8 @@
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import ts from 'typescript'
+import { settleCh2 } from '../src/game/ch2-session.ts'
+import { freshState } from '../src/game/store.ts'
 import {
   CH2_SHIFTS, CH2_BADGES, CH2_CARDS, CH2_EVENTS, CH2_EVIDENCE,
   CH2_BADGES_LEGACY, CH2_CARDS_LEGACY, CH2_ACTIVE_BADGES, CH2_ACTIVE_CARDS, CH2_EVENTS_LEGACY, CH2_EVIDENCE_LEGACY,
@@ -45,7 +47,7 @@ for (const shift of CH2_SHIFTS) {
     }
   }
 }
-// window_master / queue_tamer are granted by Ch2Screen logic in App.tsx.
+// window_master remains in Ch2Screen; queue_tamer moved into the Ch2 session.
 const appSource = readFileSync(new URL('../src/App.tsx', import.meta.url), 'utf8')
 // A string in the UI/comment is not evidence of an award. Inspect actual array assignments.
 const app = ts.createSourceFile('App.tsx', appSource, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX)
@@ -57,6 +59,15 @@ function visit(node) {
   ts.forEachChild(node, visit)
 }
 visit(app)
+// Exercise the real settlement, not a string match in the new module. Both
+// branches, the shift gate and replay idempotence remain protected.
+const queueState = { ...freshState('m'), flags: {}, dlc: { ch2: { shift: 'c2d2', phase: 'story' } } }
+const queueAward = settleCh2(queueState, 'c2d2')
+assert(queueAward.badges.includes('queue_tamer'), 'Clean queue must award on day-two settlement')
+assert.equal(settleCh2(queueAward, 'c2d2'), queueAward, 'Repeated settlement must do nothing')
+assert(!settleCh2({ ...queueState, flags: { queue_wait: true } }, 'c2d2').badges.includes('queue_tamer'))
+assert(!settleCh2(queueState, 'c2n1').badges.includes('queue_tamer'))
+engineBadges.add('queue_tamer')
 for (const id of CH2_ACTIVE_BADGES) {
   assert(grantedBadges.has(id) || (['window_master', 'queue_tamer'].includes(id) && engineBadges.has(id)), `Active badge not obtainable: ${id}`)
 }

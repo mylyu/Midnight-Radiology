@@ -33,10 +33,15 @@ const continuityNext = {
   "c2n5_m16": "c2n5_child_scan",
   "c2d2_1": "c2d2_reg0",
   "c2d4_e8": "c2d4_reg",
-  "c2n5_n5": "c2n5_n6",
+  "c2n5_n5": "c2n5_phone_break",
   c2n1_c4a: "c2n1_chat0", c2n1_c4b: "c2n1_chat0", c2n1_c4c: "c2n1_chat0", c2n1_c4d: "c2n1_chat0",
   c2d2_w2ok: "c2d2_lunch0", c2n3_a4a: "c2n3_chat_wen_q", c2n3_a4b: "c2n3_chat_wen_q",
-  c2d4_reg2: "c2d4_chat0", c2am_6: "c2am_8"
+  c2d4_reg2: "c2d4_chat0", c2am_6: "c2am_8",
+  // Pacing round: exact bridge endpoints; rewards and tasks remain checked below.
+  c2n1_d4: 'c2n1_gap_chair', c2d2_7: 'c2d2_gap_shift', c2d2_10: 'c2d2_gap_food',
+  c2d2_q1a: 'c2d2_gap_phone', c2d2_q1b: 'c2d2_gap_phone', c2d2_q1c: 'c2d2_gap_phone',
+  c2d2_t2: 'c2d2_gap_pen', c2n3_m13: 'c2n3_gap_tea', c2n3_h6: 'c2n3_gap_cups',
+  c2d4_3: 'c2d4_aorta_resist', c2d4_10: 'c2d4_gap_thermos',
 }
 const continuityFields = {
   c2d4_p3b: { card: 'fbp_iterative' },
@@ -55,10 +60,13 @@ for (const shift of old.CH2_SHIFTS) {
       assert.deepEqual(after[field], allowed && Object.hasOwn(allowed, field) ? allowed[field] : before[field], `${id}.${field}`)
     }
     if (id !== 'c2n1_p0') assert.equal(after.next, continuityNext[id] ?? before.next, `${id}.next`)
-    const oldChoices = before.choices?.map(({ text, ...rules }) => rules)
+    let oldChoices = before.choices?.map(({ text, ...rules }) => rules)
     if (id === 'c2n5_hub') delete oldChoices[0].cond.ap
     const currentChoices = after.choices?.filter(c => !['c2n3_chat0','c2n5_chat0'].includes(c.next)).map(({ text, ...rules }) => rules)
-    if (id === 'c2n5_n6') oldChoices.find(c => c.next === 'c2n5_p2b').next = 'c2n5_phone_break'
+    if (id === 'c2d2_q0') oldChoices.find(c => c.next === 'c2d2_q1a').next = 'c2d2_gap_lift'
+    if (id === 'c2n5_n6') oldChoices = [
+      { next: 'c2n5_sms_save' }, { next: 'c2n5_sms_reply' }, { next: 'c2n5_g0' },
+    ] // Exact approved SMS options; live audit covers conditional evidence continuation.
     assert.deepEqual(currentChoices, oldChoices, `${id}.choice rules`)
     if (before.text) { totalText++; if (after.text !== before.text) changedText++ }
   }

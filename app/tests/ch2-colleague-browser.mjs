@@ -40,7 +40,10 @@ try{
  for(const [id,target] of Object.entries(CH2_DEFERRED_STEPS)){
   const patch={flags:{data_audit:true,phantom_log:true},badges:['phantom_friend','wrench_night'],cards:['ring_artifact'],events:['ch2_luzhou']}
   const {context,page}=await open(id,patch)
-  await at(page,target)
+  try { await at(page,target) } catch(error) {
+   console.error('Retired save failed to resume', {id,target,actual:await read(page),body:await page.locator('body').innerText()})
+   throw error
+  }
   const saved=await read(page)
   assert.equal(saved.dlc.ch2.stepId,target)
   assert.equal(saved.ap,3);assert.equal(saved.gold,500)

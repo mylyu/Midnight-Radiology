@@ -1,20 +1,21 @@
 // Prose walkthrough: isolated fixture for Ch1 history, then normal Chapter 2 UI
-// from its first line through five shifts. Never reads the user's browser profile.
+// from its first line through five shifts, five exam questions and the ending.
+// Never reads the user's browser profile. No progress is injected after startup.
 import {createRequire} from 'node:module'
 import {mkdirSync,writeFileSync} from 'node:fs'
 import assert from 'node:assert/strict'
-import {CH2_SHIFTS,ch2StepForState} from '../src/game/ch2.ts'
+import {CH2_SHIFTS,ch2StepForState,QUIZ2} from '../src/game/ch2.ts'
 import {condOk} from '../src/game/store.ts'
 const require=createRequire(import.meta.url)
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright')
 const browser=await chromium.launch({channel:'msedge',headless:true})
-const output=process.env.STORY_OUTPUT||'../../ch2-story-echoes-review'
+const output=process.env.STORY_OUTPUT||'../../ch2-pacing-review-walk-20260921'
 mkdirSync(output,{recursive:true})
 const log=[],errors=[]
 const seed={gender:'f',night:5,gold:1500,skill:4,wealth:4,heart:4,durability:80,badges:['fixer'],stamps:[1,2,3,4,5],flags:{mystery_told:true,archive_film:true,archive_sealed:true,kai_friend:true,wen_card:true,n5_cover:true},lastCheckin:'',streak:0,finished:true,seed:1234,items:['snack','book','key','toolbox','dosimeter','milktea'],ap:0,buyCount:0,cards:[],events:[],dlc:{ch2:{}}}
 async function open(patch={},mobile=false){
  const context=await browser.newContext({viewport:mobile?{width:390,height:844}:{width:1280,height:900}})
- await context.addInitScript(s=>{localStorage.setItem('mr-ch2-unlock','1');localStorage.setItem('midnight-radiology-save-v1',JSON.stringify(s))},{...seed,...patch})
+ await context.addInitScript(s=>{localStorage.setItem('mr-ch2-unlock','1');if(!localStorage.getItem('midnight-radiology-save-v1'))localStorage.setItem('midnight-radiology-save-v1',JSON.stringify(s))},{...seed,...patch})
  const page=await context.newPage()
  page.on('pageerror',e=>errors.push(e.message))
  await page.goto((process.env.GAME_URL||'http://127.0.0.1:8798/')+'#/ch2')
@@ -40,15 +41,52 @@ async function capture(page,path){
 try{
  const {context,page}=await open()
  const visited=new Set()
- for(let count=0;count<500;count++){
+ let questionsAnswered=0
+ const settlements=new Set()
+ for(let count=0;count<700;count++){
   const s=await read(page),p=s.dlc.ch2
   if(!p.stepId){await page.waitForTimeout(50);continue}
+  if(p.done){await capture(page,`${output}/walk-complete.png`);break}
+  if(p.phase==='settle'){
+   await page.locator('[data-ch2-settlement]').waitFor()
+   settlements.add(p.shift)
+   log.push({kind:'settlement',shift:p.shift,step:p.stepId,gold:s.gold})
+   await capture(page,`${output}/walk-settlement-${p.shift}.png`)
+   await page.reload();await page.locator('[data-ch2-settlement]').waitFor()
+   const resumed=await read(page)
+   assert.equal(resumed.dlc.ch2.shift,p.shift,'Settlement reload must not start the next shift')
+   assert.equal(resumed.dlc.ch2.stepId,p.stepId)
+   assert.equal(resumed.gold,s.gold,'Settlement reload must not repay shift income')
+   await page.getByRole('button',{name:/^进入：/}).click()
+   await page.waitForFunction(shift=>JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).dlc.ch2.shift!==shift,p.shift)
+   continue
+  }
+  if(p.phase==='quiz'){
+   const quiz=p.quiz
+   await page.locator('[data-ch2-quiz]').waitFor()
+   if(quiz.completed){
+    log.push({kind:'grade',grade:quiz.grade,gold:s.gold})
+    await capture(page,`${output}/walk-quiz-grade.png`)
+    await page.reload();await page.locator('[data-ch2-quiz]').waitFor()
+    assert.equal((await read(page)).gold,s.gold,'Result reload must not pay a second reward')
+    await page.getByRole('button',{name:'回到晨会 →',exact:true}).click()
+    await page.locator('[data-ch2-step="c2am_3"]').waitFor()
+   }else{
+    const row=quiz.questions[quiz.index],q=QUIZ2[row.question]
+    log.push({kind:'quiz',index:quiz.index+1,question:q.q,options:row.order.map(i=>q.options[i]),answer:q.options[q.answer]})
+    await page.locator('[data-ch2-quiz]').getByRole('button',{name:q.options[q.answer],exact:true}).click()
+    questionsAnswered++
+    if(quiz.index===0)await capture(page,`${output}/walk-quiz-first-answer.png`)
+    await page.getByRole('button',{name:quiz.index===4?'查看成绩 →':'下一题 →',exact:true}).click()
+    await page.waitForFunction(before=>{const q=JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).dlc.ch2.quiz;return q.completed||q.index!==before},quiz.index)
+   }
+   continue
+  }
   const shift=CH2_SHIFTS.find(n=>n.id===p.shift),step=ch2StepForState(p.stepId,shift.steps[p.stepId],s)
   const text=await show(page,p.stepId,shift.steps[p.stepId],s)
   log.push({kind:'walk',step:p.stepId,text,ap:s.ap})
   visited.add(p.stepId)
   if(['c2n3_x9','c2d4_e5','c2n5_a7','c2n5_chat_both3','c2n5_g5','c2am_0'].includes(p.stepId))await capture(page,`${output}/walk-${p.stepId}.png`)
-  if(p.shift==='c2am')break
   if(step.windowTask){
    await page.getByRole('button',{name:new RegExp(` ${step.windowTask.targetW}/${step.windowTask.targetL}$`)}).click()
    await page.getByRole('button',{name:/^就这个窗口 · 确认/}).click()
@@ -60,7 +98,7 @@ try{
     const needsCoffee=step.choices.some(c=>c.cond?.ap&&!s.flags[c.cond.notFlag]&&!condOk(s,c.cond)&&condOk(s,{...c.cond,ap:0}))
     if(!choice&&needsCoffee){
      await page.getByRole('button',{name:'小卖部',exact:true}).click()
-     await page.getByRole('button',{name:'30💰',exact:true}).click()
+     await page.getByRole('dialog',{name:'第二章小卖部'}).getByRole('button',{name:'购买速溶咖啡',exact:true}).click()
      await page.getByRole('button',{name:'离开小卖部',exact:true}).click()
      continue
     }
@@ -70,22 +108,26 @@ try{
    log.at(-1).choice=choice.text
    await page.getByRole('button',{name:choice.text.replaceAll('**',''),exact:true}).click()
   }else if(step.end){
-   await page.getByRole('button',{name:/本班结束 · 结算/}).click()
-   await page.getByRole('button',{name:/^进入：/}).click()
+   await page.getByRole('button',{name:/本班结束 · 结算|第二章 · 完 —— 结算/}).click()
   }else{
    await page.locator('.dialog-box > span.animate-bounce').waitFor()
    await page.locator('.dialog-box > p').click()
   }
-  await page.waitForFunction(before=>{const p=JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).dlc.ch2;return p.stepId!==before.stepId||p.shift!==before.shift},p)
+  await page.waitForFunction(before=>{const p=JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).dlc.ch2;return p.stepId!==before.stepId||p.shift!==before.shift||p.phase!==before.phase||p.done},p)
   if(visited.size%50===0)console.log('STORY WALK',visited.size,p.stepId)
  }
  const result=await read(page)
- assert.equal(result.dlc.ch2.stepId,'c2am_0')
+ assert.equal(result.dlc.ch2.done,true,'Full walk must reach the actual chapter-complete screen')
+ assert.equal(result.dlc.ch2.phase,'done')
+ assert.equal(settlements.size,5)
+ assert.equal(questionsAnswered,5)
+ assert.equal(result.dlc.ch2.quiz.grade,'S')
+ assert.equal(result.flags.quiz2_grade,'S')
  for(const flag of ['c2n1_a','c2n1_b','c2n1_c','c2n1_e','c2n3_a','c2n3_d','c2n3_k','c2n3_bk','c2n5_cabinet','c2n5_b','c2n5_e','audit_evidence','c2n3_chat_done','c2n5_chat_done'])assert(result.flags[flag],flag)
  assert(result.badges.includes('c2_tea_regular'))
  assert(result.badges.includes('c2_two_sides'))
- log.push({kind:'summary',uniqueSteps:visited.size,flags:result.flags})
- console.log('PASS: five-shift story walk + all available exploration + audit reply, through morning:',visited.size)
+ log.push({kind:'summary',uniqueSteps:visited.size,settlements:[...settlements],questionsAnswered,quiz:result.dlc.ch2.quiz,done:result.dlc.ch2.done,flags:result.flags})
+ console.log('PASS: five-shift story walk + all exploration + audit reply + 5 persistent settlements + 5 exam questions + entire ending:',visited.size)
  await context.close()
  // Independent display fixtures cover skipped optional memories, both sexes,
  // different meeting replies, and mobile text fit without clearing any real save.

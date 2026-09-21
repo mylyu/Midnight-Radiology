@@ -5,6 +5,7 @@ import {createHash} from 'node:crypto'
 import {fileURLToPath} from 'node:url'
 import ts from 'typescript'
 import {beforeSocial as live, beforeSocialSource} from './ch2-colleague-projection.mjs'
+import {beforePacingPatientUrl} from './ch2-pacing-projection.mjs'
 import {beforeAuthorPass} from './ch2-voice-author-projection.mjs'
 
 const baseline='1d7342d'
@@ -15,7 +16,7 @@ const edits=JSON.parse(read('docs/ch2-natural-voices-changes.json'))
 const generated=JSON.parse(read('docs/ch2-natural-voices-generation.json'))
 const qa=JSON.parse(read('docs/ch2-natural-voices-qa.json'))
 const oldSource=execFileSync('git',['show',baseline+':app/src/game/ch2.ts'],{encoding:'utf8',maxBuffer:4e6})
- .replace("'./ch2-patients.ts'",JSON.stringify(new URL('../src/game/ch2-patients.ts',import.meta.url).href))
+ .replace("'./ch2-patients.ts'",JSON.stringify(beforePacingPatientUrl))
 const js=ts.transpileModule(oldSource,{compilerOptions:{module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ES2022}}).outputText
 const old=await import('data:text/javascript;base64,'+Buffer.from(js).toString('base64'))
 const restore=(id,step)=>{
@@ -52,7 +53,7 @@ for(const path of ['app/src/App.tsx','app/src/game/data.ts','app/src/game/dlc.ts
  const normalized=beforeSocialSource(path,read(path)).replaceAll('\r\n','\n').replace("SFX_VOLUME[name] ?? (name.startsWith('vox_ch2_natural_') ? 0.45 : 0.22)","SFX_VOLUME[name] ?? 0.22")
  assert.equal(normalized,was.replaceAll('\r\n','\n'),path+' must not change beyond new-clip volume')
 }
-assert.equal(execFileSync('git',['diff','--name-only','--diff-filter=DMRTUXB',baseline,'--','app/public/audio'],{encoding:'utf8'}).trim(),'','Never overwrite shared old voices')
+assert.equal(execFileSync('git',['diff','--name-only','--diff-filter=DMRTUXB',baseline,'--','app/public/audio'],{encoding:'utf8',cwd:root}).trim(),'','Never overwrite shared old voices')
 // ASR spelling variants only: ta cannot distinguish 他/她 in speech.
 const normalize=t=>t.replaceAll('诶','哎').replaceAll('唉','哎').replaceAll('喔','哦').replaceAll('還','还').replaceAll('沒','没').replaceAll('她','他').replace(/[^\p{Script=Han}a-z]/gu,'')
 for(const row of plan.lines){
@@ -81,4 +82,4 @@ for(const pair of [['fan_a','fan_b'],['director','director_am']]){
  const refs=pair.map(key=>generated.find(r=>r.key===key).reference_sha256)
  assert.equal(refs[0],refs[1],'Same actor requires same reference')
 }
-console.log('PASS: 14 short voices, exact audible-opening text, current MP3/QA hashes, old voices unchanged, full graph/UI/state preservation.')
+console.log('PASS historical natural-voice round (validated later deltas projected out): 14 short voices, exact openings, MP3/QA hashes, old voices intact, historical graph/UI/state preservation.')

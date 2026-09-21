@@ -5,6 +5,7 @@ import {execFileSync} from 'node:child_process'
 import {readFileSync} from 'node:fs'
 import ts from 'typescript'
 import {beforeSocial as live, beforeSocialSource} from './ch2-colleague-projection.mjs'
+import {beforePacingPatientUrl} from './ch2-pacing-projection.mjs'
 import {beforeAuthorPass} from './ch2-voice-author-projection.mjs'
 import {beforeCoveredCrPass} from './ch2-covered-cr-projection.mjs'
 
@@ -28,7 +29,7 @@ const current={...live,
 
 const baseline='0cf2e68'
 const oldFile=path=>execFileSync('git',['show',`${baseline}:app/${path}`],{encoding:'utf8',maxBuffer:4*1024*1024})
-const baselineSource=oldFile('src/game/ch2.ts').replace("'./ch2-patients.ts'",JSON.stringify(new URL('../src/game/ch2-patients.ts',import.meta.url).href))
+const baselineSource=oldFile('src/game/ch2.ts').replace("'./ch2-patients.ts'",JSON.stringify(beforePacingPatientUrl))
 const js=ts.transpileModule(baselineSource,{compilerOptions:{module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ES2022}}).outputText
 const old=await import('data:text/javascript;base64,'+Buffer.from(js).toString('base64'))
 const withoutText=({text,...other})=>other
@@ -83,5 +84,5 @@ assert.match(text('c2n5_g5',{c2n5_b:true}),/牛肉谁吃/)
 for(const [flags,expect] of [[{audit_evidence:true},/你让他保留/],[{data_audit:true},/待查项/],[{data_oppose:true},/离线支持联系人/],[{data_support:true},/修过也得复核/]])assert.match(text('c2am_0',flags),expect)
 assert.match(text('c2d2_n10')+text('c2d2_n17')+text('c2n5_r3')+text('c2am_7'),/细线/)
 assert.match(text('c2am_9'),/周老师.*年轻人讲/)
-console.log(`PASS: ${changes.length} raw prose changes; all node fields/choices/media, non-story exports and ${states.length} runtime state combinations preserve interaction.`)
+console.log(`PASS historical prose round (validated pacing/social deltas projected out): ${changes.length} raw prose changes; all node fields/choices/media, non-story exports and ${states.length} runtime state combinations preserve interaction.`)
 if(process.env.STORY_DIFF==='1')console.log(JSON.stringify({baseline,changes,variants:[...variants.values()]},null,2))

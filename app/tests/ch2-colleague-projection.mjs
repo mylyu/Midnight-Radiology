@@ -5,9 +5,11 @@ import assert from 'node:assert/strict'
 import {readFileSync} from 'node:fs'
 import {execFileSync} from 'node:child_process'
 import ts from 'typescript'
+import { beforePacingSource, beforePacingPatientUrl } from './ch2-pacing-projection.mjs'
 const root = new URL('../../', import.meta.url)
 const ledger = JSON.parse(readFileSync(new URL('docs/ch2-colleague-source-deltas.json', root), 'utf8'))
 export function beforeSocialSource(path, source) {
+  source = beforePacingSource(path, source)
   const rule = ledger.files.find(f => f.path === path)
   if (!rule) return source
   const lines = source.replaceAll('\r\n', '\n').trimEnd().split('\n')
@@ -21,6 +23,6 @@ export function beforeSocialSource(path, source) {
   return restored
 }
 const source = beforeSocialSource('app/src/game/ch2.ts', readFileSync(new URL('app/src/game/ch2.ts', root), 'utf8'))
-  .replace("'./ch2-patients.ts'", JSON.stringify(new URL('../src/game/ch2-patients.ts', import.meta.url).href))
+  .replace("'./ch2-patients.ts'", JSON.stringify(beforePacingPatientUrl))
 const js = ts.transpileModule(source, {compilerOptions: {module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022}}).outputText
 export const beforeSocial = await import('data:text/javascript;base64,' + Buffer.from(js).toString('base64'))

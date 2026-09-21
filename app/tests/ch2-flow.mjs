@@ -1,10 +1,13 @@
 import { createRequire } from 'node:module'
+import { mkdirSync, writeFileSync } from 'node:fs'
 import assert from 'node:assert/strict'
-import { CH2_SHIFTS } from '../src/game/ch2.ts'
+import { CH2_SHIFTS, ch2StepForState, QUIZ2 } from '../src/game/ch2.ts'
 const require = createRequire(import.meta.url)
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright')
 const browser = await chromium.launch({ headless: true, ...(process.env.EDGE_TEST === '1' ? {channel:'msedge'} : process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : {}) })
 const errors = []
+const fullLog = []
+const output = process.env.FLOW_OUTPUT || '../../ch2-pacing-review-walk-20260921'
 const url = process.env.GAME_URL || 'http://127.0.0.1:8798/'
 const current = page => page.evaluate(() => JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).dlc.ch2.stepId)
 async function open(shift, stepId, mobile = false, rejectVoice = false) {
@@ -100,14 +103,56 @@ try {
     await context.close()
   }
   if (process.env.FULL_WALK === '1') {
+    mkdirSync(output, { recursive: true })
     const { context, page } = await open('c2n1', 'c2n1_0')
-    let visited = 0
-    while (visited++ < 350) {
-      const progress = await page.evaluate(() => JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).dlc.ch2)
-      if (progress.shift === 'c2am') break
+    let visited = 0, questionsAnswered = 0
+    const settlements = new Set()
+    while (visited++ < 600) {
+      const state = await page.evaluate(() => JSON.parse(localStorage.getItem('midnight-radiology-save-v1')))
+      const progress = state.dlc.ch2
+      if (progress.done) {
+        await page.screenshot({path:`${output}/flow-complete.png`})
+        break
+      }
+      if (progress.phase === 'settle') {
+        await page.locator('[data-ch2-settlement]').waitFor()
+        settlements.add(progress.shift)
+        fullLog.push({kind:'settlement',shift:progress.shift,step:progress.stepId,gold:state.gold})
+        await page.reload()
+        await page.locator('[data-ch2-settlement]').waitFor()
+        const resumed = await page.evaluate(() => JSON.parse(localStorage.getItem('midnight-radiology-save-v1')))
+        assert.equal(resumed.dlc.ch2.shift,progress.shift)
+        assert.equal(resumed.dlc.ch2.stepId,progress.stepId)
+        assert.equal(resumed.gold,state.gold)
+        await page.getByRole('button',{name:/^进入：/}).click()
+        await page.waitForFunction(shift=>JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).dlc.ch2.shift!==shift,progress.shift)
+        continue
+      }
+      if (progress.phase === 'quiz') {
+        await page.locator('[data-ch2-quiz]').waitFor()
+        const quiz = progress.quiz
+        if (quiz.completed) {
+          fullLog.push({kind:'grade',grade:quiz.grade,gold:state.gold})
+          await page.screenshot({path:`${output}/flow-quiz-grade.png`})
+          await page.reload();await page.locator('[data-ch2-quiz]').waitFor()
+          assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).gold),state.gold)
+          await page.getByRole('button',{name:'回到晨会 →',exact:true}).click()
+          await page.locator('[data-ch2-step="c2am_3"]').waitFor()
+        } else {
+          const row = quiz.questions[quiz.index], question = QUIZ2[row.question]
+          fullLog.push({kind:'quiz',index:quiz.index+1,question:question.q,answer:question.options[question.answer]})
+          await page.locator('[data-ch2-quiz]').getByRole('button',{name:question.options[question.answer],exact:true}).click()
+          questionsAnswered++
+          await page.getByRole('button',{name:quiz.index===4?'查看成绩 →':'下一题 →',exact:true}).click()
+          await page.waitForFunction(index=>{const q=JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).dlc.ch2.quiz;return q.completed||q.index!==index},quiz.index)
+        }
+        continue
+      }
       const shift = CH2_SHIFTS.find(s => s.id === progress.shift)
-      const step = shift.steps[progress.stepId]
+      const rawStep = shift.steps[progress.stepId]
+      const step = ch2StepForState(progress.stepId,rawStep,state)
       assert(step, progress.stepId)
+      fullLog.push({kind:'story',step:progress.stepId,text:step.text,shift:progress.shift})
       if (step.windowTask) {
         // A click must reveal even task text, without skipping the step.
         await page.locator('.dialog-box > p').click()
@@ -127,24 +172,40 @@ try {
       } else if (step.end) {
         // A click must reveal even end text, without skipping settlement.
         await page.locator('.dialog-box > p').click()
-        await page.getByRole('button', { name: /本班结束 · 结算/ }).click()
-        await page.getByRole('button', { name: /^进入：/ }).click()
+        await page.getByRole('button', { name: /本班结束 · 结算|第二章 · 完 —— 结算/ }).click()
       } else {
         // Original (restored) UI: the ▼ appears once the text is done; clicking the
         // dialogue then advances exactly one step.
+        const expected=(step.text??'').replaceAll('**','').replaceAll('行动力⚡×3',`行动力⚡×${state.ap}`)
+        if(await page.locator('.dialog-box > p').textContent()!==expected)await page.locator('.dialog-box > p').click()
+        await page.waitForFunction(expected=>document.querySelector('.dialog-box > p')?.textContent===expected,expected)
         await page.locator('.dialog-box > span.animate-bounce').waitFor({ timeout: 15000 })
         await page.locator('.dialog-box > p').click()
       }
       await page.waitForFunction(before => {
         const now = JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).dlc.ch2
-        return now.stepId !== before.stepId || now.shift !== before.shift
+        return now.stepId !== before.stepId || now.shift !== before.shift || now.phase !== before.phase || now.done
       }, progress, { timeout: 5000 })
       if (visited % 30 === 0) console.log('Continuous walk', visited, await current(page))
     }
-    assert(visited < 350, 'Story loop did not reach morning meeting')
-    console.log('PASS: continuous five-shift walk, nodes:', visited)
+    assert(visited < 600, 'Story loop did not reach actual completion')
+    const final = await page.evaluate(()=>JSON.parse(localStorage.getItem('midnight-radiology-save-v1')))
+    assert.equal(final.dlc.ch2.done,true)
+    assert.equal(final.dlc.ch2.phase,'done')
+    assert.equal(settlements.size,5)
+    assert.equal(questionsAnswered,5)
+    assert.equal(final.dlc.ch2.quiz.grade,'S')
+    assert.equal(final.flags.quiz2_grade,'S')
+    fullLog.push({kind:'summary',iterations:visited,storyNodes:fullLog.filter(row=>row.kind==='story').length,settlements:[...settlements],questionsAnswered,done:true})
+    console.log('PASS: continuous five-shift walk + 5 saved settlements + all 5 exam questions + entire ending, iterations:', visited)
     await context.close()
   }
   assert.deepEqual(errors, [])
   console.log('PASS: rapid-choice taps, desktop/mobile cabinet flow, book close and reload, patient portrait/voice before doctor, clean wrist UI, new child follow-up image.')
-} finally { await browser.close() }
+} finally {
+  if(process.env.FULL_WALK === '1') {
+    mkdirSync(output,{recursive:true})
+    writeFileSync(`${output}/flow-transcript.json`,JSON.stringify(fullLog,null,2))
+  }
+  await browser.close()
+}

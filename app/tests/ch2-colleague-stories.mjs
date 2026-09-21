@@ -1,10 +1,11 @@
-// Live-round scope, routing, save migration and social-reward regression.
-// Older frozen-round tests use the explicit inverse ledger separately.
+// Historical colleague-round scope and social-reward regression. The approved
+// pacing round is reversed through exact verified hunks, not loaded from Git.
+// Current paths/rewards/UI have independent ch2-pacing-* live tests.
 import assert from 'node:assert/strict'
 import {execFileSync} from 'node:child_process'
 import {readFileSync} from 'node:fs'
-import * as live from '../src/game/ch2.ts'
-import {CH2_SOCIAL_STEPS, ch2SocialShifts} from '../src/game/ch2-social.ts'
+import {beforePacing as live, beforePacingSocial, beforePacingSource} from './ch2-pacing-projection.mjs'
+const {CH2_SOCIAL_STEPS, ch2SocialShifts} = beforePacingSocial
 import {CH2_DEFERRED_STEPS, originalCh2Step, restartCh2} from '../src/game/ch2-exploration.ts'
 import {applyEffect, condOk, freshState} from '../src/game/store.ts'
 import {beforeSocial as old} from './ch2-colleague-projection.mjs'
@@ -34,9 +35,21 @@ for (const [id, was] of Object.entries(oldSteps)) {
 }
 for (const path of ['app/src/App.tsx','app/src/game/data.ts','app/src/game/dlc.ts','app/src/game/types.ts','app/src/game/store.ts','app/src/game/ch2-patients.ts','app/src/index.css','深夜影像科/全书剧情总线.md']) {
   const normalize = s => s.replaceAll('\r\n','\n')
-  assert.equal(normalize(readFileSync(new URL(path,root),'utf8')), normalize(execFileSync('git',['show','4f70852:'+path],{encoding:'utf8',maxBuffer:4e6})), path + ': outside this round')
+  assert.equal(normalize(beforePacingSource(path, readFileSync(new URL(path,root),'utf8'))), normalize(execFileSync('git',['show','4f70852:'+path],{encoding:'utf8',maxBuffer:4e6})), path + ': outside historical colleague round')
 }
-assert.equal(execFileSync('git',['diff','--name-only','4f70852','--','app/public/audio','app/public/assets'],{encoding:'utf8'}).trim(),'','No media rewritten')
+assert.equal(execFileSync('git',['diff','--name-only','--diff-filter=DMRTUXB','4f70852','--','app/public/audio','app/public/assets'],{encoding:'utf8',cwd:root}).trim(),'','No existing media rewritten')
+// Later author-approved media may be additive only, with exact named files.
+const allowedLaterMedia = new Set([
+  'app/public/assets/ch2_bg_breakroom_day.png', 'app/public/assets/ch2_ct_aortic_wide.png',
+  'app/public/assets/ch2_ct_coronary_slices.png', 'app/public/assets/ch2_patient_fall_bandaged_bed.png',
+  'app/public/assets/ch2_remote_rack.png', 'app/public/assets/ch2_remote_rack_offline.png',
+  'app/public/audio/vox_ch2_natural_kai_light_v3.mp3',
+])
+const newMedia = [
+  execFileSync('git',['diff','--name-only','--diff-filter=A','4f70852','--','app/public/audio','app/public/assets'],{encoding:'utf8',cwd:root}),
+  execFileSync('git',['ls-files','--others','--exclude-standard','--','app/public/audio','app/public/assets'],{encoding:'utf8',cwd:root}),
+].join('\n').trim().split(/\r?\n/).filter(Boolean)
+for (const path of newMedia) assert(allowedLaterMedia.has(path), 'Undocumented media addition: ' + path)
 assert.deepEqual(live.CH2_BOOK_PAGES,old.CH2_BOOK_PAGES)
 assert.deepEqual(live.QUIZ2.filter((_,i)=>i!==21),old.QUIZ2.filter((_,i)=>i!==21))
 assert.equal(live.QUIZ2.length,24)
@@ -138,4 +151,4 @@ for(let seed=1;seed<=100;seed++){
 }
 walk(1,true)
 assert.equal(outcomes.size,3)
-console.log('PASS: live scope, unchanged UI/media/Ch1/bus, 32 migrations, no removed story remnants, 128 badge/gating states, replay/history, 100 deterministic five-shift route pairs + chat-free mainline.')
+console.log('PASS historical colleague round (validated pacing deltas projected out): scope/UI/Ch1/bus, 32 migrations, 128 badge/gating states, replay/history, 100 deterministic five-shift route pairs; live preexisting media untouched and additive media allowlist enforced.')

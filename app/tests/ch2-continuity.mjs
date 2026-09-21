@@ -61,7 +61,7 @@ for (const id of ['c2n1_c1', 'c2n1_c4b', 'c2n3_k1', 'c2n5_b1', 'c2n5_g1']) asser
 const acquisition = [
  ['c2n1_p_scan','c2n1_p3'], ['c2d2_lung_scan','c2d2_4'], ['c2d2_gut_scan','c2d2_10'],
  ['c2d2_trauma_scan','c2d2_t1'], ['c2d2_wrist_scan','c2d2_wrist_result'],
- ['c2n3_repeat_scan','c2n3_m8'], ['c2n3_cta_scan','c2n3_m10'], ['c2n3_coronary_scan','c2n3_h4'],
+ ['c2n3_repeat_scan','c2n3_m8'], ['c2n3_cta_scan','c2n3_m10'], ['c2n3_coronary_scan','c2n3_coronary_slices'],
  ['c2n3_mystery_scan','c2n3_x8'], ['c2d4_aorta_scan','c2d4_t1'], ['c2d4_metal_scan','c2d4_12a'],
  ['c2n5_child_scan','c2n5_m17'],
 ]
@@ -76,6 +76,17 @@ for (const [scan, result] of acquisition) {
  const parents = Object.entries(steps).filter(([, s]) => s.next === result || s.choices?.some(c => c.next === result)).map(([id]) => id)
  assert.deepEqual(parents, [scan], result + ' has an acquisition bypass')
 }
+// The added coronary display sequence stays downstream of that one acquisition.
+const coronaryDisplay = ['c2n3_coronary_slices', 'c2n3_coronary_where', 'c2n3_coronary_volume', 'c2n3_coronary_clear', 'c2n3_h4']
+for (let i = 0; i < coronaryDisplay.length; i++) {
+ const id = coronaryDisplay[i]
+ assert(steps[id].image, id)
+ assert.notEqual(steps[id].sfx, 'xray', id + ': reconstruction cannot add exposure')
+ if (i + 1 < coronaryDisplay.length) assert.equal(steps[id].next, coronaryDisplay[i + 1])
+}
+assert.match(steps.c2n3_coronary_volume.text, /同一次采集/)
+assert.equal(steps.c2n5_m8.imageLabel, '外院旧片｜3天前')
+assert.equal(steps.c2n5_m17.imageLabel, '本院复查｜本次')
 for (const step of Object.values(steps)) {
  for (const asset of [step.image, step.bg, step.windowTask?.image].filter(Boolean)) assert(existsSync(new URL('../public/assets/' + asset + '.png', import.meta.url)), 'Missing image ' + asset)
 }
