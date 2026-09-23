@@ -637,11 +637,11 @@ const C2D2: Record<string, Step> = {
   c2d2_q1a: { speaker: 'sys', text: '大爷哼了一声，把投诉电话挂了。术后加急查完，病房护士接回患者和图像。小唐看了眼门口，救护车还没到。', queue: C2D2_QUEUE3.filter(patient => !patient.name.startsWith('住院加急')), next: 'c2d2_gap_phone' },
   c2d2_q1b: { speaker: 'sys', text: "大爷刚进机房，病房护士的电话就追来了：「加急那位还在电梯口等呢，到底送哪儿？」小唐隔着玻璃冲你招手。等大爷查完，你赶紧腾出机房接急诊。", queue: C2D2_QUEUE3.filter(patient => !patient.name.startsWith('候诊大爷')), next: 'c2d2_gap_phone' },
   c2d2_q1c: { speaker: 'sys', text: "小唐把你拉到一边：「车祸伤快到了，不能让他排普通号。」你腾出机房，大爷也把椅子往旁边挪：「早说啊，路给你们让出来。」", queue: C2D2_QUEUE3, next: 'c2d2_gap_phone' },
-  // —— 第三例：车祸伤 ——
-  c2d2_t0: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: "车祸伤到了。救护车上还没核出姓名，急诊先建了临时身份，检查和报告跟着同一个号走。小唐递单时低声说：「这回不用找谁点头了。」团队确认了头颅及腹部检查方案。", queue: C2D2_QUEUE4, next: 'c2d2_trauma_scan' },
-  c2d2_trauma_scan: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: "医护完成准备，先后按头颅和腹部方案采集。数据送往工作站重建，抢救室的电话一直没有挂。", next: 'c2d2_t1' },
-  c2d2_t1: { speaker: 'sys', text: "联合扫描完成，图像传到工作站。值班医师拉过椅子逐层查看，电话另一头，抢救室还在等结果。", image: 'ct_abdomen_trauma', queue: C2D2_QUEUE4.map(patient => patient.name === '车祸伤患者' ? { ...patient, note: '图像已传出' } : patient), next: 'c2d2_t2' },
-  c2d2_t2: { speaker: 'sys', text: '抢救室来电话致谢：「多发伤十分钟出全图，这机器真是买值了。」候诊区的大爷也朝你竖了竖大拇指——投诉的事，再没人提。', effect: { heart: 1, gold: 60 }, queue: C2D2_QUEUE4.filter(patient => patient.name !== '车祸伤患者'), next: 'c2d2_gap_pen' },
+  // —— 第三例：车祸腰胯撞伤 ——
+  c2d2_t0: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: "车祸伤到了，腰胯撞在车门上，一挪就喊疼：「慢点，慢点……腰不敢动。」姓名还没核准，急诊先建了临时身份，检查和报告跟着同一个号走。小唐递单时低声说：「这回不用找谁点头了。」医师看过后，申请了**腰椎和骨盆CT**。", queue: C2D2_QUEUE4, next: 'c2d2_trauma_scan' },
+  c2d2_trauma_scan: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: "医护安置好病人，检查床缓缓移动。按确认的腰椎与骨盆范围采集，工作站准备骨窗和不同方向的重组图。", next: 'c2d2_t1' },
+  c2d2_t1: { speaker: 'sys', text: "值班医师把椅子拉近：「横着一层层看，竖起来也得看。别只留这两张。」你把**同次数据**的骨窗、腰椎矢状位和骨盆冠状位一并调出，完整序列传给急诊。", image: 'ch2_ct_lumbar_pelvis_v1', imageLabel: '腰椎矢状位｜骨盆冠状位 · 同次数据重组', queue: C2D2_QUEUE4.map(patient => patient.name === '车祸伤患者' ? { ...patient, note: '图像已传出' } : patient), next: 'c2d2_t2' },
+  c2d2_t2: { speaker: 'sys', text: '急诊来电话：「腰椎和骨盆的图都收到了，医生正看着呢。」候诊区的大爷把刚才拍桌子的手收回来，朝你比了个大拇指：「这回算你忙正事。」', effect: { heart: 1, gold: 60 }, queue: C2D2_QUEUE4.filter(patient => patient.name !== '车祸伤患者'), next: 'c2d2_gap_pen' },
   c2d2_11: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: "手腕摔伤的学生终于叫到了号。他用左手收起没写完的作业：「明天还得交，能给我证明不是偷懒吗？」普通片仍有疑点，医师申请了腕部CT；你先把上一位的检查关掉，确认腕部协议。", next: 'c2d2_wrist_scan' },
   c2d2_wrist_scan: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: "学生把伤腕放稳。检查床移动到采集位置，工作站开始接收腕部数据。", next: 'c2d2_wrist_result' },
   c2d2_wrist_result: { speaker: 'zhou', sprite: 'char_zhou', text: '图到了。先试骨窗，别把骨头调成一团白。', image: 'ct_wrist_simulated', next: 'c2d2_w2' },

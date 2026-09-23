@@ -8,7 +8,7 @@ export interface Ch2ScanConfig {
 }
 
 function acquisition(id: string, title: string, detail: string): Ch2ScanConfig {
-  return { id, mode: 'acquire', title, detail, durationMs: 5000 }
+  return { id, mode: 'acquire', title, detail, durationMs: 3000 }
 }
 
 function reconstruction(id: string, title: string): Ch2ScanConfig {
@@ -21,7 +21,7 @@ export const CH2_SCANS: Record<string, Ch2ScanConfig> = {
   c2n1_p_scan: acquisition('c2n1_p_scan', '泌尿系平扫', '小伙子躺稳，按确认的范围采集数据。'),
   c2d2_lung_scan: acquisition('c2d2_lung_scan', '胸部平扫', '大爷按提示屏气，检查床缓缓通过机架。'),
   c2d2_gut_scan: acquisition('c2d2_gut_scan', '腹部扫描', '腹痛病人准备好，按确认的腹部方案采集。'),
-  c2d2_trauma_scan: acquisition('c2d2_trauma_scan', '多部位急诊扫描', '团队依次按头颅和腹部方案采集，各序列分别保存。'),
+  c2d2_trauma_scan: acquisition('c2d2_trauma_scan', '腰椎与骨盆扫描', '按医师确认的腰椎与骨盆范围采集，工作站准备骨窗与多平面重组。'),
   c2d2_wrist_scan: acquisition('c2d2_wrist_scan', '腕部扫描', '伤腕放稳，采集腕部数据。'),
   c2n3_m5: acquisition('c2n3_m5', '卒中急诊 · 头颅平扫', '头颅定位完成，机架开始采集。'),
   c2n3_repeat_scan: acquisition('c2n3_repeat_scan', '受影响范围补扫', '固定垫调整好，按医师确认的必要范围补充采集。'),
@@ -42,9 +42,11 @@ export const CH2_SCAN_TEXT: Record<string, string> = Object.fromEntries(
 )
 
 export const CH2_SCAN_AUDIO = {
-  motor: 'ch2_ct_motor_loop_v1',
-  ready: 'ch2_ct_reconstruction_softclick_v1',
+  acquisition: 'ch2_ct_real_scan_20260924',
 } as const
+
+/** Dedicated artwork; none of the original chapter assets is replaced. */
+export const CH2_SCAN_ILLUSTRATION = 'ch2_ct_scan_room_pixel_v2'
 
 export interface Ch2ScanFrame {
   elapsedMs: number

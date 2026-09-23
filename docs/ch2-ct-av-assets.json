@@ -1,0 +1,34 @@
+{
+  "date": "2026-09-24",
+  "baseline": "42d18ce",
+  "branch": "codex/ch2-ct-av-polish",
+  "execution": "built-in image_gen; no CLI/API fallback; no explicit model or random seed",
+  "images": [
+    {
+      "output": "app/public/assets/ch2_ct_scan_room_pixel_v2.png",
+      "dimensions": [1672, 941],
+      "sha256": "3db8d8861c9952ef96b39b48df3c7777fca4421e085da93ccb9b3b25af0b44e9",
+      "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-4ebf9bc3-2d60-41f7-8f47-6a3e046150e5.png",
+      "reference": "app/public/assets/bg_ctcontrol.png",
+      "referenceRole": "style-only; not edited in place",
+      "prompt": "Use case: stylized-concept. Asset type: a landscape 16:9 pixel-art CT scan animation backdrop for Midnight Radiology, NOT a diagram or vector icon.\nImage 1 is STYLE REFERENCE ONLY: emulate its detailed chunky pixel painting, dark outlines and blue-gray hospital palette. Create a new view INSIDE the CT scanner room, not the control room, much closer to the equipment. A physically recognizable enclosed modern CT gantry stands in the right half, off-white housing with a real circular patient bore, small realistic control buttons and indicator lights, floor pedestal and lateral thickness. A long narrow motorized patient table extends from the lower-left foreground into that bore. Generic fully covered adult patient lies supine under a blue-gray blanket, head toward the bore, no facial closeup, no staff. Sensible clinical proportions, no MRI coil or magnet tunnels, no exposed high-voltage parts. Room wall, cable conduits, ceiling light, floor shadows and cabinet create concrete hospital context without clutter.\nThree-quarter side-front view, all of scanner and bed visible, scanner/bed occupy center 80% so readable at 350px wide. Medium-dark but equipment brightly legible, cold-blue ambient and small warm light accents. Visible square pixel clusters, shaded textured machine housing, not smooth vector blocks, not abstract polygons, not photorealistic.\nNo words, logos, watermark, labels, beam rays, lasers, glowing radiation, arrows, UI, border, montage or multiple panels. This is one coherent high-resolution pixel game scene. Output landscape 1536x864 or 16:9.",
+      "review": "Pixel room with enclosed CT gantry and patient bed; replaces abstract block illustration. Subtle camera/status animation only, no simulated visible radiation beam."
+    },
+    {
+      "output": "app/public/assets/ch2_ct_lumbar_pelvis_v1.png",
+      "dimensions": [1254, 1254],
+      "sha256": "feb30785667c1c6f5743c2256f0405c61e25c93bca9456595e09f3619ae95ae0",
+      "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-5bd0720f-e83a-402b-b0dc-f5edce3fddb3.png",
+      "initialSource": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-08b2bd3d-7aff-4e48-870a-463777526ecf.png",
+      "prompt": "Use case: scientific-educational. Asset type: CT teaching atlas for BME game, a SINGLE square PNG with TWO evenly sized vertical image panels on black, separated by a narrow black gutter.\nLEFT PANEL: plausible adult lumbar spine sagittal CT multiplanar reconstruction in BONE WINDOW, include T12, five lumbar vertebral bodies L1 through L5 and upper sacrum S1-S2. Five distinct lumbar bodies, normal overall lordotic curve, visible posterior elements/spinal canal, intervertebral discs, sharp cortical bone and trabecular texture; soft tissues muted gray. Sufficient field of view to see whole lumbar region, not an isolated vertebra.\nRIGHT PANEL: adult pelvis coronal CT multiplanar reconstruction in BONE WINDOW, wide field of view with bilateral iliac wings, sacrum, both sacroiliac joints, acetabular roofs, both hip joints and proximal femora. Bilaterally plausible anatomy and scale, not a pelvis X-ray projection or transparent skeleton; actual cross-sectional grayscale CT appearance, soft tissue contour visible.\nThese are TWO DIFFERENT RECONSTRUCTION PLANES from the same waist/pelvis examination, separated into panels, never mixed into one anatomical slice. Depict no conspicuous displaced fracture, major deformity, blood, tumors or arrows. The game teaches reviewing COMPLETE bone-window axial and reformatted sequences, not declaring a diagnosis from these two pictures, so do not invent a highlighted lesion. Realistic CT grain and bone detail, high contrast bone window, grayscale only, black outside body. No patient identifiers, text, numbers, R/L markers, arrows, circles, scale bars, colored overlays, hospital logos or watermarks. Not pixel-style characters; this is a plausible radiological teaching image, square 1024x1024.",
+      "editPrompt": "Use case: precise-object-edit, scientific-educational.\nEdit target Image 1 is a two-panel CT teaching atlas. Keep the RIGHT pelvic coronal panel and the two-panel layout, grayscale bone window texture, contrast and black background unchanged.\nChange ONLY the LEFT sagittal lumbar panel: it currently has too many similar lumbar vertebral bodies and a stray tiny \"2\" at its top. Rebuild left spinal anatomy to show exactly FIVE lumbar vertebral bodies L1,L2,L3,L4,L5, with ONLY a small portion of T12 above and continuous sacrum S1-S2 below. Five unfused large rectangular lumbar bodies separated by five discs including L5/S1; the sacrum should be a fused tapering bone, not further repeated floating lumbar blocks. Natural lordosis, realistic posterior elements and spinal canal. Frame the five lumbar bodies large and legible, whole region T12-S2 fits within the left panel. Remove every numeral, letter and text mark. No fracture arrows, no labels, no extra vertebrae or repeated anatomy. Preserve the right panel exactly. This is a plausible CT multiplanar reconstruction in bone window, not an X-ray projection.",
+      "rejectedInitial": "Initial draft had repeated vertebral bodies and a stray numeral. Not copied to the project.",
+      "review": "Final left sagittal view includes lower thoracic/lumbar region and fused sacrum; right coronal pelvis. No embedded labels or marked fracture. Used for comparing bone windows/reformat planes and handing over full data, not grading a fracture location."
+    }
+  ],
+  "limitations": "Generated teaching illustrations, not clinical DICOM or validated HU data, no independent clinician review. Exact generated files copied unchanged; old assets retained. No new AI-disclaimer text added in game.",
+  "audio": {
+    "record": "docs/ch2-real-ct-audio.json",
+    "review": "Supplied 81–84s source excerpt. Source frame at 81s inspected. ASR of delivered3s returned [] (no transcript); automatic checks do not replace listening and this runtime cannot hear audio. Source recording reuse license not independently verified; local only."
+  }
+}

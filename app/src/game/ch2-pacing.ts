@@ -55,7 +55,7 @@ export const CH2_PACING_STEPS: Record<string, Record<string, Step>> = {
     ] },
     c2d2_gap_phone_a: { speaker: 'me', sprite: 'char_tang', text: '好了。你再转两圈，咱们就得连人带电话一起交班。', next: 'c2d2_t0' },
     c2d2_gap_phone_b: { speaker: 'tang', sprite: 'char_tang', text: '对，就放这儿。说了半年换无绳的，连根长点的线都没换。', next: 'c2d2_t0' },
-    c2d2_gap_pen: { speaker: 'sys', text: '多发伤患者交回抢救团队。机房整理的空当，主任伸手去胸前口袋摸了两遍。', next: 'c2d2_gap_pen_q' },
+    c2d2_gap_pen: { speaker: 'sys', text: '腰胯撞伤的患者由急诊团队接回。机房整理的空当，主任伸手去胸前口袋摸了两遍。', next: 'c2d2_gap_pen_q' },
     c2d2_gap_pen_q: { speaker: 'director', sprite: 'char_director', text: '谁看见我的笔了？刚才还在。', choices: [
       { text: '把自己这支递过去', next: 'c2d2_gap_pen_a' },
       { text: '「您耳朵上那支，是不是？」', next: 'c2d2_gap_pen_b' },

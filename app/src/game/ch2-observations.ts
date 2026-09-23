@@ -93,13 +93,14 @@ export const CH2_OBSERVATIONS: Record<string, Ch2Observation> = {
     ],
   },
   c2d2_t1: {
-    id: 'trauma-sequence-v1', caseId: 'trauma', kind: 'image', image: 'ct_abdomen_trauma',
-    assetVersion: 'b37f4ad7f428f754a436908731dc5ce0ad2d680fc2c4e5edd56dfe2fea1f7cab',
-    prompt: '第一幅腹部图到了，抢救室的电话还没挂。你准备怎么把检查交过去？', speaker: 'duty', rewardEligible: true,
+    id: 'trauma-sequence-v1', caseId: 'trauma', kind: 'image', image: 'ch2_ct_lumbar_pelvis_v1',
+    assetVersion: 'feb30785667c1c6f5743c2256f0405c61e25c93bca9456595e09f3619ae95ae0',
+    imageLabel: '腰椎矢状位｜骨盆冠状位 · 同次数据重组',
+    prompt: '腰椎和骨盆的图出来了，急诊还等着。眼前这两张够不够，接下来怎么交过去？', speaker: 'duty', rewardEligible: true,
     choices: [
-      { id: 'single', text: '先凭这张图说一声，应该问题不大', feedback: '这张代替不了整套检查。头颅和腹部序列都调出来，我看完再接电话。' },
-      { id: 'complete', text: '把头颅、腹部完整序列调齐，交给医师', feedback: '就这样，别只传一张截图。完整序列给我，电话我来接。', correct: true },
-      ask('先核对头颅和腹部两套序列都齐了。留住完整数据，结果由我交接。'),
+      { id: 'single', text: '就传这两张，骨头应该看得差不多了', feedback: '两张只是几个切面，前后还有呢。把完整序列调出来，我得连着看。' },
+      { id: 'complete', text: '调齐骨窗和不同方向的重组，交完整序列', feedback: '嗯，换个方向看，用的还是这次采到的数据。原始薄层也留着，我接着看。', correct: true },
+      ask('先在工作站上换骨窗、换观察方向，不是让病人换个姿势再照一次。整套图留住，我来核对。'),
     ],
   },
   c2n3_m6: {

@@ -6,12 +6,14 @@ import { readFileSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import { resolve } from 'node:path'
+import { beforeLoopReviewSource } from './ch2-loop-review-projection.mjs'
 
 const root = new URL('../../', import.meta.url)
 const ledger = JSON.parse(readFileSync(new URL('docs/ch2-loop-source-deltas.json', root), 'utf8'))
 const normalize = source => source.replaceAll('\r\n', '\n').trimEnd() + '\n'
 
 export function beforeLoopSource(path, source) {
+  source = beforeLoopReviewSource(path, source)
   const file = ledger.files.find(row => row.path === path)
   if (!file) return source
   const lines = normalize(source).trimEnd().split('\n')

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
-import { CH2_SCAN_AUDIO, ch2ScanFrame } from '../game/ch2-scans'
+import { CH2_SCAN_AUDIO, CH2_SCAN_ILLUSTRATION, ch2ScanFrame } from '../game/ch2-scans'
 import type { Ch2ScanConfig } from '../game/ch2-scans'
 import './Ch2ScanOverlay.css'
 
@@ -19,6 +19,7 @@ const soundUrl = (name: string) => `${import.meta.env.BASE_URL}audio/${name}.mp3
 export function Ch2ScanOverlay({ config, startedAt, onDone, onSkip, muted = false }: Ch2ScanOverlayProps) {
   const [frame, setFrame] = useState(() => ch2ScanFrame(config, startedAt))
   const [quiet, setQuiet] = useState(muted)
+  const [imageFailed, setImageFailed] = useState(false)
   const completed = useRef(false)
   const panelRef = useRef<HTMLElement>(null)
   const skipRef = useRef<HTMLButtonElement>(null)
@@ -59,39 +60,41 @@ export function Ch2ScanOverlay({ config, startedAt, onDone, onSkip, muted = fals
     }
   }, [config, startedAt, finish])
 
-  const motorRunning = config.mode === 'acquire' && (frame.phase === 'position' || frame.phase === 'acquire')
+  const acquisitionActive = config.mode === 'acquire' && !frame.complete
   useEffect(() => {
-    if (!audioAllowed || !motorRunning || completed.current) return
-    const motor = new Audio(soundUrl(CH2_SCAN_AUDIO.motor))
-    motor.loop = true
-    motor.volume = 0.24
+    if (!audioAllowed || !acquisitionActive || completed.current) return
+    const recording = new Audio(soundUrl(CH2_SCAN_AUDIO.acquisition))
+    recording.loop = false
+    recording.volume = 0.24
+    // The supplied three-second recording plays once, never as an endless motor loop.
+    // On refresh/unmute/background return, resume at visual elapsed time instead of restarting it.
+    const seekToVisualTime = () => {
+      const elapsed = ch2ScanFrame(config, startedAt).elapsedMs / 1000
+      try { recording.currentTime = Math.min(elapsed, config.durationMs / 1000) } catch { /* metadata not yet ready */ }
+    }
+    const play = () => {
+      if (document.hidden || completed.current || ch2ScanFrame(config, startedAt).complete) return
+      seekToVisualTime()
+      try { void recording.play().catch(() => undefined) } catch { /* browser audio unavailable */ }
+    }
+    recording.addEventListener('loadedmetadata', seekToVisualTime)
     // Sound is optional. Neither a rejected play() nor a stalled download gates progress.
-    try { void motor.play().catch(() => undefined) } catch { /* browser audio unavailable */ }
+    play()
     const onVisibility = () => {
-      if (document.hidden) motor.pause()
-      else if (!completed.current) {
-        try { void motor.play().catch(() => undefined) } catch { /* no sound is safe */ }
-      }
+      if (document.hidden) recording.pause()
+      else play()
     }
     document.addEventListener('visibilitychange', onVisibility)
     return () => {
-      motor.pause()
-      motor.removeAttribute('src')
-      motor.load()
+      recording.pause()
+      recording.removeEventListener('loadedmetadata', seekToVisualTime)
+      recording.removeAttribute('src')
+      recording.load()
       document.removeEventListener('visibilitychange', onVisibility)
     }
-  }, [audioAllowed, motorRunning])
+  }, [audioAllowed, acquisitionActive, config, startedAt])
 
-  const nearingEnd = frame.progress >= 0.88 && !frame.complete
-  useEffect(() => {
-    if (!audioAllowed || !nearingEnd || document.hidden || completed.current) return
-    const ready = new Audio(soundUrl(CH2_SCAN_AUDIO.ready))
-    ready.volume = 0.2
-    try { void ready.play().catch(() => undefined) } catch { /* optional foley */ }
-    return () => { ready.pause(); ready.removeAttribute('src'); ready.load() }
-  }, [audioAllowed, nearingEnd])
-
-  const style = { '--ch2-scan-progress': frame.progress, '--ch2-table-offset': `${Math.min(1, frame.progress / 0.55) * 48}px` } as CSSProperties
+  const style = { '--ch2-scan-progress': frame.progress, '--ch2-camera-shift': `${(0.5 - frame.progress) * 2}%` } as CSSProperties
   return <div className="ch2-scan-overlay" role="dialog" aria-modal="true" aria-label={config.title}
     data-scan-id={config.id} data-scan-mode={config.mode} data-scan-phase={frame.phase}
     onPointerDown={event => event.stopPropagation()} onClick={event => event.stopPropagation()}
@@ -107,12 +110,10 @@ export function Ch2ScanOverlay({ config, startedAt, onDone, onSkip, muted = fals
     <section className="ch2-scan-panel" ref={panelRef}>
       <div className="ch2-scan-kicker">{config.mode === 'acquire' ? 'CT 控制台' : '图像工作站'}</div>
       <h2>{config.title}</h2>
-      {config.mode === 'acquire' ? <div className={`ch2-scan-device is-${frame.phase}`} aria-hidden="true">
-        <div className="ch2-scan-floor" />
-        <div className="ch2-scan-gantry"><div className="ch2-scan-bore" /><div className="ch2-scan-arc" /><div className="ch2-scan-gantry-lights" /></div>
-        <div className="ch2-scan-table-pedestal" />
-        <div className="ch2-scan-table"><div className="ch2-scan-person" /><div className="ch2-scan-tabletop" /></div>
-        <div className="ch2-scan-console"><div className="ch2-scan-console-screen">{frame.phase === 'reconstruct' ? 'RECON' : 'CT'}</div></div>
+      {config.mode === 'acquire' ? <div className={`ch2-scan-device is-${frame.phase}`}>
+        {imageFailed ? <p className="ch2-scan-image-fallback">检查进行中 · 图像正在传往工作站</p> : <img className="ch2-scan-room" src={`${import.meta.env.BASE_URL}assets/${CH2_SCAN_ILLUSTRATION}.png`}
+          alt="CT检查室中，患者躺在检查床上进入环形机架" onError={() => setImageFailed(true)} />}
+        <div className="ch2-scan-room-status" aria-hidden="true"><i />{frame.phase === 'reconstruct' ? '工作站接收数据' : frame.phase === 'position' ? '检查床就位' : '采集中'}</div>
       </div> : <div className="ch2-scan-workstation" aria-hidden="true">
         <div className="ch2-scan-slices">{[0, 1, 2, 3, 4, 5].map(value => <span key={value} style={{ animationDelay: `${value * 120}ms` }} />)}</div>
         <div className="ch2-scan-workstation-stand" />

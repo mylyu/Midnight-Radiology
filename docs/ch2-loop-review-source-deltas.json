@@ -1,0 +1,42 @@
+{
+  "baseline": "42d18ce",
+  "reason": "Post-preview author revision: replace abdomen trauma with lumbar/pelvis bone-window case; preserve all original loop hunks.",
+  "files": [
+    {
+      "path": "app/src/game/ch2-pacing.ts",
+      "edits": [
+        {
+          "afterStart": 57,
+          "before": [
+            "    c2d2_gap_pen: { speaker: 'sys', text: '多发伤患者交回抢救团队。机房整理的空当，主任伸手去胸前口袋摸了两遍。', next: 'c2d2_gap_pen_q' },"
+          ],
+          "after": [
+            "    c2d2_gap_pen: { speaker: 'sys', text: '腰胯撞伤的患者由急诊团队接回。机房整理的空当，主任伸手去胸前口袋摸了两遍。', next: 'c2d2_gap_pen_q' },"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/game/ch2.ts",
+      "edits": [
+        {
+          "afterStart": 639,
+          "before": [
+            "  // —— 第三例：车祸伤 ——",
+            "  c2d2_t0: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: \"车祸伤到了。救护车上还没核出姓名，急诊先建了临时身份，检查和报告跟着同一个号走。小唐递单时低声说：「这回不用找谁点头了。」团队确认了头颅及腹部检查方案。\", queue: C2D2_QUEUE4, next: 'c2d2_trauma_scan' },",
+            "  c2d2_trauma_scan: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: \"医护完成准备，先后按头颅和腹部方案采集。数据送往工作站重建，抢救室的电话一直没有挂。\", next: 'c2d2_t1' },",
+            "  c2d2_t1: { speaker: 'sys', text: \"联合扫描完成，图像传到工作站。值班医师拉过椅子逐层查看，电话另一头，抢救室还在等结果。\", image: 'ct_abdomen_trauma', queue: C2D2_QUEUE4.map(patient => patient.name === '车祸伤患者' ? { ...patient, note: '图像已传出' } : patient), next: 'c2d2_t2' },",
+            "  c2d2_t2: { speaker: 'sys', text: '抢救室来电话致谢：「多发伤十分钟出全图，这机器真是买值了。」候诊区的大爷也朝你竖了竖大拇指——投诉的事，再没人提。', effect: { heart: 1, gold: 60 }, queue: C2D2_QUEUE4.filter(patient => patient.name !== '车祸伤患者'), next: 'c2d2_gap_pen' },"
+          ],
+          "after": [
+            "  // —— 第三例：车祸腰胯撞伤 ——",
+            "  c2d2_t0: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: \"车祸伤到了，腰胯撞在车门上，一挪就喊疼：「慢点，慢点……腰不敢动。」姓名还没核准，急诊先建了临时身份，检查和报告跟着同一个号走。小唐递单时低声说：「这回不用找谁点头了。」医师看过后，申请了**腰椎和骨盆CT**。\", queue: C2D2_QUEUE4, next: 'c2d2_trauma_scan' },",
+            "  c2d2_trauma_scan: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: \"医护安置好病人，检查床缓缓移动。按确认的腰椎与骨盆范围采集，工作站准备骨窗和不同方向的重组图。\", next: 'c2d2_t1' },",
+            "  c2d2_t1: { speaker: 'sys', text: \"值班医师把椅子拉近：「横着一层层看，竖起来也得看。别只留这两张。」你把**同次数据**的骨窗、腰椎矢状位和骨盆冠状位一并调出，完整序列传给急诊。\", image: 'ch2_ct_lumbar_pelvis_v1', imageLabel: '腰椎矢状位｜骨盆冠状位 · 同次数据重组', queue: C2D2_QUEUE4.map(patient => patient.name === '车祸伤患者' ? { ...patient, note: '图像已传出' } : patient), next: 'c2d2_t2' },",
+            "  c2d2_t2: { speaker: 'sys', text: '急诊来电话：「腰椎和骨盆的图都收到了，医生正看着呢。」候诊区的大爷把刚才拍桌子的手收回来，朝你比了个大拇指：「这回算你忙正事。」', effect: { heart: 1, gold: 60 }, queue: C2D2_QUEUE4.filter(patient => patient.name !== '车祸伤患者'), next: 'c2d2_gap_pen' },"
+          ]
+        }
+      ]
+    }
+  ]
+}

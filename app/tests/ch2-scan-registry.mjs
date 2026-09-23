@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { readFileSync, existsSync } from 'node:fs'
 import { createHash } from 'node:crypto'
-import { CH2_SCANS, CH2_SCAN_TEXT, CH2_SCAN_AUDIO, ch2ScanFrame } from '../src/game/ch2-scans.ts'
+import { CH2_SCANS, CH2_SCAN_TEXT, CH2_SCAN_AUDIO, CH2_SCAN_ILLUSTRATION, ch2ScanFrame } from '../src/game/ch2-scans.ts'
 import { CH2_SHIFTS } from '../src/game/ch2.ts'
 
 const expectedAcquisitions = [
@@ -22,7 +22,7 @@ for (const [id, config] of Object.entries(CH2_SCANS)) {
   }
   assert.equal(config.id, id)
   assert.ok(CH2_SCAN_TEXT[id])
-  assert.equal(config.durationMs, config.mode === 'acquire' ? 5000 : 1500)
+  assert.equal(config.durationMs, config.mode === 'acquire' ? 3000 : 1500)
   assert.equal(ch2ScanFrame(config, 1000, 1000).progress, 0)
   assert.equal(ch2ScanFrame(config, 1000, 1000 + config.durationMs).complete, true)
   assert.equal(ch2ScanFrame(config, 1000, 900000).complete, true, `${id} resumes an expired scan`)
@@ -40,9 +40,30 @@ for (const record of manifest.records) {
   assert.ok(record.playbackGain <= 0.24)
 }
 for (const sound of Object.values(CH2_SCAN_AUDIO)) assert.ok(existsSync(`public/audio/${sound}.mp3`))
+assert.equal(CH2_SCAN_AUDIO.acquisition, 'ch2_ct_real_scan_20260924')
+const recorded = JSON.parse(readFileSync('../docs/ch2-real-ct-audio.json', 'utf8'))
+const recordedBytes = readFileSync(`../${recorded.output}`)
+assert.equal(recorded.output, `app/public/audio/${CH2_SCAN_AUDIO.acquisition}.mp3`)
+assert.equal(createHash('sha256').update(recordedBytes).digest('hex'), recorded.sha256)
+assert.equal(recorded.sha256, '27ce2978e81ab5a2ada579e528219814243e86fedd5da554e6cf4d8df862f633')
+assert.equal(recordedBytes.length, recorded.bytes)
+assert.deepEqual(recorded.intervalSeconds, [81, 84])
+assert.equal(recorded.processing.trimSeconds, 3)
+assert.equal(recorded.processing.pitchShift, false)
+assert.equal(recorded.processing.timeStretch, false)
+assert.equal(recorded.processing.syntheticOverlay, false)
+assert.equal(recorded.processing.sampleRate, 24000)
+assert.equal(recorded.processing.channels, 1)
+assert.equal(recorded.playbackGain, 0.24)
+assert.ok(existsSync(`public/assets/${CH2_SCAN_ILLUSTRATION}.png`))
+assert.match(CH2_SCANS.c2d2_trauma_scan.title, /腰椎与骨盆/)
 const component = readFileSync('src/components/Ch2ScanOverlay.tsx', 'utf8')
 assert.ok(!component.includes('onended'))
 assert.ok(component.includes('visibilitychange'))
 assert.ok(component.includes('window.clearInterval(timer)'))
 assert.ok(component.includes('event.stopPropagation()'))
-console.log('PASS 15 acquisition / 2 reconstruction hooks, wall-clock recovery, separate low-volume foley hashes, cleanup guards.')
+assert.ok(component.includes('recording.loop = false'))
+assert.ok(component.includes(`recording.volume = ${recorded.playbackGain}`))
+assert.ok(!component.includes('CH2_SCAN_AUDIO.ready'))
+assert.ok(!component.includes('ch2-scan-gantry'))
+console.log('PASS 15 three-second acquisition / 2 reconstruction hooks, dedicated pixel scene, real 81-84s recording exact hash/provenance, one-shot sound, wall-clock recovery, retired foley hashes preserved, cleanup guards.')

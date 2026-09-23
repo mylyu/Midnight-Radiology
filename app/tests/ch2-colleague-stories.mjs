@@ -56,6 +56,9 @@ const allowedLaterMedia = new Set([
   'app/public/assets/ct_ch2_stroke_cta_v2.png',
   'app/public/audio/ch2_ct_motor_loop_v1.mp3',
   'app/public/audio/ch2_ct_reconstruction_softclick_v1.mp3',
+  'app/public/assets/ch2_ct_lumbar_pelvis_v1.png', // User-requested waist/pelvis case, observation hash checked.
+  'app/public/assets/ch2_ct_scan_room_pixel_v2.png', // User-requested revised acquisition visual.
+  'app/public/audio/ch2_ct_real_scan_20260924.mp3', // Author-provided scan audio; extraction source/parameters recorded.
 ])
 const newMedia = [
   execFileSync('git',['diff','--name-only','--diff-filter=A','4f70852','--','app/public/audio','app/public/assets'],{encoding:'utf8',cwd:root}),

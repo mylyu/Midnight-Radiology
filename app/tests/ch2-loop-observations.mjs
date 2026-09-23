@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'
 import { CH2_SHIFTS, CH2_CARDS, ch2StepForState } from '../src/game/ch2.ts'
 import { CH2_OBSERVATIONS, CH2_OBSERVATION_WINDOW_CASES, getCh2Observation } from '../src/game/ch2-observations.ts'
+import { CH2_CASE_COMPLETIONS } from '../src/game/ch2-ledger.ts'
 import { freshState } from '../src/game/store.ts'
 
 const steps = Object.assign({}, ...CH2_SHIFTS.map(shift => shift.steps))
@@ -86,6 +87,26 @@ assert.equal(getCh2Observation('c2n1_p3').choices.find(x => x.correct).id, 'lowe
 assert.equal(getCh2Observation('c2d2_w1ok').choices.find(x => x.correct).id, 'upper-right')
 assert.equal(getCh2Observation('c2n5_m17').imageLabel, '本院复查｜本次')
 assert.equal(steps.c2n5_m8.imageLabel, '外院旧片｜3天前')
+
+// The car-crash case now covers lumbar/pelvic bone data, not another abdomen case.
+// Keep saved node/observation IDs and the old handover rewards, with no focal-fracture hunt.
+const trauma = getCh2Observation('c2d2_t1')
+assert.equal(trauma.id, 'trauma-sequence-v1')
+assert.equal(trauma.image, 'ch2_ct_lumbar_pelvis_v1')
+assert.equal(steps.c2d2_t1.image, trauma.image)
+assert.equal(steps.c2d2_t1.imageLabel, trauma.imageLabel)
+assert.equal(trauma.regions, undefined)
+assert.match(steps.c2d2_t0.text, /腰胯.*临时身份.*不用找谁点头.*医师.*腰椎和骨盆CT/)
+assert.match(steps.c2d2_t1.text, /同次数据.*骨窗.*矢状位.*冠状位.*完整序列/)
+assert.match(trauma.choices.find(c => c.correct).text, /骨窗.*重组.*完整序列/)
+assert.match(trauma.choices.find(c => c.correct).feedback, /这次采到的数据/)
+const traumaCopy = ['c2d2_t0', 'c2d2_trauma_scan', 'c2d2_t1', 'c2d2_t2', 'c2d2_gap_pen']
+  .map(id => steps[id].text).join('') + JSON.stringify(trauma) + CH2_CASE_COMPLETIONS.c2d2_t2
+assert.doesNotMatch(traumaCopy, /头颅|腹部|头腹|多发伤|确诊骨折|排除骨折/)
+assert.deepEqual(steps.c2d2_t2.effect, { heart: 1, gold: 60 })
+assert.equal(steps.c2d2_t2.next, 'c2d2_gap_pen')
+assert.equal(steps.c2d2_gap_pen.next, 'c2d2_gap_pen_q')
+assert.match(CH2_CASE_COMPLETIONS.c2d2_t2, /腰椎与骨盆完整序列已交接/)
 
 // Directly preserve all prior saved story IDs, endpoints, original choices,
 // rewards, and approved voices. Only 14 old CR-style xray SFX retire to CT SFX.

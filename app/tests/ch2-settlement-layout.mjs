@@ -6,7 +6,7 @@ import { beginCh2Shift, recordCh2Change } from '../src/game/ch2-ledger.ts'
 import { settleCh2 } from '../src/game/ch2-session.ts'
 const require = createRequire(import.meta.url), { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright')
 const browser = await chromium.launch({ channel: 'msedge', headless: true })
-const out = process.env.LAYOUT_OUTPUT || '../../ch2-settlement-layout-review'
+const out = process.env.LAYOUT_OUTPUT || '../../ch2-settlement-equipment-review'
 mkdirSync(out, { recursive: true })
 let s = beginCh2Shift({ ...freshState('m'), finished: true, gold: 380, skill: 8, heart: 5, wealth: 2,
   items: ['snack', 'milktea'], flags: { quiz_grade: 'A' }, dlc: { ch2: { shift: 'c2n1', stepId: 'c2n1_s4', phase: 'story' } } }, 'c2n1')
@@ -39,14 +39,24 @@ try {
       assert(!bounds.horizontalOverflow)
       for (const button of await nav.getByRole('button').all()) assert(await button.isVisible())
     }
+    assert.equal(await panel.locator('details, summary, ol').count(), 0, 'no visible transaction ledger or disclosure controls')
+    assert.equal(await panel.getByText(/已记录的第 \d+ 笔/).count(), 0)
+    assert.equal(await panel.locator('[data-ch2-equipment-overview]').count(), 1)
+    assert.equal(await panel.locator('[data-equipment="cr"]').getAttribute('data-unlock'), 'complete')
+    assert.equal(await panel.locator('[data-equipment="ct"]').getAttribute('data-unlock'), 'current')
+    for (const id of ['us', 'mri']) assert.equal(await panel.locator(`[data-equipment="${id}"]`).getAttribute('data-unlock'), 'locked')
+    for (const id of ['dr', 'dsa']) {
+      assert.equal(await panel.locator(`[data-equipment="${id}"]`).getAttribute('data-unlock'), 'available')
+      assert.match(await panel.locator(`[data-equipment="${id}"]`).innerText(), /已开放/)
+    }
+    assert.equal(await panel.locator('[data-ch2-stat="gold"]').getByText('680 金币', {exact:true}).count(), 1)
+    assert.equal(await panel.locator('[data-ch2-stat="gold"]').getByText('本班 +300', {exact:true}).count(), 1)
+    assert.deepEqual(await page.evaluate(() => JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).dlc.ch2.loop.entries), s.dlc.ch2.loop.entries, 'hiding ledger must not delete saved records')
     await assertLayout()
-    await page.screenshot({ path: `${out}/${viewport.width}-collapsed.png` })
-    await panel.locator('summary').click()
-    await assertLayout()
-    await page.screenshot({ path: `${out}/${viewport.width}-expanded.png` })
+    await page.screenshot({ path: `${out}/${viewport.width}-overview.png` })
     await scroll.evaluate(el => { el.scrollTop = el.scrollHeight })
     await assertLayout()
-    await page.screenshot({ path: `${out}/${viewport.width}-expanded-bottom.png` })
+    await page.screenshot({ path: `${out}/${viewport.width}-overview-bottom.png` })
     await nav.getByRole('button', { name: '🛒 小卖部', exact: true }).click()
     await page.getByRole('dialog', { name: '第二章小卖部' }).waitFor()
     await page.getByRole('button', { name: '离开小卖部', exact: true }).click()
@@ -54,5 +64,5 @@ try {
     await context.close()
   }
   assert.deepEqual(errors, [])
-  console.log('PASS settlement layout: desktop + 390px collapsed/expanded/bottom screenshots; visible normal-flow actions, content never covered, no horizontal overflow, shop modal closes without advancing.')
+  console.log('PASS settlement equipment overview: desktop + 390px screenshots; no visible ledger but complete records preserved, factual chapter/DLC states, actual stats, always-visible actions, no overlap/overflow, shop closes without advancing.')
 } finally { await browser.close() }
