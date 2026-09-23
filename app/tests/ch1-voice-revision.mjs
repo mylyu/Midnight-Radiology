@@ -6,7 +6,13 @@ import {createHash} from 'node:crypto';
 const root = path.resolve(import.meta.dirname, '../..');
 const git = (...args) => execFileSync('git', args, {cwd:root});
 const changed = git('diff','--name-only','2d629e8','--','app/src','app/public/audio','app/public/assets').toString().trim().split('\n');
-assert.deepEqual(changed, ['app/src/game/store.ts']);
+assert.deepEqual(changed, [
+  'app/public/audio/vox_ch1_fan_mature_20260923.mp3',
+  'app/public/audio/vox_ch1_thin_breathless_20260923.mp3',
+  'app/public/audio/vox_ch1_worker_bass_20260923.mp3',
+  'app/src/game/store.ts',
+]);
+assert.equal(git('diff','--name-only','--diff-filter=MDR','2d629e8','--','app/public/audio','app/public/assets').toString().trim(), '');
 const source = fs.readFileSync(path.join(root,'app/src/game/store.ts'),'utf8');
 const old = git('show','2d629e8:app/src/game/store.ts').toString();
 const unpatched = source.replace(/    \/\/ Chapter 1 voice-only revision:[\s\S]*?    const src = `[^\n]+\n/, '    const src = `${import.meta.env.BASE_URL}audio/${name}.mp3?v=2`\n');

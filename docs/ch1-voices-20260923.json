@@ -1,8 +1,9 @@
 {
   "baseline": "2d629e8",
   "reference_audio_used": false,
-  "user_approved": false,
-  "status": "Local replacement; awaiting user audition, not deployed",
+  "user_approved": true,
+  "user_approval": "很好，替换并上线",
+  "status": "Approved for publication; exact audition files retained without regeneration or processing",
   "takes": [
     {
       "id": "fan_v2",
