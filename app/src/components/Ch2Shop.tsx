@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { SHOP_ITEMS } from '../game/data'
-import { buyCh2Item, CH2_ITEM_DESCRIPTIONS, ch2ItemUnavailable, shareCh2Item } from '../game/ch2-session'
+import { buyCh2Item, CH2_ITEM_DESCRIPTIONS, ch2ItemUnavailable } from '../game/ch2-session'
+import { ch2GiftSalesEnded } from '../game/ch2-gifts'
 import type { GameState } from '../game/types'
 
 type Props = { state: GameState; update: (f: (s: GameState) => GameState) => void; onClose: () => void }
@@ -41,12 +42,7 @@ export function Ch2Shop({ state, update, onClose }: Props) {
   </div>
 }
 
-export function Ch2Backpack({ state, update, onClose }: Props) {
-  const [message, setMessage] = useState('')
-  const share = (id: 'milktea' | 'snack') => {
-    update(s => shareCh2Item(s, id))
-    setMessage(id === 'milktea' ? '小唐接过奶茶：「吸管呢？……哦，在袋底。」大家一人拿了一杯。' : '老周掀开盒盖：「给我留个丸子。」你把夜宵放到桌中间。人心 +1。')
-  }
+export function Ch2Backpack({ state, onClose }: Props) {
   return <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/85 p-4" onClick={e => { e.stopPropagation(); onClose() }}>
     <section role="dialog" aria-label="第二章背包" className="max-h-[88%] w-full max-w-lg overflow-y-auto rounded-xl border border-slate-500 bg-slate-900 p-5" onClick={e => e.stopPropagation()}>
       <h3 className="text-xl text-teal-200 mb-4">🎒 背包 · 用得上的东西</h3>
@@ -57,10 +53,11 @@ export function Ch2Backpack({ state, update, onClose }: Props) {
         return <div key={id} className="mb-3 rounded-lg border border-slate-700 p-3">
           <p className="text-slate-100">{item?.icon} {id === 'toolbox' ? '元件盒' : item?.name ?? id}</p>
           <p className="text-xs text-slate-400 mt-1">{CH2_ITEM_DESCRIPTIONS[id] ?? '原有收藏，继续妥善保管。'}</p>
-          {(id === 'milktea' || id === 'snack') && state.dlc?.ch2?.phase === 'settle' && <button onClick={() => share(id)} className="mt-2 rounded bg-teal-600 px-3 py-2 text-sm text-white">{id === 'milktea' ? '请同事喝奶茶' : '把夜宵分给同事'}</button>}
+          {(id === 'milktea' || id === 'snack') && <p className="mt-2 text-xs text-teal-200">{ch2GiftSalesEnded(state)
+            ? '本轮当面送礼的机会已经过去，物品仍替你留在背包里。'
+            : state.dlc?.ch2?.phase === 'settle' ? '留到下一班同事在场的闲聊时，才会出现递东西的选项。' : '开诊前闲聊、午饭或交接后的空当，可以当面递给同事。'}</p>}
         </div>
       })}
-      {message && <p role="status" className="text-sm text-emerald-200 mb-3">{message}</p>}
       <button onClick={onClose} className="w-full rounded border border-slate-500 py-2 text-slate-100">收好背包</button>
     </section>
   </div>

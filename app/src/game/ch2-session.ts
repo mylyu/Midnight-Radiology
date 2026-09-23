@@ -1,6 +1,8 @@
 import { CH2_SHIFTS, QUIZ2 } from './ch2'
 import { SHOP_ITEMS } from './data'
 import { applyEffect } from './store'
+import { beginCh2Shift, recordCh2Change, snapshotCh2Settlement } from './ch2-ledger'
+import { ch2GiftSalesEnded } from './ch2-gifts'
 import type { Ch2QuizProgress, DlcProgress, GameState } from './types'
 
 /** Only dlc.ch2 is written here. Chapter 1's counters and save cursor are frozen. */
@@ -18,7 +20,8 @@ export function settleCh2(s: GameState, shiftId: string): GameState {
   const last = shiftId === CH2_SHIFTS.at(-1)?.id
   const next = shiftId === 'c2d2' && !s.flags.queue_wait
     ? applyEffect(s, { badge: 'queue_tamer' }) : s
-  return patchCh2(next, { phase: last ? 'done' : 'settle', done: last })
+  return snapshotCh2Settlement(recordCh2Change(s, patchCh2(next, { phase: last ? 'done' : 'settle', done: last }),
+    `settle:${shiftId}`, last ? '晨会结束，全章交班' : '本班交班完成', 'settlement'), shiftId)
 }
 
 export function nextCh2Shift(s: GameState): GameState {
@@ -27,19 +30,20 @@ export function nextCh2Shift(s: GameState): GameState {
   const current = CH2_SHIFTS.findIndex(shift => shift.id === p?.shift)
   const next = current >= 0 ? CH2_SHIFTS[current + 1] : undefined
   if (!next) return s
-  return patchCh2(s, { phase: 'story', shift: next.id, stepId: next.start,
-    viewBg: undefined, viewSprite: undefined, viewSprite2: undefined })
+  return beginCh2Shift(patchCh2(s, { phase: 'story', shift: next.id, stepId: next.start,
+    viewBg: undefined, viewSprite: undefined, viewSprite2: undefined }), next.id)
 }
 
 export function redeemCh2Coffee(s: GameState, stepId: string): GameState {
   if (!s.dlc?.ch2?.pendingCoffee || !/^c2n[135]_hub$/.test(stepId)) return s
-  return patchCh2(applyEffect(s, { ap: 1 }), { pendingCoffee: false })
+  return recordCh2Change(s, patchCh2(applyEffect(s, { ap: 1 }), { pendingCoffee: false }),
+    `coffee:${s.dlc?.ch2?.shift}:${stepId}`, '喝掉班后留好的咖啡', 'shop')
 }
 
 export const CH2_ITEM_DESCRIPTIONS: Record<string, string> = {
   coffee: '探索时行动力 +1；班后购买则留给下一次夜间自由探索。',
-  milktea: '人心 +2，并放入背包；可递给同事，或班后请大家喝。',
-  snack: '两盒热乎夜宵；可请小何吃，也能在班后分享（人心 +1）。',
+  milktea: '购买时人心 +2；带进背包，在同事闲聊时递出，不重复加属性。',
+  snack: '同事闲聊时分享，人心 +1；也可留给第三夜小何的关东煮支线。',
   book: '医术 +2，永久保留；第三夜可翻到旧书签，之后仍可复习。',
   lottery: '每班限五张，探索和班后共用额度；原赔率不变，久刮必亏。',
   toolbox: '元件盒里的小工具可紧一紧办公椅螺丝；不用于擅自拆修 CT。',
@@ -55,6 +59,7 @@ export function ch2ItemUnavailable(s: GameState, id: string): string | undefined
   const doseDialoguePassed = entered('c2n5_m14a') || entered('c2n5_m15') ||
     /^c2n5_(m13[a-d]|m14a|m1[5-9]|m2[01]|child_scan|n\d|p2|phone_break|sms_|g\d)/.test(p.stepId ?? '')
   if (phase !== 'story' && phase !== 'settle') return '本班小卖部已打烊'
+  if ((id === 'milktea' || id === 'snack') && ch2GiftSalesEnded(s)) return '本轮能当面送礼的空当已过，暂不再售；背包里已有的仍保留'
   if (id === 'coffee') {
     if (p.pendingCoffee) return '背包里还有一份待用咖啡'
     const currentHub = phase === 'story' && /^c2n[135]_hub$/.test(p.stepId ?? '')
@@ -98,12 +103,14 @@ export function buyCh2Item(s: GameState, id: string, randomValue = 0): { state: 
     message = win ? `刮中了 ${win} 金币。${win === 50 ? '刚好回本。' : win < 50 ? '回了个零头。' : '今天手气不错！'}` : '「谢谢惠顾」……算了，留点钱吃饭。'
   } else next = applyEffect(next, { item: id })
   next = patchCh2(next, { shop: { shift, lotteryCount, buyCount: (p.shop?.buyCount ?? 0) + 1 } })
-  return { state: next, message }
+  return { state: recordCh2Change(s, next, `buy:${(p.shop?.buyCount ?? 0) + 1}`,
+    `购买${item.id === 'toolbox' ? '元件盒' : item.name}（支出 ${item.price} 金币）${id === 'lottery' ? `；${message}` : ''}`, 'shop'), message }
 }
 
+/** Historical API retained as a no-op: gifts now require an in-person dialogue. */
 export function shareCh2Item(s: GameState, id: 'milktea' | 'snack'): GameState {
-  if (ch2Phase(s) !== 'settle' || !s.items.includes(id)) return s
-  return applyEffect(s, { loseItem: id, ...(id === 'snack' ? { heart: 1 } : {}) })
+  void id
+  return s
 }
 
 export const CH2_QUIZ_REWARDS = { S: 250, A: 200, B: 80, C: 0 } as const
@@ -140,5 +147,6 @@ export function nextCh2Question(s: GameState): GameState {
   if (q.index + 1 < q.questions.length) return patchCh2(s, { quiz: { ...q, index: q.index + 1 } })
   const score = ch2QuizScore(q), grade = score >= 5 ? 'S' : score === 4 ? 'A' : score === 3 ? 'B' : 'C'
   const next = { ...s, gold: s.gold + (q.rewarded ? 0 : CH2_QUIZ_REWARDS[grade]), flags: { ...s.flags, quiz2_grade: grade } }
-  return patchCh2(next, { quiz: { ...q, completed: true, rewarded: true, grade } })
+  return recordCh2Change(s, patchCh2(next, { quiz: { ...q, completed: true, rewarded: true, grade } }),
+    'quiz:reward', `晨会考核 ${grade}：奖励 ${q.rewarded ? 0 : CH2_QUIZ_REWARDS[grade]} 金币`, 'quiz')
 }

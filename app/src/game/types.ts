@@ -136,6 +136,12 @@ export interface GameState {
 }
 
 export interface DlcProgress {
+  /** 第二章经营账本；旧存档缺省，从恢复点起记，不补造历史。 */
+  loop?: Ch2LoopProgress
+  scanSessions?: Record<string, { startedAt: number; completed?: boolean }>
+  observations?: Record<string, { choiceId: string; acknowledged?: boolean }>
+  observationRewardShifts?: string[]
+  giftReply?: { stepId: string; text: string; speaker?: string; sprite?: string }
   /** 第二章专用；旧存档省略时按当前剧情节点恢复。 */
   phase?: 'story' | 'settle' | 'quiz' | 'done'
   quiz?: Ch2QuizProgress
@@ -161,6 +167,38 @@ export interface DlcProgress {
   gone?: string[]
   /** DR：AI 初诊决策记录（patientId → 玩家是否采纳） */
   aiChoices?: Record<string, boolean>
+}
+
+export interface Ch2LedgerSnapshot {
+  gold: number
+  skill: number
+  heart: number
+  wealth: number
+  ap: number
+  items: string[]
+  badges: string[]
+  cards: string[]
+  events: string[]
+}
+
+export interface Ch2LedgerEntry {
+  id: string
+  shift: string
+  label: string
+  kind: 'story' | 'choice' | 'shop' | 'gift' | 'quiz' | 'settlement' | 'case' | 'observation'
+  delta: Pick<Ch2LedgerSnapshot, 'gold' | 'skill' | 'heart' | 'wealth' | 'ap'>
+  gained: { items: string[]; badges: string[]; cards: string[]; events: string[] }
+  consumed: string[]
+  flags: string[]
+}
+
+export interface Ch2LoopProgress {
+  version: 1
+  runId: string
+  currentShift: string
+  shifts: Record<string, { start: Ch2LedgerSnapshot; recovered: boolean; settled?: Ch2LedgerSnapshot }>
+  entries: Ch2LedgerEntry[]
+  gifts: { shift: string; person: string; item: 'milktea' | 'snack'; node: string }[]
 }
 
 export interface Ch2QuizProgress {
