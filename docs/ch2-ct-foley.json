@@ -1,0 +1,66 @@
+{
+  "source": "Procedural FFmpeg lavfi noise synthesis; no third-party recording, voice or reference audio.",
+  "generator": "app/scripts/generate-ch2-ct-foley.mjs",
+  "ffmpeg": "ffmpeg version 8.1.1-full_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers",
+  "scope": "Second chapter scan overlay only; all existing audio assets retained unchanged.",
+  "records": [
+    {
+      "file": "ch2_ct_motor_loop_v1.mp3",
+      "purpose": "Quiet broadband gantry/table motor, used only for acquisition; no diagnostic realism implied.",
+      "playbackGain": 0.24,
+      "argv": [
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-y",
+        "-f",
+        "lavfi",
+        "-i",
+        "anoisesrc=color=brown:amplitude=0.27:duration=4:sample_rate=24000:seed=245891",
+        "-af",
+        "highpass=f=45,lowpass=f=420,volume=0.6,afade=t=in:d=0.18,afade=t=out:st=3.82:d=0.18",
+        "-ar",
+        "24000",
+        "-ac",
+        "1",
+        "-c:a",
+        "libmp3lame",
+        "-b:a",
+        "128k",
+        "C:\\Users\\lvmen\\Documents\\New project\\Midnight-Radiology\\app\\public\\audio\\ch2_ct_motor_loop_v1.mp3"
+      ],
+      "output": "app/public/audio/ch2_ct_motor_loop_v1.mp3",
+      "bytes": 65325,
+      "sha256": "59f95741f5053234dd507973ae16dfe31606682472e825087853a45995bb3773"
+    },
+    {
+      "file": "ch2_ct_reconstruction_softclick_v1.mp3",
+      "purpose": "Soft non-tonal console relay click near image readiness, never a beep.",
+      "playbackGain": 0.2,
+      "argv": [
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-y",
+        "-f",
+        "lavfi",
+        "-i",
+        "anoisesrc=color=pink:amplitude=0.28:duration=0.14:sample_rate=24000:seed=73104",
+        "-af",
+        "highpass=f=170,lowpass=f=1000,afade=t=in:d=0.007,afade=t=out:st=0.012:d=0.128,volume=0.34",
+        "-ar",
+        "24000",
+        "-ac",
+        "1",
+        "-c:a",
+        "libmp3lame",
+        "-b:a",
+        "128k",
+        "C:\\Users\\lvmen\\Documents\\New project\\Midnight-Radiology\\app\\public\\audio\\ch2_ct_reconstruction_softclick_v1.mp3"
+      ],
+      "output": "app/public/audio/ch2_ct_reconstruction_softclick_v1.mp3",
+      "bytes": 3501,
+      "sha256": "0446303963a59fb38adf5a4abacef3e31c289664c1bd6b7eb70af5c5f71bc91a"
+    }
+  ]
+}

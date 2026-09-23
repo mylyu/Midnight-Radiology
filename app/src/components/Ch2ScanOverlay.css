@@ -1,0 +1,37 @@
+.ch2-scan-overlay { position: fixed; inset: 0; z-index: 95; background: rgba(3, 8, 19, .94); color: #e2e8f0; display: grid; place-items: center; padding: 20px; overflow: auto; overscroll-behavior: contain; touch-action: manipulation; }
+.ch2-scan-overlay * { box-sizing: border-box; }
+.ch2-scan-panel { width: min(100%, 590px); text-align: center; padding: 22px 28px; border: 2px solid #33465d; background: #0b1626; box-shadow: 8px 8px 0 #030813; }
+.ch2-scan-panel h2 { font-size: clamp(19px, 4vw, 25px); margin: 5px 0 12px; font-weight: 700; }
+.ch2-scan-kicker { color: #90a9bc; font-size: 12px; letter-spacing: .2em; }
+.ch2-scan-device { position: relative; height: 235px; max-width: 420px; margin: auto; overflow: hidden; background: linear-gradient(#132339 76%, #0d1b2c 76%); border: 3px solid #33465d; image-rendering: pixelated; }
+.ch2-scan-floor { position: absolute; inset: 76% 0 0; background: repeating-linear-gradient(90deg, transparent 0 48px, #203248 49px 51px), repeating-linear-gradient(0deg, transparent 0 18px, #203248 19px 21px); }
+.ch2-scan-gantry { position: absolute; right: 50px; top: 24px; width: 150px; height: 167px; border: 8px solid #44546a; background: #8493a1; clip-path: polygon(18% 0, 82% 0, 100% 16%, 100% 100%, 0 100%, 0 16%); box-shadow: inset 8px 0 #64768a, inset -8px 0 #a6b1bb; }
+.ch2-scan-bore { position: absolute; top: 24px; left: 20px; width: 94px; height: 105px; background: #101c2b; border: 10px solid #475d72; clip-path: polygon(22% 0, 78% 0, 100% 20%, 100% 80%, 78% 100%, 22% 100%, 0 80%, 0 20%); }
+.ch2-scan-arc { position: absolute; left: 21px; top: 25px; width: 92px; height: 103px; border: 5px solid transparent; border-top-color: #72c8c0; border-left-color: #528e94; opacity: .35; }
+.ch2-scan-device.is-acquire .ch2-scan-arc { animation: ch2-gantry-turn 1.4s steps(12) infinite; opacity: 1; }
+.ch2-scan-gantry-lights { position: absolute; width: 7px; height: 7px; top: 7px; right: 14px; background: #89bfc0; box-shadow: -12px 0 #294359; }
+.ch2-scan-table-pedestal { position: absolute; left: 132px; top: 173px; width: 38px; height: 33px; background: #4d647a; border: 5px solid #304359; box-shadow: 8px 3px 0 #182a3c; }
+.ch2-scan-table { position: absolute; left: 53px; top: 133px; width: 215px; height: 39px; transform: translateX(var(--ch2-table-offset)); }
+.ch2-scan-tabletop { position: absolute; bottom: 0; left: 0; height: 12px; width: 100%; border: 4px solid #52677e; background: #a6b0b7; box-shadow: 0 5px #1a2c40; }
+.ch2-scan-person { position: absolute; bottom: 12px; left: 23px; width: 148px; height: 17px; background: #90a8ad; clip-path: polygon(0 45%, 7% 20%, 38% 20%, 44% 0, 85% 0, 85% 22%, 100% 22%, 100% 100%, 0 100%); }
+.ch2-scan-console { position: absolute; left: 14px; top: 82px; width: 42px; height: 47px; border: 5px solid #3b5268; background: #102737; box-shadow: 0 7px #1a2c40; }
+.ch2-scan-console-screen { color: #7fd6c5; font: 10px monospace; padding-top: 11px; }
+.ch2-scan-workstation { max-width: 325px; margin: 25px auto 30px; position: relative; }
+.ch2-scan-slices { border: 12px solid #3b5268; background: #091728; box-shadow: 6px 6px #030a13; padding: 15px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 13px; }
+.ch2-scan-slices span { aspect-ratio: 1; background: #375367; border: 7px solid #1b3548; box-shadow: inset 0 0 0 5px #59848d; animation: ch2-recon-fill 1s steps(5) infinite; }
+.ch2-scan-workstation-stand { width: 40px; height: 18px; margin: auto; background: #30495e; box-shadow: -20px 14px #30495e, 20px 14px #30495e; }
+.ch2-scan-phase { color: #75dbc9; margin: 18px 0 6px; font-size: 17px; }
+.ch2-scan-detail { color: #b3c2d0; margin: 0 0 20px; min-height: 42px; font-size: 14px; line-height: 1.6; }
+.ch2-scan-progress { height: 12px; border: 2px solid #52647a; border-radius: 3px; overflow: hidden; background: #152137; }
+.ch2-scan-progress span { display: block; height: 100%; background: #55c5af; }
+.ch2-scan-progress-number { font-size: 12px; margin: 7px 0 18px; color: #94a8bd; }
+.ch2-scan-controls { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+.ch2-scan-controls button { color: #c5d3df; border: 1px solid #52647a; background: #172a40; padding: 8px 14px; cursor: pointer; border-radius: 5px; }
+.ch2-scan-controls button:focus-visible { outline: 3px solid #68d7c4; outline-offset: 3px; }
+.ch2-scan-controls .ch2-scan-skip { background: #244f54; border-color: #61998f; }
+.ch2-scan-controls button:disabled { opacity: .65; cursor: default; }
+.ch2-scan-panel small { color: #738ca2; font-size: 11px; display: block; line-height: 1.5; margin-top: 13px; }
+@keyframes ch2-gantry-turn { to { transform: rotate(360deg); } }
+@keyframes ch2-recon-fill { 50% { background: #649195; box-shadow: inset 0 0 0 5px #adc3bc; } }
+@media (max-width: 430px) { .ch2-scan-overlay { padding: 12px; } .ch2-scan-panel { padding: 18px 15px; } .ch2-scan-device { height: 218px; } .ch2-scan-gantry { right: 21px; } .ch2-scan-table { left: 4px; width: 205px; } .ch2-scan-table-pedestal { left: 87px; } .ch2-scan-console { left: 6px; top: 55px; } .ch2-scan-detail { font-size: 13px; } }
+@media (prefers-reduced-motion: reduce) { .ch2-scan-device .ch2-scan-arc, .ch2-scan-slices span { animation: none !important; } .ch2-scan-table { transform: none; } }
