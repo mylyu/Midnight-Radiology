@@ -2,6 +2,8 @@ import { createRequire } from 'node:module'
 import { mkdirSync, writeFileSync } from 'node:fs'
 import assert from 'node:assert/strict'
 import { CH2_SHIFTS, ch2StepForState, QUIZ2 } from '../src/game/ch2.ts'
+import { CH2_SCANS } from '../src/game/ch2-scans.ts'
+import { getCh2Observation } from '../src/game/ch2-observations.ts'
 const require = createRequire(import.meta.url)
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright')
 const browser = await chromium.launch({ headless: true, ...(process.env.EDGE_TEST === '1' ? {channel:'msedge'} : process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : {}) })
@@ -34,9 +36,38 @@ async function open(shift, stepId, mobile = false, rejectVoice = false) {
   return { context, page }
 }
 async function advance(page, expected) {
+  // Result fixtures now stop first at the player's observation. Complete that
+  // in-scene exchange, then advance the original story exactly as before.
+  await completeObservation(page)
   await page.locator('.dialog-box > span.animate-bounce').waitFor({ timeout: 15000 })
   await page.locator('.dialog-box > p').click()
   await page.waitForFunction(expected => JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).dlc.ch2.stepId === expected, expected, { timeout: 3000 })
+}
+async function completeObservation(page) {
+  const state = await page.evaluate(() => JSON.parse(localStorage.getItem('midnight-radiology-save-v1')))
+  const p = state.dlc.ch2, config = getCh2Observation(p.stepId, state)
+  if (!config || p.observations?.[config.id]?.acknowledged) return false
+  let answer = p.observations?.[config.id]
+  const dialog = page.locator('.dialog-box > p')
+  if (!answer) {
+    const expected = config.prompt.replaceAll('**', '')
+    if (await dialog.textContent() !== expected) await dialog.click()
+    await page.waitForFunction(text => document.querySelector('.dialog-box > p')?.textContent === text, expected)
+    const choice = config.choices.find(c => c.correct) ?? config.choices.find(c => c.hint)
+    assert(choice, `${p.stepId}: observation must have an available response`)
+    if (config.regions?.length) assert.equal(await page.getByLabel(config.regions[0].label, { exact: true }).count(), 0, 'No answer ring before choice')
+    await page.locator('.choice-in').getByRole('button', { name: choice.text.replaceAll('**', ''), exact: true }).click()
+    await page.waitForFunction(key => !!JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).dlc.ch2.observations[key], config.id)
+    answer = { choiceId: choice.id }
+  }
+  const feedback = config.choices.find(c => c.id === answer.choiceId).feedback.replaceAll('**', '')
+  if (await dialog.textContent() !== feedback) await dialog.click()
+  await page.waitForFunction(text => document.querySelector('.dialog-box > p')?.textContent === text, feedback)
+  await page.locator('.dialog-box > span.animate-bounce').waitFor({ timeout: 15000 })
+  await dialog.click()
+  await page.waitForFunction(key => JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).dlc.ch2.observations[key].acknowledged, config.id)
+  assert.equal(await current(page), p.stepId, 'Acknowledging observation must return to, not skip, original node')
+  return config.id
 }
 try {
   {
@@ -106,7 +137,7 @@ try {
     mkdirSync(output, { recursive: true })
     const { context, page } = await open('c2n1', 'c2n1_0')
     let visited = 0, questionsAnswered = 0
-    const settlements = new Set()
+    const settlements = new Set(), scans = new Set(), observations = new Set()
     while (visited++ < 600) {
       const state = await page.evaluate(() => JSON.parse(localStorage.getItem('midnight-radiology-save-v1')))
       const progress = state.dlc.ch2
@@ -124,7 +155,7 @@ try {
         assert.equal(resumed.dlc.ch2.shift,progress.shift)
         assert.equal(resumed.dlc.ch2.stepId,progress.stepId)
         assert.equal(resumed.gold,state.gold)
-        await page.getByRole('button',{name:/^进入：/}).click()
+        await page.getByRole('button',{name:/进入下一班|前往晨会/}).click()
         await page.waitForFunction(shift=>JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).dlc.ch2.shift!==shift,progress.shift)
         continue
       }
@@ -152,6 +183,25 @@ try {
       const rawStep = shift.steps[progress.stepId]
       const step = ch2StepForState(progress.stepId,rawStep,state)
       assert(step, progress.stepId)
+      const scan = CH2_SCANS[progress.stepId]
+      if (scan && !progress.scanSessions?.[progress.stepId]?.completed) {
+        if (!progress.scanSessions?.[progress.stepId]) await page.locator('.dialog-box > p').click()
+        await page.locator(`.ch2-scan-overlay[data-scan-id="${progress.stepId}"]`).waitFor({ timeout: 12000 })
+        assert.equal(await page.locator('img[alt="影像或证物"]').count(), 0, 'No result before scan presentation')
+        await page.getByRole('button', { name: '跳过演出', exact: true }).click()
+        await page.locator('.ch2-scan-overlay').waitFor({ state: 'detached' })
+        await page.waitForFunction(id => JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).dlc.ch2.scanSessions[id].completed, progress.stepId)
+        if (scan.mode === 'acquire') await page.waitForFunction(id => JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).dlc.ch2.stepId !== id, progress.stepId)
+        scans.add(progress.stepId)
+        fullLog.push({kind:'scan',step:progress.stepId,mode:scan.mode})
+        continue
+      }
+      const observed = await completeObservation(page)
+      if (observed) {
+        observations.add(observed)
+        fullLog.push({kind:'observation',step:progress.stepId,id:observed})
+        continue
+      }
       fullLog.push({kind:'story',step:progress.stepId,text:step.text,shift:progress.shift})
       if (step.windowTask) {
         // A click must reveal even task text, without skipping the step.
@@ -196,7 +246,9 @@ try {
     assert.equal(questionsAnswered,5)
     assert.equal(final.dlc.ch2.quiz.grade,'S')
     assert.equal(final.flags.quiz2_grade,'S')
-    fullLog.push({kind:'summary',iterations:visited,storyNodes:fullLog.filter(row=>row.kind==='story').length,settlements:[...settlements],questionsAnswered,done:true})
+    assert.deepEqual([...scans].sort(), Object.keys(CH2_SCANS).sort(), 'Full walk must still exercise all 15 acquisitions and 2 reconstructions')
+    assert.equal(observations.size, 12, 'Every added observation/plan gate is played')
+    fullLog.push({kind:'summary',iterations:visited,storyNodes:fullLog.filter(row=>row.kind==='story').length,settlements:[...settlements],scans:[...scans],observations:[...observations],questionsAnswered,done:true})
     console.log('PASS: continuous five-shift walk + 5 saved settlements + all 5 exam questions + entire ending, iterations:', visited)
     await context.close()
   }

@@ -42,8 +42,8 @@ try {
     const { context, page } = await open({ badges: ['first_ct'], cards: ['ct_tube_heat'], shift: 'c2am', stepId: 'c2am_9' })
     await page.locator('.dialog-box > p').click()
     await page.getByRole('button', { name: '🏁 第二章 · 完 —— 结算' }).click()
-    await page.getByText('本章收集：📖 知识卡片 1/17 · 🏅 勋章 1/12', { exact: false }).waitFor()
-    assert.equal(await page.getByText('旧版停颁内容').count(), 0)
+    await page.getByText('📖 1/17 · 🏅 1/12', { exact: true }).waitFor()
+    assert.equal(await page.getByText('历史收藏：', { exact: false }).count(), 0)
     await context.close()
     console.log('PASS: completion screen counts 1/17 and 1/12 without legacy note.')
   }
@@ -52,8 +52,8 @@ try {
     const { context, page } = await open({ badges: ['phantom_friend', 'wrench_night'], cards: ['ring_artifact'], shift: 'c2am', stepId: 'c2am_9' })
     await page.locator('.dialog-box > p').click()
     await page.getByRole('button', { name: '🏁 第二章 · 完 —— 结算' }).click()
-    await page.getByText('本章收集：📖 知识卡片 0/17 · 🏅 勋章 0/12', { exact: false }).waitFor()
-    await page.getByText('旧版停颁内容不计入统计；你已保留的旧版卡片 1 张、徽章 2 枚仍在夜班手册与勋章墙中。', { exact: true }).waitFor()
+    await page.getByText('📖 0/17 · 🏅 0/12', { exact: true }).waitFor()
+    await page.getByText('历史收藏：卡片 1 张、勋章 2 枚；旧版停颁条目不计入分母。', { exact: true }).waitFor()
     await context.close()
     console.log('PASS: completion screen excludes legacy entries and explains the policy.')
   }

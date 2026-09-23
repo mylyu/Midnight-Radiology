@@ -4,6 +4,7 @@ import {createRequire} from 'node:module'
 import {readFileSync,mkdirSync} from 'node:fs'
 import {createHash} from 'node:crypto'
 import {CH2_SHIFTS,ch2StepForState} from '../src/game/ch2.ts'
+import {getCh2Observation} from '../src/game/ch2-observations.ts'
 import {freshState} from '../src/game/store.ts'
 const require=createRequire(import.meta.url)
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright')
@@ -37,7 +38,7 @@ try{
   const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message))
   await page.goto(baseURL+'#/ch2')
   const p=page.locator('.dialog-box > p');await p.waitFor()
-  const expected=ch2StepForState(id,shift.steps[id],s).text.replaceAll('**','')
+  const expected=(getCh2Observation(id,s)?.prompt ?? ch2StepForState(id,shift.steps[id],s).text).replaceAll('**','')
   await p.click();await page.waitForFunction(t=>document.querySelector('.dialog-box > p')?.textContent===t,expected)
   if(asset)await page.locator(`img[src$="/${asset}.png"]:not([aria-hidden="true"])`).waitFor()
   if(label)await page.getByText(label,{exact:true}).waitFor()

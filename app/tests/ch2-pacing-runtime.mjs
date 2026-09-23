@@ -4,6 +4,7 @@ import {readFileSync} from 'node:fs'
 import {CH2_SHIFTS, QUIZ2} from '../src/game/ch2.ts'
 import {freshState, applyEffect} from '../src/game/store.ts'
 import {restartCh2} from '../src/game/ch2-exploration.ts'
+import {ch2GiftChoices,giveCh2Gift} from '../src/game/ch2-gifts.ts'
 import {patchCh2,ch2Phase,settleCh2,nextCh2Shift,redeemCh2Coffee,buyCh2Item,ch2ItemUnavailable,shareCh2Item,startCh2Quiz,answerCh2Quiz,nextCh2Question,ch2QuizScore} from '../src/game/ch2-session.ts'
 
 const initial={...freshState('m'),night:4,gold:10000,buyCount:42,lotteryNight:4,lotteryCount:3,screenHint:'day',stepId:'n4_end',resumeKey:'4-n4_end',viewBg:'bg_day',flags:{quiz_grade:'S',quiz2_grade:'A',n5_qian:true,n5_fan:true},dlc:{dr:{done:true,served:['ge']},dsa:{dose:20,pedalTry:4},ch2:{shift:'c2n1',stepId:'c2n1_hub',phase:'story'}}}
@@ -37,8 +38,18 @@ for(const shift of CH2_SHIFTS.slice(0,5)){
   assert.match(ch2ItemUnavailable(s,'lottery'),/五张/)
   s=buyCh2Item(s,'coffee').state;assert(s.dlc.ch2.pendingCoffee)
   assert.equal(buyCh2Item(s,'coffee').state,s)
-  s=shareCh2Item(s,'milktea');assert(!s.items.includes('milktea'));assert.equal(s.heart,2)
-  const h=s.heart;s=shareCh2Item(s,'snack');assert.equal(s.heart,h+1);assert.equal(shareCh2Item(s,'snack'),s)
+  // Approved loop round moves sharing to an in-person conversation, retaining the original item/reward assertions.
+  assert.equal(shareCh2Item(s,'milktea'),s);assert.equal(shareCh2Item(s,'snack'),s)
+  assert(s.items.includes('milktea')&&s.items.includes('snack'),'settlement cannot consume gifts')
+  let chat=patchCh2(s,{phase:'story',stepId:'c2n1_chat_q'})
+  const milk=ch2GiftChoices(chat,'c2n1_chat_q').find(c=>c.next.endsWith(':milktea'))
+  chat=giveCh2Gift(chat,'c2n1_chat_q',milk.next).state
+  assert(!chat.items.includes('milktea'));assert.equal(chat.heart,2)
+  const h=chat.heart,snack=ch2GiftChoices(chat,'c2n1_gap_chair_q').find(c=>c.next.endsWith(':snack'))
+  chat=giveCh2Gift(chat,'c2n1_gap_chair_q',snack.next).state
+  assert.equal(chat.heart,h+1);assert(!chat.items.includes('snack'))
+  assert.equal(giveCh2Gift(chat,'c2n1_gap_chair_q',snack.next).state,chat)
+  s=patchCh2(chat,{phase:'settle',stepId:end,giftReply:undefined})
  }
  if(shift.id==='c2n5')assert.match(ch2ItemUnavailable(s,'coffee'),/没有夜间自由探索/)
  const next=nextCh2Shift(s);assert.equal(ch2Phase(next),'story');assert.notEqual(next.dlc.ch2.shift,shift.id)
@@ -88,9 +99,20 @@ assert.deepEqual(restart.dlc.ch2,{})
 // Exact source guards, not behavior approximations, for all non-Ch2 App code.
 const old=execFileSync('git',['show','1452d78:app/src/App.tsx'],{encoding:'utf8'})
 const now=readFileSync(new URL('../src/App.tsx',import.meta.url),'utf8')
-const withoutCh2=text=>text.replace(/^import .*['"]\.\/components\/Ch2Shop['"]\r?\n/m,'').replace(/^import .*['"]\.\/game\/ch2-session['"]\r?\n/m,'')
+// Exact allowlist of additional Ch2 imports; original shared imports stay checked.
+const withoutCh2=text=>text.replace(/^import .*['"]\.\/(?:components\/(?:Ch2Shop|Ch2Settlement|Ch2ScanOverlay|Ch2ObservationImage)|game\/(?:ch2-session|ch2-scans|ch2-observations|ch2-ledger|ch2-gifts|ch2-playback))['"]\r?\n/gm,'')
+ .replace(/, CH2_CARDS, CH2_ACTIVE_CARDS, CH2_CARDS_LEGACY(?=,)/,'')
  .replace(/function Ch2Screen\([\s\S]*?(?=\/\* ================= 第二章 · 窗宽窗位)/,'')
  .replace(/function Ch2Quiz\([\s\S]*?(?=\/\* ================= DLC 番外篇大厅)/,'').replaceAll('\r\n','\n')
 assert.equal(withoutCh2(now),withoutCh2(old),'All App code outside Ch2Screen/Ch2Quiz/imports must remain byte-equivalent')
-for(const path of ['app/src/game/data.ts','app/src/game/store.ts','app/src/game/dlc.ts'])assert.equal(readFileSync(new URL('../../'+path,import.meta.url),'utf8').replaceAll('\r\n','\n'),execFileSync('git',['show','1452d78:'+path],{encoding:'utf8'}).replaceAll('\r\n','\n'))
-console.log('PASS: five persistent settlements; all 8 goods; independent counters; coffee carry/redeem; gift sharing; expired purposes; persistent quiz + stale-grade/reward/restart protection; Ch1/DR/DSA exact-source and state guards.')
+for(const path of ['app/src/game/data.ts','app/src/game/store.ts','app/src/game/dlc.ts']){
+ let source=readFileSync(new URL('../../'+path,import.meta.url),'utf8').replaceAll('\r\n','\n')
+ // Preserve 1452d78's historical baseline while exactly reversing the separately approved 05889fa voice-only remap.
+ if(path.endsWith('/store.ts')){
+  const voicePatch="    // Chapter 1 voice-only revision: retain old assets and volume, use new filenames to avoid stale audio caches.\n    const revisedVoiceFiles: Partial<Record<SfxName, string>> = {\n      vox_fan: 'vox_ch1_fan_mature_20260923',\n      vox_worker: 'vox_ch1_worker_bass_20260923',\n      vox_thin: 'vox_ch1_thin_breathless_20260923',\n    }\n    const src = `${import.meta.env.BASE_URL}audio/${revisedVoiceFiles[name] ?? name}.mp3?v=2`"
+  assert(source.includes(voicePatch),'The permitted voice mapping must be the exact accepted patch')
+  source=source.replace(voicePatch,'    const src = `${import.meta.env.BASE_URL}audio/${name}.mp3?v=2`')
+ }
+ assert.equal(source,execFileSync('git',['show','1452d78:'+path],{encoding:'utf8'}).replaceAll('\r\n','\n'))
+}
+console.log('PASS: five persistent settlements; all 8 goods; independent counters; coffee carry/redeem; in-dialogue gift sharing and no-op settlement; expired purposes; persistent quiz + stale-grade/reward/restart protection; Ch1/DR/DSA exact-source and state guards (approved voice remap projected explicitly).')

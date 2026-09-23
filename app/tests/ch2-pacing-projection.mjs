@@ -8,12 +8,16 @@ import { execFileSync } from 'node:child_process'
 import ts from 'typescript'
 import { fileURLToPath } from 'node:url'
 import { resolve } from 'node:path'
+import { beforeLoopSource } from './ch2-loop-projection.mjs'
+import { beforeApprovedCh1Voices } from './ch1-approved-voices-projection.mjs'
 
 const root = new URL('../../', import.meta.url)
 const ledger = JSON.parse(readFileSync(new URL('docs/ch2-pacing-source-deltas.json', root), 'utf8'))
 const normalize = source => source.replaceAll('\r\n', '\n').trimEnd() + '\n'
 
 export function beforePacingSource(path, source) {
+  source = beforeLoopSource(path, source)
+  source = beforeApprovedCh1Voices(path, source)
   const file = ledger.files.find(f => f.path === path)
   if (!file) return source
   const lines = normalize(source).trimEnd().split('\n')
@@ -43,13 +47,15 @@ const ch2Source = projectedSource('app/src/game/ch2.ts')
 export const beforePacing = await import(moduleUrl(ch2Source))
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  for (const { path, edits } of ledger.files) {
+  for (const { path } of ledger.files) {
     const live = readFileSync(new URL(path, root), 'utf8')
     beforePacingSource(path, live)
-    const changed = edits.find(e => e.after.length)?.after[0]
+    // A later reviewed loop hunk can replace a pacing hunk's old line. Probe an
+    // actual current line: both projection layers must reject any new mutation.
+    const changed = live.split(/\r?\n/).find(line => line.trim())
     assert(changed, path + ': expected explicit reviewed edits')
-    assert.throws(() => beforePacingSource(path, live.replace(changed, changed + ' // undocumented')), /undocumented mutation/)
-    assert.throws(() => beforePacingSource(path, live.trimEnd() + '\n// undocumented append\n'), /mutation outside approved pacing hunks/)
+    assert.throws(() => beforePacingSource(path, live.replace(changed, changed + ' // undocumented')), /undocumented mutation|mutation outside approved (?:pacing|loop) hunks/)
+    assert.throws(() => beforePacingSource(path, live.trimEnd() + '\n// undocumented append\n'), /mutation outside approved (?:pacing|loop) hunks/)
   }
   console.log(`PASS historical projection guard: ${ledger.files.length} files, exact inverse hunks and complete-baseline comparison; both in-hunk and outside-hunk mutations rejected`)
 }

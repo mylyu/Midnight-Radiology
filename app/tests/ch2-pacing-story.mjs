@@ -4,6 +4,7 @@ import { CH2_SHIFTS, ch2StepForState, CH2_IMAGE_CAPTIONS, CH2_BOOK_PAGES, CH2_AC
 import { CH2_PACING_STEPS, CH2_PATIENT_BRIDGES } from '../src/game/ch2-pacing.ts'
 import { CH2_SOCIAL_STEPS } from '../src/game/ch2-social.ts'
 import { CH2_PATIENT_ENTRANCES, isPatientBed } from '../src/game/ch2-patients.ts'
+import { CH2_SCANS } from '../src/game/ch2-scans.ts'
 import { applyEffect, freshState } from '../src/game/store.ts'
 
 const steps = Object.assign({}, ...CH2_SHIFTS.map(s => s.steps))
@@ -113,7 +114,12 @@ while (coronaryId !== 'c2n3_h6') {
   coronaryId = steps[coronaryId].next
 }
 assert(coronaryPath.indexOf('c2n3_coronary_slices') < coronaryPath.indexOf('c2n3_coronary_volume'))
-assert.equal(coronaryPath.filter(id => steps[id].sfx === 'xray').length, 1)
+// Loop-parity round replaces the old CR-like xray flag with explicit CT stages.
+// Preserve (and strengthen) the semantic invariant: one acquisition, then one
+// same-data reconstruction, never an extra exposure for the 3D image.
+assert.deepEqual(coronaryPath.filter(id => CH2_SCANS[id]?.mode === 'acquire'), ['c2n3_coronary_scan'])
+assert.deepEqual(coronaryPath.filter(id => CH2_SCANS[id]?.mode === 'reconstruct'), ['c2n3_coronary_volume'])
+assert.equal(coronaryPath.filter(id => steps[id].sfx === 'xray').length, 0)
 assert.equal(steps.c2n3_coronary_slices.image, 'ch2_ct_coronary_slices')
 assert.equal(steps.c2n3_coronary_volume.image, 'ct_coronary_cta')
 assert.match(steps.c2n3_coronary_volume.text, /同一次采集/)
@@ -179,4 +185,4 @@ for (const audited of [false, true]) for (let choiceIndex = 0; choiceIndex < 3; 
 assert.equal(CH2_BOOK_PAGES.length, 20)
 assert.equal(CH2_ACTIVE_BADGES.length, 12)
 assert.equal(CH2_ACTIVE_CARDS.length, 17)
-console.log(`PASS ch2-pacing-story: ${Object.keys(steps).length} nodes; 9 patient bridges; all SMS branches; media wiring; first-chapter memory gates; no new stat rewards`)
+console.log(`PASS ch2-pacing-story: ${Object.keys(steps).length} nodes; 9 patient bridges retain zero stat rewards; all SMS branches; media wiring; first-chapter memory gates; one coronary acquisition plus one same-data reconstruction`)

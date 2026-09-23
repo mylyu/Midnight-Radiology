@@ -48,6 +48,14 @@ const allowedLaterMedia = new Set([
   'app/public/audio/vox_ch2_natural_kai_soft_shi_v5.mp3',
   'app/public/audio/vox_ch2_natural_kai_soft_shi_v6.mp3', // Author-requested stronger attenuation audition only.
   'app/public/audio/vox_ch2_natural_kai_noref_b_v9.mp3', // Author-selected no-reference candidate B.
+  'app/public/audio/vox_ch1_fan_mature_20260923.mp3', // User-approved published Chapter 1 voices, hash-checked above.
+  'app/public/audio/vox_ch1_thin_breathless_20260923.mp3',
+  'app/public/audio/vox_ch1_worker_bass_20260923.mp3',
+  'app/public/assets/ct_ch2_stone_v2.png', // Approved loop-parity image/foley additions; independent hashes in new tests.
+  'app/public/assets/ct_ch2_stroke_plain_v2.png',
+  'app/public/assets/ct_ch2_stroke_cta_v2.png',
+  'app/public/audio/ch2_ct_motor_loop_v1.mp3',
+  'app/public/audio/ch2_ct_reconstruction_softclick_v1.mp3',
 ])
 const newMedia = [
   execFileSync('git',['diff','--name-only','--diff-filter=A','4f70852','--','app/public/audio','app/public/assets'],{encoding:'utf8',cwd:root}),

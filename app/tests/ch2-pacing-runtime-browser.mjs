@@ -29,30 +29,33 @@ try{
   const saved=await read(page);assert.equal(saved.dlc.ch2.shift,shift.id)
   await page.reload();await page.locator('[data-ch2-settlement]').waitFor()
   assert.equal((await read(page)).gold,saved.gold)
-  await page.getByRole('button',{name:'🛒 去小卖部',exact:true}).click()
+  await page.getByRole('button',{name:'🛒 小卖部',exact:true}).click()
   const shop=page.getByRole('dialog',{name:'第二章小卖部'});await shop.waitFor()
-  await shop.getByRole('button',{name:'购买全科室奶茶',exact:true}).click()
-  assert((await read(page)).items.includes('milktea'))
+  if(i < 4) {
+   await shop.getByRole('button',{name:'购买全科室奶茶',exact:true}).click()
+   assert((await read(page)).items.includes('milktea'))
+  } else assert(!(await read(page)).items.includes('milktea'), 'last gift scene passed: no stock sold')
   assert(await shop.getByRole('button',{name:'购买全科室奶茶',exact:true}).isDisabled())
   if(i===0){await shop.getByRole('button',{name:'购买速溶咖啡',exact:true}).click();assert((await read(page)).dlc.ch2.pendingCoffee)}
   if(i===4)assert(await shop.getByRole('button',{name:'购买速溶咖啡',exact:true}).isDisabled())
   await shop.getByRole('button',{name:'离开小卖部',exact:true}).click()
-  await page.getByRole('button',{name:'🎒 背包与分享',exact:true}).click()
-  await page.getByRole('button',{name:'请同事喝奶茶',exact:true}).click();assert(!(await read(page)).items.includes('milktea'))
+  await page.getByRole('button',{name:'查看背包用途',exact:true}).click()
+  assert.equal(await page.getByRole('button',{name:/请同事喝奶茶|把夜宵分/}).count(),0, 'gifts belong in conversations')
+  if(i < 4) assert((await read(page)).items.includes('milktea'), 'closing backpack never consumes gift')
   await page.getByRole('button',{name:'收好背包',exact:true}).click()
-  for(const [openName,closeName] of [['📖 夜班手册','合上手册'],['📚 翻翻《CT夜班二十页》','合上书，回科室'],['🏅 勋章墙','← 返回']]){
+  for(const [openName,closeName] of [['📖 夜班手册','合上手册'],['📚 已解锁书页','合上书，回科室'],['🏅 勋章墙','← 返回']]){
    await page.locator('[data-ch2-settlement]').getByRole('button',{name:openName,exact:true}).click()
    await page.getByRole('button',{name:closeName,exact:true}).click()
    assert.equal((await read(page)).dlc.ch2.shift,shift.id)
   }
   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth))
   await frozen(page)
-  await page.getByRole('button',{name:/进入：/}).click()
+  await page.getByRole('button',{name:/进入下一班|前往晨会/}).click()
   await page.locator(`[data-ch2-step="${CH2_SHIFTS[i+1].start}"]`).waitFor()
   assert.equal((await read(page)).dlc.ch2.shift,CH2_SHIFTS[i+1].id)
   await context.close()
  }
- console.log('PASS: all 5 settlement pages, reload, shop/backpack/sharing/manual/book/badges/mobile, explicit next, Chapter 1 and DLC counters preserved.')
+ console.log('PASS: all 5 settlement pages, reload, shop/backpack/no settlement gifting/manual/book/badges/mobile, last gift cutoff, explicit next, Chapter 1 and DLC counters preserved.')
 
  // Legacy stale grade before the examination must still display all five questions.
  const {context,page}=await open({shift:'c2am',stepId:'c2am_2',appliedSteps:['ch2-c2am_2']},{flags:{...base.flags,quiz2_grade:'S'}})
@@ -73,7 +76,7 @@ try{
  await frozen(page);await context.close()
  for(const progress of [{shift:'c2am',stepId:'c2am_3'},{done:true}]){
   const {context,page}=await open(progress,{flags:{...base.flags,quiz2_grade:'A'}})
-  if(progress.done)await page.getByText('🌀 第二章「快与狠」 · 完',{exact:true}).waitFor()
+  if(progress.done)await page.getByText('🌅 夜班交接完成 · 全章汇总',{exact:true}).waitFor()
   else await page.locator('[data-ch2-step="c2am_3"]').waitFor()
   assert.equal(await page.locator('[data-ch2-quiz]').count(),0);await context.close()
  }

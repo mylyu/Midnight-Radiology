@@ -1,0 +1,604 @@
+{
+  "baseline": "05889fa",
+  "date": "2026-09-24",
+  "purpose": "Historical test projection only. Reverse exact reviewed loop-parity changes, validating every hunk and the complete restored source; never substitute baseline before checking live source. New live gameplay/ledger/scan/observation tests validate intended behavior independently.",
+  "scope": [
+    "App: only imports, Ch2Screen integration and ending/settlement UI; first chapter and DR/DSA components remain frozen",
+    "Types: optional ch2 save data only",
+    "Story: CT acquisition copy, medically bounded result descriptions and new chapter-specific image aliases; original graph/rewards and approved voices unchanged"
+  ],
+  "files": [
+    {
+      "path": "app/src/App.tsx",
+      "edits": [
+        {
+          "afterStart": 3,
+          "before": [
+            "import { ch2StepForState, ch2BackgroundAsset, CH2_META, CH2_SHIFTS, CH2_BADGES, CH2_ACTIVE_BADGES, CH2_BADGES_LEGACY, CH2_CARDS, CH2_ACTIVE_CARDS, CH2_CARDS_LEGACY, CH2_BOOK_PAGES, CH2_IMAGE_CAPTIONS, QUIZ2, grayToHU, ch2Unlocked, tryUnlockCh2, ch2BookUnlocked, ch2PortraitAsset } from './game/ch2'"
+          ],
+          "after": [
+            "import { ch2StepForState, ch2BackgroundAsset, CH2_META, CH2_SHIFTS, CH2_BADGES, CH2_ACTIVE_BADGES, CH2_BADGES_LEGACY, CH2_BOOK_PAGES, CH2_IMAGE_CAPTIONS, QUIZ2, grayToHU, ch2Unlocked, tryUnlockCh2, ch2BookUnlocked, ch2PortraitAsset } from './game/ch2'"
+          ]
+        },
+        {
+          "afterStart": 8,
+          "before": [],
+          "after": [
+            "import { Ch2Settlement } from './components/Ch2Settlement'",
+            "import { Ch2ScanOverlay } from './components/Ch2ScanOverlay'",
+            "import { Ch2ObservationImage } from './components/Ch2ObservationImage'",
+            "import { CH2_SCANS, CH2_SCAN_TEXT } from './game/ch2-scans'",
+            "import { getCh2Observation } from './game/ch2-observations'",
+            "import { beginCh2Shift, CH2_CASE_COMPLETIONS, recordCh2Change } from './game/ch2-ledger'",
+            "import { ch2GiftChoices, giveCh2Gift } from './game/ch2-gifts'",
+            "import { startCh2Scan, completeCh2Scan, answerCh2Observation, acknowledgeCh2Observation } from './game/ch2-playback'"
+          ]
+        },
+        {
+          "afterStart": 1874,
+          "before": [
+            "  const step: Step = ch2StepForState(stepId, shift.steps[stepId] ?? { end: true }, state)"
+          ],
+          "after": [
+            "  const baseStep: Step = ch2StepForState(stepId, shift.steps[stepId] ?? { end: true }, state)",
+            "  const scan = CH2_SCANS[stepId]",
+            "  const scanSession = prog.scanSessions?.[stepId]",
+            "  const scanPending = phase === 'story' && !!scan && !scanSession?.completed",
+            "  const observation = getCh2Observation(stepId, state)",
+            "  const observationAnswer = observation && prog.observations?.[observation.id]",
+            "  const observationPending = phase === 'story' && !scanPending && !!observation && !observationAnswer?.acknowledged",
+            "  const observedChoice = observation?.choices.find(c => c.id === observationAnswer?.choiceId)",
+            "  const giftReply = prog.giftReply?.stepId === stepId ? prog.giftReply : undefined",
+            "  const gifts = phase === 'story' && !scanPending && !observationPending && !giftReply ? ch2GiftChoices(state, stepId) : []",
+            "  const step: Step = giftReply ? { speaker: giftReply.speaker as Step['speaker'], sprite: giftReply.sprite, text: giftReply.text, next: '@ch2gift-return' }",
+            "    : scanPending ? { ...baseStep, text: scan.mode === 'acquire' ? baseStep.text : CH2_SCAN_TEXT[stepId], image: undefined, windowTask: undefined, choices: undefined, next: undefined }",
+            "    : observationPending && observation ? { speaker: observation.speaker, image: observation.image, imageLabel: observation.imageLabel,",
+            "      text: observedChoice ? observedChoice.feedback : observation.prompt,",
+            "      ...(observedChoice ? { next: '@ch2observe-return' } : { choices: observation.choices.map(c => ({ text: c.text, next: `@ch2observe:${c.id}` })) }) }",
+            "    : gifts.length ? { ...baseStep, choices: [...gifts, ...(baseStep.choices ?? (baseStep.next ? [{ text: '接着聊', next: baseStep.next }] : []))] } : baseStep",
+            "  const presentationBlocked = scanPending || observationPending || !!giftReply"
+          ]
+        },
+        {
+          "afterStart": 1926,
+          "before": [
+            "    applied.current.add(key)"
+          ],
+          "after": [
+            "    const deferEffects = presentationBlocked",
+            "    if (!deferEffects) applied.current.add(key)"
+          ]
+        },
+        {
+          "afterStart": 1931,
+          "before": [
+            "    const sfxList = [step.sfx, step.sfx2].filter((n): n is NonNullable<typeof n> => !!n)"
+          ],
+          "after": [
+            "    const sfxList = deferEffects ? [] : [baseStep.sfx, baseStep.sfx2].filter((n): n is NonNullable<typeof n> => !!n)"
+          ]
+        },
+        {
+          "afterStart": 1943,
+          "before": [
+            "    const speakerSprite = step.speaker === 'luzhou' ? 'luzhou' : step.speaker ? `char_${step.speaker}` : undefined"
+          ],
+          "after": [
+            "    const speakerSprite = baseStep.speaker === 'luzhou' ? 'luzhou' : baseStep.speaker ? `char_${baseStep.speaker}` : undefined"
+          ]
+        },
+        {
+          "afterStart": 1945,
+          "before": [
+            "      step.sprite ??",
+            "      (step.speaker === 'me' ? 'me' : speakerSprite && cur.sprite === speakerSprite ? cur.sprite : undefined)",
+            "    const newView = { bg: step.bg ?? cur.bg, sprite: impliedSprite, sprite2: step.sprite2 }"
+          ],
+          "after": [
+            "      baseStep.sprite ??",
+            "      (baseStep.speaker === 'me' ? 'me' : speakerSprite && cur.sprite === speakerSprite ? cur.sprite : undefined)",
+            "    const newView = { bg: baseStep.bg ?? cur.bg, sprite: impliedSprite, sprite2: baseStep.sprite2 }"
+          ]
+        },
+        {
+          "afterStart": 1950,
+          "before": [
+            "    const newCard = step.card && !(state.cards ?? []).includes(step.card) ? step.card : undefined"
+          ],
+          "after": [
+            "    const newCard = !deferEffects && baseStep.card && !(state.cards ?? []).includes(baseStep.card) ? baseStep.card : undefined"
+          ]
+        },
+        {
+          "afterStart": 1952,
+          "before": [
+            "      let next = !already && step.effect ? applyEffect(s, step.effect) : s"
+          ],
+          "after": [
+            "      const before = beginCh2Shift(s, shift.id, { recovered: !s.dlc?.ch2?.loop && !!s.dlc?.ch2?.stepId && s.dlc.ch2.stepId !== shift.start })",
+            "      let next = !already && !deferEffects && baseStep.effect ? applyEffect(before, baseStep.effect) : before"
+          ]
+        },
+        {
+          "afterStart": 1960,
+          "before": [
+            "      if (step.event && !(next.events ?? []).includes(step.event)) next = { ...next, events: [...(next.events ?? []), step.event] }"
+          ],
+          "after": [
+            "      if (!deferEffects && baseStep.event && !(next.events ?? []).includes(baseStep.event)) next = { ...next, events: [...(next.events ?? []), baseStep.event] }",
+            "      if (!already && !deferEffects && (baseStep.effect || newCard || baseStep.event)) {",
+            "        next = recordCh2Change(before, next, key, (baseStep.text ?? '剧情进展').replaceAll('**', '').slice(0, 64), 'story')",
+            "      }",
+            "      if (!deferEffects && CH2_CASE_COMPLETIONS[stepId]) {",
+            "        next = recordCh2Change(next, next, `case:${stepId}`, CH2_CASE_COMPLETIONS[stepId], 'case')",
+            "      }"
+          ]
+        },
+        {
+          "afterStart": 1972,
+          "before": [
+            "  }, [stepId])"
+          ],
+          "after": [
+            "  }, [stepId, presentationBlocked])",
+            "",
+            "  // Animation time is saved separately from rewards; a missing/blocked audio never controls progress.",
+            "  useEffect(() => {",
+            "    if (!scanPending || !done || scanSession) return",
+            "    const startedAt = Date.now()",
+            "    update(s => startCh2Scan(s, stepId, startedAt))",
+            "  }, [scanPending, done, scanSession, stepId, update])",
+            "",
+            "  const finishScan = () => {",
+            "    update(s => completeCh2Scan(s, stepId))",
+            "    setShown(0)",
+            "    // Rebuilds remain on their window/image node; acquisitions proceed to first image/observation.",
+            "    if (scan?.mode === 'acquire' && baseStep.next) setStepId(baseStep.next)",
+            "  }"
+          ]
+        },
+        {
+          "afterStart": 2016,
+          "before": [
+            "  const blocked = !!(step.choices || step.end || step.windowTask || step.checklist) || shopOpen || bookOpen || manualOpen || badgeOpen || backpackOpen || phase !== 'story'"
+          ],
+          "after": [
+            "  const blocked = scanPending || !!(step.choices || step.end || step.windowTask || step.checklist) || shopOpen || bookOpen || manualOpen || badgeOpen || backpackOpen || phase !== 'story'"
+          ]
+        },
+        {
+          "afterStart": 2025,
+          "before": [],
+          "after": [
+            "    if (step.next === '@ch2gift-return') { update(s => patchCh2(s, { giftReply: undefined })); setShown(0); return }",
+            "    if (step.next === '@ch2observe-return') { update(s => acknowledgeCh2Observation(s, stepId)); setShown(0); return }"
+          ]
+        },
+        {
+          "afterStart": 2042,
+          "before": [],
+          "after": [
+            "    if (c.next.startsWith('@ch2observe:')) { update(s => answerCh2Observation(s, stepId, c.next.slice('@ch2observe:'.length))); setShown(0); return }",
+            "    if (c.next.startsWith('@ch2gift:')) { update(s => giveCh2Gift(s, stepId, c.next).state); setShown(0); return }"
+          ]
+        },
+        {
+          "afterStart": 2045,
+          "before": [
+            "    if (c.effect) update(s => applyEffect(s, c.effect))",
+            "    if (c.risk && Math.random() < c.risk.chance) {",
+            "      if (c.risk.effect) update(s => applyEffect(s, c.risk!.effect))"
+          ],
+          "after": [
+            "    const risk = !!c.risk && Math.random() < c.risk.chance",
+            "    if (c.effect || risk && c.risk?.effect) update(s => recordCh2Change(s,",
+            "      applyEffect(applyEffect(s, c.effect), risk ? c.risk?.effect : undefined), `choice:${stepId}`,",
+            "      c.text.replaceAll('**', ''), 'story'))",
+            "    if (risk && c.risk) {"
+          ]
+        },
+        {
+          "afterStart": 2062,
+          "before": [
+            "      update(s => s.badges.includes('window_master') ? s : { ...s, badges: [...s.badges, 'window_master'] })"
+          ],
+          "after": [
+            "      update(s => s.badges.includes('window_master') ? s : recordCh2Change(s, { ...s, badges: [...s.badges, 'window_master'] }, 'window-master', '完成脑窗与硬膜下窗调整', 'story'))"
+          ]
+        },
+        {
+          "afterStart": 2092,
+          "before": [
+            "  const leftSprite = spriteOf(view.sprite)",
+            "  const rightSprite = spriteOf(view.sprite2)"
+          ],
+          "after": [
+            "  const leftSprite = observationPending ? null : spriteOf(giftReply?.sprite ?? view.sprite)",
+            "  const rightSprite = observationPending || giftReply ? null : spriteOf(view.sprite2)"
+          ]
+        },
+        {
+          "afterStart": 2097,
+          "before": [
+            "  const ch2CardsGot = (state.cards ?? []).filter(id => CH2_CARDS[id] && !CH2_CARDS_LEGACY.includes(id)).length",
+            "  const ch2BadgesGot = state.badges.filter(b => CH2_BADGES[b] && !CH2_BADGES_LEGACY.includes(b)).length",
+            "  const ch2LegacyCards = (state.cards ?? []).filter(id => CH2_CARDS_LEGACY.includes(id)).length",
+            "  const ch2LegacyBadges = state.badges.filter(b => CH2_BADGES_LEGACY.includes(b)).length"
+          ],
+          "after": []
+        },
+        {
+          "afterStart": 2099,
+          "before": [
+            "    <div ref={stageRef} className=\"relative w-full h-full cursor-pointer\" data-ch2-step={stepId} data-ch2-phase={phase} onClickCapture={retryVoices} onClick={advance}>"
+          ],
+          "after": [
+            "    <div ref={stageRef} className=\"relative w-full h-full cursor-pointer\" data-ch2-step={stepId} data-ch2-phase={phase} data-ch2-observation={observationPending ? observation?.id : undefined} onClickCapture={retryVoices} onClick={advance}>"
+          ]
+        },
+        {
+          "afterStart": 2155,
+          "before": [
+            "      {step.image && (",
+            "        <div className=\"absolute inset-0 z-10 flex flex-col items-center justify-center pointer-events-none pb-40\">",
+            "          <img src={IMG(step.image)} className=\"max-h-[45%] portrait:max-h-[38%] max-w-[90%] object-contain rounded-lg border-4 border-slate-700 shadow-2xl pixel\" alt={CH2_IMAGE_CAPTIONS[step.image] ?? '影像或证物'} />",
+            "          {CH2_IMAGE_CAPTIONS[step.image] && <p className=\"mt-1 mx-2 px-2 py-1 rounded bg-slate-950/90 text-amber-100 text-[10px] md:text-xs text-center\">{CH2_IMAGE_CAPTIONS[step.image]}</p>}",
+            "          {step.imageLabel && <p className=\"mt-2 rounded border border-teal-600 bg-slate-950/95 px-3 py-1 text-xs md:text-sm text-teal-100\">{step.imageLabel}</p>}",
+            "        </div>",
+            "      )}"
+          ],
+          "after": [
+            "      {step.image && !scanPending && <Ch2ObservationImage image={step.image} label={step.imageLabel} caption={CH2_IMAGE_CAPTIONS[step.image]}",
+            "        regions={observationPending && observedChoice ? observation?.regions : undefined} />}"
+          ]
+        },
+        {
+          "afterStart": 2209,
+          "before": [
+            "      {phase === 'settle' && nextShiftDef && (",
+            "        <div data-ch2-settlement className=\"absolute inset-0 z-30 bg-slate-950/95 overflow-y-auto flex flex-col items-center gap-4 px-4 py-6 md:py-12\" onClick={e => e.stopPropagation()}>",
+            "          <p className=\"text-teal-300 tracking-[0.4em] text-sm\">第二章 · 快与狠</p>",
+            "          <h3 className=\"text-xl md:text-2xl text-center text-slate-100\">{shift.icon} {shift.title}「{shift.subtitle}」 · 完</h3>",
+            "          <p className=\"text-slate-400 text-sm\">进度已自动保存 · 💰 {state.gold} · 🏅 {state.badges.length} 枚勋章</p>",
+            "          <p className=\"max-w-lg text-sm text-slate-400 text-center\">{shift.kind === 'night' ? '把工作交接完，先吃口东西。下个班不会自己跑过来。' : '终于能从椅子上起来了。先歇会儿，再看下一张排班表。'}</p>",
+            "          <div className=\"grid grid-cols-2 gap-2 w-full max-w-lg\">",
+            "            <button onClick={() => setShopOpen(true)} className=\"rounded-lg border border-amber-600 bg-slate-800 px-3 py-3 text-amber-200\">🛒 去小卖部</button>",
+            "            <button onClick={() => setBackpackOpen(true)} className=\"rounded-lg border border-slate-600 bg-slate-800 px-3 py-3 text-slate-100\">🎒 背包与分享</button>",
+            "            <button onClick={() => setManualOpen(true)} className=\"rounded-lg border border-slate-600 bg-slate-800 px-3 py-3 text-slate-100\">📖 夜班手册</button>",
+            "            <button onClick={() => setBadgeOpen(true)} className=\"rounded-lg border border-slate-600 bg-slate-800 px-3 py-3 text-slate-100\">🏅 勋章墙</button>",
+            "            <button onClick={() => setBookOpen(true)} className=\"col-span-2 rounded-lg border border-slate-600 bg-slate-800 px-3 py-3 text-slate-100\">📚 翻翻《CT夜班二十页》</button>",
+            "          </div>",
+            "          <button onClick={nextShift}",
+            "            className=\"mt-2 px-8 py-3 rounded-lg bg-teal-500/90 text-slate-950 font-bold tracking-widest hover:bg-teal-400\">",
+            "            进入：{nextShiftDef.icon} {nextShiftDef.title}「{nextShiftDef.subtitle}」→",
+            "          </button>",
+            "          <button onClick={onExit} className=\"text-xs text-slate-500 hover:text-slate-300 underline\">先回大厅，稍后再来</button>",
+            "        </div>",
+            "      )}"
+          ],
+          "after": [
+            "      {(phase === 'settle' && nextShiftDef || phase === 'done') && <Ch2Settlement state={state} onNext={nextShift} onShop={() => setShopOpen(true)} onBackpack={() => setBackpackOpen(true)} onManual={() => setManualOpen(true)} onBadges={() => setBadgeOpen(true)} onBook={() => setBookOpen(true)} onExit={onExit} />}"
+          ]
+        },
+        {
+          "afterStart": 2211,
+          "before": [
+            "      {/* 第二章完 */}",
+            "      {phase === 'done' && (",
+            "        <div className=\"absolute inset-0 z-50 bg-slate-950/95 flex flex-col items-center justify-center gap-4 px-6\" onClick={e => e.stopPropagation()}>",
+            "          <p className=\"text-teal-300 tracking-[0.4em] text-sm\">🌀 第二章「快与狠」 · 完</p>",
+            "          <h3 className=\"text-xl text-slate-100 text-center\">夜班交接完成。<br />新机器要你看着，老周还在科里。</h3>",
+            "          <p className=\"text-slate-400 text-sm\">本章收集：📖 知识卡片 {ch2CardsGot}/{CH2_ACTIVE_CARDS.length} · 🏅 勋章 {ch2BadgesGot}/{CH2_ACTIVE_BADGES.length}</p>",
+            "          {ch2LegacyCards + ch2LegacyBadges > 0 && <p className=\"text-slate-500 text-xs\">旧版停颁内容不计入统计；你已保留的旧版卡片 {ch2LegacyCards} 张、徽章 {ch2LegacyBadges} 枚仍在夜班手册与勋章墙中。</p>}",
+            "          <p className=\"text-slate-500 text-xs\">彩蛋与钩子的落点，取决于你这一轮值班做过的选择。</p>",
+            "          <button onClick={onExit} className=\"mt-2 px-8 py-3 rounded-lg bg-teal-500/90 text-slate-950 font-bold tracking-widest hover:bg-teal-400\">回大厅 →</button>",
+            "        </div>",
+            "      )}"
+          ],
+          "after": [
+            "      {scanPending && scanSession && <Ch2ScanOverlay key={`${prog.loop?.runId}:${stepId}`} config={scan} startedAt={scanSession.startedAt} onDone={finishScan} onSkip={finishScan} />}"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/game/ch2.ts",
+      "edits": [
+        {
+          "afterStart": 211,
+          "before": [
+            "    image: 'ct_head_stroke',"
+          ],
+          "after": [
+            "    image: 'ct_ch2_stroke_plain_v2',"
+          ]
+        },
+        {
+          "afterStart": 214,
+          "before": [
+            "    title: '卒中CT：致密动脉征',",
+            "    body: '急性卒中平扫除了排出血，还要看血管：被血栓堵住的大脑中动脉密度比周围高，像一条隐约发白的带子——「致密动脉征」。它不是用来背的征象，是CTA该往哪儿看的指路牌。',",
+            "    image: 'ct_head_stroke',"
+          ],
+          "after": [
+            "    title: '卒中CT：平扫与血管图各看什么',",
+            "    body: '急性卒中的平扫先帮助排查出血，早期缺血改变可能很轻，单张切面看不出异常不能排除卒中。有时血栓会表现为致密动脉征，但不是每例都有，也不能只靠这一征象定论。CTA进一步显示血管，由医师结合完整序列判断闭塞位置。',",
+            "    image: 'ct_ch2_stroke_plain_v2',"
+          ]
+        },
+        {
+          "afterStart": 221,
+          "before": [
+            "    image: 'ct_cta',"
+          ],
+          "after": [
+            "    image: 'ct_ch2_stroke_cta_v2',"
+          ]
+        },
+        {
+          "afterStart": 252,
+          "before": [
+            "    body: '泌尿系结石的CT值几百到上千HU，比软组织白出几个量级，平扫上藏都没处藏——绞痛加血尿，平扫五分钟见分晓。增强反而添乱：对比剂排进肾盂输尿管，白花花一片，小结石直接淹死在里面。影像给的不只是「有没有」，还有位置、大小、梗阻程度——泌尿外科拿着这三样就能定方案。',",
+            "    image: 'ct_kidney_stone',"
+          ],
+          "after": [
+            "    body: '初次怀疑泌尿系结石时，平扫通常就能提供有用信息：不少结石比周围软组织亮。还要结合完整序列看位置、测大小、查有无梗阻，不能拿屏幕上的亮点估毫米。对比剂排进尿路后可能遮住小结石，但增强并非一概没用；还有其他疑问时，由医师决定后续方案。',",
+            "    image: 'ct_ch2_stone_v2',"
+          ]
+        },
+        {
+          "afterStart": 512,
+          "before": [
+            "  c2n1_m1: { speaker: 'he', sprite: 'char_he', sfx: 'vox_ch2_natural_he_v2', text: \"老爷子夜里坠床，要拍头颅CT。（小何跟着平车进门）养老院送来的，头磕在床头柜上。现在叫不太醒，右侧瞳孔有点大，急诊那边催着呢。\", next: 'c2n1_m2' },"
+          ],
+          "after": [
+            "  c2n1_m1: { speaker: 'he', sprite: 'char_he', sfx: 'vox_ch2_natural_he_v2', text: \"老爷子夜里坠床，要拍头颅CT。（小何跟着平车进门）养老院送来的，头磕在床头柜上。现在叫不太醒，瞳孔也不太对称，急诊那边催着呢。\", next: 'c2n1_m2' },"
+          ]
+        },
+        {
+          "afterStart": 522,
+          "before": [
+            "  c2n1_m7: { bg: 'bg_ctcontrol', speaker: 'sys', text: '定位像 → 设定范围 → 扫描。「嗡——」十几秒，第一幅横断图像跳上屏幕。', sfx: 'xray', next: 'c2n1_m8' },"
+          ],
+          "after": [
+            "  c2n1_m7: { bg: 'bg_ctcontrol', speaker: 'sys', text: '定位像确认，范围设好。检查床缓缓移动，机架开始采集，工作站等着接收数据。', next: 'c2n1_m8' },"
+          ]
+        },
+        {
+          "afterStart": 527,
+          "before": [
+            "  c2n1_w1ok: { speaker: 'sys', text: '灰雾散开了。左侧额颞部，颅骨内板下贴着一弯**新月形的高密度影**，脑室被压得偏了位。', image: 'ct_head_hema', next: 'c2n1_w2' },"
+          ],
+          "after": [
+            "  c2n1_w1ok: { speaker: 'sys', text: '你把鼠标停在屏幕右边。老周点点头：「这片沿着内板的白影，再换个窗口比一比。」', image: 'ct_head_hema', next: 'c2n1_w2' },"
+          ]
+        },
+        {
+          "afterStart": 552,
+          "before": [
+            "  c2n1_p_scan: { bg: 'bg_ctcontrol', speaker: 'sys', text: \"小伙子躺稳后，检查床缓缓进到机架里。采集结束，进度条转到了重建。\", sfx: 'xray', next: 'c2n1_p3' },",
+            "  c2n1_p3: { speaker: 'sys', text: \"平扫完成。老周沿着输尿管往下翻，在末端停住：**一颗约3mm的高密度小点，上游轻度扩张**。\", image: 'ct_kidney_stone', next: 'c2n1_p4' },",
+            "  c2n1_p4: { speaker: 'zhou', sprite: 'char_zhou', text: \"就在这儿，三毫米左右。位置、大小，还有上游扩张，记上，泌尿外科要看。\", image: 'ct_kidney_stone', next: 'c2n1_p5' },"
+          ],
+          "after": [
+            "  c2n1_p_scan: { bg: 'bg_ctcontrol', speaker: 'sys', text: \"小伙子躺稳后，检查床缓缓进到机架里。采集开始，工作站接收泌尿系平扫数据。\", next: 'c2n1_p3' },",
+            "  c2n1_p3: { speaker: 'sys', text: \"你留住了这一层。老周接过鼠标，沿着前后几层继续追，再打开测量工具。\", image: 'ct_ch2_stone_v2', next: 'c2n1_p4' },",
+            "  c2n1_p4: { speaker: 'zhou', sprite: 'char_zhou', text: \"就在这儿。大小得用测量工具量，位置和上游情况也要一起看，泌尿外科要这些。\", image: 'ct_ch2_stone_v2', next: 'c2n1_p5' },"
+          ]
+        },
+        {
+          "afterStart": 609,
+          "before": [
+            "  c2d2_lung_scan: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: \"大爷按提示屏住气。扫描完成，工作站收到胸部数据，你先打开了默认的厚层序列。\", sfx: 'xray', next: 'c2d2_4' },",
+            "  c2d2_4: { speaker: 'me', text: '（阅片）肺窗上一枚6mm的磨玻璃结节……等等，今天的图像上，它**时有时无**，有几层根本看不见。', image: 'ct_lung', queue: C2D2_QUEUE1, next: 'c2d2_5' },"
+          ],
+          "after": [
+            "  c2d2_lung_scan: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: \"大爷按提示屏住气。胸部数据开始传进工作站，重建列表里先排着默认的厚层序列。\", next: 'c2d2_4' },",
+            "  c2d2_4: { speaker: 'me', text: '（翻旧报告）上回记的是一枚小结节……等等，今天的厚层图像上，它**时有时无**，有几层根本看不见。', image: 'ct_lung', queue: C2D2_QUEUE1, next: 'c2d2_5' },"
+          ]
+        },
+        {
+          "afterStart": 620,
+          "before": [
+            "  c2d2_w1ok: { speaker: 'sys', text: '窗宽拉开到1500、窗位压到-500——肺野瞬间透亮，那枚6mm的磨玻璃结节，清清白白地躺在那里。', image: 'ct_lung', next: 'c2d2_7' },"
+          ],
+          "after": [
+            "  c2d2_w1ok: { speaker: 'sys', text: '老周把这一层和旧片并排放好，又翻过前后相邻的几层。不是结节跟人捉迷藏，是刚才那组图把它藏住了。', image: 'ct_lung', next: 'c2d2_7' },"
+          ]
+        },
+        {
+          "afterStart": 628,
+          "before": [
+            "  c2d2_gut_scan: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: \"急诊团队把腹痛病人送上床。按确认的方案完成扫描后，你调出腹部图像。\", sfx: 'xray', next: 'c2d2_10' },"
+          ],
+          "after": [
+            "  c2d2_gut_scan: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: \"急诊团队把腹痛病人送上床。你启动确认好的方案，工作站开始接收腹部数据。\", next: 'c2d2_10' },"
+          ]
+        },
+        {
+          "afterStart": 641,
+          "before": [
+            "  c2d2_trauma_scan: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: \"医护完成准备，先后按头颅和腹部方案采集。数据送往工作站重建，抢救室的电话一直没有挂。\", sfx: 'xray', next: 'c2d2_t1' },"
+          ],
+          "after": [
+            "  c2d2_trauma_scan: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: \"医护完成准备，先后按头颅和腹部方案采集。数据送往工作站重建，抢救室的电话一直没有挂。\", next: 'c2d2_t1' },"
+          ]
+        },
+        {
+          "afterStart": 645,
+          "before": [
+            "  c2d2_wrist_scan: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: \"学生把伤腕放稳。采集结束，工作站开始重建腕部切面。\", sfx: 'xray', next: 'c2d2_wrist_result' },"
+          ],
+          "after": [
+            "  c2d2_wrist_scan: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: \"学生把伤腕放稳。检查床移动到采集位置，工作站开始接收腕部数据。\", next: 'c2d2_wrist_result' },"
+          ]
+        },
+        {
+          "afterStart": 702,
+          "before": [
+            "  c2n3_m5: { bg: 'bg_ctcontrol', speaker: 'me', text: '开机、定位像、扫描——「嗡——」', sfx: 'xray', dnt: 24, next: 'c2n3_m6' },",
+            "  c2n3_m6: { speaker: 'sys', text: '【老人躁动，图像蒙了一层运动伪影。怎么办？】', image: 'ct_motion', dnt: 26, choices: ["
+          ],
+          "after": [
+            "  c2n3_m5: { bg: 'bg_ctcontrol', speaker: 'me', text: '定位像确认，头颅平扫开始。老人还不太安稳，小唐隔着玻璃留意着他。', dnt: 24, next: 'c2n3_m6' },",
+            "  c2n3_m6: { speaker: 'sys', text: '【这组图像有重影，接下来怎么办？】', image: 'ct_motion', dnt: 26, choices: ["
+          ]
+        },
+        {
+          "afterStart": 709,
+          "before": [
+            "  c2n3_repeat_scan: { bg: 'bg_ctcontrol', speaker: 'sys', text: \"头托与固定垫调整好，人员退出机房。受影响范围补扫完成，新的序列传到了工作站。\", sfx: 'xray', next: 'c2n3_m8' },",
+            "  c2n3_m8: { speaker: 'sys', text: '平扫图像：**各脑叶未见明确高密度出血灶，左侧大脑中动脉走行区隐约密度偏高**——「致密动脉征」！', image: 'ct_head_stroke', card: 'stroke_ct_sign', dnt: 33, next: 'c2n3_m9' },",
+            "  c2n3_m9: { speaker: 'zhou', sprite: 'char_zhou', text: \"平扫没看到明确出血。我把结果报给卒中团队，**用药由他们评估**。CTA的准备接上。\", dnt: 38, image: 'ct_head_stroke', next: 'c2n3_cta_scan' },",
+            "  c2n3_cta_scan: { bg: 'bg_ctcontrol', speaker: 'sys', text: \"对比剂按方案团注，确认动脉强化后完成CTA采集，工作站开始重建血管图像。\", sfx: 'xray', next: 'c2n3_m10' },",
+            "  c2n3_m10: { speaker: 'me', text: \"CTA图像重建出来了。老周沿血管翻看片子，在左侧大脑中动脉M1段停住：「这里闭了。」\", image: 'ct_cta', card: 'cta_intro', dnt: 44, next: 'c2n3_m11' },",
+            "  c2n3_m11: { speaker: 'he', phone: 'char_he', text: '溶栓药已上！……M1段闭塞？！马上联系上级医院，**取栓绿道同步启动**——', dnt: 52, image: 'ct_cta', next: 'c2n3_m12' },"
+          ],
+          "after": [
+            "  c2n3_repeat_scan: { bg: 'bg_ctcontrol', speaker: 'sys', text: \"头托与固定垫调整好，人员退出机房。你按确认的范围启动补扫，留意着新的数据进度。\", next: 'c2n3_m8' },",
+            "  c2n3_m8: { speaker: 'sys', text: '新的平扫序列清楚多了。老周逐层核对：「**没看到明确出血。**早期缺血可能不显眼，还得接着看血管。」', image: 'ct_ch2_stroke_plain_v2', card: 'stroke_ct_sign', dnt: 33, next: 'c2n3_m9' },",
+            "  c2n3_m9: { speaker: 'zhou', sprite: 'char_zhou', text: \"我把平扫结果报给卒中团队，**用药由他们评估**。CTA的准备接上。\", dnt: 38, image: 'ct_ch2_stroke_plain_v2', next: 'c2n3_cta_scan' },",
+            "  c2n3_cta_scan: { bg: 'bg_ctcontrol', speaker: 'sys', text: \"对比剂按方案团注。确认动脉强化，CTA开始采集，工作站准备重建血管图像。\", next: 'c2n3_m10' },",
+            "  c2n3_m10: { speaker: 'me', text: \"CTA图像重建出来了。老周核对患者方向，沿血管翻看完整序列，在**患者左侧大脑中动脉M1段**停住：「这一段中断了。」\", image: 'ct_ch2_stroke_cta_v2', imageLabel: '冠状位血管重建｜画面右侧为患者左侧', card: 'cta_intro', dnt: 44, next: 'c2n3_m11' },",
+            "  c2n3_m11: { speaker: 'he', phone: 'char_he', text: '溶栓药已上！……M1段闭塞？！马上联系上级医院，**取栓绿道同步启动**——', dnt: 52, image: 'ct_ch2_stroke_cta_v2', imageLabel: '冠状位血管重建｜画面右侧为患者左侧', next: 'c2n3_m12' },"
+          ]
+        },
+        {
+          "afterStart": 728,
+          "before": [
+            "  c2n3_coronary_scan: { bg: 'bg_ctcontrol', speaker: 'sys', text: \"心内和影像科共同确认冠脉CTA方案，团队完成准备。心电同步采集结束，工作站开始重建冠脉序列。\", sfx: 'xray', next: 'c2n3_coronary_slices' },"
+          ],
+          "after": [
+            "  c2n3_coronary_scan: { bg: 'bg_ctcontrol', speaker: 'sys', text: \"心内和影像科共同确认冠脉CTA方案，团队完成准备。心电同步采集开始，工作站等着接收冠脉数据。\", next: 'c2n3_coronary_slices' },"
+          ]
+        },
+        {
+          "afterStart": 745,
+          "before": [
+            "  c2n3_mystery_scan: { bg: 'bg_ctcontrol', speaker: 'sys', text: \"老人慢慢躺下，双手交叠在腹前。检查床驶过机架；采集结束，控制台开始重建。\", sfx: 'xray', next: 'c2n3_x8' },"
+          ],
+          "after": [
+            "  c2n3_mystery_scan: { bg: 'bg_ctcontrol', speaker: 'sys', text: \"老人慢慢躺下，双手交叠在腹前。检查床驶入机架，控制台开始接收数据。\", next: 'c2n3_x8' },"
+          ]
+        },
+        {
+          "afterStart": 755,
+          "before": [
+            "  // 两个病例仅连续对话推进；沿用旧节点 ID，兼容旧进度。"
+          ],
+          "after": [
+            "  // 沿用旧节点 ID，观察与扫描演出由第二章独立配置接入。"
+          ]
+        },
+        {
+          "afterStart": 763,
+          "before": [
+            "  c2d4_7: {\"speaker\":\"me\",\"text\":\"还是这台机器，换个协议，看见的东西就不一样了。\",\"next\":\"c2d4_8\"},"
+          ],
+          "after": [
+            "  c2d4_7: {\"speaker\":\"me\",\"text\":\"我把确认过的主动脉方案调出来，跟老周再对一遍范围。\",\"next\":\"c2d4_8\"},"
+          ]
+        },
+        {
+          "afterStart": 765,
+          "before": [
+            "  c2d4_aorta_scan: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: \"准备完成。对比剂团注后，系统按确认的方案完成主动脉容积采集，检查床缓缓退回。\", sfx: 'xray', next: 'c2d4_t1' },",
+            "  c2d4_t1: {\"speaker\":\"sys\",\"text\":\"扫描结束，完整胸部切面铺开，肺、心脏和脊柱都在图上。主任沿着主动脉逐层往下翻，停在一处分成两个腔的血管截面上。\",\"image\":\"ch2_ct_aortic_wide\",\"next\":\"c2d4_t1ok\"},"
+          ],
+          "after": [
+            "  c2d4_aorta_scan: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: \"准备完成。对比剂团注后，系统按确认的时机开始主动脉容积采集，检查床平稳移动。\", next: 'c2d4_t1' },",
+            "  c2d4_t1: {\"speaker\":\"sys\",\"text\":\"你把刚才留意的那一层停住。主任拖过相邻切面，对照着看了一遍。\",\"image\":\"ch2_ct_aortic_wide\",\"next\":\"c2d4_t1ok\"},"
+          ]
+        },
+        {
+          "afterStart": 776,
+          "before": [
+            "  c2d4_metal_scan: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: \"老爷子躺上检查床，头部平扫完成。控制台把采集数据送去重建，你等着第一组图。\", sfx: 'xray', next: 'c2d4_12a' },",
+            "  c2d4_12a: {\"speaker\":\"sys\",\"text\":\"头部图像出来后，颅底附近横着几道黑白条纹。你往下翻了一层，条纹更重，像有什么东西把画面扯开了。\",\"image\":\"ct_dental_metal_teaching\",\"next\":\"c2d4_13\"},",
+            "  c2d4_13: {\"speaker\":\"me\",\"text\":\"周师傅，机器又出问题了？上午还好好的。\",\"image\":\"ct_dental_metal_teaching\",\"next\":\"c2d4_14\"},"
+          ],
+          "after": [
+            "  c2d4_metal_scan: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: \"老爷子躺上检查床，头部平扫开始。控制台接收采集数据，你等着第一组重建图。\", next: 'c2d4_12a' },",
+            "  c2d4_12a: {\"speaker\":\"sys\",\"text\":\"你把条纹最重的口腔邻近层面留在屏幕上。老周拖动序列，和上面的层面对照了一下。\",\"image\":\"ct_dental_metal_teaching\",\"next\":\"c2d4_13\"},",
+            "  c2d4_13: {\"speaker\":\"me\",\"text\":\"同一套图，有的层面轻，有的重。这些条纹到底从哪儿拖出来的？\",\"image\":\"ct_dental_metal_teaching\",\"next\":\"c2d4_14\"},"
+          ]
+        },
+        {
+          "afterStart": 788,
+          "before": [
+            "  c2d4_m1: {\"speaker\":\"sys\",\"text\":\"医师确认颅底附近的图像不足以判断病情。去除活动义齿后，团队只补充了必要范围的扫描，条纹明显减轻。新旧图像一起保留，交由医师完成判读。\",\"next\":\"c2d4_m2\"},",
+            "  c2d4_m2: {\"speaker\":\"sys\",\"text\":\"老爷子拿回义齿盒，开盖数了数。老周乐了：「放心，一颗没扣。」老爷子把盒子揣好：「这可说不准，你们机器刚才照得那么狠。」\",\"next\":\"c2d4_m3\"},"
+          ],
+          "after": [
+            "  c2d4_m1: {\"speaker\":\"sys\",\"text\":\"医师确认受影响的层面不足以判断。活动义齿已取下，团队重新摆好位置，只启动必要范围的补扫。\",\"next\":\"c2d4_m2\"},",
+            "  c2d4_m2: {\"speaker\":\"sys\",\"text\":\"新序列上的条纹减轻了，两组图一起保留。老爷子拿回义齿盒，开盖数了数。老周乐了：「放心，一颗没扣。」老爷子把盒子揣好：「这可说不准，你们机器刚才照得那么狠。」\",\"next\":\"c2d4_m3\"},"
+          ]
+        },
+        {
+          "afterStart": 906,
+          "before": [
+            "  c2n5_child_scan: { bg: 'bg_ctcontrol', speaker: 'sys', text: \"小唐答应等他回急诊问问糖的事。男孩躺稳，人员退出机房；按儿童协议完成采集，新的头颅序列开始重建。\", sfx: 'xray', next: 'c2n5_m17' },"
+          ],
+          "after": [
+            "  c2n5_child_scan: { bg: 'bg_ctcontrol', speaker: 'sys', text: \"小唐答应等他回急诊问问糖的事。男孩躺稳，人员退出机房；确认儿童协议，新的头颅采集开始了。\", next: 'c2n5_m17' },"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/game/types.ts",
+      "edits": [
+        {
+          "afterStart": 138,
+          "before": [],
+          "after": [
+            "  /** 第二章经营账本；旧存档缺省，从恢复点起记，不补造历史。 */",
+            "  loop?: Ch2LoopProgress",
+            "  scanSessions?: Record<string, { startedAt: number; completed?: boolean }>",
+            "  observations?: Record<string, { choiceId: string; acknowledged?: boolean }>",
+            "  observationRewardShifts?: string[]",
+            "  giftReply?: { stepId: string; text: string; speaker?: string; sprite?: string }"
+          ]
+        },
+        {
+          "afterStart": 171,
+          "before": [],
+          "after": [
+            "export interface Ch2LedgerSnapshot {",
+            "  gold: number",
+            "  skill: number",
+            "  heart: number",
+            "  wealth: number",
+            "  ap: number",
+            "  items: string[]",
+            "  badges: string[]",
+            "  cards: string[]",
+            "  events: string[]",
+            "}",
+            "",
+            "export interface Ch2LedgerEntry {",
+            "  id: string",
+            "  shift: string",
+            "  label: string",
+            "  kind: 'story' | 'choice' | 'shop' | 'gift' | 'quiz' | 'settlement' | 'case' | 'observation'",
+            "  delta: Pick<Ch2LedgerSnapshot, 'gold' | 'skill' | 'heart' | 'wealth' | 'ap'>",
+            "  gained: { items: string[]; badges: string[]; cards: string[]; events: string[] }",
+            "  consumed: string[]",
+            "  flags: string[]",
+            "}",
+            "",
+            "export interface Ch2LoopProgress {",
+            "  version: 1",
+            "  runId: string",
+            "  currentShift: string",
+            "  shifts: Record<string, { start: Ch2LedgerSnapshot; recovered: boolean; settled?: Ch2LedgerSnapshot }>",
+            "  entries: Ch2LedgerEntry[]",
+            "  gifts: { shift: string; person: string; item: 'milktea' | 'snack'; node: string }[]",
+            "}",
+            ""
+          ]
+        }
+      ]
+    }
+  ]
+}
