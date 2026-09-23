@@ -1,5 +1,16 @@
 # 开发交接 · 2026-09-21
 
+## 2026-09-23：第一章三条配音按作者新要求重做（本地，待试听）
+
+- 分支 `codex/ch1-fan-worker-voices`，基点 `2d629e8`（该基点已推送 main 并成功部署 Pages）。本轮不推送或部署。
+- 作者明确授权本次第一章声音例外：老范开场老成；摔伤工人浑厚低沉、粗鲁一点；气胸男断续气促、可加语气词。全部 AuK-Flash text-only，无 `--audio` 或 `--ref_text`，不使用 reference。
+- 老范和工人台词不变；气胸男配音为“呃……医生……胸口，像针扎……喘……喘不上气。”，剧情文字仍不改。
+- `store.ts` 仅将 `vox_fan / vox_worker / vox_thin` 映射到三个新增带日期文件名，原音频、音量、其他播放逻辑不变。已核对这三个别名只在第一章使用。不改第二章、DR/DSA、图片、选项、存档或奖励。
+- 原始 WAV、失败候选保存在相邻 AuK 的 `outputs/ch1-fan-worker-20260923/`。首轮老范重复尾句、工人表现不合适，均未接入。保留种子、模型和命令的记录：`docs/ch1-voices-20260923.json`；自动语音评审不能代替作者试听批准。
+- 新旧对比：`app/public/ch1-voice-preview.html`。保留全句喘息与停顿，只作整体响度匹配和格式转换，无变调或变速。
+- 验证：`node tests/ch1-voice-revision.mjs`、`npm run build` 通过；Edge headless 实际加载并播放全部六条新旧音频，时长新版分别 3 / 4.5 / 6 秒、音量均 0.45。仍有原构建大包警告。自动音色检查首次在第三条遇到 CUDA 错误，重跑成功，未声称人工回听或作者认可。
+- 回退：revert 本次独立配音提交即可恢复三条旧文件引用；不要 hard reset。旧的第二章冻结测试锁死 `store.ts`，本次明确授权变更会触发它，未篡改该历史测试；本轮独立 `ch1-voice-revision.mjs` 对比基点，验证仅三个文件名映射有变。
+
 ## 最新已确认：第二章小凯替换为无 reference 的 B
 
 - 作者明确回复“B更好，替换吧。”已将试听 `auditions/kai-no-reference-v9/b.mp3` **逐字节复制**为正式游戏别名 `audio/vox_ch2_natural_kai_noref_b_v9.mp3`，SHA256 `236c804dc8f4137c8c5763ac72e54417d893b9ca6182ba7aed66aa9d9a7f812b`。不重新生成、不再压字、不重新编码。

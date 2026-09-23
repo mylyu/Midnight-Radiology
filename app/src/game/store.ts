@@ -167,7 +167,13 @@ const SFX_VOLUME: Partial<Record<SfxName, number>> = {
 export function playSfx(name: SfxName): Promise<boolean> {
   try {
     // ?v=2：2025年11月 16 条配音重制后破除浏览器旧缓存（同名文件内容已变）
-    const src = `${import.meta.env.BASE_URL}audio/${name}.mp3?v=2`
+    // Chapter 1 voice-only revision: retain old assets and volume, use new filenames to avoid stale audio caches.
+    const revisedVoiceFiles: Partial<Record<SfxName, string>> = {
+      vox_fan: 'vox_ch1_fan_mature_20260923',
+      vox_worker: 'vox_ch1_worker_bass_20260923',
+      vox_thin: 'vox_ch1_thin_breathless_20260923',
+    }
+    const src = `${import.meta.env.BASE_URL}audio/${revisedVoiceFiles[name] ?? name}.mp3?v=2`
     if (!audioCache[name]) audioCache[name] = new Audio(src)
     const a = audioCache[name]
     a.currentTime = 0

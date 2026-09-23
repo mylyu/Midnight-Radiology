@@ -1,0 +1,345 @@
+{
+  "baseline": "2d629e8",
+  "reference_audio_used": false,
+  "user_approved": false,
+  "status": "Local replacement; awaiting user audition, not deployed",
+  "takes": [
+    {
+      "id": "fan_v2",
+      "text": "设备科老范，送耗材来了。",
+      "description": "六十岁的老年男性，低沉宽厚、微微沙哑的嗓音，沉稳老成。心平气和、慢条斯理地打招呼，温和而随意，音量平稳。自然中文口语，干净人声，无音乐。",
+      "argv": [
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\.venv\\Scripts\\auk-infer.exe",
+        "--ckpt",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\ckpts\\AuK-Flash\\auk_flash.safetensors",
+        "--qwen_path",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\ckpts\\Qwen2.5-Omni-3B",
+        "--dtype",
+        "bf16",
+        "--device",
+        "cuda:0",
+        "--cpu_offload",
+        "--seed",
+        "2026092311",
+        "--gen_seconds",
+        "3.0",
+        "--instruction",
+        "请基于下面的描述: \"六十岁的老年男性，低沉宽厚、微微沙哑的嗓音，沉稳老成。心平气和、慢条斯理地打招呼，温和而随意，音量平稳。自然中文口语，干净人声，无音乐。\",生成语音内容\"设备科老范，送耗材来了。\".",
+        "--output",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch1-fan-worker-20260923\\fan_v2-raw.wav"
+      ],
+      "raw": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch1-fan-worker-20260923\\fan_v2-raw.wav",
+      "raw_sha256": "52006caa9a18b3c2edafa97a701bc86c35508a235a637959a66b6e74ecbb3c3d",
+      "reference_audio_used": false,
+      "transcript": "设备科 老范 送耗材来了",
+      "words": [
+        {
+          "text": "设",
+          "start": 0.0,
+          "end": 0.44
+        },
+        {
+          "text": "备",
+          "start": 0.44,
+          "end": 0.58
+        },
+        {
+          "text": "科",
+          "start": 0.58,
+          "end": 1.04
+        },
+        {
+          "text": " 老",
+          "start": 1.24,
+          "end": 1.36
+        },
+        {
+          "text": "范",
+          "start": 1.36,
+          "end": 1.98
+        },
+        {
+          "text": " 送",
+          "start": 2.18,
+          "end": 2.26
+        },
+        {
+          "text": "耗",
+          "start": 2.26,
+          "end": 2.42
+        },
+        {
+          "text": "材",
+          "start": 2.42,
+          "end": 2.6
+        },
+        {
+          "text": "来了",
+          "start": 2.6,
+          "end": 2.84
+        }
+      ],
+      "output": "app/public/audio/vox_ch1_fan_mature_20260923.mp3",
+      "sha256": "d930972c651850a77ddc95f8b7d8319f5a3dcca90d6eb46d072e18171feaa42b",
+      "processing": [
+        "ffmpeg",
+        "-y",
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-i",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch1-fan-worker-20260923\\fan_v2-raw.wav",
+        "-af",
+        "loudnorm=I=-20:TP=-2:LRA=7",
+        "-ar",
+        "24000",
+        "-ac",
+        "1",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch1-fan-worker-20260923\\vox_ch1_fan_mature_20260923.wav"
+      ],
+      "wav": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch1-fan-worker-20260923\\vox_ch1_fan_mature_20260923.wav"
+    },
+    {
+      "id": "worker_v2",
+      "text": "哎呦医生，轻点，胳膊不敢动了。",
+      "description": "A mature fifty-year-old man with a very deep bass voice, thick resonant chest tone and gravelly rough texture. A burly laborer grumbling bluntly through pain. Low pitched groan, gruff impatient conversational Mandarin, full heavy vocal weight. Dry clean speech recording.",
+      "argv": [
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\.venv\\Scripts\\auk-infer.exe",
+        "--ckpt",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\ckpts\\AuK-Flash\\auk_flash.safetensors",
+        "--qwen_path",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\ckpts\\Qwen2.5-Omni-3B",
+        "--dtype",
+        "bf16",
+        "--device",
+        "cuda:0",
+        "--cpu_offload",
+        "--seed",
+        "2026092312",
+        "--gen_seconds",
+        "4.5",
+        "--instruction",
+        "请基于下面的描述: \"A mature fifty-year-old man with a very deep bass voice, thick resonant chest tone and gravelly rough texture. A burly laborer grumbling bluntly through pain. Low pitched groan, gruff impatient conversational Mandarin, full heavy vocal weight. Dry clean speech recording.\",生成语音内容\"哎呦医生，轻点，胳膊不敢动了。\".",
+        "--output",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch1-fan-worker-20260923\\worker_v2-raw.wav"
+      ],
+      "raw": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch1-fan-worker-20260923\\worker_v2-raw.wav",
+      "raw_sha256": "646c6b5d883844eb8eae7ea22b691f4356084f8fb939074d4e07945d200ae388",
+      "reference_audio_used": false,
+      "transcript": "哎呦 医生 轻点 胳膊不敢动了",
+      "words": [
+        {
+          "text": "哎",
+          "start": 0.0,
+          "end": 0.76
+        },
+        {
+          "text": "呦",
+          "start": 0.76,
+          "end": 1.06
+        },
+        {
+          "text": " 医",
+          "start": 1.06,
+          "end": 1.48
+        },
+        {
+          "text": "生",
+          "start": 1.48,
+          "end": 1.9
+        },
+        {
+          "text": " 轻",
+          "start": 2.26,
+          "end": 2.34
+        },
+        {
+          "text": "点",
+          "start": 2.34,
+          "end": 2.82
+        },
+        {
+          "text": " 胳",
+          "start": 3.24,
+          "end": 3.36
+        },
+        {
+          "text": "膊",
+          "start": 3.36,
+          "end": 3.44
+        },
+        {
+          "text": "不",
+          "start": 3.44,
+          "end": 3.74
+        },
+        {
+          "text": "敢",
+          "start": 3.74,
+          "end": 3.88
+        },
+        {
+          "text": "动",
+          "start": 3.88,
+          "end": 4.16
+        },
+        {
+          "text": "了",
+          "start": 4.16,
+          "end": 4.48
+        }
+      ],
+      "output": "app/public/audio/vox_ch1_worker_bass_20260923.mp3",
+      "sha256": "0d2f96f356c470547b2ff6ad6e9d758cd201c63b2c019aab7a18b3624aec4b47",
+      "processing": [
+        "ffmpeg",
+        "-y",
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-i",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch1-fan-worker-20260923\\worker_v2-raw.wav",
+        "-af",
+        "loudnorm=I=-20:TP=-2:LRA=7",
+        "-ar",
+        "24000",
+        "-ac",
+        "1",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch1-fan-worker-20260923\\vox_ch1_worker_bass_20260923.wav"
+      ],
+      "wav": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch1-fan-worker-20260923\\vox_ch1_worker_bass_20260923.wav"
+    },
+    {
+      "id": "thin",
+      "text": "呃……医生……胸口，像针扎……喘……喘不上气。",
+      "description": "年轻男性患者，胸痛难受，呼吸急促，说话上气不接下气。气息短，声音虚弱，断断续续说几个字就停下来吸气，喘息清楚但不夸张，不大喊。自然痛苦的口语，干净人声，无音乐。",
+      "argv": [
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\.venv\\Scripts\\auk-infer.exe",
+        "--ckpt",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\ckpts\\AuK-Flash\\auk_flash.safetensors",
+        "--qwen_path",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\ckpts\\Qwen2.5-Omni-3B",
+        "--dtype",
+        "bf16",
+        "--device",
+        "cuda:0",
+        "--cpu_offload",
+        "--seed",
+        "2026092303",
+        "--gen_seconds",
+        "6.0",
+        "--instruction",
+        "请基于下面的描述: \"年轻男性患者，胸痛难受，呼吸急促，说话上气不接下气。气息短，声音虚弱，断断续续说几个字就停下来吸气，喘息清楚但不夸张，不大喊。自然痛苦的口语，干净人声，无音乐。\",生成语音内容\"呃……医生……胸口，像针扎……喘……喘不上气。\".",
+        "--output",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch1-fan-worker-20260923\\thin-raw.wav"
+      ],
+      "raw": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch1-fan-worker-20260923\\thin-raw.wav",
+      "raw_sha256": "cc883191bc38dec4a510dcc1654d1a425a3b9ccff564dc10d8d8b708630312e2",
+      "reference_audio_used": false,
+      "transcript": "呃 医生 胸口 像针扎 喘 喘不上气",
+      "words": [
+        {
+          "text": "呃",
+          "start": 0.6200000000000001,
+          "end": 1.04
+        },
+        {
+          "text": " 医",
+          "start": 1.22,
+          "end": 1.28
+        },
+        {
+          "text": "生",
+          "start": 1.28,
+          "end": 2.1
+        },
+        {
+          "text": " 胸",
+          "start": 2.32,
+          "end": 2.48
+        },
+        {
+          "text": "口",
+          "start": 2.48,
+          "end": 3.2
+        },
+        {
+          "text": " 像",
+          "start": 3.36,
+          "end": 3.42
+        },
+        {
+          "text": "针",
+          "start": 3.42,
+          "end": 3.68
+        },
+        {
+          "text": "扎",
+          "start": 3.68,
+          "end": 4.24
+        },
+        {
+          "text": " 喘",
+          "start": 4.44,
+          "end": 5.04
+        },
+        {
+          "text": " 喘",
+          "start": 5.26,
+          "end": 5.36
+        },
+        {
+          "text": "不",
+          "start": 5.36,
+          "end": 5.5
+        },
+        {
+          "text": "上",
+          "start": 5.5,
+          "end": 5.62
+        },
+        {
+          "text": "气",
+          "start": 5.62,
+          "end": 5.9
+        }
+      ],
+      "output": "app/public/audio/vox_ch1_thin_breathless_20260923.mp3",
+      "sha256": "939970bea5252a7cc14c096b3973cd7d8fc7f220b8f3c6358e6ec97a43c72659",
+      "processing": [
+        "ffmpeg",
+        "-y",
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-i",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch1-fan-worker-20260923\\thin-raw.wav",
+        "-af",
+        "loudnorm=I=-20:TP=-2:LRA=7",
+        "-ar",
+        "24000",
+        "-ac",
+        "1",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch1-fan-worker-20260923\\vox_ch1_thin_breathless_20260923.wav"
+      ],
+      "wav": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch1-fan-worker-20260923\\vox_ch1_thin_breathless_20260923.wav"
+    }
+  ],
+  "automated_audio_review": [
+    {
+      "id": "fan_v2",
+      "answer": "嗯…声音听起来比较低沉浑厚，有点粗哑，像是成熟或者年长的人。没有喘息和停顿。你要是还有啥想法或者疑问，随时跟我说哈。",
+      "method": "Automated audio model; not human approval"
+    },
+    {
+      "id": "worker_v2",
+      "answer": "声音听起来低沉浑厚，有点粗哑，像是成熟的人。没有喘息和停顿。你要是还有啥想法，随时跟我说哈。",
+      "method": "Automated audio model; not human approval"
+    },
+    {
+      "id": "thin",
+      "answer": "嗯…声音听起来比较低沉浑厚，有点粗哑，像是成熟或者年长的人。有喘息，还有停顿。你要是还有啥想法或者疑问，随时跟我说哈。",
+      "method": "Automated audio model; not human approval"
+    }
+  ]
+}
