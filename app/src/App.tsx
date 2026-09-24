@@ -10,6 +10,8 @@ import { Ch2Settlement } from './components/Ch2Settlement'
 import { Ch2ScanOverlay } from './components/Ch2ScanOverlay'
 import { Ch2ObservationImage } from './components/Ch2ObservationImage'
 import { Ch2MysteryMedia, Ch2MysterySound } from './components/Ch2MysteryMedia'
+import { Ch2DawnScene } from './components/Ch2DawnScene'
+import { CH2_DAWN_SHOTS } from './game/ch2-dawn'
 import { CH2_SCANS, CH2_SCAN_TEXT } from './game/ch2-scans'
 import { getCh2Observation } from './game/ch2-observations'
 import { beginCh2Shift, CH2_CASE_COMPLETIONS, recordCh2Change } from './game/ch2-ledger'
@@ -2096,10 +2098,11 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
   const speakerMeta = step.speaker ? CHARACTERS[step.speaker] : undefined
   const visibleChoices = (step.choices ?? []).filter(c => condOk(state, c.cond))
   const nextShiftDef = CH2_SHIFTS[shiftIdx + 1]
+  const dawnShot = phase === 'story' ? CH2_DAWN_SHOTS[stepId] : undefined
 
   return (
     <div ref={stageRef} className="relative w-full h-full cursor-pointer" data-ch2-step={stepId} data-ch2-phase={phase} data-ch2-observation={observationPending ? observation?.id : undefined} onClickCapture={retryVoices} onClick={advance}>
-      <BgImg name={ch2BackgroundAsset(view.bg)} />
+      {dawnShot ? <Ch2DawnScene shot={dawnShot} /> : <BgImg name={ch2BackgroundAsset(view.bg)} />}
       <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-slate-950/80 to-transparent pointer-events-none" />
 
       {/* 顶部信息条 */}

@@ -5,6 +5,7 @@ import { CH2_SOCIAL_STEPS, ch2SocialStep } from './ch2-social.ts'
 import { CH2_PACING_STEPS, ch2PacingStep } from './ch2-pacing.ts'
 import { CH2_NEEDLE_STEPS, CH2_NEEDLE_EVIDENCE, ch2NeedleStep } from './ch2-needles.ts'
 import { CH2_TERMINAL_STEPS, CH2_TERMINAL_EVIDENCE, ch2TerminalStep } from './ch2-terminal.ts'
+import { CH2_DAWN_STEPS, ch2DawnStep } from './ch2-dawn.ts'
 
 /* ================= 第二章「快与狠」· CT篇 =================
  * 故事时间：2025年11月，新CT启用初期，五个值班跨约十天。
@@ -154,7 +155,7 @@ export function ch2StepForState(id: string, step: Step, state: Pick<GameState, '
     text = '周一早上八点，办公室先过昨夜交班：CT正常交接；远程终端保持离线。信息科今天接手查日志，周五反馈。' + reply + '老周把排班表推过来，你的名字在主值栏，他的在备班栏。'
   }
   const rendered = text === step.text && queue === step.queue ? step : { ...step, text, queue }
-  return ch2TerminalStep(id, ch2NeedleStep(id, ch2PacingStep(id, ch2SocialStep(id, rendered, state), state), state), state)
+  return ch2DawnStep(id, ch2TerminalStep(id, ch2NeedleStep(id, ch2PacingStep(id, ch2SocialStep(id, rendered, state), state), state), state), state)
 }
 
 /* 旧版停颁（病例替换及支线撤出）：保留定义与老存档记录，不计入收集分母。 */
@@ -660,6 +661,7 @@ const C2D2: Record<string, Step> = {
 
 /* ================= 第3夜「快」 ================= */
 const C2N3: Record<string, Step> = {
+  ...CH2_DAWN_STEPS,
   ...CH2_TERMINAL_STEPS.c2n3,
   ...CH2_SOCIAL_STEPS.c2n3,
   ...CH2_PACING_STEPS.c2n3,

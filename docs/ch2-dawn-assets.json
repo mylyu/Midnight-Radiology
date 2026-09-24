@@ -1,0 +1,36 @@
+{
+  "baseline": "b3de319",
+  "generator": "built-in image_gen",
+  "created": "2026-09-24",
+  "scene": "Third shift, after handover, first-person player beside Tang at existing east corridor window",
+  "camera": "presentation-only CSS pull-out / push-in / return to wide; no click gate; reduced-motion respected",
+  "assets": [
+    {
+      "file": "ch2_dawn_window_v1.png",
+      "sha256": "3729695006bdf69b72d98fdcf2bed0bee7c986aa41164b710fd738c568f578bc",
+      "width": 1672,
+      "height": 941,
+      "output": "app/public/assets/ch2_dawn_window_v1.png",
+      "source": "exec-17c087a1-43b9-4bb1-8023-233069c57b73.png",
+      "prompt": "Use case: illustration-story.\nAsset type: a finished 2048x1152 16:9 pixel-art visual-novel cinematic background, new scene for the Chinese hospital game Midnight Radiology.\nInput images: Image 1 is ENVIRONMENT/PIXEL STYLE reference only; Image 2 is CHARACTER IDENTITY reference for coworker nurse Tang only. Do not copy text or watermarks.\nPrimary request: a gentle early-November sunrise viewed together with Tang at the existing hospital corridor's east-facing large closed window, after a night shift. The player is the first-person camera standing beside her, so do NOT draw the player or assign the player's gender.\nScene: interior of the same modest county hospital, blue-green lower wall, pale worn upper wall, dark metal window mullions, broad window sill, small warm-lit ceiling fixture, beyond the glass a quiet Chinese county town of low tiled rooftops, a few apartment blocks, cool morning mist, a narrow gold sun just clearing the distant roofline. Calm intimate everyday moment, not a disaster or fantasy.\nTang: one single young adult woman, the SAME Tang as image 2, dark brown twin braids with white ties, pink nurse uniform with white apron/collar and white cap with pink band; seen from behind in a relaxed three-quarter profile, looking out rather than at camera, forearms resting on the sill, a plain dark coat folded over one arm. No flashlight, no clipboard. Her recognizable head and upper body around horizontal 41%, mid-height, sun around 58% so both survive a center portrait crop. Adult proportions, preserve hair/clothes identity, not a child.\nStyle: genuine coarse hand-placed pixel clusters, crisp stepped dark outlines, limited palette, shadow blues shifting to restrained apricot/gold light, matching references, no smooth gradients, no photorealism, no 3D, no vector. Cinematic wide framing with depth, quiet air, believable window and anatomy.\nComposition: this is ONE coherent shot suitable for slow digital zoom-out then zoom-in, not a storyboard or split panel. Visible generous environment at edges, important subject and sunrise central. No baked UI, bars, captions, readable signs, logos, watermark, signature or AI text. No extra people or duplicate reflections. No medical emergency, no ghosts, no roof access, no romantic props.",
+      "references": [
+        "app/public/assets/bg_corridor.png",
+        "app/public/assets/ch2_pixel_char_tang.png"
+      ],
+      "review": "Viewed original generated image: one Tang, twin braids / pink uniform / white apron and cap; warm sunrise; no text. Mobile composition made separately so subject and sun both visible."
+    },
+    {
+      "file": "ch2_dawn_window_portrait_v1.png",
+      "sha256": "ab69cdbf532644e175328b13cd2baa350e1eef77b5352441e6c1854642d15206",
+      "width": 1024,
+      "height": 1536,
+      "output": "app/public/assets/ch2_dawn_window_portrait_v1.png",
+      "source": "exec-ecae14e2-ce87-45e3-a6a0-a7cebb4709aa.png",
+      "prompt": "Use case: identity-preserve. Image 1 is the approved landscape cutscene, edit target and exact identity/style reference. Make a responsive VERTICAL 1024x1536 companion composition of the same moment for a mobile phone game. Keep the SAME nurse Tang, same twin braids, pink nurse uniform and white apron/cap, dark coat held in her arms, same rear three-quarter view at the CLOSED east hospital corridor window, same town skyline, distant hills and gold sunrise, same coarse pixel-cluster painting. Reframe/pull back just enough vertically so Tang's head and torso, the sill, and the sun are ALL within the central 80% width and upper 78% height: Tang lower-left/center at about x38%, sun above her shoulder to right about x68%, generous blue-orange morning sky. Preserve plausible perspective and exact identity. Player remains first person unseen, no extra people. One coherent vertically composed scene, not letterboxing, not collage. No UI, text, signs, labels, captions, borders, watermark, or new story objects. Do not blur or smooth the original pixel style.",
+      "references": [
+        "ch2_dawn_window_v1.png"
+      ],
+      "review": "Viewed original generated image: one Tang, twin braids / pink uniform / white apron and cap; warm sunrise; no text. Mobile composition made separately so subject and sun both visible."
+    }
+  ]
+}
