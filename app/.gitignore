@@ -12,6 +12,11 @@ dist
 dist-ssr
 *.local
 
+# Reproducible delivery copies; npm predev/prebuild derives them from retained PNGs.
+public/assets/optimized/
+src/lib/image-assets.generated.json
+image-delivery-report.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

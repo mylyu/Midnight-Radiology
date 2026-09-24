@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { CH2_TERMINAL_CUES, CH2_TERMINAL_PANELS } from '../game/ch2-terminal'
+import { imageAsset } from '../lib/image-assets'
 
 const quietKey = 'midnight-radiology-ch2-terminal-muted-v1'
 
@@ -74,7 +75,7 @@ export function Ch2MysteryMedia({ stepId, image, label }: { stepId: string; imag
     style={{ bottom: 'calc(var(--ch2-dialog-height, 240px) + 12px)' }}>
     {failed
       ? <p className="bg-slate-950/90 p-2 text-sm text-slate-200">近景暂未载入，仍可继续查看文字记录。</p>
-      : <img src={`${import.meta.env.BASE_URL}assets/${image}.png`} alt="机架上的远程终端"
+      : <img src={imageAsset(image)} alt="机架上的远程终端"
         onError={() => setFailed(true)} className="max-w-[90%] object-contain rounded border-2 border-slate-700 pixel"
         style={{ maxHeight: 'max(90px, calc(var(--apph, 100vh) - var(--ch2-dialog-height, 240px) - 205px))' }} />}
     {panel && <div className="max-w-[90%] rounded border border-slate-600 bg-slate-950/95 px-3 py-2 text-xs md:text-sm text-slate-300 font-mono">

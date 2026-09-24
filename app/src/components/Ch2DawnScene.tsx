@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import type { Ch2DawnShot } from '../game/ch2-dawn'
+import { imageAsset } from '../lib/image-assets'
 import './Ch2DawnScene.css'
 
 /** Presentation only: the existing dialogue remains the sole progression
@@ -19,8 +20,8 @@ export function Ch2DawnScene({ shot }: { shot: Ch2DawnShot }) {
     <div className="ch2-dawn-frame">
       <div className="ch2-dawn-camera" data-dawn-camera>
         <picture>
-          <source media="(orientation: portrait)" srcSet={`${import.meta.env.BASE_URL}assets/ch2_dawn_window_portrait_v1.png`} />
-          <img src={`${import.meta.env.BASE_URL}assets/ch2_dawn_window_v1.png`}
+          <source media="(orientation: portrait)" srcSet={imageAsset('ch2_dawn_window_portrait_v1')} />
+          <img src={imageAsset('ch2_dawn_window_v1')}
             alt="小唐靠着走廊窗台，看晨光越过县城屋顶" draggable={false}
             onLoad={reveal} onError={() => { setFailed(true); reveal() }} />
         </picture>

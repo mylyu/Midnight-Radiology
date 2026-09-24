@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { Ch2ObservationRegion } from '../game/ch2-observations'
+import { imageAsset } from '../lib/image-assets'
 
 interface Props {
   image: string
@@ -17,7 +18,7 @@ export function Ch2ObservationImage({ image, label, caption, regions }: Props) {
     <div className="relative max-w-[90%]">
       {failedImage === image
         ? <p role="status" className="rounded-lg border border-slate-600 bg-slate-950/95 p-4 text-sm text-slate-200">图像暂未载入，可以请同事带看并继续，或刷新重试。</p>
-        : <img src={`${import.meta.env.BASE_URL}assets/${image}.png`} onError={() => setFailedImage(image)}
+        : <img src={imageAsset(image)} onError={() => setFailedImage(image)}
           style={{ maxHeight: 'max(100px, calc(var(--apph, 100vh) - var(--ch2-dialog-height, 240px) - 110px))' }}
           className="max-w-full object-contain rounded-lg border-4 border-slate-700 shadow-2xl pixel" alt={caption ?? '影像或证物'} />}
       {failedImage !== image && regions?.map((region, index) => <span key={index} aria-label={region.label}

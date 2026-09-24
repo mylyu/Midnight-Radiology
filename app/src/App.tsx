@@ -22,30 +22,13 @@ import { startCh2Scan, completeCh2Scan, answerCh2Observation, acknowledgeCh2Obse
 import { patchCh2, ch2Phase, settleCh2, nextCh2Shift, redeemCh2Coffee, startCh2Quiz, answerCh2Quiz, nextCh2Question, ch2QuizScore } from './game/ch2-session'
 import type { GameState, Step, ShopItem, Choice, DlcProgress } from './game/types'
 import { freshState, loadState, saveState, wipeSave, applyEffect, condOk, dailyCheckin, meterLevel, playSfx, makeCredCode, verifyCredCode } from './game/store'
+import { imageAsset } from './lib/image-assets'
+import { SceneBackground } from './components/SceneBackground'
 
 type Screen = 'title' | 'select' | 'checkin' | 'night' | 'day' | 'badges' | 'quiz' | 'epilogue' | 'chapterEnd' | 'verify' | 'dlcHall' | 'dlc' | 'ch2'
 
-const IMG = (n: string) => `${import.meta.env.BASE_URL}assets/${n}.png`
+const IMG = imageAsset
 const LAST_NIGHT = NIGHTS.length
-
-// 预加载全部素材，避免剧情推进时图片即需加载造成闪屏
-const ALL_ASSETS = [
-  'bg_archive', 'bg_breakroom', 'bg_control', 'bg_corridor', 'bg_day', 'bg_title', 'bg_xrayroom',
-  'char_bai', 'char_f', 'char_fan', 'char_he', 'char_kai', 'char_lei', 'char_m', 'char_qian', 'char_tang', 'char_wen', 'char_zhou',
-  'pat_aunt', 'pat_child', 'pat_dad', 'pat_mystery', 'pat_oldman', 'pat_regular', 'pat_thin', 'pat_trauma', 'pat_worker',
-  'machine_mammo', 'machine_mobile', 'machine_reader', 'item_film', 'item_photo', 'char_jiang',
-  'item_tea', 'item_apple', 'item_glasses', 'item_notebook', 'item_screen', 'char_director', 'bg_morning', 'img_teaser',
-  'xray_battery', 'xray_coin', 'xray_fog', 'xray_fracture', 'xray_ghost', 'xray_normal', 'xray_pneumo', 'stamp',
-  // DLC 番外篇素材
-  'bg_drroom', 'bg_waiting', 'bg_cathlab', 'char_shao', 'char_du', 'char_qin', 'char_liao', 'pat_ge',
-  'img_dsa_normal', 'img_dsa_stenosis', 'img_dsa_stent',
-]
-let assetsPreloaded = false
-function preloadAssets() {
-  if (assetsPreloaded) return
-  assetsPreloaded = true
-  for (const n of ALL_ASSETS) { const img = new Image(); img.src = IMG(n) }
-}
 
 export default function App() {
   // 移动端 100vh 陷阱根治：实测 window.innerHeight 写入 --apph，地址栏伸缩/旋转/键盘弹出都实时跟随
@@ -65,7 +48,6 @@ export default function App() {
   const [state, setState] = useState<GameState | null>(null)
   const [checkinReward, setCheckinReward] = useState(0)
   const [dlcId, setDlcId] = useState<string | null>(null)
-  useEffect(preloadAssets, [])
 
   // 隐藏入口（教师验证入口右侧的 ▪）：#/dlc 或 #/hall → 内容大厅；#/dlc/dr、#/dlc/dsa 直达对应 DLC；#/ch2 直达第二章
   useEffect(() => {
@@ -299,13 +281,7 @@ export default function App() {
 /* ================= 自适应背景 ================= */
 /* 横屏：object-cover 铺满；竖屏：object-contain 完整显示整幅场景，空白处用同图模糊放大垫底 */
 function BgImg({ name, fixed = false }: { name: string; fixed?: boolean }) {
-  const pos = fixed ? 'fixed' : 'absolute'
-  return (
-    <>
-      <img src={IMG(name)} aria-hidden className={`${pos} inset-0 w-full h-full object-cover blur-2xl scale-125 opacity-60 pixel hidden portrait:block`} alt="" />
-      <img src={IMG(name)} className={`${pos} inset-0 w-full h-full object-cover portrait:object-contain portrait:scale-[1.65] portrait:-translate-y-[5%] pixel`} alt="" />
-    </>
-  )
+  return <SceneBackground name={name} fixed={fixed} />
 }
 
 /* 全屏切换：仅在支持 Fullscreen API 的浏览器渲染（安卓 Chrome 等）；微信/iOS 自动隐藏 */

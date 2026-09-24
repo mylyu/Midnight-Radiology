@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import { CH2_CT_GANTRY_CLIP, CH2_CT_MOTION, ch2CtBedPosition } from '../game/ch2-ct-motion'
 import { CH2_SCAN_ILLUSTRATION } from '../game/ch2-scans'
-
-const imageUrl = (name: string) => `${import.meta.env.BASE_URL}assets/${name}.png`
+import { imageAsset as imageUrl } from '../lib/image-assets'
 
 /** Stateless time input: reloading/backgrounding resumes at the saved scan time. */
 export function Ch2CtMotion({ progress }: { progress: number }) {

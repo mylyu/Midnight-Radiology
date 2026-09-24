@@ -4,6 +4,7 @@ import { getDlc } from '../game/dlc'
 import { CH2_STAT_KEYS, ch2NetChange } from '../game/ch2-ledger'
 import { ch2PayoffKeepsakes } from '../game/ch2-payoffs'
 import type { GameState } from '../game/types'
+import { SceneBackground } from './SceneBackground'
 
 type Props = {
   state: GameState
@@ -15,7 +16,6 @@ type Props = {
   onBook: () => void
   onExit: () => void
 }
-const asset = (name: string) => `${import.meta.env.BASE_URL}assets/${name}.png`
 const signed = (n: number) => n > 0 ? `+${n}` : String(n)
 const itemName = (id: string) => id === 'toolbox' ? '元件盒' : SHOP_ITEMS.find(item => item.id === id)?.name ?? id
 const metricStyle = 'rounded-xl border border-slate-600/90 bg-slate-900/90 p-3 shadow-lg'
@@ -46,7 +46,7 @@ export function Ch2Settlement({ state, onNext, onShop, onBackpack, onManual, onB
       : state.dlc?.[id]?.stepId ? '进行中 · 可从大厅继续' : '已开放 · 可从大厅进入'
   return <section data-ch2-settlement data-ch2-complete={complete ? 'true' : 'false'} aria-label={complete ? '第二章全章汇总' : '第二章班后经营'}
     className="absolute inset-0 z-30 cursor-default overflow-hidden" onClick={event => event.stopPropagation()}>
-    <img src={asset('bg_ctcontrol_day_ready')} alt="" className="absolute inset-0 h-full w-full object-cover pixel pointer-events-none" />
+    <SceneBackground name="bg_ctcontrol_day_ready" landscapeOnly />
     <div className="absolute inset-0 bg-slate-950/55 pointer-events-none" />
     <div className="relative mx-auto flex h-full w-full max-w-4xl flex-col px-3 py-3 md:px-6 md:py-5">
       <div data-ch2-settlement-scroll className="min-h-0 flex-1 overflow-y-auto pb-3 pr-1">

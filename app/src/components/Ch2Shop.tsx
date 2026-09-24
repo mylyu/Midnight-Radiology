@@ -4,9 +4,9 @@ import { buyCh2Item, CH2_ITEM_DESCRIPTIONS, ch2ItemUnavailable } from '../game/c
 import { ch2GiftSalesEnded } from '../game/ch2-gifts'
 import { ch2PayoffKeepsakes } from '../game/ch2-payoffs'
 import type { GameState } from '../game/types'
+import { imageAsset as image } from '../lib/image-assets'
 
 type Props = { state: GameState; update: (f: (s: GameState) => GameState) => void; onClose: () => void }
-const image = (name: string) => `${import.meta.env.BASE_URL}assets/${name}.png`
 
 /** Separate from Chapter 1's shop: its prices are shared, its counters are not. */
 export function Ch2Shop({ state, update, onClose }: Props) {
