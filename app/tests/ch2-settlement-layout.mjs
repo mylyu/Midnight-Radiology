@@ -1,9 +1,16 @@
 import assert from 'node:assert/strict'
 import { createRequire } from 'node:module'
-import { mkdirSync } from 'node:fs'
+import { mkdirSync, readFileSync } from 'node:fs'
 import { freshState, applyEffect } from '../src/game/store.ts'
 import { beginCh2Shift, recordCh2Change } from '../src/game/ch2-ledger.ts'
 import { settleCh2 } from '../src/game/ch2-session.ts'
+import { getDlc } from '../src/game/dlc.ts'
+const chapterNames = { cr: '第一章「老伙计」', ct: '第二章「快与狠」', us: '第三章「回声」', mri: '第四章「共振」', pet: '第五章「微光」' }
+const bus = readFileSync('../深夜影像科/全书剧情总线.md', 'utf8')
+for (const name of Object.values(chapterNames)) assert(bus.includes(name.slice(3)), `formal title ${name} exists in story bus`)
+const equipmentNames = { cr: '老伙计（CR · X光机）', ct: 'CT 扫描仪', us: '二手超声', mri: '3.0T 磁共振', dr: '楼上 DR 机房', dsa: '介入室 C型臂DSA' }
+const firstChapter = readFileSync('src/App.tsx', 'utf8').split('function DayScreen(')[1].split('function Panel(')[0]
+for (const name of Object.values(equipmentNames)) assert(firstChapter.includes(name), `${name} matches Chapter 1 equipment naming`)
 const require = createRequire(import.meta.url), { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright')
 const browser = await chromium.launch({ channel: 'msedge', headless: true })
 const out = process.env.LAYOUT_OUTPUT || '../../ch2-settlement-equipment-review'
@@ -44,10 +51,13 @@ try {
     assert.equal(await panel.locator('[data-ch2-equipment-overview]').count(), 1)
     assert.equal(await panel.locator('[data-equipment="cr"]').getAttribute('data-unlock'), 'complete')
     assert.equal(await panel.locator('[data-equipment="ct"]').getAttribute('data-unlock'), 'current')
-    for (const id of ['us', 'mri']) assert.equal(await panel.locator(`[data-equipment="${id}"]`).getAttribute('data-unlock'), 'locked')
+    for (const id of ['us', 'mri', 'pet']) assert.equal(await panel.locator(`[data-equipment="${id}"]`).getAttribute('data-unlock'), 'locked')
+    for (const [id, name] of Object.entries(chapterNames)) assert((await panel.locator(`[data-equipment="${id}"]`).innerText()).includes(name), `${id} uses its formal chapter name`)
+    for (const [id, name] of Object.entries(equipmentNames)) assert((await panel.locator(`[data-equipment="${id}"]`).innerText()).includes(name), `${id} keeps Chapter 1's equipment name`)
     for (const id of ['dr', 'dsa']) {
       assert.equal(await panel.locator(`[data-equipment="${id}"]`).getAttribute('data-unlock'), 'available')
       assert.match(await panel.locator(`[data-equipment="${id}"]`).innerText(), /已开放/)
+      assert((await panel.locator(`[data-equipment="${id}"]`).innerText()).includes(getDlc(id).title), `${id} matches the content hall title`)
     }
     assert.equal(await panel.locator('[data-ch2-stat="gold"]').getByText('680 金币', {exact:true}).count(), 1)
     assert.equal(await panel.locator('[data-ch2-stat="gold"]').getByText('本班 +300', {exact:true}).count(), 1)

@@ -9,43 +9,39 @@ export interface Ch2ScanOverlayProps {
   /** Persist this before mounting; key the component by run and step id. */
   startedAt: number
   onDone: () => void
-  /** Skip only the presentation. The caller must still show the observation. */
-  onSkip: () => void
   muted?: boolean
 }
 
 const soundUrl = (name: string) => `${import.meta.env.BASE_URL}audio/${name}.mp3`
 
-export function Ch2ScanOverlay({ config, startedAt, onDone, onSkip, muted = false }: Ch2ScanOverlayProps) {
+export function Ch2ScanOverlay({ config, startedAt, onDone, muted = false }: Ch2ScanOverlayProps) {
   const [frame, setFrame] = useState(() => ch2ScanFrame(config, startedAt))
   const [quiet, setQuiet] = useState(muted)
   const [imageFailed, setImageFailed] = useState(false)
   const completed = useRef(false)
   const panelRef = useRef<HTMLElement>(null)
-  const skipRef = useRef<HTMLButtonElement>(null)
-  const callbacks = useRef({ onDone, onSkip })
+  const doneCallback = useRef(onDone)
   const audioAllowed = !quiet && !muted
-  useEffect(() => { callbacks.current = { onDone, onSkip } }, [onDone, onSkip])
+  useEffect(() => { doneCallback.current = onDone }, [onDone])
   useEffect(() => {
     const priorFocus = document.activeElement
-    skipRef.current?.focus({ preventScroll: true })
+    panelRef.current?.focus({ preventScroll: true })
     return () => {
       if (priorFocus instanceof HTMLElement && priorFocus.isConnected) priorFocus.focus({ preventScroll: true })
     }
   }, [])
 
-  const finish = useCallback((skip: boolean) => {
+  const finish = useCallback(() => {
     if (completed.current) return
     completed.current = true
-    if (skip) callbacks.current.onSkip()
-    else callbacks.current.onDone()
+    doneCallback.current()
   }, [])
 
   useEffect(() => {
     const tick = () => {
       const next = ch2ScanFrame(config, startedAt)
       setFrame(next)
-      if (next.complete) finish(false)
+      if (next.complete) finish()
     }
     // setTimeout also handles a restored, already-completed scan without a render-time callback.
     const firstTick = window.setTimeout(tick, 0)
@@ -101,13 +97,15 @@ export function Ch2ScanOverlay({ config, startedAt, onDone, onSkip, muted = fals
     onKeyDown={event => {
       event.stopPropagation()
       if (event.key !== 'Tab') return
+      event.preventDefault()
       const buttons = panelRef.current?.querySelectorAll<HTMLButtonElement>('button:not(:disabled)')
-      if (!buttons?.length) return
-      const first = buttons[0], last = buttons[buttons.length - 1]
-      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus() }
-      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus() }
+      if (!buttons?.length) { panelRef.current?.focus(); return }
+      const controls = Array.from(buttons)
+      const index = controls.findIndex(button => button === document.activeElement)
+      const next = event.shiftKey ? (index <= 0 ? controls.length - 1 : index - 1) : (index + 1) % controls.length
+      controls[next].focus()
     }} style={style}>
-    <section className="ch2-scan-panel" ref={panelRef}>
+    <section className="ch2-scan-panel" ref={panelRef} tabIndex={-1} aria-label="正在处理图像，完成后自动显示">
       <div className="ch2-scan-kicker">{config.mode === 'acquire' ? 'CT 控制台' : '图像工作站'}</div>
       <h2>{config.title}</h2>
       {config.mode === 'acquire' ? <div className={`ch2-scan-device is-${frame.phase}`}>
@@ -126,9 +124,8 @@ export function Ch2ScanOverlay({ config, startedAt, onDone, onSkip, muted = fals
       <div className="ch2-scan-progress-number">{Math.round(frame.progress * 100)}%</div>
       <div className="ch2-scan-controls">
         <button type="button" onClick={() => setQuiet(value => !value)} aria-pressed={quiet || muted} disabled={muted}>{quiet || muted ? '设备声已关闭' : '关闭设备声'}</button>
-        <button ref={skipRef} type="button" className="ch2-scan-skip" onClick={() => finish(true)}>跳过演出</button>
       </div>
-      <small>跳过后仍需查看图像。演出时长不代表实际检查时长。</small>
+      <small>完成后自动显示图像。演出时长不代表实际检查时长。</small>
     </section>
   </div>
 }

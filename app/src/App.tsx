@@ -2209,7 +2209,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
       {/* 班次结算 */}
       {(phase === 'settle' && nextShiftDef || phase === 'done') && <Ch2Settlement state={state} onNext={nextShift} onShop={() => setShopOpen(true)} onBackpack={() => setBackpackOpen(true)} onManual={() => setManualOpen(true)} onBadges={() => setBadgeOpen(true)} onBook={() => setBookOpen(true)} onExit={onExit} />}
 
-      {scanPending && scanSession && <Ch2ScanOverlay key={`${prog.loop?.runId}:${stepId}`} config={scan} startedAt={scanSession.startedAt} onDone={finishScan} onSkip={finishScan} />}
+      {scanPending && scanSession && <Ch2ScanOverlay key={`${prog.loop?.runId}:${stepId}`} config={scan} startedAt={scanSession.startedAt} onDone={finishScan} />}
 
       {/* 小卖部 / 书 / 手册 / 勋章 */}
       {shopOpen && <Ch2Shop state={state} update={update} onClose={() => setShopOpen(false)} />}

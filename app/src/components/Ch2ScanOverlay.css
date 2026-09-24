@@ -1,6 +1,7 @@
 .ch2-scan-overlay { position: fixed; inset: 0; z-index: 95; background: rgba(3, 8, 19, .94); color: #e2e8f0; display: grid; place-items: center; padding: 20px; overflow: auto; overscroll-behavior: contain; touch-action: manipulation; }
 .ch2-scan-overlay * { box-sizing: border-box; }
 .ch2-scan-panel { width: min(100%, 590px); text-align: center; padding: 22px 28px; border: 2px solid #33465d; background: #0b1626; box-shadow: 8px 8px 0 #030813; }
+.ch2-scan-panel:focus { outline: none; }
 .ch2-scan-panel h2 { font-size: clamp(19px, 4vw, 25px); margin: 5px 0 12px; font-weight: 700; }
 .ch2-scan-kicker { color: #90a9bc; font-size: 12px; letter-spacing: .2em; }
 .ch2-scan-device { position: relative; aspect-ratio: 16 / 9; width: 100%; margin: auto; overflow: hidden; background: #14273b; border: 3px solid #33465d; image-rendering: pixelated; }
@@ -21,7 +22,6 @@
 .ch2-scan-controls { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
 .ch2-scan-controls button { color: #c5d3df; border: 1px solid #52647a; background: #172a40; padding: 8px 14px; cursor: pointer; border-radius: 5px; }
 .ch2-scan-controls button:focus-visible { outline: 3px solid #68d7c4; outline-offset: 3px; }
-.ch2-scan-controls .ch2-scan-skip { background: #244f54; border-color: #61998f; }
 .ch2-scan-controls button:disabled { opacity: .65; cursor: default; }
 .ch2-scan-panel small { color: #738ca2; font-size: 11px; display: block; line-height: 1.5; margin-top: 13px; }
 @keyframes ch2-recon-fill { 50% { background: #649195; box-shadow: inset 0 0 0 5px #adc3bc; } }

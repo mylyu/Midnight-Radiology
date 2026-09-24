@@ -5,7 +5,7 @@ import { mkdirSync, readFileSync } from 'node:fs'
 const require = createRequire(import.meta.url)
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright')
 const baseURL = process.env.GAME_URL || 'http://127.0.0.1:8798/'
-const output = process.env.SCAN_OUTPUT || '../../ch2-real-scan-review'
+const output = process.env.SCAN_OUTPUT || '../../ch2-unskippable-scan-review'
 mkdirSync(output, { recursive: true })
 const browser = await chromium.launch({ channel: 'msedge', headless: true })
 const errors = []
@@ -48,28 +48,41 @@ try {
       const mount = document.createElement('div')
       document.body.append(mount)
       const root = ReactDOM.createRoot(mount)
-      window.__scanStats = { done: 0, skip: 0, leak: 0 }
-      window.__mountScan = (id, startedAt = Date.now()) => {
+      window.__scanStats = { done: 0, leak: 0 }
+      window.__scanCompletions = []
+      window.__mountScan = (id, startedAt = Date.now(), muted = false) => {
         root.render(React.createElement('div', { onClick: () => window.__scanStats.leak++ }, React.createElement(Ch2ScanOverlay, {
-          key: id + startedAt, config: CH2_SCANS[id], startedAt,
-          onDone: () => { window.__scanStats.done++; root.render(null) },
-          onSkip: () => { window.__scanStats.skip++; root.render(null) },
+          key: id + startedAt, config: CH2_SCANS[id], startedAt, muted,
+          onDone: () => { window.__scanStats.done++; window.__scanCompletions.push({ id, elapsed: Date.now() - startedAt }); root.render(null) },
         })))
       }
       window.__mountScan('c2n1_m7')
     })
     await page.getByRole('dialog', { name: '头颅平扫' }).waitFor()
+    assert.equal(await page.getByRole('button', { name: /跳过/ }).count(), 0)
+    assert(await page.evaluate(() => document.activeElement?.classList.contains('ch2-scan-panel')), 'Focus begins on the non-actionable scan panel')
+    await page.keyboard.press('Enter')
+    await page.keyboard.press('Space')
+    await page.keyboard.press('Escape')
+    await page.keyboard.press('ArrowRight')
+    await page.locator('.ch2-scan-overlay').click({ position: { x: 3, y: 3 } })
+    assert.deepEqual(await page.evaluate(() => window.__scanStats), { done: 0, leak: 0 }, 'Keys and backdrop clicks cannot dismiss or advance the scan')
+    await page.keyboard.press('Tab')
+    await page.keyboard.press('Shift+Tab')
+    assert(await page.evaluate(() => !!document.activeElement?.closest('.ch2-scan-panel')), 'Keyboard focus remains inside the scan')
     await page.locator('.ch2-scan-room').waitFor()
     await page.waitForFunction(() => document.querySelector('.ch2-scan-room')?.naturalWidth > 0)
-    await page.waitForTimeout(1150)
+    await page.waitForTimeout(750)
     assert.equal(await page.locator('.ch2-scan-overlay').getAttribute('data-scan-phase'), 'acquire')
     const box = await page.locator('.ch2-scan-panel').boundingBox()
     assert(box.x >= 0 && box.x + box.width <= page.viewportSize().width)
     assert(box.y >= 0 && box.y + box.height <= page.viewportSize().height)
     await page.screenshot({ path: `${output}/${mobile ? 'mobile' : 'desktop'}-acquisition.png` })
-    await page.getByRole('button', { name: '跳过演出', exact: true }).click()
-    await page.locator('.ch2-scan-overlay').waitFor({ state: 'detached' })
-    assert.deepEqual(await page.evaluate(() => window.__scanStats), { done: 0, skip: 1, leak: 0 })
+    assert.equal(await page.evaluate(() => window.__scanStats.done), 0, 'Acquisition has not finished early')
+    await page.locator('.ch2-scan-overlay').waitFor({ state: 'detached', timeout: 4500 })
+    assert.deepEqual(await page.evaluate(() => window.__scanStats), { done: 1, leak: 0 })
+    const acquisition = await page.evaluate(() => window.__scanCompletions.at(-1))
+    assert(acquisition.elapsed >= 3000 && acquisition.elapsed < 4200, 'Unskippable acquisition waits the full three seconds')
     const firstAudio = await page.evaluate(() => window.__scanSound)
     assert.equal(firstAudio.length, 1, 'One recording starts once, without a loop or extra ready click')
     assert(firstAudio[0].src.includes('ch2_ct_real_scan_20260924'))
@@ -77,15 +90,22 @@ try {
 
     await page.evaluate(() => { window.__scanSound = []; window.__mountScan('c2n3_coronary_volume') })
     await page.getByRole('dialog', { name: '冠脉三维重建' }).waitFor()
+    assert.equal(await page.getByRole('button', { name: /跳过/ }).count(), 0)
+    await page.keyboard.press('Enter')
+    await page.keyboard.press('Space')
+    await page.keyboard.press('Escape')
+    assert.equal(await page.evaluate(() => window.__scanStats.done), 1, 'Reconstruction cannot be dismissed by keyboard')
     await page.screenshot({ path: `${output}/${mobile ? 'mobile' : 'desktop'}-reconstruction.png` })
     await page.locator('.ch2-scan-overlay').waitFor({ state: 'detached' })
-    assert.equal(await page.evaluate(() => window.__scanStats.done), 1)
+    assert.equal(await page.evaluate(() => window.__scanStats.done), 2)
+    const reconstruction = await page.evaluate(() => window.__scanCompletions.at(-1))
+    assert(reconstruction.elapsed >= 1500 && reconstruction.elapsed < 2700, 'Reconstruction waits the full 1.5 seconds')
     assert.deepEqual(await page.evaluate(() => window.__scanSound), [], 'Pure reconstruction never plays exposure or a synthetic ready click')
 
     await page.evaluate(() => window.__mountScan('c2n1_p_scan', Date.now() - 9000))
-    await page.waitForFunction(() => window.__scanStats.done === 2)
+    await page.waitForFunction(() => window.__scanStats.done === 3)
     await page.waitForTimeout(200)
-    assert.equal(await page.evaluate(() => window.__scanStats.done), 2, 'Restored overdue scan completes once')
+    assert.equal(await page.evaluate(() => window.__scanStats.done), 3, 'Restored overdue scan completes once')
 
     const start = Date.now()
     await page.evaluate(() => window.__mountScan('c2n3_m5'))
@@ -95,16 +115,23 @@ try {
     await page.evaluate(() => document.dispatchEvent(new Event('visibilitychange')))
     await page.locator('.ch2-scan-overlay').waitFor({ state: 'detached', timeout: 4500 })
     assert(Date.now() - start < 4200, 'Default acquisition completes in roughly three seconds, not five')
-    assert.deepEqual(await page.evaluate(() => window.__scanStats), { done: 3, skip: 1, leak: 0 })
+    assert.deepEqual(await page.evaluate(() => window.__scanStats), { done: 4, leak: 0 })
     await page.evaluate(() => { window.__scanSound = []; window.__mountScan('c2n1_m7', Date.now() - 1700) })
     await page.locator('.ch2-scan-overlay').waitFor()
     const restoredAudio = await page.evaluate(() => window.__scanSound)
     assert.equal(restoredAudio.length, 1)
     assert(restoredAudio[0].at >= 1.7 && restoredAudio[0].at < 2.2, 'Reload resumes the clip at elapsed time, never from its start')
     await page.locator('.ch2-scan-overlay').waitFor({ state: 'detached', timeout: 2000 })
-    assert.equal(await page.evaluate(() => window.__scanStats.done), 4)
+    assert.equal(await page.evaluate(() => window.__scanStats.done), 5)
+    // A globally muted reconstruction has no enabled buttons; Tab still cannot escape the modal.
+    await page.evaluate(() => window.__mountScan('c2d2_w1', Date.now(), true))
+    await page.getByRole('dialog', { name: '胸部薄层重建' }).waitFor()
+    await page.keyboard.press('Tab'); await page.keyboard.press('Shift+Tab')
+    assert(await page.evaluate(() => document.activeElement?.classList.contains('ch2-scan-panel')))
+    await page.locator('.ch2-scan-overlay').waitFor({ state: 'detached', timeout: 2500 })
+    assert.deepEqual(await page.evaluate(() => window.__scanStats), { done: 6, leak: 0 })
     await context.close()
   }
   assert.deepEqual(errors, [])
-  console.log('PASS actual recording HTTP hash and browser decode (3s/24kHz/mono); real pixel-room scan desktop/390px, one-shot recording, no extra clicks/reconstruction sounds, seek on restore, no click-through, skip, denied audio, visibility and mute, completion once.')
+  console.log('PASS actual recording HTTP hash/decode; unskippable full 3s acquisition/1.5s reconstruction desktop/390px, no button/key/backdrop bypass, focus containment, one-shot audio, restore, rejected audio, visibility/mute, completion once.')
 } finally { await browser.close() }

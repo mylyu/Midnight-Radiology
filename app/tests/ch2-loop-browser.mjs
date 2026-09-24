@@ -135,8 +135,8 @@ try {
           assert.equal((await read(page)).gold, running.gold)
           reloadedScan = true
         }
-        await page.getByRole('button', { name: '跳过演出', exact: true }).click()
-        await page.locator('.ch2-scan-overlay').waitFor({ state: 'detached' })
+        assert.equal(await page.getByRole('button', { name: /跳过/ }).count(), 0, 'Every scan/reconstruction must play to completion')
+        await page.locator('.ch2-scan-overlay').waitFor({ state: 'detached', timeout: 5000 })
         await page.waitForFunction(id => JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).dlc.ch2.scanSessions[id].completed, id)
         if (CH2_SCANS[id].mode === 'acquire') await waitStepChange(page, id)
         log.push({ kind: 'scan', id })

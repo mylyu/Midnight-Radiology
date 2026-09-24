@@ -40,8 +40,8 @@ export function Ch2Settlement({ state, onNext, onShop, onBackpack, onManual, onB
   const next = CH2_SHIFTS[CH2_SHIFTS.findIndex(row => row.id === shift.id) + 1]
   const scans = Object.values(progress?.scanSessions ?? {}).filter(row => row.completed).length
   const dlcStatus = (id: string) => !getDlc(id) ? 'DLC 预定 · 尚未开放'
-    : state.dlc?.[id]?.done ? '番外已完成 · 可从大厅重玩'
-      : state.dlc?.[id]?.stepId ? '番外进行中 · 可从大厅继续' : '番外已开放 · 可从大厅进入'
+    : state.dlc?.[id]?.done ? '已完成 · 可从大厅重玩'
+      : state.dlc?.[id]?.stepId ? '进行中 · 可从大厅继续' : '已开放 · 可从大厅进入'
   return <section data-ch2-settlement data-ch2-complete={complete ? 'true' : 'false'} aria-label={complete ? '第二章全章汇总' : '第二章班后经营'}
     className="absolute inset-0 z-30 cursor-default overflow-hidden" onClick={event => event.stopPropagation()}>
     <img src={asset('bg_ctcontrol_day_ready')} alt="" className="absolute inset-0 h-full w-full object-cover pixel pointer-events-none" />
@@ -77,12 +77,13 @@ export function Ch2Settlement({ state, onNext, onShop, onBackpack, onManual, onB
         <p className="mt-2 text-xs text-slate-400">奶茶和零食带回剧情，遇见同事闲聊时再递给对方。</p>
       <div className="mt-3 border-t border-slate-700 pt-3" aria-label="章节与设备" data-ch2-equipment-overview>
         <div className="space-y-1.5 text-sm">
-          <p data-equipment="cr" data-unlock={state.finished ? 'complete' : 'available'} className="text-slate-300">{state.finished ? '✅' : '🔓'} 老伙计（CR · X光机）—— <span className="text-slate-400">第一章{state.finished ? '已完成' : state.stepId || state.night > 1 ? '进行中' : '可体验'}</span></p>
-          <p data-equipment="ct" data-unlock={complete ? 'complete' : 'current'} className="text-teal-200">{complete ? '✅' : '🔓'} 国产128排CT —— <span className="text-amber-200/90">第二章{complete ? '已完成' : '正在值守'} · 新机已经接过夜班</span></p>
-          <p data-equipment="us" data-unlock="locked" className="text-slate-500">🔒 二手超声 —— <span className="text-slate-400">第3章规划 · 开发中，尚未开放</span></p>
-          <p data-equipment="mri" data-unlock="locked" className="text-slate-500">🔒 3.0T磁共振 —— <span className="text-slate-400">还是传闻里的东西，尚未开放</span></p>
-          <p data-equipment="dr" data-unlock={getDlc('dr') ? state.dlc?.dr?.done ? 'complete' : 'available' : 'locked'} className="text-slate-300">{getDlc('dr') ? '🔓' : '🔒'} 楼上DR机房 —— <span className="text-slate-400">{dlcStatus('dr')}</span></p>
-          <p data-equipment="dsa" data-unlock={getDlc('dsa') ? state.dlc?.dsa?.done ? 'complete' : 'available' : 'locked'} className="text-slate-300">{getDlc('dsa') ? '🔓' : '🔒'} 介入室C型臂DSA —— <span className="text-slate-400">{dlcStatus('dsa')}</span></p>
+          <p data-equipment="cr" data-unlock={state.finished ? 'complete' : 'available'} className="text-slate-300">{state.finished ? '✅' : '🔓'} 老伙计（CR · X光机）—— <span className="text-slate-400">第一章「老伙计」 · {state.finished ? '已完成' : state.stepId || state.night > 1 ? '进行中' : '可体验'}</span></p>
+          <p data-equipment="ct" data-unlock={complete ? 'complete' : 'current'} className="text-teal-200">{complete ? '✅' : '🔓'} CT 扫描仪（国产128排）—— <span className="text-amber-200/90">第二章「快与狠」 · {complete ? '已完成' : '正在值守'}</span></p>
+          <p data-equipment="us" data-unlock="locked" className="text-slate-500">🔒 二手超声 —— <span className="text-slate-400">第三章「回声」 · 超声科跟班，尚未开放</span></p>
+          <p data-equipment="mri" data-unlock="locked" className="text-slate-500">🔒 3.0T 磁共振 —— <span className="text-slate-400">第四章「共振」 · 仍是传闻，尚未开放</span></p>
+          <p data-equipment="pet" data-unlock="locked" className="text-slate-500">🔒 PET/CT —— <span className="text-slate-400">第五章「微光」 · 省院进修，尚未开放</span></p>
+          <p data-equipment="dr" data-unlock={getDlc('dr') ? state.dlc?.dr?.done ? 'complete' : 'available' : 'locked'} className="text-slate-300">{getDlc('dr') ? '🔓' : '🔒'} 楼上 DR 机房 —— <span className="text-slate-400">{getDlc('dr')?.title ?? '番外篇 · DR 白班'} · {dlcStatus('dr')}</span></p>
+          <p data-equipment="dsa" data-unlock={getDlc('dsa') ? state.dlc?.dsa?.done ? 'complete' : 'available' : 'locked'} className="text-slate-300">{getDlc('dsa') ? '🔓' : '🔒'} 介入室 C型臂DSA —— <span className="text-slate-400">{getDlc('dsa')?.title ?? '番外篇 · DSA 导管室'} · {dlcStatus('dsa')}</span></p>
         </div>
         <p className="mt-3 border-t border-slate-700 pt-3 text-xs text-slate-300">📖 {cards}/{CH2_ACTIVE_CARDS.length} · 🏅 {badges}/{CH2_ACTIVE_BADGES.length}</p>
         {(legacyBadges + legacyCards > 0) && <p className="mt-2 text-xs text-slate-400">历史收藏：卡片 {legacyCards} 张、勋章 {legacyBadges} 枚；旧版停颁条目不计入分母。</p>}
