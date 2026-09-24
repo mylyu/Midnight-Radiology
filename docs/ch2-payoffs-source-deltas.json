@@ -1,0 +1,217 @@
+{
+  "baseline": "6a0311b",
+  "reason": "Approved chapter-two useful keepsakes, conditional return gifts, recognition scene and independent bed-only CT motion. Exact inverse of five scoped existing files; no App, chapter-one, DR/DSA, scan lifecycle, rewards, audio or old delta ledger edits.",
+  "files": [
+    {
+      "path": "app/src/components/Ch2ScanOverlay.css",
+      "edits": [
+        {
+          "afterStart": 7,
+          "before": [
+            ".ch2-scan-room { display: block; width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; transform: scale(1.055) translateX(var(--ch2-camera-shift)); transition: transform 50ms linear; }"
+          ],
+          "after": [
+            ".ch2-scan-room { display: block; width: 100%; height: 100%; object-fit: fill; image-rendering: pixelated; }",
+            ".ch2-ct-motion { position: absolute; inset: 0; overflow: hidden; isolation: isolate; }",
+            ".ch2-ct-motion img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: fill; image-rendering: pixelated; pointer-events: none; user-select: none; }",
+            ".ch2-ct-fixed-room { z-index: 0; }",
+            ".ch2-ct-sliding-bed { z-index: 1; transition: transform 50ms linear; will-change: transform; }",
+            ".ch2-ct-fixed-front { z-index: 2; }",
+            ".ch2-ct-motion[data-ct-motion-ready=\"false\"] .ch2-ct-sliding-bed { visibility: hidden; }"
+          ]
+        },
+        {
+          "afterStart": 34,
+          "before": [
+            "@media (prefers-reduced-motion: reduce) { .ch2-scan-slices span { animation: none !important; } .ch2-scan-room { transform: none; transition: none; } }"
+          ],
+          "after": [
+            "@media (prefers-reduced-motion: reduce) { .ch2-scan-slices span { animation: none !important; } .ch2-ct-sliding-bed { transform: translate(11.961722%, -4.250797%) !important; transition: none; } }"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/components/Ch2ScanOverlay.tsx",
+      "edits": [
+        {
+          "afterStart": 2,
+          "before": [
+            "import { CH2_SCAN_AUDIO, CH2_SCAN_ILLUSTRATION, ch2ScanFrame } from '../game/ch2-scans'"
+          ],
+          "after": [
+            "import { CH2_SCAN_AUDIO, ch2ScanFrame } from '../game/ch2-scans'"
+          ]
+        },
+        {
+          "afterStart": 4,
+          "before": [],
+          "after": [
+            "import { Ch2CtMotion } from './Ch2CtMotion'"
+          ]
+        },
+        {
+          "afterStart": 20,
+          "before": [
+            "  const [imageFailed, setImageFailed] = useState(false)"
+          ],
+          "after": []
+        },
+        {
+          "afterStart": 92,
+          "before": [
+            "  const style = { '--ch2-scan-progress': frame.progress, '--ch2-camera-shift': `${(0.5 - frame.progress) * 2}%` } as CSSProperties"
+          ],
+          "after": [
+            "  const style = { '--ch2-scan-progress': frame.progress } as CSSProperties"
+          ]
+        },
+        {
+          "afterStart": 111,
+          "before": [
+            "        {imageFailed ? <p className=\"ch2-scan-image-fallback\">检查进行中 · 图像正在传往工作站</p> : <img className=\"ch2-scan-room\" src={`${import.meta.env.BASE_URL}assets/${CH2_SCAN_ILLUSTRATION}.png`}",
+            "          alt=\"CT检查室中，患者躺在检查床上进入环形机架\" onError={() => setImageFailed(true)} />}"
+          ],
+          "after": [
+            "        <Ch2CtMotion progress={frame.progress} />"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/components/Ch2Settlement.tsx",
+      "edits": [
+        {
+          "afterStart": 4,
+          "before": [],
+          "after": [
+            "import { ch2PayoffKeepsakes } from '../game/ch2-payoffs'"
+          ]
+        },
+        {
+          "afterStart": 42,
+          "before": [],
+          "after": [
+            "  const keepsakes = ch2PayoffKeepsakes(state)"
+          ]
+        },
+        {
+          "afterStart": 79,
+          "before": [],
+          "after": [
+            "        {keepsakes.length > 0 && <p data-ch2-keepsake-summary className=\"mt-2 text-xs text-teal-200\">本章带回：{keepsakes.map(item => item.title).join('、')}。用途收在背包里。</p>}"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/components/Ch2Shop.tsx",
+      "edits": [
+        {
+          "afterStart": 4,
+          "before": [],
+          "after": [
+            "import { ch2PayoffKeepsakes } from '../game/ch2-payoffs'"
+          ]
+        },
+        {
+          "afterStart": 46,
+          "before": [],
+          "after": [
+            "  const keepsakes = ch2PayoffKeepsakes(state)"
+          ]
+        },
+        {
+          "afterStart": 50,
+          "before": [
+            "      {!state.items.length && !state.dlc?.ch2?.pendingCoffee && <p className=\"text-sm text-slate-400\">背包暂时是空的，可以去小卖部看看。</p>}"
+          ],
+          "after": [
+            "      {!state.items.length && !state.dlc?.ch2?.pendingCoffee && !keepsakes.length && <p className=\"text-sm text-slate-400\">背包暂时是空的，可以去小卖部看看。</p>}"
+          ]
+        },
+        {
+          "afterStart": 62,
+          "before": [],
+          "after": [
+            "      {keepsakes.length > 0 && <section aria-label=\"本章收到与借用的物品\" className=\"mb-4 border-t border-slate-600 pt-3\">",
+            "        <h4 className=\"mb-3 text-sm text-amber-200\">带回来的东西 · 在故事里派上用场</h4>",
+            "        {keepsakes.map(item => <div key={item.id} data-ch2-keepsake={item.id} className=\"mb-3 rounded-lg border border-slate-700 p-3\">",
+            "          <p className=\"text-slate-100\">{item.icon} {item.title}</p>",
+            "          <p className=\"mt-1 text-xs text-slate-300\">{item.body}</p>",
+            "          <p className=\"mt-2 text-xs text-teal-200\">{item.use}</p>",
+            "        </div>)}",
+            "      </section>}"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/game/ch2.ts",
+      "edits": [
+        {
+          "afterStart": 8,
+          "before": [],
+          "after": [
+            "import { CH2_PAYOFF_STEPS, CH2_PAYOFF_EVIDENCE, ch2PayoffStep } from './ch2-payoffs.ts'"
+          ]
+        },
+        {
+          "afterStart": 114,
+          "before": [
+            "export function ch2StepForState(id: string, step: Step, state: Pick<GameState, 'flags' | 'badges' | 'gender' | 'finished'> & Partial<Pick<GameState,'ap'|'items'>>): Step {"
+          ],
+          "after": [
+            "export function ch2StepForState(id: string, step: Step, state: Pick<GameState, 'flags' | 'badges' | 'gender' | 'finished'> & Partial<Pick<GameState,'ap'|'items'|'dlc'>>): Step {"
+          ]
+        },
+        {
+          "afterStart": 158,
+          "before": [
+            "  return ch2DawnStep(id, ch2TerminalStep(id, ch2NeedleStep(id, ch2PacingStep(id, ch2SocialStep(id, rendered, state), state), state), state), state)"
+          ],
+          "after": [
+            "  return ch2PayoffStep(id, ch2DawnStep(id, ch2TerminalStep(id, ch2NeedleStep(id, ch2PacingStep(id, ch2SocialStep(id, rendered, state), state), state), state), state), state)"
+          ]
+        },
+        {
+          "afterStart": 293,
+          "before": [
+            "  ch2_cabinet: { time: '2025年11月', title: '封条柜开启', body: '科里保管的半钥匙与老周找回的一半合齐。柜内是教学片、手写笔记和1997年合影，照片中年轻的老周抱着本子，站在最边上。' },"
+          ],
+          "after": [
+            "  ch2_cabinet: { time: '2025年11月', title: '封条柜开启', body: '科里保管的半钥匙与老周找回的一半合齐。旧教学片、笔记与1997年合影仍按编号留档；老周另从柜里取出一套透明叠层教具，借给你在下周交流时演示。配套底座另锁在小铁柜里。' },"
+          ]
+        },
+        {
+          "afterStart": 299,
+          "before": [],
+          "after": [
+            "  ...CH2_PAYOFF_EVIDENCE,"
+          ]
+        },
+        {
+          "afterStart": 601,
+          "before": [],
+          "after": [
+            "  ...CH2_PAYOFF_STEPS.c2d2,"
+          ]
+        },
+        {
+          "afterStart": 831,
+          "before": [],
+          "after": [
+            "  ...CH2_PAYOFF_STEPS.c2n5,"
+          ]
+        },
+        {
+          "afterStart": 961,
+          "before": [],
+          "after": [
+            "  ...CH2_PAYOFF_STEPS.c2am,"
+          ]
+        }
+      ]
+    }
+  ]
+}

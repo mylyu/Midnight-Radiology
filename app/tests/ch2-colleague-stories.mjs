@@ -10,6 +10,7 @@ const {CH2_SOCIAL_STEPS, ch2SocialShifts} = beforePacingSocial
 import {CH2_DEFERRED_STEPS, originalCh2Step, restartCh2} from '../src/game/ch2-exploration.ts'
 import {applyEffect, condOk, freshState} from '../src/game/store.ts'
 import {beforeSocial as old} from './ch2-colleague-projection.mjs'
+import { payoffMediaHashes } from './ch2-payoffs-freeze.mjs'
 
 const root = new URL('../../', import.meta.url)
 const steps = Object.assign({}, ...live.CH2_SHIFTS.map(s => s.steps))
@@ -99,6 +100,9 @@ const newMedia = [
   execFileSync('git',['diff','--name-only','--diff-filter=A','4f70852','--','app/public/audio','app/public/assets'],{encoding:'utf8',cwd:root}),
   execFileSync('git',['ls-files','--others','--exclude-standard','--','app/public/audio','app/public/assets'],{encoding:'utf8',cwd:root}),
 ].join('\n').trim().split(/\r?\n/).filter(Boolean)
+// Latest approved round: exact six names, already independently hash-checked
+// by the imported LIVE freeze. No prefix/directory wildcard is permitted.
+for (const path of payoffMediaHashes.keys()) allowedLaterMedia.add(path)
 for (const path of newMedia) assert(allowedLaterMedia.has(path), 'Undocumented media addition: ' + path)
 assert.deepEqual(live.CH2_BOOK_PAGES,old.CH2_BOOK_PAGES)
 assert.deepEqual(live.QUIZ2.filter((_,i)=>i!==21),old.QUIZ2.filter((_,i)=>i!==21))

@@ -30,7 +30,15 @@ const setFlags = new Set()
 const auditBase = freshState('m')
 const renderProfiles = [auditBase, { ...auditBase, flags: {
   c2_needle_seen: true, c2_needle_assessed: true, c2_terminal_n3_unplugged: true,
-} }]
+} }, {
+  // These independently tested prerequisites are essential: the new adapter
+  // refuses to open the small cabinet for an empty inventory or invent gifts
+  // from people whose earlier interaction was never played. Do not exempt the
+  // new evidence from the same reachable-grant assertions as every old item.
+  ...auditBase, items: ['key'], flags: {
+    n5_lei: true, n5_jiang: true, c2_needle_resolved: true, c2_terminal_device_noted: true,
+  },
+}]
 for (const shift of CH2_SHIFTS) {
   const reachable = new Set()
   const rendered = new Map()

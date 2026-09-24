@@ -5,6 +5,7 @@ import { readFileSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import { resolve } from 'node:path'
+import { beforePayoffSource } from './ch2-payoffs-projection.mjs'
 
 const root = new URL('../../', import.meta.url)
 const ledger = JSON.parse(readFileSync(new URL('docs/ch2-dawn-source-deltas.json', root), 'utf8'))
@@ -13,6 +14,10 @@ assert.equal(ledger.baseline, 'b3de319', 'Dawn baseline must not move')
 assert.deepEqual(ledger.files.map(file => file.path).sort(), ['app/src/App.tsx', 'app/src/game/ch2.ts'])
 
 export function beforeDawnSource(path, source) {
+  return invertDawnSource(path, beforePayoffSource(path, source))
+}
+
+function invertDawnSource(path, source) {
   const file = ledger.files.find(row => row.path === path)
   if (!file) return source
   const lines = normalize(source).trimEnd().split('\n')
@@ -31,20 +36,20 @@ export function beforeDawnSource(path, source) {
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   let probes = 0
   for (const { path, edits } of ledger.files) {
-    const live = readFileSync(new URL(path, root), 'utf8')
-    beforeDawnSource(path, live)
+    const live = beforePayoffSource(path, readFileSync(new URL(path, root), 'utf8'))
+    invertDawnSource(path, live)
     for (const edit of edits) {
       const offset = edit.after.findIndex(line => line.trim())
       if (offset < 0) continue
       const changed = normalize(live).trimEnd().split('\n')
       changed[edit.afterStart + offset] += ' // undocumented mutation'
-      assert.throws(() => beforeDawnSource(path, changed.join('\n') + '\n'), /undocumented mutation in dawn hunk/)
+      assert.throws(() => invertDawnSource(path, changed.join('\n') + '\n'), /undocumented mutation in dawn hunk/)
       probes++
     }
-    assert.throws(() => beforeDawnSource(path, live.trimEnd() + '\n// undocumented append\n'), /mutation outside approved loop hunks \(dawn layer\)/)
+    assert.throws(() => invertDawnSource(path, live.trimEnd() + '\n// undocumented append\n'), /mutation outside approved loop hunks \(dawn layer\)/)
     const outside = normalize(live).trimEnd().split('\n')
     outside[0] += ' // undocumented outside hunk'
-    assert.throws(() => beforeDawnSource(path, outside.join('\n') + '\n'), /mutation outside approved loop hunks \(dawn layer\)/)
+    assert.throws(() => invertDawnSource(path, outside.join('\n') + '\n'), /mutation outside approved loop hunks \(dawn layer\)/)
     probes += 2
   }
   console.log(`PASS dawn projection: ${ledger.files.length} exact inversions to ${ledger.baseline}; ${probes} mutation probes rejected; all previous ledgers unchanged.`)
