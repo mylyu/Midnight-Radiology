@@ -1,5 +1,19 @@
 # 开发交接 · 2026-09-21
 
+## 2026-09-25：全游戏图片轻量交付与Kimi导入包（本轮有发布授权）
+
+提交拆分：`66ceebb`实体素材与加载逻辑，`a5e7f4e`回归与保护，随后为本交接/导出工具提交。两项先前本地工具审阅发现的问题已处理或注明：替换素材后需核对旧WebP并移出public，不能直接绕过orphan检查；内嵌首帧覆盖19个bg_*场景，不宣称日出/白天休息室都有预览。
+
+- 作者明确要求优化全游戏加载、允许展示图片有损、清理不用的发布素材，最后直接推送GitHub/Pages并给Kimi ZIP。基点 `c4215b0`，分支 `codex/game-delivery-optimization`。此授权也包含此前本地已完成的连续断层提交 `86922fd`、`8fbb258`、`c4215b0`，覆盖下方当时“未发布”状态；最终部署结果以本次Actions与交付回执核对。
+- 197图从230,542,368 B降至23,796,318 B（约减少89.7%）：193张原尺寸有损WebP、1张小字证物无损WebP、3张调窗PNG原字节。全部透明通道逐像素一致；不是缩小人物或模糊调窗数值。`bg_day`从3,145,564 B降到170,336 B。新build的309文件共28,762,015 B。旧本地dist含积累缓存，不能据此虚报上次线上包减量。
+- 移出194份已替换大PNG、295份旧生成缓存、6个公开试听HTML和2个候选MP3。正式96条音频和12张CT连续图集不变，全部197逻辑图片ID仍在，保留旧档人物/背景/收藏兼容。第一章/第二章/DR/DSA故事、数值、存档、配音均未修改；App唯一界面差异是删除失效的内部试听小按钮。
+- 构建改读受版本控制的 `app/src/lib/image-assets.catalog.json`，无需原PNG/Git历史即可构建；不再同时复制大原图和压缩副本。背景内嵌同图48px预览，加载成功才换清晰图，最多三次轻量URL重试，不回退巨PNG、不锁剧情。旧版本已经打开的页面如有旧资源缓存，发布后刷新一次，不清存档；正式网址无需固定v参数。
+- 正式生产子路径全新UI连续第一章→第二章通过：262+414节点、6次CR读片、第二章17演出/12观察/5结算/5晨会题与尾声、15/15现役勋章，0页面异常/失败资源；没有注入通关档。桌面/390px限速首屏与197图HTTP/SHA/浏览器解码通过。37个连续断层夹具+2个真实迟到音频清理探针通过；2项真实后台/冻结探针无头环境不支持，不算通过。
+- LIVE审计核对197实际图、265,882,764个alpha像素，3数值图/96声音/12图集字节不变；历史测试保留独立旧身份并验证新实体，不以Git旧bytes冒充新交付。48项原静态清单最终48/48通过；三个更早期browser脚本的旧节点假设仍有失败，已明确与现行连续流程区分，详见 `docs/game-delivery-regression.md`。全仓lint原10 errors/2 warnings未新增，不宣称全仓零问题。
+- 用途与参数：`docs/game-delivery-optimization.md`；每图新旧哈希/尺寸/编码：`docs/game-delivery-assets.json`；独立源码审核：`docs/game-delivery-source-deltas.json`、`game-delivery-review.json`；维护：`docs/media-import.md`。后续新增图片用 `app/scripts/import-image.mjs`，不要回填旧PNG/optimized；原始创作稿另存仓库外。
+- Kimi包由 `scripts/export-kimi.ps1` 导出源码、实际素材、部署配置、测试、文档及三份剧情设计文本，附 `KIMI_IMPORT.md`、`REVISION.txt`、逐文件SHA256。不包含node_modules/dist/.git/原始体数据/重复原图/旧配音备份/开发HTML。包中 `app/` 可独立npm ci/build；缺Git历史不能运行历史冻结审计，不因此删除测试或批量改哈希。
+- **ImageCAS冠脉连续切片商用前必须替换或另获授权**，保留NOTICE和来源记录；儿童连续图仍待补，运动/义齿伪影明确是模拟。原设计和声音备份未删除；移出public的文件另存仓库旁 `game-delivery-review/removed-public-files-c4215b0/`，也可从Git基点恢复。回退本轮用 `git log c4215b0..codex/game-delivery-optimization` 查提交，逆序revert，禁止hard reset/强推/清玩家存档。
+
 ## 2026-09-25：第二章连续断层演出（本地完成，未发布）
 
 - 基点 `6117220`，分支 `codex/ch2-ct-slice-sequences`。本地实施与下述验收完成，**未推送、未部署**；不延用此前发布授权。素材提交`86922fd`，运行逻辑`8fbb258`，之后为测试交接提交。

@@ -1,5 +1,7 @@
 # 深夜影像科 / Midnight Radiology
 
+图片交付已轻量化：正式图片通过 `app/src/lib/image-assets.catalog.json` 解析，构建不再需要原始大PNG。新增/替换素材请阅读 [图片导入说明](docs/media-import.md)，不要将旧图、录音试听或生成缓存放回 `app/public`。三张用于调窗的数值PNG不得有损压缩。优化和回退记录见 [全游戏轻量交付](docs/game-delivery-optimization.md)。
+
 《深夜影像科》是一款以医学影像科为背景的互动叙事教学游戏。2026-09-17 更新版包含主线第一章、第二章 **「快与狠」CT 篇**，以及 **DR 白班**、**DSA 导管室**两个 DLC，并更新了角色配音与相关素材。
 
 [在线游玩（GitHub Pages）](https://mylyu.github.io/Midnight-Radiology/)
