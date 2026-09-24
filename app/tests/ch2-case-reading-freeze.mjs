@@ -1,4 +1,6 @@
 import assert from 'node:assert/strict'
+import './ch2-ct-sequences-freeze.mjs'
+import { CT_SEQUENCES_ADDED_SOURCE, CT_SEQUENCES_ADDED_MEDIA } from './ch2-ct-sequences-projection.mjs'
 import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
@@ -20,8 +22,10 @@ for (const path of files) {
   assert.equal(normalize(beforeCaseReadingSource(path, live)), normalize(git('show', `${baseline}:${path}`)), `${path}: no other production or ledger edit`)
 }
 for (const prefix of ['app/src', 'app/public/assets', 'app/public/audio']) {
-  assert.equal(git('diff', '--name-only', '--diff-filter=A', baseline, '--', prefix).trim(), '', 'No new source or media')
-  assert.equal(git('ls-files', '--others', '--exclude-standard', '--', prefix).trim(), '', 'No untracked source or media')
+  const later = [...CT_SEQUENCES_ADDED_SOURCE, ...CT_SEQUENCES_ADDED_MEDIA]
+  const additions = [...new Set([git('diff', '--name-only', '--diff-filter=A', baseline, '--', prefix),
+    git('ls-files', '--others', '--exclude-standard', '--', prefix)].join('\n').split(/\r?\n/).filter(Boolean))]
+  assert.deepEqual(additions.filter(path => !later.includes(path)), [], 'No new source or media beyond the exact later LIVE-validated CT additions')
 }
 let mediaCount = 0
 for (const entry of git('ls-tree', '-r', '-z', baseline, '--', 'app/public/assets', 'app/public/audio').split('\0').filter(Boolean)) {

@@ -34,10 +34,10 @@ function ledger() {
   return recorded
 }
 export function beforeRewardsRoundSource(path, source) {
-  if (!REWARDS_ROUND_EDITED_FILES.includes(path)) return source
   // Repeated historical projections may supply this exact checked snapshot.
-  if (normalize(source) === original(path)) return source
+  if (REWARDS_ROUND_EDITED_FILES.includes(path) && normalize(source) === original(path)) return source
   source = beforeCaseReadingSource(path, source)
+  if (!REWARDS_ROUND_EDITED_FILES.includes(path)) return source
   const file = ledger().files.find(row => row.path === path)
   assert(file && file.edits.length, `${path}: no recorded approved changes`)
   const lines = normalize(source).trimEnd().split('\n')

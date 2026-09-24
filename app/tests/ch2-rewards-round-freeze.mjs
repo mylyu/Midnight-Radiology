@@ -1,6 +1,8 @@
 // Latest LIVE boundary: exact chapter-two changes only, then older historical
 // audits may reverse this layer while retaining every original baseline.
 import assert from 'node:assert/strict'
+import './ch2-ct-sequences-freeze.mjs'
+import { beforeCtSequencesSource, CT_SEQUENCES_ADDED_SOURCE, CT_SEQUENCES_ADDED_MEDIA } from './ch2-ct-sequences-projection.mjs'
 import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
@@ -13,7 +15,7 @@ const root = new URL('../../', import.meta.url)
 const git = (...args) => execFileSync('git', args, { cwd: fileURLToPath(root), maxBuffer: 48e6 })
 const normalize = source => source.replaceAll('\r\n', '\n').trimEnd() + '\n'
 const original = path => normalize(git('show', `${baseline}:${path}`).toString('utf8'))
-const current = path => normalize(readFileSync(new URL(path, root), 'utf8'))
+const current = path => normalize(beforeCtSequencesSource(path, readFileSync(new URL(path, root), 'utf8')))
 const tracked = prefix => git('ls-tree', '-r', '--name-only', baseline, '--', prefix)
   .toString('utf8').trim().split('\n').filter(Boolean)
 const protectedFiles = [...tracked('app/src'), 'app/package.json', 'app/package-lock.json', 'app/.gitignore',
@@ -71,7 +73,7 @@ const additions = prefix => [...new Set([
   git('diff', '--name-only', '--diff-filter=A', baseline, '--', prefix).toString(),
   git('ls-files', '--others', '--exclude-standard', '--', prefix).toString(),
 ].join('\n').split(/\r?\n/).filter(Boolean))].sort()
-assert.deepEqual(additions('app/src'), REWARDS_ROUND_ADDED_SOURCE, 'Only exact approved new source paths')
+assert.deepEqual(additions('app/src').filter(path => !CT_SEQUENCES_ADDED_SOURCE.includes(path)), REWARDS_ROUND_ADDED_SOURCE, 'Only exact approved new source paths')
 assert.deepEqual(additions('app/public/audio'), [], 'No voices or sound assets may change')
 let mediaCount = 0
 for (const entry of git('ls-tree', '-r', '-z', baseline, '--', 'app/public/assets', 'app/public/audio').toString().split('\0').filter(Boolean)) {
@@ -92,7 +94,7 @@ export const rewardsRoundMediaHashes = new Map([
   ['app/public/assets/ch2_gift_zhou_cup_v1.png', '02fe4035bac63e8ead8e853aac54b7df90ff37caf8bc9316bcf00e0c392c5480'],
 ])
 assert.equal(rewardsRoundMediaHashes.size, 4, 'Record all four reviewed gift images before release')
-assert.deepEqual(additions('app/public/assets'), [...rewardsRoundMediaHashes.keys()].sort())
+assert.deepEqual(additions('app/public/assets').filter(path => !CT_SEQUENCES_ADDED_MEDIA.includes(path)), [...rewardsRoundMediaHashes.keys()].sort())
 for (const [path, sha256] of rewardsRoundMediaHashes) {
   assert.equal(createHash('sha256').update(readFileSync(new URL(path, root))).digest('hex'), sha256, `${path}: reviewed asset identity`)
 }

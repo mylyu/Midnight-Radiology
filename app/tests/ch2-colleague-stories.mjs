@@ -13,6 +13,7 @@ import {beforeSocial as old} from './ch2-colleague-projection.mjs'
 import { payoffMediaHashes } from './ch2-payoffs-freeze.mjs'
 import { POLISH_ADDED_MEDIA } from './image-polish-projection.mjs'
 import { REWARDS_ROUND_ADDED_MEDIA } from './ch2-rewards-round-projection.mjs'
+import { CT_SEQUENCES_ADDED_MEDIA } from './ch2-ct-sequences-projection.mjs'
 
 const root = new URL('../../', import.meta.url)
 const steps = Object.assign({}, ...live.CH2_SHIFTS.map(s => s.steps))
@@ -107,6 +108,8 @@ const newMedia = [
 for (const path of payoffMediaHashes.keys()) allowedLaterMedia.add(path)
 for (const path of POLISH_ADDED_MEDIA) allowedLaterMedia.add(path)
 for (const path of REWARDS_ROUND_ADDED_MEDIA) allowedLaterMedia.add(path)
+// This round's exact twelve reviewed atlases; imported LIVE freeze keeps all old media pinned.
+for (const path of CT_SEQUENCES_ADDED_MEDIA) allowedLaterMedia.add(path)
 for (const path of newMedia) assert(allowedLaterMedia.has(path), 'Undocumented media addition: ' + path)
 assert.deepEqual(live.CH2_BOOK_PAGES,old.CH2_BOOK_PAGES)
 assert.deepEqual(live.QUIZ2.filter((_,i)=>i!==21),old.QUIZ2.filter((_,i)=>i!==21))

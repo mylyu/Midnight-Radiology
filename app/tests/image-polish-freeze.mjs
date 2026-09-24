@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { CT_SEQUENCES_ADDED_SOURCE, CT_SEQUENCES_ADDED_MEDIA } from './ch2-ct-sequences-projection.mjs'
 import './ch2-rewards-round-freeze.mjs'
 import { REWARDS_ROUND_ADDED_SOURCE, REWARDS_ROUND_ADDED_MEDIA } from './ch2-rewards-round-projection.mjs'
 import { execFileSync } from 'node:child_process'
@@ -24,8 +25,8 @@ const additions = prefix => [...new Set([
   git('diff', '--name-only', '--diff-filter=A', baseline, '--', prefix).toString(),
   git('ls-files', '--others', '--exclude-standard', '--', prefix).toString(),
 ].join('\n').split(/\r?\n/).filter(Boolean))].sort()
-assert.deepEqual(additions('app/src').filter(path => !REWARDS_ROUND_ADDED_SOURCE.includes(path)), POLISH_ADDED_SOURCE)
-assert.deepEqual(additions('app/public/assets').filter(path => !REWARDS_ROUND_ADDED_MEDIA.includes(path)), POLISH_ADDED_MEDIA)
+assert.deepEqual(additions('app/src').filter(path => !REWARDS_ROUND_ADDED_SOURCE.includes(path) && !CT_SEQUENCES_ADDED_SOURCE.includes(path)), POLISH_ADDED_SOURCE)
+assert.deepEqual(additions('app/public/assets').filter(path => !REWARDS_ROUND_ADDED_MEDIA.includes(path) && !CT_SEQUENCES_ADDED_MEDIA.includes(path)), POLISH_ADDED_MEDIA)
 assert.deepEqual(additions('app/public/audio'), [])
 let mediaCount = 0
 for (const entry of git('ls-tree', '-r', '-z', baseline, '--', 'app/public/assets', 'app/public/audio').toString().split('\0').filter(Boolean)) {

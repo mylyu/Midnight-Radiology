@@ -4,6 +4,7 @@ import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { beforeCtSequencesSource } from './ch2-ct-sequences-projection.mjs'
 
 const root = new URL('../../', import.meta.url)
 export const CASE_READING_BASELINE = 'a2cc9dc'
@@ -26,6 +27,7 @@ const original = () => baselineSource ??= normalize(execFileSync('git', ['show',
 const insertionAnchor = '      </header>\n\n'
 
 export function beforeCaseReadingSource(path, source) {
+  source = beforeCtSequencesSource(path, source)
   if (path !== CASE_READING_FILE) return source
   const live = normalize(source)
   if (live === original()) return source // Exact, already-validated historical input.
