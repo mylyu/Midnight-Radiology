@@ -379,8 +379,6 @@ function TitleScreen({ hasSave, onNew, onContinue, onBadges, onVerify, onDlc }: 
           <button onClick={onVerify} className="text-slate-600 hover:text-slate-400 text-xs underline">教师验证入口</button>
           {/* 隐蔽的通用入口：内容大厅（正篇后续章节 + 番外篇都从这里进） */}
           <button onClick={e => { e.stopPropagation(); onDlc() }} className="text-slate-800 hover:text-slate-500 text-xs transition-colors" title="内容大厅">▪</button>
-          {/* 隐蔽的内部入口：配音试听页（开发调试用，正式上线前删除） */}
-          <button onClick={e => { e.stopPropagation(); window.location.href = '/voice-preview.html' }} className="text-slate-800 hover:text-slate-500 text-xs transition-colors" title="配音试听">▫</button>
         </div>
       </div>
     </div>

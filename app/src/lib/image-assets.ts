@@ -1,6 +1,10 @@
-import optimized from './image-assets.generated.json'
+import catalog from './image-assets.catalog.json'
+import previews from './image-previews.catalog.json'
 
-const assets: Record<string, string> = optimized
-/** Only delivery encoding changes. Unknown or numerical-gray assets retain their original PNG. */
+const assets: Record<string, string> = catalog
+const tinyPreviews: Record<string, string> = previews
+/** Stable logical IDs also resolve sprites/backgrounds stored by older saves. */
 export const imageAsset = (name: string) => `${import.meta.env.BASE_URL}assets/${assets[name] ?? `${name}.png`}`
-export const originalImageAsset = (name: string) => `${import.meta.env.BASE_URL}assets/${name}.png`
+/** Compatibility alias: never download a second, full-size original on a slow connection. */
+export const originalImageAsset = imageAsset
+export const imagePreview = (name: string): string | undefined => tinyPreviews[name]

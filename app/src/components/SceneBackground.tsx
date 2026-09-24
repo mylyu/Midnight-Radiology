@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { imageAsset, originalImageAsset } from '../lib/image-assets'
+import { imageAsset, imagePreview } from '../lib/image-assets'
 
 type Frame = { name: string; url: string }
 const TIMEOUT = 20_000
@@ -40,9 +40,8 @@ export function SceneBackground({ name, fixed = false, landscapeOnly = false }: 
       request = new AbortController()
       deadline = setTimeout(() => request?.abort(), TIMEOUT)
       try {
-        // The final bounded attempt also handles a stale/corrupt optimized file by using the retained original.
-        const url = index === 2 ? originalImageAsset(name) : preferred
-        const response = await fetch(url, { signal: request.signal, priority: 'high', cache: index > 0 || attempt > 0 ? 'reload' : 'default' } as RequestInit)
+        // Retry the same small content-hashed asset; bypass a stale response, not the size budget.
+        const response = await fetch(preferred, { signal: request.signal, priority: 'high', cache: index > 0 || attempt > 0 ? 'reload' : 'default' } as RequestInit)
         if (!response.ok) throw new Error(`Image HTTP ${response.status}`)
         const blob = await response.blob()
         if (!alive) return
@@ -81,6 +80,7 @@ export function SceneBackground({ name, fixed = false, landscapeOnly = false }: 
 
   return <>
     {!frame && <div aria-hidden className={`${pos} inset-0 pointer-events-none bg-gradient-to-br from-slate-700 via-slate-900 to-cyan-950`} />}
+    {!frame && imagePreview(name) && <img src={imagePreview(name)} data-scene-preview={name} aria-hidden className={`${pos} inset-0 w-full h-full object-cover ${landscapeOnly ? '' : 'portrait:object-contain portrait:scale-[1.65] portrait:-translate-y-[5%]'} pixel pointer-events-none`} alt="" />}
     {frame && <>
       {!landscapeOnly && <img src={frame.url} data-scene-backdrop={frame.name} aria-hidden className={`${pos} inset-0 w-full h-full object-cover blur-2xl scale-125 opacity-60 pixel hidden portrait:block pointer-events-none`} alt="" />}
       <img src={frame.url} data-scene-background={frame.name} fetchPriority="high" className={`${pos} inset-0 w-full h-full object-cover ${landscapeOnly ? '' : 'portrait:object-contain portrait:scale-[1.65] portrait:-translate-y-[5%]'} pixel pointer-events-none`} alt="" />
