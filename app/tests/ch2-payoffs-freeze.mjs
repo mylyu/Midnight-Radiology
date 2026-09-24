@@ -1,5 +1,7 @@
-// Current-round LIVE boundary. Old protected files are compared to immutable
-// 6a0311b; the five allowed existing files pass an exact, mutation-tested inverse.
+// Historical payoff boundary. Run the newer check-in LIVE guard first, then
+// strip only that round's exact App integration and its validated additions.
+import './ch2-checkin-freeze.mjs'
+import { CHECKIN_ADDED_FILES } from './ch2-checkin-projection.mjs'
 import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
@@ -30,7 +32,7 @@ const additions = prefix => [...new Set([
   git('diff', '--name-only', '--diff-filter=A', baseline, '--', prefix).toString('utf8'),
   git('ls-files', '--others', '--exclude-standard', '--', prefix).toString('utf8'),
 ].join('\n').split(/\r?\n/).filter(Boolean))].sort()
-assert.deepEqual(additions('app/src'), [
+assert.deepEqual(additions('app/src').filter(path => !CHECKIN_ADDED_FILES.includes(path)), [
   'app/src/components/Ch2CtMotion.tsx', 'app/src/game/ch2-ct-motion.ts', 'app/src/game/ch2-payoffs.ts',
 ], 'Only three exact chapter-two additions, no new shared runtime')
 
@@ -79,4 +81,4 @@ for (const path of ['app/src/App.tsx', 'app/src/game/data.ts', 'app/src/game/dlc
   assert.throws(() => assert.equal(normalize(beforePayoffSource(path, `${current(path)}\n// unexplained alteration\n`)),
     normalize(original(path))), /AssertionError/)
 }
-console.log(`PASS ${baseline} payoff live freeze: ${protectedFiles.length} original files, ${PAYOFF_EDITED_FILES.length} exact-delta files, App/Ch1/DR/DSA unchanged, ${mediaCount} original media, six pinned additive PNGs, no audio changes, historical ledgers intact`)
+console.log(`PASS ${baseline} payoff historical freeze after check-in LIVE audit: ${protectedFiles.length} original files, ${PAYOFF_EDITED_FILES.length} exact-delta files, projected App/Ch1/DR/DSA unchanged, ${mediaCount} original media, six pinned additive PNGs, no audio changes, historical ledgers intact`)

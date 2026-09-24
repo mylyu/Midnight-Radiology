@@ -1,6 +1,7 @@
 // Two real, isolated Edge playthroughs; never access the player's profile.
 // Kept separate from historical tests so their assertions are not relaxed.
 import assert from 'node:assert/strict'
+import { swipeCh2Checkin } from './ch2-checkin-driver.mjs'
 import { createRequire } from 'node:module'
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { pathToFileURL } from 'node:url'
@@ -90,6 +91,7 @@ export async function walkChapterTwo(page, {
     while (++loops < 900) {
       const s = await read(page), p = s.dlc.ch2, id = p.stepId
       if (p.done) break
+      if (await swipeCh2Checkin(page, s)) { log.push({ kind: 'checkin', id }); continue }
       if (p.phase === 'settle') {
         await page.locator('[data-ch2-settlement]').waitFor()
         settlements.add(p.shift)

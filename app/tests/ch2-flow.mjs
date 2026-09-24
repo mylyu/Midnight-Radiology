@@ -1,6 +1,7 @@
 import { createRequire } from 'node:module'
 import { mkdirSync, writeFileSync } from 'node:fs'
 import assert from 'node:assert/strict'
+import { swipeCh2Checkin } from './ch2-checkin-driver.mjs'
 import { CH2_SHIFTS, ch2StepForState, QUIZ2 } from '../src/game/ch2.ts'
 import { CH2_SCANS } from '../src/game/ch2-scans.ts'
 import { getCh2Observation } from '../src/game/ch2-observations.ts'
@@ -145,6 +146,7 @@ try {
         await page.screenshot({path:`${output}/flow-complete.png`})
         break
       }
+      if (await swipeCh2Checkin(page, state)) { fullLog.push({kind:'checkin',step:progress.stepId}); continue }
       if (progress.phase === 'settle') {
         await page.locator('[data-ch2-settlement]').waitFor()
         settlements.add(progress.shift)

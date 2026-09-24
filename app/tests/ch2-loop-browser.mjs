@@ -1,5 +1,6 @@
 // Real, isolated Edge walk. No production profile, saves, old tests, or content mutations.
 import assert from 'node:assert/strict'
+import { swipeCh2Checkin } from './ch2-checkin-driver.mjs'
 import { createRequire } from 'node:module'
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { CH2_SHIFTS, ch2StepForState, QUIZ2 } from '../src/game/ch2.ts'
@@ -76,6 +77,7 @@ try {
     while (++iterations < 700) {
       const state = await read(page), p = state.dlc.ch2, id = p.stepId
       if (p.done) break
+      if (await swipeCh2Checkin(page, state)) { log.push({ kind: 'checkin', id }); continue }
       if (p.phase === 'settle') {
         await page.locator('[data-ch2-settlement]').waitFor()
         settlements.add(p.shift)

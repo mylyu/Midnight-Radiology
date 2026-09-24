@@ -1,6 +1,7 @@
 // Fresh UI-only Chapter 1 -> Chapter 2 journeys in one isolated browser/storage.
 // No injected save, chapter unlock flag, shortened animation or mocked media.
 import assert from 'node:assert/strict'
+import { swipeCh2Checkin } from './ch2-checkin-driver.mjs'
 import { createRequire } from 'node:module'
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
@@ -236,6 +237,7 @@ async function runCh2(page, variant, inherited, log) {
     const s = await read(page), p = s.dlc.ch2
     assertInherited(inherited, s)
     if (p.done) break
+    if (await swipeCh2Checkin(page, s)) { log.push({ kind: 'checkin', id: p.stepId }); continue }
     if (p.phase === 'settle') {
       await page.locator('[data-ch2-settlement]').waitFor()
       shifts.add(p.shift)

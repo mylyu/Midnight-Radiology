@@ -1,0 +1,93 @@
+{
+  "baseline": "b3213f0",
+  "reason": "Approved Chapter 2 swipe check-in at five existing work-shift nodes. Exact inverse of the two new imports and Ch2Screen-only integration; original story, three +50 gold/+3 AP check-ins, day-shift economy, Chapter 1 daily check-in, save schema, original modules/assets and prior source-delta ledgers remain untouched.",
+  "files": [
+    {
+      "path": "app/src/App.tsx",
+      "edits": [
+        {
+          "afterStart": 14,
+          "before": [],
+          "after": [
+            "import Ch2Checkin from './components/Ch2Checkin'",
+            "import { CH2_CHECKINS, ch2CheckinPending, completeCh2Checkin } from './game/ch2-checkin'"
+          ]
+        },
+        {
+          "afterStart": 1880,
+          "before": [],
+          "after": [
+            "  const checkin = CH2_CHECKINS[stepId]",
+            "  const checkinPending = ch2CheckinPending(state, stepId)"
+          ]
+        },
+        {
+          "afterStart": 1891,
+          "before": [
+            "  const step: Step = giftReply ? { speaker: giftReply.speaker as Step['speaker'], sprite: giftReply.sprite, text: giftReply.text, next: '@ch2gift-return' }"
+          ],
+          "after": [
+            "  const step: Step = checkinPending ? { ...baseStep, text: `${shift.kind === 'night' ? '夜班' : '白班'}到岗。新打卡机的屏幕亮着，向右滑动签到。`, next: undefined }",
+            "    : giftReply ? { speaker: giftReply.speaker as Step['speaker'], sprite: giftReply.sprite, text: giftReply.text, next: '@ch2gift-return' }"
+          ]
+        },
+        {
+          "afterStart": 1898,
+          "before": [
+            "  const presentationBlocked = scanPending || observationPending || !!giftReply"
+          ],
+          "after": [
+            "  const presentationBlocked = checkinPending || scanPending || observationPending || !!giftReply"
+          ]
+        },
+        {
+          "afterStart": 1996,
+          "before": [],
+          "after": [
+            "  const finishCheckin = () => {",
+            "    const key = `ch2-${stepId}`",
+            "    if (!checkinPending || applied.current.has(key)) return",
+            "    applied.current.add(key)",
+            "    update(s => completeCh2Checkin(s, stepId))",
+            "    void playSfx('stamp')",
+            "    setShown(0)",
+            "  }",
+            ""
+          ]
+        },
+        {
+          "afterStart": 2033,
+          "before": [
+            "  const blocked = scanPending || !!(step.choices || step.end || step.windowTask || step.checklist) || shopOpen || bookOpen || manualOpen || badgeOpen || backpackOpen || phase !== 'story'"
+          ],
+          "after": [
+            "  const blocked = checkinPending || scanPending || !!(step.choices || step.end || step.windowTask || step.checklist) || shopOpen || bookOpen || manualOpen || badgeOpen || backpackOpen || phase !== 'story'"
+          ]
+        },
+        {
+          "afterStart": 2055,
+          "before": [],
+          "after": [
+            "    if (checkinPending) return"
+          ]
+        },
+        {
+          "afterStart": 2199,
+          "before": [
+            "          {!step.choices && !step.end && !step.windowTask && !step.checklist && done && <span className=\"absolute bottom-3 right-4 text-teal-300 animate-bounce\">▼</span>}"
+          ],
+          "after": [
+            "          {!checkinPending && !step.choices && !step.end && !step.windowTask && !step.checklist && done && <span className=\"absolute bottom-3 right-4 text-teal-300 animate-bounce\">▼</span>}"
+          ]
+        },
+        {
+          "afterStart": 2238,
+          "before": [],
+          "after": [
+            "      {checkinPending && done && <Ch2Checkin key={stepId} title={`${shift.icon} ${shift.title} · ${shift.subtitle}`} rewardText={checkin.rewardText} onComplete={finishCheckin} />}"
+          ]
+        }
+      ]
+    }
+  ]
+}

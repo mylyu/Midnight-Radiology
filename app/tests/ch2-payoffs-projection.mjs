@@ -5,6 +5,7 @@ import { readFileSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import { resolve } from 'node:path'
+import { beforeCheckinSource } from './ch2-checkin-projection.mjs'
 
 const root = new URL('../../', import.meta.url)
 const ledger = JSON.parse(readFileSync(new URL('docs/ch2-payoffs-source-deltas.json', root), 'utf8'))
@@ -17,6 +18,7 @@ assert.equal(ledger.baseline, '6a0311b', 'Payoff baseline must not move')
 assert.deepEqual(ledger.files.map(file => file.path).sort(), PAYOFF_EDITED_FILES)
 
 export function beforePayoffSource(path, source) {
+  source = beforeCheckinSource(path, source)
   const file = ledger.files.find(row => row.path === path)
   if (!file) return source
   const lines = normalize(source).trimEnd().split('\n')
