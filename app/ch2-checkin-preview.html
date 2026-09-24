@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第二章 · 滑动打卡试玩</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#08171b;color:#d8e9e3;font:14px/1.6 system-ui,sans-serif}header.preview-nav{height:60px;padding:8px 14px;display:flex;justify-content:space-between;align-items:center;gap:12px;background:#071218}a{color:#9edcc5}#demo{position:relative;height:calc(100svh - 60px);min-height:310px}.preview-controls{position:absolute;z-index:40;right:16px;top:12px}button{font:inherit;padding:7px 12px;border:1px solid #829e94;background:#203b33;color:#e4f6ed;border-radius:4px;cursor:pointer}.preview-nav small{display:block;color:#96b6ab}
+</style></head><body>
+<header class="preview-nav"><div>第二章 · 新打卡机<small>独立试玩，不读写存档或发奖</small></div><a href="./#/ch2">返回游戏</a></header>
+<div id="demo"></div>
+<script type="module">
+import React, {useState} from 'react';
+import {createRoot} from 'react-dom/client';
+import Ch2Checkin from './src/components/Ch2Checkin';
+function Preview(){
+  const [round,setRound]=useState(0),[complete,setComplete]=useState(false);
+  return React.createElement(React.Fragment,null,
+    React.createElement(Ch2Checkin,{key:round,title:'🌙 第1夜 · 新机',rewardText:'试玩完成后留在本页 · 游戏内仍按原规则发放奖励',onComplete:()=>setComplete(true)}),
+    complete&&React.createElement('div',{className:'preview-controls'},React.createElement('button',{onClick:()=>{setComplete(false);setRound(v=>v+1)}},'再试一次')));
+}
+createRoot(document.getElementById('demo')).render(React.createElement(Preview));
+</script></body></html>

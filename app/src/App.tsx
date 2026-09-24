@@ -12,6 +12,8 @@ import { Ch2ObservationImage } from './components/Ch2ObservationImage'
 import { Ch2MysteryMedia, Ch2MysterySound } from './components/Ch2MysteryMedia'
 import { Ch2DawnScene } from './components/Ch2DawnScene'
 import { CH2_DAWN_SHOTS } from './game/ch2-dawn'
+import Ch2Checkin from './components/Ch2Checkin'
+import { CH2_CHECKINS, ch2CheckinPending, completeCh2Checkin } from './game/ch2-checkin'
 import { CH2_SCANS, CH2_SCAN_TEXT } from './game/ch2-scans'
 import { getCh2Observation } from './game/ch2-observations'
 import { beginCh2Shift, CH2_CASE_COMPLETIONS, recordCh2Change } from './game/ch2-ledger'
@@ -1876,6 +1878,8 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
   const windowTries = useRef<Record<number, number>>({})
 
   const baseStep: Step = ch2StepForState(stepId, shift.steps[stepId] ?? { end: true }, state)
+  const checkin = CH2_CHECKINS[stepId]
+  const checkinPending = ch2CheckinPending(state, stepId)
   const scan = CH2_SCANS[stepId]
   const scanSession = prog.scanSessions?.[stepId]
   const scanPending = phase === 'story' && !!scan && !scanSession?.completed
@@ -1885,13 +1889,14 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
   const observedChoice = observation?.choices.find(c => c.id === observationAnswer?.choiceId)
   const giftReply = prog.giftReply?.stepId === stepId ? prog.giftReply : undefined
   const gifts = phase === 'story' && !scanPending && !observationPending && !giftReply ? ch2GiftChoices(state, stepId) : []
-  const step: Step = giftReply ? { speaker: giftReply.speaker as Step['speaker'], sprite: giftReply.sprite, text: giftReply.text, next: '@ch2gift-return' }
+  const step: Step = checkinPending ? { ...baseStep, text: `${shift.kind === 'night' ? '夜班' : '白班'}到岗。新打卡机的屏幕亮着，向右滑动签到。`, next: undefined }
+    : giftReply ? { speaker: giftReply.speaker as Step['speaker'], sprite: giftReply.sprite, text: giftReply.text, next: '@ch2gift-return' }
     : scanPending ? { ...baseStep, text: scan.mode === 'acquire' ? baseStep.text : CH2_SCAN_TEXT[stepId], image: undefined, windowTask: undefined, choices: undefined, next: undefined }
     : observationPending && observation ? { speaker: observation.speaker, image: observation.image, imageLabel: observation.imageLabel,
       text: observedChoice ? observedChoice.feedback : observation.prompt,
       ...(observedChoice ? { next: '@ch2observe-return' } : { choices: observation.choices.map(c => ({ text: c.text, next: `@ch2observe:${c.id}` })) }) }
     : gifts.length ? { ...baseStep, choices: [...gifts, ...(baseStep.choices ?? (baseStep.next ? [{ text: '接着聊', next: baseStep.next }] : []))] } : baseStep
-  const presentationBlocked = scanPending || observationPending || !!giftReply
+  const presentationBlocked = checkinPending || scanPending || observationPending || !!giftReply
   // hub 横幅的行动力跟随时实数值渲染，别再硬编码×3（否则玩家花了AP文本不变，像没扣）
   const fullText = (step.text ?? '').replaceAll('行动力⚡×3', `行动力⚡×${state.ap}`)
   const plainLen = fullText.replaceAll('**', '').length
@@ -1989,6 +1994,15 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
     if (scan?.mode === 'acquire' && baseStep.next) setStepId(baseStep.next)
   }
 
+  const finishCheckin = () => {
+    const key = `ch2-${stepId}`
+    if (!checkinPending || applied.current.has(key)) return
+    applied.current.add(key)
+    update(s => completeCh2Checkin(s, stepId))
+    void playSfx('stamp')
+    setShown(0)
+  }
+
   // 打字机
   useEffect(() => {
     if (done) return
@@ -2017,7 +2031,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
     }
   }, [stepId, done, hasChoices])
 
-  const blocked = scanPending || !!(step.choices || step.end || step.windowTask || step.checklist) || shopOpen || bookOpen || manualOpen || badgeOpen || backpackOpen || phase !== 'story'
+  const blocked = checkinPending || scanPending || !!(step.choices || step.end || step.windowTask || step.checklist) || shopOpen || bookOpen || manualOpen || badgeOpen || backpackOpen || phase !== 'story'
 
   const advance = () => {
     if (shopOpen || bookOpen || manualOpen || badgeOpen || backpackOpen || phase !== 'story') return
@@ -2039,6 +2053,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
   }
 
   const pick = (c: Choice) => {
+    if (checkinPending) return
     // The visible-choice delay already prevents accidental selection. Do not
     // extend a lock on every rejected tap: rapid taps could otherwise starve it.
     if (choicesLocked || !done || (pickedGate.current.id === stepId && performance.now() < pickedGate.current.until)) return
@@ -2182,7 +2197,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
           <p key={stepId} className="text-slate-100 leading-relaxed text-base md:text-lg whitespace-pre-wrap min-h-[4.9rem] md:min-h-[5.4rem] text-in">
             <RichText text={fullText} shown={shown} />
           </p>
-          {!step.choices && !step.end && !step.windowTask && !step.checklist && done && <span className="absolute bottom-3 right-4 text-teal-300 animate-bounce">▼</span>}
+          {!checkinPending && !step.choices && !step.end && !step.windowTask && !step.checklist && done && <span className="absolute bottom-3 right-4 text-teal-300 animate-bounce">▼</span>}
           {step.choices && done && !choicesLocked && (
             <div className="mt-4 flex flex-col gap-2 choice-in max-h-[38vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
               {visibleChoices.map((c, i) => (
@@ -2221,6 +2236,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
       {(phase === 'settle' && nextShiftDef || phase === 'done') && <Ch2Settlement state={state} onNext={nextShift} onShop={() => setShopOpen(true)} onBackpack={() => setBackpackOpen(true)} onManual={() => setManualOpen(true)} onBadges={() => setBadgeOpen(true)} onBook={() => setBookOpen(true)} onExit={onExit} />}
 
       {scanPending && scanSession && <Ch2ScanOverlay key={`${prog.loop?.runId}:${stepId}`} config={scan} startedAt={scanSession.startedAt} onDone={finishScan} />}
+      {checkinPending && done && <Ch2Checkin key={stepId} title={`${shift.icon} ${shift.title} · ${shift.subtitle}`} rewardText={checkin.rewardText} onComplete={finishCheckin} />}
 
       {/* 小卖部 / 书 / 手册 / 勋章 */}
       {shopOpen && <Ch2Shop state={state} update={update} onClose={() => setShopOpen(false)} />}
