@@ -1,0 +1,113 @@
+{
+  "baseline": "6a0311b",
+  "generator": "built-in image_gen",
+  "created": "2026-09-24",
+  "branch": "codex/ch2-payoffs-and-ct-motion",
+  "generation_parameters": "Built-in tool only; prompts and reference paths are exact. No seed/model/size controls available beyond prose requests. Original generated PNGs copied byte-for-byte; no raster post-processing.",
+  "assets": [
+    {
+      "output": "app/public/assets/ch2_ct_motion_bed_v1.png",
+      "sha256": "6208fd0c1c8057556f43d31d65b985c7ca6c617ee564a52cfb72f310f7aac055",
+      "bytes": 334076,
+      "width": 1672,
+      "height": 941,
+      "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-eaf44fc0-ae0f-4092-adee-72381aad1d33.png",
+      "prompt": "Use case: background-extraction. Asset type: precisely registered transparent moving sprite layer for a CT-bed animation.\nImage 1 is the ORIGINAL layered scene to extract FROM. Image 2 is the matching static background after patient and thin upper sliding bed have been removed; it is only an alignment reference.\nProduce ONLY the original patient with grey-blue blanket, head cushion, and the thin padded carbon-fibre sliding upper tabletop/mattress as ONE connected foreground layer on a REAL TRANSPARENT alpha background. Nothing else. Keep every retained pixel's original position, scale, lighting, pixel texture and perspective relative to Image 1.\nCrucial: preserve the FULL ORIGINAL CANVAS 1672x941. Do NOT tightly crop, recenter, enlarge, rotate, change viewpoint or redraw the patient into a standing figure. The long bed points from bottom-left/front (near x150,y600) toward upper-right CT bore (around x1040,y400). Extraction must remain in exactly those original coordinates.\nExclude all fixed thick beige/grey table housing, fixed rails, elevating column, base, room, floor, gantry, bore dark background, shadows belonging to those fixed objects. Include only the thin top slab/padding directly beneath the blanket and patient's head support. No fake checkerboard painted on; actual PNG alpha. No extra furniture or floor shadow, no motion blur, no text. In the output most of the full wide canvas will be empty transparent space. This layer will slide together toward the bore over Image 2.",
+      "references": [
+        "app/public/assets/ch2_ct_scan_room_pixel_v2.png",
+        "app/public/assets/ch2_ct_motion_room_v1.png"
+      ],
+      "review": "Real RGBA, transparent corner checked. Original full-canvas placement retained; actual rendered frames checked at 0%,36%,72%. Head enters behind fixed gantry lip, no scaling or room drift."
+    },
+    {
+      "output": "app/public/assets/ch2_ct_motion_room_v1.png",
+      "sha256": "5cac0d5a6f5f90714e3906387d9fd5658c1a9168f90af17556aec85d8e8ab9a8",
+      "bytes": 1809433,
+      "width": 1672,
+      "height": 941,
+      "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-2ffbeb3e-b627-431e-a2a6-61c63b70c8cc.png",
+      "prompt": "Use case: precise-object-edit. Asset type: STATIC BACKGROUND layer for a real moving-table pixel-art CT animation.\nInput image is the exact edit target and camera/pixel style reference. Preserve the room, fixed CT gantry exterior and circular bore, all wall fixtures, fixed large examination-table pedestal, base and FLOOR perfectly, preserve exact camera framing, dimensions and perspective.\nChange ONLY: remove the entire patient, blanket, pillow and thin TOP sliding tabletop/mattress; remove the detached near-end tabletop handle that moves with that sliding tabletop. Reveal the stationary table support rails/upper carriage below where the sliding tabletop was. The fixed thick lower table body and lift pedestal remain absolutely unchanged in shape and position. Reveal the empty DARK BORE and believable hidden rails where patient has been removed.\nThis is a clean background plate for animation. Absolutely NO person or blanket or floating sliding tabletop remains. NO arrows, lasers, clinical text or labels, no new interface, no motion blur. Do not shift, rotate, resize or redesign the gantry, room or pedestal. Keep original coarse pixel painting, dark navy night palette and warm reflections. Same wide aspect ratio and dimensions as input (1672x941 if supported).",
+      "references": [
+        "app/public/assets/ch2_ct_scan_room_pixel_v2.png"
+      ],
+      "review": "Patient, blanket and thin sliding top removed. Lower support, lift pedestal and gantry remain stationary. Reused clipped image for the fixed foreground occlusion, not a second moving gantry."
+    },
+    {
+      "output": "app/public/assets/ch2_model_base_v1.png",
+      "sha256": "28bf954376bcf4919c5a86dc9eb128d12263c7c5d7885ee32ead4e91ab2a9c31",
+      "bytes": 1809223,
+      "width": 1672,
+      "height": 941,
+      "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-5eb3eb1a-31d2-423e-b1a4-4f6c21693799.png",
+      "prompt": "Use this reference ONLY for the chunky pixel-art style, cool blue hospital desk and warm desk lamp. Create a NEW close-up of an OPTIONAL manually rotating stand to hold the wooden stackable teaching model, wide1672x941. NO teaching model or plates in this asset, just stand.\nMechanical geometry crucial: a low round turntable with completely flat unobstructed wooden top, two small shallow locating tabs at edges to hold a rectangular object placed ON TOP. Below its wooden disk is a simple dark-grey gear housing, worn rubber feet. A SHORT HAND CRANK PROJECTS HORIZONTALLY FROM THE SIDE OF THE LOWER HOUSING, then bends outwards into a small black grip. The crank is NOT on top, does NOT stick up through the top and does NOT prevent placing the model on it. No motor, wires or electrical parts, no monitor.\nShow three-quarter view, centered large across frame, modest scratches and screws, resting on same blue-grey table under warm lamp. Dark navy outlines, clearly coarse square pixels, simple limited pixel-color clusters not photographic/smooth3D. No people, no text, no labels, no logos.",
+      "references": [
+        "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-85257eee-855a-4e8d-acad-941b302bc723.png"
+      ],
+      "review": "Side crank and unobstructed top. Optional accessory shown only on its own receipt/use path. Not a CT part or patient-use medical device."
+    },
+    {
+      "output": "app/public/assets/ch2_slice_model_assembled_v1.png",
+      "sha256": "ed50fe298d68c2d4052adb1189656fbfa09fd1d51f97e18f2467b6d00109ee36",
+      "bytes": 1963384,
+      "width": 1672,
+      "height": 941,
+      "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-61e5f389-758d-4e72-93b0-b74b13b877ad.png",
+      "prompt": "Create a pixel-art alternate-view close-up of this exact transparent plate teaching model MOUNTED on the exact manual turntable from input2. Input1 identity: worn rectangular slotted wooden holder, thin clear upright acrylic plates with ONE FLAT RED CIRCLE on EACH plate, different positions tracing a bent curve. All plates are now inserted into their slots; no loose plate beside it. No real tube or red connecting wires between dots. Input2: low round wooden disk with side handcrank, dark metal low gear housing.\nMount the rectangular holder centered on the flat round disk, scaled so holder fits firmly between the two shallow locating tabs. The crank stays on the side, not obstructing tabletop. SHOW THE MODEL TURNED ABOUT 35 DEGREES relative to input1; camera stays in this same hospital teaching desk setting. From this more side-on angle the separate red points must visibly trace a bent arch through depth. Not straight, no 3D red spheres. Keep enough oblique angle to see several plate edges and their offset dot positions. Turn only the model and top wooden disk, not the whole room or lamp.\nWarm task light on worn wood, cool blue-grey desk, coarse visible square pixel clusters, dark outlines, same painterly pixel style. No people, captions, labels, watermarks or logos. Wide1672x941, entire teaching object and crank within frame. Educational illustrative model, never clinical equipment.",
+      "references": [
+        "app/public/assets/ch2_slice_model_v1.png",
+        "app/public/assets/ch2_model_base_v1.png"
+      ],
+      "review": "Assembled wooden model on side-crank stand. Separate flat red points, no physical continuous wire. New angle shown when player chooses rotation; illustration not a numerical CT reconstruction."
+    },
+    {
+      "output": "app/public/assets/ch2_slice_model_v1.png",
+      "sha256": "13a7fce2211e356e17a49bacaf0db8263addc45398ce54126411163804afb2f2",
+      "bytes": 1881620,
+      "width": 1672,
+      "height": 941,
+      "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-e98a4750-111f-4008-8ae2-3cfe6472fbd4.png",
+      "prompt": "Precisely edit this pixel-art teaching model image, same composition, lighting, coarse square pixel style, wooden slotted holder and clear plates. Make TWO essential corrections:\n1. REMOVE the round turntable and crank completely from the right side. Replace it with bare blue-grey desk, no accessory. The only objects are clear slicing plates and their rectangular wooden slotted holder. Keep one loose clear plate at the left.\n2. Red marks must be FLAT printed red circle dots, exactly one discrete dot on each plate, NOT 3D red balls, NOT joined by any physical string, wire or line. REMOVE ALL red connecting lines between the plates. Place the dots at varying heights and side-to-side offsets so their virtual path forms a clearly bent arch across the stack instead of a straight diagonal line. It is a physical explanatory model of slices, not a scanner: there is absolutely no real tube, laser or rod passing between plates. The isolated loose plate shows its one flat red painted circle.\nKeep the desk, task lamp, wood texture, scratched clear acrylic and dark outlines. No writing, labels, logos, glowing marks, hands or people. Full wide canvas 1672x941.",
+      "references": [
+        "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-85257eee-855a-4e8d-acad-941b302bc723.png"
+      ],
+      "review": "Corrected first candidate: separate flat red marks following an arch, connecting wire removed, base hidden until separately unlocked. No exact plate count is taught or tested."
+    },
+    {
+      "output": "app/public/assets/ch2_zhou_expert_handshake_v1.png",
+      "sha256": "29087f82840f13010859ede3e157276d3ae93fc4553a8a16409f1caf33e84bdf",
+      "bytes": 1901071,
+      "width": 1672,
+      "height": 941,
+      "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-3806c6e2-ecb4-48ad-b10d-d628e8800be7.png",
+      "prompt": "Use case: illustration-story / identity-preserve. Asset type: a new pixel-art story still for the Chinese hospital game Midnight Radiology, 16:9 landscape around 1536x864.\nInput 1 is the EXACT identity/style reference for Lao Zhou: older Chinese male doctor around 60, receding bald crown, dark grey side hair, heavy eyebrows, slight stubble, warm tanned skin, rumpled white coat over pale blue shirt, brown trousers. Keep his recognizable face, age and rough chunky pixel proportions. Input 2 is environment/style reference only: a modest Chinese county hospital CT control room in daytime.\nPrimary request: TWO men warmly recognize each other and shake hands. Lao Zhou on the left, relaxed slightly surprised smile, older and a little stooped. A NEW Chinese visiting quality-control expert around 50 on right, neat salt-and-pepper hair, thin rectangular glasses, navy suit jacket over pale shirt, modest visitor lanyard, leaning forward respectfully, using his right hand to shake Zhou's right hand. Two clear anatomically coherent right hands joined at waist, no extra fingers or limbs. His other hand holds a slim folder close to body. Zhou is NOT holding a mug while shaking. Medium-wide shot from knees upward, both faces, handshake, and coats fully visible. No protagonist, no other people, no crowds, no text or captions. Keep the pair centered with breathing room.\nBackground: ordinary tidy control-room desk and dark monitors with indistinct blue imaging windows, observation glass, complete closed CT gantry beyond glass. No opened machine panels, no patient data, no signage text. Morning ambient light.\nStrict rendering: clearly visible coarse square pixel clusters, stepped outlines, dark navy contours, limited color ramps, game sprite-like shading. Match reference 1's coarse pixel character feel, not smooth anime, oil painting, photographic rendering or vector cartoon. No watermark, no 'AI' mark, no new logos. Landscape image is a standalone scene displayed above original dialogue, so keep all crucial faces and handshake within the central 70% of frame.",
+      "references": [
+        "app/public/assets/ch2_pixel_char_zhou.png",
+        "app/public/assets/bg_ctcontrol_day.png"
+      ],
+      "review": "Lao Zhou older, receding hairline/white coat preserved. New older visiting expert with glasses, folder, navy jacket; two joined right hands visible. 390px game screenshot checked, no text clipping."
+    }
+  ],
+  "generation_history": [
+    {
+      "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-85257eee-855a-4e8d-acad-941b302bc723.png",
+      "status": "rejected; not distributed in app",
+      "reason": "Connected red wire/3D balls and obstructing top crank; showing optional base before receipt. Regenerated rather than accepting mismatch.",
+      "prompt": "Use case: scientific-educational / stylized-concept. Asset type: pixel-art close-up of a handmade CT slicing TEACHING OBJECT, not medical equipment.\nScene: a worn but clean blue-grey wooden hospital teaching desk, tightly framed 16:9 landscape around1536x864. Coarse visible square pixels, dark navy outlines, limited shades, same chunky pixel painting feel as the reference character image (style reference only; do not draw this man).\nSubject: a small handmade clear acrylic sectional model sitting on a rectangular wooden slotted holder. SEVEN thin transparent rectangular plates stand vertically, parallel and evenly spaced, one behind another. Each plate bears a SINGLE small red circular cross-section at a slightly different horizontal and vertical position; looking obliquely across the stack these separate red marks trace ONE bent tube path. No actual continuous physical tube goes through plates; it is dots on seven plates which collectively depict the curve.\nOne plate has been lifted out and rests leaned neatly at the side so its isolated red dot can be understood; the remaining plates stay in slots. The wood is well used, has small scratches and ordinary metal screws. Not magic, no glowing projections, no screens, no actual patient imagery. Three-quarter close view showing clearly the stacked transparent plate edges, the isolated removable slice, and wooden holder. Keep model large centered and all parts in frame.\nA small separate round manual turntable with a short black crank handle lies on the far right of the desk, unconnected to the model, clearly an optional attachable base; preserve enough gap to distinguish main model and optional accessory. No labels, no handwritten words, no ruler numbers, no watermarks, no logos. Warm task light on object and cool room ambient. No people or hands in image.",
+      "references": [
+        "app/public/assets/ch2_pixel_char_zhou.png"
+      ]
+    }
+  ],
+  "motion": {
+    "renderer": "React layered PNG transforms + fixed clipped foreground; not a looping GIF",
+    "duration_ms": 3000,
+    "allow_skip": false,
+    "width": 1672,
+    "height": 941,
+    "travel_x": 200,
+    "travel_y": -40,
+    "reconstruction_ms": 1500,
+    "audio": "Existing user-provided real CT recording unchanged; no new audio or voices.",
+    "limitations": "Illustrative oblique CT table motion, not a model-specific kinematic simulation; reduced-motion setting uses parked state."
+  }
+}

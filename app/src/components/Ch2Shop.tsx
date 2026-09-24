@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { SHOP_ITEMS } from '../game/data'
 import { buyCh2Item, CH2_ITEM_DESCRIPTIONS, ch2ItemUnavailable } from '../game/ch2-session'
 import { ch2GiftSalesEnded } from '../game/ch2-gifts'
+import { ch2PayoffKeepsakes } from '../game/ch2-payoffs'
 import type { GameState } from '../game/types'
 
 type Props = { state: GameState; update: (f: (s: GameState) => GameState) => void; onClose: () => void }
@@ -43,10 +44,11 @@ export function Ch2Shop({ state, update, onClose }: Props) {
 }
 
 export function Ch2Backpack({ state, onClose }: Props) {
+  const keepsakes = ch2PayoffKeepsakes(state)
   return <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/85 p-4" onClick={e => { e.stopPropagation(); onClose() }}>
     <section role="dialog" aria-label="第二章背包" className="max-h-[88%] w-full max-w-lg overflow-y-auto rounded-xl border border-slate-500 bg-slate-900 p-5" onClick={e => e.stopPropagation()}>
       <h3 className="text-xl text-teal-200 mb-4">🎒 背包 · 用得上的东西</h3>
-      {!state.items.length && !state.dlc?.ch2?.pendingCoffee && <p className="text-sm text-slate-400">背包暂时是空的，可以去小卖部看看。</p>}
+      {!state.items.length && !state.dlc?.ch2?.pendingCoffee && !keepsakes.length && <p className="text-sm text-slate-400">背包暂时是空的，可以去小卖部看看。</p>}
       {state.dlc?.ch2?.pendingCoffee && <p className="mb-3 text-sm text-amber-200">☕ 咖啡已留好：下一次夜间自由探索自动加 1 点行动力。</p>}
       {state.items.map(id => {
         const item = SHOP_ITEMS.find(row => row.id === id)
@@ -58,6 +60,14 @@ export function Ch2Backpack({ state, onClose }: Props) {
             : state.dlc?.ch2?.phase === 'settle' ? '留到下一班同事在场的闲聊时，才会出现递东西的选项。' : '开诊前闲聊、午饭或交接后的空当，可以当面递给同事。'}</p>}
         </div>
       })}
+      {keepsakes.length > 0 && <section aria-label="本章收到与借用的物品" className="mb-4 border-t border-slate-600 pt-3">
+        <h4 className="mb-3 text-sm text-amber-200">带回来的东西 · 在故事里派上用场</h4>
+        {keepsakes.map(item => <div key={item.id} data-ch2-keepsake={item.id} className="mb-3 rounded-lg border border-slate-700 p-3">
+          <p className="text-slate-100">{item.icon} {item.title}</p>
+          <p className="mt-1 text-xs text-slate-300">{item.body}</p>
+          <p className="mt-2 text-xs text-teal-200">{item.use}</p>
+        </div>)}
+      </section>}
       <button onClick={onClose} className="w-full rounded border border-slate-500 py-2 text-slate-100">收好背包</button>
     </section>
   </div>

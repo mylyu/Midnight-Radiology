@@ -2,6 +2,7 @@ import { CH2_ACTIVE_BADGES, CH2_ACTIVE_CARDS, CH2_BADGES_LEGACY, CH2_CARDS_LEGAC
 import { SHOP_ITEMS } from '../game/data'
 import { getDlc } from '../game/dlc'
 import { CH2_STAT_KEYS, ch2NetChange } from '../game/ch2-ledger'
+import { ch2PayoffKeepsakes } from '../game/ch2-payoffs'
 import type { GameState } from '../game/types'
 
 type Props = {
@@ -39,6 +40,7 @@ export function Ch2Settlement({ state, onNext, onShop, onBackpack, onManual, onB
   const recovered = !loop || Object.values(loop.shifts).some(row => row.recovered)
   const next = CH2_SHIFTS[CH2_SHIFTS.findIndex(row => row.id === shift.id) + 1]
   const scans = Object.values(progress?.scanSessions ?? {}).filter(row => row.completed).length
+  const keepsakes = ch2PayoffKeepsakes(state)
   const dlcStatus = (id: string) => !getDlc(id) ? 'DLC 预定 · 尚未开放'
     : state.dlc?.[id]?.done ? '已完成 · 可从大厅重玩'
       : state.dlc?.[id]?.stepId ? '进行中 · 可从大厅继续' : '已开放 · 可从大厅进入'
@@ -75,6 +77,7 @@ export function Ch2Settlement({ state, onNext, onShop, onBackpack, onManual, onB
           <button className="shrink-0 rounded border border-slate-500 px-3 py-2 text-xs text-slate-100" onClick={onBackpack}>查看背包用途</button>
         </div>
         <p className="mt-2 text-xs text-slate-400">奶茶和零食带回剧情，遇见同事闲聊时再递给对方。</p>
+        {keepsakes.length > 0 && <p data-ch2-keepsake-summary className="mt-2 text-xs text-teal-200">本章带回：{keepsakes.map(item => item.title).join('、')}。用途收在背包里。</p>}
       <div className="mt-3 border-t border-slate-700 pt-3" aria-label="章节与设备" data-ch2-equipment-overview>
         <div className="space-y-1.5 text-sm">
           <p data-equipment="cr" data-unlock={state.finished ? 'complete' : 'available'} className="text-slate-300">{state.finished ? '✅' : '🔓'} 老伙计（CR · X光机）—— <span className="text-slate-400">第一章「老伙计」 · {state.finished ? '已完成' : state.stepId || state.night > 1 ? '进行中' : '可体验'}</span></p>

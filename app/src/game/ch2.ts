@@ -6,6 +6,7 @@ import { CH2_PACING_STEPS, ch2PacingStep } from './ch2-pacing.ts'
 import { CH2_NEEDLE_STEPS, CH2_NEEDLE_EVIDENCE, ch2NeedleStep } from './ch2-needles.ts'
 import { CH2_TERMINAL_STEPS, CH2_TERMINAL_EVIDENCE, ch2TerminalStep } from './ch2-terminal.ts'
 import { CH2_DAWN_STEPS, ch2DawnStep } from './ch2-dawn.ts'
+import { CH2_PAYOFF_STEPS, CH2_PAYOFF_EVIDENCE, ch2PayoffStep } from './ch2-payoffs.ts'
 
 /* ================= 第二章「快与狠」· CT篇 =================
  * 故事时间：2025年11月，新CT启用初期，五个值班跨约十天。
@@ -111,7 +112,7 @@ export function ch2BackgroundAsset(key: string): string {
 }
 
 /** Resolve patient staging, remembered choices and optional social branches from saved state. */
-export function ch2StepForState(id: string, step: Step, state: Pick<GameState, 'flags' | 'badges' | 'gender' | 'finished'> & Partial<Pick<GameState,'ap'|'items'>>): Step {
+export function ch2StepForState(id: string, step: Step, state: Pick<GameState, 'flags' | 'badges' | 'gender' | 'finished'> & Partial<Pick<GameState,'ap'|'items'|'dlc'>>): Step {
   step = patientStep(id, step)
   const { flags, badges } = state
   let text = step.text
@@ -155,7 +156,7 @@ export function ch2StepForState(id: string, step: Step, state: Pick<GameState, '
     text = '周一早上八点，办公室先过昨夜交班：CT正常交接；远程终端保持离线。信息科今天接手查日志，周五反馈。' + reply + '老周把排班表推过来，你的名字在主值栏，他的在备班栏。'
   }
   const rendered = text === step.text && queue === step.queue ? step : { ...step, text, queue }
-  return ch2DawnStep(id, ch2TerminalStep(id, ch2NeedleStep(id, ch2PacingStep(id, ch2SocialStep(id, rendered, state), state), state), state), state)
+  return ch2PayoffStep(id, ch2DawnStep(id, ch2TerminalStep(id, ch2NeedleStep(id, ch2PacingStep(id, ch2SocialStep(id, rendered, state), state), state), state), state), state)
 }
 
 /* 旧版停颁（病例替换及支线撤出）：保留定义与老存档记录，不计入收集分母。 */
@@ -290,12 +291,13 @@ export const CH2_EVENTS: Record<string, ChronicleEvent> = {
   ch2_stroke: { time: '2025年11月', title: '卒中绿道之夜', body: '房颤老人深夜卒中：运动伪影重扫、平扫排血、CTA提示M1闭塞。团队在进院52分钟时开始溶栓，同时联系上级医院评估取栓。' },
   ch2_mystery: { time: '2025年11月', title: '神秘病人第二诊', body: '去年那位寻找父亲旧片的老人再度来院。头颅平扫未见明确异常，头痛仍需回门诊评估；父亲的档案也没有查明。' },
   ch2_data_showdown: { time: '2025年11月', title: '数据回传摊牌', body: '小雷在质控样本中发现未清除的患者标识。会上叫停样本外传；玩家可主张整改服务、离线维保或完整断网审计。' },
-  ch2_cabinet: { time: '2025年11月', title: '封条柜开启', body: '科里保管的半钥匙与老周找回的一半合齐。柜内是教学片、手写笔记和1997年合影，照片中年轻的老周抱着本子，站在最边上。' },
+  ch2_cabinet: { time: '2025年11月', title: '封条柜开启', body: '科里保管的半钥匙与老周找回的一半合齐。旧教学片、笔记与1997年合影仍按编号留档；老周另从柜里取出一套透明叠层教具，借给你在下周交流时演示。配套底座另锁在小铁柜里。' },
   ch2_solo: { time: '2025年11月', title: '独立值守', body: '老周交出整夜夜班主值职责，返聘带教与备班仍在。你完成交班，和他、小唐去吃早饭。' },
 }
 
 /* ================= 第二章证物（6件） ================= */
 export const CH2_EVIDENCE: Record<string, Evidence> = {
+  ...CH2_PAYOFF_EVIDENCE,
   ...CH2_NEEDLE_EVIDENCE,
   ...CH2_TERMINAL_EVIDENCE,
   maintenance_draft: { title: '维保合同草案', body: '雯雯留下的草案页：球管按曝光次数阶梯计价、超支部分封顶。她说：球管是耗材，不是固定资产，不这么写你们迟早吃亏。', image: 'ev_maintenance_draft', flag: 'maintenance_draft' },
@@ -597,6 +599,7 @@ const C2D2_QUEUE4 = [
 ]
 
 const C2D2: Record<string, Step> = {
+  ...CH2_PAYOFF_STEPS.c2d2,
   ...CH2_SOCIAL_STEPS.c2d2,
   ...CH2_PACING_STEPS.c2d2,
   c2d2_0: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: '三天后，周一。主任把你从夜班临时调来支援白班：新CT的名声传开了，门诊开单量翻倍，候诊长队从CT室门口排到电梯间。', next: 'c2d2_1' },
@@ -826,6 +829,7 @@ const C2D4: Record<string, Step> = {
 
 /* ================= 第5夜「值守」 ================= */
 const C2N5: Record<string, Step> = {
+  ...CH2_PAYOFF_STEPS.c2n5,
   ...CH2_NEEDLE_STEPS.c2n5,
   ...CH2_TERMINAL_STEPS.c2n5,
   ...CH2_SOCIAL_STEPS.c2n5,
@@ -955,6 +959,7 @@ const C2N5: Record<string, Step> = {
 
 /* ================= 晨会考核（第5夜后） ================= */
 const C2AM: Record<string, Step> = {
+  ...CH2_PAYOFF_STEPS.c2am,
   ...CH2_TERMINAL_STEPS.c2am,
   c2am_0: { bg: 'bg_office_day', speaker: 'sys', text: "周一早上八点，医生办公室。会上先过昨夜交班：CT正常交接；远程终端保持离线，信息科今天接手查日志，周五反馈。主任在交接记录上签了字。角落里，老周正把你的名字勾进夜班主值栏。", next: 'c2am_1' },
   c2am_1: { speaker: 'director', sprite: 'char_director', sfx: 'vox2_director_am', text: "年轻人不错啊，我出几道题考考你。五道，老规矩。答完再去吃饭。", next: 'c2am_2' },

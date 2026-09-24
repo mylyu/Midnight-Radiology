@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第二章 · 回礼与检查床运动预览</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#09111e;color:#e2e8f0;font:16px/1.7 system-ui,sans-serif}main{max-width:1100px;margin:auto;padding:25px 18px}h1{font-size:26px}h2{font-size:20px}a{color:#82dccb}p{color:#afbfce}button{font:inherit;cursor:pointer;border:1px solid #8fcfc1;background:#20493f;color:#ecfff9;padding:10px 20px;border-radius:6px}.notice{border-left:3px solid #60c6b4;padding-left:12px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:18px}article{padding:14px;border:1px solid #35455b;border-radius:10px;background:#121f30}article img,.hero{width:100%;display:block;image-rendering:pixelated;border-radius:6px}article p{font-size:14px}summary{cursor:pointer;color:#f1d797}details{margin-top:24px}footer{font-size:13px;color:#aabcca;margin:25px 0}.scan-standby{max-width:820px;margin:20px auto}#demo-status{min-height:1.7em;color:#97dfcc}
+</style></head>
+<body><main>
+<h1>第二章 · 回礼与真正移动的检查床</h1>
+<p class="notice">本地预览，不读写游戏存档。这里的扫描直接使用游戏里的同一个组件；不是另做一套展示动画。本轮尚未发布。</p>
+<p><a href="./#/ch2">进入第二章 →</a></p>
+<section aria-label="扫描演出预览">
+<h2>CT 检查床 · 3秒</h2>
+<p>检查床和患者沿轨道进到机架内，房间、机架和底座固定。仍用您提供的CT原声，不可跳过；重建不再进床。</p>
+<div id="still" class="scan-standby"></div>
+<button id="scan">播放一次游戏内扫描</button>
+<p id="demo-status" role="status">点击后播放，不会自动循环。</p>
+</section>
+<details open><summary>两把钥匙的新用途（含结尾内容）</summary>
+<p>封条柜借出的叠层教具，小铁柜配套的旋转底座，会在下周专家来访时真正拿出来用。没有买钥匙也能拆层展示；拿到了底座才有转动的选项。</p>
+<div class="grid">
+<article><img src="assets/ch2_slice_model_v1.png" alt="可抽出的透明片，红点排列成弯曲形状"><h3>透明叠层教具</h3><p>单拿一片是一个点，按顺序叠起来才看出走向。不再只收到一段怀旧说明。</p></article>
+<article><img src="assets/ch2_model_base_v1.png" alt="侧面有手摇柄的旋转底座"><h3>小铁柜里的配套底座</h3><p>手摇转动换个角度看。纯桌面教学物品，不放进患者机架。</p></article>
+<article><img src="assets/ch2_slice_model_assembled_v1.png" alt="模型放在旋转底座上"><h3>章末实际展示</h3><p>选择装上底座，画面会换到组合展示。没有拿到的旧存档不会凭空出现物品。</p></article>
+</div></details>
+<details><summary>“周老师！” · 新的握手画面</summary>
+<p>沿用老周的年龄、发际线、白大褂和粗像素风。专家认出他，但不解释1998年谜底。</p>
+<img class="hero" src="assets/ch2_zhou_expert_handshake_v1.png" alt="老周与市里来的质控专家握手">
+</details>
+<details><summary>支线回礼与第一章回响</summary>
+<p>罗阿姨的光盘布袋、小雷的收纳袋、老蒋的杯套，都要有对应经历才出现。保留小唐的饭与老周的新保温杯；新增物品的用途可以在本章背包查看。</p>
+<p>第一章错题本可拿来翻，分享苹果影响小唐的回应，报废眼镜当镇纸，老蒋还记得上回的冰红茶。不把纪念物当有效防护，也不编造玩家没经历过的共同回忆。</p>
+</details>
+<footer>仅新增第二章专用资源。第一章、DR/DSA和已批准声音不变。试玩旧档不会清进度；想重看完整支线请用游戏内第二章重玩入口。</footer>
+</main><div id="demo"></div>
+<script type="module">
+import React from 'react';
+import {createRoot} from 'react-dom/client';
+import {Ch2CtMotion} from './src/components/Ch2CtMotion';
+import {Ch2ScanOverlay} from './src/components/Ch2ScanOverlay';
+import {CH2_SCANS} from './src/game/ch2-scans';
+const h=React.createElement;
+createRoot(document.getElementById('still')).render(h('div',{className:'ch2-scan-device'},h(Ch2CtMotion,{progress:0})));
+const root=createRoot(document.getElementById('demo'));
+const button=document.getElementById('scan'), status=document.getElementById('demo-status');
+button.addEventListener('click',()=>{
+  button.disabled=true;status.textContent='播放中 · 3秒后自动完成';
+  root.render(h(Ch2ScanOverlay,{key:String(Date.now()),config:CH2_SCANS.c2d2_lung_scan,startedAt:Date.now(),onDone:()=>{
+    root.render(null);button.disabled=false;status.textContent='演出完成。游戏随后出图、由玩家先观察；这里不推进游戏存档。';
+  }}));
+});
+</script></body></html>
