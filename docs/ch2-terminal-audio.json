@@ -1,0 +1,196 @@
+{
+  "baseline": "194c442",
+  "scope": "Two new second-chapter-only aliases; all existing audio remains unchanged.",
+  "generator": "scripts/ch2-terminal-audio.py",
+  "generator_sha256": "a645121b92c6710acbc2994008aa506ba09cde78379e1683887b8a5bcd37108b",
+  "ffmpeg": "ffmpeg version 8.1.1-full_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers",
+  "voice": {
+    "text": "样本已接收。",
+    "description": "A calm neutral low-pitched automated announcement. Flat even Mandarin delivery, clear consonants, a settled falling final syllable. Dry voice only, no music.",
+    "reference_audio_used": false,
+    "argv": [
+      "C:\\Users\\lvmen\\Documents\\New project\\AuK\\.venv\\Scripts\\auk-infer.exe",
+      "--ckpt",
+      "C:\\Users\\lvmen\\Documents\\New project\\AuK\\ckpts\\AuK-Flash\\auk_flash.safetensors",
+      "--qwen_path",
+      "C:\\Users\\lvmen\\Documents\\New project\\AuK\\ckpts\\Qwen2.5-Omni-3B",
+      "--dtype",
+      "bf16",
+      "--device",
+      "cuda:0",
+      "--cpu_offload",
+      "--seed",
+      "2026092453",
+      "--gen_seconds",
+      "1.6",
+      "--instruction",
+      "请基于下面的描述: \"A calm neutral low-pitched automated announcement. Flat even Mandarin delivery, clear consonants, a settled falling final syllable. Dry voice only, no music.\",生成语音内容\"样本已接收。\".",
+      "--output",
+      "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-terminal-mystery-20260924\\ch2_terminal_receipt_v1-take03-raw.wav"
+    ],
+    "raw_wav": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-terminal-mystery-20260924\\ch2_terminal_receipt_v1-take03-raw.wav",
+    "raw_sha256": "8b82b18d7e72c66235537681dc3654a5e627171d9643e06f22b2376bf9bce438",
+    "processing_argv": [
+      "C:\\Users\\lvmen\\AppData\\Local\\Microsoft\\WinGet\\Packages\\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\\ffmpeg-8.1.1-full_build\\bin\\ffmpeg.EXE",
+      "-y",
+      "-hide_banner",
+      "-loglevel",
+      "error",
+      "-i",
+      "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-terminal-mystery-20260924\\ch2_terminal_receipt_v1-take03-raw.wav",
+      "-af",
+      "highpass=f=85,lowpass=f=5500,loudnorm=I=-23:TP=-5:LRA=5",
+      "-ar",
+      "24000",
+      "-ac",
+      "1",
+      "-c:a",
+      "pcm_s16le",
+      "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-terminal-mystery-20260924\\ch2_terminal_receipt_v1.wav"
+    ],
+    "seed": 2026092453,
+    "gen_seconds": 1.6,
+    "speed_or_pitch_changed": false,
+    "transcript": "样本已接收。",
+    "raw_acoustic": {
+      "seconds": 1.6,
+      "sample_rate": 24000,
+      "channels": 1,
+      "finite": true,
+      "peak": 0.617549,
+      "rms": 0.043298
+    },
+    "words": [
+      {
+        "text": "样",
+        "start": 0.0,
+        "end": 0.48
+      },
+      {
+        "text": "本",
+        "start": 0.48,
+        "end": 0.78
+      },
+      {
+        "text": "已",
+        "start": 0.78,
+        "end": 1.06
+      },
+      {
+        "text": "接",
+        "start": 1.06,
+        "end": 1.24
+      },
+      {
+        "text": "收。",
+        "start": 1.24,
+        "end": 1.36
+      }
+    ]
+  },
+  "alarm": {
+    "source": "Original FFmpeg lavfi synthesis; no sampled third-party recording.",
+    "argv": [
+      "C:\\Users\\lvmen\\AppData\\Local\\Microsoft\\WinGet\\Packages\\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\\ffmpeg-8.1.1-full_build\\bin\\ffmpeg.EXE",
+      "-y",
+      "-hide_banner",
+      "-loglevel",
+      "error",
+      "-f",
+      "lavfi",
+      "-i",
+      "aevalsrc=0.14*(sin(2*PI*330*t)+0.35*sin(2*PI*495*t))*exp(-5*t):s=24000:d=0.7",
+      "-af",
+      "lowpass=f=1200,afade=t=in:d=0.018,afade=t=out:st=0.46:d=0.24",
+      "-ar",
+      "24000",
+      "-ac",
+      "1",
+      "-c:a",
+      "pcm_s16le",
+      "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-terminal-mystery-20260924\\ch2_terminal_alarm_v1-raw.wav"
+    ],
+    "raw_wav": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-terminal-mystery-20260924\\ch2_terminal_alarm_v1-raw.wav",
+    "raw_sha256": "983d4761c96464e0ca9bf651a0a91d37a70119339c17ae40b6f12ca1afbff7d4",
+    "duration_seconds": 0.7
+  },
+  "records": [
+    {
+      "id": "ch2_terminal_receipt_v1",
+      "output": "app/public/audio/ch2_terminal_receipt_v1.mp3",
+      "sha256": "6904a94a505dbcefa2803a95f8c63bd4134842777f3e457262cdac9fa28205a8",
+      "bytes": 26925,
+      "purpose": "Isolated machine receipt: 样本已接收。",
+      "wav_source": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-terminal-mystery-20260924\\ch2_terminal_receipt_v1.wav",
+      "wav_sha256": "0c254fa74ff75f151d793764de496116b39858d9c371e21a39fcdc86ce72de58",
+      "encode_argv": [
+        "C:\\Users\\lvmen\\AppData\\Local\\Microsoft\\WinGet\\Packages\\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\\ffmpeg-8.1.1-full_build\\bin\\ffmpeg.EXE",
+        "-y",
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-i",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-terminal-mystery-20260924\\ch2_terminal_receipt_v1.wav",
+        "-ar",
+        "24000",
+        "-ac",
+        "1",
+        "-c:a",
+        "libmp3lame",
+        "-b:a",
+        "128k",
+        "C:\\Users\\lvmen\\Documents\\New project\\Midnight-Radiology\\app\\public\\audio\\ch2_terminal_receipt_v1.mp3"
+      ],
+      "recommended_playback_gain": 0.5,
+      "loop": false,
+      "acoustic": {
+        "seconds": 1.6,
+        "sample_rate": 24000,
+        "channels": 1,
+        "finite": true,
+        "peak": 0.53381,
+        "rms": 0.034173
+      }
+    },
+    {
+      "id": "ch2_terminal_alarm_v1",
+      "output": "app/public/audio/ch2_terminal_alarm_v1.mp3",
+      "sha256": "6e20289fadb1bcd6d0a1359795ce9d7c6e6bb32e42ffdb2fd9ab860a8a666b65",
+      "bytes": 12717,
+      "purpose": "Single warm decaying alert; no repeated or looping beeps.",
+      "wav_source": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-terminal-mystery-20260924\\ch2_terminal_alarm_v1-raw.wav",
+      "wav_sha256": "983d4761c96464e0ca9bf651a0a91d37a70119339c17ae40b6f12ca1afbff7d4",
+      "encode_argv": [
+        "C:\\Users\\lvmen\\AppData\\Local\\Microsoft\\WinGet\\Packages\\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\\ffmpeg-8.1.1-full_build\\bin\\ffmpeg.EXE",
+        "-y",
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-i",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-terminal-mystery-20260924\\ch2_terminal_alarm_v1-raw.wav",
+        "-ar",
+        "24000",
+        "-ac",
+        "1",
+        "-c:a",
+        "libmp3lame",
+        "-b:a",
+        "128k",
+        "C:\\Users\\lvmen\\Documents\\New project\\Midnight-Radiology\\app\\public\\audio\\ch2_terminal_alarm_v1.mp3"
+      ],
+      "recommended_playback_gain": 0.45,
+      "loop": false,
+      "acoustic": {
+        "seconds": 0.7,
+        "sample_rate": 24000,
+        "channels": 1,
+        "finite": true,
+        "peak": 0.155428,
+        "rms": 0.035281
+      }
+    }
+  ],
+  "human_listened": false,
+  "user_approved": false,
+  "review_limitations": "The agent cannot directly audition audio in this session. Local Whisper transcription and decoded PCM checks confirm words, duration and integrity, not subjective tone or real-world loudness; user audition is still required."
+}

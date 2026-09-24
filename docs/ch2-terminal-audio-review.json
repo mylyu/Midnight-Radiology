@@ -1,0 +1,42 @@
+{
+  "selected_take": 3,
+  "generation_record": "docs/ch2-terminal-audio.json",
+  "review_script": "scripts/ch2-terminal-audio-review.py",
+  "raw_directory": "C:/Users/lvmen/Documents/New project/AuK/outputs/ch2-terminal-mystery-20260924/",
+  "human_listened": false,
+  "user_approved": false,
+  "method": "Independent local Whisper-medium transcription plus Qwen2.5-Omni-3B perception, without a target transcript in the Qwen prompt. These are fallible automated checks, not human audition.",
+  "attempts": [
+    {
+      "take": 1,
+      "raw_file": "ch2_terminal_receipt_v1-raw.wav",
+      "raw_sha256": "2790c1c5dfe8d480e37fc44631975f1ec9b076703e0183f4bec8fd48fd2b32d9",
+      "seed": 2026092451,
+      "gen_seconds": 2.0,
+      "whisper": "样本已接收,样本已接收",
+      "qwen": "样本已接收样本已接收\n语速：中等\n语调：平缓",
+      "result": "Rejected: repeated line. Raw WAV retained outside repo; never exported to game audio."
+    },
+    {
+      "take": 2,
+      "raw_file": "ch2_terminal_receipt_v1-take02-raw.wav",
+      "raw_sha256": "bf4101a217bd31915d9d51b78b22ac6885462a2424d13750397483f4e9638675",
+      "seed": 2026092452,
+      "gen_seconds": 1.8,
+      "whisper": "样本已接收,谢罗。",
+      "qwen": "样本已接收。",
+      "result": "Rejected conservatively: independent models disagree on trailing extra words. Raw WAV retained; no game export."
+    },
+    {
+      "take": 3,
+      "raw_file": "ch2_terminal_receipt_v1-take03-raw.wav",
+      "raw_sha256": "8b82b18d7e72c66235537681dc3654a5e627171d9643e06f22b2376bf9bce438",
+      "seed": 2026092453,
+      "gen_seconds": 1.6,
+      "whisper": "样本已接收。",
+      "qwen": "样本已接收。语速：中等。语调：平缓。",
+      "result": "Selected for local preview: both transcribe the exact five-character line once; 0.24 seconds remain after the final word timestamp. No pitch or speed change. Tone still requires user audition."
+    }
+  ],
+  "limitations": "The agent has no direct audio listening capability in this session. There is no claim that the machine delivery or subjective softness has been personally heard and approved. The alarm is original single 0.7-second synthesis, not a sampled warning or a looping beep."
+}

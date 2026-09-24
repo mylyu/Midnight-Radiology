@@ -3,6 +3,8 @@ import type { KnowledgeCard, ChronicleEvent, Evidence } from './dlc'
 import { patientStep } from './ch2-patients.ts'
 import { CH2_SOCIAL_STEPS, ch2SocialStep } from './ch2-social.ts'
 import { CH2_PACING_STEPS, ch2PacingStep } from './ch2-pacing.ts'
+import { CH2_NEEDLE_STEPS, CH2_NEEDLE_EVIDENCE, ch2NeedleStep } from './ch2-needles.ts'
+import { CH2_TERMINAL_STEPS, CH2_TERMINAL_EVIDENCE, ch2TerminalStep } from './ch2-terminal.ts'
 
 /* ================= 第二章「快与狠」· CT篇 =================
  * 故事时间：2025年11月，新CT启用初期，五个值班跨约十天。
@@ -152,7 +154,7 @@ export function ch2StepForState(id: string, step: Step, state: Pick<GameState, '
     text = '周一早上八点，办公室先过昨夜交班：CT正常交接；远程终端保持离线。信息科今天接手查日志，周五反馈。' + reply + '老周把排班表推过来，你的名字在主值栏，他的在备班栏。'
   }
   const rendered = text === step.text && queue === step.queue ? step : { ...step, text, queue }
-  return ch2PacingStep(id, ch2SocialStep(id, rendered, state), state)
+  return ch2TerminalStep(id, ch2NeedleStep(id, ch2PacingStep(id, ch2SocialStep(id, rendered, state), state), state), state)
 }
 
 /* 旧版停颁（病例替换及支线撤出）：保留定义与老存档记录，不计入收集分母。 */
@@ -293,6 +295,8 @@ export const CH2_EVENTS: Record<string, ChronicleEvent> = {
 
 /* ================= 第二章证物（6件） ================= */
 export const CH2_EVIDENCE: Record<string, Evidence> = {
+  ...CH2_NEEDLE_EVIDENCE,
+  ...CH2_TERMINAL_EVIDENCE,
   maintenance_draft: { title: '维保合同草案', body: '雯雯留下的草案页：球管按曝光次数阶梯计价、超支部分封顶。她说：球管是耗材，不是固定资产，不这么写你们迟早吃亏。', image: 'ev_maintenance_draft', flag: 'maintenance_draft' },
   phantom_log: { title: '体模实验记录（旧版留档）', body: '陆舟留下的实验记录：水箱与线对卡体模、三组参数的扫描数据。「归你们科存档，说不定哪天质控用得上。」', image: 'ct_phantom', flag: 'phantom_log' },
   remote_proposal: { title: '远程质控服务方案', body: '厂家彩页：设备运行数据、图像质量参数自动回传云端，免费。附件三写着「乙方有权使用脱敏后数据」——「脱敏后」三个字，由他们自己定义。', image: 'ev_remote_proposal', flag: 'remote_proposal' },
@@ -444,6 +448,7 @@ const WRIST_GRAY2HU: [number, number][] = [
 
 /* ================= 第1夜「新机」 ================= */
 const C2N1: Record<string, Step> = {
+  ...CH2_TERMINAL_STEPS.c2n1,
   ...CH2_SOCIAL_STEPS.c2n1,
   ...CH2_PACING_STEPS.c2n1,
   c2n1_0: { bg: 'bg_ctcontrol', speaker: 'sys', text: '2025年11月，晚上九点半。影像科走廊新刷了漆，CT室门口的红地垫还没踩脏。你在新打卡机前站了两秒——连打卡机都换了。', effect: { flag: 'c2_started' }, next: 'c2n1_1' },
@@ -655,6 +660,7 @@ const C2D2: Record<string, Step> = {
 
 /* ================= 第3夜「快」 ================= */
 const C2N3: Record<string, Step> = {
+  ...CH2_TERMINAL_STEPS.c2n3,
   ...CH2_SOCIAL_STEPS.c2n3,
   ...CH2_PACING_STEPS.c2n3,
   c2n3_0: { bg: 'bg_ctcontrol', speaker: 'sys', text: "晚上九点半。白班的人走了，分诊台上的纸条倒越贴越多。新登记办法的联系人旁边，多了一张计时表；小唐正找地方贴，差点盖住报修电话。", next: 'c2n3_1' },
@@ -751,6 +757,8 @@ const C2N3: Record<string, Step> = {
 
 /* ================= 第4日「狠」（白班 · 增强扫描专场） ================= */
 const C2D4: Record<string, Step> = {
+  ...CH2_NEEDLE_STEPS.c2d4,
+  ...CH2_TERMINAL_STEPS.c2d4,
   ...CH2_SOCIAL_STEPS.c2d4,
   ...CH2_PACING_STEPS.c2d4,
   // 沿用旧节点 ID，观察与扫描演出由第二章独立配置接入。
@@ -816,6 +824,8 @@ const C2D4: Record<string, Step> = {
 
 /* ================= 第5夜「值守」 ================= */
 const C2N5: Record<string, Step> = {
+  ...CH2_NEEDLE_STEPS.c2n5,
+  ...CH2_TERMINAL_STEPS.c2n5,
   ...CH2_SOCIAL_STEPS.c2n5,
   ...CH2_PACING_STEPS.c2n5,
   c2n5_0: { bg: 'bg_corridor', speaker: 'sys', text: "晚上九点半。老周蹲在更衣柜前，把一摞交班本挪进纸箱。白大褂还挂着，最上层那罐茶叶也没动。", next: 'c2n5_1' },
@@ -943,6 +953,7 @@ const C2N5: Record<string, Step> = {
 
 /* ================= 晨会考核（第5夜后） ================= */
 const C2AM: Record<string, Step> = {
+  ...CH2_TERMINAL_STEPS.c2am,
   c2am_0: { bg: 'bg_office_day', speaker: 'sys', text: "周一早上八点，医生办公室。会上先过昨夜交班：CT正常交接；远程终端保持离线，信息科今天接手查日志，周五反馈。主任在交接记录上签了字。角落里，老周正把你的名字勾进夜班主值栏。", next: 'c2am_1' },
   c2am_1: { speaker: 'director', sprite: 'char_director', sfx: 'vox2_director_am', text: "年轻人不错啊，我出几道题考考你。五道，老规矩。答完再去吃饭。", next: 'c2am_2' },
   c2am_2: { speaker: 'sys', text: '【考核开始 · 5道随机题】', next: '@quiz' },

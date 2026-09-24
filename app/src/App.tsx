@@ -9,6 +9,7 @@ import { Ch2Shop, Ch2Backpack } from './components/Ch2Shop'
 import { Ch2Settlement } from './components/Ch2Settlement'
 import { Ch2ScanOverlay } from './components/Ch2ScanOverlay'
 import { Ch2ObservationImage } from './components/Ch2ObservationImage'
+import { Ch2MysteryMedia, Ch2MysterySound } from './components/Ch2MysteryMedia'
 import { CH2_SCANS, CH2_SCAN_TEXT } from './game/ch2-scans'
 import { getCh2Observation } from './game/ch2-observations'
 import { beginCh2Shift, CH2_CASE_COMPLETIONS, recordCh2Change } from './game/ch2-ledger'
@@ -2153,8 +2154,15 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
       )}
 
       {/* 中央大图 */}
-      {step.image && !scanPending && <Ch2ObservationImage image={step.image} label={step.imageLabel} caption={CH2_IMAGE_CAPTIONS[step.image]}
-        regions={observationPending && observedChoice ? observation?.regions : undefined} />}
+      {phase === 'story' && <Ch2MysterySound key={stepId} stepId={stepId}
+        consumed={!!state.flags[`c2_terminal_sound_${stepId}`]}
+        onConsumed={() => update(s => s.flags[`c2_terminal_sound_${stepId}`] ? s : {
+          ...s, flags: { ...s.flags, [`c2_terminal_sound_${stepId}`]: true },
+        })} />}
+      {step.image && !scanPending && (step.image.startsWith('ch2_terminal_')
+        ? <Ch2MysteryMedia key={`${stepId}-${step.image}`} stepId={stepId} image={step.image} label={step.imageLabel} />
+        : <Ch2ObservationImage image={step.image} label={step.imageLabel} caption={CH2_IMAGE_CAPTIONS[step.image]}
+          regions={observationPending && observedChoice ? observation?.regions : undefined} />)}
 
       {/* 立绘 */}
       {leftSprite && <img src={leftSprite} className={`sprite-l absolute bottom-48 portrait:bottom-44 left-4 md:left-24 portrait:h-44 h-64 md:h-96 object-contain pixel drop-shadow-2xl z-10 pointer-events-none ${isPatientBed(view.sprite) ? 'ch2-patient-bed' : isPatientWheelchair(view.sprite) ? 'ch2-patient-wheelchair' : ''}`} alt={isPatientBed(view.sprite) ? '患者躺在转运平车上' : isPatientWheelchair(view.sprite) ? '患者坐在轮椅上' : ''} />}

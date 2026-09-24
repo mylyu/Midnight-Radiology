@@ -1,0 +1,102 @@
+{
+  "baseline": "194c442",
+  "generation_date": "2026-09-24",
+  "generator": "built-in image_gen; no API fallback, no image editing with scripts",
+  "defaultSourceDirectory": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb",
+  "medical_reference": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6301504/",
+  "review_limitations": "Illustrations for one fictional case, not actual DICOM or voxel-registered reconstructions. Visually checked posterior paraspinal location, 2 axial dots, 4 MPR fragments, 15 VR fragments. No diagnostic/measurement claim. Real publication figures were not copied or redistributed. The story's sequential views represent one study; no new exposure.",
+  "assets": [
+    {
+      "file": "ch2_pat_luo_v1.png",
+      "source": "exec-a2048174-e839-46b0-9453-8dcc0df2fbed.png",
+      "role": "Original transparent pixel portrait, fictional 68-year-old Luo.",
+      "refs": [
+        "app/public/assets/pat_aunt.png"
+      ],
+      "prompt": "Use case: stylized-concept. Create ONE NEW full-body transparent PNG character sprite for a Chinese pixel-art hospital story game. Image 1 is STYLE REFERENCE ONLY, not the same character. New character: Luo, a 68-year-old retired seamstress, ordinary Chinese elderly woman, noticeably gray short permed hair, small weathered face and kind but stubborn eyebrows, muted brown knitted cardigan over faded sage shirt, navy comfortable trousers and sensible flat shoes. She is standing unaided, holding a large old tan hospital radiology film envelope under one arm and one hand gripping the opening, mildly puzzled expression. Clearly a different identity from reference. Faithfully match its coarse hand-placed square pixel clusters, dark stepped outlines, limited shaded palette, mature proportions and warm face/cool blue shadows. NOT smooth digital painting, not anime gloss, not photorealistic, no blur. 1024x1536 portrait canvas, centered full body including feet with 8% transparent padding around figure. Genuine transparent background with clean alpha, no cast backdrop, no checkerboard baked in. No text, no watermark, no medical tools, no visible needles, no labels on envelope.",
+      "sha256": "621a13803ca4701668cde32ab6efe09e45efc103619ed8fbdb8dbb26deee3e8c",
+      "width": 1024,
+      "height": 1536,
+      "cornerAlpha": 0,
+      "output": "app/public/assets/ch2_pat_luo_v1.png"
+    },
+    {
+      "file": "ch2_needle_vr_v1.png",
+      "source": "exec-150c3934-9504-4780-8ca6-263ece492385.png",
+      "role": "Case illustration: posterior volume-rendered view; exactly 15 short fragments (7 screen-left, 8 screen-right).",
+      "refs": [],
+      "prompt": "Use case: scientific-educational. Create one educational CT volume-rendering still for a fictional chest CT case showing 15 retained short acupuncture needle fragments in the posterior cervical and thoracic PARASPINAL SOFT TISSUES. Portrait 1024x1536, pure black background. A posterior-view CT 3D volume reconstruction cropped from lower skull base to upper lumbar spine, with ivory-gray cervical/thoracic vertebrae, faint realistic posterior rib arcs and scapulae, translucent soft-tissue contour. The metal fragments are thin bright white short line segments about 1-2 cm, NOT huge nails, not penetrating the spine, spinal canal, lungs or heart. CRITICAL COUNT: exactly FIFTEEN well-separated fragments total: SEVEN on screen-left of spine and EIGHT on screen-right. Distribution on left: 2 lower neck, 2 upper thoracic, 2 mid-thoracic, 1 lower thoracic; on right: 2 lower neck, 2 upper thoracic, 2 mid-thoracic, 2 lower thoracic. All entirely outside the bony spinal column, a few centimeters lateral to it, clearly isolated inside soft tissues. Do not add metallic objects elsewhere. Realistic medical CT VR appearance, not x-ray projection, not anatomical cartoon, no full body flesh, no bloody injury, no skull face, no horror embellishments. Exact scientifically plausible anatomy, thin rods not screw heads, no arrows, no text or labels, no watermark. Same fictional elderly woman case, not a real patient's scan. Need countable subtle findings and surrounding anatomy, not a zoom-only abstract cluster of needles.",
+      "sha256": "38ceb0f01fd2ef003f9b1cfe3cd6b0ae9afaf22192f2278a79d5f1737b6366e5",
+      "width": 1024,
+      "height": 1536,
+      "cornerAlpha": 255,
+      "output": "app/public/assets/ch2_needle_vr_v1.png"
+    },
+    {
+      "file": "ch2_needle_axial_v1.png",
+      "source": "exec-e07cdb9d-0b5e-4d38-8031-fc0d8ac8e2ee.png",
+      "role": "Case illustration: one axial chest slice, two posterior paraspinal punctate metal foci.",
+      "refs": [
+        "app/public/assets/ch2_needle_vr_v1.png"
+      ],
+      "prompt": "Use case: scientific-educational. Image 1 is anatomical CASE LOCATION REFERENCE, NOT output style. Generate a single clinically plausible grayscale AXIAL CT cross-section at mid thoracic level of the SAME fictional elderly woman. 1024x1024 black square. Entire chest cross-section with both lungs, mediastinum, vertebral body anterior to spinal canal, posterior spinous process, bilateral paraspinal muscles and posterior skin fully inside the FOV, standard supine axial view viewed from feet, anterior at image top/posterior bottom. Soft tissue/mediastinal display window, lungs very dark with subtle vessels; no tumors or new diagnoses. Exactly TWO tiny bright METALLIC punctate foci (needle cross-sections, 1-2 mm each) inside the posterior paraspinal soft tissue, one on screen-left and one on screen-right, lateral to spinous process and safely outside vertebra/spinal canal. Their location is approximately 7 o'clock and 5 o'clock relative to posterior central spine, near posterior muscle, NOT inside lungs, NOT ureters, NOT kidneys, NOT spinal canal. Rest of the retained needle set lies on other slices and is not visible here. Tiny foci slightly hyperdense, subtle short local star streak allowed, NOT big rods, NOT giant white blobs, NOT all fifteen visible at once. Clean plausible CT texture with realistic fine grain, no cutaway flesh, no gore, no colored circles, no text, no arrows, no labels, no borders, no watermark. This is a fictional teaching scan, not a real patient's data. Match body proportions and posterior needle placement to reference; output must look like a CT slice, not a 3D skeleton.",
+      "sha256": "1af7dac2544fce8c34f6c8ab48168224f712c6a75d39ea72a49610a6b162c458",
+      "width": 1254,
+      "height": 1254,
+      "cornerAlpha": 255,
+      "output": "app/public/assets/ch2_needle_axial_v1.png"
+    },
+    {
+      "file": "ch2_needle_mpr_v1.png",
+      "source": "exec-35b04105-403d-48e7-99c8-0a4447a1efee.png",
+      "role": "Case illustration: coronal reformat through posterior tissues, four short line fragments; a subset of the total.",
+      "refs": [
+        "app/public/assets/ch2_needle_vr_v1.png"
+      ],
+      "prompt": "Use case: scientific-educational. Image 1 is the SAME CASE anatomy and needle-location reference only. Create a medical grayscale CORONAL CT REFORMAT through posterior paraspinal tissues, centered on thoracic spine, from lower cervical neck to lower thorax, 1024x1536 portrait black background. Looks like a REAL GRAYSCALE CT MULTIPLANAR REFORMATION, NOT a 3D skeleton rendering or plain X-ray. Show coronal section through posterior vertebral elements, partial bilateral posterior ribs and paraspinal muscle soft tissue with subtle grain, sensible human proportions. Several short bright 1-2 cm thin linear metal fragments appear inside the paraspinal soft tissue on both sides outside the bony spinal canal. Crucially this particular reformat shows only FOUR of the reference's fifteen fragments: one left lower-neck fragment, one left mid-thoracic fragment, one right upper-thoracic fragment, one right lower-thoracic fragment. Other fragments are outside this reformat plane. Short slightly tilted bright white thin line fragments, NO needle piercing lungs or spinal canal, no giant surgical nails, no implanted screws or fixation hardware. Entire visible thoracic back FOV for anatomical context, not zoom-only rods. No text, no labels, no arrows, no colored annotations, no watermark, no extra disease, no horror effects. Used immediately after axial image to reveal bright dots become short lines on a different viewing plane; output must convincingly be a gray CT reformat.",
+      "sha256": "a14136ae91a43a7f1c05737f6628595da61d6d7b74f3fddcc52c2f065a0c95d4",
+      "width": 1024,
+      "height": 1536,
+      "cornerAlpha": 255,
+      "output": "app/public/assets/ch2_needle_mpr_v1.png"
+    },
+    {
+      "file": "ch2_terminal_closeup_v1.png",
+      "source": "exec-af5b75c2-946e-47b3-9012-ded183d84005.png",
+      "role": "Fictional offline but powered appliance; blank LCD and UI-rendered status.",
+      "refs": [
+        "app/public/assets/ch2_remote_rack.png"
+      ],
+      "prompt": "Use case: precise-object-edit. Create one closer view of the fictional remote-support box on the middle rack shelf in Image 1. Preserve the exact coarse pixel-art hospital rack style, steel rails, upper network switch and blue cable bundles, cold blue-gray lighting with subdued warm overhead light. Do NOT make a lone floating product. The same compact charcoal rectangular box now fills about 45 percent of image width, with rack and cables around it. Add to the box front a small dark rectangular status LCD (blank, meant for UI text later), one small recessed square maintenance button and modest speaker perforations. Remove the antenna-looking stub entirely: this fictional box has no radio/wifi/cellular capability. Its single uplink RJ45 port must be EMPTY: put the blue unplugged Ethernet plug beside the box on the shelf, clearly visible with a few pixels gap from port. A black POWER cable remains connected at the rear. Tiny dim amber power indicator, network indicator OFF, upper switch lights modest green unchanged. This is an OFFLINE BUT POWERED box, do not show cable connected to its empty uplink. Landscape 1536x1024. Hand-placed square pixel clusters, dark stepped contours, no smooth photography, no gradients, no large bloom. No people, no readable text, no labels, no watermark. Leave enough space at the bottom for an external status caption added in code.",
+      "sha256": "06cdab1726c99624d48a90ff12781ad8b6435894b2f86ff1184f237267b90995",
+      "width": 1536,
+      "height": 1024,
+      "cornerAlpha": 255,
+      "output": "app/public/assets/ch2_terminal_closeup_v1.png"
+    },
+    {
+      "file": "ch2_terminal_online_v1.png",
+      "source": "exec-e0dfa942-52d0-40d9-8ff5-1b44df1ed8ee.png",
+      "role": "Matching online/connected appliance variant.",
+      "refs": [
+        "app/public/assets/ch2_terminal_closeup_v1.png"
+      ],
+      "prompt": "Use case: precise-object-edit. Make the ONLINE/CONNECTED variant of this exact pixel-art equipment rack closeup. Change ONLY: plug the currently loose blue Ethernet connector into the box's front RJ45 socket so connection is obvious, remove its loose copy from shelf, and light the box's small network indicator green. Preserve all other geometry, box front status LCD (blank), recessed maintenance button, speaker holes, black power cable, rack, upper switch and cable bundles, camera, lighting, coarse pixel clusters. Do not add antenna, wireless module, extra cables, text, labels, watermark or people. Exact same landscape 1536x1024 composition. The box is now powered AND connected on its single blue uplink.",
+      "sha256": "580c46d57a712cc2215f70be624a801cdeb7c52bd4fc28a6b83879bf1d9318f5",
+      "width": 1536,
+      "height": 1024,
+      "cornerAlpha": 255,
+      "output": "app/public/assets/ch2_terminal_online_v1.png"
+    }
+  ],
+  "authoredDocument": {
+    "file": "ch2_needle_record_v1.png",
+    "sha256": "d0c8e424a118d93a53bd0fca2b5338ac977864de49604fe9eee411696291f14e",
+    "width": 1000,
+    "height": 1200,
+    "cornerAlpha": 255,
+    "source": "docs/assets/ch2-needle-record-v1.svg",
+    "renderScript": "scripts/render-ch2-needle-record.mjs",
+    "description": "Fictional 1995 treatment-record prop; deterministic SVG/UI typesetting, Edge screenshot to PNG; no clinical advice."
+  }
+}
