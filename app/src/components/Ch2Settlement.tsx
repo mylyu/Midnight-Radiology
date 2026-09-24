@@ -57,6 +57,15 @@ export function Ch2Settlement({ state, onNext, onShop, onBackpack, onManual, onB
         <p className="mt-1 text-xs text-slate-300">进度已保存。{complete ? '新机器要你看着，老周还在科里。' : '先歇一会儿，下一班等你亲自开始。'}</p>
       </header>
 
+      {complete && <section data-ch2-case-reading className={`${metricStyle} mb-3`} aria-labelledby="ch2-case-reading-title">
+        <h3 id="ch2-case-reading-title" className="text-sm text-amber-200">延伸阅读 · “十五根针”的真实原型</h3>
+        <p className="mt-2 text-sm leading-relaxed text-slate-200">还记得罗阿姨片子上的亮点吗？真实病例中，CT三维重建显示患者颈背部椎旁肌内留有15根针，追溯到约30年前的一次留针治疗。想看看真实影像和完整经过，可以课后读读原文。</p>
+        <p className="mt-2 text-xs leading-relaxed text-slate-400">罗阿姨的人物、就诊经过与对话为游戏改编。原报道涉及一种罕见的留针做法，并非普通针灸的常态，也不代表长期留针普遍安全。</p>
+        <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC6301504/" target="_blank" rel="noopener noreferrer"
+          className="mt-3 inline-flex min-h-11 items-center rounded-lg border border-teal-500/60 px-3 py-2 text-sm text-teal-200 underline underline-offset-4 hover:bg-teal-900/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-300">阅读真实病例与原始影像 ↗</a>
+        <p className="mt-2 break-words text-xs leading-relaxed text-slate-400"><cite>Point of emphasis: retained acupuncture needles after 30 years</cite><br />BMJ Case Reports · 2018 · 英文全文（新标签页打开）</p>
+      </section>}
+
       <div className="grid grid-cols-2 gap-2 md:gap-3" aria-label="本章数值">
         {CH2_STAT_KEYS.map(key => <div key={key} className={metricStyle} data-ch2-stat={key}>
           <p className="text-xs text-slate-400">{{ gold: '💰 科室存款', skill: '🩺 医术', heart: '🧡 人心', wealth: '🏠 家业' }[key]}</p>

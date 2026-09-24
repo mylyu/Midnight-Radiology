@@ -5,6 +5,7 @@ import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { resolve } from 'node:path'
+import { beforeCaseReadingSource } from './ch2-case-reading-projection.mjs'
 
 const root = new URL('../../', import.meta.url)
 export const REWARDS_ROUND_BASELINE = 'be269d9'
@@ -36,6 +37,7 @@ export function beforeRewardsRoundSource(path, source) {
   if (!REWARDS_ROUND_EDITED_FILES.includes(path)) return source
   // Repeated historical projections may supply this exact checked snapshot.
   if (normalize(source) === original(path)) return source
+  source = beforeCaseReadingSource(path, source)
   const file = ledger().files.find(row => row.path === path)
   assert(file && file.edits.length, `${path}: no recorded approved changes`)
   const lines = normalize(source).trimEnd().split('\n')
@@ -51,7 +53,7 @@ export function beforeRewardsRoundSource(path, source) {
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   let probes = 0
   for (const { path, edits } of ledger().files) {
-    const live = readFileSync(new URL(path, root), 'utf8')
+    const live = beforeCaseReadingSource(path, readFileSync(new URL(path, root), 'utf8'))
     beforeRewardsRoundSource(path, live)
     const covered = new Set()
     for (const edit of edits) {
