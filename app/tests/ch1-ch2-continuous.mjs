@@ -7,10 +7,11 @@ import { mkdirSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { NIGHTS, QUIZ, SHOP_ITEMS } from '../src/game/data.ts'
 import { condOk } from '../src/game/store.ts'
-import { CH2_SHIFTS, CH2_PASSWORD, ch2StepForState, QUIZ2 } from '../src/game/ch2.ts'
+import { CH2_SHIFTS, CH2_PASSWORD, CH2_ACTIVE_BADGES, ch2StepForState, QUIZ2 } from '../src/game/ch2.ts'
 import { CH2_SCANS } from '../src/game/ch2-scans.ts'
 import { getCh2Observation } from '../src/game/ch2-observations.ts'
 import { ch2GiftChoices } from '../src/game/ch2-gifts.ts'
+import { ALL_BADGES_CHOICES } from './ch2-all-badges-route.mjs'
 
 const require = createRequire(import.meta.url)
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright')
@@ -24,6 +25,8 @@ const variants = [
 ].filter(v => !process.env.CHAIN_VARIANT || process.env.CHAIN_VARIANT === v.id)
 assert(variants.length, 'CHAIN_VARIANT must name one of the two fixed routes')
 const results = []
+const allBadges = process.env.CHAIN_ALL_BADGES === '1'
+const chapter2Only = allBadges && process.env.CHAIN_CH2_ONLY === '1'
 const read = page => page.evaluate(() => JSON.parse(localStorage.getItem('midnight-radiology-save-v1')))
 const plain = text => (text ?? '').replaceAll('**', '')
 const dialog = page => page.locator('.dialog-box > p')
@@ -37,6 +40,12 @@ async function advance(page) {
   await reveal(page)
   await page.locator('.dialog-box > span.animate-bounce').waitFor({ timeout: 20000 })
   await click(page, dialog(page))
+}
+async function settlementImages(page) {
+  await page.locator('[data-ch2-settlement] [data-scene-background="bg_ctcontrol_day_ready"]').waitFor()
+  await page.locator('[data-ch2-settlement] [data-scene-load-status]').waitFor({ state: 'detached' })
+  await page.waitForFunction(() => [...document.querySelectorAll('[data-ch2-settlement] img')]
+    .every(img => img.complete && img.naturalWidth > 0))
 }
 async function resumeCh1(page) {
   await click(page, page.getByRole('button', { name: '▶ 继续夜班（自动存档）', exact: true }))
@@ -205,7 +214,9 @@ async function observation(page, variant, log, refreshed) {
 async function buyAtSettlement(page, log) {
   await click(page, page.getByRole('button', { name: '🛒 小卖部', exact: true }))
   const before = await read(page)
-  for (const id of ['milktea', 'snack']) {
+  const purchases = allBadges ? before.dlc.ch2.shift === 'c2n1' ? ['dosimeter']
+    : before.dlc.ch2.shift === 'c2d2' ? ['key', 'snack'] : [] : ['milktea', 'snack']
+  for (const id of purchases) {
     const item = SHOP_ITEMS.find(i => i.id === id), button = page.getByRole('button', { name: `购买${item.name}`, exact: true })
     if (await button.isEnabled()) {
       const a = await read(page)
@@ -221,7 +232,8 @@ async function buyAtSettlement(page, log) {
   assert.equal((await read(page)).dlc.ch2.phase, 'settle')
 }
 async function runCh2(page, variant, inherited, log) {
-  await click(page, page.getByRole('button', { name: '🗂️ 内容大厅', exact: true }))
+  if (chapter2Only) await page.goto(url + '#/hall')
+  else await click(page, page.getByRole('button', { name: '🗂️ 内容大厅', exact: true }))
   await page.getByPlaceholder('章节口令').fill(CH2_PASSWORD)
   await click(page, page.getByRole('button', { name: '解锁', exact: true }))
   const card = page.locator('div.border-2.rounded-2xl').filter({ has: page.getByText('第二章 · 快与狠', { exact: true }) })
@@ -246,6 +258,7 @@ async function runCh2(page, variant, inherited, log) {
       await page.reload(); await page.locator('[data-ch2-settlement]').waitFor()
       assert.deepEqual(await read(page), settled, `Ch2 ${p.shift} settlement+purchases survive refresh once`)
       assert.equal(settled.dlc.ch2.loop.entries.filter(e => e.id === `settle:${p.shift}`).length, 1)
+      await settlementImages(page)
       await page.screenshot({ path: `${output}/${variant.id}-${p.shift}-settle.png` })
       await click(page, page.getByRole('button', { name: /进入下一班|前往晨会/ }))
       await page.waitForFunction(id => JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).dlc.ch2.shift !== id, p.shift)
@@ -321,21 +334,44 @@ async function runCh2(page, variant, inherited, log) {
     log.push({ kind: 'ch2-story', node: p.stepId, text: step.text })
     if (step.windowTask) {
       await dialog(page).click()
+      if (allBadges && p.stepId === 'c2n1_m11' && !refresh.has('window-failed')) {
+        await click(page, page.getByRole('button', { name: /^就这个窗口 · 确认/ }))
+        await page.waitForFunction(() => JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).dlc.ch2.windowTasks?.c2n1_m11?.attempts === 1)
+        await page.reload(); await dialog(page).waitFor(); await dialog(page).click()
+        await page.getByRole('button', { name: /^就这个窗口 · 确认（已试 1 次）$/ }).waitFor()
+        refresh.add('window-failed')
+      }
       await click(page, page.getByRole('button', { name: new RegExp(` ${step.windowTask.targetW}/${step.windowTask.targetL}$`) }))
       await click(page, page.getByRole('button', { name: /^就这个窗口 · 确认/ }))
     } else if (step.choices || ch2GiftChoices(s, p.stepId).length) {
       await reveal(page); await buttons(page).first().waitFor({ timeout: 20000 })
       const labels = await buttons(page).allTextContents()
-      let pick = labels.findIndex(t => /^把.*递给/.test(t))
+      if (allBadges && p.stepId === 'c2n1_hub' && !s.items.includes('toolbox')) {
+        await click(page, page.getByRole('button', { name: '小卖部', exact: true }))
+        const item = SHOP_ITEMS.find(i => i.id === 'toolbox')
+        await click(page, page.getByRole('button', { name: `购买${item.name}`, exact: true }))
+        assert((await read(page)).items.includes('toolbox'))
+        await click(page, page.getByRole('button', { name: '离开小卖部', exact: true }))
+        log.push({ kind: 'ch2-buy', shift: p.shift, id: 'toolbox' })
+        continue
+      }
+      let pick = allBadges && !s.badges.includes('night_snack') ? -1 : labels.findIndex(t => /^把.*递给/.test(t))
       if (p.stepId.endsWith('_hub')) {
         hubs.add(p.shift)
         // All available once-only places before clinic; each route orders them differently.
         const places = labels.map((text, index) => ({ text, index })).filter(row => !/开诊|翻书|小卖部/.test(row.text))
         pick = (variant.reverse ? places.at(-1) : places[0])?.index ?? labels.findIndex(t => t.includes('【开诊】'))
       }
+      if (allBadges && ALL_BADGES_CHOICES[p.stepId]) {
+        const desired = ALL_BADGES_CHOICES[p.stepId].map(next => step.choices?.find(c => c.next === next && condOk(s, c.cond)))
+          .find(c => c && labels.includes(plain(c.text)))
+        assert(desired, `All-collection route has a visible intended choice at ${p.stepId}`)
+        pick = labels.indexOf(plain(desired.text))
+      }
       if (pick < 0) pick = labels.findIndex(t => step.choices?.some(c => c.tag === 'good' && plain(c.text) === t))
       if (pick < 0) {
-        const ordinary = labels.map((text, index) => ({ text, index })).filter(row => !/小卖部|翻书/.test(row.text))
+        const ordinary = labels.map((text, index) => ({ text, index })).filter(row => !/小卖部|翻书/.test(row.text) &&
+          !(allBadges && !s.badges.includes('night_snack') && /^把.*递给/.test(row.text)))
         pick = (variant.reverse ? ordinary.at(-1) : ordinary[0])?.index ?? 0
       }
       await click(page, buttons(page).nth(pick))
@@ -353,7 +389,15 @@ async function runCh2(page, variant, inherited, log) {
   assert(count < 800, 'Ch2 finishes without a loop')
   const final = await read(page), loop = final.dlc.ch2.loop
   assert.equal(final.dlc.ch2.done, true); assert.equal(shifts.size, 5); assert.equal(questions, 5); assert.equal(hubs.size, 3)
-  assert.equal(final.flags.quiz_grade, 'S'); assert.equal(final.flags.quiz2_grade, 'S')
+  assert.equal(final.flags.quiz_grade, inherited.flags.quiz_grade); assert.equal(final.flags.quiz2_grade, 'S')
+  if (allBadges) {
+    assert.deepEqual(CH2_ACTIVE_BADGES.filter(id => !final.badges.includes(id)), [], 'Every currently obtainable badge in ONE real playthrough')
+    assert.equal(final.dlc.ch2.windowTasks.c2n1_m11.attempts, 2)
+    assert.equal(final.dlc.ch2.windowTasks.c2n1_w2.attempts, 1)
+    assert.equal(final.dlc.ch2.loop.entries.filter(e => e.id === 'window-master').length, 1)
+    for (const id of ['c2_chair_helper', 'c2_brass_key', 'c2_model_demo']) assert(final.badges.includes(id), id)
+    console.log('ALL ACTIVE BADGES', CH2_ACTIVE_BADGES.length, CH2_ACTIVE_BADGES.join(', '))
+  }
   assert.equal([...seen].filter(id => id.startsWith('c2n3_dawn')).length, 20, 'One complete 20-node dawn path')
   assert.equal(final.flags.c2_dawn_seen, true)
   assert.equal(final.flags.c2_dawn_done, true)
@@ -371,6 +415,7 @@ async function runCh2(page, variant, inherited, log) {
   await page.locator('[data-ch2-settlement]').waitFor()
   await page.reload(); await page.locator('[data-ch2-settlement]').waitFor()
   assert.deepEqual(await read(page), final, 'Whole chapter completion reload does not reset or reward')
+  await settlementImages(page)
   await page.screenshot({ path: `${output}/${variant.id}-ch2-end.png` })
   // Begin a genuine replay through the same hall. Preserve the completed run
   // in the report, then verify old grade and run-local mysteries cannot leak.
@@ -385,6 +430,7 @@ async function runCh2(page, variant, inherited, log) {
   assert.equal(restarted.flags.c2_terminal_stopped, undefined)
   assert.equal(restarted.flags.c2_needle_resolved, undefined)
   assert.equal(restarted.dlc.ch2.quiz, undefined)
+  assert.equal(restarted.dlc.ch2.windowTasks, undefined)
   assert.equal(restarted.dlc.ch2.done, undefined)
   for (const key of ['gold', 'skill', 'heart', 'wealth', 'items']) assert.deepEqual(restarted[key], final[key], `Replay preserves shared ${key}`)
   log.push({ kind: 'ch2-replay-start', step: restarted.dlc.ch2.stepId, quizReset: true, firstChapterPreserved: true })
@@ -403,14 +449,24 @@ try {
     page.on('pageerror', e => errors.push(e.message))
     page.on('response', response => { if (response.status() >= 400) networkFailures.push({ url: response.url(), status: response.status() }) })
     try {
-      const first = await runCh1(page, variant, log)
+      let first
+      if (chapter2Only) {
+        await page.goto(url)
+        assert.equal(await read(page), null, 'Actual empty browser context')
+        await click(page, page.getByRole('button', { name: '▶ 开始游戏', exact: true }))
+        await click(page, page.getByRole('button', { name: /林小满.*细心温和/ }))
+        first = { state: await read(page), nodes: 0, readouts: 0, explorationEvents: 0 }
+        assert.deepEqual(first.state.badges, [])
+        assert.deepEqual(first.state.items, [])
+        assert(first.state.gold <= 150, 'No inherited endgame fortune funds this route')
+      } else first = await runCh1(page, variant, log)
       const second = await runCh2(page, variant, first.state, log)
       assert.deepEqual(errors, [])
       assert.deepEqual(networkFailures, [], 'No failed image/audio/app response during both chapters')
       const result = { variant, first, second, errors, networkFailures }
       results.push(result)
       writeFileSync(`${output}/${variant.id}-result.json`, JSON.stringify(result, null, 2))
-      console.log('PASS CONTINUOUS CH1->CH2', variant.id, first.nodes, second.nodes, second.iterations, 'same live save')
+      console.log(chapter2Only ? 'PASS FRESH CH2 ALL BADGES' : 'PASS CONTINUOUS CH1->CH2', variant.id, first.nodes, second.nodes, second.iterations, 'same live save')
     } catch (error) {
       log.push({ kind: 'failure', error: String(error), state: await read(page), body: await page.locator('body').innerText() })
       await page.screenshot({ path: `${output}/${variant.id}-failure.png` })

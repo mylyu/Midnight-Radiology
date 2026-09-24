@@ -1,6 +1,7 @@
 // Latest-round LIVE boundary. Only two imports and Ch2Screen may change in
 // the existing App; every other old module, asset and historical ledger is exact.
 import './image-polish-freeze.mjs'
+import { REWARDS_ROUND_ADDED_SOURCE, REWARDS_ROUND_ADDED_MEDIA } from './ch2-rewards-round-projection.mjs'
 import { beforeImagePolishSource, POLISH_ADDED_SOURCE, POLISH_ADDED_MEDIA } from './image-polish-projection.mjs'
 import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
@@ -67,8 +68,8 @@ const additions = prefix => [...new Set([
   git('diff', '--name-only', '--diff-filter=A', baseline, '--', prefix).toString('utf8'),
   git('ls-files', '--others', '--exclude-standard', '--', prefix).toString('utf8'),
 ].join('\n').split(/\r?\n/).filter(Boolean))].sort()
-assert.deepEqual(additions('app/src').filter(path => !POLISH_ADDED_SOURCE.includes(path)), CHECKIN_ADDED_FILES, 'Only three isolated check-in source files after the newer LIVE audit')
-assert.deepEqual(additions('app/public/assets').filter(path => !POLISH_ADDED_MEDIA.includes(path)), [], 'Check-in adds no image assets')
+assert.deepEqual(additions('app/src').filter(path => !POLISH_ADDED_SOURCE.includes(path) && !REWARDS_ROUND_ADDED_SOURCE.includes(path)), CHECKIN_ADDED_FILES, 'Only three isolated check-in source files after the newer LIVE audit')
+assert.deepEqual(additions('app/public/assets').filter(path => !POLISH_ADDED_MEDIA.includes(path) && !REWARDS_ROUND_ADDED_MEDIA.includes(path)), [], 'Check-in adds no image assets')
 assert.deepEqual(additions('app/public/audio'), [], 'Check-in adds no audio assets')
 let mediaCount = 0
 for (const entry of git('ls-tree', '-r', '-z', baseline, '--', 'app/public/assets', 'app/public/audio')

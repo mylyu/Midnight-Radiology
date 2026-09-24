@@ -1,0 +1,469 @@
+{
+  "baseline": "be269d9",
+  "files": [
+    {
+      "path": "app/src/App.tsx",
+      "edits": [
+        {
+          "beforeStart": 6,
+          "afterStart": 6,
+          "before": [],
+          "after": [
+            "import { recordCh2WindowAttempt } from './game/ch2-window-progress'",
+            "import { ch2SideBadgeBackfill } from './game/ch2-side-badges'"
+          ]
+        },
+        {
+          "beforeStart": 1805,
+          "afterStart": 1807,
+          "before": [],
+          "after": [
+            "  useEffect(() => {",
+            "    // Historical successful actions qualify even on a completed save; merely",
+            "    // owning an item does not. The pure updater is a no-op once reconciled.",
+            "    if (ch2SideBadgeBackfill(state) !== state) update(ch2SideBadgeBackfill)",
+            "  }, [state, update])"
+          ]
+        },
+        {
+          "beforeStart": 1853,
+          "afterStart": 1860,
+          "before": [
+            "  const windowTries = useRef<Record<number, number>>({})"
+          ],
+          "after": []
+        },
+        {
+          "beforeStart": 2052,
+          "afterStart": 2058,
+          "before": [
+            "  const windowDone = (task: NonNullable<Step['windowTask']>, tries: number) => {",
+            "    const stage = task.stage ?? 0",
+            "    windowTries.current[stage] = tries",
+            "    if (stage === 2 && (windowTries.current[1] ?? 99) <= 2 && tries <= 2) {",
+            "      update(s => s.badges.includes('window_master') ? s : recordCh2Change(s, { ...s, badges: [...s.badges, 'window_master'] }, 'window-master', '完成脑窗与硬膜下窗调整', 'story'))",
+            "    }",
+            "    setStepId(task.success)"
+          ],
+          "after": [
+            "  const confirmWindow = (task: NonNullable<Step['windowTask']>, attempts: number, width: number, level: number) => {",
+            "    update(s => recordCh2WindowAttempt(s, stepId, task, attempts, width, level))",
+            "    if (Math.abs(width - task.targetW) <= task.tolW && Math.abs(level - task.targetL) <= task.tolL) setStepId(task.success)"
+          ]
+        },
+        {
+          "beforeStart": 2199,
+          "afterStart": 2201,
+          "before": [
+            "        <WindowGame key={stepId} task={step.windowTask} onDone={t => windowDone(step.windowTask!, t)} />"
+          ],
+          "after": [
+            "        <WindowGame key={stepId} task={step.windowTask} progress={prog.windowTasks?.[stepId]}",
+            "          onConfirm={(attempts, width, level) => confirmWindow(step.windowTask!, attempts, width, level)} />"
+          ]
+        },
+        {
+          "beforeStart": 2231,
+          "afterStart": 2234,
+          "before": [
+            "function WindowGame({ task, onDone }: { task: NonNullable<Step['windowTask']>; onDone: (tries: number) => void }) {"
+          ],
+          "after": [
+            "function WindowGame({ task, progress, onConfirm }: {",
+            "  task: NonNullable<Step['windowTask']>",
+            "  progress?: NonNullable<DlcProgress['windowTasks']>[string]",
+            "  onConfirm: (attempts: number, width: number, level: number) => void",
+            "}) {"
+          ]
+        },
+        {
+          "beforeStart": 2233,
+          "afterStart": 2240,
+          "before": [
+            "  const [W, setW] = useState(2000)",
+            "  const [L, setL] = useState(500)",
+            "  const [tries, setTries] = useState(0)",
+            "  const [msg, setMsg] = useState('')"
+          ],
+          "after": [
+            "  const [W, setW] = useState(progress?.width ?? 2000)",
+            "  const [L, setL] = useState(progress?.level ?? 500)",
+            "  const tries = progress?.attempts ?? 0",
+            "  const msg = tries === 0 ? '' : tries === 1 ? '不对——这幅窗里，该看的东西还没浮出来。再拖一拖。' : '还不是这扇窗。想想目标值，窗宽先定范围，窗位再对准中心。'",
+            "  const confirmGate = useRef({ until: 0, completed: false })"
+          ]
+        },
+        {
+          "beforeStart": 2285,
+          "afterStart": 2293,
+          "before": [],
+          "after": [
+            "    if (confirmGate.current.completed || performance.now() < confirmGate.current.until) return",
+            "    confirmGate.current = { until: performance.now() + 250, completed: inTarget }"
+          ]
+        },
+        {
+          "beforeStart": 2286,
+          "afterStart": 2296,
+          "before": [
+            "    const t = tries + 1",
+            "    setTries(t)",
+            "    if (inTarget) { playSfx('badge'); onDone(t); return }",
+            "    playSfx('buzz')",
+            "    setMsg(t === 1 ? '不对——这幅窗里，该看的东西还没浮出来。再拖一拖。' : '还不是这扇窗。想想目标值，窗宽先定范围，窗位再对准中心。')"
+          ],
+          "after": [
+            "    playSfx(inTarget ? 'badge' : 'buzz')",
+            "    onConfirm(tries, W, L)"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/components/Ch2Settlement.tsx",
+      "edits": [
+        {
+          "beforeStart": 7,
+          "afterStart": 7,
+          "before": [],
+          "after": [
+            "import { imageAsset } from '../lib/image-assets'"
+          ]
+        },
+        {
+          "beforeStart": 80,
+          "afterStart": 81,
+          "before": [],
+          "after": [
+            "        {keepsakes.length > 0 && <div data-ch2-keepsake-gallery className=\"mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4\">",
+            "          {keepsakes.map(item => <figure key={item.id} data-ch2-keepsake-card={item.id} className=\"min-w-0 rounded-lg border border-slate-600 bg-slate-950/70 p-2 text-center\">",
+            "            <img src={imageAsset(item.image!)} alt={item.title} loading=\"lazy\" decoding=\"async\" className=\"pixel mx-auto h-24 w-full object-contain\" />",
+            "            <figcaption className=\"mt-1 text-xs leading-relaxed text-slate-200\">{item.title}</figcaption>",
+            "          </figure>)}",
+            "        </div>}"
+          ]
+        },
+        {
+          "beforeStart": 89,
+          "afterStart": 96,
+          "before": [],
+          "after": [
+            "          <p data-equipment=\"ldct\" data-unlock=\"locked\" className=\"text-slate-500\">🔒 低剂量CT —— <span className=\"text-slate-400\">DLC 预告 · 尚未开放</span></p>"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/components/Ch2Shop.tsx",
+      "edits": [
+        {
+          "beforeStart": 65,
+          "afterStart": 65,
+          "before": [],
+          "after": [
+            "          <img src={image(item.image!)} alt={item.title} loading=\"lazy\" decoding=\"async\" className=\"pixel mx-auto mb-3 h-28 w-full object-contain\" />"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/game/ch2-exploration.ts",
+      "edits": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "before": [
+            "import type { GameState } from './types'"
+          ],
+          "after": [
+            "import type { GameState, Step } from './types'",
+            "",
+            "type ArchiveState = Pick<GameState, 'flags'> & Partial<Pick<GameState, 'items' | 'dlc'>>",
+            "const CABINET_RETURN = 'c2n5_key_return0'",
+            "const fifthNightClinical = /^c2n5_(m\\d|n\\d|child_scan|p\\d|phone_break|sms_|g\\d|needle_short|dawn|sunrise|ring_)/",
+            "const clearArchiveView = { sprite: '', sprite2: '', phone: '', radio: '', imageLabel: '' }",
+            "",
+            "/** The cabinet opportunity ends at the clinical handoff, not at the archive handover.",
+            " * The cursor check covers legacy saves without an applied-step ledger. */",
+            "export function ch2ArchiveExplorationClosed(s: ArchiveState): boolean {",
+            " const p = s.dlc?.ch2",
+            " if (!p) return false",
+            " if (p.done || p.shift === 'c2am' || p.phase === 'quiz' || p.phase === 'done') return true",
+            " if (p.shift === 'c2n5' && p.phase === 'settle') return true",
+            " return fifthNightClinical.test(p.stepId ?? '') ||",
+            "  (p.appliedSteps ?? []).some(key => fifthNightClinical.test(key.replace(/^ch2-/, '')))",
+            "}",
+            "",
+            "/** Separate node identities let pre-payoff saves revisit an unfinished small cabinet",
+            " * even when the original k1/k2 nodes were already entered in an older version. */",
+            "export const CH2_ARCHIVE_RETURN_STEPS: Record<string, Step> = {",
+            " c2n5_key_return0: { ...clearArchiveView, bg: 'bg_archive', speaker: 'sys', image: 'ch2_model_base_v1',",
+            "  text: '封条柜的交接已经办好。你回到旁边的小铁柜前，把黄铜钥匙转了两圈。柜门开了，里面放着一只带小摇柄的旋转底座。',",
+            "  sfx: 'click', effect: { flag: 'c2_payoff_base' }, next: 'c2n5_key_return1' },",
+            " c2n5_key_return1: { ...clearArchiveView, bg: 'bg_ctcontrol', speaker: 'sys', image: 'ch2_model_base_v1',",
+            "  text: '回到控制室，你把底座放到空桌上，黄铜钥匙仍收在口袋里。', next: 'c2n5_hub' },",
+            "}",
+            "",
+            "/** Only the unfinished small cabinet returns; completed archive scenes stay closed. */",
+            "export function ch2ArchiveReturnStep(id: string, step: Step, s: ArchiveState): Step {",
+            " const f = s.flags, p = s.dlc?.ch2",
+            " const inFifthNight = !p?.shift || p.shift === 'c2n5'",
+            " if (id === 'c2n5_hub') {",
+            "  const allowed = inFifthNight && !ch2ArchiveExplorationClosed(s) && f.c2n5_cabinet &&",
+            "   !f.c2_payoff_base && s.items?.includes('key')",
+            "  const existing = step.choices ?? []",
+            "  if (!allowed && !existing.some(choice => choice.next === CABINET_RETURN)) return step",
+            "  const choices = existing.filter(choice => choice.next !== CABINET_RETURN)",
+            "  if (allowed) {",
+            "   const archiveIndex = choices.findIndex(choice => choice.next === 'c2n5_a1')",
+            "   choices.splice(archiveIndex + 1, 0, {",
+            "    text: '【不耗行动力】回旧片库 · 用黄铜钥匙开小铁柜', next: CABINET_RETURN,",
+            "    cond: { flag: 'c2n5_cabinet', item: 'key', notFlag: 'c2_payoff_base' }, tag: 'good',",
+            "   })",
+            "  }",
+            "  return { ...step, choices }",
+            " }",
+            " if (id !== CABINET_RETURN && id !== 'c2n5_key_return1') return step",
+            " if (!inFifthNight || ch2ArchiveExplorationClosed(s)) return {",
+            "  ...clearArchiveView, speaker: 'sys', image: '', text: '这会儿先接着眼前的值守。',",
+            "  next: p?.stepId && p.stepId !== id ? p.stepId : 'c2n5_m0',",
+            " }",
+            " if (!f.c2n5_cabinet || id === CABINET_RETURN && !s.items?.includes('key') && !f.c2_payoff_base) return {",
+            "  ...clearArchiveView, bg: 'bg_archive', speaker: 'sys', image: '',",
+            "  text: f.c2n5_cabinet ? '小铁柜还锁着。你摸了摸口袋，先回控制室。' : '封条柜的交接还没办好，先回去找老周。', next: 'c2n5_hub',",
+            " }",
+            " if (id === 'c2n5_key_return1' && !f.c2_payoff_base) return {",
+            "  ...clearArchiveView, bg: 'bg_archive', speaker: 'sys', image: '', text: '你带上旧片库的门，先回控制室。', next: 'c2n5_hub',",
+            " }",
+            " if (id === 'c2n5_key_return1' && f.c2_payoff_model) return { ...step, image: 'ch2_slice_model_assembled_v1',",
+            "  text: '回到控制室，你把底座卡在借来的木盒下面。慢慢摇一下，透明片连出的弯管也跟着转了过来。试好后，你把教具放回桌上。' }",
+            " return step",
+            "}"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/game/ch2-payoffs.ts",
+      "edits": [
+        {
+          "beforeStart": 2,
+          "afterStart": 2,
+          "before": [],
+          "after": [
+            "import { ch2ArchiveReturnStep } from './ch2-exploration'",
+            "import { ch2SideBadgeStep } from './ch2-side-badges'"
+          ]
+        },
+        {
+          "beforeStart": 28,
+          "afterStart": 30,
+          "before": [
+            "  { id: 'luo_pouch', title: '罗阿姨的光盘布袋', flag: 'c2_payoff_luo_gift', icon: '🪡',"
+          ],
+          "after": [
+            "  { id: 'luo_pouch', title: '罗阿姨的光盘布袋', flag: 'c2_payoff_luo_gift', icon: '🪡', image: 'ch2_gift_luo_pouch_v1',"
+          ]
+        },
+        {
+          "beforeStart": 31,
+          "afterStart": 33,
+          "before": [
+            "  { id: 'lei_pouch', title: '小雷的线材收纳袋', flag: 'c2_payoff_lei_gift', icon: '🧰',"
+          ],
+          "after": [
+            "  { id: 'lei_pouch', title: '小雷的线材收纳袋', flag: 'c2_payoff_lei_gift', icon: '🧰', image: 'ch2_gift_lei_pouch_v1',"
+          ]
+        },
+        {
+          "beforeStart": 34,
+          "afterStart": 36,
+          "before": [
+            "  { id: 'jiang_sleeve', title: '老蒋捎来的杯套', flag: 'c2_payoff_jiang_gift', icon: '🧶',"
+          ],
+          "after": [
+            "  { id: 'jiang_sleeve', title: '老蒋捎来的杯套', flag: 'c2_payoff_jiang_gift', icon: '🧶', image: 'ch2_gift_jiang_sleeve_v1',"
+          ]
+        },
+        {
+          "beforeStart": 37,
+          "afterStart": 39,
+          "before": [
+            "  { id: 'zhou_cup', title: '老周送的新保温杯', flag: 'c2_payoff_zhou_cup', icon: '🍵',"
+          ],
+          "after": [
+            "  { id: 'zhou_cup', title: '老周送的新保温杯', flag: 'c2_payoff_zhou_cup', icon: '🍵', image: 'ch2_gift_zhou_cup_v1',"
+          ]
+        },
+        {
+          "beforeStart": 40,
+          "afterStart": 42,
+          "before": [],
+          "after": [
+            "  { id: 'tang_meal', title: '小唐留的那份牛肉', flag: 'c2n5_b', icon: '🍱', image: 'item_beef',",
+            "    body: '第五夜，小唐用保温盒给你留了一份切好的牛肉。盒子是借你的，饭是给你的。',",
+            "    use: '这顿已经吃过了，留下的是交接饭的记忆；盒子洗净归还，不是可反复使用的补给。' },"
+          ]
+        },
+        {
+          "beforeStart": 91,
+          "afterStart": 96,
+          "before": [
+            "    c2n5_payoff_luo1: { ...clear, speaker: 'sys',"
+          ],
+          "after": [
+            "    c2n5_payoff_luo1: { ...clear, speaker: 'sys', image: 'ch2_gift_luo_pouch_v1',"
+          ]
+        },
+        {
+          "beforeStart": 96,
+          "afterStart": 101,
+          "before": [
+            "    c2n5_payoff_lei1: { ...clear, speaker: 'sys', sprite: 'char_lei',"
+          ],
+          "after": [
+            "    c2n5_payoff_lei1: { ...clear, speaker: 'sys', sprite: 'char_lei', image: 'ch2_gift_lei_pouch_v1',"
+          ]
+        },
+        {
+          "beforeStart": 101,
+          "afterStart": 106,
+          "before": [
+            "    c2n5_payoff_jiang1: { ...clear, speaker: 'sys', sprite: 'char_jiang',"
+          ],
+          "after": [
+            "    c2n5_payoff_jiang1: { ...clear, speaker: 'sys', sprite: 'char_jiang', image: 'ch2_gift_jiang_sleeve_v1',"
+          ]
+        },
+        {
+          "beforeStart": 127,
+          "afterStart": 132,
+          "before": [
+            "      effect: { flag: 'c2_payoff_expert_done' }, end: true },"
+          ],
+          "after": [
+            "      effect: { flag: 'c2_payoff_expert_done' }, next: 'c2am_lowdose_teaser0' },",
+            "    c2am_lowdose_teaser0: { ...clear, bg: 'bg_ctcontrol_day', speaker: 'sys',",
+            "      text: '【几天后】小雷拿来一份新安排，压在你的茶杯底下。标题圈了三个字：**低剂量**。你翻到后面——体模、重建方案，还有一整页待比较的图。', next: 'c2am_lowdose_teaser1' },",
+            "    c2am_lowdose_teaser1: { ...clear, speaker: 'lei', sprite: 'char_lei',",
+            "      text: '先拿体模试。参数怎么选、图还能看清多少，慢慢比。你可别一听“新项目”，又把包背上准备下班。', next: 'c2am_lowdose_teaser2' },",
+            "    c2am_lowdose_teaser2: { ...clear, speaker: 'me',",
+            "      text: '“我包还没放下呢。”你把那张安排抽出来，夹进本子。\\n\\n**DLC预告 · 低剂量CT**\\n新的图像、新的取舍。尚未开放，故事留待后续。', end: true },"
+          ]
+        },
+        {
+          "beforeStart": 133,
+          "afterStart": 144,
+          "before": [
+            "export function ch2PayoffStep(id: string, step: Step, s: PayoffState): Step {"
+          ],
+          "after": [
+            "function payoffStep(id: string, step: Step, s: PayoffState): Step {"
+          ]
+        },
+        {
+          "beforeStart": 199,
+          "afterStart": 210,
+          "before": [
+            "  if (id === 'c2n5_b2' && f.c2_apples_shared) return { ...step,",
+            "    text: '你掀开保温盒，牛肉切好了，小唐还塞了双筷子。「苹果归苹果，这盒记得洗。」她说完，又从盘里补了一块。' }",
+            "  if (id === 'c2n5_g1') return { ...step,"
+          ],
+          "after": [
+            "  if (id === 'c2n5_b2') return { ...step, image: 'item_beef',",
+            "    text: f.c2_apples_shared ? '你掀开保温盒，牛肉切好了，小唐还塞了双筷子。「苹果归苹果，这盒记得洗。」她说完，又从盘里补了一块。' : step.text }",
+            "  if (id === 'c2n5_g1') return { ...step, image: 'ch2_gift_zhou_cup_v1',"
+          ]
+        },
+        {
+          "beforeStart": 221,
+          "afterStart": 232,
+          "before": [],
+          "after": [
+            "",
+            "export function ch2PayoffStep(id: string, step: Step, s: PayoffState): Step {",
+            "  return ch2SideBadgeStep(ch2ArchiveReturnStep(id, payoffStep(id, step, s), s))",
+            "}"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/game/ch2-session.ts",
+      "edits": [
+        {
+          "beforeStart": 5,
+          "afterStart": 5,
+          "before": [],
+          "after": [
+            "import { ch2ArchiveExplorationClosed } from './ch2-exploration'"
+          ]
+        },
+        {
+          "beforeStart": 74,
+          "afterStart": 75,
+          "before": [
+            "      if (idx > 4 || phase === 'settle' && idx === 4 || s.flags.c2n5_cabinet || entered('c2n5_m0')) return '本轮小铁柜的剧情已结束'"
+          ],
+          "after": [
+            "      if (idx > 4 || s.flags.c2_payoff_base || ch2ArchiveExplorationClosed(s)) return '本轮小铁柜的剧情已结束'"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/game/ch2.ts",
+      "edits": [
+        {
+          "beforeStart": 9,
+          "afterStart": 9,
+          "before": [],
+          "after": [
+            "import { CH2_ARCHIVE_RETURN_STEPS } from './ch2-exploration.ts'",
+            "import { CH2_SIDE_BADGES } from './ch2-side-badges.ts'"
+          ]
+        },
+        {
+          "beforeStart": 85,
+          "afterStart": 87,
+          "before": [
+            "/* ================= 第二章勋章（12枚现役，5枚旧版留档） ================= */"
+          ],
+          "after": [
+            "/* ================= 第二章勋章（15枚现役，5枚旧版留档） ================= */"
+          ]
+        },
+        {
+          "beforeStart": 87,
+          "afterStart": 89,
+          "before": [],
+          "after": [
+            "  ...CH2_SIDE_BADGES,"
+          ]
+        },
+        {
+          "beforeStart": 833,
+          "afterStart": 836,
+          "before": [],
+          "after": [
+            "  ...CH2_ARCHIVE_RETURN_STEPS,"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/game/types.ts",
+      "edits": [
+        {
+          "beforeStart": 138,
+          "afterStart": 138,
+          "before": [],
+          "after": [
+            "  /** 第二章调窗：本轮每次确认立即保存；旧档不补造阶段成绩。 */",
+            "  windowTasks?: Record<string, { attempts: number; completed: boolean; width: number; level: number; stage?: number }>"
+          ]
+        }
+      ]
+    }
+  ]
+}

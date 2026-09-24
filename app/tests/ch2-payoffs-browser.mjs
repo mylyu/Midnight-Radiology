@@ -3,7 +3,7 @@
 // as a fresh Chapter 1 playthrough. Existing full-walk assertions are reused intact.
 import assert from 'node:assert/strict'
 import { createRequire } from 'node:module'
-import { mkdirSync, writeFileSync } from 'node:fs'
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { CH2_SHIFTS, ch2StepForState } from '../src/game/ch2.ts'
 import { CH2_PAYOFF_KEEPSAKES } from '../src/game/ch2-payoffs.ts'
@@ -14,12 +14,14 @@ const { chromium } = createRequire(import.meta.url)(process.env.PLAYWRIGHT_MODUL
 const browser = await chromium.launch({ channel: 'msedge', headless: true })
 const output = resolve(process.env.PAYOFF_OUTPUT || '../../ch2-payoffs-browser-review')
 const url = (process.env.GAME_URL || 'http://127.0.0.1:8798/').replace(/\/$/, '') + '/#/ch2'
+const optimizedAssets = JSON.parse(readFileSync(new URL('../src/lib/image-assets.generated.json', import.meta.url), 'utf8'))
 const errors = [], results = []
 mkdirSync(output, { recursive: true })
 let activePage
 const read = page => page.evaluate(() => JSON.parse(localStorage.getItem('midnight-radiology-save-v1')))
 const clean = text => (text ?? '').replaceAll('**', '')
 const metrics = s => Object.fromEntries(['gold', 'skill', 'heart', 'wealth', 'ap', 'durability', 'items', 'badges', 'stamps'].map(key => [key, s[key]]))
+const withBadges = (snapshot, badges) => ({ ...snapshot, badges: [...new Set([...snapshot.badges, ...badges])] })
 const protectedState = s => ({ night: s.night, finished: s.finished, buyCount: s.buyCount,
   lotteryNight: s.lotteryNight, lotteryCount: s.lotteryCount, quiz: s.flags.quiz_grade,
   gifts: Object.fromEntries(['n5_lei', 'n5_qian', 'n5_fan', 'n5_jiang'].map(key => [key, s.flags[key]])),
@@ -110,9 +112,12 @@ async function layout(page) {
 }
 
 async function imageReady(page, filename) {
-  const img = page.locator(`img[src*="/${filename}.png"]`).first()
+  const assetPath = optimizedAssets[filename] ?? `${filename}.png`
+  const expectedURL = new URL(`assets/${assetPath}`, page.url()).href
+  const img = page.locator(`img[src$=${JSON.stringify(`/${assetPath}`)}]`).first()
   await img.waitFor()
   await img.evaluate(image => image.decode())
+  assert.equal(await img.evaluate(image => image.currentSrc || image.src), expectedURL)
   assert(await img.evaluate(image => image.naturalWidth > 0))
 }
 
@@ -154,7 +159,9 @@ async function ending(page, { base, model, glasses, mobile, prefix }) {
   assert(final.flags.c2_payoff_expert_done)
   assert.equal(visited.includes('c2am_payoff_rotate'), model && base)
   assert.equal(visited.includes('c2am_payoff_layers'), model && !base)
-  assert.deepEqual(metrics(final), metrics(start))
+  assert.deepEqual(visited.slice(-4), ['c2am_payoff_end', 'c2am_lowdose_teaser0', 'c2am_lowdose_teaser1', 'c2am_lowdose_teaser2'])
+  assert.deepEqual(metrics(final), withBadges(metrics(start), model ? ['c2_model_demo'] : []),
+    'The model demonstration may add only its specific new badge; the teaser adds no economy or awards')
   assert.deepEqual(protectedState(final), protectedState(start))
   await refresh(page, 'completed ending')
   await page.locator('[data-ch2-complete="true"]').waitFor()
@@ -192,7 +199,8 @@ try {
   }
   const collected = await read(page)
   assert(collected.flags.c2_payoff_model && collected.flags.c2_payoff_base)
-  assert.deepEqual(metrics(collected), metrics(beforeGifts))
+  assert.deepEqual(metrics(collected), withBadges(metrics(beforeGifts), ['c2_brass_key']),
+    'The brass-key receipt may add only its specific new badge; all original metrics remain frozen')
   assert.deepEqual(protectedState(collected), protectedState(beforeGifts))
   results.push({ fixture: 'real-hub-receipts-and-two-cabinets', gifts: 3, ap: collected.ap, model: true, base: true })
   await context.close()
@@ -206,9 +214,25 @@ try {
   results.push({ fixture: 'no-fabricated-receipt-or-unresolved-Luo-gift', passed: true })
   await noMemories.context.close()
 
+  // The seventh gallery entry is the existing one-AP meal, earned by its actual
+  // receipt node. Its original +1 heart remains separate from the free gifts.
+  const mealContext = await open(fixture('c2n5_b1', collected.flags,
+    { items: collected.items, badges: collected.badges, ap: 1 }))
+  const beforeMeal = await read(mealContext.page)
+  assert.equal(beforeMeal.ap, 0, 'Entering the existing meal spends exactly one AP')
+  await advance(mealContext.page)
+  await mealContext.page.waitForFunction(() => JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).flags.c2n5_b)
+  await imageReady(mealContext.page, 'item_beef')
+  const mealReceived = await read(mealContext.page)
+  assert.deepEqual(metrics(mealReceived), { ...metrics(beforeMeal), heart: beforeMeal.heart + 1 })
+  await refresh(mealContext.page, 'existing meal receipt')
+  await mealContext.context.close()
+  results.push({ fixture: 'existing-meal-seventh-keepsake', apCost: 1, originalHeartReward: 1 })
+
   // Locate the existing dawn cup scene separately; preceding patient cases are
   // exercised by the full walk below, not silently skipped and called a full run.
-  const cupContext = await open(fixture('c2n5_g0', collected.flags, { items: collected.items }))
+  const cupContext = await open(fixture('c2n5_g0', mealReceived.flags,
+    { items: mealReceived.items, badges: mealReceived.badges }))
   await advance(cupContext.page)
   await cupContext.page.waitForFunction(() => JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).flags.c2_payoff_zhou_cup)
   assert.match((await reveal(cupContext.page)).step.text, /杯套/)
@@ -216,7 +240,8 @@ try {
   const cupReceived = await read(cupContext.page)
   await cupContext.context.close()
 
-  const endingWith = await open(fixture('c2am_9', cupReceived.flags, { items: collected.items }), true)
+  const endingWith = await open(fixture('c2am_9', cupReceived.flags,
+    { items: cupReceived.items, badges: cupReceived.badges }), true)
   const completed = await ending(endingWith.page, { base: true, model: true, glasses: true, mobile: true, prefix: 'owned' })
   await endingWith.page.getByRole('button', { name: '查看背包用途', exact: true }).click()
   const backpack = endingWith.page.getByRole('dialog', { name: '第二章背包' })
@@ -232,7 +257,7 @@ try {
   await endingWith.page.screenshot({ path: resolve(output, 'keepsakes-backpack-390-bottom.png') })
   await backpack.getByRole('button', { name: '收好背包', exact: true }).click()
   assert.deepEqual((await read(endingWith.page)).flags, completed.final.flags)
-  results.push({ fixture: 'owned-items-next-week', visited: completed.visited, keepsakes: 6, mobile: 390 })
+  results.push({ fixture: 'owned-items-next-week', visited: completed.visited, keepsakes: 7, mobile: 390 })
   await endingWith.context.close()
 
   for (const model of [false, true]) {
@@ -294,6 +319,11 @@ try {
     assert(result.final.flags.c2_payoff_model)
     assert(result.final.flags.c2_payoff_model_used || result.final.flags.c2_payoff_base_used)
     assert(result.final.flags.c2_payoff_expert_done)
+    for (const [badge, earned] of [
+      ['c2_chair_helper', !!result.final.flags.c2_chair_fixed],
+      ['c2_brass_key', !!result.final.flags.c2_payoff_base],
+      ['c2_model_demo', !!(result.final.flags.c2_payoff_model_used || result.final.flags.c2_payoff_base_used)],
+    ]) assert.equal(result.final.badges.filter(id => id === badge).length, earned ? 1 : 0, `${badge}: exactly one badge for its actual use receipt`)
     assert.deepEqual(protectedState(result.final), protectedState(initial))
     results.push({ fullChapter: true, ...result.summary })
     await full.context.close()

@@ -13,14 +13,16 @@ const inherited = { n5_lei: true, n5_qian: true, n5_fan: true, n5_jiang: true,
 const old = { ...freshState('f'), gold: 876, ap: 2, flags: { ...inherited },
   finished: true, night: 5, buyCount: 27, lotteryNight: 5, lotteryCount: 4,
   dlc: { dr: { done: true }, dsa: { done: true, dose: 42 }, ch2: { shift: 'c2n5', phase: 'story' } } }
-const score = s => Object.fromEntries(['gold', 'skill', 'heart', 'wealth', 'ap', 'durability', 'items', 'badges', 'stamps'].map(key => [key, s[key]]))
+const newUseBadges = ['c2_brass_key', 'c2_model_demo']
+const score = s => Object.fromEntries(['gold', 'skill', 'heart', 'wealth', 'ap', 'durability', 'items', 'badges', 'stamps']
+  .map(key => [key, key === 'badges' ? s.badges.filter(badge => !newUseBadges.includes(badge)) : s[key]]))
 const protectedState = s => ({ night: s.night, finished: s.finished, buyCount: s.buyCount,
   lotteryNight: s.lotteryNight, lotteryCount: s.lotteryCount,
   oldFlags: Object.fromEntries(Object.keys(inherited).map(key => [key, s.flags[key]])), dr: s.dlc?.dr, dsa: s.dlc?.dsa })
 const render = (id, s) => ch2PayoffStep(id, nodes[id], s)
 
 for (const [id, step] of Object.entries(additions)) {
-  assert.match(id, /^c2(?:d2|n5|am)_payoff_/)
+  if (!['c2am_lowdose_teaser0', 'c2am_lowdose_teaser1', 'c2am_lowdose_teaser2'].includes(id)) assert.match(id, /^c2(?:d2|n5|am)_payoff_/)
   assert.equal(step.sfx, undefined)
   assert.equal(step.sfx2, undefined)
   for (const field of ['windowTask', 'checklist', 'readout', 'pedal', 'dose', 'dnt', 'card']) assert.equal(step[field], undefined)
@@ -71,6 +73,8 @@ for (const gender of ['f', 'm']) for (const withKey of [false, true]) {
   assert.equal(id, 'c2n5_hub')
   assert(s.flags.c2_payoff_model)
   assert.equal(Boolean(s.flags.c2_payoff_base), withKey)
+  assert.equal(s.badges.includes('c2_brass_key'), withKey, 'Only actual key use gets the one approved new badge')
+  assert.equal(s.badges.includes('c2_model_demo'), false)
   assert.equal(s.flags.old_photo, undefined, 'Do not re-use the stray legacy photograph flag')
   for (const flag of ['old_register', 'nameless_films', 'zhou_handover', 'c2n5_cabinet']) assert(s.flags[flag])
   assert.deepEqual(score(s), before)
@@ -122,7 +126,7 @@ for (const item of ch2PayoffGiftChoices(giftState)) assert.equal(item.effect, un
 for (const id of ['c2n5_b1', 'c2n5_b2']) {
   assert.deepEqual(render(id, { ...old, flags: { c2_apples_shared: true } }).effect, original[id].effect)
   assert.match(render(id, { ...old, flags: { c2_apples_shared: true } }).text, /苹果/)
-  assert.equal(render(id, old), original[id], 'No invented apple sharing')
+  assert.deepEqual(render(id, old), id === 'c2n5_b2' ? { ...original[id], image: 'item_beef' } : original[id], 'No invented apple sharing; existing beef image now shown')
 }
 
 const cup = render('c2n5_g1', { ...old, flags: { c2_payoff_jiang_gift: true } })
@@ -131,10 +135,14 @@ assert.match(cup.text, /杯套/)
 assert.doesNotMatch(render('c2n5_g1', old).text, /杯套/)
 assert.equal(ch2PayoffKeepsakes(old).length, 0)
 const owned = { flags: Object.fromEntries(CH2_PAYOFF_KEEPSAKES.map(item => [item.flag, true])) }
-assert.equal(ch2PayoffKeepsakes(owned).length, 6)
-assert.equal(Object.keys(CH2_PAYOFF_EVIDENCE).length, 6)
+assert.equal(ch2PayoffKeepsakes(owned).length, 7)
+assert.equal(Object.keys(CH2_PAYOFF_EVIDENCE).length, 7)
 for (const item of CH2_PAYOFF_KEEPSAKES) {
-  assert.match(item.flag, /^c2_payoff_/)
+  if (item.id === 'tang_meal') {
+    assert.equal(item.flag, 'c2n5_b', 'Existing meal receipt, not another consumable or reward')
+    assert.equal(item.image, 'item_beef')
+  } else assert.match(item.flag, /^c2_payoff_/)
+  assert(item.image, 'Every keepsake has a reviewed image')
   assert(item.use.length > 5)
   assert.equal(CH2_PAYOFF_EVIDENCE[`ch2_keepsake_${item.id}`].flag, item.flag)
 }
@@ -147,7 +155,7 @@ for (const model of [false, true]) for (const base of [false, true]) for (const 
   const before = score(s), frozen = protectedState(s)
   let id = 'c2am_9', visits = 0
   const seen = []
-  while (visits++ < 12) {
+  while (visits++ < 16) {
     seen.push(id)
     const step = render(id, s)
     s = JSON.parse(JSON.stringify(applyEffect(s, step.effect)))
@@ -155,12 +163,15 @@ for (const model of [false, true]) for (const base of [false, true]) for (const 
     id = step.choices ? step.choices[base ? step.choices.length - 1 : 0].next : step.next
     assert(nodes[id], `Ending must not strand the player at ${id}`)
   }
-  assert.equal(seen.at(-1), 'c2am_payoff_end')
-  assert(seen.length <= 8)
+  assert.equal(seen.at(-1), 'c2am_lowdose_teaser2')
+  assert(seen.length <= 11)
+  assert.deepEqual(seen.slice(-3), ['c2am_lowdose_teaser0', 'c2am_lowdose_teaser1', 'c2am_lowdose_teaser2'])
   assert(seen.includes('c2am_payoff_handshake'))
   assert.equal(seen.includes('c2am_payoff_rotate'), model && base)
   assert.equal(seen.includes('c2am_payoff_layers'), model && !base)
   assert(s.flags.c2_payoff_expert_done)
+  assert.equal(s.badges.includes('c2_model_demo'), model, 'Either actual demonstration earns the same single new badge')
+  assert.equal(s.badges.includes('c2_brass_key'), false, 'An injected model ownership flag alone does not play the key-use event')
   assert.deepEqual(score(s), before)
   assert.deepEqual(protectedState(s), frozen)
   assert.equal(render('c2am_9', s), original.c2am_9, 'Finished saves do not replay the new ending')

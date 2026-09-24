@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第二章 · 回礼与支线奖励预览</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#09111e;color:#e2e8f0;font:16px/1.7 system-ui,sans-serif}main{max-width:1000px;margin:auto;padding:24px 16px}h1{font-size:25px}h2{font-size:20px;color:#f1d797}a{color:#82dccb}p{color:#b7c9d8}.notice{border-left:3px solid #60c6b4;padding-left:12px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}article{padding:16px;border:1px solid #35455b;border-radius:10px;background:#121f30}article img{width:100%;height:210px;object-fit:contain;image-rendering:pixelated}article h3{margin:8px 0;font-size:17px}article p{font-size:14px}#teaser p{white-space:pre-line}footer{margin:30px 0;color:#b7c9d8;font-size:13px}
+</style></head>
+<body><main>
+<h1>第二章 · 回礼与支线奖励</h1>
+<p class="notice">本地改动预览，含章末内容。不读写游戏存档；这里展示全部配图，正式游戏仅显示实际拿到的礼物。当前未发布到 GitHub Pages。</p>
+<p><a href="./#/ch2">进入正式第二章 →</a></p>
+<h2>两把钥匙，不再绑成一次机会</h2>
+<p>封条柜交接完成后，小铁柜尚未打开时可单独返回，不耗行动力。黄铜钥匙也可以稍后补买；开诊后不把剧情倒退回探索。</p>
+<h2>回礼与借用物件</h2><div class="grid" id="gifts"></div>
+<h2>实际用过，才算完成</h2><div class="grid" id="badges"></div>
+<p>第二章共15枚现役勋章，可在同一轮收集；原5枚停颁勋章只保留历史记录。两阶段调窗的尝试次数现在随存档保存。</p>
+<details><summary>低剂量CT · 章末预告（展开剧透）</summary><div id="teaser"></div></details>
+<footer>图像由内置 image_gen 参考原游戏像素道具生成。全部提示词、来源、哈希与回退方式保存在仓库 docs；第一章、DR/DSA及配音未改。</footer>
+</main>
+<script type="module">
+import {CH2_PAYOFF_KEEPSAKES,CH2_PAYOFF_STEPS} from './src/game/ch2-payoffs';
+import {CH2_SIDE_BADGES} from './src/game/ch2-side-badges';
+import {imageAsset} from './src/lib/image-assets';
+for(const item of CH2_PAYOFF_KEEPSAKES){
+ const article=document.createElement('article');
+ const img=document.createElement('img');img.src=imageAsset(item.image);img.alt=item.title;img.loading='lazy';article.append(img);
+ const title=document.createElement('h3');title.textContent=item.title;article.append(title);
+ for(const value of [item.body,item.use]){const p=document.createElement('p');p.textContent=value;article.append(p);}
+ document.getElementById('gifts').append(article);
+}
+for(const badge of Object.values(CH2_SIDE_BADGES)){
+ const article=document.createElement('article');const title=document.createElement('h3');title.textContent=badge.icon+' '+badge.name;article.append(title);
+ const p=document.createElement('p');p.textContent=badge.desc;article.append(p);document.getElementById('badges').append(article);
+}
+for(const id of ['c2am_lowdose_teaser0','c2am_lowdose_teaser1','c2am_lowdose_teaser2']){
+ const p=document.createElement('p');p.textContent=CH2_PAYOFF_STEPS.c2am[id].text.replaceAll('**','');document.getElementById('teaser').append(p);
+}
+</script></body></html>

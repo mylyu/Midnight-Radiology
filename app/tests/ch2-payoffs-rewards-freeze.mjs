@@ -11,6 +11,8 @@ import { beforePayoffSource } from './ch2-payoffs-projection.mjs'
 import './image-polish-data.mjs'
 import { beforeImagePolishSource } from './image-polish-projection.mjs'
 import { CH2_DAWN_LEADIN_STEPS } from '../src/game/ch2-dawn.ts'
+import { CH2_ARCHIVE_RETURN_STEPS } from '../src/game/ch2-exploration.ts'
+import { CH2_SIDE_BADGES } from '../src/game/ch2-side-badges.ts'
 
 const root = new URL('../../', import.meta.url)
 const ch2Path = 'app/src/game/ch2.ts'
@@ -21,9 +23,17 @@ const checkedJS = ts.transpileModule(checkedSource, { compilerOptions: {
   `from ${JSON.stringify(new URL(relative, new URL(ch2Path, root)).href)}`)
 const old = await import('data:text/javascript;base64,' + Buffer.from(checkedJS).toString('base64'))
 for (const key of ['CH2_META', 'CH2_PASSWORD', 'CH2_PORTRAITS', 'CH2_IMAGE_CAPTIONS',
-  'CH2_BADGES', 'CH2_BADGES_LEGACY', 'CH2_ACTIVE_BADGES', 'CH2_CARDS', 'CH2_CARDS_LEGACY',
+  'CH2_BADGES_LEGACY', 'CH2_CARDS', 'CH2_CARDS_LEGACY',
   'CH2_ACTIVE_CARDS', 'CH2_EVENTS_LEGACY', 'CH2_EVIDENCE_LEGACY',
   'CH2_BOOK_PAGES', 'GRAY2HU', 'QUIZ2']) assert.deepEqual(live[key], old[key], `${key}: original registry unchanged`)
+const newBadgeIds = ['c2_brass_key', 'c2_chair_helper', 'c2_model_demo']
+assert.deepEqual(Object.keys(CH2_SIDE_BADGES).sort(), newBadgeIds)
+assert.deepEqual(Object.fromEntries(Object.entries(live.CH2_BADGES).filter(([id]) => !newBadgeIds.includes(id))), old.CH2_BADGES,
+  'Every original badge definition remains exact')
+assert.deepEqual(Object.keys(live.CH2_BADGES).filter(id => !old.CH2_BADGES[id]).sort(), newBadgeIds,
+  'Exactly three approved use badges, no other grant registry drift')
+for (const id of newBadgeIds) assert.deepEqual(live.CH2_BADGES[id], CH2_SIDE_BADGES[id])
+assert.deepEqual(live.CH2_ACTIVE_BADGES.filter(id => !newBadgeIds.includes(id)), old.CH2_ACTIVE_BADGES)
 for (const [id, entry] of Object.entries(old.CH2_EVIDENCE)) assert.deepEqual(live.CH2_EVIDENCE[id], entry, `${id}: historical evidence preserved`)
 assert.deepEqual(Object.keys(live.CH2_EVENTS), Object.keys(old.CH2_EVENTS), 'No added/removed event grant')
 for (const [id, entry] of Object.entries(old.CH2_EVENTS)) {
@@ -34,7 +44,7 @@ assert.deepEqual(Object.keys(live.CH2_EVIDENCE).filter(id => !old.CH2_EVIDENCE[i
 
 const oldSteps = Object.assign({}, ...old.CH2_SHIFTS.map(shift => shift.steps))
 const liveSteps = Object.assign({}, ...live.CH2_SHIFTS.map(shift => shift.steps))
-const newSteps = Object.assign({}, ...Object.values(CH2_PAYOFF_STEPS), CH2_DAWN_LEADIN_STEPS)
+const newSteps = Object.assign({}, ...Object.values(CH2_PAYOFF_STEPS), CH2_DAWN_LEADIN_STEPS, CH2_ARCHIVE_RETURN_STEPS)
 assert.deepEqual(Object.keys(liveSteps).filter(id => !oldSteps[id]).sort(), Object.keys(newSteps).sort())
 assert.equal(live.CH2_SHIFTS.length, old.CH2_SHIFTS.length)
 for (let i = 0; i < live.CH2_SHIFTS.length; i++) {
@@ -52,6 +62,18 @@ for (let i = 0; i < live.CH2_SHIFTS.length; i++) {
   }
 }
 const economics = effect => Object.fromEntries(Object.entries(effect ?? {}).filter(([key]) => key !== 'flag'))
+const approvedBadgeByReceipt = { c2_chair_fixed: 'c2_chair_helper', c2_payoff_base: 'c2_brass_key',
+  c2_payoff_model_used: 'c2_model_demo', c2_payoff_base_used: 'c2_model_demo' }
+function oldEconomicsAfterUseBadge(effect, previous) {
+  const approved = approvedBadgeByReceipt[effect?.flag]
+  assert.equal(effect?.badge, approved ?? previous?.badge, 'Only an actual approved use receipt may add a badge')
+  const economic = economics(effect)
+  if (approved) {
+    assert.equal(previous?.badge, undefined, 'New use badges must not overwrite an existing badge grant')
+    delete economic.badge
+  }
+  return economic
+}
 let comparisons = 0
 for (let mask = 0; mask < 32; mask++) {
   const state = { ...freshState(mask & 1 ? 'f' : 'm'), finished: true, ap: 2, items: mask & 2 ? ['key'] : [],
@@ -64,7 +86,7 @@ for (let mask = 0; mask < 32; mask++) {
   for (const [id, source] of Object.entries(oldSteps)) {
     const before = old.ch2StepForState(id, source, state)
     const after = live.ch2StepForState(id, liveSteps[id], state)
-    assert.deepEqual(economics(after.effect), economics(before.effect), `${id}: no monetary/stat/item/badge reward change`)
+    assert.deepEqual(oldEconomicsAfterUseBadge(after.effect, before.effect), economics(before.effect), `${id}: no monetary/stat/item/old-badge reward change`)
     assert.equal(after.card, before.card, `${id}: same knowledge-card grant`)
     assert.equal(after.event, before.event, `${id}: same chronicle grant`)
     if (before.effect?.flag && id !== 'c2n5_k1') assert.equal(after.effect?.flag, before.effect.flag, `${id}: original story receipt remains`)

@@ -50,7 +50,8 @@ for (const bridge of CH2_PATIENT_BRIDGES) {
       assert(pacing[id], `Bridge escaped into patient story before destination: ${id}`)
       const s = render(id, state)
       for (const key of ['ap', 'gold', 'heart', 'skill', 'wealth', 'badge', 'loseItem']) {
-        assert.equal(s.effect?.[key], undefined, `${id}: bridge changed ${key}`)
+        const expected = key === 'badge' && id === 'c2n1_gap_chair_fix' && hasToolbox ? 'c2_chair_helper' : undefined
+        assert.equal(s.effect?.[key], expected, `${id}: only actual chair repair may award its one new badge; unchanged ${key}`)
       }
       assert(!s.sfx && !s.sfx2 && !s.windowTask && !s.checklist, `${id}: unwanted interaction/audio`)
       if (s.choices) {
@@ -77,6 +78,7 @@ assert.equal(render('c2n1_gap_chair_q', toolboxState).choices[0].next, 'c2n1_gap
 assert.equal(render('c2n1_gap_chair_fix').effect, undefined)
 const repaired = applyEffect(toolboxState, render('c2n1_gap_chair_fix', toolboxState).effect)
 assert(repaired.flags.c2_chair_fixed)
+assert.equal(repaired.badges.filter(id => id === 'c2_chair_helper').length, 1)
 assert.deepEqual(repaired.items, ['toolbox'])
 assert.equal(render('c2n1_gap_chair_fix', repaired).effect, undefined)
 assert.equal(render('c2n1_gap_chair_fix', repaired).text, steps.c2n1_gap_chair_fix.text, 'Applied flag must not replace the currently displayed repair line')
@@ -183,6 +185,6 @@ for (const audited of [false, true]) for (let choiceIndex = 0; choiceIndex < 3; 
   }
 }
 assert.equal(CH2_BOOK_PAGES.length, 20)
-assert.equal(CH2_ACTIVE_BADGES.length, 12)
+assert.equal(CH2_ACTIVE_BADGES.length, 15)
 assert.equal(CH2_ACTIVE_CARDS.length, 17)
 console.log(`PASS ch2-pacing-story: ${Object.keys(steps).length} nodes; 9 patient bridges retain zero stat rewards; all SMS branches; media wiring; first-chapter memory gates; one coronary acquisition plus one same-data reconstruction`)

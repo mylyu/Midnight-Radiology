@@ -4,6 +4,7 @@ import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { resolve } from 'node:path'
+import { beforeRewardsRoundSource } from './ch2-rewards-round-projection.mjs'
 const root = new URL('../../', import.meta.url)
 const ledger = JSON.parse(readFileSync(new URL('docs/image-polish-source-deltas.json', root), 'utf8'))
 const normalize = value => value.replaceAll('\r\n', '\n').trimEnd() + '\n'
@@ -26,6 +27,8 @@ function original(path) {
 }
 export function beforeImagePolishSource(path, source) {
   const file = ledger.files.find(row => row.path === path)
+  if (file && normalize(source) === original(path)) return source // Exact already-projected historical input.
+  source = beforeRewardsRoundSource(path, source)
   if (!file) return source
   if (normalize(source) === original(path)) return source // Already checked, exactly projected input.
   const lines = normalize(source).trimEnd().split('\n')
@@ -41,7 +44,7 @@ export function beforeImagePolishSource(path, source) {
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   let probes = 0
   for (const {path, edits} of ledger.files) {
-    const live = readFileSync(new URL(path, root), 'utf8')
+    const live = beforeRewardsRoundSource(path, readFileSync(new URL(path, root), 'utf8'))
     beforeImagePolishSource(path, live)
     for (const edit of edits) {
       const offset = edit.after.findIndex(line => line.trim())

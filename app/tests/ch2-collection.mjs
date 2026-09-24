@@ -1,5 +1,5 @@
 // Isolated browser contexts only; verifies the chapter two collection denominators
-// (12 badges / 17 cards after the QA round) and the legacy-entry display.
+// (15 badges / 17 cards) and the legacy-entry display.
 import { createRequire } from 'node:module'
 import assert from 'node:assert/strict'
 const require = createRequire(import.meta.url)
@@ -29,30 +29,30 @@ try {
     // Badge wall: counts only obtainable badges; owned legacy badge is listed separately, not in the grid.
     const { context, page } = await open({ badges: ['first_ct', 'checklist_zero'] })
     await page.getByRole('button', { name: '🏅 勋章', exact: true }).click()
-    await page.getByText('已收集 1/12', { exact: false }).waitFor()
+    await page.getByText('已收集 1/15', { exact: false }).waitFor()
     await page.getByText('历史收藏（旧版停颁，不计入分母）：零遗漏', { exact: true }).waitFor()
     const grid = page.locator('.grid').nth(1)
-    assert.equal(await grid.getByText('？？？').count(), 11, 'ch2 grid must exclude the 5 legacy badges')
+    assert.equal(await grid.getByText('？？？').count(), 14, 'ch2 grid must exclude the 5 legacy badges')
     assert.equal(await grid.getByText('零遗漏').count(), 0)
     await context.close()
-    console.log('PASS: badge wall shows 1/12; legacy badge listed as history only.')
+    console.log('PASS: badge wall shows 1/15; legacy badge listed as history only.')
   }
   {
     // Completion screen: active-only counts, no legacy note without legacy holdings.
-    const { context, page } = await open({ badges: ['first_ct'], cards: ['ct_tube_heat'], shift: 'c2am', stepId: 'c2am_9' })
+    const { context, page } = await open({ badges: ['first_ct'], cards: ['ct_tube_heat'], shift: 'c2am', stepId: 'c2am_lowdose_teaser2' })
     await page.locator('.dialog-box > p').click()
     await page.getByRole('button', { name: '🏁 第二章 · 完 —— 结算' }).click()
-    await page.getByText('📖 1/17 · 🏅 1/12', { exact: true }).waitFor()
+    await page.getByText('📖 1/17 · 🏅 1/15', { exact: true }).waitFor()
     assert.equal(await page.getByText('历史收藏：', { exact: false }).count(), 0)
     await context.close()
-    console.log('PASS: completion screen counts 1/17 and 1/12 without legacy note.')
+    console.log('PASS: completion screen counts 1/17 and 1/15 without legacy note.')
   }
   {
     // Completion screen: legacy holdings stay out of the counts and trigger the policy note.
-    const { context, page } = await open({ badges: ['phantom_friend', 'wrench_night'], cards: ['ring_artifact'], shift: 'c2am', stepId: 'c2am_9' })
+    const { context, page } = await open({ badges: ['phantom_friend', 'wrench_night'], cards: ['ring_artifact'], shift: 'c2am', stepId: 'c2am_lowdose_teaser2' })
     await page.locator('.dialog-box > p').click()
     await page.getByRole('button', { name: '🏁 第二章 · 完 —— 结算' }).click()
-    await page.getByText('📖 0/17 · 🏅 0/12', { exact: true }).waitFor()
+    await page.getByText('📖 0/17 · 🏅 0/15', { exact: true }).waitFor()
     await page.getByText('历史收藏：卡片 1 张、勋章 2 枚；旧版停颁条目不计入分母。', { exact: true }).waitFor()
     await context.close()
     console.log('PASS: completion screen excludes legacy entries and explains the policy.')

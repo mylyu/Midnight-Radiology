@@ -1,0 +1,22 @@
+// Ordered live choices, not save/flag injection. Optional chat exits are last.
+export const ALL_BADGES_CHOICES = {
+  c2n1_hub: ['c2n1_c1', 'c2n1_b1', 'c2n1_e1', 'c2n1_m0'],
+  c2n1_chat_q: ['c2n1_chat_sign1', 'c2n1_chat_roster1', 'c2n1_c5'],
+  c2n1_gap_chair_q: ['c2n1_gap_chair_fix'],
+  c2d2_8: ['c2d2_9a'],
+  c2d2_q0: ['c2d2_gap_lift'],
+  c2d2_lunch_q: ['c2d2_chat_lei1', 'c2d2_chat_fan1', 'c2d2_lunch_end'],
+  c2n3_hub: ['c2n3_k1', 'c2n3_a1', 'c2n3_chat0', 'c2n3_m0'],
+  c2n3_a3: ['c2n3_a4a'],
+  c2n3_chat_wen_q: ['c2n3_chat_wen1'],
+  c2n3_chat_q: ['c2n3_chat_sign1', 'c2n3_chat_joke', 'c2n3_chat_log', 'c2n3_chat_end'],
+  c2n3_m6: ['c2n3_m7b'],
+  c2d4_e6: ['c2d4_e7c'],
+  c2d4_chat_q: ['c2d4_chat_director1', 'c2d4_chat_food1', 'c2d4_e9'],
+  c2n5_hub: ['c2n5_a1', 'c2n5_chat0', 'c2n5_b1', 'c2n5_e1', 'c2n5_needle_short0', 'c2n5_m0'],
+  c2n5_a6: ['c2n5_k1'],
+  c2n5_chat_q: ['c2n5_chat_both1', 'c2n5_chat_roster1', 'c2n5_chat_end'],
+  c2n5_m6: ['c2n5_m7b'],
+  c2n5_m12: ['c2n5_m13d'],
+  c2am_payoff_q: ['c2am_payoff_rotate', 'c2am_payoff_layers'],
+}
