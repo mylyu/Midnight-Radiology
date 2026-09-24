@@ -5,6 +5,7 @@ import { CH2_STAT_KEYS, ch2NetChange } from '../game/ch2-ledger'
 import { ch2PayoffKeepsakes } from '../game/ch2-payoffs'
 import type { GameState } from '../game/types'
 import { SceneBackground } from './SceneBackground'
+import { imageAsset } from '../lib/image-assets'
 
 type Props = {
   state: GameState
@@ -78,6 +79,12 @@ export function Ch2Settlement({ state, onNext, onShop, onBackpack, onManual, onB
         </div>
         <p className="mt-2 text-xs text-slate-400">奶茶和零食带回剧情，遇见同事闲聊时再递给对方。</p>
         {keepsakes.length > 0 && <p data-ch2-keepsake-summary className="mt-2 text-xs text-teal-200">本章带回：{keepsakes.map(item => item.title).join('、')}。用途收在背包里。</p>}
+        {keepsakes.length > 0 && <div data-ch2-keepsake-gallery className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
+          {keepsakes.map(item => <figure key={item.id} data-ch2-keepsake-card={item.id} className="min-w-0 rounded-lg border border-slate-600 bg-slate-950/70 p-2 text-center">
+            <img src={imageAsset(item.image!)} alt={item.title} loading="lazy" decoding="async" className="pixel mx-auto h-24 w-full object-contain" />
+            <figcaption className="mt-1 text-xs leading-relaxed text-slate-200">{item.title}</figcaption>
+          </figure>)}
+        </div>}
       <div className="mt-3 border-t border-slate-700 pt-3" aria-label="章节与设备" data-ch2-equipment-overview>
         <div className="space-y-1.5 text-sm">
           <p data-equipment="cr" data-unlock={state.finished ? 'complete' : 'available'} className="text-slate-300">{state.finished ? '✅' : '🔓'} 老伙计（CR · X光机）—— <span className="text-slate-400">第一章「老伙计」 · {state.finished ? '已完成' : state.stepId || state.night > 1 ? '进行中' : '可体验'}</span></p>
@@ -87,6 +94,7 @@ export function Ch2Settlement({ state, onNext, onShop, onBackpack, onManual, onB
           <p data-equipment="pet" data-unlock="locked" className="text-slate-500">🔒 PET/CT —— <span className="text-slate-400">第五章「微光」 · 省院进修，尚未开放</span></p>
           <p data-equipment="dr" data-unlock={getDlc('dr') ? state.dlc?.dr?.done ? 'complete' : 'available' : 'locked'} className="text-slate-300">{getDlc('dr') ? '🔓' : '🔒'} 楼上 DR 机房 —— <span className="text-slate-400">{getDlc('dr')?.title ?? '番外篇 · DR 白班'} · {dlcStatus('dr')}</span></p>
           <p data-equipment="dsa" data-unlock={getDlc('dsa') ? state.dlc?.dsa?.done ? 'complete' : 'available' : 'locked'} className="text-slate-300">{getDlc('dsa') ? '🔓' : '🔒'} 介入室 C型臂DSA —— <span className="text-slate-400">{getDlc('dsa')?.title ?? '番外篇 · DSA 导管室'} · {dlcStatus('dsa')}</span></p>
+          <p data-equipment="ldct" data-unlock="locked" className="text-slate-500">🔒 低剂量CT —— <span className="text-slate-400">DLC 预告 · 尚未开放</span></p>
         </div>
         <p className="mt-3 border-t border-slate-700 pt-3 text-xs text-slate-300">📖 {cards}/{CH2_ACTIVE_CARDS.length} · 🏅 {badges}/{CH2_ACTIVE_BADGES.length}</p>
         {(legacyBadges + legacyCards > 0) && <p className="mt-2 text-xs text-slate-400">历史收藏：卡片 {legacyCards} 张、勋章 {legacyBadges} 枚；旧版停颁条目不计入分母。</p>}

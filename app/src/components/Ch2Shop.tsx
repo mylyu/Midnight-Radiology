@@ -63,6 +63,7 @@ export function Ch2Backpack({ state, onClose }: Props) {
       {keepsakes.length > 0 && <section aria-label="本章收到与借用的物品" className="mb-4 border-t border-slate-600 pt-3">
         <h4 className="mb-3 text-sm text-amber-200">带回来的东西 · 在故事里派上用场</h4>
         {keepsakes.map(item => <div key={item.id} data-ch2-keepsake={item.id} className="mb-3 rounded-lg border border-slate-700 p-3">
+          <img src={image(item.image!)} alt={item.title} loading="lazy" decoding="async" className="pixel mx-auto mb-3 h-28 w-full object-contain" />
           <p className="text-slate-100">{item.icon} {item.title}</p>
           <p className="mt-1 text-xs text-slate-300">{item.body}</p>
           <p className="mt-2 text-xs text-teal-200">{item.use}</p>

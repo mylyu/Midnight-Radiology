@@ -1,0 +1,65 @@
+{
+  "date": "2026-09-24",
+  "branch": "codex/ch2-keys-gifts-badges",
+  "baseline": "be269d9",
+  "tool": "built-in image_gen.imagegen",
+  "mode": "precise-object-edit with referenced_image_paths",
+  "modelSettings": "The built-in tool exposes prompt and references only; no seed/model override was supplied.",
+  "policy": "New sibling PNGs only; references and existing assets unchanged. Four generated images visually inspected; true alpha verified. Deployed derivatives made by existing lossless image pipeline, no pixel resizing.",
+  "reused": [
+    {
+      "path": "app/public/assets/item_beef.png",
+      "use": "小唐交接饭的回响记录，复用旧图，不重复发物品或补给"
+    }
+  ],
+  "assets": [
+    {
+      "key": "luo_pouch",
+      "path": "app/public/assets/ch2_gift_luo_pouch_v1.png",
+      "sha256": "0e25570a678c0dc0f2dddd2ada589ad47f67f4809619836dd744a5d5fb7ef086",
+      "bytes": 1235646,
+      "width": 1254,
+      "height": 1254,
+      "hasAlpha": true,
+      "reference": "app/public/assets/item_toolbox.png",
+      "prompt": "Use case: precise-object-edit. Asset type: standalone pixel-art keepsake illustration for the Chinese game Midnight Radiology. Image 1 is the edit target, used to preserve the established game's coarse pixel clusters, chunky dark outlines, limited gray/teal/amber palette and small-object framing. Replace the toolbox and all its contents with one handmade cloth pouch for medical-image CD cases, sewn by an elderly retired seamstress as a thank-you gift. Faded warm indigo cotton with a subtle tiny beige check weave, two roomy sewn compartments, one small label pocket, a flap folded back so its construction is clear. ONE unlabelled closed clear plastic CD case partially peeks out of a compartment, no patient data. Soft worn fabric, careful stitching; no needles, pins or loose tools. Match the reference's crisp visible square pixel clusters, hand-dithered material shading, old-school adventure-game inventory art. Do NOT make smooth digital painting, vector art, glossy 3D or photorealism. Center the entire object in a square image with generous empty margin, readable when shown at 96px. Three-quarter view consistent with reference, soft upper-left light. Genuinely transparent background (alpha), no surface, no cast shadow backdrop. Remove any existing lettering/watermark from the reference. No letters, numbers, labels, logos, watermarks or border. Output only this one object, not a sprite sheet or comparison.",
+      "source": "C:\\Users\\lvmen\\.codex\\generated_images\\01a03d87-f338-71d1-ac31-cfd37ee2d8bb\\exec-436d2888-8d92-44c4-899a-fd535a137a72.png"
+    },
+    {
+      "key": "lei_pouch",
+      "path": "app/public/assets/ch2_gift_lei_pouch_v1.png",
+      "sha256": "5dbc24c8e341a6df309623889503141c6004f7c9786a61cd71b5385e7b8b7ea4",
+      "bytes": 1074771,
+      "width": 1254,
+      "height": 1254,
+      "hasAlpha": true,
+      "reference": "app/public/assets/item_toolbox.png",
+      "prompt": "Use case: precise-object-edit. Asset type: standalone pixel-art keepsake illustration for the Chinese game Midnight Radiology. Image 1 is the edit target, used to preserve the established game's coarse pixel clusters, chunky dark outlines, limited gray/teal/amber palette and small-object framing. Replace the toolbox and all its contents with one compact dark teal-gray zippered electronics organizer pouch, partly opened, with visibly distinct elastic loops and small mesh compartments. One short neatly coiled black USB cable and one small plain adapter in separate slots; modest everyday technician gift, not medical equipment. No toolbox shell, voltmeter or screwdrivers. Match the reference's crisp visible square pixel clusters, hand-dithered material shading, old-school adventure-game inventory art. Do NOT make smooth digital painting, vector art, glossy 3D or photorealism. Center the entire object in a square image with generous empty margin, readable when shown at 96px. Three-quarter view consistent with reference, soft upper-left light. Genuinely transparent background (alpha), no surface, no cast shadow backdrop. Remove any existing lettering/watermark from the reference. No letters, numbers, labels, logos, watermarks or border. Output only this one object, not a sprite sheet or comparison.",
+      "source": "C:\\Users\\lvmen\\.codex\\generated_images\\01a03d87-f338-71d1-ac31-cfd37ee2d8bb\\exec-527934de-396f-476d-859d-70d2a1145b08.png"
+    },
+    {
+      "key": "jiang_sleeve",
+      "path": "app/public/assets/ch2_gift_jiang_sleeve_v1.png",
+      "sha256": "d91b4da354a49be3bf231a648c34e58097bc37d0d03727622f8a51ca70893e3d",
+      "bytes": 584937,
+      "width": 1254,
+      "height": 1254,
+      "hasAlpha": true,
+      "reference": "app/public/assets/item_thermos.png",
+      "prompt": "Use case: precise-object-edit. Asset type: standalone pixel-art keepsake illustration for the Chinese game Midnight Radiology. Image 1 is the edit target, used to preserve the established game's coarse pixel clusters, chunky dark outlines, limited gray/teal/amber palette and small-object framing. Replace the thermos with ONE empty cylindrical reusable cloth thermos sleeve. Warm burnt-orange and oatmeal woven cloth with one dark woven vertical seam, open top and clearly visible hollow inside; a simple short fabric carry loop. Practical homemade cup-cover gift, no cup inside, no knitted text, not a closed pouch. Match the reference's crisp visible square pixel clusters, hand-dithered material shading, old-school adventure-game inventory art. Do NOT make smooth digital painting, vector art, glossy 3D or photorealism. Center the entire object in a square image with generous empty margin, readable when shown at 96px. Three-quarter view consistent with reference, soft upper-left light. Genuinely transparent background (alpha), no surface, no cast shadow backdrop. Remove any existing lettering/watermark from the reference. No letters, numbers, labels, logos, watermarks or border. Output only this one object, not a sprite sheet or comparison.",
+      "source": "C:\\Users\\lvmen\\.codex\\generated_images\\01a03d87-f338-71d1-ac31-cfd37ee2d8bb\\exec-870091cd-cbb4-4cea-ad2a-265ab14bd7cb.png"
+    },
+    {
+      "key": "zhou_cup",
+      "path": "app/public/assets/ch2_gift_zhou_cup_v1.png",
+      "sha256": "02fe4035bac63e8ead8e853aac54b7df90ff37caf8bc9316bcf00e0c392c5480",
+      "bytes": 418518,
+      "width": 1254,
+      "height": 1254,
+      "hasAlpha": true,
+      "reference": "app/public/assets/item_thermos.png",
+      "prompt": "Use case: precise-object-edit. Asset type: standalone pixel-art keepsake illustration for the Chinese game Midnight Radiology. Image 1 is the edit target, used to preserve the established game's coarse pixel clusters, chunky dark outlines, limited gray/teal/amber palette and small-object framing. Replace the worn old thermos with ONE NEW modest stainless-steel vacuum flask with a dark teal cup-cap and small side handle. Clean brushed metal with simple chunky highlights, no rust, scratches or dents. Lid closed, complete object; preserve original narrow upright flask proportions. Everyday mentor gift, no luxury brand or decoration. Match the reference's crisp visible square pixel clusters, hand-dithered material shading, old-school adventure-game inventory art. Do NOT make smooth digital painting, vector art, glossy 3D or photorealism. Center the entire object in a square image with generous empty margin, readable when shown at 96px. Three-quarter view consistent with reference, soft upper-left light. Genuinely transparent background (alpha), no surface, no cast shadow backdrop. Remove any existing lettering/watermark from the reference. No letters, numbers, labels, logos, watermarks or border. Output only this one object, not a sprite sheet or comparison.",
+      "source": "C:\\Users\\lvmen\\.codex\\generated_images\\01a03d87-f338-71d1-ac31-cfd37ee2d8bb\\exec-5ef932bc-0ff4-4dd6-9577-e186367597bf.png"
+    }
+  ]
+}

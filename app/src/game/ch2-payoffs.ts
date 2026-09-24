@@ -1,5 +1,7 @@
 import type { Evidence } from './dlc'
 import type { Choice, GameState, Step } from './types'
+import { ch2ArchiveReturnStep } from './ch2-exploration'
+import { ch2SideBadgeStep } from './ch2-side-badges'
 
 type PayoffState = Pick<GameState, 'flags'> & Partial<Pick<GameState, 'items' | 'dlc'>>
 const MODEL = 'ch2_slice_model_v1'
@@ -26,18 +28,21 @@ export const CH2_PAYOFF_KEEPSAKES: Ch2Keepsake[] = [
   { id: 'model_base', title: '手摇旋转底座', flag: 'c2_payoff_base', icon: '⚙️', image: BASE,
     body: '黄铜钥匙打开的小铁柜里，藏着叠层教具的配套底座。慢慢摇，整套模型会跟着转。',
     use: '迎检时可换个角度展示弯管；没有它也能拆层演示。' },
-  { id: 'luo_pouch', title: '罗阿姨的光盘布袋', flag: 'c2_payoff_luo_gift', icon: '🪡',
+  { id: 'luo_pouch', title: '罗阿姨的光盘布袋', flag: 'c2_payoff_luo_gift', icon: '🪡', image: 'ch2_gift_luo_pouch_v1',
     body: '罗阿姨以前缝的布袋，由女儿托门卫捎来。分格可以装光盘盒和片袋标签。',
     use: '装好本章交接用的空光盘盒与标签，不用再往衣兜里硬塞。' },
-  { id: 'lei_pouch', title: '小雷的线材收纳袋', flag: 'c2_payoff_lei_gift', icon: '🧰',
+  { id: 'lei_pouch', title: '小雷的线材收纳袋', flag: 'c2_payoff_lei_gift', icon: '🧰', image: 'ch2_gift_lei_pouch_v1',
     body: '小雷分给你一个多格小袋，线头和转接件终于不用滚在抽屉里。',
     use: '可收好教具底座的摇柄；没有底座时先装自己的转接头。' },
-  { id: 'jiang_sleeve', title: '老蒋捎来的杯套', flag: 'c2_payoff_jiang_gift', icon: '🧶',
+  { id: 'jiang_sleeve', title: '老蒋捎来的杯套', flag: 'c2_payoff_jiang_gift', icon: '🧶', image: 'ch2_gift_jiang_sleeve_v1',
     body: '老蒋记得去年换灯管时你搭过手，又捎来一个没用过的布杯套。',
     use: '天亮收到老周的新保温杯后，正好套上，不影响任何医学数值。' },
-  { id: 'zhou_cup', title: '老周送的新保温杯', flag: 'c2_payoff_zhou_cup', icon: '🍵',
+  { id: 'zhou_cup', title: '老周送的新保温杯', flag: 'c2_payoff_zhou_cup', icon: '🍵', image: 'ch2_gift_zhou_cup_v1',
     body: '第五夜交班后，老周递来的新杯子。旧的那个，他说还要自己用。',
     use: '属于你的夜班茶杯。下周交流放在自己的座位旁，杯底已写好名字。' },
+  { id: 'tang_meal', title: '小唐留的那份牛肉', flag: 'c2n5_b', icon: '🍱', image: 'item_beef',
+    body: '第五夜，小唐用保温盒给你留了一份切好的牛肉。盒子是借你的，饭是给你的。',
+    use: '这顿已经吃过了，留下的是交接饭的记忆；盒子洗净归还，不是可反复使用的补给。' },
 ]
 
 export const CH2_PAYOFF_EVIDENCE: Record<string, Evidence> = Object.fromEntries(
@@ -89,17 +94,17 @@ export const CH2_PAYOFF_STEPS: Record<string, Record<string, Step>> = {
   c2n5: {
     c2n5_payoff_luo0: { ...clear, bg: 'bg_corridor', speaker: 'tang', sprite: 'char_tang',
       text: '罗阿姨女儿捎来的。旧记录交过去以后，阿姨从家里翻出以前缝的小布袋，说这个装光盘不容易掉。', next: 'c2n5_payoff_luo1' },
-    c2n5_payoff_luo1: { ...clear, speaker: 'sys',
+    c2n5_payoff_luo1: { ...clear, speaker: 'sys', image: 'ch2_gift_luo_pouch_v1',
       text: '里面分了两个兜，连装标签的小格都留好了。你把空光盘盒装进去试了试。小唐说：「她还让我转告，裤脚照常收费，别拿这个抵。」',
       effect: { flag: 'c2_payoff_luo_gift' }, next: 'c2n5_hub' },
     c2n5_payoff_lei0: { ...clear, bg: 'bg_corridor', speaker: 'lei', sprite: 'char_lei',
       text: '给你一个。我收抽屉收出三个，自己留一个，另一个谁也别问我哪儿去了。', next: 'c2n5_payoff_lei1' },
-    c2n5_payoff_lei1: { ...clear, speaker: 'sys', sprite: 'char_lei',
+    c2n5_payoff_lei1: { ...clear, speaker: 'sys', sprite: 'char_lei', image: 'ch2_gift_lei_pouch_v1',
       text: '你拉开小袋，线头、转接头都有独立的小格。小雷指指你的口袋：「别老一掏手机，跟着掉一地。」',
       effect: { flag: 'c2_payoff_lei_gift' }, next: 'c2n5_hub' },
     c2n5_payoff_jiang0: { ...clear, bg: 'bg_corridor', speaker: 'jiang', sprite: 'char_jiang',
       text: '去年你帮我扶梯子那回，还记得吧？拿着，没用过的杯套。上回请你冰红茶，这天气可不敢再送冰的了。', next: 'c2n5_payoff_jiang1' },
-    c2n5_payoff_jiang1: { ...clear, speaker: 'sys', sprite: 'char_jiang',
+    c2n5_payoff_jiang1: { ...clear, speaker: 'sys', sprite: 'char_jiang', image: 'ch2_gift_jiang_sleeve_v1',
       text: '老蒋把布杯套塞过来，量了量你手边的纸杯：「这个先别套，待会儿你连杯子一块儿扔了。」你笑着收进包里。',
       effect: { flag: 'c2_payoff_jiang_gift' }, next: 'c2n5_hub' },
   },
@@ -125,13 +130,19 @@ export const CH2_PAYOFF_STEPS: Record<string, Record<string, Step>> = {
       text: '手先停一停，底下还压着今天的记录。那份也拿出来，咱们接着看。', next: 'c2am_payoff_end' },
     c2am_payoff_end: { ...clear, bg: 'bg_office_day', speaker: 'sys',
       text: '你把体模记录摊到桌上。小唐悄悄把椅子往你这边挪：「周老师这称呼……回头再问。」老周听见了：「先看记录。八卦又不会跑。」',
-      effect: { flag: 'c2_payoff_expert_done' }, end: true },
+      effect: { flag: 'c2_payoff_expert_done' }, next: 'c2am_lowdose_teaser0' },
+    c2am_lowdose_teaser0: { ...clear, bg: 'bg_ctcontrol_day', speaker: 'sys',
+      text: '【几天后】小雷拿来一份新安排，压在你的茶杯底下。标题圈了三个字：**低剂量**。你翻到后面——体模、重建方案，还有一整页待比较的图。', next: 'c2am_lowdose_teaser1' },
+    c2am_lowdose_teaser1: { ...clear, speaker: 'lei', sprite: 'char_lei',
+      text: '先拿体模试。参数怎么选、图还能看清多少，慢慢比。你可别一听“新项目”，又把包背上准备下班。', next: 'c2am_lowdose_teaser2' },
+    c2am_lowdose_teaser2: { ...clear, speaker: 'me',
+      text: '“我包还没放下呢。”你把那张安排抽出来，夹进本子。\n\n**DLC预告 · 低剂量CT**\n新的图像、新的取舍。尚未开放，故事留待后续。', end: true },
   },
 }
 
 /** Only presentation, chapter-local receipts, and explicit new continuations.
  * Original archive handover/economy effects remain on their original nodes. */
-export function ch2PayoffStep(id: string, step: Step, s: PayoffState): Step {
+function payoffStep(id: string, step: Step, s: PayoffState): Step {
   const f = s.flags
   if (id === 'c2d2_trauma_scan' && f.n5_lei && !f.c2_payoff_notebook_read && !f.c2_payoff_notebook_passed) {
     return { ...step, next: 'c2d2_payoff_notebook_q' }
@@ -197,9 +208,9 @@ export function ch2PayoffStep(id: string, step: Step, s: PayoffState): Step {
     text: '你把教具底座的小摇柄收进窄格，正合适。小雷看了一眼：「挺好，别跟转接头放一块儿，下次我真会装错。」' }
   if (id === 'c2n5_b1' && f.c2_apples_shared) return { ...step,
     text: '（塞给你一个保温盒）上回那袋苹果净被我们吃了，这次给你留点牛肉。老周已经吃掉一半，剩下这半我守住了。' }
-  if (id === 'c2n5_b2' && f.c2_apples_shared) return { ...step,
-    text: '你掀开保温盒，牛肉切好了，小唐还塞了双筷子。「苹果归苹果，这盒记得洗。」她说完，又从盘里补了一块。' }
-  if (id === 'c2n5_g1') return { ...step,
+  if (id === 'c2n5_b2') return { ...step, image: 'item_beef',
+    text: f.c2_apples_shared ? '你掀开保温盒，牛肉切好了，小唐还塞了双筷子。「苹果归苹果，这盒记得洗。」她说完，又从盘里补了一块。' : step.text }
+  if (id === 'c2n5_g1') return { ...step, image: 'ch2_gift_zhou_cup_v1',
     effect: { ...step.effect, flag: 'c2_payoff_zhou_cup' },
     text: `${step.text ?? ''}${f.c2_payoff_jiang_gift ? '你试着套上老蒋捎来的布杯套，松紧正好。老周看看：「配得还挺齐。」' : ''}` }
   if (id === 'c2am_9' && !f.c2_payoff_expert_done) return { ...step, ...clear, bg: 'bg_office_day',
@@ -218,4 +229,8 @@ export function ch2PayoffStep(id: string, step: Step, s: PayoffState): Step {
       ? '窗缝吹得资料翻了页，你拿来去年老范送的报废铅眼镜压住。小唐掂掂它：「这个镇纸，谁都顺不走。」'
       : '小唐拿订书机压住资料一角，替你翻到做过标记的那页。'}${f.c2_payoff_zhou_cup ? '你把写好名字的新茶杯放到椅子旁。' : ''}` }
   return step
+}
+
+export function ch2PayoffStep(id: string, step: Step, s: PayoffState): Step {
+  return ch2SideBadgeStep(ch2ArchiveReturnStep(id, payoffStep(id, step, s), s))
 }

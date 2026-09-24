@@ -7,6 +7,8 @@ import { CH2_NEEDLE_STEPS, CH2_NEEDLE_EVIDENCE, ch2NeedleStep } from './ch2-need
 import { CH2_TERMINAL_STEPS, CH2_TERMINAL_EVIDENCE, ch2TerminalStep } from './ch2-terminal.ts'
 import { CH2_DAWN_STEPS, CH2_DAWN_LEADIN_STEPS, ch2DawnStep } from './ch2-dawn.ts'
 import { CH2_PAYOFF_STEPS, CH2_PAYOFF_EVIDENCE, ch2PayoffStep } from './ch2-payoffs.ts'
+import { CH2_ARCHIVE_RETURN_STEPS } from './ch2-exploration.ts'
+import { CH2_SIDE_BADGES } from './ch2-side-badges.ts'
 
 /* ================= 第二章「快与狠」· CT篇 =================
  * 故事时间：2025年11月，新CT启用初期，五个值班跨约十天。
@@ -83,8 +85,9 @@ export function tryUnlockCh2(input: string): boolean {
   return true
 }
 
-/* ================= 第二章勋章（12枚现役，5枚旧版留档） ================= */
+/* ================= 第二章勋章（15枚现役，5枚旧版留档） ================= */
 export const CH2_BADGES: Record<string, { name: string; icon: string; desc: string; hidden?: boolean }> = {
+  ...CH2_SIDE_BADGES,
   first_ct: { name: '首扫', icon: '🌀', desc: '在新CT上完成第一例夜班急诊扫描' },
   window_master: { name: '窗宽窗位大师', icon: '🎚️', desc: '窗口教学关两个阶段都在两次内调到目标窗' },
   queue_tamer: { name: '队列调度员', icon: '🚦', desc: '白班队列零「等太久」事件' },
@@ -831,6 +834,7 @@ const C2D4: Record<string, Step> = {
 /* ================= 第5夜「值守」 ================= */
 const C2N5: Record<string, Step> = {
   ...CH2_PAYOFF_STEPS.c2n5,
+  ...CH2_ARCHIVE_RETURN_STEPS,
   ...CH2_NEEDLE_STEPS.c2n5,
   ...CH2_TERMINAL_STEPS.c2n5,
   ...CH2_SOCIAL_STEPS.c2n5,

@@ -136,6 +136,8 @@ export interface GameState {
 }
 
 export interface DlcProgress {
+  /** 第二章调窗：本轮每次确认立即保存；旧档不补造阶段成绩。 */
+  windowTasks?: Record<string, { attempts: number; completed: boolean; width: number; level: number; stage?: number }>
   /** 第二章经营账本；旧存档缺省，从恢复点起记，不补造历史。 */
   loop?: Ch2LoopProgress
   scanSessions?: Record<string, { startedAt: number; completed?: boolean }>

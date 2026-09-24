@@ -3,6 +3,7 @@ import { SHOP_ITEMS } from './data'
 import { applyEffect } from './store'
 import { beginCh2Shift, recordCh2Change, snapshotCh2Settlement } from './ch2-ledger'
 import { ch2GiftSalesEnded } from './ch2-gifts'
+import { ch2ArchiveExplorationClosed } from './ch2-exploration'
 import type { Ch2QuizProgress, DlcProgress, GameState } from './types'
 
 /** Only dlc.ch2 is written here. Chapter 1's counters and save cursor are frozen. */
@@ -72,7 +73,7 @@ export function ch2ItemUnavailable(s: GameState, id: string): string | undefined
     if (s.items.includes(id)) return '已持有，先用掉再买'
     if (id === 'key') {
       if (idx < 1) return '第二班起上架'
-      if (idx > 4 || phase === 'settle' && idx === 4 || s.flags.c2n5_cabinet || entered('c2n5_m0')) return '本轮小铁柜的剧情已结束'
+      if (idx > 4 || s.flags.c2_payoff_base || ch2ArchiveExplorationClosed(s)) return '本轮小铁柜的剧情已结束'
     }
     if (id === 'toolbox' && (idx > 0 || phase === 'settle' || s.flags.c2_chair_fixed || s.flags.c2_chair_passed || entered('c2n1_p0'))) return '本轮修椅子的机会已过'
     if (id === 'dosimeter' && (idx > 4 || phase === 'settle' && idx === 4 || doseDialoguePassed)) return '本轮剂量计对话已结束'

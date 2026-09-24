@@ -4,6 +4,8 @@ import { DLCS, getDlc, DLC_BADGES, CARDS, EVENTS, EVIDENCE, DR_QUEUE, queueWaits
 import { ch2StepForState, ch2BackgroundAsset, CH2_META, CH2_SHIFTS, CH2_BADGES, CH2_ACTIVE_BADGES, CH2_BADGES_LEGACY, CH2_BOOK_PAGES, CH2_IMAGE_CAPTIONS, QUIZ2, grayToHU, ch2Unlocked, tryUnlockCh2, ch2BookUnlocked, ch2PortraitAsset } from './game/ch2'
 import type { DlcDef, QueuePatient } from './game/dlc'
 import { originalCh2Step, restartCh2 } from './game/ch2-exploration'
+import { recordCh2WindowAttempt } from './game/ch2-window-progress'
+import { ch2SideBadgeBackfill } from './game/ch2-side-badges'
 import { isPatientBed, isPatientWheelchair } from './game/ch2-patients'
 import { Ch2Shop, Ch2Backpack } from './components/Ch2Shop'
 import { Ch2Settlement } from './components/Ch2Settlement'
@@ -1803,6 +1805,11 @@ function ScriptScreen({ dlc, state, update, onExit }: { dlc: DlcDef; state: Game
 
 /* ================= 第二章「快与狠」· 剧情引擎（独立于 NightScreen / ScriptScreen） ================= */
 function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s: GameState) => GameState) => void; onExit: () => void }) {
+  useEffect(() => {
+    // Historical successful actions qualify even on a completed save; merely
+    // owning an item does not. The pure updater is a no-op once reconciled.
+    if (ch2SideBadgeBackfill(state) !== state) update(ch2SideBadgeBackfill)
+  }, [state, update])
   const dialogRef = useRef<HTMLDivElement>(null)
   const stageRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
@@ -1851,7 +1858,6 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
       })
     })
   }
-  const windowTries = useRef<Record<number, number>>({})
 
   const baseStep: Step = ch2StepForState(stepId, shift.steps[stepId] ?? { end: true }, state)
   const checkin = CH2_CHECKINS[stepId]
@@ -2050,13 +2056,9 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
     setStepId(c.next)
   }
 
-  const windowDone = (task: NonNullable<Step['windowTask']>, tries: number) => {
-    const stage = task.stage ?? 0
-    windowTries.current[stage] = tries
-    if (stage === 2 && (windowTries.current[1] ?? 99) <= 2 && tries <= 2) {
-      update(s => s.badges.includes('window_master') ? s : recordCh2Change(s, { ...s, badges: [...s.badges, 'window_master'] }, 'window-master', '完成脑窗与硬膜下窗调整', 'story'))
-    }
-    setStepId(task.success)
+  const confirmWindow = (task: NonNullable<Step['windowTask']>, attempts: number, width: number, level: number) => {
+    update(s => recordCh2WindowAttempt(s, stepId, task, attempts, width, level))
+    if (Math.abs(width - task.targetW) <= task.tolW && Math.abs(level - task.targetL) <= task.tolL) setStepId(task.success)
   }
 
   // 班次结束：结算画面 → 下一班；末班（晨会）结束 → 第二章完
@@ -2197,7 +2199,8 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
 
       {/* 窗宽窗位玩法 */}
       {phase === 'story' && step.windowTask && done && (
-        <WindowGame key={stepId} task={step.windowTask} onDone={t => windowDone(step.windowTask!, t)} />
+        <WindowGame key={stepId} task={step.windowTask} progress={prog.windowTasks?.[stepId]}
+          onConfirm={(attempts, width, level) => confirmWindow(step.windowTask!, attempts, width, level)} />
       )}
 
       {/* 增强前核对清单 */}
@@ -2229,12 +2232,17 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
 }
 
 /* ================= 第二章 · 窗宽窗位双滑块（canvas 实时映射） ================= */
-function WindowGame({ task, onDone }: { task: NonNullable<Step['windowTask']>; onDone: (tries: number) => void }) {
+function WindowGame({ task, progress, onConfirm }: {
+  task: NonNullable<Step['windowTask']>
+  progress?: NonNullable<DlcProgress['windowTasks']>[string]
+  onConfirm: (attempts: number, width: number, level: number) => void
+}) {
   const SIZE = 512
-  const [W, setW] = useState(2000)
-  const [L, setL] = useState(500)
-  const [tries, setTries] = useState(0)
-  const [msg, setMsg] = useState('')
+  const [W, setW] = useState(progress?.width ?? 2000)
+  const [L, setL] = useState(progress?.level ?? 500)
+  const tries = progress?.attempts ?? 0
+  const msg = tries === 0 ? '' : tries === 1 ? '不对——这幅窗里，该看的东西还没浮出来。再拖一拖。' : '还不是这扇窗。想想目标值，窗宽先定范围，窗位再对准中心。'
+  const confirmGate = useRef({ until: 0, completed: false })
   const [ready, setReady] = useState(false)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const srcGray = useRef<Uint8ClampedArray | null>(null)
@@ -2283,12 +2291,11 @@ function WindowGame({ task, onDone }: { task: NonNullable<Step['windowTask']>; o
 
   const inTarget = Math.abs(W - task.targetW) <= task.tolW && Math.abs(L - task.targetL) <= task.tolL
   const confirm = () => {
+    if (confirmGate.current.completed || performance.now() < confirmGate.current.until) return
+    confirmGate.current = { until: performance.now() + 250, completed: inTarget }
     playSfx('click')
-    const t = tries + 1
-    setTries(t)
-    if (inTarget) { playSfx('badge'); onDone(t); return }
-    playSfx('buzz')
-    setMsg(t === 1 ? '不对——这幅窗里，该看的东西还没浮出来。再拖一拖。' : '还不是这扇窗。想想目标值，窗宽先定范围，窗位再对准中心。')
+    playSfx(inTarget ? 'badge' : 'buzz')
+    onConfirm(tries, W, L)
   }
 
   const PRESETS: [string, number, number][] = [['脑窗', 80, 30], ['硬膜下窗', 130, 65], ['骨窗', 4000, 250], ['肺窗', 1500, -500], ['腹窗', 350, 0], ['CTA窗', 450, 150]]
