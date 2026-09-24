@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1200" viewBox="0 0 1000 1200">
+  <rect width="1000" height="1200" fill="#101925"/>
+  <path d="M90 60H910V1110L866 1140H90Z" fill="#d5c6a5" stroke="#7e725f" stroke-width="5"/>
+  <path d="M120 370H880M120 490H880M120 610H880M120 745H880M120 1010H880" stroke="#7f7663" stroke-width="2"/>
+  <path d="M330 310V745" stroke="#7f7663" stroke-width="2"/>
+  <g fill="#413d36" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif">
+    <text x="500" y="170" text-anchor="middle" font-size="48" letter-spacing="4">旧治疗记录（摘录）</text>
+    <text x="500" y="230" text-anchor="middle" font-size="26" fill="#686153">家属保留的旧册页</text>
+    <g font-size="32">
+      <text x="155" y="345">年份</text><text x="365" y="345">1995 年</text>
+      <text x="155" y="445">姓名</text><text x="365" y="445">罗女士</text>
+      <text x="155" y="565">部位</text><text x="365" y="565">颈背部</text>
+      <text x="155" y="685">治疗</text><text x="365" y="685">永久留针治疗</text>
+      <text x="155" y="810">原记录中的说明：</text>
+      <text x="155" y="885" font-size="35">短针长期留置，不安排取出。</text>
+      <text x="155" y="950">按约定复诊。</text>
+    </g>
+    <text x="155" y="1070" font-size="23" fill="#736959">纸页边缘已起毛，折痕压过了“留置”二字。</text>
+  </g>
+</svg>
