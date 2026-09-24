@@ -5,7 +5,13 @@
 .ch2-scan-panel h2 { font-size: clamp(19px, 4vw, 25px); margin: 5px 0 12px; font-weight: 700; }
 .ch2-scan-kicker { color: #90a9bc; font-size: 12px; letter-spacing: .2em; }
 .ch2-scan-device { position: relative; aspect-ratio: 16 / 9; width: 100%; margin: auto; overflow: hidden; background: #14273b; border: 3px solid #33465d; image-rendering: pixelated; }
-.ch2-scan-room { display: block; width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; transform: scale(1.055) translateX(var(--ch2-camera-shift)); transition: transform 50ms linear; }
+.ch2-scan-room { display: block; width: 100%; height: 100%; object-fit: fill; image-rendering: pixelated; }
+.ch2-ct-motion { position: absolute; inset: 0; overflow: hidden; isolation: isolate; }
+.ch2-ct-motion img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: fill; image-rendering: pixelated; pointer-events: none; user-select: none; }
+.ch2-ct-fixed-room { z-index: 0; }
+.ch2-ct-sliding-bed { z-index: 1; transition: transform 50ms linear; will-change: transform; }
+.ch2-ct-fixed-front { z-index: 2; }
+.ch2-ct-motion[data-ct-motion-ready="false"] .ch2-ct-sliding-bed { visibility: hidden; }
 .ch2-scan-room-status { position: absolute; bottom: 9px; left: 9px; display: flex; gap: 6px; align-items: center; color: #d2ede7; font-size: 11px; padding: 5px 8px; background: #071724e8; border: 1px solid #607b86; }
 .ch2-scan-room-status i { width: 5px; height: 5px; background: #88c9b7; box-shadow: 0 0 5px #84bdad66; }
 .ch2-scan-device.is-reconstruct .ch2-scan-room-status i { background: #c8af73; }
@@ -26,4 +32,4 @@
 .ch2-scan-panel small { color: #738ca2; font-size: 11px; display: block; line-height: 1.5; margin-top: 13px; }
 @keyframes ch2-recon-fill { 50% { background: #649195; box-shadow: inset 0 0 0 5px #adc3bc; } }
 @media (max-width: 430px) { .ch2-scan-overlay { padding: 12px; } .ch2-scan-panel { padding: 18px 15px; } .ch2-scan-detail { font-size: 13px; } .ch2-scan-room-status { font-size: 10px; bottom: 6px; left: 6px; } }
-@media (prefers-reduced-motion: reduce) { .ch2-scan-slices span { animation: none !important; } .ch2-scan-room { transform: none; transition: none; } }
+@media (prefers-reduced-motion: reduce) { .ch2-scan-slices span { animation: none !important; } .ch2-ct-sliding-bed { transform: translate(11.961722%, -4.250797%) !important; transition: none; } }

@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
-import { CH2_SCAN_AUDIO, CH2_SCAN_ILLUSTRATION, ch2ScanFrame } from '../game/ch2-scans'
+import { CH2_SCAN_AUDIO, ch2ScanFrame } from '../game/ch2-scans'
 import type { Ch2ScanConfig } from '../game/ch2-scans'
+import { Ch2CtMotion } from './Ch2CtMotion'
 import './Ch2ScanOverlay.css'
 
 export interface Ch2ScanOverlayProps {
@@ -17,7 +18,6 @@ const soundUrl = (name: string) => `${import.meta.env.BASE_URL}audio/${name}.mp3
 export function Ch2ScanOverlay({ config, startedAt, onDone, muted = false }: Ch2ScanOverlayProps) {
   const [frame, setFrame] = useState(() => ch2ScanFrame(config, startedAt))
   const [quiet, setQuiet] = useState(muted)
-  const [imageFailed, setImageFailed] = useState(false)
   const completed = useRef(false)
   const panelRef = useRef<HTMLElement>(null)
   const doneCallback = useRef(onDone)
@@ -90,7 +90,7 @@ export function Ch2ScanOverlay({ config, startedAt, onDone, muted = false }: Ch2
     }
   }, [audioAllowed, acquisitionActive, config, startedAt])
 
-  const style = { '--ch2-scan-progress': frame.progress, '--ch2-camera-shift': `${(0.5 - frame.progress) * 2}%` } as CSSProperties
+  const style = { '--ch2-scan-progress': frame.progress } as CSSProperties
   return <div className="ch2-scan-overlay" role="dialog" aria-modal="true" aria-label={config.title}
     data-scan-id={config.id} data-scan-mode={config.mode} data-scan-phase={frame.phase}
     onPointerDown={event => event.stopPropagation()} onClick={event => event.stopPropagation()}
@@ -109,8 +109,7 @@ export function Ch2ScanOverlay({ config, startedAt, onDone, muted = false }: Ch2
       <div className="ch2-scan-kicker">{config.mode === 'acquire' ? 'CT 控制台' : '图像工作站'}</div>
       <h2>{config.title}</h2>
       {config.mode === 'acquire' ? <div className={`ch2-scan-device is-${frame.phase}`}>
-        {imageFailed ? <p className="ch2-scan-image-fallback">检查进行中 · 图像正在传往工作站</p> : <img className="ch2-scan-room" src={`${import.meta.env.BASE_URL}assets/${CH2_SCAN_ILLUSTRATION}.png`}
-          alt="CT检查室中，患者躺在检查床上进入环形机架" onError={() => setImageFailed(true)} />}
+        <Ch2CtMotion progress={frame.progress} />
         <div className="ch2-scan-room-status" aria-hidden="true"><i />{frame.phase === 'reconstruct' ? '工作站接收数据' : frame.phase === 'position' ? '检查床就位' : '采集中'}</div>
       </div> : <div className="ch2-scan-workstation" aria-hidden="true">
         <div className="ch2-scan-slices">{[0, 1, 2, 3, 4, 5].map(value => <span key={value} style={{ animationDelay: `${value * 120}ms` }} />)}</div>
