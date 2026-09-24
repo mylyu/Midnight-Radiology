@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { CH2_DAWN_STEPS, CH2_DAWN_SHOTS, ch2DawnStep } from '../src/game/ch2-dawn.ts'
+import { CH2_DAWN_STEPS, CH2_DAWN_LEADIN_STEPS, CH2_DAWN_SHOTS, ch2DawnStep } from '../src/game/ch2-dawn.ts'
 import { CH2_SHIFTS } from '../src/game/ch2.ts'
 import { applyEffect, freshState } from '../src/game/store.ts'
 import { restartCh2 } from '../src/game/ch2-exploration.ts'
@@ -37,7 +37,7 @@ const source = structuredClone(original.c2n3_x9)
 const state = { ...freshState('f'), flags: { old_shared_flag: true } }
 const before = JSON.stringify(state)
 const entry = ch2DawnStep('c2n3_x9', source, state)
-assert.equal(entry.next, 'c2n3_dawn0')
+assert.equal(entry.next, 'c2n3_handoff0')
 assert.deepEqual({ ...entry, next: source.next }, source, 'Patient departure, event and reward remain unchanged')
 assert.equal(JSON.stringify(state), before, 'The adapter must not mutate saves')
 assert.deepEqual(ch2DawnStep('c2n3_x9', entry, state), entry, 'Repeated render is idempotent')
@@ -57,7 +57,7 @@ for (const gender of ['f', 'm']) for (const study of [0, 1]) for (const life of 
   const visited = [], applied = new Set()
   let id = entry.next
   for (let n = 0; id !== 'c2n3_s1' && n < 40; n++) {
-    const step = ch2DawnStep(id, steps[id], s)
+    const step = ch2DawnStep(id, steps[id] ?? CH2_DAWN_LEADIN_STEPS[id], s)
     assert(step, `Missing ${id}`)
     visited.push(id)
     if (!applied.has(id)) { s = applyEffect(s, step.effect); applied.add(id) }
@@ -68,10 +68,10 @@ for (const gender of ['f', 'm']) for (const study of [0, 1]) for (const life of 
     id = step.choices ? step.choices[pick].next : step.next
   }
   assert.equal(id, 'c2n3_s1')
-  assert.equal(visited.length, 20)
+  assert.equal(visited.length, 23, 'Three handoff/walk beats plus the original 20-node cinematic route')
   assert(s.flags.c2_dawn_seen && s.flags.c2_dawn_done && s.flags.old_shared_flag)
   assert.deepEqual(snapshot(s), metrics)
-  assert.deepEqual([...new Set(visited.map(node => CH2_DAWN_SHOTS[node]))], ['arrival', 'wide', 'close', 'rest'])
+  assert.deepEqual([...new Set(visited.map(node => CH2_DAWN_SHOTS[node]).filter(Boolean))], ['arrival', 'wide', 'close', 'rest'])
   assert.equal(ch2DawnStep('c2n3_x9', source, s), source)
 
   const originalSettlement = applyEffect(s, original.c2n3_s1.effect)
@@ -85,7 +85,8 @@ for (const gender of ['f', 'm']) for (const study of [0, 1]) for (const life of 
   routes++
 }
 
-assert.match(steps.c2n3_dawn0.text, /白班同事.*核完记录.*签好交接/)
+assert.match(CH2_DAWN_LEADIN_STEPS.c2n3_handoff0.text, /白班同事.*核对完记录.*签好交接/)
+assert.match(steps.c2n3_dawn0.text, /东边窗前.*帘子.*看出去/)
 assert.match(steps.c2n3_dawn_brochure.text, /招生册肯定是白天拍的/)
 assert.match(steps.c2n3_dawn_thought.text, /交出去一张图.*后来怎么样/)
 assert.match(steps.c2n3_dawn_reply.text, /转院以后不一定.*不知道/)

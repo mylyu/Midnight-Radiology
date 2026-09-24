@@ -1,6 +1,7 @@
 // Historical payoff boundary. Run the newer check-in LIVE guard first, then
 // strip only that round's exact App integration and its validated additions.
 import './ch2-checkin-freeze.mjs'
+import { POLISH_ADDED_SOURCE, POLISH_ADDED_MEDIA } from './image-polish-projection.mjs'
 import { CHECKIN_ADDED_FILES } from './ch2-checkin-projection.mjs'
 import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
@@ -32,7 +33,7 @@ const additions = prefix => [...new Set([
   git('diff', '--name-only', '--diff-filter=A', baseline, '--', prefix).toString('utf8'),
   git('ls-files', '--others', '--exclude-standard', '--', prefix).toString('utf8'),
 ].join('\n').split(/\r?\n/).filter(Boolean))].sort()
-assert.deepEqual(additions('app/src').filter(path => !CHECKIN_ADDED_FILES.includes(path)), [
+assert.deepEqual(additions('app/src').filter(path => !CHECKIN_ADDED_FILES.includes(path) && !POLISH_ADDED_SOURCE.includes(path)), [
   'app/src/components/Ch2CtMotion.tsx', 'app/src/game/ch2-ct-motion.ts', 'app/src/game/ch2-payoffs.ts',
 ], 'Only three exact chapter-two additions, no new shared runtime')
 
@@ -57,7 +58,7 @@ export const payoffMediaHashes = new Map([
   ['app/public/assets/ch2_slice_model_v1.png', '13a7fce2211e356e17a49bacaf0db8263addc45398ce54126411163804afb2f2'],
   ['app/public/assets/ch2_zhou_expert_handshake_v1.png', '29087f82840f13010859ede3e157276d3ae93fc4553a8a16409f1caf33e84bdf'],
 ])
-assert.deepEqual(additions('app/public/assets'), [...payoffMediaHashes.keys()].sort(), 'Only six exact reviewed images may be added')
+assert.deepEqual(additions('app/public/assets').filter(path => !POLISH_ADDED_MEDIA.includes(path)), [...payoffMediaHashes.keys()].sort(), 'Only six exact reviewed images after newer LIVE audit')
 assert.deepEqual(additions('app/public/audio'), [], 'No sound is added or replaced in this round')
 for (const [path, expected] of payoffMediaHashes) {
   assert.equal(createHash('sha256').update(readFileSync(new URL(path, root))).digest('hex'), expected, `${path}: approved asset identity`)

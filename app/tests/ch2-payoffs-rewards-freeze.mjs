@@ -8,6 +8,9 @@ import * as live from '../src/game/ch2.ts'
 import { CH2_PAYOFF_STEPS, CH2_PAYOFF_EVIDENCE } from '../src/game/ch2-payoffs.ts'
 import { freshState } from '../src/game/store.ts'
 import { beforePayoffSource } from './ch2-payoffs-projection.mjs'
+import './image-polish-data.mjs'
+import { beforeImagePolishSource } from './image-polish-projection.mjs'
+import { CH2_DAWN_LEADIN_STEPS } from '../src/game/ch2-dawn.ts'
 
 const root = new URL('../../', import.meta.url)
 const ch2Path = 'app/src/game/ch2.ts'
@@ -31,14 +34,22 @@ assert.deepEqual(Object.keys(live.CH2_EVIDENCE).filter(id => !old.CH2_EVIDENCE[i
 
 const oldSteps = Object.assign({}, ...old.CH2_SHIFTS.map(shift => shift.steps))
 const liveSteps = Object.assign({}, ...live.CH2_SHIFTS.map(shift => shift.steps))
-const newSteps = Object.assign({}, ...Object.values(CH2_PAYOFF_STEPS))
+const newSteps = Object.assign({}, ...Object.values(CH2_PAYOFF_STEPS), CH2_DAWN_LEADIN_STEPS)
 assert.deepEqual(Object.keys(liveSteps).filter(id => !oldSteps[id]).sort(), Object.keys(newSteps).sort())
 assert.equal(live.CH2_SHIFTS.length, old.CH2_SHIFTS.length)
 for (let i = 0; i < live.CH2_SHIFTS.length; i++) {
   const { steps: oldRows, ...oldMeta } = old.CH2_SHIFTS[i]
   const { steps: newRows, ...newMeta } = live.CH2_SHIFTS[i]
   assert.deepEqual(newMeta, oldMeta, 'Same three night/two day shifts, quiz and original starting points')
-  for (const [id, step] of Object.entries(oldRows)) assert.deepEqual(newRows[id], step, `${id}: original raw node remains exact`)
+  for (const [id, step] of Object.entries(oldRows)) {
+    const projected = { ...newRows[id] }
+    if (['c2d2_4','c2d2_5','c2d2_6a','c2d2_6b','c2d2_6c','c2d2_w1','c2d2_w1ok','c2d2_7'].includes(id)) {
+      // The imported image-polish test checks exact new labels/images first.
+      projected.image = step.image
+      delete projected.imageLabel
+    }
+    assert.deepEqual(projected, step, `${id}: original raw node remains exact after checked visual-only delta`)
+  }
 }
 const economics = effect => Object.fromEntries(Object.entries(effect ?? {}).filter(([key]) => key !== 'flag'))
 let comparisons = 0
@@ -81,5 +92,5 @@ const getShop = source => {
   return ast.statements.find(node => ts.isFunctionDeclaration(node) && node.name?.text === 'Ch2Shop')?.getText(ast)
 }
 assert(getShop(shopBefore), 'Original shop function must be found')
-assert.equal(getShop(shopLive), getShop(shopBefore), 'All purchasing logic and shop prices/messages are unchanged')
+assert.equal(getShop(beforeImagePolishSource(shopPath, shopLive)), getShop(shopBefore), 'All purchasing logic and shop prices/messages are unchanged')
 console.log(`PASS payoff LIVE reward boundary: ${Object.keys(oldSteps).length} exact old raw nodes; ${comparisons} rendered effect comparisons; original registries/quiz/card/event/luck awards; read-only backpack with unchanged purchase function; chapter saves not mutated (${fileURLToPath(root)})`)

@@ -18,7 +18,10 @@ assert.equal(ledger.baseline, '6a0311b', 'Payoff baseline must not move')
 assert.deepEqual(ledger.files.map(file => file.path).sort(), PAYOFF_EDITED_FILES)
 
 export function beforePayoffSource(path, source) {
-  source = beforeCheckinSource(path, source)
+  return invertPayoffSource(path, beforeCheckinSource(path, source))
+}
+
+function invertPayoffSource(path, source) {
   const file = ledger.files.find(row => row.path === path)
   if (!file) return source
   const lines = normalize(source).trimEnd().split('\n')
@@ -37,8 +40,8 @@ export function beforePayoffSource(path, source) {
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   let probes = 0
   for (const { path, edits } of ledger.files) {
-    const live = readFileSync(new URL(path, root), 'utf8')
-    beforePayoffSource(path, live)
+    const live = beforeCheckinSource(path, readFileSync(new URL(path, root), 'utf8'))
+    invertPayoffSource(path, live)
     const covered = new Set()
     for (const edit of edits) {
       edit.after.forEach((_, i) => covered.add(edit.afterStart + i))
@@ -46,15 +49,15 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
       if (offset < 0) continue
       const changed = normalize(live).trimEnd().split('\n')
       changed[edit.afterStart + offset] += ' // undocumented mutation'
-      assert.throws(() => beforePayoffSource(path, changed.join('\n') + '\n'), /undocumented mutation in payoff hunk/)
+      assert.throws(() => invertPayoffSource(path, changed.join('\n') + '\n'), /undocumented mutation in payoff hunk/)
       probes++
     }
-    assert.throws(() => beforePayoffSource(path, live.trimEnd() + '\n// undocumented append\n'), /mutation outside approved loop hunks \(payoff layer\)/)
+    assert.throws(() => invertPayoffSource(path, live.trimEnd() + '\n// undocumented append\n'), /mutation outside approved loop hunks \(payoff layer\)/)
     const outside = normalize(live).trimEnd().split('\n')
     const at = outside.findIndex((line, index) => line.trim() && !covered.has(index))
     assert(at >= 0, 'Each edited file retains unmodified content to protect')
     outside[at] += ' // undocumented outside hunk'
-    assert.throws(() => beforePayoffSource(path, outside.join('\n') + '\n'), /mutation outside approved loop hunks \(payoff layer\)/)
+    assert.throws(() => invertPayoffSource(path, outside.join('\n') + '\n'), /mutation outside approved loop hunks \(payoff layer\)/)
     probes += 2
   }
   console.log(`PASS payoff projection: ${ledger.files.length} exact inversions to ${ledger.baseline}; ${probes} mutation probes rejected; older ledgers unchanged.`)

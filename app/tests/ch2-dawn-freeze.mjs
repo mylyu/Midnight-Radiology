@@ -1,6 +1,7 @@
 // Historical sunrise boundary. A separate latest-round LIVE freeze runs first;
 // only its exact reviewed source hunks are then reversed for these old checks.
 import { payoffMediaHashes } from './ch2-payoffs-freeze.mjs'
+import { POLISH_ADDED_MEDIA } from './image-polish-projection.mjs'
 import { beforePayoffSource } from './ch2-payoffs-projection.mjs'
 import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
@@ -110,5 +111,5 @@ const addedMedia = [
   git('diff', '--name-only', '--diff-filter=A', baseline, '--', 'app/public/assets', 'app/public/audio').toString('utf8'),
   git('ls-files', '--others', '--exclude-standard', '--', 'app/public/assets', 'app/public/audio').toString('utf8'),
 ].join('\n').split(/\r?\n/).filter(Boolean)
-assert.deepEqual([...new Set(addedMedia)].filter(file => !payoffMediaHashes.has(file)).sort(), [...expectedNew.keys()].sort(), 'Only named sunrise images may be added after exact later-media verification, no new sound')
+assert.deepEqual([...new Set(addedMedia)].filter(file => !payoffMediaHashes.has(file) && !POLISH_ADDED_MEDIA.includes(file)).sort(), [...expectedNew.keys()].sort(), 'Only named sunrise images may be added after exact later-media verification, no new sound')
 console.log(`PASS ${baseline} dawn live freeze: ${sharedFiles.length} shared modules/configs; ${oldFunctions.size - 1} exact App functions; imports/globals; ${mediaCount} existing media; three independently pinned approved Ch1 voices. Negative mutation probes rejected.`)

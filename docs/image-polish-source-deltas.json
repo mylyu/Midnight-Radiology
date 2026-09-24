@@ -1,0 +1,1078 @@
+{
+  "baseline": "ea9d6c5",
+  "files": [
+    {
+      "path": "app/.gitignore",
+      "edits": [
+        {
+          "beforeStart": 14,
+          "afterStart": 14,
+          "before": [],
+          "after": [
+            "# Reproducible delivery copies; npm predev/prebuild derives them from retained PNGs.",
+            "public/assets/optimized/",
+            "src/lib/image-assets.generated.json",
+            "image-delivery-report.json",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/package-lock.json",
+      "edits": [
+        {
+          "beforeStart": 70,
+          "afterStart": 70,
+          "before": [],
+          "after": [
+            "        \"sharp\": \"0.35.3\","
+          ]
+        },
+        {
+          "beforeStart": 1867,
+          "afterStart": 1868,
+          "before": [],
+          "after": [
+            "    \"node_modules/@emnapi/runtime\": {",
+            "      \"version\": \"1.11.3\",",
+            "      \"resolved\": \"https://registry.npmjs.org/@emnapi/runtime/-/runtime-1.11.3.tgz\",",
+            "      \"integrity\": \"sha512-Xz4Tpyki7XyrpbUK1jR1AhdAdaXyhhY4lZ3neLodmhpuWfy2PAQN5B46sAiU4liOXGLkHypn/qU+jvfWSCYYLA==\",",
+            "      \"dev\": true,",
+            "      \"license\": \"MIT\",",
+            "      \"optional\": true,",
+            "      \"dependencies\": {",
+            "        \"tslib\": \"^2.4.0\"",
+            "      }",
+            "    },"
+          ]
+        },
+        {
+          "beforeStart": 2568,
+          "afterStart": 2580,
+          "before": [],
+          "after": [
+            "    \"node_modules/@img/colour\": {",
+            "      \"version\": \"1.1.0\",",
+            "      \"resolved\": \"https://registry.npmjs.org/@img/colour/-/colour-1.1.0.tgz\",",
+            "      \"integrity\": \"sha512-Td76q7j57o/tLVdgS746cYARfSyxk8iEfRxewL9h4OMzYhbW4TAcppl0mT4eyqXddh6L/jwoM75mo7ixa/pCeQ==\",",
+            "      \"dev\": true,",
+            "      \"license\": \"MIT\",",
+            "      \"engines\": {",
+            "        \"node\": \">=18\"",
+            "      }",
+            "    },",
+            "    \"node_modules/@img/sharp-darwin-arm64\": {",
+            "      \"version\": \"0.35.3\",",
+            "      \"resolved\": \"https://registry.npmjs.org/@img/sharp-darwin-arm64/-/sharp-darwin-arm64-0.35.3.tgz\",",
+            "      \"integrity\": \"sha512-RMnFX7YQsMoh7lWfcM4NEHHymBX/rLuKNPVM84XE9ONPcaSCDgE7CHIHpSgPcO2xcRthgBy1HfNO319mwhIAkg==\",",
+            "      \"cpu\": [",
+            "        \"arm64\"",
+            "      ],",
+            "      \"dev\": true,",
+            "      \"license\": \"Apache-2.0\",",
+            "      \"optional\": true,",
+            "      \"os\": [",
+            "        \"darwin\"",
+            "      ],",
+            "      \"engines\": {",
+            "        \"node\": \">=20.9.0\"",
+            "      },",
+            "      \"funding\": {",
+            "        \"url\": \"https://opencollective.com/libvips\"",
+            "      },",
+            "      \"optionalDependencies\": {",
+            "        \"@img/sharp-libvips-darwin-arm64\": \"1.3.2\"",
+            "      }",
+            "    },",
+            "    \"node_modules/@img/sharp-darwin-x64\": {",
+            "      \"version\": \"0.35.3\",",
+            "      \"resolved\": \"https://registry.npmjs.org/@img/sharp-darwin-x64/-/sharp-darwin-x64-0.35.3.tgz\",",
+            "      \"integrity\": \"sha512-Xo+5uFBtLN0BKqieTxiFzFPQAUlBbbH5iBKyRX/z1JrbnYsHTfKJnUfL8+p2TPXr1pXqao4eeL4Rl144uDpK9w==\",",
+            "      \"cpu\": [",
+            "        \"x64\"",
+            "      ],",
+            "      \"dev\": true,",
+            "      \"license\": \"Apache-2.0\",",
+            "      \"optional\": true,",
+            "      \"os\": [",
+            "        \"darwin\"",
+            "      ],",
+            "      \"engines\": {",
+            "        \"node\": \">=20.9.0\"",
+            "      },",
+            "      \"funding\": {",
+            "        \"url\": \"https://opencollective.com/libvips\"",
+            "      },",
+            "      \"optionalDependencies\": {",
+            "        \"@img/sharp-libvips-darwin-x64\": \"1.3.2\"",
+            "      }",
+            "    },",
+            "    \"node_modules/@img/sharp-freebsd-wasm32\": {",
+            "      \"version\": \"0.35.3\",",
+            "      \"resolved\": \"https://registry.npmjs.org/@img/sharp-freebsd-wasm32/-/sharp-freebsd-wasm32-0.35.3.tgz\",",
+            "      \"integrity\": \"sha512-lUxcqWIj2wMQ9BrwNjngcr1gWUr5xgaGThBRqPPalIC2n67Cqj1uPh8NnA/ZhAg8hUbKl+kVHKwgUIwe6ZYPrg==\",",
+            "      \"dev\": true,",
+            "      \"license\": \"Apache-2.0\",",
+            "      \"optional\": true,",
+            "      \"os\": [",
+            "        \"freebsd\"",
+            "      ],",
+            "      \"dependencies\": {",
+            "        \"@img/sharp-wasm32\": \"0.35.3\"",
+            "      },",
+            "      \"engines\": {",
+            "        \"node\": \">=20.9.0\"",
+            "      },",
+            "      \"funding\": {",
+            "        \"url\": \"https://opencollective.com/libvips\"",
+            "      }",
+            "    },",
+            "    \"node_modules/@img/sharp-libvips-darwin-arm64\": {",
+            "      \"version\": \"1.3.2\",",
+            "      \"resolved\": \"https://registry.npmjs.org/@img/sharp-libvips-darwin-arm64/-/sharp-libvips-darwin-arm64-1.3.2.tgz\",",
+            "      \"integrity\": \"sha512-9J6ypZFpQBj4YnePGoq/S38w6nz+vqg5WZLrLGY4YuSemdMq47GMLBPO42MzwdGwpg/agZ7xzZcFHa48xlywfg==\",",
+            "      \"cpu\": [",
+            "        \"arm64\"",
+            "      ],",
+            "      \"dev\": true,",
+            "      \"license\": \"LGPL-3.0-or-later\",",
+            "      \"optional\": true,",
+            "      \"os\": [",
+            "        \"darwin\"",
+            "      ],",
+            "      \"funding\": {",
+            "        \"url\": \"https://opencollective.com/libvips\"",
+            "      }",
+            "    },",
+            "    \"node_modules/@img/sharp-libvips-darwin-x64\": {",
+            "      \"version\": \"1.3.2\",",
+            "      \"resolved\": \"https://registry.npmjs.org/@img/sharp-libvips-darwin-x64/-/sharp-libvips-darwin-x64-1.3.2.tgz\",",
+            "      \"integrity\": \"sha512-m2pW1n6cns9VaubNwsZ+c3CRYjxNQWgJ5gPlnL1nbBcpkBvFm6SCFN5o0psFHI8w9n11NKhFkeEDns98tiqbEw==\",",
+            "      \"cpu\": [",
+            "        \"x64\"",
+            "      ],",
+            "      \"dev\": true,",
+            "      \"license\": \"LGPL-3.0-or-later\",",
+            "      \"optional\": true,",
+            "      \"os\": [",
+            "        \"darwin\"",
+            "      ],",
+            "      \"funding\": {",
+            "        \"url\": \"https://opencollective.com/libvips\"",
+            "      }",
+            "    },",
+            "    \"node_modules/@img/sharp-libvips-linux-arm\": {",
+            "      \"version\": \"1.3.2\",",
+            "      \"resolved\": \"https://registry.npmjs.org/@img/sharp-libvips-linux-arm/-/sharp-libvips-linux-arm-1.3.2.tgz\",",
+            "      \"integrity\": \"sha512-1eMLzy92I4J6rmi4mAT8yC3HxOtniyGELlzGbNMLLeqe052ahFQ0h6LFq+lh5DsDIdYViIDst08abvSbcEdLXQ==\",",
+            "      \"cpu\": [",
+            "        \"arm\"",
+            "      ],",
+            "      \"dev\": true,",
+            "      \"libc\": [",
+            "        \"glibc\"",
+            "      ],",
+            "      \"license\": \"LGPL-3.0-or-later\",",
+            "      \"optional\": true,",
+            "      \"os\": [",
+            "        \"linux\"",
+            "      ],",
+            "      \"funding\": {",
+            "        \"url\": \"https://opencollective.com/libvips\"",
+            "      }",
+            "    },",
+            "    \"node_modules/@img/sharp-libvips-linux-arm64\": {",
+            "      \"version\": \"1.3.2\",",
+            "      \"resolved\": \"https://registry.npmjs.org/@img/sharp-libvips-linux-arm64/-/sharp-libvips-linux-arm64-1.3.2.tgz\",",
+            "      \"integrity\": \"sha512-dqVSFynCox4C/J8kT16V7SIFAns0IjgLwkvYT7p8LQVmJ5OS5b6tI9IGflxTeuBS//zXeFIUbwt5dwxyZ17cnA==\",",
+            "      \"cpu\": [",
+            "        \"arm64\"",
+            "      ],",
+            "      \"dev\": true,",
+            "      \"libc\": [",
+            "        \"glibc\"",
+            "      ],",
+            "      \"license\": \"LGPL-3.0-or-later\",",
+            "      \"optional\": true,",
+            "      \"os\": [",
+            "        \"linux\"",
+            "      ],",
+            "      \"funding\": {",
+            "        \"url\": \"https://opencollective.com/libvips\"",
+            "      }",
+            "    },",
+            "    \"node_modules/@img/sharp-libvips-linux-ppc64\": {",
+            "      \"version\": \"1.3.2\",",
+            "      \"resolved\": \"https://registry.npmjs.org/@img/sharp-libvips-linux-ppc64/-/sharp-libvips-linux-ppc64-1.3.2.tgz\",",
+            "      \"integrity\": \"sha512-3z0NHDxD6n5I9gc05U1eW1AyRm+Gznzq3naMrthPNqE6oYykcogW0l/jfpJdjYnuNl8R7yI9pNbE1XiUeyq0Aw==\",",
+            "      \"cpu\": [",
+            "        \"ppc64\"",
+            "      ],",
+            "      \"dev\": true,",
+            "      \"libc\": [",
+            "        \"glibc\"",
+            "      ],",
+            "      \"license\": \"LGPL-3.0-or-later\",",
+            "      \"optional\": true,",
+            "      \"os\": [",
+            "        \"linux\"",
+            "      ],",
+            "      \"funding\": {",
+            "        \"url\": \"https://opencollective.com/libvips\"",
+            "      }",
+            "    },",
+            "    \"node_modules/@img/sharp-libvips-linux-riscv64\": {",
+            "      \"version\": \"1.3.2\",",
+            "      \"resolved\": \"https://registry.npmjs.org/@img/sharp-libvips-linux-riscv64/-/sharp-libvips-linux-riscv64-1.3.2.tgz\",",
+            "      \"integrity\": \"sha512-bsb4rI+NldGOsXuej2r8OdSS8+zXDVaCWxyWrcv6kneTOlgAHtZABRzBBCwdsPiD90J4myNJuHpg6kA20ImW/w==\",",
+            "      \"cpu\": [",
+            "        \"riscv64\"",
+            "      ],",
+            "      \"dev\": true,",
+            "      \"libc\": [",
+            "        \"glibc\"",
+            "      ],",
+            "      \"license\": \"LGPL-3.0-or-later\",",
+            "      \"optional\": true,",
+            "      \"os\": [",
+            "        \"linux\"",
+            "      ],",
+            "      \"funding\": {",
+            "        \"url\": \"https://opencollective.com/libvips\"",
+            "      }",
+            "    },",
+            "    \"node_modules/@img/sharp-libvips-linux-s390x\": {",
+            "      \"version\": \"1.3.2\",",
+            "      \"resolved\": \"https://registry.npmjs.org/@img/sharp-libvips-linux-s390x/-/sharp-libvips-linux-s390x-1.3.2.tgz\",",
+            "      \"integrity\": \"sha512-/ABshyj8gCpyIrNXnHn4LorDJ0HHm1VhXPBlxZ8zAtfVPAaSafXPGn+sUSIRiwaSBy0mmFjSjiXI5mkcwdChKQ==\",",
+            "      \"cpu\": [",
+            "        \"s390x\"",
+            "      ],",
+            "      \"dev\": true,",
+            "      \"libc\": [",
+            "        \"glibc\"",
+            "      ],",
+            "      \"license\": \"LGPL-3.0-or-later\",",
+            "      \"optional\": true,",
+            "      \"os\": [",
+            "        \"linux\"",
+            "      ],",
+            "      \"funding\": {",
+            "        \"url\": \"https://opencollective.com/libvips\"",
+            "      }",
+            "    },",
+            "    \"node_modules/@img/sharp-libvips-linux-x64\": {",
+            "      \"version\": \"1.3.2\",",
+            "      \"resolved\": \"https://registry.npmjs.org/@img/sharp-libvips-linux-x64/-/sharp-libvips-linux-x64-1.3.2.tgz\",",
+            "      \"integrity\": \"sha512-ITPEtgffGJ0S6G9dRyw/366tJQqFRcHWPHhC+Stpg3Z8AEMrDrTr2lhdz4f/Y/HMbRh//7Z5mBzEpVdi62Oc3w==\",",
+            "      \"cpu\": [",
+            "        \"x64\"",
+            "      ],",
+            "      \"dev\": true,",
+            "      \"libc\": [",
+            "        \"glibc\"",
+            "      ],",
+            "      \"license\": \"LGPL-3.0-or-later\",",
+            "      \"optional\": true,",
+            "      \"os\": [",
+            "        \"linux\"",
+            "      ],",
+            "      \"funding\": {",
+            "        \"url\": \"https://opencollective.com/libvips\"",
+            "      }",
+            "    },",
+            "    \"node_modules/@img/sharp-libvips-linuxmusl-arm64\": {",
+            "      \"version\": \"1.3.2\",",
+            "      \"resolved\": \"https://registry.npmjs.org/@img/sharp-libvips-linuxmusl-arm64/-/sharp-libvips-linuxmusl-arm64-1.3.2.tgz\",",
+            "      \"integrity\": \"sha512-zE9EdiUzUmg5mDT5a1rk5fYJ6GWPloTwWBYDS14naqHsL+EaMpDj1AWnpLgh3u0YCORv2Tt50wrcrpYqkP97Kw==\",",
+            "      \"cpu\": [",
+            "        \"arm64\"",
+            "      ],",
+            "      \"dev\": true,",
+            "      \"libc\": [",
+            "        \"musl\"",
+            "      ],",
+            "      \"license\": \"LGPL-3.0-or-later\",",
+            "      \"optional\": true,",
+            "      \"os\": [",
+            "        \"linux\"",
+            "      ],",
+            "      \"funding\": {",
+            "        \"url\": \"https://opencollective.com/libvips\"",
+            "      }",
+            "    },",
+            "    \"node_modules/@img/sharp-libvips-linuxmusl-x64\": {",
+            "      \"version\": \"1.3.2\",",
+            "      \"resolved\": \"https://registry.npmjs.org/@img/sharp-libvips-linuxmusl-x64/-/sharp-libvips-linuxmusl-x64-1.3.2.tgz\",",
+            "      \"integrity\": \"sha512-m0lrLiUt+lBYnCFr8qV/65yMR4E/c7/wf78I5eKTdkEakFAlZ9QlzEM3QIhhAwVeUhLAHLcCq7a7Vszq/oFNZQ==\",",
+            "      \"cpu\": [",
+            "        \"x64\"",
+            "      ],",
+            "      \"dev\": true,",
+            "      \"libc\": [",
+            "        \"musl\"",
+            "      ],",
+            "      \"license\": \"LGPL-3.0-or-later\",",
+            "      \"optional\": true,",
+            "      \"os\": [",
+            "        \"linux\"",
+            "      ],",
+            "      \"funding\": {",
+            "        \"url\": \"https://opencollective.com/libvips\"",
+            "      }",
+            "    },",
+            "    \"node_modules/@img/sharp-linux-arm\": {",
+            "      \"version\": \"0.35.3\",",
+            "      \"resolved\": \"https://registry.npmjs.org/@img/sharp-linux-arm/-/sharp-linux-arm-0.35.3.tgz\",",
+            "      \"integrity\": \"sha512-affVWCTLooy8TSxbDx2qkzuDeaWLNVBA+P//FNBirHsXpP2fuBhk5AuboYUnrDnzoXes8GFjpTx0SBFOCRg+FA==\",",
+            "      \"cpu\": [",
+            "        \"arm\"",
+            "      ],",
+            "      \"dev\": true,",
+            "      \"libc\": [",
+            "        \"glibc\"",
+            "      ],",
+            "      \"license\": \"Apache-2.0\",",
+            "      \"optional\": true,",
+            "      \"os\": [",
+            "        \"linux\"",
+            "      ],",
+            "      \"engines\": {",
+            "        \"node\": \">=20.9.0\"",
+            "      },",
+            "      \"funding\": {",
+            "        \"url\": \"https://opencollective.com/libvips\"",
+            "      },",
+            "      \"optionalDependencies\": {",
+            "        \"@img/sharp-libvips-linux-arm\": \"1.3.2\"",
+            "      }",
+            "    },",
+            "    \"node_modules/@img/sharp-linux-arm64\": {",
+            "      \"version\": \"0.35.3\",",
+            "      \"resolved\": \"https://registry.npmjs.org/@img/sharp-linux-arm64/-/sharp-linux-arm64-0.35.3.tgz\",",
+            "      \"integrity\": \"sha512-QgKDspHPnrU+GQ55XPhGwyhC8acLVOOSyAvo1oVfFmrIXLkDNmGWzAfDZ4xK8oSA1qBQrALcHX0G5UZni/SuFQ==\",",
+            "      \"cpu\": [",
+            "        \"arm64\"",
+            "      ],",
+            "      \"dev\": true,",
+            "      \"libc\": [",
+            "        \"glibc\"",
+            "      ],",
+            "      \"license\": \"Apache-2.0\",",
+            "      \"optional\": true,",
+            "      \"os\": [",
+            "        \"linux\"",
+            "      ],",
+            "      \"engines\": {",
+            "        \"node\": \">=20.9.0\"",
+            "      },",
+            "      \"funding\": {",
+            "        \"url\": \"https://opencollective.com/libvips\"",
+            "      },",
+            "      \"optionalDependencies\": {",
+            "        \"@img/sharp-libvips-linux-arm64\": \"1.3.2\"",
+            "      }",
+            "    },",
+            "    \"node_modules/@img/sharp-linux-ppc64\": {",
+            "      \"version\": \"0.35.3\",",
+            "      \"resolved\": \"https://registry.npmjs.org/@img/sharp-linux-ppc64/-/sharp-linux-ppc64-0.35.3.tgz\",",
+            "      \"integrity\": \"sha512-sMd8rDxmpLOwv/7N44klFjOD5DUO7FLdjiXDI0hoxYaf7Ar262dQIEkosE98bps+5HPLtp/EvNqeqQtOycP/IA==\",",
+            "      \"cpu\": [",
+            "        \"ppc64\"",
+            "      ],",
+            "      \"dev\": true,",
+            "      \"libc\": [",
+            "        \"glibc\"",
+            "      ],",
+            "      \"license\": \"Apache-2.0\",",
+            "      \"optional\": true,",
+            "      \"os\": [",
+            "        \"linux\"",
+            "      ],",
+            "      \"engines\": {",
+            "        \"node\": \">=20.9.0\"",
+            "      },",
+            "      \"funding\": {",
+            "        \"url\": \"https://opencollective.com/libvips\"",
+            "      },",
+            "      \"optionalDependencies\": {",
+            "        \"@img/sharp-libvips-linux-ppc64\": \"1.3.2\"",
+            "      }",
+            "    },",
+            "    \"node_modules/@img/sharp-linux-riscv64\": {",
+            "      \"version\": \"0.35.3\",",
+            "      \"resolved\": \"https://registry.npmjs.org/@img/sharp-linux-riscv64/-/sharp-linux-riscv64-0.35.3.tgz\",",
+            "      \"integrity\": \"sha512-0Eob78yjlYPfL5vMNWAW55l3R9Y6BQS/gOfe0ZcP9mEz9ohhKSt4im1hayiknXgf8AWrFqMvJcKIdmLmEe7yeQ==\",",
+            "      \"cpu\": [",
+            "        \"riscv64\"",
+            "      ],",
+            "      \"dev\": true,",
+            "      \"libc\": [",
+            "        \"glibc\"",
+            "      ],",
+            "      \"license\": \"Apache-2.0\",",
+            "      \"optional\": true,",
+            "      \"os\": [",
+            "        \"linux\"",
+            "      ],",
+            "      \"engines\": {",
+            "        \"node\": \">=20.9.0\"",
+            "      },",
+            "      \"funding\": {",
+            "        \"url\": \"https://opencollective.com/libvips\"",
+            "      },",
+            "      \"optionalDependencies\": {",
+            "        \"@img/sharp-libvips-linux-riscv64\": \"1.3.2\"",
+            "      }",
+            "    },",
+            "    \"node_modules/@img/sharp-linux-s390x\": {",
+            "      \"version\": \"0.35.3\",",
+            "      \"resolved\": \"https://registry.npmjs.org/@img/sharp-linux-s390x/-/sharp-linux-s390x-0.35.3.tgz\",",
+            "      \"integrity\": \"sha512-KgAxQ0DxpNOq1rG2t5cgTgShJFGSuU7XO45cqC+1NVOuZnP6tlgZRuSYOfNupGkHID0o3cJOsw4DVeJpMovcGw==\",",
+            "      \"cpu\": [",
+            "        \"s390x\"",
+            "      ],",
+            "      \"dev\": true,",
+            "      \"libc\": [",
+            "        \"glibc\"",
+            "      ],",
+            "      \"license\": \"Apache-2.0\",",
+            "      \"optional\": true,",
+            "      \"os\": [",
+            "        \"linux\"",
+            "      ],",
+            "      \"engines\": {",
+            "        \"node\": \">=20.9.0\"",
+            "      },",
+            "      \"funding\": {",
+            "        \"url\": \"https://opencollective.com/libvips\"",
+            "      },",
+            "      \"optionalDependencies\": {",
+            "        \"@img/sharp-libvips-linux-s390x\": \"1.3.2\"",
+            "      }",
+            "    },",
+            "    \"node_modules/@img/sharp-linux-x64\": {",
+            "      \"version\": \"0.35.3\",",
+            "      \"resolved\": \"https://registry.npmjs.org/@img/sharp-linux-x64/-/sharp-linux-x64-0.35.3.tgz\",",
+            "      \"integrity\": \"sha512-8pqvxubL2PGdhlPy6GLqzDYMUjyRmKAwKHYKixpdJYBUK7PJ0C029XdsnpFIdgRZG68fZiGdHVWcKPvtiPB4cA==\",",
+            "      \"cpu\": [",
+            "        \"x64\"",
+            "      ],",
+            "      \"dev\": true,",
+            "      \"libc\": [",
+            "        \"glibc\"",
+            "      ],",
+            "      \"license\": \"Apache-2.0\",",
+            "      \"optional\": true,",
+            "      \"os\": [",
+            "        \"linux\"",
+            "      ],",
+            "      \"engines\": {",
+            "        \"node\": \">=20.9.0\"",
+            "      },",
+            "      \"funding\": {",
+            "        \"url\": \"https://opencollective.com/libvips\"",
+            "      },",
+            "      \"optionalDependencies\": {",
+            "        \"@img/sharp-libvips-linux-x64\": \"1.3.2\"",
+            "      }",
+            "    },",
+            "    \"node_modules/@img/sharp-linuxmusl-arm64\": {",
+            "      \"version\": \"0.35.3\",",
+            "      \"resolved\": \"https://registry.npmjs.org/@img/sharp-linuxmusl-arm64/-/sharp-linuxmusl-arm64-0.35.3.tgz\",",
+            "      \"integrity\": \"sha512-Vz0iQjzzcSX3HCbfwFfCSG/9SCIqyO0mH2sXyiHaAYfBk0cRsCWXRyQYX0ovCK/PAQBbTzQ0dsPQHh5MAFL59w==\",",
+            "      \"cpu\": [",
+            "        \"arm64\"",
+            "      ],",
+            "      \"dev\": true,",
+            "      \"libc\": [",
+            "        \"musl\"",
+            "      ],",
+            "      \"license\": \"Apache-2.0\",",
+            "      \"optional\": true,",
+            "      \"os\": [",
+            "        \"linux\"",
+            "      ],",
+            "      \"engines\": {",
+            "        \"node\": \">=20.9.0\"",
+            "      },",
+            "      \"funding\": {",
+            "        \"url\": \"https://opencollective.com/libvips\"",
+            "      },",
+            "      \"optionalDependencies\": {",
+            "        \"@img/sharp-libvips-linuxmusl-arm64\": \"1.3.2\"",
+            "      }",
+            "    },",
+            "    \"node_modules/@img/sharp-linuxmusl-x64\": {",
+            "      \"version\": \"0.35.3\",",
+            "      \"resolved\": \"https://registry.npmjs.org/@img/sharp-linuxmusl-x64/-/sharp-linuxmusl-x64-0.35.3.tgz\",",
+            "      \"integrity\": \"sha512-6O1NPKcDVj9QEdg7Hx549EX8U0rp6yXQERqru6yRN7fGBn32UvIRJUlWnk+8xDCiG76hXVBbX82NZ/ZKr0euIg==\",",
+            "      \"cpu\": [",
+            "        \"x64\"",
+            "      ],",
+            "      \"dev\": true,",
+            "      \"libc\": [",
+            "        \"musl\"",
+            "      ],",
+            "      \"license\": \"Apache-2.0\",",
+            "      \"optional\": true,",
+            "      \"os\": [",
+            "        \"linux\"",
+            "      ],",
+            "      \"engines\": {",
+            "        \"node\": \">=20.9.0\"",
+            "      },",
+            "      \"funding\": {",
+            "        \"url\": \"https://opencollective.com/libvips\"",
+            "      },",
+            "      \"optionalDependencies\": {",
+            "        \"@img/sharp-libvips-linuxmusl-x64\": \"1.3.2\"",
+            "      }",
+            "    },",
+            "    \"node_modules/@img/sharp-wasm32\": {",
+            "      \"version\": \"0.35.3\",",
+            "      \"resolved\": \"https://registry.npmjs.org/@img/sharp-wasm32/-/sharp-wasm32-0.35.3.tgz\",",
+            "      \"integrity\": \"sha512-cZ0XkcYGpHZkqW6iCkqTcmUC0CD9DhD5d/qeZlZkfRBn6GnHniZXLUo5+9xw8Iv76YE6LQFN9YNBlKREcCG76w==\",",
+            "      \"dev\": true,",
+            "      \"license\": \"Apache-2.0 AND LGPL-3.0-or-later AND MIT\",",
+            "      \"optional\": true,",
+            "      \"dependencies\": {",
+            "        \"@emnapi/runtime\": \"^1.11.1\"",
+            "      },",
+            "      \"engines\": {",
+            "        \"node\": \">=20.9.0\"",
+            "      },",
+            "      \"funding\": {",
+            "        \"url\": \"https://opencollective.com/libvips\"",
+            "      }",
+            "    },",
+            "    \"node_modules/@img/sharp-webcontainers-wasm32\": {",
+            "      \"version\": \"0.35.3\",",
+            "      \"resolved\": \"https://registry.npmjs.org/@img/sharp-webcontainers-wasm32/-/sharp-webcontainers-wasm32-0.35.3.tgz\",",
+            "      \"integrity\": \"sha512-2rnq7bX3NzeR2T4YWgz8qiG4h3TSdMe+vN1iQXpJleSJ3SM5zQ8Fy2SyyXAWlbxpEZ2Y+Z4u1BePgJEYbSy80Q==\",",
+            "      \"cpu\": [",
+            "        \"wasm32\"",
+            "      ],",
+            "      \"dev\": true,",
+            "      \"license\": \"Apache-2.0\",",
+            "      \"optional\": true,",
+            "      \"dependencies\": {",
+            "        \"@img/sharp-wasm32\": \"0.35.3\"",
+            "      },",
+            "      \"engines\": {",
+            "        \"node\": \">=20.9.0\"",
+            "      },",
+            "      \"funding\": {",
+            "        \"url\": \"https://opencollective.com/libvips\"",
+            "      }",
+            "    },",
+            "    \"node_modules/@img/sharp-win32-arm64\": {",
+            "      \"version\": \"0.35.3\",",
+            "      \"resolved\": \"https://registry.npmjs.org/@img/sharp-win32-arm64/-/sharp-win32-arm64-0.35.3.tgz\",",
+            "      \"integrity\": \"sha512-4bPwFdMbeC4JQ8L8LOyWp6nsHcboP5fxkp6iPOXz2Vg49R42TuMs2whkJ5OAP4/Ul035qOzy0AecOF9VOscn4w==\",",
+            "      \"cpu\": [",
+            "        \"arm64\"",
+            "      ],",
+            "      \"dev\": true,",
+            "      \"license\": \"Apache-2.0 AND LGPL-3.0-or-later\",",
+            "      \"optional\": true,",
+            "      \"os\": [",
+            "        \"win32\"",
+            "      ],",
+            "      \"engines\": {",
+            "        \"node\": \">=20.9.0\"",
+            "      },",
+            "      \"funding\": {",
+            "        \"url\": \"https://opencollective.com/libvips\"",
+            "      }",
+            "    },",
+            "    \"node_modules/@img/sharp-win32-ia32\": {",
+            "      \"version\": \"0.35.3\",",
+            "      \"resolved\": \"https://registry.npmjs.org/@img/sharp-win32-ia32/-/sharp-win32-ia32-0.35.3.tgz\",",
+            "      \"integrity\": \"sha512-r53mXsBN6lFUDiST764SvgwUdHAqM4rPAiDzAmf4fLoB6X/rkfyTrLCg6+g17wJJiCmB3JYgHuUldCWUIRFSXw==\",",
+            "      \"cpu\": [",
+            "        \"ia32\"",
+            "      ],",
+            "      \"dev\": true,",
+            "      \"license\": \"Apache-2.0 AND LGPL-3.0-or-later\",",
+            "      \"optional\": true,",
+            "      \"os\": [",
+            "        \"win32\"",
+            "      ],",
+            "      \"engines\": {",
+            "        \"node\": \"^20.9.0\"",
+            "      },",
+            "      \"funding\": {",
+            "        \"url\": \"https://opencollective.com/libvips\"",
+            "      }",
+            "    },",
+            "    \"node_modules/@img/sharp-win32-x64\": {",
+            "      \"version\": \"0.35.3\",",
+            "      \"resolved\": \"https://registry.npmjs.org/@img/sharp-win32-x64/-/sharp-win32-x64-0.35.3.tgz\",",
+            "      \"integrity\": \"sha512-D4y1vNeZrIIJCN+uHaWVtH86B+aCrdMYYjicy9pXHvbGZeGYLLSd3wdVuC37FxVXlU1ARsk84eKWfWMXGYEqvA==\",",
+            "      \"cpu\": [",
+            "        \"x64\"",
+            "      ],",
+            "      \"dev\": true,",
+            "      \"license\": \"Apache-2.0 AND LGPL-3.0-or-later\",",
+            "      \"optional\": true,",
+            "      \"os\": [",
+            "        \"win32\"",
+            "      ],",
+            "      \"engines\": {",
+            "        \"node\": \">=20.9.0\"",
+            "      },",
+            "      \"funding\": {",
+            "        \"url\": \"https://opencollective.com/libvips\"",
+            "      }",
+            "    },"
+          ]
+        },
+        {
+          "beforeStart": 5765,
+          "afterStart": 6352,
+          "before": [],
+          "after": [
+            "    \"node_modules/detect-libc\": {",
+            "      \"version\": \"2.1.2\",",
+            "      \"resolved\": \"https://registry.npmjs.org/detect-libc/-/detect-libc-2.1.2.tgz\",",
+            "      \"integrity\": \"sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==\",",
+            "      \"dev\": true,",
+            "      \"license\": \"Apache-2.0\",",
+            "      \"engines\": {",
+            "        \"node\": \">=8\"",
+            "      }",
+            "    },"
+          ]
+        },
+        {
+          "beforeStart": 7662,
+          "afterStart": 8259,
+          "before": [],
+          "after": [
+            "    \"node_modules/sharp\": {",
+            "      \"version\": \"0.35.3\",",
+            "      \"resolved\": \"https://registry.npmjs.org/sharp/-/sharp-0.35.3.tgz\",",
+            "      \"integrity\": \"sha512-ej0zVHuZGHCiABXcNxeYhpRnPNPAcvbG8RMdBAhDAxLKkCRVSpK3Iyu7qbqw3JMzoj0REeM6f3tJLtVwl0023Q==\",",
+            "      \"dev\": true,",
+            "      \"license\": \"Apache-2.0\",",
+            "      \"dependencies\": {",
+            "        \"@img/colour\": \"^1.1.0\",",
+            "        \"detect-libc\": \"^2.1.2\",",
+            "        \"semver\": \"^7.8.5\"",
+            "      },",
+            "      \"engines\": {",
+            "        \"node\": \">=20.9.0\"",
+            "      },",
+            "      \"funding\": {",
+            "        \"url\": \"https://opencollective.com/libvips\"",
+            "      },",
+            "      \"optionalDependencies\": {",
+            "        \"@img/sharp-darwin-arm64\": \"0.35.3\",",
+            "        \"@img/sharp-darwin-x64\": \"0.35.3\",",
+            "        \"@img/sharp-freebsd-wasm32\": \"0.35.3\",",
+            "        \"@img/sharp-libvips-darwin-arm64\": \"1.3.2\",",
+            "        \"@img/sharp-libvips-darwin-x64\": \"1.3.2\",",
+            "        \"@img/sharp-libvips-linux-arm\": \"1.3.2\",",
+            "        \"@img/sharp-libvips-linux-arm64\": \"1.3.2\",",
+            "        \"@img/sharp-libvips-linux-ppc64\": \"1.3.2\",",
+            "        \"@img/sharp-libvips-linux-riscv64\": \"1.3.2\",",
+            "        \"@img/sharp-libvips-linux-s390x\": \"1.3.2\",",
+            "        \"@img/sharp-libvips-linux-x64\": \"1.3.2\",",
+            "        \"@img/sharp-libvips-linuxmusl-arm64\": \"1.3.2\",",
+            "        \"@img/sharp-libvips-linuxmusl-x64\": \"1.3.2\",",
+            "        \"@img/sharp-linux-arm\": \"0.35.3\",",
+            "        \"@img/sharp-linux-arm64\": \"0.35.3\",",
+            "        \"@img/sharp-linux-ppc64\": \"0.35.3\",",
+            "        \"@img/sharp-linux-riscv64\": \"0.35.3\",",
+            "        \"@img/sharp-linux-s390x\": \"0.35.3\",",
+            "        \"@img/sharp-linux-x64\": \"0.35.3\",",
+            "        \"@img/sharp-linuxmusl-arm64\": \"0.35.3\",",
+            "        \"@img/sharp-linuxmusl-x64\": \"0.35.3\",",
+            "        \"@img/sharp-webcontainers-wasm32\": \"0.35.3\",",
+            "        \"@img/sharp-win32-arm64\": \"0.35.3\",",
+            "        \"@img/sharp-win32-ia32\": \"0.35.3\",",
+            "        \"@img/sharp-win32-x64\": \"0.35.3\"",
+            "      },",
+            "      \"peerDependenciesMeta\": {",
+            "        \"@types/node\": {",
+            "          \"optional\": true",
+            "        }",
+            "      }",
+            "    },",
+            "    \"node_modules/sharp/node_modules/semver\": {",
+            "      \"version\": \"7.8.5\",",
+            "      \"resolved\": \"https://registry.npmjs.org/semver/-/semver-7.8.5.tgz\",",
+            "      \"integrity\": \"sha512-Y7/KDsb8LjooZpwaqGyulO6DQlksgCncchHGk+sZIY4SBvUocMBEFH5Ur1fI4dV+Jvl0w6cjvucaIi40puRioA==\",",
+            "      \"dev\": true,",
+            "      \"license\": \"ISC\",",
+            "      \"bin\": {",
+            "        \"semver\": \"bin/semver.js\"",
+            "      },",
+            "      \"engines\": {",
+            "        \"node\": \">=10\"",
+            "      }",
+            "    },"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/package.json",
+      "edits": [
+        {
+          "beforeStart": 6,
+          "afterStart": 6,
+          "before": [],
+          "after": [
+            "    \"images:prepare\": \"node scripts/prepare-images.mjs\",",
+            "    \"predev\": \"npm run images:prepare\","
+          ]
+        },
+        {
+          "beforeStart": 7,
+          "afterStart": 9,
+          "before": [],
+          "after": [
+            "    \"prebuild\": \"npm run images:prepare\","
+          ]
+        },
+        {
+          "beforeStart": 72,
+          "afterStart": 75,
+          "before": [],
+          "after": [
+            "    \"sharp\": \"0.35.3\","
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/App.tsx",
+      "edits": [
+        {
+          "beforeStart": 24,
+          "afterStart": 24,
+          "before": [],
+          "after": [
+            "import { imageAsset } from './lib/image-assets'",
+            "import { SceneBackground } from './components/SceneBackground'"
+          ]
+        },
+        {
+          "beforeStart": 27,
+          "afterStart": 29,
+          "before": [
+            "const IMG = (n: string) => `${import.meta.env.BASE_URL}assets/${n}.png`"
+          ],
+          "after": [
+            "const IMG = imageAsset"
+          ]
+        },
+        {
+          "beforeStart": 30,
+          "afterStart": 32,
+          "before": [
+            "// 预加载全部素材，避免剧情推进时图片即需加载造成闪屏",
+            "const ALL_ASSETS = [",
+            "  'bg_archive', 'bg_breakroom', 'bg_control', 'bg_corridor', 'bg_day', 'bg_title', 'bg_xrayroom',",
+            "  'char_bai', 'char_f', 'char_fan', 'char_he', 'char_kai', 'char_lei', 'char_m', 'char_qian', 'char_tang', 'char_wen', 'char_zhou',",
+            "  'pat_aunt', 'pat_child', 'pat_dad', 'pat_mystery', 'pat_oldman', 'pat_regular', 'pat_thin', 'pat_trauma', 'pat_worker',",
+            "  'machine_mammo', 'machine_mobile', 'machine_reader', 'item_film', 'item_photo', 'char_jiang',",
+            "  'item_tea', 'item_apple', 'item_glasses', 'item_notebook', 'item_screen', 'char_director', 'bg_morning', 'img_teaser',",
+            "  'xray_battery', 'xray_coin', 'xray_fog', 'xray_fracture', 'xray_ghost', 'xray_normal', 'xray_pneumo', 'stamp',",
+            "  // DLC 番外篇素材",
+            "  'bg_drroom', 'bg_waiting', 'bg_cathlab', 'char_shao', 'char_du', 'char_qin', 'char_liao', 'pat_ge',",
+            "  'img_dsa_normal', 'img_dsa_stenosis', 'img_dsa_stent',",
+            "]",
+            "let assetsPreloaded = false",
+            "function preloadAssets() {",
+            "  if (assetsPreloaded) return",
+            "  assetsPreloaded = true",
+            "  for (const n of ALL_ASSETS) { const img = new Image(); img.src = IMG(n) }",
+            "}",
+            ""
+          ],
+          "after": []
+        },
+        {
+          "beforeStart": 67,
+          "afterStart": 50,
+          "before": [
+            "  useEffect(preloadAssets, [])"
+          ],
+          "after": []
+        },
+        {
+          "beforeStart": 301,
+          "afterStart": 283,
+          "before": [
+            "  const pos = fixed ? 'fixed' : 'absolute'",
+            "  return (",
+            "    <>",
+            "      <img src={IMG(name)} aria-hidden className={`${pos} inset-0 w-full h-full object-cover blur-2xl scale-125 opacity-60 pixel hidden portrait:block`} alt=\"\" />",
+            "      <img src={IMG(name)} className={`${pos} inset-0 w-full h-full object-cover portrait:object-contain portrait:scale-[1.65] portrait:-translate-y-[5%] pixel`} alt=\"\" />",
+            "    </>",
+            "  )"
+          ],
+          "after": [
+            "  return <SceneBackground name={name} fixed={fixed} />"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/components/Ch2CtMotion.tsx",
+      "edits": [
+        {
+          "beforeStart": 3,
+          "afterStart": 3,
+          "before": [
+            "",
+            "const imageUrl = (name: string) => `${import.meta.env.BASE_URL}assets/${name}.png`"
+          ],
+          "after": [
+            "import { imageAsset as imageUrl } from '../lib/image-assets'"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/components/Ch2DawnScene.tsx",
+      "edits": [
+        {
+          "beforeStart": 2,
+          "afterStart": 2,
+          "before": [],
+          "after": [
+            "import { imageAsset } from '../lib/image-assets'"
+          ]
+        },
+        {
+          "beforeStart": 21,
+          "afterStart": 22,
+          "before": [
+            "          <source media=\"(orientation: portrait)\" srcSet={`${import.meta.env.BASE_URL}assets/ch2_dawn_window_portrait_v1.png`} />",
+            "          <img src={`${import.meta.env.BASE_URL}assets/ch2_dawn_window_v1.png`}"
+          ],
+          "after": [
+            "          <source media=\"(orientation: portrait)\" srcSet={imageAsset('ch2_dawn_window_portrait_v1')} />",
+            "          <img src={imageAsset('ch2_dawn_window_v1')}"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/components/Ch2MysteryMedia.tsx",
+      "edits": [
+        {
+          "beforeStart": 2,
+          "afterStart": 2,
+          "before": [],
+          "after": [
+            "import { imageAsset } from '../lib/image-assets'"
+          ]
+        },
+        {
+          "beforeStart": 76,
+          "afterStart": 77,
+          "before": [
+            "      : <img src={`${import.meta.env.BASE_URL}assets/${image}.png`} alt=\"机架上的远程终端\""
+          ],
+          "after": [
+            "      : <img src={imageAsset(image)} alt=\"机架上的远程终端\""
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/components/Ch2ObservationImage.tsx",
+      "edits": [
+        {
+          "beforeStart": 2,
+          "afterStart": 2,
+          "before": [],
+          "after": [
+            "import { imageAsset } from '../lib/image-assets'"
+          ]
+        },
+        {
+          "beforeStart": 19,
+          "afterStart": 20,
+          "before": [
+            "        : <img src={`${import.meta.env.BASE_URL}assets/${image}.png`} onError={() => setFailedImage(image)}"
+          ],
+          "after": [
+            "        : <img src={imageAsset(image)} onError={() => setFailedImage(image)}"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/components/Ch2Settlement.tsx",
+      "edits": [
+        {
+          "beforeStart": 6,
+          "afterStart": 6,
+          "before": [],
+          "after": [
+            "import { SceneBackground } from './SceneBackground'"
+          ]
+        },
+        {
+          "beforeStart": 17,
+          "afterStart": 18,
+          "before": [
+            "const asset = (name: string) => `${import.meta.env.BASE_URL}assets/${name}.png`"
+          ],
+          "after": []
+        },
+        {
+          "beforeStart": 48,
+          "afterStart": 48,
+          "before": [
+            "    <img src={asset('bg_ctcontrol_day_ready')} alt=\"\" className=\"absolute inset-0 h-full w-full object-cover pixel pointer-events-none\" />"
+          ],
+          "after": [
+            "    <SceneBackground name=\"bg_ctcontrol_day_ready\" landscapeOnly />"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/components/Ch2Shop.tsx",
+      "edits": [
+        {
+          "beforeStart": 6,
+          "afterStart": 6,
+          "before": [],
+          "after": [
+            "import { imageAsset as image } from '../lib/image-assets'"
+          ]
+        },
+        {
+          "beforeStart": 8,
+          "afterStart": 9,
+          "before": [
+            "const image = (name: string) => `${import.meta.env.BASE_URL}assets/${name}.png`"
+          ],
+          "after": []
+        }
+      ]
+    },
+    {
+      "path": "app/src/game/ch2-dawn.ts",
+      "edits": [
+        {
+          "beforeStart": 9,
+          "afterStart": 9,
+          "before": [],
+          "after": [
+            "// Let the night actually end before revealing the sunrise illustration. These",
+            "// are ordinary existing-room beats, not part of the cinematic or a new hub.",
+            "export const CH2_DAWN_LEADIN_STEPS: Record<string, Step> = {",
+            "  c2n3_handoff0: { ...view, bg: 'bg_ctcontrol', speaker: 'sys',",
+            "    text: '老人走后，后半夜总算安静下来。等你理完剩下的记录，窗外已经泛白。白班同事到了，你们核对完记录、签好交接，才把工作站让出来。',",
+            "    next: 'c2n3_handoff1' },",
+            "  c2n3_handoff1: { ...view, bg: 'bg_ctcontrol_day', sprite: 'char_tang', speaker: 'tang',",
+            "    text: '下班了。一起走？楼下包子应该开了。', next: 'c2n3_handoff2' },",
+            "  c2n3_handoff2: { ...view, bg: 'bg_corridor', speaker: 'sys',",
+            "    text: '你拎起外套，跟着小唐出了控制室。走廊那头的窗帘没拉严，一道暖光落在地砖上。她走着走着，慢了下来。',",
+            "    next: 'c2n3_dawn0' },",
+            "}",
+            ""
+          ]
+        },
+        {
+          "beforeStart": 11,
+          "afterStart": 24,
+          "before": [
+            "    text: '天快亮时，白班同事到了。你们核完记录，签好交接，才拿上外套往外走。小唐到了东边窗前，忽然停下脚步。',"
+          ],
+          "after": [
+            "    text: '小唐在东边窗前停下来，伸手把帘子拨开一点。你顺着她的目光看出去，对面楼顶被照出了一条金边。',"
+          ]
+        },
+        {
+          "beforeStart": 86,
+          "afterStart": 99,
+          "before": [
+            "  if (id === 'c2n3_x9' && !flags.c2_dawn_done) return { ...step, next: 'c2n3_dawn0' }"
+          ],
+          "after": [
+            "  if (id === 'c2n3_x9' && !flags.c2_dawn_done) return { ...step, next: 'c2n3_handoff0' }"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/game/ch2-observations.ts",
+      "edits": [
+        {
+          "beforeStart": 72,
+          "afterStart": 72,
+          "before": [],
+          "after": [
+            "    imageLabel: '本次数据 · 1 mm 薄层重建',"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/game/ch2.ts",
+      "edits": [
+        {
+          "beforeStart": 7,
+          "afterStart": 7,
+          "before": [
+            "import { CH2_DAWN_STEPS, ch2DawnStep } from './ch2-dawn.ts'"
+          ],
+          "after": [
+            "import { CH2_DAWN_STEPS, CH2_DAWN_LEADIN_STEPS, ch2DawnStep } from './ch2-dawn.ts'"
+          ]
+        },
+        {
+          "beforeStart": 619,
+          "afterStart": 619,
+          "before": [
+            "  c2d2_4: { speaker: 'me', text: '（翻旧报告）上回记的是一枚小结节……等等，今天的厚层图像上，它**时有时无**，有几层根本看不见。', image: 'ct_lung', queue: C2D2_QUEUE1, next: 'c2d2_5' },",
+            "  c2d2_5: { speaker: 'sys', text: '【怎么回事？】', image: 'ct_lung', queue: C2D2_QUEUE1, choices: ["
+          ],
+          "after": [
+            "  c2d2_4: { speaker: 'me', text: '（翻旧报告）上回记的是一枚小结节……等等，今天的厚层图像上，它**时有时无**，有几层根本看不见。', image: 'ch2_lung_thick_v2', imageLabel: '本次数据 · 5 mm 厚层', queue: C2D2_QUEUE1, next: 'c2d2_5' },",
+            "  c2d2_5: { speaker: 'sys', text: '【怎么回事？】', image: 'ch2_lung_thick_v2', imageLabel: '本次数据 · 5 mm 厚层', queue: C2D2_QUEUE1, choices: ["
+          ]
+        },
+        {
+          "beforeStart": 625,
+          "afterStart": 625,
+          "before": [
+            "  c2d2_6a: { speaker: 'zhou', sprite: 'char_zhou', text: \"先别写吸收。你现在开的是5mm厚层，小结节混在里面不显眼。原始数据还在，先重建一套薄层看看。\", card: 'slice_partial', image: 'ct_lung', next: 'c2d2_w1' },",
+            "  c2d2_6b: { speaker: 'me', text: \"厚层把周围组织混到一块儿了。原始数据还在，先做**1mm薄层重建**，不用马上把大爷叫回来重扫。\", card: 'slice_partial', image: 'ct_lung', next: 'c2d2_w1' },",
+            "  c2d2_6c: { speaker: 'zhou', sprite: 'char_zhou', text: \"窗可以调，但这次先查层厚。薄层数据还在，重建一套再比。别急着按曝光键。\", card: 'slice_partial', image: 'ct_lung', next: 'c2d2_w1' },",
+            "  c2d2_w1: { speaker: 'sys', text: '薄层重建完成。老周敲敲屏幕：「**窗口调到肺窗，亲手把那枚『消失』的结节给我找出来。**」', image: 'ct_lung', windowTask: { image: 'ct_lung', targetW: 1500, targetL: -500, tolW: 220, tolL: 60, success: 'c2d2_w1ok' }, next: 'c2d2_w1ok' },",
+            "  c2d2_w1ok: { speaker: 'sys', text: '老周把这一层和旧片并排放好，又翻过前后相邻的几层。不是结节跟人捉迷藏，是刚才那组图把它藏住了。', image: 'ct_lung', next: 'c2d2_7' },",
+            "  c2d2_7: { speaker: 'uncle', sprite: 'pat_uncle2', text: \"哦，这回看清了。（大爷凑近薄层重建的图，手指悬在屏幕前）去年说看不见，我还当它没了。\", effect: { gold: 80 }, image: 'ct_lung', next: 'c2d2_gap_shift' },"
+          ],
+          "after": [
+            "  c2d2_6a: { speaker: 'zhou', sprite: 'char_zhou', text: \"先别写吸收。你现在开的是5mm厚层，小结节混在里面不显眼。原始数据还在，先重建一套薄层看看。\", card: 'slice_partial', image: 'ch2_lung_thick_v2', imageLabel: '本次数据 · 5 mm 厚层', next: 'c2d2_w1' },",
+            "  c2d2_6b: { speaker: 'me', text: \"厚层把周围组织混到一块儿了。原始数据还在，先做**1mm薄层重建**，不用马上把大爷叫回来重扫。\", card: 'slice_partial', image: 'ch2_lung_thick_v2', imageLabel: '本次数据 · 5 mm 厚层', next: 'c2d2_w1' },",
+            "  c2d2_6c: { speaker: 'zhou', sprite: 'char_zhou', text: \"窗可以调，但这次先查层厚。薄层数据还在，重建一套再比。别急着按曝光键。\", card: 'slice_partial', image: 'ch2_lung_thick_v2', imageLabel: '本次数据 · 5 mm 厚层', next: 'c2d2_w1' },",
+            "  c2d2_w1: { speaker: 'sys', text: '薄层重建完成。老周敲敲屏幕：「**窗口调到肺窗，亲手把那枚『消失』的结节给我找出来。**」', image: 'ct_lung', imageLabel: '本次数据 · 1 mm 薄层重建', windowTask: { image: 'ct_lung', targetW: 1500, targetL: -500, tolW: 220, tolL: 60, success: 'c2d2_w1ok' }, next: 'c2d2_w1ok' },",
+            "  c2d2_w1ok: { speaker: 'sys', text: '老周把这一层和旧片并排放好，又翻过前后相邻的几层。不是结节跟人捉迷藏，是刚才那组图把它藏住了。', image: 'ct_lung', imageLabel: '本次数据 · 1 mm 薄层重建', next: 'c2d2_7' },",
+            "  c2d2_7: { speaker: 'uncle', sprite: 'pat_uncle2', text: \"哦，这回看清了。（大爷凑近薄层重建的图，手指悬在屏幕前）去年说看不见，我还当它没了。\", effect: { gold: 80 }, image: 'ct_lung', imageLabel: '本次数据 · 1 mm 薄层重建', next: 'c2d2_gap_shift' },"
+          ]
+        },
+        {
+          "beforeStart": 667,
+          "afterStart": 667,
+          "before": [],
+          "after": [
+            "  ...CH2_DAWN_LEADIN_STEPS,"
+          ]
+        }
+      ]
+    }
+  ]
+}

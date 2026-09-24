@@ -1,7 +1,7 @@
 // Focused presentation/restore QA; full fresh-save walks are separate tests.
 import assert from 'node:assert/strict'
 import { createRequire } from 'node:module'
-import { mkdirSync, writeFileSync } from 'node:fs'
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { freshState } from '../src/game/store.ts'
 import { CH2_DAWN_STEPS, CH2_DAWN_SHOTS } from '../src/game/ch2-dawn.ts'
@@ -11,6 +11,7 @@ const output = resolve(process.env.DAWN_OUTPUT || '../../ch2-dawn-review')
 mkdirSync(output, { recursive: true })
 const url = (process.env.GAME_URL || 'http://127.0.0.1:8798/').replace(/\/$/, '') + '/#/ch2'
 const errors = [], results = []
+const delivery = JSON.parse(readFileSync(new URL('../src/lib/image-assets.generated.json', import.meta.url), 'utf8'))
 const read = page => page.evaluate(() => JSON.parse(localStorage.getItem('midnight-radiology-save-v1')))
 const metrics = state => Object.fromEntries(['gold','skill','heart','wealth','ap','badges','cards','items','buyCount','lotteryCount','night','finished'].map(k => [k, state[k]]))
 const stage = page => page.locator('[data-ch2-step]')
@@ -41,7 +42,7 @@ async function open({ mobile = false, landscape = false, reduced = false, missin
     if (!localStorage.getItem('midnight-radiology-save-v1')) localStorage.setItem('midnight-radiology-save-v1', JSON.stringify(save))
     HTMLMediaElement.prototype.play = () => Promise.reject(new DOMException('Blocked for test', 'NotAllowedError'))
   }, save)
-  if (missing) await context.route('**/assets/ch2_dawn_window*.png', route => route.abort())
+  if (missing) await context.route(/\/assets\/(?:optimized\/)?ch2_dawn_window[^/]*\.(?:png|webp)/, route => route.abort())
   const page = await context.newPage()
   page.setDefaultTimeout(8000)
   page.on('pageerror', e => errors.push(e.message))
@@ -70,7 +71,8 @@ try {
     const firstScale = await scale(page)
     await page.waitForTimeout(2200)
     assert(await scale(page) < firstScale - 0.02, 'Arrival actually pulls back')
-    const expectedImage = mobile ? 'ch2_dawn_window_portrait_v1.png' : 'ch2_dawn_window_v1.png'
+    const expectedAsset = mobile ? 'ch2_dawn_window_portrait_v1' : 'ch2_dawn_window_v1'
+    const expectedImage = delivery[expectedAsset] ?? `${expectedAsset}.png`
     assert((await page.locator('[data-dawn-camera] img').evaluate(img => img.currentSrc)).endsWith(expectedImage))
     await readyText(page)
     await page.screenshot({ path: resolve(output, mobile ? 'mobile-arrival.png' : 'desktop-arrival.png') })

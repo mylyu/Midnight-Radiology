@@ -15,7 +15,12 @@ const pipeline = 'delivery-v2-background-q85-effort6'
 const rawImages = new Set(['ct_head_hema', 'ct_lung', 'ct_wrist_simulated'])
 const isBackground = name => name.startsWith('bg_') || name.startsWith('ch2_dawn_window') || name === 'ch2_ct_motion_room_v1'
 const sha = buffer => createHash('sha256').update(buffer).digest('hex')
-const readJson = async file => JSON.parse(await readFile(file, 'utf8').catch(() => '{}'))
+async function readJson(file) {
+  try {
+    const parsed = JSON.parse(await readFile(file, 'utf8'))
+    return parsed && typeof parsed === 'object' && Array.isArray(parsed.images) ? parsed : {}
+  } catch { return {} } // Missing/interrupted generated caches are disposable, not build dependencies.
+}
 const previous = await readJson(reportPath)
 const manifest = {}, images = []
 await mkdir(outputDir, { recursive: true })

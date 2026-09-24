@@ -5,6 +5,7 @@ import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { resolve } from 'node:path'
+import { beforeImagePolishSource } from './image-polish-projection.mjs'
 
 const root = new URL('../../', import.meta.url)
 const ledger = JSON.parse(readFileSync(new URL('docs/ch2-checkin-source-deltas.json', root), 'utf8'))
@@ -17,6 +18,10 @@ assert.equal(ledger.baseline, 'b3213f0', 'Check-in baseline must not move')
 assert.deepEqual(ledger.files.map(file => file.path).sort(), CHECKIN_EDITED_FILES)
 
 export function beforeCheckinSource(path, source) {
+  return invertCheckinSource(path, beforeImagePolishSource(path, source))
+}
+
+function invertCheckinSource(path, source) {
   const file = ledger.files.find(row => row.path === path)
   if (!file) return source
   const lines = normalize(source).trimEnd().split('\n')
@@ -35,8 +40,8 @@ export function beforeCheckinSource(path, source) {
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   let probes = 0
   for (const { path, edits } of ledger.files) {
-    const live = readFileSync(new URL(path, root), 'utf8')
-    beforeCheckinSource(path, live)
+    const live = beforeImagePolishSource(path, readFileSync(new URL(path, root), 'utf8'))
+    invertCheckinSource(path, live)
     const covered = new Set()
     for (const edit of edits) {
       edit.after.forEach((_, i) => covered.add(edit.afterStart + i))
@@ -44,15 +49,15 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
       if (offset < 0) continue
       const changed = normalize(live).trimEnd().split('\n')
       changed[edit.afterStart + offset] += ' // undocumented mutation'
-      assert.throws(() => beforeCheckinSource(path, changed.join('\n') + '\n'), /undocumented mutation in check-in hunk/)
+      assert.throws(() => invertCheckinSource(path, changed.join('\n') + '\n'), /undocumented mutation in check-in hunk/)
       probes++
     }
-    assert.throws(() => beforeCheckinSource(path, live.trimEnd() + '\n// undocumented append\n'), /mutation outside approved loop hunks \(check-in layer\)/)
+    assert.throws(() => invertCheckinSource(path, live.trimEnd() + '\n// undocumented append\n'), /mutation outside approved loop hunks \(check-in layer\)/)
     const outside = normalize(live).trimEnd().split('\n')
     const at = outside.findIndex((line, index) => line.trim() && !covered.has(index))
     assert(at >= 0, 'The App retains unmodified source to protect')
     outside[at] += ' // undocumented outside hunk'
-    assert.throws(() => beforeCheckinSource(path, outside.join('\n') + '\n'), /mutation outside approved loop hunks \(check-in layer\)/)
+    assert.throws(() => invertCheckinSource(path, outside.join('\n') + '\n'), /mutation outside approved loop hunks \(check-in layer\)/)
     probes += 2
   }
   console.log(`PASS check-in projection: ${ledger.files.length} exact inversion to ${ledger.baseline}; ${probes} mutation probes rejected; older ledgers unchanged.`)

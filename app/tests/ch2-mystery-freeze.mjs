@@ -28,7 +28,7 @@ const sharedFiles = tracked('app/src').filter(file => file !== 'app/src/App.tsx'
 sharedFiles.push('app/package.json', 'app/package-lock.json', 'app/index.html',
   'app/vite.config.ts', 'app/tsconfig.json', 'app/tsconfig.app.json')
 for (const file of sharedFiles) {
-  assert.equal(current(file), original(file), `${file}: shared/Ch1/DR/DSA source and dependencies must stay frozen`)
+  assert.equal(beforeDawnSource(file, current(file)), original(file), `${file}: shared/Ch1/DR/DSA source and dependencies must stay frozen after exact later-source verification`)
 }
 
 const parse = source => ts.createSourceFile('App.tsx', source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX)
