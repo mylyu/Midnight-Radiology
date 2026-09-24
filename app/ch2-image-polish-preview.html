@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>图片加载与第二章过渡 · 本地预览</title>
+<style>body{margin:0;background:#09121c;color:#e2e8f0;font:16px/1.7 system-ui}main{max-width:1100px;margin:auto;padding:24px}h1{font-size:25px}h2{font-size:20px}a{color:#5eead4}button{background:#164e63;color:#fff;border:1px solid #5eead4;border-radius:6px;padding:9px 18px;cursor:pointer}section{margin:24px 0}.pair{display:grid;grid-template-columns:1fr 1fr;gap:16px}.pair img{width:100%;image-rendering:pixelated;background:#000}.pair p{margin:8px 0}.shot{height:600px;position:relative;overflow:hidden;border:1px solid #475569;border-radius:10px;--ch2-dialog-height:160px}.line{position:absolute;bottom:12px;left:4%;right:4%;z-index:20;background:#0f172af2;padding:20px;border:1px solid #64748b;border-radius:12px}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}@media(max-width:600px){main{padding:14px}.pair{grid-template-columns:1fr}.shot{height:680px;--ch2-dialog-height:220px}}</style></head>
+<body><main><h1>图片加载与第二章过渡</h1><p>本地审阅页，不读取或修改存档。<a href="./#/ch2" target="_blank">进入完整第二章</a></p>
+<section><h2>厚层 → 同次数据薄层重建</h2><p>正式游戏仍先调窗、观察，再接人物解释；这里并排展示，方便比较。</p><div class="pair" id="pair"></div></section>
+<section><h2>交班 → 下楼买早饭 → 走廊窗边</h2><div id="dawn"></div></section>
+<section><h2>图片加载</h2><p>背景按需下载，约47.3 MiB压至4.0 MiB。医学影像不做有损压缩，调窗灰度原图保持原样。请求超时或失败会提示并可重试，不锁住剧情。</p></section>
+</main><script type="module">
+import React, {useState} from 'react'; import {createRoot} from 'react-dom/client';
+import './src/index.css';
+import {imageAsset} from './src/lib/image-assets';
+import {SceneBackground} from './src/components/SceneBackground';
+import {Ch2DawnScene} from './src/components/Ch2DawnScene';
+import {CH2_DAWN_LEADIN_STEPS,CH2_DAWN_STEPS,CH2_DAWN_SHOTS} from './src/game/ch2-dawn';
+import {ch2BackgroundAsset} from './src/game/ch2';
+const h=React.createElement;
+createRoot(document.getElementById('pair')).render(['ch2_lung_thick_v2','ct_lung'].map((name,i)=>h('div',{key:name},h('img',{src:imageAsset(name),alt:i?'1 mm薄层重建':'5 mm厚层'}),h('p',null,i?'1 mm 薄层重建：结节边界更容易辨认':'5 mm 厚层：同位置结节较淡、边界不清'))));
+const rows=[...Object.entries(CH2_DAWN_LEADIN_STEPS),...['c2n3_dawn0','c2n3_dawn_light','c2n3_dawn_school','c2n3_dawn_sleep'].map(id=>[id,CH2_DAWN_STEPS[id]])];
+function Preview(){const[i,setI]=useState(0);const[id,s]=rows[i];return h(React.Fragment,null,h('div',{className:'shot'},CH2_DAWN_SHOTS[id]?h(Ch2DawnScene,{shot:CH2_DAWN_SHOTS[id]}):h(SceneBackground,{name:ch2BackgroundAsset(s.bg)}),h('div',{className:'line'},s.text)),h('div',{className:'actions'},h('button',{onClick:()=>setI(Math.max(0,i-1)),disabled:!i},'上一段'),h('button',{onClick:()=>setI((i+1)%rows.length)},i===rows.length-1?'重新看':'下一段'),h('span',null,`${i+1} / ${rows.length}`)))}
+createRoot(document.getElementById('dawn')).render(h(Preview));
+</script></body></html>

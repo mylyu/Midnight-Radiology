@@ -7,9 +7,22 @@ const view = {
   imageLabel: '', phone: '', radio: '',
 } as const
 
+// Let the night actually end before revealing the sunrise illustration. These
+// are ordinary existing-room beats, not part of the cinematic or a new hub.
+export const CH2_DAWN_LEADIN_STEPS: Record<string, Step> = {
+  c2n3_handoff0: { ...view, bg: 'bg_ctcontrol', speaker: 'sys',
+    text: '老人走后，后半夜总算安静下来。等你理完剩下的记录，窗外已经泛白。白班同事到了，你们核对完记录、签好交接，才把工作站让出来。',
+    next: 'c2n3_handoff1' },
+  c2n3_handoff1: { ...view, bg: 'bg_ctcontrol_day', sprite: 'char_tang', speaker: 'tang',
+    text: '下班了。一起走？楼下包子应该开了。', next: 'c2n3_handoff2' },
+  c2n3_handoff2: { ...view, bg: 'bg_corridor', speaker: 'sys',
+    text: '你拎起外套，跟着小唐出了控制室。走廊那头的窗帘没拉严，一道暖光落在地砖上。她走着走着，慢了下来。',
+    next: 'c2n3_dawn0' },
+}
+
 export const CH2_DAWN_STEPS: Record<string, Step> = {
   c2n3_dawn0: { ...view, speaker: 'sys',
-    text: '天快亮时，白班同事到了。你们核完记录，签好交接，才拿上外套往外走。小唐到了东边窗前，忽然停下脚步。',
+    text: '小唐在东边窗前停下来，伸手把帘子拨开一点。你顺着她的目光看出去，对面楼顶被照出了一条金边。',
     effect: { flag: 'c2_dawn_seen' }, next: 'c2n3_dawn_light' },
   c2n3_dawn_light: { ...view, speaker: 'tang',
     text: '等一下。那边亮了。', next: 'c2n3_dawn_school' },
@@ -84,6 +97,6 @@ export const CH2_DAWN_SHOTS: Record<string, Ch2DawnShot> = {
  * continuation. Already-settled or completed saves are never routed backwards.
  */
 export function ch2DawnStep(id: string, step: Step, { flags }: Pick<GameState, 'flags'>): Step {
-  if (id === 'c2n3_x9' && !flags.c2_dawn_done) return { ...step, next: 'c2n3_dawn0' }
+  if (id === 'c2n3_x9' && !flags.c2_dawn_done) return { ...step, next: 'c2n3_handoff0' }
   return step
 }

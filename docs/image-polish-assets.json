@@ -1,0 +1,39 @@
+{
+  "baseline": "ea9d6c5",
+  "created": "2026-09-24",
+  "assets": [
+    {
+      "output": "app/public/assets/ch2_lung_thick_v2.png",
+      "source": "app/public/assets/ct_lung.png",
+      "sourceSha256": "c498df11cc94766ffe110d13cd20fce379eb73cf23eeb926d5e611bd3d559135",
+      "sha256": "3fc63700d5e109922fbb3c2ae2f9a682747453ed847abffb1953481e2c331776",
+      "bytes": 1463030,
+      "width": 1254,
+      "height": 1254,
+      "tool": "built-in image_gen; one referenced-image edit; original inspected before editing",
+      "generatedFile": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-493d6c85-ff25-4609-b83e-2e572413c953.png",
+      "prompt": "Use case: precise-object-edit / scientific-educational. Asset: a square grayscale chest CT teaching image in an existing Chinese biomedical engineering visual novel. Image 1 is the EDIT TARGET and is the existing thin-slice lung-window view. Make its matched 5 mm THICK-SLICE illustrative counterpart, NOT a new patient or different slice. Preserve the exact 1024x1024 framing, black margin, full thoracic outline, lung shapes, mediastinum, vertebra, ribs, vessels and screen orientation. The small bright circular nodule at approximately x=77%, y=36% in screen upper-right must stay at EXACTLY the same location, but be substantially less conspicuous: a faint small low-contrast gray smudge with an indistinct margin, consistent with partial-volume averaging. It must still be subtly present if examined, not removed entirely. Surrounding fine pulmonary vessels can be very slightly less distinct; maintain crisp pixel-grained grayscale rendering, not whole-image Gaussian blur. Do not enlarge the nodule. Do not sharpen the thick image. Do not invent additional lesions, calcifications, effusions, hemorrhage, medical tools, labels, arrows or rings. No lettering, measurements, borders, annotations, watermark or split panels. Keep anatomy and geometry as close to the reference as possible; edit the nodule contrast and very fine vessel visibility only. This is an illustrative comparison, not a claimed numerical DICOM reconstruction. Output one square complete image.",
+      "review": "Viewed paired images at the actual desktop and 390px game display size. Same normalized screen-upper-right nodule location and broadly matched axial thoracic framing; new thick counterpart is lower contrast with less distinct margins; retained original thin has a much clearer small bright nodule. Generation returned1254 square rather than requested1024; no resizing or numerical gray manipulation was done. These are matched teaching illustrations, not a volume-derived reconstruction; original thin window input, observation region, choices and reward identity stay byte-for-byte unchanged except the presentation label. No labels/arrows or additional lesions were baked into the new image.",
+      "references": [
+        "https://pubs.rsna.org/doi/full/10.1148/radiol.2017161659",
+        "https://pubs.rsna.org/doi/10.1148/radiol.2017151022"
+      ]
+    }
+  ],
+  "delivery": {
+    "encoder": "sharp0.35.3 / webp1.6.0",
+    "pipeline": "delivery-v2-background-q85-effort6",
+    "background": "same dimensions; WebPquality85 effort6; sourcePNGkept",
+    "otherImages": "lossless WebP effort5 only when decoded RGBA exact; otherwise lossless PNG compressionLevel9 adaptiveFiltering; smaller copies only",
+    "rawGrayUnchanged": ["ct_head_hema", "ct_lung", "ct_wrist_simulated"],
+    "count": 193,
+    "optimized": 188,
+    "originalBytes": 227228496,
+    "deliveredBytes": 152042055,
+    "backgroundCount": 22,
+    "backgroundOriginalBytes": 49549162,
+    "backgroundDeliveredBytes": 4192240,
+    "generatedReport": "app/image-delivery-report.json (rebuildable/ignored)",
+    "originalMediaPolicy": "All 288 existing images/audio compared directly to ea9d6c5 Git blobs; unchanged. Only the new thick illustrative source is added. No voice, animation timing, reward, save key or exam change."
+  }
+}

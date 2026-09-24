@@ -5,7 +5,7 @@ import { CH2_SOCIAL_STEPS, ch2SocialStep } from './ch2-social.ts'
 import { CH2_PACING_STEPS, ch2PacingStep } from './ch2-pacing.ts'
 import { CH2_NEEDLE_STEPS, CH2_NEEDLE_EVIDENCE, ch2NeedleStep } from './ch2-needles.ts'
 import { CH2_TERMINAL_STEPS, CH2_TERMINAL_EVIDENCE, ch2TerminalStep } from './ch2-terminal.ts'
-import { CH2_DAWN_STEPS, ch2DawnStep } from './ch2-dawn.ts'
+import { CH2_DAWN_STEPS, CH2_DAWN_LEADIN_STEPS, ch2DawnStep } from './ch2-dawn.ts'
 import { CH2_PAYOFF_STEPS, CH2_PAYOFF_EVIDENCE, ch2PayoffStep } from './ch2-payoffs.ts'
 
 /* ================= 第二章「快与狠」· CT篇 =================
@@ -617,18 +617,18 @@ const C2D2: Record<string, Step> = {
   c2d2_2: { bg: 'bg_waiting', speaker: 'sys', text: '【白班队列】预约病人按号排，急诊/住院随时「插单」。让危重等太久，是要出事的。', queue: C2D2_QUEUE0, next: 'c2d2_3' },
   c2d2_3: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: "第一位是来复查肺结节的大爷。去年体检发现，医嘱半年复查。旧片袋的口子用胶带补了三层，他递过来还不松手：「上回那张也看看，别光看新的。」", queue: C2D2_QUEUE1, next: 'c2d2_lung_scan' },
   c2d2_lung_scan: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: "大爷按提示屏住气。胸部数据开始传进工作站，重建列表里先排着默认的厚层序列。", next: 'c2d2_4' },
-  c2d2_4: { speaker: 'me', text: '（翻旧报告）上回记的是一枚小结节……等等，今天的厚层图像上，它**时有时无**，有几层根本看不见。', image: 'ct_lung', queue: C2D2_QUEUE1, next: 'c2d2_5' },
-  c2d2_5: { speaker: 'sys', text: '【怎么回事？】', image: 'ct_lung', queue: C2D2_QUEUE1, choices: [
+  c2d2_4: { speaker: 'me', text: '（翻旧报告）上回记的是一枚小结节……等等，今天的厚层图像上，它**时有时无**，有几层根本看不见。', image: 'ch2_lung_thick_v2', imageLabel: '本次数据 · 5 mm 厚层', queue: C2D2_QUEUE1, next: 'c2d2_5' },
+  c2d2_5: { speaker: 'sys', text: '【怎么回事？】', image: 'ch2_lung_thick_v2', imageLabel: '本次数据 · 5 mm 厚层', queue: C2D2_QUEUE1, choices: [
     { text: '「对比去年的片子，结节确实吸收了，半年后再说吧。」', next: 'c2d2_6a', effect: { skill: -1 } },
     { text: '「这套层厚太厚了，先用原始数据重建薄层。」', next: 'c2d2_6b', effect: { skill: 2 }, tag: 'good' },
     { text: '「窗口没调好——换个窄窗再仔细看看。」', next: 'c2d2_6c', effect: { skill: -1 } },
   ]},
-  c2d2_6a: { speaker: 'zhou', sprite: 'char_zhou', text: "先别写吸收。你现在开的是5mm厚层，小结节混在里面不显眼。原始数据还在，先重建一套薄层看看。", card: 'slice_partial', image: 'ct_lung', next: 'c2d2_w1' },
-  c2d2_6b: { speaker: 'me', text: "厚层把周围组织混到一块儿了。原始数据还在，先做**1mm薄层重建**，不用马上把大爷叫回来重扫。", card: 'slice_partial', image: 'ct_lung', next: 'c2d2_w1' },
-  c2d2_6c: { speaker: 'zhou', sprite: 'char_zhou', text: "窗可以调，但这次先查层厚。薄层数据还在，重建一套再比。别急着按曝光键。", card: 'slice_partial', image: 'ct_lung', next: 'c2d2_w1' },
-  c2d2_w1: { speaker: 'sys', text: '薄层重建完成。老周敲敲屏幕：「**窗口调到肺窗，亲手把那枚『消失』的结节给我找出来。**」', image: 'ct_lung', windowTask: { image: 'ct_lung', targetW: 1500, targetL: -500, tolW: 220, tolL: 60, success: 'c2d2_w1ok' }, next: 'c2d2_w1ok' },
-  c2d2_w1ok: { speaker: 'sys', text: '老周把这一层和旧片并排放好，又翻过前后相邻的几层。不是结节跟人捉迷藏，是刚才那组图把它藏住了。', image: 'ct_lung', next: 'c2d2_7' },
-  c2d2_7: { speaker: 'uncle', sprite: 'pat_uncle2', text: "哦，这回看清了。（大爷凑近薄层重建的图，手指悬在屏幕前）去年说看不见，我还当它没了。", effect: { gold: 80 }, image: 'ct_lung', next: 'c2d2_gap_shift' },
+  c2d2_6a: { speaker: 'zhou', sprite: 'char_zhou', text: "先别写吸收。你现在开的是5mm厚层，小结节混在里面不显眼。原始数据还在，先重建一套薄层看看。", card: 'slice_partial', image: 'ch2_lung_thick_v2', imageLabel: '本次数据 · 5 mm 厚层', next: 'c2d2_w1' },
+  c2d2_6b: { speaker: 'me', text: "厚层把周围组织混到一块儿了。原始数据还在，先做**1mm薄层重建**，不用马上把大爷叫回来重扫。", card: 'slice_partial', image: 'ch2_lung_thick_v2', imageLabel: '本次数据 · 5 mm 厚层', next: 'c2d2_w1' },
+  c2d2_6c: { speaker: 'zhou', sprite: 'char_zhou', text: "窗可以调，但这次先查层厚。薄层数据还在，重建一套再比。别急着按曝光键。", card: 'slice_partial', image: 'ch2_lung_thick_v2', imageLabel: '本次数据 · 5 mm 厚层', next: 'c2d2_w1' },
+  c2d2_w1: { speaker: 'sys', text: '薄层重建完成。老周敲敲屏幕：「**窗口调到肺窗，亲手把那枚『消失』的结节给我找出来。**」', image: 'ct_lung', imageLabel: '本次数据 · 1 mm 薄层重建', windowTask: { image: 'ct_lung', targetW: 1500, targetL: -500, tolW: 220, tolL: 60, success: 'c2d2_w1ok' }, next: 'c2d2_w1ok' },
+  c2d2_w1ok: { speaker: 'sys', text: '老周把这一层和旧片并排放好，又翻过前后相邻的几层。不是结节跟人捉迷藏，是刚才那组图把它藏住了。', image: 'ct_lung', imageLabel: '本次数据 · 1 mm 薄层重建', next: 'c2d2_7' },
+  c2d2_7: { speaker: 'uncle', sprite: 'pat_uncle2', text: "哦，这回看清了。（大爷凑近薄层重建的图，手指悬在屏幕前）去年说看不见，我还当它没了。", effect: { gold: 80 }, image: 'ct_lung', imageLabel: '本次数据 · 1 mm 薄层重建', next: 'c2d2_gap_shift' },
   c2d2_8: { bg: 'bg_waiting', speaker: 'sys', text: '【队列事件】急诊插单：「腹痛待查，怀疑肠梗阻，加急！」——前面还有两位门诊病人在等。', queue: C2D2_QUEUE2, sfx: 'ring', choices: [
     { text: '按规矩，急重症优先，立刻插队。', next: 'c2d2_9a', effect: { heart: 1 }, tag: 'good' },
     { text: '让他按号排，先来后到。', next: 'c2d2_9b', effect: { heart: -1, flag: 'queue_wait' } },
@@ -665,6 +665,7 @@ const C2D2: Record<string, Step> = {
 /* ================= 第3夜「快」 ================= */
 const C2N3: Record<string, Step> = {
   ...CH2_DAWN_STEPS,
+  ...CH2_DAWN_LEADIN_STEPS,
   ...CH2_TERMINAL_STEPS.c2n3,
   ...CH2_SOCIAL_STEPS.c2n3,
   ...CH2_PACING_STEPS.c2n3,

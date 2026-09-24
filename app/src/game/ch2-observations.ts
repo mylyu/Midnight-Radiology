@@ -70,6 +70,7 @@ export const CH2_OBSERVATIONS: Record<string, Ch2Observation> = {
   },
   c2d2_w1ok: {
     id: 'lung-observe-v1', caseId: 'lung', kind: 'image', image: 'ct_lung',
+    imageLabel: '本次数据 · 1 mm 薄层重建',
     assetVersion: 'c498df11cc94766ffe110d13cd20fce379eb73cf23eeb926d5e611bd3d559135',
     prompt: '薄层和肺窗都调好了。按屏幕方向，你会先把哪儿留给周师傅看？', speaker: 'zhou', rewardEligible: true,
     choices: [
