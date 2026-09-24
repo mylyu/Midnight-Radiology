@@ -6,6 +6,7 @@ import { readFileSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import { resolve } from 'node:path'
+import { beforeDawnSource } from './ch2-dawn-projection.mjs'
 
 const root = new URL('../../', import.meta.url)
 const ledger = JSON.parse(readFileSync(new URL('docs/ch2-mystery-source-deltas.json', root), 'utf8'))
@@ -14,6 +15,10 @@ assert.equal(ledger.baseline, '194c442', 'Mystery baseline must not move')
 assert.deepEqual(ledger.files.map(file => file.path).sort(), ['app/src/App.tsx', 'app/src/game/ch2.ts'])
 
 export function beforeMysterySource(path, source) {
+  return invertMysterySource(path, beforeDawnSource(path, source))
+}
+
+function invertMysterySource(path, source) {
   const file = ledger.files.find(row => row.path === path)
   if (!file) return source
   const lines = normalize(source).trimEnd().split('\n')
@@ -46,21 +51,21 @@ export async function loadHistoricalCh2(projectSource = beforeMysterySource) {
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   let probes = 0
   for (const { path, edits } of ledger.files) {
-    const live = readFileSync(new URL(path, root), 'utf8')
-    beforeMysterySource(path, live)
+    const live = beforeDawnSource(path, readFileSync(new URL(path, root), 'utf8'))
+    invertMysterySource(path, live)
     // Probe each actual new hunk by exact line index, not an ambiguous replace.
     for (const edit of edits) {
       const offset = edit.after.findIndex(line => line.trim())
       if (offset < 0) continue
       const changed = normalize(live).trimEnd().split('\n')
       changed[edit.afterStart + offset] += ' // undocumented mutation'
-      assert.throws(() => beforeMysterySource(path, changed.join('\n') + '\n'), /undocumented mutation in mystery hunk/)
+      assert.throws(() => invertMysterySource(path, changed.join('\n') + '\n'), /undocumented mutation in mystery hunk/)
       probes++
     }
-    assert.throws(() => beforeMysterySource(path, live.trimEnd() + '\n// undocumented append\n'), /mutation outside approved loop hunks \(mystery layer\)/)
+    assert.throws(() => invertMysterySource(path, live.trimEnd() + '\n// undocumented append\n'), /mutation outside approved loop hunks \(mystery layer\)/)
     const outside = normalize(live).trimEnd().split('\n')
     outside[0] += ' // undocumented outside hunk'
-    assert.throws(() => beforeMysterySource(path, outside.join('\n') + '\n'), /mutation outside approved loop hunks \(mystery layer\)/)
+    assert.throws(() => invertMysterySource(path, outside.join('\n') + '\n'), /mutation outside approved loop hunks \(mystery layer\)/)
     probes += 2
   }
   console.log(`PASS mystery projection: ${ledger.files.length} exact file inversions to ${ledger.baseline}; ${probes} in-hunk/outside-hunk mutation probes rejected; prior ledgers untouched.`)

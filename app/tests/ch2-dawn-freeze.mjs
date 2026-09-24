@@ -1,8 +1,5 @@
-// Historical needle/terminal boundary: exact later sunrise hunks are inverted
-// only for App assertions. The imported dawn guard independently checks LIVE
-// shared code; all old media and voice hashes below are still read directly.
-import './ch2-dawn-freeze.mjs'
-import { beforeDawnSource } from './ch2-dawn-projection.mjs'
+// Independent live-source boundary for the sunrise revision.
+// This reads immutable Git blobs directly, never a historical projection.
 import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
@@ -13,7 +10,7 @@ import { fileURLToPath } from 'node:url'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const ts = createRequire(import.meta.url)('typescript')
-const baseline = '194c442'
+const baseline = 'b3de319'
 const git = (...args) => execFileSync('git', args, { cwd: root, maxBuffer: 48 * 1024 * 1024 })
 const normalize = text => text.replaceAll('\r\n', '\n')
 const original = file => normalize(git('show', `${baseline}:${file}`).toString('utf8'))
@@ -21,10 +18,10 @@ const current = file => normalize(readFileSync(path.join(root, file), 'utf8'))
 const tracked = prefix => git('ls-tree', '-r', '--name-only', baseline, '--', prefix)
   .toString('utf8').trim().split('\n').filter(Boolean)
 
-// Every pre-existing non-Ch2 module is frozen, not only the obvious story/store.
-// This also covers shared UI components, route hooks and the approved voice aliases.
+// Every pre-existing module except the two exact integration files is frozen,
+// including all earlier Ch2 mechanics as well as Ch1/DR/DSA and voice aliases.
 const sharedFiles = tracked('app/src').filter(file => file !== 'app/src/App.tsx'
-  && !/^app\/src\/(?:game\/ch2(?:[.-])|components\/Ch2)/.test(file))
+  && file !== 'app/src/game/ch2.ts')
 sharedFiles.push('app/package.json', 'app/package-lock.json', 'app/index.html',
   'app/vite.config.ts', 'app/tsconfig.json', 'app/tsconfig.app.json')
 for (const file of sharedFiles) {
@@ -36,7 +33,10 @@ const oldApp = parse(original('app/src/App.tsx'))
 const funcs = ast => new Map(ast.statements.filter(ts.isFunctionDeclaration)
   .map(node => [node.name?.text, node.getText(ast)]))
 const oldFunctions = funcs(oldApp)
-const allowedImport = './components/Ch2MysteryMedia'
+const allowedImports = new Map([
+  ['./components/Ch2DawnScene', "import { Ch2DawnScene } from './components/Ch2DawnScene'"],
+  ['./game/ch2-dawn', "import { CH2_DAWN_SHOTS } from './game/ch2-dawn'"],
+])
 function assertFrozenApp(source) {
   const ast = parse(source), after = funcs(ast)
   assert.deepEqual([...after.keys()], [...oldFunctions.keys()], 'No added/removed/renamed shared App functions')
@@ -44,18 +44,20 @@ function assertFrozenApp(source) {
     assert.equal(after.get(name), body, `${name}: only Ch2Screen is editable in this round`)
   }
   const imports = tree => tree.statements.filter(ts.isImportDeclaration)
-    .filter(node => node.moduleSpecifier.text !== allowedImport).map(node => node.getText(tree))
-  assert.deepEqual(imports(ast), imports(oldApp), 'Only the isolated Ch2MysteryMedia import may be added')
-  const extras = ast.statements.filter(ts.isImportDeclaration).filter(node => node.moduleSpecifier.text === allowedImport)
-  assert(extras.length <= 1, 'Only one isolated mystery import is allowed')
+    .filter(node => !allowedImports.has(node.moduleSpecifier.text)).map(node => node.getText(tree))
+  assert.deepEqual(imports(ast), imports(oldApp), 'Only the two isolated dawn imports may be added')
+  const extras = ast.statements.filter(ts.isImportDeclaration).filter(node => allowedImports.has(node.moduleSpecifier.text))
+  assert(extras.length <= 2, 'Only two isolated dawn imports are allowed')
+  assert.equal(new Set(extras.map(node => node.moduleSpecifier.text)).size, extras.length, 'No duplicate dawn import')
+  for (const node of extras) assert.equal(node.getText(ast), allowedImports.get(node.moduleSpecifier.text), 'Dawn imports use exact approved symbols')
   const globals = tree => tree.statements.filter(node => !ts.isImportDeclaration(node)
     && !ts.isFunctionDeclaration(node)).map(node => node.getText(tree))
   assert.deepEqual(globals(ast), globals(oldApp), 'Shared routes, globals, image helper and preload list must stay exact')
 }
-assertFrozenApp(beforeDawnSource('app/src/App.tsx', current('app/src/App.tsx')))
+assertFrozenApp(current('app/src/App.tsx'))
 const oldSource = original('app/src/App.tsx')
 assert.throws(() => assertFrozenApp(oldSource + '\nconst undocumentedGlobal = true\n'), /Shared routes/)
-assert.throws(() => assertFrozenApp("import './unapproved-module'\n" + oldSource), /isolated Ch2MysteryMedia/)
+assert.throws(() => assertFrozenApp("import './unapproved-module'\n" + oldSource), /isolated dawn imports/)
 assert.throws(() => assertFrozenApp(oldSource + '\nfunction undocumentedSharedFunction() {}\n'), /shared App functions/)
 const firstProtected = oldApp.statements.find(node => ts.isFunctionDeclaration(node)
   && node.name?.text !== 'Ch2Screen' && node.body)
@@ -63,7 +65,7 @@ assert.throws(() => assertFrozenApp(oldSource.slice(0, firstProtected.body.getSt
   + '\nvoid "unauthorized regression";\n' + oldSource.slice(firstProtected.body.getStart(oldApp) + 1)), /only Ch2Screen/)
 
 // Hash every old image/audio blob, including old second-chapter illustrations.
-// New mystery media use sibling names and therefore need no allowlist exception.
+// New sunrise media use two exact sibling names and are checked below.
 let mediaCount = 0
 const media = git('ls-tree', '-r', '-z', baseline, '--', 'app/public/assets', 'app/public/audio')
   .toString('utf8').split('\0').filter(Boolean)
@@ -92,4 +94,19 @@ for (const voice of approved.takes) {
   assert.equal(createHash('sha256').update(readFileSync(path.join(root, voice.output))).digest('hex'),
     approvedVoices.get(voice.output), `Approved voice changed: ${voice.output}`)
 }
-console.log(`PASS ${baseline} mystery freeze: ${sharedFiles.length} shared modules/configs; ${oldFunctions.size - 1} exact App functions; imports/globals; ${mediaCount} existing media; three independently pinned approved Ch1 voices. Negative mutation probes rejected.`)
+const assets = JSON.parse(readFileSync(path.join(root, 'docs/ch2-dawn-assets.json'), 'utf8'))
+const expectedNew = new Map([
+  ['app/public/assets/ch2_dawn_window_v1.png', '3729695006bdf69b72d98fdcf2bed0bee7c986aa41164b710fd738c568f578bc'],
+  ['app/public/assets/ch2_dawn_window_portrait_v1.png', 'ab69cdbf532644e175328b13cd2baa350e1eef77b5352441e6c1854642d15206'],
+])
+assert.deepEqual(assets.assets.map(row => row.output).sort(), [...expectedNew.keys()].sort(), 'Exactly two dedicated sunrise images')
+for (const row of assets.assets) {
+  assert.equal(row.sha256, expectedNew.get(row.output), 'Recorded image identity must remain approved')
+  assert.equal(createHash('sha256').update(readFileSync(path.join(root, row.output))).digest('hex'), expectedNew.get(row.output), 'New image hash mismatch')
+}
+const addedMedia = [
+  git('diff', '--name-only', '--diff-filter=A', baseline, '--', 'app/public/assets', 'app/public/audio').toString('utf8'),
+  git('ls-files', '--others', '--exclude-standard', '--', 'app/public/assets', 'app/public/audio').toString('utf8'),
+].join('\n').split(/\r?\n/).filter(Boolean)
+assert.deepEqual([...new Set(addedMedia)].sort(), [...expectedNew.keys()].sort(), 'Only named sunrise images may be added, no new sound')
+console.log(`PASS ${baseline} dawn live freeze: ${sharedFiles.length} shared modules/configs; ${oldFunctions.size - 1} exact App functions; imports/globals; ${mediaCount} existing media; three independently pinned approved Ch1 voices. Negative mutation probes rejected.`)

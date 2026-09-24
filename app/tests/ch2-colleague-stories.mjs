@@ -83,6 +83,18 @@ for (const row of mysteryMedia) {
     'Current mystery media differs from its reviewed record: ' + row.path)
   allowedLaterMedia.add(row.path)
 }
+// Sunrise adds exactly two independently pinned images, no namespace wildcard.
+const dawnImages = JSON.parse(readFileSync(new URL('docs/ch2-dawn-assets.json', root), 'utf8'))
+const dawnHashes = new Map([
+  ['app/public/assets/ch2_dawn_window_v1.png', '3729695006bdf69b72d98fdcf2bed0bee7c986aa41164b710fd738c568f578bc'],
+  ['app/public/assets/ch2_dawn_window_portrait_v1.png', 'ab69cdbf532644e175328b13cd2baa350e1eef77b5352441e6c1854642d15206'],
+])
+assert.deepEqual(dawnImages.assets.map(row => row.output).sort(), [...dawnHashes.keys()].sort())
+for (const row of dawnImages.assets) {
+  assert.equal(row.sha256, dawnHashes.get(row.output))
+  assert.equal(createHash('sha256').update(readFileSync(new URL(row.output, root))).digest('hex'), row.sha256)
+  allowedLaterMedia.add(row.output)
+}
 const newMedia = [
   execFileSync('git',['diff','--name-only','--diff-filter=A','4f70852','--','app/public/audio','app/public/assets'],{encoding:'utf8',cwd:root}),
   execFileSync('git',['ls-files','--others','--exclude-standard','--','app/public/audio','app/public/assets'],{encoding:'utf8',cwd:root}),

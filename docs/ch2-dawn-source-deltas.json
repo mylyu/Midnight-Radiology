@@ -1,0 +1,49 @@
+{
+  "baseline": "b3de319",
+  "reason": "Approved third-shift sunrise pause. Exact inverse of two App imports, Ch2Screen background selection, and ch2.ts module registration/continuation only. All prior ledgers and baselines remain unchanged.",
+  "files": [
+    {
+      "path": "app/src/App.tsx",
+      "edits": [
+        {
+          "afterStart": 12,
+          "before": [],
+          "after": [
+            "import { Ch2DawnScene } from './components/Ch2DawnScene'",
+            "import { CH2_DAWN_SHOTS } from './game/ch2-dawn'"
+          ]
+        },
+        {
+          "afterStart": 2100,
+          "before": [],
+          "after": ["  const dawnShot = phase === 'story' ? CH2_DAWN_SHOTS[stepId] : undefined"]
+        },
+        {
+          "afterStart": 2104,
+          "before": ["      <BgImg name={ch2BackgroundAsset(view.bg)} />"],
+          "after": ["      {dawnShot ? <Ch2DawnScene shot={dawnShot} /> : <BgImg name={ch2BackgroundAsset(view.bg)} />}"]
+        }
+      ]
+    },
+    {
+      "path": "app/src/game/ch2.ts",
+      "edits": [
+        {
+          "afterStart": 7,
+          "before": [],
+          "after": ["import { CH2_DAWN_STEPS, ch2DawnStep } from './ch2-dawn.ts'"]
+        },
+        {
+          "afterStart": 157,
+          "before": ["  return ch2TerminalStep(id, ch2NeedleStep(id, ch2PacingStep(id, ch2SocialStep(id, rendered, state), state), state), state)"],
+          "after": ["  return ch2DawnStep(id, ch2TerminalStep(id, ch2NeedleStep(id, ch2PacingStep(id, ch2SocialStep(id, rendered, state), state), state), state), state)"]
+        },
+        {
+          "afterStart": 663,
+          "before": [],
+          "after": ["  ...CH2_DAWN_STEPS,"]
+        }
+      ]
+    }
+  ]
+}
