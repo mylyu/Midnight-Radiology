@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { deliveryManifest, historicalRetiredReference } from './game-delivery-media.mjs'
 import {execFileSync} from 'node:child_process'
 import {readFileSync} from 'node:fs'
 import {createHash} from 'node:crypto'
@@ -59,6 +60,9 @@ for(const r of plan.lines){
  }else assert.equal(norm(check.asr),norm(r.text),r.key+' transcript')
  assert(check.seconds>.5&&check.seconds<4&&check.peak<.98&&check.rms>.003)
 }
-const page=read('app/public/ch2-voice-preview.html')
-assert.deepEqual(JSON.parse(page.match(/const rows=(.*);/)[1]),current)
+assert(deliveryManifest().removed.some(row=>row.path==='app/public/ch2-voice-preview.html'),
+ 'The old static audition page must be explicitly retired; all actual generation/audio/graph checks above still run')
+const historicalPreview=historicalRetiredReference('app/public/ch2-voice-preview.html').toString('utf8')
+assert.deepEqual(JSON.parse(historicalPreview.match(/const rows=(.*);/)[1]),current,
+ 'Historical audition metadata remains exact; this does not claim the retired page is still published')
 console.log('PASS historical author-voice round (validated later deltas projected out): exact 5 author lines, 2 original voices, 2 silent roles; references/hashes, historical graph/UI/save/shared audio. Xiao He ASR discrepancy retained.')

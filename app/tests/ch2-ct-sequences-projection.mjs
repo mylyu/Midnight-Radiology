@@ -4,6 +4,7 @@ import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { resolve } from 'node:path'
+import { beforeGameDeliverySource } from './game-delivery-projection.mjs'
 
 const root = new URL('../../', import.meta.url)
 export const CT_SEQUENCES_BASELINE = '61172202570b78ada9253a63c65af7137547d8e3'
@@ -35,6 +36,8 @@ function ledger() {
   return recorded
 }
 export function beforeCtSequencesSource(path, source) {
+  if (CT_SEQUENCES_EDITED_FILES.includes(path) && normalize(source) === original(path)) return source
+  source = beforeGameDeliverySource(path, source)
   if (!CT_SEQUENCES_EDITED_FILES.includes(path)) return source
   if (normalize(source) === original(path)) return source // Exact previously checked historical input.
   const file = ledger().files.find(row => row.path === path)

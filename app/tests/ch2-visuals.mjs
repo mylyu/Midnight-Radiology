@@ -2,6 +2,7 @@
 // PLAYWRIGHT_MODULE points to an installed playwright package; CHROME_PATH is optional.
 import { createRequire } from 'node:module'
 import assert from 'node:assert/strict'
+import { logicalImagePath, waitForLiveImage } from './game-delivery-media.mjs'
 import { mkdirSync, existsSync } from 'node:fs'
 import { ch2BookUnlocked, ch2PortraitAsset, CH2_PORTRAITS, CH2_IMAGE_CAPTIONS, CH2_SHIFTS } from '../src/game/ch2.ts'
 const require = createRequire(import.meta.url)
@@ -35,7 +36,7 @@ async function scene(shift, stepId, mobile = false, gender = 'm') {
 }
 try {
   for (const asset of new Set(Object.values(CH2_PORTRAITS))) {
-    assert(existsSync(new URL(`../public/assets/${asset}.png`, import.meta.url)), `Missing portrait: ${asset}`)
+    assert(logicalImagePath(asset), `Missing portrait delivery: ${asset}`)
   }
   for (const shift of CH2_SHIFTS) for (const step of Object.values(shift.steps)) {
     for (const key of [step.sprite, step.sprite2, step.phone].filter(Boolean)) {
@@ -51,7 +52,7 @@ try {
     const match = matches.find(({ step }) => [step.sprite ?? (step.speaker === 'me' ? 'me' : step.speaker === 'luzhou' ? 'luzhou' : undefined), step.sprite2, step.phone].filter(Boolean).some(value => ch2PortraitAsset(value, gender) === asset))
     assert(match, `No scene found for ${key}`)
     const { context, page } = await scene(match.shift.id, match.node, false, gender)
-    await page.waitForFunction(asset => [...document.images].some(i => i.src.endsWith('/' + asset + '.png') && i.complete && i.naturalWidth > 0), asset)
+    await waitForLiveImage(page, asset, base)
     await context.close()
   }
   for (const [index, shift] of CH2_SHIFTS.slice(0, 5).entries()) {
@@ -87,9 +88,7 @@ try {
   ]) {
     const { context, page } = await scene(shift, node)
     // BgImg has a hidden portrait-only blur layer before the visible backdrop.
-    const img = page.locator(`img[src$="/${asset}.png"]:visible`).first()
-    await img.waitFor()
-    await page.waitForFunction(asset => [...document.images].some(i => i.src.endsWith('/' + asset + '.png') && i.complete && i.naturalWidth > 0), asset)
+    const img = await waitForLiveImage(page, asset, base)
     if (CH2_IMAGE_CAPTIONS[asset]) await page.getByText(CH2_IMAGE_CAPTIONS[asset], { exact: true }).waitFor()
     if (['ch2_ct_aortic_wide', 'ct_dental_metal_teaching', 'ch2_ct_coronary_slices'].includes(asset)) {
       assert(!/AI生成|教学模拟|非患者CT/.test(await page.locator('body').innerText()), `In-story caption should be retired: ${asset}`)

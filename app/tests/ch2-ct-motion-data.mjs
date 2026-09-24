@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { inspectLiveImage } from './game-delivery-media.mjs'
 import { readFileSync } from 'node:fs'
 import { CH2_CT_MOTION, CH2_CT_GANTRY_EDGE, CH2_CT_GANTRY_CLIP, ch2CtBedPosition } from '../src/game/ch2-ct-motion.ts'
 
@@ -25,10 +26,10 @@ for (const [x, y] of CH2_CT_GANTRY_EDGE) {
 }
 assert(CH2_CT_GANTRY_CLIP.startsWith('polygon('))
 for (const key of ['room', 'bed']) {
-  const bytes = readFileSync(`public/assets/${CH2_CT_MOTION[key]}.png`)
-  assert.equal(bytes.readUInt32BE(16), CH2_CT_MOTION.width, 'Layers share an exact canvas width')
-  assert.equal(bytes.readUInt32BE(20), CH2_CT_MOTION.height, 'Layers share an exact canvas height')
-  if (key === 'bed') assert.equal(bytes[25], 6, 'Moving layer has an alpha channel')
+  const live = await inspectLiveImage(`app/public/assets/${CH2_CT_MOTION[key]}.png`)
+  assert.equal(live.width, CH2_CT_MOTION.width, 'Layers share an exact canvas width')
+  assert.equal(live.height, CH2_CT_MOTION.height, 'Layers share an exact canvas height')
+  if (key === 'bed') assert.equal(live.metadata.hasAlpha, true, 'Moving layer has an actual alpha channel')
 }
 const component = readFileSync('src/components/Ch2CtMotion.tsx', 'utf8')
 assert.doesNotMatch(component, /setTimeout|setInterval|requestAnimationFrame|animationend|onDone|\.play\(/, 'The visual layer cannot add a second lifecycle clock or sound')

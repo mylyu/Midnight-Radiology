@@ -6,6 +6,7 @@ import { REWARDS_ROUND_ADDED_SOURCE, REWARDS_ROUND_ADDED_MEDIA } from './ch2-rew
 import { POLISH_ADDED_SOURCE, POLISH_ADDED_MEDIA } from './image-polish-projection.mjs'
 import { CHECKIN_ADDED_FILES } from './ch2-checkin-projection.mjs'
 import assert from 'node:assert/strict'
+import { assertHistoricalMedia, priorMediaPaths, priorSourcePaths, inspectLiveImage } from './game-delivery-media.mjs'
 import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
@@ -35,7 +36,7 @@ const additions = prefix => [...new Set([
   git('diff', '--name-only', '--diff-filter=A', baseline, '--', prefix).toString('utf8'),
   git('ls-files', '--others', '--exclude-standard', '--', prefix).toString('utf8'),
 ].join('\n').split(/\r?\n/).filter(Boolean))].sort()
-assert.deepEqual(additions('app/src').filter(path => !CHECKIN_ADDED_FILES.includes(path) && !POLISH_ADDED_SOURCE.includes(path) && !REWARDS_ROUND_ADDED_SOURCE.includes(path) && !CT_SEQUENCES_ADDED_SOURCE.includes(path)), [
+assert.deepEqual(priorSourcePaths(additions('app/src')).filter(path => !CHECKIN_ADDED_FILES.includes(path) && !POLISH_ADDED_SOURCE.includes(path) && !REWARDS_ROUND_ADDED_SOURCE.includes(path) && !CT_SEQUENCES_ADDED_SOURCE.includes(path)), [
   'app/src/components/Ch2CtMotion.tsx', 'app/src/game/ch2-ct-motion.ts', 'app/src/game/ch2-payoffs.ts',
 ], 'Only three exact chapter-two additions, no new shared runtime')
 
@@ -45,9 +46,7 @@ for (const entry of git('ls-tree', '-r', '-z', baseline, '--', 'app/public/asset
   const match = /^\d+ blob ([0-9a-f]+)\t(.+)$/.exec(entry)
   assert(match)
   const [, expected, path] = match
-  const bytes = readFileSync(new URL(path, root))
-  assert.equal(createHash('sha1').update(`blob ${bytes.length}\0`).update(bytes).digest('hex'), expected,
-    `${path}: no existing image/audio may be overwritten or deleted`)
+  assertHistoricalMedia(path, { gitBlob: expected })
   mediaCount++
 }
 
@@ -60,20 +59,20 @@ export const payoffMediaHashes = new Map([
   ['app/public/assets/ch2_slice_model_v1.png', '13a7fce2211e356e17a49bacaf0db8263addc45398ce54126411163804afb2f2'],
   ['app/public/assets/ch2_zhou_expert_handshake_v1.png', '29087f82840f13010859ede3e157276d3ae93fc4553a8a16409f1caf33e84bdf'],
 ])
-assert.deepEqual(additions('app/public/assets').filter(path => !POLISH_ADDED_MEDIA.includes(path) && !REWARDS_ROUND_ADDED_MEDIA.includes(path) && !CT_SEQUENCES_ADDED_MEDIA.includes(path)), [...payoffMediaHashes.keys()].sort(), 'Only six exact reviewed images after newer LIVE audit')
+assert.deepEqual(priorMediaPaths(additions('app/public/assets'), baseline).filter(path => !POLISH_ADDED_MEDIA.includes(path) && !REWARDS_ROUND_ADDED_MEDIA.includes(path) && !CT_SEQUENCES_ADDED_MEDIA.includes(path)), [...payoffMediaHashes.keys()].sort(), 'Only six exact reviewed images after newer LIVE audit')
 assert.deepEqual(additions('app/public/audio'), [], 'No sound is added or replaced in this round')
 for (const [path, expected] of payoffMediaHashes) {
-  assert.equal(createHash('sha256').update(readFileSync(new URL(path, root))).digest('hex'), expected, `${path}: approved asset identity`)
+  assertHistoricalMedia(path, { sha256: expected })
 }
 const mediaRecord = JSON.parse(readFileSync(new URL('docs/ch2-payoffs-assets.json', root), 'utf8'))
 assert.equal(mediaRecord.baseline, baseline, 'Asset provenance belongs to this fixed revision')
 assert.deepEqual(mediaRecord.assets.map(row => row.output).sort(), [...payoffMediaHashes.keys()].sort(), 'Manifest records exactly the six approved outputs')
 for (const row of mediaRecord.assets) {
   assert.equal(row.sha256, payoffMediaHashes.get(row.output), `${row.output}: manifest and independent fixed hash agree`)
-  const bytes = readFileSync(new URL(row.output, root))
-  assert.equal(bytes.length, row.bytes, `${row.output}: recorded byte count`)
-  assert.equal(bytes.readUInt32BE(16), row.width, `${row.output}: PNG canvas width`)
-  assert.equal(bytes.readUInt32BE(20), row.height, `${row.output}: PNG canvas height`)
+  const live = await inspectLiveImage(row.output)
+  assert.equal(live.row.sourceBytes, row.bytes, `${row.output}: historical source byte count`)
+  assert.equal(live.width, row.width, `${row.output}: actual delivery canvas width`)
+  assert.equal(live.height, row.height, `${row.output}: actual delivery canvas height`)
   assert(row.prompt?.length > 80 && row.source?.endsWith('.png') && row.review?.length > 20,
     `${row.output}: retain exact generation prompt, source and visual review record`)
 }

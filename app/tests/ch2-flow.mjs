@@ -5,6 +5,7 @@ import { swipeCh2Checkin } from './ch2-checkin-driver.mjs'
 import { CH2_SHIFTS, ch2StepForState, QUIZ2 } from '../src/game/ch2.ts'
 import { CH2_SCANS } from '../src/game/ch2-scans.ts'
 import { getCh2Observation } from '../src/game/ch2-observations.ts'
+import { logicalImagePath } from './game-delivery-media.mjs'
 const require = createRequire(import.meta.url)
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright')
 const browser = await chromium.launch({ headless: true, ...(process.env.EDGE_TEST === '1' ? {channel:'msedge'} : process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : {}) })
@@ -114,12 +115,12 @@ try {
   }
   {
     const { context, page } = await open('c2n1', 'c2n1_p0')
-    await page.locator('img[src$="/ch2_pixel_pat_stone.png"]').waitFor()
+    await page.locator(`img[src$="assets/${logicalImagePath('ch2_pixel_pat_stone')}"]`).waitFor()
     await advance(page, 'c2n1_pain')
     await page.getByText('哎呦，疼死我了。', { exact: true }).waitFor()
     assert.equal(await page.evaluate(() => window.__voiceCalls.filter(src => src.includes('/vox_guy.mp3')).length), 1)
     await advance(page, 'c2n1_p1')
-    await page.locator('img[src$="/ch2_pixel_char_he.png"]').waitFor()
+    await page.locator(`img[src$="assets/${logicalImagePath('ch2_pixel_char_he')}"]`).waitFor()
     await context.close()
   }
   {
@@ -130,7 +131,7 @@ try {
   }
   {
     const { context, page } = await open('c2n5', 'c2n5_m17')
-    await page.locator('img[src$="/ct_head_child_followup.png"]').waitFor()
+    await page.locator(`img[src$="assets/${logicalImagePath('ct_head_child_followup')}"]`).waitFor()
     await advance(page, 'c2n5_m18')
     await context.close()
   }

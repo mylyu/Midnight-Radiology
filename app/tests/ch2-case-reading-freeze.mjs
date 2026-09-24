@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { assertHistoricalMedia, priorMediaPaths, priorSourcePaths, inspectLiveImage } from './game-delivery-media.mjs'
 import './ch2-ct-sequences-freeze.mjs'
 import { CT_SEQUENCES_ADDED_SOURCE, CT_SEQUENCES_ADDED_MEDIA } from './ch2-ct-sequences-projection.mjs'
 import { execFileSync } from 'node:child_process'
@@ -25,13 +26,13 @@ for (const prefix of ['app/src', 'app/public/assets', 'app/public/audio']) {
   const later = [...CT_SEQUENCES_ADDED_SOURCE, ...CT_SEQUENCES_ADDED_MEDIA]
   const additions = [...new Set([git('diff', '--name-only', '--diff-filter=A', baseline, '--', prefix),
     git('ls-files', '--others', '--exclude-standard', '--', prefix)].join('\n').split(/\r?\n/).filter(Boolean))]
-  assert.deepEqual(additions.filter(path => !later.includes(path)), [], 'No new source or media beyond the exact later LIVE-validated CT additions')
+  const historical = prefix === 'app/src' ? priorSourcePaths(additions) : priorMediaPaths(additions, baseline)
+  assert.deepEqual(historical.filter(path => !later.includes(path)), [], 'No new source or media beyond the exact later LIVE-validated CT additions')
 }
 let mediaCount = 0
 for (const entry of git('ls-tree', '-r', '-z', baseline, '--', 'app/public/assets', 'app/public/audio').split('\0').filter(Boolean)) {
   const [, expected, path] = /^\d+ blob ([0-9a-f]+)\t(.+)$/.exec(entry)
-  const bytes = readFileSync(new URL(path, root))
-  assert.equal(createHash('sha1').update(`blob ${bytes.length}\0`).update(bytes).digest('hex'), expected, `${path}: media frozen`)
+  assertHistoricalMedia(path, { gitBlob: expected })
   mediaCount++
 }
 console.log(`PASS case-reading LIVE freeze: ${files.length} original source/config/ledger files and ${mediaCount} media; only the exact approved completion citation may differ`)

@@ -35,7 +35,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     const changed = edits.find(e => e.after.length)?.after.find(line => line.trim())
     assert(changed, `${path}: expected explicit reviewed addition/change`)
     assert.throws(() => beforeLoopSource(path, live.replace(changed, changed + ' // undocumented')), /undocumented mutation/)
-    assert.throws(() => beforeLoopSource(path, live.trimEnd() + '\n// undocumented append\n'), /mutation outside approved loop hunks/)
+    assert.throws(() => beforeLoopSource(path, live.trimEnd() + '\n// undocumented append\n'), /mutation outside approved loop hunks|undocumented mutation outside exact reviewed delivery hunks/)
   }
   console.log(`PASS loop projection: ${ledger.files.length} exact reviewed file inversions to ${ledger.baseline}; in-hunk/outside-hunk mutations rejected`)
 }

@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { logicalImagePath, liveMedia, assertHistoricalMedia } from './game-delivery-media.mjs'
 import { readFileSync, existsSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 import sharp from 'sharp'
@@ -17,7 +18,7 @@ assert.equal(new Set(CH2_ACTIVE_BADGES).size, 15)
 assert.equal(CH2_PAYOFF_KEEPSAKES.length, 7)
 for (const gift of CH2_PAYOFF_KEEPSAKES) {
   assert(gift.image, `${gift.id}: actual illustration, not emoji alone`)
-  assert(existsSync(new URL(`../public/assets/${gift.image}.png`, import.meta.url)))
+  assert(logicalImagePath(gift.image))
 }
 for (const [id, image, flags] of [
   ['c2n5_payoff_luo1', 'ch2_gift_luo_pouch_v1', { c2_needle_resolved: true }],
@@ -63,8 +64,8 @@ for (const [i, id] of teaser.entries()) {
 }
 const provenance = JSON.parse(readFileSync(new URL('../../docs/ch2-rewards-round-assets.json', import.meta.url)))
 for (const asset of provenance.assets) {
-  const bytes = readFileSync(new URL(`../../${asset.path}`, import.meta.url))
-  assert.equal(createHash('sha256').update(bytes).digest('hex'), asset.sha256)
+  const bytes = liveMedia(asset.path).bytes
+  assertHistoricalMedia(asset.path, { sha256: asset.sha256 })
   const metadata = await sharp(bytes).metadata(), stats = await sharp(bytes).stats()
   assert(metadata.hasAlpha && stats.channels[3].min === 0 && stats.channels[3].max === 255)
   assert(asset.prompt?.includes('pixel') && asset.source && asset.reference)

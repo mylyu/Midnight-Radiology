@@ -6,6 +6,7 @@ import { resolve } from 'node:path'
 import { CH2_SHIFTS, ch2StepForState } from '../src/game/ch2.ts'
 import { freshState } from '../src/game/store.ts'
 import { CH2_TERMINAL_CUES } from '../src/game/ch2-terminal.ts'
+import { logicalImagePath, logicalImageUrl } from './game-delivery-media.mjs'
 
 const require = createRequire(import.meta.url)
 const modulePath = process.env.PLAYWRIGHT_MODULE || 'C:/Users/lvmen/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright'
@@ -104,9 +105,10 @@ async function layout(page) {
   }
 }
 async function imageLoaded(page, key) {
-  const img = page.locator(`img[src$="/${key}.png"]`).first()
+  const expectedImage = logicalImageUrl(key, page.url())
+  const img = page.locator(`img[src$="assets/${logicalImagePath(key)}"]`).first()
   await img.waitFor()
-  await page.waitForFunction(key => [...document.images].some(img => img.src.endsWith(`/${key}.png`) && img.complete && img.naturalWidth > 0), key)
+  await page.waitForFunction(expected => [...document.images].some(img => img.src === expected && img.complete && img.naturalWidth > 0), expectedImage)
 }
 async function manual(page, expectedTitles, screenshot) {
   const before = await read(page)

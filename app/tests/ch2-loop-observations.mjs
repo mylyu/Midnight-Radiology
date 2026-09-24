@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { assertHistoricalMedia } from './game-delivery-media.mjs'
 import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'
@@ -28,9 +29,9 @@ for (const [stepId, config] of Object.entries(CH2_OBSERVATIONS)) {
     assert.doesNotMatch(choice.feedback, /答错|回答错误|扣分|重答|答对|正确答案/)
   }
   if (config.image) {
-    const file = new URL(`../public/assets/${config.image}.png`, import.meta.url)
-    assert.equal(createHash('sha256').update(readFileSync(file)).digest('hex'), config.assetVersion,
-      `${config.image}: artwork changed; re-review observation, answer and region`)
+    // Encoding migration must not reset observation/reward identity. The helper
+    // separately verifies the real delivery hash before checking this old pin.
+    assertHistoricalMedia(`app/public/assets/${config.image}.png`, { sha256: config.assetVersion })
   }
   for (const region of config.regions ?? []) {
     assert(region.x >= 0 && region.y >= 0 && region.width > 0 && region.height > 0)

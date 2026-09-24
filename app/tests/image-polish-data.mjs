@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { liveMedia } from './game-delivery-media.mjs'
 import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
 import { CH2_SHIFTS } from '../src/game/ch2.ts'
@@ -26,7 +27,7 @@ assert.equal(CH2_OBSERVATIONS.c2d2_w1ok.image, 'ct_lung')
 assert.equal(CH2_OBSERVATIONS.c2d2_w1ok.id, 'lung-observe-v1', 'No fresh observation reward ID')
 assert.equal(CH2_OBSERVATIONS.c2d2_w1ok.choices.find(choice => choice.correct).id, 'upper-right')
 assert.equal(createHash('sha256').update(readFileSync(new URL('../public/assets/ct_lung.png', import.meta.url))).digest('hex'), CH2_OBSERVATIONS.c2d2_w1ok.assetVersion)
-assert.notEqual(createHash('sha256').update(readFileSync(new URL('../public/assets/ch2_lung_thick_v2.png', import.meta.url))).digest('hex'), CH2_OBSERVATIONS.c2d2_w1ok.assetVersion)
+assert.notEqual(createHash('sha256').update(liveMedia('app/public/assets/ch2_lung_thick_v2.png').bytes).digest('hex'), CH2_OBSERVATIONS.c2d2_w1ok.assetVersion)
 
 const state = freshState('f'), snapshot = JSON.stringify(state)
 let id = ch2DawnStep('c2n3_x9', steps.c2n3_x9, state).next

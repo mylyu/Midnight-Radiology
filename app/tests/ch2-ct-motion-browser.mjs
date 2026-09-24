@@ -2,6 +2,7 @@
 import assert from 'node:assert/strict'
 import { mkdirSync } from 'node:fs'
 import { createRequire } from 'node:module'
+import { logicalImageUrl } from './game-delivery-media.mjs'
 const require = createRequire(import.meta.url)
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright')
 const baseURL = process.env.GAME_URL || 'http://127.0.0.1:8798/'
@@ -86,7 +87,11 @@ try {
   // Failed moving-layer download uses the existing static frame and never traps input.
   const context = await browser.newContext()
   const page = await context.newPage()
-  await page.route('**/assets/ch2_ct_motion_bed_v1.png', route => route.abort('failed'))
+  let failedLayerRequests = 0
+  await page.route(logicalImageUrl('ch2_ct_motion_bed_v1', baseURL), route => {
+    failedLayerRequests++
+    return route.abort('failed')
+  })
   await page.goto(baseURL)
   await page.evaluate(async () => {
     const reactModule = await import('/node_modules/.vite/deps/react.js')
@@ -97,6 +102,7 @@ try {
     ReactDOM.createRoot(mount).render(React.createElement(Ch2CtMotion, { progress: 0.5 }))
   })
   await page.locator('[data-ct-motion-fallback="true"]').waitFor()
+  assert(failedLayerRequests > 0, 'Missing-layer fixture intercepted the actual canonical image request')
   assert(await page.locator('[data-ct-motion-fallback="true"]').evaluate(image => image.complete && image.naturalWidth > 0))
   await context.close()
   assert.deepEqual(errors, [])

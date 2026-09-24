@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { assertHistoricalMedia, priorMediaPaths, priorSourcePaths, inspectLiveImage } from './game-delivery-media.mjs'
 import { CT_SEQUENCES_ADDED_SOURCE, CT_SEQUENCES_ADDED_MEDIA } from './ch2-ct-sequences-projection.mjs'
 import './ch2-rewards-round-freeze.mjs'
 import { REWARDS_ROUND_ADDED_SOURCE, REWARDS_ROUND_ADDED_MEDIA } from './ch2-rewards-round-projection.mjs'
@@ -25,16 +26,14 @@ const additions = prefix => [...new Set([
   git('diff', '--name-only', '--diff-filter=A', baseline, '--', prefix).toString(),
   git('ls-files', '--others', '--exclude-standard', '--', prefix).toString(),
 ].join('\n').split(/\r?\n/).filter(Boolean))].sort()
-assert.deepEqual(additions('app/src').filter(path => !REWARDS_ROUND_ADDED_SOURCE.includes(path) && !CT_SEQUENCES_ADDED_SOURCE.includes(path)), POLISH_ADDED_SOURCE)
-assert.deepEqual(additions('app/public/assets').filter(path => !REWARDS_ROUND_ADDED_MEDIA.includes(path) && !CT_SEQUENCES_ADDED_MEDIA.includes(path)), POLISH_ADDED_MEDIA)
+assert.deepEqual(priorSourcePaths(additions('app/src')).filter(path => !REWARDS_ROUND_ADDED_SOURCE.includes(path) && !CT_SEQUENCES_ADDED_SOURCE.includes(path)), POLISH_ADDED_SOURCE)
+assert.deepEqual(priorMediaPaths(additions('app/public/assets'), baseline).filter(path => !REWARDS_ROUND_ADDED_MEDIA.includes(path) && !CT_SEQUENCES_ADDED_MEDIA.includes(path)), POLISH_ADDED_MEDIA)
 assert.deepEqual(additions('app/public/audio'), [])
 let mediaCount = 0
 for (const entry of git('ls-tree', '-r', '-z', baseline, '--', 'app/public/assets', 'app/public/audio').toString().split('\0').filter(Boolean)) {
   const [, expected, path] = /^\d+ blob ([0-9a-f]+)\t(.+)$/.exec(entry)
-  const bytes = readFileSync(new URL(path, root))
-  assert.equal(createHash('sha1').update(`blob ${bytes.length}\0`).update(bytes).digest('hex'), expected, `${path}: original media bytes remain unchanged`)
+  assertHistoricalMedia(path, { gitBlob: expected })
   mediaCount++
 }
-const thick = readFileSync(new URL(POLISH_ADDED_MEDIA[0], root))
-assert.equal(createHash('sha256').update(thick).digest('hex'), '3fc63700d5e109922fbb3c2ae2f9a682747453ed847abffb1953481e2c331776')
+assertHistoricalMedia(POLISH_ADDED_MEDIA[0], { sha256: '3fc63700d5e109922fbb3c2ae2f9a682747453ed847abffb1953481e2c331776' })
 console.log(`PASS image-polish LIVE freeze: ${protectedFiles.length} protected source/config/ledger files, ${mediaCount} original images/audio, one pinned new thick image; Ch1/DR/DSA mechanics preserved`)

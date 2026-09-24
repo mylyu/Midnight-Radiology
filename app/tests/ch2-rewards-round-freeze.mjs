@@ -1,6 +1,7 @@
 // Latest LIVE boundary: exact chapter-two changes only, then older historical
 // audits may reverse this layer while retaining every original baseline.
 import assert from 'node:assert/strict'
+import { assertHistoricalMedia, priorMediaPaths, priorSourcePaths, inspectLiveImage } from './game-delivery-media.mjs'
 import './ch2-ct-sequences-freeze.mjs'
 import { beforeCtSequencesSource, CT_SEQUENCES_ADDED_SOURCE, CT_SEQUENCES_ADDED_MEDIA } from './ch2-ct-sequences-projection.mjs'
 import { execFileSync } from 'node:child_process'
@@ -73,15 +74,14 @@ const additions = prefix => [...new Set([
   git('diff', '--name-only', '--diff-filter=A', baseline, '--', prefix).toString(),
   git('ls-files', '--others', '--exclude-standard', '--', prefix).toString(),
 ].join('\n').split(/\r?\n/).filter(Boolean))].sort()
-assert.deepEqual(additions('app/src').filter(path => !CT_SEQUENCES_ADDED_SOURCE.includes(path)), REWARDS_ROUND_ADDED_SOURCE, 'Only exact approved new source paths')
+assert.deepEqual(priorSourcePaths(additions('app/src')).filter(path => !CT_SEQUENCES_ADDED_SOURCE.includes(path)), REWARDS_ROUND_ADDED_SOURCE, 'Only exact approved new source paths')
 assert.deepEqual(additions('app/public/audio'), [], 'No voices or sound assets may change')
 let mediaCount = 0
 for (const entry of git('ls-tree', '-r', '-z', baseline, '--', 'app/public/assets', 'app/public/audio').toString().split('\0').filter(Boolean)) {
   const match = /^\d+ blob ([0-9a-f]+)\t(.+)$/.exec(entry)
   assert(match)
-  const [, expected, path] = match, bytes = readFileSync(new URL(path, root))
-  assert.equal(createHash('sha1').update(`blob ${bytes.length}\0`).update(bytes).digest('hex'), expected,
-    `${path}: every old image/audio byte must remain unchanged`)
+  const [, expected, path] = match
+  assertHistoricalMedia(path, { gitBlob: expected })
   mediaCount++
 }
 
@@ -94,20 +94,20 @@ export const rewardsRoundMediaHashes = new Map([
   ['app/public/assets/ch2_gift_zhou_cup_v1.png', '02fe4035bac63e8ead8e853aac54b7df90ff37caf8bc9316bcf00e0c392c5480'],
 ])
 assert.equal(rewardsRoundMediaHashes.size, 4, 'Record all four reviewed gift images before release')
-assert.deepEqual(additions('app/public/assets').filter(path => !CT_SEQUENCES_ADDED_MEDIA.includes(path)), [...rewardsRoundMediaHashes.keys()].sort())
+assert.deepEqual(priorMediaPaths(additions('app/public/assets'), baseline).filter(path => !CT_SEQUENCES_ADDED_MEDIA.includes(path)), [...rewardsRoundMediaHashes.keys()].sort())
 for (const [path, sha256] of rewardsRoundMediaHashes) {
-  assert.equal(createHash('sha256').update(readFileSync(new URL(path, root))).digest('hex'), sha256, `${path}: reviewed asset identity`)
+  assertHistoricalMedia(path, { sha256 })
 }
 const provenance = JSON.parse(readFileSync(new URL('docs/ch2-rewards-round-assets.json', root), 'utf8'))
 assert.equal(provenance.baseline, baseline)
 assert.deepEqual(provenance.assets.map(row => row.path).sort(), [...rewardsRoundMediaHashes.keys()].sort())
 assert.deepEqual(provenance.reused.map(row => row.path), ['app/public/assets/item_beef.png'])
 for (const asset of provenance.assets) {
-  const bytes = readFileSync(new URL(asset.path, root))
+  const live = await inspectLiveImage(asset.path)
   assert.equal(asset.sha256, rewardsRoundMediaHashes.get(asset.path), 'Editable provenance must agree with independent pins')
-  assert.equal(asset.bytes, bytes.length)
-  assert.equal(asset.width, bytes.readUInt32BE(16))
-  assert.equal(asset.height, bytes.readUInt32BE(20))
+  assert.equal(asset.bytes, live.row.sourceBytes)
+  assert.equal(asset.width, live.width)
+  assert.equal(asset.height, live.height)
   assert(asset.prompt.length > 80 && asset.source.endsWith('.png') && asset.reference.startsWith('app/public/assets/'),
     'Exact generation prompt, source output and preserved reference are required')
 }

@@ -1,6 +1,7 @@
 // Hard gate for the 1452d78 -> chapter-two pacing round. No refreshed baseline.
 // Compare real Git blobs, not a generated snapshot that could bless regressions.
 import assert from 'node:assert/strict'
+import { assertHistoricalMedia, priorMediaPaths, priorSourcePaths, inspectLiveImage } from './game-delivery-media.mjs'
 import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
@@ -70,9 +71,7 @@ for (const line of blobs) {
   const match = /^\d+ blob ([0-9a-f]+)\t(.+)$/.exec(line)
   assert(match, `Unexpected asset Git entry: ${line}`)
   const [, expected, file] = match
-  const content = readFileSync(path.join(root, file))
-  const actual = createHash('sha1').update(`blob ${content.length}\0`).update(content).digest('hex')
-  assert.equal(actual, expected, `Existing shared/Ch1/DLC asset was replaced: ${file}; use a Ch2-specific sibling`)
+  assertHistoricalMedia(file, { gitBlob: expected })
   assetCount++
 }
 console.log(`PASS frozen baseline ${baseline}: ${beforeFunctions.size - allowed.size} App functions, Ch1/DR/DSA data/store/styles, existing type members, and ${assetCount} original media hashes.`)

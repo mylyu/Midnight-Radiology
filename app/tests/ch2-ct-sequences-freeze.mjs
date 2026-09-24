@@ -1,5 +1,8 @@
 // LIVE boundary for this round; older checks may peel only its exact approved deltas.
+import './game-delivery-freeze.mjs'
+import { beforeGameDeliverySource } from './game-delivery-projection.mjs'
 import assert from 'node:assert/strict'
+import { assertHistoricalMedia, priorMediaPaths, priorSourcePaths, inspectLiveImage } from './game-delivery-media.mjs'
 import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
@@ -12,7 +15,7 @@ const root = new URL('../../', import.meta.url)
 const git = (...args) => execFileSync('git', args, { cwd: fileURLToPath(root), maxBuffer: 24e6 }).toString('utf8')
 const normalize = source => source.replaceAll('\r\n', '\n').trimEnd() + '\n'
 const tracked = prefix => git('ls-tree', '-r', '--name-only', baseline, '--', prefix).trim().split('\n').filter(Boolean)
-const current = path => normalize(readFileSync(new URL(path, root), 'utf8'))
+const current = path => normalize(beforeGameDeliverySource(path, readFileSync(new URL(path, root), 'utf8')))
 const original = path => normalize(git('show', `${baseline}:${path}`))
 const files = [...tracked('app/src'), 'app/package.json', 'app/package-lock.json', 'app/.gitignore',
   'app/index.html', 'app/vite.config.ts', 'app/tsconfig.json', 'app/tsconfig.app.json',
@@ -26,7 +29,7 @@ const additions = prefix => [...new Set([
   git('diff', '--name-only', '--diff-filter=A', baseline, '--', prefix),
   git('ls-files', '--others', '--exclude-standard', '--', prefix),
 ].join('\n').split(/\r?\n/).filter(Boolean))].sort()
-assert.deepEqual(additions('app/src'), CT_SEQUENCES_ADDED_SOURCE, 'Exactly two isolated new chapter-two modules')
+assert.deepEqual(priorSourcePaths(additions('app/src')), CT_SEQUENCES_ADDED_SOURCE, 'Exactly two isolated new chapter-two modules')
 assert.deepEqual(additions('app/public/audio'), [], 'Original CT sound and all approved voices stay exact; no new sound')
 
 const parse = (path, source) => ts.createSourceFile(path, source, ts.ScriptTarget.Latest, true,
@@ -71,9 +74,8 @@ for (const name of ['presentation', 'sequence']) {
 let mediaCount = 0
 for (const entry of git('ls-tree', '-r', '-z', baseline, '--', 'app/public/assets', 'app/public/audio').split('\0').filter(Boolean)) {
   const [, expected, path] = /^\d+ blob ([0-9a-f]+)\t(.+)$/.exec(entry)
-  const bytes = readFileSync(new URL(path, root))
-  assert.equal(createHash('sha1').update(`blob ${bytes.length}\0`).update(bytes).digest('hex'), expected, `${path}: published media bytes frozen`)
+  assertHistoricalMedia(path, { gitBlob: expected })
   mediaCount++
 }
-assert.deepEqual(additions('app/public/assets'), [...CT_SEQUENCES_ADDED_MEDIA].sort(), 'Only individually named reviewed atlases')
+assert.deepEqual(priorMediaPaths(additions('app/public/assets'), baseline), [...CT_SEQUENCES_ADDED_MEDIA].sort(), 'Only individually named reviewed atlases')
 console.log(`PASS CT sequences LIVE freeze: ${files.length} source/config/historical ledgers, ${functions(oldApp).size - 1} App functions, unchanged save types, ${mediaCount} original media; only named new source/atlases`)

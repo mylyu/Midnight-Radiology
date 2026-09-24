@@ -55,7 +55,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     const changed = live.split(/\r?\n/).find(line => line.trim())
     assert(changed, path + ': expected explicit reviewed edits')
     assert.throws(() => beforePacingSource(path, live.replace(changed, changed + ' // undocumented')), /undocumented mutation|mutation outside approved (?:pacing|loop) hunks/)
-    assert.throws(() => beforePacingSource(path, live.trimEnd() + '\n// undocumented append\n'), /mutation outside approved (?:pacing|loop) hunks/)
+    assert.throws(() => beforePacingSource(path, live.trimEnd() + '\n// undocumented append\n'), /mutation outside approved (?:pacing|loop) hunks|undocumented mutation outside exact reviewed delivery hunks/)
   }
   console.log(`PASS historical projection guard: ${ledger.files.length} files, exact inverse hunks and complete-baseline comparison; both in-hunk and outside-hunk mutations rejected`)
 }

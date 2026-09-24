@@ -2,6 +2,7 @@
 // pacing round is reversed through exact verified hunks, not loaded from Git.
 // Current paths/rewards/UI have independent ch2-pacing-* live tests.
 import assert from 'node:assert/strict'
+import { assertHistoricalMedia, priorMediaPaths, reviewedMediaChanges } from './game-delivery-media.mjs'
 import {execFileSync} from 'node:child_process'
 import {readFileSync} from 'node:fs'
 import {createHash} from 'node:crypto'
@@ -42,7 +43,7 @@ for (const path of ['app/src/App.tsx','app/src/game/data.ts','app/src/game/dlc.t
   const normalize = s => s.replaceAll('\r\n','\n')
   assert.equal(normalize(beforePacingSource(path, readFileSync(new URL(path,root),'utf8'))), normalize(execFileSync('git',['show','4f70852:'+path],{encoding:'utf8',maxBuffer:4e6})), path + ': outside historical colleague round')
 }
-assert.equal(execFileSync('git',['diff','--name-only','--diff-filter=DMRTUXB','4f70852','--','app/public/audio','app/public/assets'],{encoding:'utf8',cwd:root}).trim(),'','No existing media rewritten')
+assert.deepEqual(reviewedMediaChanges(execFileSync('git',['diff','--no-renames','--name-only','--diff-filter=DMRTUXB','4f70852','--','app/public/audio','app/public/assets'],{encoding:'utf8',cwd:root}).trim().split('\n').filter(Boolean)),[],'Only precisely reviewed encoding migrations; no other existing media rewritten')
 // Later author-approved media may be additive only, with exact named files.
 const allowedLaterMedia = new Set([
   'app/public/assets/ch2_bg_breakroom_day.png', 'app/public/assets/ch2_ct_aortic_wide.png',
@@ -83,8 +84,7 @@ assert.deepEqual(mysteryMedia.map(row => row.path).sort(), [
   'app/public/audio/ch2_terminal_receipt_v1.mp3',
 ])
 for (const row of mysteryMedia) {
-  assert.equal(createHash('sha256').update(readFileSync(new URL(row.path, root))).digest('hex'), row.sha256,
-    'Current mystery media differs from its reviewed record: ' + row.path)
+  assertHistoricalMedia(row.path, { sha256: row.sha256 })
   allowedLaterMedia.add(row.path)
 }
 // Sunrise adds exactly two independently pinned images, no namespace wildcard.
@@ -96,7 +96,7 @@ const dawnHashes = new Map([
 assert.deepEqual(dawnImages.assets.map(row => row.output).sort(), [...dawnHashes.keys()].sort())
 for (const row of dawnImages.assets) {
   assert.equal(row.sha256, dawnHashes.get(row.output))
-  assert.equal(createHash('sha256').update(readFileSync(new URL(row.output, root))).digest('hex'), row.sha256)
+  assertHistoricalMedia(row.output, { sha256: row.sha256 })
   allowedLaterMedia.add(row.output)
 }
 const newMedia = [
@@ -110,7 +110,7 @@ for (const path of POLISH_ADDED_MEDIA) allowedLaterMedia.add(path)
 for (const path of REWARDS_ROUND_ADDED_MEDIA) allowedLaterMedia.add(path)
 // This round's exact twelve reviewed atlases; imported LIVE freeze keeps all old media pinned.
 for (const path of CT_SEQUENCES_ADDED_MEDIA) allowedLaterMedia.add(path)
-for (const path of newMedia) assert(allowedLaterMedia.has(path), 'Undocumented media addition: ' + path)
+for (const path of priorMediaPaths(newMedia, '4f70852')) assert(allowedLaterMedia.has(path), 'Undocumented media addition: ' + path)
 assert.deepEqual(live.CH2_BOOK_PAGES,old.CH2_BOOK_PAGES)
 assert.deepEqual(live.QUIZ2.filter((_,i)=>i!==21),old.QUIZ2.filter((_,i)=>i!==21))
 assert.equal(live.QUIZ2.length,24)

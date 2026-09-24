@@ -1,5 +1,6 @@
 // Pure continuity and visual-order checks. Browser tests cover rendered timing separately.
 import assert from 'node:assert/strict'
+import { logicalImagePath } from './game-delivery-media.mjs'
 import { readFileSync, existsSync } from 'node:fs'
 import { beforeLoopSource } from './ch2-loop-projection.mjs'
 import { loadHistoricalCh2 } from './ch2-mystery-projection.mjs'
@@ -92,7 +93,7 @@ assert.match(steps.c2n3_coronary_volume.text, /同一次采集/)
 assert.equal(steps.c2n5_m8.imageLabel, '外院旧片｜3天前')
 assert.equal(steps.c2n5_m17.imageLabel, '本院复查｜本次')
 for (const step of Object.values(steps)) {
- for (const asset of [step.image, step.bg, step.windowTask?.image].filter(Boolean)) assert(existsSync(new URL('../public/assets/' + asset + '.png', import.meta.url)), 'Missing image ' + asset)
+ for (const asset of [step.image, step.bg, step.windowTask?.image].filter(Boolean)) assert(logicalImagePath(asset), 'Missing actual delivery for ' + asset)
 }
 const app = beforeLoopSource('app/src/App.tsx', readFileSync(new URL('../src/App.tsx', import.meta.url), 'utf8'))
 assert.match(app, /const step: Step = ch2StepForState\(stepId/)

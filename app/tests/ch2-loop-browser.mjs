@@ -9,6 +9,7 @@ import { CH2_OBSERVATIONS, CH2_OBSERVATION_WINDOW_CASES, getCh2Observation } fro
 import { CH2_CASE_COMPLETIONS } from '../src/game/ch2-ledger.ts'
 import { ch2GiftChoices } from '../src/game/ch2-gifts.ts'
 import { freshState, condOk } from '../src/game/store.ts'
+import { logicalImageUrl } from './game-delivery-media.mjs'
 const require = createRequire(import.meta.url)
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright')
 const baseURL = process.env.GAME_URL || 'http://127.0.0.1:8798/'
@@ -36,11 +37,15 @@ async function open(state = initial(), mobile = false, failImage) {
   }, state)
   const page = await context.newPage()
   activePage = page
-  if (failImage) await page.route(`**/${failImage}.png`, route => route.abort())
+  let failedImageRequests = 0
+  if (failImage) await page.route(logicalImageUrl(failImage, baseURL), route => {
+    failedImageRequests++
+    return route.abort()
+  })
   page.on('pageerror', error => errors.push(error.message))
   await page.goto(baseURL + '#/ch2')
   await page.locator('[data-ch2-step]').waitFor()
-  return { page, context }
+  return { page, context, failedImageRequests: () => failedImageRequests }
 }
 async function reveal(page, expected) {
   const p = page.locator('.dialog-box > p')
@@ -284,10 +289,11 @@ try {
     await context.close()
   }
   {
-    const { page, context } = await open(fixture('c2n1_p3'), true, 'ct_ch2_stone_v2')
+    const { page, context, failedImageRequests } = await open(fixture('c2n1_p3'), true, 'ct_ch2_stone_v2')
     const before = await read(page), observation = getCh2Observation('c2n1_p3', before)
     await reveal(page, observation.prompt)
     await page.getByRole('status').waitFor()
+    assert(failedImageRequests() > 0, 'Missing-image fixture intercepted the actual canonical observation image')
     const hint = observation.choices.find(choice => choice.hint)
     await safeChoice(page, hint.text)
     await forwardText(page, hint.feedback)

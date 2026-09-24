@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { assertHistoricalMedia, inspectLiveImage } from './game-delivery-media.mjs'
 import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { createHash } from 'node:crypto'
@@ -18,10 +19,9 @@ assert.equal(steps.c2n1_ab1.bg, 'bg_corridor', 'Do not change the sealed-parts b
 assert.equal(steps.c2n1_hub.bg, 'bg_ctcontrol', 'Returning to exploration must leave the corridor')
 assert.equal(ch2BackgroundAsset(steps.c2n1_an1.bg), 'bg_corridor_cr_covered')
 assert.equal(ch2BackgroundAsset('bg_corridor'), 'bg_corridor')
-const hash = path => createHash('sha256').update(read(path)).digest('hex')
-assert.equal(hash('app/public/assets/bg_corridor.png'), '2f76e25038eb69e569744315d2cac00f8ccdc8abcb5d64e5e4bf8fbd8eaad0f0')
-assert.equal(hash('app/public/assets/bg_corridor_cr_covered.png'), '4165fab299c606050e513f96eee6a9af54f8be8ea81253b4edbe7e178de2a912')
-const png = read('app/public/assets/bg_corridor_cr_covered.png')
-assert.equal(png.subarray(1, 4).toString(), 'PNG')
-assert(png.readUInt32BE(16) >= 1500 && png.readUInt32BE(20) >= 900)
+assertHistoricalMedia('app/public/assets/bg_corridor.png', { sha256: '2f76e25038eb69e569744315d2cac00f8ccdc8abcb5d64e5e4bf8fbd8eaad0f0' })
+assertHistoricalMedia('app/public/assets/bg_corridor_cr_covered.png', { sha256: '4165fab299c606050e513f96eee6a9af54f8be8ea81253b4edbe7e178de2a912' })
+const delivered = await inspectLiveImage('app/public/assets/bg_corridor_cr_covered.png')
+assert.equal(delivered.metadata.format, 'webp')
+assert(delivered.width >= 1500 && delivered.height >= 900)
 console.log('PASS historical covered-CR round (validated later deltas projected out): single background change; live original/shared art hashes and covered-CR routing still intact.')

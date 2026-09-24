@@ -1,5 +1,6 @@
 // Real rendered media fixtures in disposable profiles; never touch player saves.
 import assert from 'node:assert/strict'
+import { assertHistoricalMedia, inspectLiveImage, waitForLiveImage, deliveryManifest } from './game-delivery-media.mjs'
 import {createRequire} from 'node:module'
 import {readFileSync,mkdirSync} from 'node:fs'
 import {createHash} from 'node:crypto'
@@ -14,10 +15,10 @@ mkdirSync(output,{recursive:true})
 const ledger=JSON.parse(readFileSync(new URL('../../docs/ch2-pacing-assets.json',import.meta.url),'utf8'))
 assert.equal(ledger.assets.length,6)
 for(const item of ledger.assets){
- const data=readFileSync(new URL('../../'+item.path,import.meta.url))
- assert.equal(createHash('sha256').update(data).digest('hex'),item.sha256.toLowerCase())
- assert(data.readUInt32BE(16)>=1000&&data.readUInt32BE(20)>=900,item.alias+' production dimensions')
- if(item.alias.includes('bandaged'))assert.equal(data[25],6,'Patient PNG must carry alpha')
+ const data=await inspectLiveImage(item.path)
+ assertHistoricalMedia(item.path,{sha256:item.sha256.toLowerCase()})
+ assert(data.width>=1000&&data.height>=900,item.alias+' production dimensions')
+ if(item.alias.includes('bandaged'))assert.equal(data.metadata.hasAlpha,true,'Actual patient delivery must carry alpha')
 }
 const browser=await chromium.launch({channel:'msedge',headless:true})
 const errors=[]
@@ -40,7 +41,7 @@ try{
   const p=page.locator('.dialog-box > p');await p.waitFor()
   const expected=(getCh2Observation(id,s)?.prompt ?? ch2StepForState(id,shift.steps[id],s).text).replaceAll('**','')
   await p.click();await page.waitForFunction(t=>document.querySelector('.dialog-box > p')?.textContent===t,expected)
-  if(asset)await page.locator(`img[src$="/${asset}.png"]:not([aria-hidden="true"])`).waitFor()
+  if(asset)await waitForLiveImage(page,asset,baseURL)
   if(label)await page.getByText(label,{exact:true}).waitFor()
   if(voice)assert.equal(await page.evaluate(v=>window.__voices.filter(src=>src.includes('/'+v+'.mp3')).length,voice),1)
   await page.waitForFunction(()=>[...document.images].every(i=>i.complete&&i.naturalWidth>0))
@@ -53,11 +54,7 @@ try{
   await page.screenshot({path:`${output}/${mobile?'mobile':'desktop'}-${id}.png`})
   await context.close()
  }
- const context=await browser.newContext(),page=await context.newPage()
- await page.goto(baseURL+'ch2-pacing-preview.html')
- await page.waitForFunction(()=>[...document.images].every(i=>i.complete&&i.naturalWidth>0))
- assert.equal(await page.evaluate(()=>localStorage.getItem('midnight-radiology-save-v1')),null)
- await context.close()
+ assert(deliveryManifest().removed.some(row=>row.path==='app/public/ch2-pacing-preview.html'), 'Static preview retirement must be explicitly reviewed; real game fixtures above remain required')
  assert.deepEqual(errors,[])
- console.log('PASS: six media hashes; 20 desktop/mobile visual fixtures; patient alpha format; CTA sequence images; new/old CT labels; Kai entrance voice; unchanged dialog controls; save-free gallery.')
+ console.log('PASS: six source identities and actual deliveries; 20 desktop/mobile game fixtures; patient alpha; CTA images; new/old CT labels; Kai voice; unchanged dialog controls. Static preview explicitly retired, not browser-tested.')
 }finally{await browser.close()}

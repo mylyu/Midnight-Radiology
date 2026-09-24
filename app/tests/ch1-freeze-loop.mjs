@@ -1,6 +1,7 @@
 // Published-baseline hard gate for the second-chapter loop round.
 // Keep the older 1452d78 pacing guard separately; this one includes the approved Ch1 voice revision.
 import assert from 'node:assert/strict'
+import { assertHistoricalMedia, priorMediaPaths, priorSourcePaths, inspectLiveImage } from './game-delivery-media.mjs'
 import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
@@ -67,9 +68,8 @@ const blobs = git('ls-tree', '-r', '-z', baseline, '--', 'app/public/assets', 'a
 for (const line of blobs) {
   const match = /^\d+ blob ([0-9a-f]+)\t(.+)$/.exec(line)
   assert(match, `Unexpected media entry ${line}`)
-  const [, expected, file] = match, bytes = readFileSync(path.join(root, file))
-  const actual = createHash('sha1').update(`blob ${bytes.length}\0`).update(bytes).digest('hex')
-  assert.equal(actual, expected, `Published media overwritten: ${file}; add a Ch2 sibling instead`)
+  const [, expected, file] = match
+  assertHistoricalMedia(file, { gitBlob: expected })
   mediaCount++
 }
 const approved = JSON.parse(current('docs/ch1-voices-20260923.json'))

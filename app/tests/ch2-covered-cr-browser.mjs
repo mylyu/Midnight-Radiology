@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { createRequire } from 'node:module'
 import { mkdirSync } from 'node:fs'
+import { logicalImageUrl } from './game-delivery-media.mjs'
 const require = createRequire(import.meta.url)
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright')
 const url = process.env.GAME_URL || 'http://127.0.0.1:8798/'
@@ -27,7 +28,11 @@ async function open(stepId, mobile = false) {
   return { page, context }
 }
 async function background(page, name) {
-  await page.waitForFunction(name => [...document.images].some(i => i.src.includes('/' + name + '.png') && i.complete && i.naturalWidth > 0), name)
+  await page.waitForFunction(({ name, expected }) => {
+    const image = document.querySelector(`img[data-scene-background="${name}"]`)
+    return image?.complete && image.naturalWidth > 0 && image.src.startsWith('blob:') &&
+      performance.getEntriesByName(expected).some(entry => entry.initiatorType === 'fetch')
+  }, { name, expected: logicalImageUrl(name, url) })
   const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('midnight-radiology-save-v1')))
   return saved
 }
@@ -65,8 +70,8 @@ try {
   await resumed.context.close()
   const { page, context } = await open('c2n1_ab1')
   await background(page, 'bg_corridor')
-  assert.equal(await page.locator('img[src*="bg_corridor_cr_covered"]').count(), 0)
+  assert.equal(await page.locator('img[data-scene-background="bg_corridor_cr_covered"]').count(), 0)
   await context.close()
   assert.deepEqual(errors, [])
-  console.log('PASS: isolated Edge desktop/mobile PNG decode and screenshots; old-background save resumes at entrance; refresh AP-safe; five-node scene advances and returns; alternate branch unchanged.')
+  console.log('PASS: isolated Edge desktop/mobile canonical-image decode and screenshots; old-background save resumes at entrance; refresh AP-safe; five-node scene advances and returns; alternate branch unchanged.')
 } finally { await browser.close() }

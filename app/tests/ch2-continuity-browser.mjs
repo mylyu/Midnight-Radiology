@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import { createRequire } from 'node:module'
 import { mkdirSync } from 'node:fs'
 import { CH2_SHIFTS, ch2StepForState } from '../src/game/ch2.ts'
+import { logicalImagePath, logicalImageUrl } from './game-delivery-media.mjs'
 const require = createRequire(import.meta.url)
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright')
 const browser = await chromium.launch({ headless: true, ...(process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : {}) })
@@ -32,6 +33,13 @@ async function reveal(page) {
  const p = page.locator('.dialog-box > p')
  await p.click()
 }
+async function backgroundLoaded(page, name) {
+ await page.waitForFunction(({ name, expected }) => {
+  const image = document.querySelector(`img[data-scene-background="${name}"]`)
+  return image?.complete && image.naturalWidth > 0 && image.src.startsWith('blob:') &&
+   performance.getEntriesByName(expected).some(entry => entry.initiatorType === 'fetch')
+ }, { name, expected: logicalImageUrl(name, url) })
+}
 try {
  const pairs = [
   ['c2n1_p_scan','c2n1_p3'], ['c2d2_lung_scan','c2d2_4'], ['c2d2_gut_scan','c2d2_10'],
@@ -43,20 +51,21 @@ try {
  for (const [scan, result] of pairs) {
   const { context, page, shift } = await open(scan)
   const asset = shift.steps[result].image
-  assert.equal(await page.locator('img[src$="/' + asset + '.png"]').count(), 0, scan + ' future result leaked')
+  const expectedImage = logicalImageUrl(asset, url)
+  assert.equal(await page.locator(`img[src$="assets/${logicalImagePath(asset)}"]`).count(), 0, scan + ' future result leaked')
   await reveal(page)
   await page.locator('.dialog-box > span.animate-bounce').waitFor()
   await page.screenshot({ path: output + '/' + scan + '.png' })
   await page.locator('.dialog-box > p').click()
   await page.locator('[data-ch2-step="' + result + '"]').waitFor()
-  await page.waitForFunction(asset => [...document.images].some(i => i.src.endsWith('/' + asset + '.png') && i.complete && i.naturalWidth > 0), asset)
+  await page.waitForFunction(expected => [...document.images].some(i => i.src === expected && i.complete && i.naturalWidth > 0), expectedImage)
   await context.close()
  }
  for (const mobile of [false, true]) {
   for (const [id, background] of [['c2n1_0','bg_ctcontrol_ready'], ['c2d2_0','bg_ctcontrol_day_ready']]) {
    const { context, page } = await open(id, {}, mobile)
    await reveal(page)
-   await page.waitForFunction(asset => [...document.images].some(i => i.src.endsWith('/' + asset + '.png') && i.complete && i.naturalWidth > 0), background)
+   await backgroundLoaded(page, background)
    await page.screenshot({ path: output + '/' + background + (mobile ? '-mobile' : '-desktop') + '.png' })
    await context.close()
   }
@@ -71,7 +80,7 @@ try {
   for (const [id, asset] of [['c2n1_old_ct','ev_old_ct_retired'], ['c2n5_a5','ev_ch2_teaching_archive'], ['c2n5_a6','ev_ch2_team_1997']]) {
    const { context, page } = await open(id, {}, mobile)
    await reveal(page)
-   await page.waitForFunction(asset => [...document.images].some(i => i.src.endsWith('/' + asset + '.png') && i.complete && i.naturalWidth > 0), asset)
+   await page.waitForFunction(expected => [...document.images].some(i => i.src === expected && i.complete && i.naturalWidth > 0), logicalImageUrl(asset, url))
    assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth))
    const box = await page.locator('.dialog-box').boundingBox()
    assert(box.y >= 0 && box.y + box.height <= page.viewportSize().height)
@@ -80,7 +89,7 @@ try {
   }
   const morning = await open('c2am_0', {}, mobile)
   await reveal(morning.page)
-  await morning.page.waitForFunction(() => [...document.images].some(i => i.src.endsWith('/bg_office_day.png') && i.complete && i.naturalWidth > 0))
+  await backgroundLoaded(morning.page, 'bg_office_day')
   assert.match(await morning.page.locator('.dialog-box > p').innerText(), /信息科今天接手查日志，周五反馈/)
   assert(await morning.page.evaluate(() => document.documentElement.scrollWidth <= innerWidth))
   await morning.page.locator('.dialog-box > span.animate-bounce').waitFor()

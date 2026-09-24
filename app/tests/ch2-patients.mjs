@@ -1,6 +1,7 @@
 import {createRequire} from 'node:module'
 import {existsSync,mkdirSync} from 'node:fs'
 import assert from 'node:assert/strict'
+import { logicalImagePath, waitForLiveImage } from './game-delivery-media.mjs'
 import {CH2_SHIFTS,ch2StepForState,ch2PortraitAsset} from '../src/game/ch2.ts'
 import {CH2_PATIENT_ENTRANCES,CH2_RETIRED_PATIENT_VOICES,isPatientBed,isPatientWheelchair} from '../src/game/ch2-patients.ts'
 const require=createRequire(import.meta.url)
@@ -26,7 +27,7 @@ try {
    if(patient.voice) assert([step.sfx,step.sfx2].includes(patient.voice),patient.id)
    assert(!step.image,patient.id+' must enter before result image')
    const asset=ch2PortraitAsset(patient.sprite,'m')
-   assert(existsSync('public/assets/'+asset+'.png'),asset)
+   assert(logicalImagePath(asset),asset)
    if(patient.voice) assert(existsSync('public/audio/'+patient.voice+'.mp3'),patient.voice)
    const context=await browser.newContext({viewport})
    await context.addInitScript(state=>{
@@ -38,9 +39,7 @@ try {
    const page=await context.newPage()
    page.on('pageerror',e=>errors.push(e.message))
    await page.goto((process.env.GAME_URL||'http://127.0.0.1:8798/')+'#/ch2')
-   const img=page.locator(`img[src$="/${asset}.png"]`)
-   await img.waitFor()
-   await page.waitForFunction(asset=>[...document.images].some(i=>i.src.endsWith('/'+asset+'.png')&&i.complete&&i.naturalWidth>0),asset)
+   const img=await waitForLiveImage(page,asset,process.env.GAME_URL||'http://127.0.0.1:8798/')
    if(!(await page.locator('.dialog-box > span.animate-bounce').count()) && !(await page.locator('.choice-in').count())) await page.locator('.dialog-box > p').click()
    const calls=(await page.evaluate(()=>window.__voices)).filter(v=>/\/(vox_|vox2_|cry_child|groan_man)/.test(v.src))
    assert.equal(calls.length,patient.voice?1:0,patient.id+' entrance sound policy')

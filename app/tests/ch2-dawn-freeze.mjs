@@ -6,6 +6,7 @@ import { POLISH_ADDED_MEDIA } from './image-polish-projection.mjs'
 import { REWARDS_ROUND_ADDED_MEDIA } from './ch2-rewards-round-projection.mjs'
 import { beforePayoffSource } from './ch2-payoffs-projection.mjs'
 import assert from 'node:assert/strict'
+import { assertHistoricalMedia, priorMediaPaths, priorSourcePaths, inspectLiveImage } from './game-delivery-media.mjs'
 import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
@@ -77,9 +78,8 @@ const media = git('ls-tree', '-r', '-z', baseline, '--', 'app/public/assets', 'a
 for (const entry of media) {
   const match = /^\d+ blob ([0-9a-f]+)\t(.+)$/.exec(entry)
   assert(match, `Unexpected media entry: ${entry}`)
-  const [, expected, file] = match, bytes = readFileSync(path.join(root, file))
-  const actual = createHash('sha1').update(`blob ${bytes.length}\0`).update(bytes).digest('hex')
-  assert.equal(actual, expected, `Existing media overwritten/deleted: ${file}; add a new Ch2-specific file`)
+  const [, expected, file] = match
+  assertHistoricalMedia(file, { gitBlob: expected })
   mediaCount++
 }
 
@@ -107,11 +107,11 @@ const expectedNew = new Map([
 assert.deepEqual(assets.assets.map(row => row.output).sort(), [...expectedNew.keys()].sort(), 'Exactly two dedicated sunrise images')
 for (const row of assets.assets) {
   assert.equal(row.sha256, expectedNew.get(row.output), 'Recorded image identity must remain approved')
-  assert.equal(createHash('sha256').update(readFileSync(path.join(root, row.output))).digest('hex'), expectedNew.get(row.output), 'New image hash mismatch')
+  assertHistoricalMedia(row.output, { sha256: expectedNew.get(row.output) })
 }
 const addedMedia = [
   git('diff', '--name-only', '--diff-filter=A', baseline, '--', 'app/public/assets', 'app/public/audio').toString('utf8'),
   git('ls-files', '--others', '--exclude-standard', '--', 'app/public/assets', 'app/public/audio').toString('utf8'),
 ].join('\n').split(/\r?\n/).filter(Boolean)
-assert.deepEqual([...new Set(addedMedia)].filter(file => !payoffMediaHashes.has(file) && !POLISH_ADDED_MEDIA.includes(file) && !REWARDS_ROUND_ADDED_MEDIA.includes(file) && !CT_SEQUENCES_ADDED_MEDIA.includes(file)).sort(), [...expectedNew.keys()].sort(), 'Only named sunrise images may be added after exact later-media verification, no new sound')
+assert.deepEqual(priorMediaPaths(addedMedia, baseline).filter(file => !payoffMediaHashes.has(file) && !POLISH_ADDED_MEDIA.includes(file) && !REWARDS_ROUND_ADDED_MEDIA.includes(file) && !CT_SEQUENCES_ADDED_MEDIA.includes(file)).sort(), [...expectedNew.keys()].sort(), 'Only named sunrise images may be added after exact later-media verification, no new sound')
 console.log(`PASS ${baseline} dawn live freeze: ${sharedFiles.length} shared modules/configs; ${oldFunctions.size - 1} exact App functions; imports/globals; ${mediaCount} existing media; three independently pinned approved Ch1 voices. Negative mutation probes rejected.`)

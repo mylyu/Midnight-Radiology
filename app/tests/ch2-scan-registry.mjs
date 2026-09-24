@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { logicalImagePath } from './game-delivery-media.mjs'
 import { readFileSync, existsSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 import { CH2_SCANS, CH2_SCAN_TEXT, CH2_SCAN_AUDIO, CH2_SCAN_ILLUSTRATION, ch2ScanFrame } from '../src/game/ch2-scans.ts'
@@ -55,7 +56,7 @@ assert.equal(recorded.processing.syntheticOverlay, false)
 assert.equal(recorded.processing.sampleRate, 24000)
 assert.equal(recorded.processing.channels, 1)
 assert.equal(recorded.playbackGain, 0.24)
-assert.ok(existsSync(`public/assets/${CH2_SCAN_ILLUSTRATION}.png`))
+assert.ok(logicalImagePath(CH2_SCAN_ILLUSTRATION))
 assert.match(CH2_SCANS.c2d2_trauma_scan.title, /腰椎与骨盆/)
 const component = readFileSync('src/components/Ch2ScanOverlay.tsx', 'utf8')
 assert.ok(!component.includes('onended'))

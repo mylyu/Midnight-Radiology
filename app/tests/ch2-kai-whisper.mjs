@@ -1,6 +1,7 @@
 // One-clip correction only: preserve the entire accepted d15e47b game, apart
 // from Kai's Chapter 2 entrance alias. Automated QA is not listener approval.
 import assert from 'node:assert/strict'
+import { deliveryManifest, historicalRetiredReference } from './game-delivery-media.mjs'
 import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
@@ -112,11 +113,13 @@ const probe = JSON.parse(execFileSync('ffprobe', ['-v', 'error', '-show_entries'
 assert.equal(probe.streams.length, 1)
 assert.deepEqual(probe.streams[0], { codec_name: 'mp3', sample_rate: '24000', channels: 1 })
 
-const preview = read('app/public/ch2-pacing-preview.html')
-const sources = [...preview.matchAll(/<audio\b[^>]*\bsrc="([^"]+)"/g)].map(match => match[1])
-assert(sources.some(source => source.split('?')[0] === `audio/${alias}.mp3`), 'Preview must play v4')
-assert(sources.some(source => source.split('?')[0] === `audio/${oldAlias}.mp3`), 'Keep rejected v3 for a genuine A/B comparison')
-assert.match(preview, /悄悄话|耳语/)
-assert(!preview.includes('localStorage'), 'The media preview must not read or alter player progress')
+assert(deliveryManifest().removed.some(row => row.path === 'app/public/ch2-pacing-preview.html'),
+  'Static A/B audition page retirement must be explicitly reviewed; all original audio/blob/acoustic checks above remain active')
+const historicalPreview = historicalRetiredReference('app/public/ch2-pacing-preview.html').toString('utf8')
+const sources = [...historicalPreview.matchAll(/<audio\b[^>]*\bsrc="([^"]+)"/g)].map(match => match[1])
+assert(sources.some(source => source.split('?')[0] === `audio/${alias}.mp3`), 'Historical A/B preview linked the reviewed v4')
+assert(sources.some(source => source.split('?')[0] === `audio/${oldAlias}.mp3`), 'Historical A/B preview also linked rejected v3')
+assert.match(historicalPreview, /悄悄话|耳语/)
+assert(!historicalPreview.includes('localStorage'), 'Historical static audition did not access player progress')
 
-console.log(`PASS Kai whisper v4: single Chapter 2 alias; ${audioBlobs.length} old audio blobs intact; shared runtime frozen; same-voice AuK speech edit and hashes; exact words, MP3 decode and A/B preview. Performance still requires user audition.`)
+console.log(`PASS Kai whisper v4: single Chapter 2 alias; ${audioBlobs.length} old audio blobs intact; shared runtime frozen; same-voice AuK speech edit and hashes; exact words and MP3 decode. Static A/B preview explicitly retired, not counted as browser PASS. Performance still requires user audition.`)

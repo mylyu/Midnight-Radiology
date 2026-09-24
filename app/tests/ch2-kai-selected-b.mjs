@@ -1,6 +1,7 @@
 // Adopt exactly the user's approved B audition. No regeneration, remastering,
 // other voices, dialogue or shared game logic are part of this replacement.
 import assert from 'node:assert/strict'
+import { DELIVERY_BASELINE, deliveryManifest } from './game-delivery-media.mjs'
 import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
@@ -23,8 +24,12 @@ const git = (...args) => execFileSync('git', args, { cwd: root, maxBuffer: 24 * 
 const original = file => git('show', `${baseline}:${file}`).toString('utf8').replaceAll('\r\n', '\n')
 const sha256 = data => createHash('sha256').update(data).digest('hex')
 
-assert.equal(sha256(bytes(source)), approvedHash, 'The audition B heard by the user must remain unchanged')
-assert.deepEqual(bytes(output), bytes(source), 'Use the approved MP3 byte-for-byte; do not regenerate or apply more effects')
+const retired = deliveryManifest().removed.find(row => row.path === source)
+assert(retired && retired.sha256 === approvedHash, 'Only the reviewed redundant audition copy was retired, not the in-game sound')
+// Explicit HISTORICAL audition reference, not a pretend current public file.
+const auditionReference = git('show', `${DELIVERY_BASELINE}:${source}`)
+assert.equal(sha256(auditionReference), approvedHash, 'The audition B heard by the user remains the fixed historical reference')
+assert.deepEqual(bytes(output), auditionReference, 'Actual current in-game MP3 is byte-for-byte the approved audition, without extra effects')
 const record = JSON.parse(read('docs/ch2-kai-selected-b.json'))
 assert.equal(record.baseline, baseline)
 assert.equal(record.selected_candidate, 'b')

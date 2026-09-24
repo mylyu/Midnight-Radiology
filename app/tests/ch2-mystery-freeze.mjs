@@ -4,6 +4,7 @@
 import './ch2-dawn-freeze.mjs'
 import { beforeDawnSource } from './ch2-dawn-projection.mjs'
 import assert from 'node:assert/strict'
+import { assertHistoricalMedia, priorMediaPaths, priorSourcePaths, inspectLiveImage } from './game-delivery-media.mjs'
 import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
@@ -70,9 +71,8 @@ const media = git('ls-tree', '-r', '-z', baseline, '--', 'app/public/assets', 'a
 for (const entry of media) {
   const match = /^\d+ blob ([0-9a-f]+)\t(.+)$/.exec(entry)
   assert(match, `Unexpected media entry: ${entry}`)
-  const [, expected, file] = match, bytes = readFileSync(path.join(root, file))
-  const actual = createHash('sha1').update(`blob ${bytes.length}\0`).update(bytes).digest('hex')
-  assert.equal(actual, expected, `Existing media overwritten/deleted: ${file}; add a new Ch2-specific file`)
+  const [, expected, file] = match
+  assertHistoricalMedia(file, { gitBlob: expected })
   mediaCount++
 }
 
