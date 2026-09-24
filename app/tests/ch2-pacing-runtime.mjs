@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import {execFileSync} from 'node:child_process'
 import {readFileSync} from 'node:fs'
+import {beforeMysterySource} from './ch2-mystery-projection.mjs'
 import {CH2_SHIFTS, QUIZ2} from '../src/game/ch2.ts'
 import {freshState, applyEffect} from '../src/game/store.ts'
 import {restartCh2} from '../src/game/ch2-exploration.ts'
@@ -98,7 +99,7 @@ assert.deepEqual(restart.dlc.ch2,{})
 
 // Exact source guards, not behavior approximations, for all non-Ch2 App code.
 const old=execFileSync('git',['show','1452d78:app/src/App.tsx'],{encoding:'utf8'})
-const now=readFileSync(new URL('../src/App.tsx',import.meta.url),'utf8')
+const now=beforeMysterySource('app/src/App.tsx',readFileSync(new URL('../src/App.tsx',import.meta.url),'utf8'))
 // Exact allowlist of additional Ch2 imports; original shared imports stay checked.
 const withoutCh2=text=>text.replace(/^import .*['"]\.\/(?:components\/(?:Ch2Shop|Ch2Settlement|Ch2ScanOverlay|Ch2ObservationImage)|game\/(?:ch2-session|ch2-scans|ch2-observations|ch2-ledger|ch2-gifts|ch2-playback))['"]\r?\n/gm,'')
  .replace(/, CH2_CARDS, CH2_ACTIVE_CARDS, CH2_CARDS_LEGACY(?=,)/,'')

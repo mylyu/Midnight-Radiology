@@ -7,13 +7,14 @@ import { readFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
+import { beforeMysterySource } from './ch2-mystery-projection.mjs'
 
 const require = createRequire(import.meta.url), ts = require('typescript')
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const baseline = '05889fa'
 const git = (...args) => execFileSync('git', args, { cwd: root, maxBuffer: 32 * 1024 * 1024 })
 const original = file => git('show', `${baseline}:${file}`).toString('utf8').replaceAll('\r\n', '\n')
-const current = file => readFileSync(path.join(root, file), 'utf8').replaceAll('\r\n', '\n')
+const current = file => beforeMysterySource(file, readFileSync(path.join(root, file), 'utf8').replaceAll('\r\n', '\n'))
 const parse = (file, source) => ts.createSourceFile(file, source, ts.ScriptTarget.Latest, true,
   file.endsWith('.tsx') ? ts.ScriptKind.TSX : ts.ScriptKind.TS)
 const declarations = (file, source, predicate) => {

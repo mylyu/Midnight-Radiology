@@ -3,9 +3,13 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {execFileSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
+// The completed voice-only publication retains its exact original scope;
+// later Chapter 2 revisions are separately checked against live shared code
+// and every original media hash, not silently ignored by an old Git snapshot.
+import './ch2-mystery-freeze.mjs';
 const root = path.resolve(import.meta.dirname, '../..');
 const git = (...args) => execFileSync('git', args, {cwd:root});
-const changed = git('diff','--name-only','2d629e8','--','app/src','app/public/audio','app/public/assets').toString().trim().split('\n');
+const changed = git('diff','--name-only','2d629e8','05889fa','--','app/src','app/public/audio','app/public/assets').toString().trim().split('\n');
 assert.deepEqual(changed, [
   'app/public/audio/vox_ch1_fan_mature_20260923.mp3',
   'app/public/audio/vox_ch1_thin_breathless_20260923.mp3',

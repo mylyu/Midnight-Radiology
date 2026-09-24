@@ -188,8 +188,10 @@ try {
         if (!progress.scanSessions?.[progress.stepId]) await page.locator('.dialog-box > p').click()
         await page.locator(`.ch2-scan-overlay[data-scan-id="${progress.stepId}"]`).waitFor({ timeout: 12000 })
         assert.equal(await page.locator('img[alt="影像或证物"]').count(), 0, 'No result before scan presentation')
-        await page.getByRole('button', { name: '跳过演出', exact: true }).click()
-        await page.locator('.ch2-scan-overlay').waitFor({ state: 'detached' })
+        assert.equal(await page.getByRole('button', { name: /跳过/ }).count(), 0, 'CT presentation cannot be skipped')
+        // The author removed all skip paths. Wait for the real persisted
+        // 3s acquisition / 1.5s reconstruction clock, never shorten it in tests.
+        await page.locator('.ch2-scan-overlay').waitFor({ state: 'detached', timeout: 5000 })
         await page.waitForFunction(id => JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).dlc.ch2.scanSessions[id].completed, progress.stepId)
         if (scan.mode === 'acquire') await page.waitForFunction(id => JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).dlc.ch2.stepId !== id, progress.stepId)
         scans.add(progress.stepId)

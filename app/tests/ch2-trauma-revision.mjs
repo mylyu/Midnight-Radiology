@@ -1,10 +1,14 @@
 import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
 import ts from 'typescript'
-import { CH2_SHIFTS, CH2_BOOK_PAGES, CH2_CARDS, QUIZ2 } from '../src/game/ch2.ts'
+import { loadHistoricalCh2 } from './ch2-mystery-projection.mjs'
 import { CH2_CASE_COMPLETIONS } from '../src/game/ch2-ledger.ts'
 import { getCh2Observation } from '../src/game/ch2-observations.ts'
 import { CH2_SCANS } from '../src/game/ch2-scans.ts'
+
+// Keep the historical lumbar/pelvis scope exact after reversing only the
+// independently tested needle/terminal registration and renderer hunks.
+const { CH2_SHIFTS, CH2_BOOK_PAGES, CH2_CARDS, QUIZ2 } = await loadHistoricalCh2()
 
 const source = name => execFileSync('git', ['show', `42d18ce:app/src/game/${name}.ts`], { encoding: 'utf8', maxBuffer: 4e6 })
 const url = code => 'data:text/javascript;base64,' + Buffer.from(ts.transpileModule(code,

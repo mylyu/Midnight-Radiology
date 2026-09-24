@@ -6,6 +6,8 @@ import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { beforeLoopSource } from './ch2-loop-projection.mjs'
+import { beforeApprovedCh1Voices } from './ch1-approved-voices-projection.mjs'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const baseline = 'a542af1'
@@ -15,7 +17,8 @@ const source = 'app/public/auditions/kai-no-reference-v9/b.mp3'
 const output = `app/public/audio/${alias}.mp3`
 const approvedHash = '236c804dc8f4137c8c5763ac72e54417d893b9ca6182ba7aed66aa9d9a7f812b'
 const bytes = file => readFileSync(path.join(root, file))
-const read = file => bytes(file).toString('utf8').replaceAll('\r\n', '\n')
+const read = file => beforeApprovedCh1Voices(file,
+  beforeLoopSource(file, bytes(file).toString('utf8').replaceAll('\r\n', '\n')))
 const git = (...args) => execFileSync('git', args, { cwd: root, maxBuffer: 24 * 1024 * 1024 })
 const original = file => git('show', `${baseline}:${file}`).toString('utf8').replaceAll('\r\n', '\n')
 const sha256 = data => createHash('sha256').update(data).digest('hex')

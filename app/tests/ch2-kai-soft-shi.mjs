@@ -6,6 +6,8 @@ import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
+import { beforeLoopSource } from './ch2-loop-projection.mjs'
+import { beforeApprovedCh1Voices } from './ch1-approved-voices-projection.mjs'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const baseline = 'a542af1'
@@ -15,7 +17,8 @@ const output = `app/public/audio/${alias}.mp3`
 const text = '跟你说个事儿。'
 const git = (...args) => execFileSync('git', args, { cwd: root, maxBuffer: 24 * 1024 * 1024 })
 const bytes = file => readFileSync(path.join(root, file))
-const read = file => bytes(file).toString('utf8').replaceAll('\r\n', '\n')
+const read = file => beforeApprovedCh1Voices(file,
+  beforeLoopSource(file, bytes(file).toString('utf8').replaceAll('\r\n', '\n')))
 const original = file => git('show', `${baseline}:${file}`).toString('utf8').replaceAll('\r\n', '\n')
 const sha256 = data => createHash('sha256').update(data).digest('hex')
 

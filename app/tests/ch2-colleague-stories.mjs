@@ -4,6 +4,7 @@
 import assert from 'node:assert/strict'
 import {execFileSync} from 'node:child_process'
 import {readFileSync} from 'node:fs'
+import {createHash} from 'node:crypto'
 import {beforePacing as live, beforePacingSocial, beforePacingSource} from './ch2-pacing-projection.mjs'
 const {CH2_SOCIAL_STEPS, ch2SocialShifts} = beforePacingSocial
 import {CH2_DEFERRED_STEPS, originalCh2Step, restartCh2} from '../src/game/ch2-exploration.ts'
@@ -60,6 +61,28 @@ const allowedLaterMedia = new Set([
   'app/public/assets/ch2_ct_scan_room_pixel_v2.png', // User-requested revised acquisition visual.
   'app/public/audio/ch2_ct_real_scan_20260924.mp3', // Author-provided scan audio; extraction source/parameters recorded.
 ])
+// This round is additive too: admit exactly the reviewed seven image names
+// and two sound names, with hashes checked against their generation records.
+// No namespace wildcard may hide unrelated media or an overwritten old file.
+const mysteryImages = JSON.parse(readFileSync(new URL('docs/ch2-mystery-assets.json', root), 'utf8'))
+const mysteryAudio = JSON.parse(readFileSync(new URL('docs/ch2-terminal-audio.json', root), 'utf8'))
+const mysteryMedia = [
+  ...mysteryImages.assets.map(row => ({ path: row.output, sha256: row.sha256 })),
+  { path: `app/public/assets/${mysteryImages.authoredDocument.file}`, sha256: mysteryImages.authoredDocument.sha256 },
+  ...mysteryAudio.records.map(row => ({ path: row.output, sha256: row.sha256 })),
+]
+assert.deepEqual(mysteryMedia.map(row => row.path).sort(), [
+  'app/public/assets/ch2_needle_axial_v1.png', 'app/public/assets/ch2_needle_mpr_v1.png',
+  'app/public/assets/ch2_needle_record_v1.png', 'app/public/assets/ch2_needle_vr_v1.png',
+  'app/public/assets/ch2_pat_luo_v1.png', 'app/public/assets/ch2_terminal_closeup_v1.png',
+  'app/public/assets/ch2_terminal_online_v1.png', 'app/public/audio/ch2_terminal_alarm_v1.mp3',
+  'app/public/audio/ch2_terminal_receipt_v1.mp3',
+])
+for (const row of mysteryMedia) {
+  assert.equal(createHash('sha256').update(readFileSync(new URL(row.path, root))).digest('hex'), row.sha256,
+    'Current mystery media differs from its reviewed record: ' + row.path)
+  allowedLaterMedia.add(row.path)
+}
 const newMedia = [
   execFileSync('git',['diff','--name-only','--diff-filter=A','4f70852','--','app/public/audio','app/public/assets'],{encoding:'utf8',cwd:root}),
   execFileSync('git',['ls-files','--others','--exclude-standard','--','app/public/audio','app/public/assets'],{encoding:'utf8',cwd:root}),

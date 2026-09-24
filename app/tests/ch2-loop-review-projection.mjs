@@ -5,12 +5,16 @@ import { readFileSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import { resolve } from 'node:path'
+import { beforeMysterySource } from './ch2-mystery-projection.mjs'
+import { beforeUnskippableSource } from './ch2-unskippable-projection.mjs'
 
 const root = new URL('../../', import.meta.url)
 const ledger = JSON.parse(readFileSync(new URL('docs/ch2-loop-review-source-deltas.json', root), 'utf8'))
 const normalize = source => source.replaceAll('\r\n', '\n').trimEnd() + '\n'
 
 export function beforeLoopReviewSource(path, source) {
+  source = beforeMysterySource(path, source)
+  source = beforeUnskippableSource(path, source)
   const file = ledger.files.find(row => row.path === path)
   if (!file) return source
   const lines = normalize(source).trimEnd().split('\n')

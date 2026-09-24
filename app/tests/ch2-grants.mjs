@@ -9,6 +9,7 @@ import { freshState } from '../src/game/store.ts'
 import {
   CH2_SHIFTS, CH2_BADGES, CH2_CARDS, CH2_EVENTS, CH2_EVIDENCE,
   CH2_BADGES_LEGACY, CH2_CARDS_LEGACY, CH2_ACTIVE_BADGES, CH2_ACTIVE_CARDS, CH2_EVENTS_LEGACY, CH2_EVIDENCE_LEGACY,
+  ch2StepForState,
 } from '../src/game/ch2.ts'
 
 assert.deepEqual([...CH2_BADGES_LEGACY].sort(), ['allergy_save', 'checklist_zero', 'phantom_friend', 'phase_eye', 'wrench_night'])
@@ -22,18 +23,29 @@ const grantedCards = new Set()
 const grantedBadges = new Set()
 const grantedEvents = new Set()
 const setFlags = new Set()
+// Keep every old raw-graph branch, and also follow the real adapter-injected
+// links. The second profile represents the independently tested Friday case
+// and night-three unplug route, so Sunday's evidence is reachable without
+// pretending a fresh save already knows those events.
+const auditBase = freshState('m')
+const renderProfiles = [auditBase, { ...auditBase, flags: {
+  c2_needle_seen: true, c2_needle_assessed: true, c2_terminal_n3_unplugged: true,
+} }]
 for (const shift of CH2_SHIFTS) {
   const reachable = new Set()
+  const rendered = new Map()
   const queue = [shift.start]
   while (queue.length) {
     const id = queue.pop()
     if (reachable.has(id) || id.startsWith('@')) continue
-    const step = shift.steps[id]
-    assert(step, 'Missing reachable node ' + id)
+    const raw = shift.steps[id]
+    assert(raw, 'Missing reachable node ' + id)
+    const variants = [raw, ...renderProfiles.map(state => ch2StepForState(id, raw, state))]
+    rendered.set(id, variants)
     reachable.add(id)
-    queue.push(...[step.next, step.windowTask?.success, step.checklist?.next, ...(step.choices ?? []).flatMap(c => [c.next, c.risk?.next])].filter(Boolean))
+    for (const step of variants) queue.push(...[step.next, step.windowTask?.success, step.checklist?.next, ...(step.choices ?? []).flatMap(c => [c.next, c.risk?.next])].filter(Boolean))
   }
-  for (const [id, step] of Object.entries(shift.steps).filter(([id]) => reachable.has(id))) {
+  for (const [id, variants] of rendered) for (const step of variants) {
     assert(id)
     if (step.card) grantedCards.add(step.card)
     if (step.effect?.card) grantedCards.add(step.effect.card)

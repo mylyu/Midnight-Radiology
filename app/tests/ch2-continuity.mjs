@@ -1,7 +1,11 @@
 // Pure continuity and visual-order checks. Browser tests cover rendered timing separately.
 import assert from 'node:assert/strict'
 import { readFileSync, existsSync } from 'node:fs'
-import { CH2_SHIFTS, CH2_EVIDENCE, CH2_EVENTS, CH2_BOOK_PAGES, ch2StepForState } from '../src/game/ch2.ts'
+import { beforeLoopSource } from './ch2-loop-projection.mjs'
+import { loadHistoricalCh2 } from './ch2-mystery-projection.mjs'
+// Retain the pre-loop twelve xray-cue assertions on exact projected live data;
+// current 17-hook timing/audio and observations have independent live guards.
+const { CH2_SHIFTS, CH2_EVIDENCE, CH2_EVENTS, CH2_BOOK_PAGES, ch2StepForState } = await loadHistoricalCh2(beforeLoopSource)
 const steps = Object.assign({}, ...CH2_SHIFTS.map(s => s.steps))
 const base = { flags: {}, badges: [], gender: 'm', finished: true }
 const text = (id, patch = {}) => ch2StepForState(id, steps[id], { ...base, ...patch }).text
@@ -90,7 +94,7 @@ assert.equal(steps.c2n5_m17.imageLabel, '本院复查｜本次')
 for (const step of Object.values(steps)) {
  for (const asset of [step.image, step.bg, step.windowTask?.image].filter(Boolean)) assert(existsSync(new URL('../public/assets/' + asset + '.png', import.meta.url)), 'Missing image ' + asset)
 }
-const app = readFileSync(new URL('../src/App.tsx', import.meta.url), 'utf8')
+const app = beforeLoopSource('app/src/App.tsx', readFileSync(new URL('../src/App.tsx', import.meta.url), 'utf8'))
 assert.match(app, /const step: Step = ch2StepForState\(stepId/)
 assert.doesNotMatch(app, /新CT启用的第一周/)
 console.log('PASS: cross-chapter memories, evidence IDs, dates, cabinet AP, 12 acquisition/result pairs and asset existence.')

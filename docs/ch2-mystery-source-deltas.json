@@ -1,0 +1,103 @@
+{
+  "baseline": "194c442",
+  "reason": "Approved isolated Chapter 2 needle case and terminal suspense additions. Exact inverse of App Ch2Screen/media import and ch2.ts module registration/renderer chain only; prior historical ledgers remain unchanged.",
+  "files": [
+    {
+      "path": "app/src/App.tsx",
+      "edits": [
+        {
+          "afterStart": 11,
+          "before": [],
+          "after": [
+            "import { Ch2MysteryMedia, Ch2MysterySound } from './components/Ch2MysteryMedia'"
+          ]
+        },
+        {
+          "afterStart": 2156,
+          "before": [
+            "      {step.image && !scanPending && <Ch2ObservationImage image={step.image} label={step.imageLabel} caption={CH2_IMAGE_CAPTIONS[step.image]}",
+            "        regions={observationPending && observedChoice ? observation?.regions : undefined} />}"
+          ],
+          "after": [
+            "      {phase === 'story' && <Ch2MysterySound key={stepId} stepId={stepId}",
+            "        consumed={!!state.flags[`c2_terminal_sound_${stepId}`]}",
+            "        onConsumed={() => update(s => s.flags[`c2_terminal_sound_${stepId}`] ? s : {",
+            "          ...s, flags: { ...s.flags, [`c2_terminal_sound_${stepId}`]: true },",
+            "        })} />}",
+            "      {step.image && !scanPending && (step.image.startsWith('ch2_terminal_')",
+            "        ? <Ch2MysteryMedia key={`${stepId}-${step.image}`} stepId={stepId} image={step.image} label={step.imageLabel} />",
+            "        : <Ch2ObservationImage image={step.image} label={step.imageLabel} caption={CH2_IMAGE_CAPTIONS[step.image]}",
+            "          regions={observationPending && observedChoice ? observation?.regions : undefined} />)}"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/game/ch2.ts",
+      "edits": [
+        {
+          "afterStart": 5,
+          "before": [],
+          "after": [
+            "import { CH2_NEEDLE_STEPS, CH2_NEEDLE_EVIDENCE, ch2NeedleStep } from './ch2-needles.ts'",
+            "import { CH2_TERMINAL_STEPS, CH2_TERMINAL_EVIDENCE, ch2TerminalStep } from './ch2-terminal.ts'"
+          ]
+        },
+        {
+          "afterStart": 156,
+          "before": [
+            "  return ch2PacingStep(id, ch2SocialStep(id, rendered, state), state)"
+          ],
+          "after": [
+            "  return ch2TerminalStep(id, ch2NeedleStep(id, ch2PacingStep(id, ch2SocialStep(id, rendered, state), state), state), state)"
+          ]
+        },
+        {
+          "afterStart": 297,
+          "before": [],
+          "after": [
+            "  ...CH2_NEEDLE_EVIDENCE,",
+            "  ...CH2_TERMINAL_EVIDENCE,"
+          ]
+        },
+        {
+          "afterStart": 450,
+          "before": [],
+          "after": [
+            "  ...CH2_TERMINAL_STEPS.c2n1,"
+          ]
+        },
+        {
+          "afterStart": 662,
+          "before": [],
+          "after": [
+            "  ...CH2_TERMINAL_STEPS.c2n3,"
+          ]
+        },
+        {
+          "afterStart": 759,
+          "before": [],
+          "after": [
+            "  ...CH2_NEEDLE_STEPS.c2d4,",
+            "  ...CH2_TERMINAL_STEPS.c2d4,"
+          ]
+        },
+        {
+          "afterStart": 826,
+          "before": [],
+          "after": [
+            "  ...CH2_NEEDLE_STEPS.c2n5,",
+            "  ...CH2_TERMINAL_STEPS.c2n5,"
+          ]
+        },
+        {
+          "afterStart": 955,
+          "before": [],
+          "after": [
+            "  ...CH2_TERMINAL_STEPS.c2am,"
+          ]
+        }
+      ]
+    }
+  ]
+}
