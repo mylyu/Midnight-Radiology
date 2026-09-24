@@ -1,0 +1,48 @@
+Midnight Radiology: Chapter 2 CT presentation sources
+These independent third-party assets retain the following source licenses.
+Changes: selected same-series slices, display windows/fixed crops where applicable, aspect-preserving resize, lossy WebP for a 3-second teaching presentation.
+Motion/dental artifact versions are simulations, not real clinical before/after acquisitions. See repository docs/ch2-ct-sequences-assets.json for methods and hashes.
+Future commercial release: replace all ImageCAS derivatives or obtain separate applicable permission. Project ownership does not waive third-party NC restrictions.
+
+Evgenia Blagosklonova, Daria Dolotova, Natalia Polunina, Elena Grigorieva, Denis Pakhomov, Vladimir Krylov and Andrey Gavrilov, Open dataset of annotated DICOM images of head CTA for intracranial aneurysm detection; DOI10.5281/zenodo.15697196. Source metadata authors verified atZenodoAPI.
+Authors: Evgenia Blagosklonova; Daria Dolotova; Natalia Polunina; Elena Grigorieva; Denis Pakhomov; Vladimir Krylov; Andrey Gavrilov
+https://zenodo.org/records/15697196
+License: CC-BY-4.0 — https://creativecommons.org/licenses/by/4.0/
+Restrictions/limitations: none; retain the source license and attribution. Control label excludes intracranial aneurysm only, not every disease. 24 native consecutive files496-519 at skull-base/intracranial artery level, 0.5mm spacing and 1mm thickness. Dataset defaced; anonymized headers checked. 
+Derived files: assets/ct-sequences/adult-neck-cta-v1.webp
+
+An Zeng et al., ImageCAS: A Large-Scale Dataset and Benchmark for Coronary Artery Segmentation based on Computed Tomography Angiography Images (2023).
+Authors: An Zeng et al., ImageCAS: A Large-Scale Dataset and Benchmark for Coronary Artery Segmentation based on Computed Tomography Angiography Images (2023).
+https://www.kaggle.com/datasets/xiaoweixumedicalai/imagecas
+License: CC-BY-NC-4.0 — https://creativecommons.org/licenses/by-nc/4.0/
+Restrictions/limitations: replace-or-obtain-license-before-commercial-use. Per-case diagnosis and cardiac phase are not supplied; use as a brief acquisition teaching sequence, not a fictional patient diagnostic record. 
+Derived files: assets/ct-sequences/coronary-cta-v1.webp
+
+Dania El Rahal, David C.Rotzinger and Guillaume Fahrni, AortaSeg-60(2026), DOI10.5281/zenodo.18147026; associated publication DOI10.46471/gigabyte.183.
+Authors: Dania El Rahal, David C.Rotzinger and Guillaume Fahrni, AortaSeg-60(2026), DOI10.5281/zenodo.18147026; associated publication DOI10.46471/gigabyte.183.
+https://zenodo.org/records/18147026
+License: CC-BY-4.0 — https://creativecommons.org/licenses/by/4.0/
+Restrictions/limitations: none; retain the source license and attribution. Not a normal-entire-body diagnosis, not a confirmed stone/trauma patient. Native reconstruction uses soft-tissue kernel; changing display window does not create a sharp bone reconstruction. Do not use automated segmentation as gold-standard anatomy. AuthorREADME saysCC-BY4.0 while Zenodo metadata and publication sayCC0. Both permit adaptation and redistribution including commercial use; preserve attribution and record both, do not label ambiguously sourced data as exclusivelyCC0. Source has a cardiac pacemaker. The selected lung sequence uses LPS slices 777-846, away from the generator and pronounced lead streaks; it is not an implant-free or fully normal examination. Reviewed coverage includes kidneys, lumbar spine and upper pelvis.
+Derived files: assets/ct-sequences/chest-plain-v1.webp, assets/ct-sequences/abdomen-plain-v1.webp, assets/ct-sequences/urinary-plain-v1.webp, assets/ct-sequences/lumbar-pelvis-plain-v1.webp
+
+Dania El Rahal, David C.Rotzinger and Guillaume Fahrni, AortaSeg-60(2026), DOI10.5281/zenodo.18147026; associated publication DOI10.46471/gigabyte.183.
+Authors: Dania El Rahal, David C.Rotzinger and Guillaume Fahrni, AortaSeg-60(2026), DOI10.5281/zenodo.18147026; associated publication DOI10.46471/gigabyte.183.
+https://zenodo.org/records/18147026
+License: CC-BY-4.0 — https://creativecommons.org/licenses/by/4.0/
+Restrictions/limitations: none; retain the source license and attribution. Only acquisition-teaching sequence; not same person or disease morphology as fictional final observation image. Automated segmentation masks not selected or treated as clinical truth.  Author README says CC BY 4.0 while Zenodo metadata/publication also state CC0. Retain BY 4.0 attribution conservatively, as for Nat 07 from the same release.
+Derived files: assets/ct-sequences/aorta-cta-v1.webp
+
+CT of a normal brain, axial plane (case 1), 2019
+Authors: Mikael Häggström, M.D.
+https://commons.wikimedia.org/wiki/Category:Computed_tomography_of_normal_brain_in_axial_plane_(case_1)
+License: CC0-1.0 — https://creativecommons.org/publicdomain/zero/1.0/
+Restrictions/limitations: none. 18-year-old male; same-examination 4 mm pre-windowed PNG exports, not original HU or detector data. Author reports normal anatomy and consent for online publication. Not the fictional elderly patients; artifact variants are explicitly simulated and not real repeat acquisitions.
+Derived files: assets/ct-sequences/adult-head-plain-v1.webp, assets/ct-sequences/adult-head-motion-v1.webp, assets/ct-sequences/adult-head-dental-v1.webp, assets/ct-sequences/adult-head-dental-repeat-v1.webp
+
+Multimodal CT Dataset of Cadaveric Wrist Joints, V1 (2024), specimen 7 scan 1
+Authors: Jilmen Quintiens; Walter Coudyzer; Melissa Bevers; Evie Vereecke; G. Harry van Lenthe
+https://doi.org/10.48804/DWF4RG
+License: CC-BY-SA-4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+Restrictions/limitations: retain independent BY-SA for this derived atlas; do not relicense it as project NC-SA. 80-year-old female right cadaveric wrist, not a living fracture case. Specimen preparation has soft-tissue gas. Use as brief bone anatomy presentation only, never fracture evidence. Anonymized DICOM age 001D is not the real age. Native 0.1 mm step decimated to 2 mm sampled interval.
+Derived files: assets/ct-sequences/wrist-bone-v1.webp
+

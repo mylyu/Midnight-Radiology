@@ -6,3 +6,10 @@ Commercial use is not granted under this public license. The copyright holder re
 
 Third-party dependencies and materials are subject to their own license terms.
 
+Chapter 2 CT acquisition-preview atlases are third-party-derived teaching
+materials with separate source licenses. See docs/ch2-ct-sequences-assets.json
+and the deployed ct-sequences-sources.txt for attribution, transformations,
+simulation limitations, and file-specific terms. In particular, ImageCAS-based
+coronary previews use CC BY-NC 4.0 data and must be replaced or separately
+licensed before commercial use. KU Leuven wrist-derived previews retain
+CC BY-SA 4.0 independently; they are not relicensed under the project NC-SA terms.
