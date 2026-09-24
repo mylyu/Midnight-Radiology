@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>第二章 · 扫描演出预览</title>
+    <style>
+      * { box-sizing: border-box; }
+      body { margin: 0; color: #dce8f2; background: #08121f; font: 14px/1.6 ui-monospace, Consolas, "Microsoft YaHei", monospace; }
+      button { font: inherit; }
+      button:focus-visible { outline: 3px solid #7de4cd; outline-offset: 3px; }
+      button:disabled { cursor: default; opacity: .55; }
+      .preview-shell { max-width: 1100px; margin: auto; padding: 30px 22px 50px; }
+      .preview-kicker { color: #91b8c9; letter-spacing: .15em; font-size: 12px; }
+      .preview-shell h1 { margin: 5px 0 10px; font-size: clamp(23px, 4vw, 32px); color: #eff5fb; }
+      .preview-note { color: #98acbc; max-width: 850px; }
+      .preview-summary { display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0; }
+      .preview-summary span { padding: 6px 10px; border: 1px solid #355069; background: #102337; color: #bdcedb; }
+      .preview-selection { padding: 18px; margin-bottom: 22px; border: 2px solid #4a786f; background: #102b2d; }
+      .preview-selection h2 { margin: 0 0 6px; font-size: 20px; }
+      .preview-selection p { margin: 6px 0; }
+      .preview-play { display: block; min-height: 46px; margin-top: 15px; padding: 9px 18px; border: 2px solid #88d5bc; background: #b7e7d4; color: #09241d; font-weight: bold; cursor: pointer; }
+      .preview-state { color: #b7e7d4; }
+      .preview-pending { color: #dfc696; }
+      .preview-result { border-top: 1px solid #3c625d; padding-top: 9px; }
+      .preview-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+      .preview-choice { min-width: 0; min-height: 108px; padding: 13px; text-align: left; color: #cbd9e6; border: 1px solid #36516a; background: #101f30; cursor: pointer; }
+      .preview-choice[aria-pressed="true"] { border: 2px solid #7cc4b0; padding: 12px; background: #183a3b; }
+      .preview-choice strong, .preview-choice span { display: block; }
+      .preview-choice strong { color: #e2edf5; font-size: 14px; }
+      .preview-choice span { margin-top: 5px; font-size: 12px; }
+      .preview-footer { margin-top: 24px; padding-top: 14px; border-top: 1px solid #294157; color: #92a9bd; font-size: 12px; }
+      @media (max-width: 700px) { .preview-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .preview-shell { padding: 20px 14px 35px; } }
+      @media (max-width: 430px) { .preview-grid { grid-template-columns: 1fr; } .preview-choice { min-height: 92px; } }
+    </style>
+  </head>
+  <body>
+    <div id="preview-root"></div>
+    <script type="module">
+      import React, { useEffect, useState } from 'react'
+      import { createRoot } from 'react-dom/client'
+      import { Ch2ScanOverlay } from './src/components/Ch2ScanOverlay.tsx'
+      import { CH2_SCANS } from './src/game/ch2-scans.ts'
+      import { getCh2SliceSequence, preloadCh2SliceSequence } from './src/game/ch2-scan-sequences.ts'
+
+      const h = React.createElement
+      const scans = Object.values(CH2_SCANS).filter(config => config.mode === 'acquire')
+      const shifts = { c2n1: '第1夜', c2d2: '第2日', c2n3: '第3夜', c2d4: '第4日', c2n5: '第5夜' }
+      const modeLabel = config => config.presentation === 'console' ? '控制台 · 断层出图'
+        : config.presentation === 'machine' ? '儿童保留 · 原机器画面' : '双画面 · 左机器 / 右断层'
+      const stateLabel = config => {
+        if (config.presentation === 'machine') return '明确保留原画面 · 待合适儿童序列'
+        const sequence = getCh2SliceSequence(config.sequence)
+        return sequence ? `教学序列已入库 · ${sequence.frameCount} 帧` : '断层序列尚未入库'
+      }
+
+      function Preview() {
+        const [selectedId, setSelectedId] = useState(scans[0].id)
+        const [run, setRun] = useState(null)
+        const [completed, setCompleted] = useState(null)
+        const [runNumber, setRunNumber] = useState(0)
+        const selected = CH2_SCANS[selectedId]
+        const sequence = getCh2SliceSequence(selected.sequence)
+        const admitted = scans.filter(config => config.presentation !== 'machine' && getCh2SliceSequence(config.sequence)).length
+
+        useEffect(() => {
+          // Only the selected case is prefetched. This does not start or delay the scan clock.
+          preloadCh2SliceSequence(selected.sequence)
+        }, [selected.sequence])
+
+        const play = () => {
+          if (run) return
+          preloadCh2SliceSequence(selected.sequence)
+          const number = runNumber + 1
+          setRunNumber(number)
+          setRun({ number, config: selected, startedAt: Date.now() })
+          setCompleted(null)
+        }
+        const resultText = completed && (completed.machine
+          ? '本轮原机器演出已按正式计时结束；儿童序列仍待后续补充。'
+          : completed.admitted ? '本轮演出已按正式计时结束。慢图或加载失败不会延长计时，可再看一次。'
+            : '本轮演出已结束，但断层序列尚未入库；这不是素材完成验收。')
+
+        return h('main', { className: 'preview-shell', 'data-preview-playing': run ? 'true' : 'false' },
+          h('header', null,
+            h('p', { className: 'preview-kicker' }, '第二章 / 独立演出检查页'),
+            h('h1', null, '扫描演出预览'),
+            h('p', { className: 'preview-note' }, '复用正式扫描组件与实际序列登记。此页不接入游戏存档；播放不会推进剧情，也不会授予属性或奖励。'),
+            h('p', { className: 'preview-note' }, '每轮仍播放正式的 3 秒采集演出，没有跳过按钮。三处控制台模式仍是采集，并沿用同一段设备声。')),
+          h('div', { className: 'preview-summary' },
+            h('span', null, `${scans.length} 个采集入口`),
+            h('span', { 'data-preview-admitted': admitted }, `断层序列 ${admitted} / 14 已入库`),
+            h('span', null, '儿童 1 例明确保留原画面')),
+          h('section', { className: 'preview-selection', 'aria-label': '当前预览入口' },
+            h('h2', null, `${shifts[selected.id.split('_')[0]]} · ${selected.title}`),
+            h('p', null, modeLabel(selected)),
+            h('p', { className: sequence ? 'preview-state' : 'preview-pending' }, stateLabel(selected)),
+            h('p', { className: 'preview-note' }, selected.detail),
+            h('button', { className: 'preview-play', disabled: !!run, onClick: play, 'data-preview-play': selected.id },
+              `${completed?.id === selected.id ? '再看一次' : '播放本例'} · ${selected.durationMs / 1000} 秒`),
+            completed && h('p', { className: 'preview-result preview-state', role: 'status', 'data-preview-run-complete': completed.number }, resultText)),
+          h('nav', { className: 'preview-grid', 'aria-label': '15 个采集入口' }, scans.map(config =>
+            h('button', { key: config.id, className: 'preview-choice', disabled: !!run,
+              'aria-pressed': config.id === selectedId, 'data-preview-select': config.id,
+              onClick: () => { setSelectedId(config.id); setCompleted(null) } },
+              h('strong', null, `${shifts[config.id.split('_')[0]]} · ${config.title}`),
+              h('span', null, modeLabel(config)),
+              h('span', { className: getCh2SliceSequence(config.sequence) ? 'preview-state' : 'preview-pending' }, stateLabel(config))))),
+          h('footer', { className: 'preview-footer' },
+            h('p', null, '此页不展示观察题选项或答案，也不显示原始来源的病人资料。正式剧情仍在采集结束后进入原有图像、观察与调窗。'),
+            h('p', null, '体积压缩只用于这段采集演出；病例原有的观察与调窗图像不作压缩替换。'),
+            h('p', null, '选择入口时只预取本例图集。序列尚未入库、慢图或加载失败均会如实显示；不借用其他部位图像，也不改变正式计时。')),
+          run && h(Ch2ScanOverlay, { key: run.number, config: run.config, startedAt: run.startedAt,
+            onDone: () => {
+              setCompleted({ id: run.config.id, number: run.number, machine: run.config.presentation === 'machine',
+                admitted: !!getCh2SliceSequence(run.config.sequence) })
+              setRun(null)
+            } }))
+      }
+
+      createRoot(document.getElementById('preview-root')).render(h(Preview))
+    </script>
+  </body>
+</html>

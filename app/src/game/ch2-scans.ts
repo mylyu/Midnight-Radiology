@@ -5,10 +5,19 @@ export interface Ch2ScanConfig {
   title: string
   detail: string
   durationMs: number
+  /** Presentation does not change acquisition/reconstruction or the saved clock. */
+  presentation?: 'dual' | 'console' | 'machine'
+  sequence?: string
 }
 
 function acquisition(id: string, title: string, detail: string): Ch2ScanConfig {
-  return { id, mode: 'acquire', title, detail, durationMs: 3000 }
+  const consoleOnly = ['c2n3_repeat_scan', 'c2n3_cta_scan', 'c2d4_m1'].includes(id)
+  // Explicitly approved exception: keep the original pediatric machine scene
+  // until an appropriate reviewed child sequence is available.
+  const machineOnly = id === 'c2n5_child_scan'
+  return { id, mode: 'acquire', title, detail, durationMs: 3000,
+    presentation: machineOnly ? 'machine' : consoleOnly ? 'console' : 'dual',
+    ...(!machineOnly ? { sequence: id } : {}) }
 }
 
 function reconstruction(id: string, title: string): Ch2ScanConfig {
@@ -66,7 +75,7 @@ export function ch2ScanFrame(config: Ch2ScanConfig, startedAt: number, now = Dat
   const complete = progress >= 1
   const phase = complete ? 'complete' : config.mode === 'reconstruct' ? 'reconstruct'
     : progress < 0.2 ? 'position' : progress < 0.72 ? 'acquire' : 'reconstruct'
-  const label = phase === 'complete' ? '图像已就绪' : phase === 'position' ? '检查床进到位'
+  const label = phase === 'complete' ? '图像已就绪' : phase === 'position' ? config.presentation === 'console' ? '本次采集准备就绪' : '检查床进到位'
     : phase === 'acquire' ? '机架采集数据' : '工作站重建图像'
   return { elapsedMs, progress, phase, label, complete }
 }

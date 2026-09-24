@@ -10,6 +10,7 @@ import { isPatientBed, isPatientWheelchair } from './game/ch2-patients'
 import { Ch2Shop, Ch2Backpack } from './components/Ch2Shop'
 import { Ch2Settlement } from './components/Ch2Settlement'
 import { Ch2ScanOverlay } from './components/Ch2ScanOverlay'
+import { preloadCh2SliceSequence } from './game/ch2-scan-sequences'
 import { Ch2ObservationImage } from './components/Ch2ObservationImage'
 import { Ch2MysteryMedia, Ch2MysterySound } from './components/Ch2MysteryMedia'
 import { Ch2DawnScene } from './components/Ch2DawnScene'
@@ -1961,6 +1962,15 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stepId, presentationBlocked])
+
+  // Warm only the current/immediately following acquisition while dialogue is shown.
+  // No resource can delay the saved three-second scan or mutate its rewards.
+  const scanWarmupIds = [stepId, baseStep.next, ...(baseStep.choices ?? []).map(choice => choice.next)]
+    .filter((id): id is string => !!id && !!CH2_SCANS[id]).join('|')
+  useEffect(() => {
+    if (phase !== 'story') return
+    for (const id of scanWarmupIds.split('|')) preloadCh2SliceSequence(CH2_SCANS[id]?.sequence)
+  }, [phase, scanWarmupIds])
 
   // Animation time is saved separately from rewards; a missing/blocked audio never controls progress.
   useEffect(() => {
