@@ -136,6 +136,10 @@ try {
     assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth))
     const frame = await page.locator('.ch2-dawn-frame').boundingBox()
     assert(frame.height > 40, 'Short landscape still has a scene viewport')
+    const dialogBox = await page.locator('.dialog-box').boundingBox()
+    const speaker = await page.locator('.dialog-box > span.absolute:not(.animate-bounce)').boundingBox()
+    assert(speaker.y >= dialogBox.y && speaker.y + speaker.height <= dialogBox.y + dialogBox.height,
+      'Short-screen speaker badge must be fully inside its scrollable dialog')
     for (const b of await page.locator('.choice-in button').all()) {
       const box = await b.boundingBox(); assert(box.y >= 0 && box.y + box.height <= 375, 'Landscape option is clipped')
     }

@@ -10,6 +10,7 @@
 - 37项静态回归、类型/生产构建、本轮文件定向lint通过；第一章原八商品/限购/考核浏览器回归另跑通过。实时保护 **87模块/配置、31 App函数、280旧媒体、批准的三条第一章声音** 与基点一致，DR/DSA不变。全仓lint仍原 **10 errors / 2 warnings**，原大包体警告仍在，未掩盖。
 - 提交：**`aa516e8`**（场景/像素素材/最小接线）、**`test(ch2): verify sunrise and continuous chapter journeys`**（本段所在回归交接提交）。整轮撤销按回归交接提交→`aa516e8`逆序 `git revert`；准确列表用 `git log --oneline b3de319..codex/ch2-dawn-interlude`，不要hard reset或强推。旧分支和素材保留。
 - 详细设计：[docs/ch2-dawn-interlude.md](docs/ch2-dawn-interlude.md)；实测结果/复跑：[docs/ch2-dawn-regression.md](docs/ch2-dawn-regression.md)；完整图像提示词/来源/哈希：[docs/ch2-dawn-assets.json](docs/ch2-dawn-assets.json)；历史测试适配：[docs/ch2-dawn-static-regression.md](docs/ch2-dawn-static-regression.md)。新图来自内置image_gen，未覆盖旧媒体。最终发布成功与否以本次Actions/线上资源核验和交付消息为准。
+- 上线复核补丁：`dc0ba43`已部署，但人工复看发现矮横屏原滚动框裁剪日出名牌；只给日出节点增加框内名牌排版，补充完整可见断言，独立提交 `fix(ch2): keep dawn speaker visible on short screens`。不改交互/剧情/存档/第一章。整轮回退需先revert此布局补丁，再revert `dc0ba43`、`aa516e8`。
 
 ## 2026-09-24：作者批准第二章当前完整版本发布
 
