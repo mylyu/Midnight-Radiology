@@ -15,6 +15,8 @@ import { Ch2ScanOverlay } from './components/Ch2ScanOverlay'
 import { preloadCh2SliceSequence } from './game/ch2-scan-sequences'
 import { Ch2ObservationImage } from './components/Ch2ObservationImage'
 import { Ch2MysteryMedia, Ch2MysterySound } from './components/Ch2MysteryMedia'
+import { Ch2CommunicationNotice } from './components/Ch2CommunicationNotice'
+import { ch2CommunicationHeardKey } from './game/ch2-communications'
 import { Ch2DawnScene } from './components/Ch2DawnScene'
 import { CH2_DAWN_SHOTS } from './game/ch2-dawn'
 import Ch2Checkin from './components/Ch2Checkin'
@@ -2266,6 +2268,12 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
           </div>
         </div>
       )}
+
+      {phase === 'story' && !presentationBlocked && !step.phone && <Ch2CommunicationNotice key={`communication-${stepId}`} stepId={stepId}
+        consumed={!!state.flags[ch2CommunicationHeardKey(stepId)]}
+        onConsumed={() => update(s => s.flags[ch2CommunicationHeardKey(stepId)] ? s : {
+          ...s, flags: { ...s.flags, [ch2CommunicationHeardKey(stepId)]: true },
+        })} />}
 
       {/* 中央大图 */}
       {phase === 'story' && <Ch2MysterySound key={stepId} stepId={stepId}

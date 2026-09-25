@@ -1,0 +1,30 @@
+.ch2-communication {
+  position: absolute;
+  top: 6.5rem;
+  right: .5rem;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  max-width: calc(100% - 1rem);
+  padding: .45rem .6rem;
+  color: #6ee7b7;
+  background: rgb(15 23 42 / .94);
+  border: 1px solid #477c77;
+  border-radius: .65rem;
+  box-shadow: 0 4px 12px #02061766;
+  pointer-events: none;
+}
+.ch2-communication[data-ch2-communication="message"] { color: #93c5fd; border-color: #486b92; }
+.ch2-communication-icon { width: 32px; height: 36px; flex: none; }
+.ch2-communication-copy { display: flex; flex-direction: column; min-width: 0; gap: .15rem; }
+.ch2-communication-copy strong { font-size: .8rem; font-weight: 600; }
+.ch2-communication-copy span { color: #cbd5e1; font-size: .65rem; }
+.ch2-communication-mute { color: #94a3b8; font-size: .6rem; padding: .5rem .15rem; flex: none; pointer-events: auto; }
+@media (min-width: 768px) and (min-height: 621px) {
+  .ch2-communication { top: 3.25rem; right: 1rem; }
+}
+@media (max-height: 480px) {
+  .ch2-communication { top: 2.8rem; padding: .2rem .5rem; }
+  .ch2-communication-icon { width: 24px; height: 28px; }
+}

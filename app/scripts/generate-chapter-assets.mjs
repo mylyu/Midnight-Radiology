@@ -20,6 +20,7 @@ import { CH2_SCAN_AUDIO } from '../src/game/ch2-scans.ts'
 import { CH2_CT_MOTION } from '../src/game/ch2-ct-motion.ts'
 import { CH2_TERMINAL_CUES } from '../src/game/ch2-terminal.ts'
 import { CH2_PAYOFF_KEEPSAKES } from '../src/game/ch2-payoffs.ts'
+import { CH2_COMMUNICATION_AUDIO } from '../src/game/ch2-communications.ts'
 
 export const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 export const manifestPath = path.join(appRoot, 'src/lib/media-manifest.generated.json')
@@ -146,6 +147,7 @@ export async function buildChapterManifest() {
   collect('ch2', CH2_PAYOFF_KEEPSAKES)
   for (const image of [CH2_CT_MOTION.room, CH2_CT_MOTION.bed, 'stamp', 'me', 'luzhou']) addImage('ch2', image)
   for (const sound of Object.values(CH2_SCAN_AUDIO)) addSound('ch2', sound)
+  for (const asset of Object.values(CH2_COMMUNICATION_AUDIO)) addPath('ch2', asset, 'audio')
   for (const kind of new Set(Object.values(CH2_TERMINAL_CUES).map(cue => cue.kind))) addSound('ch2', `ch2_terminal_${kind}_v1`)
   for (const sequence of Object.values(CH2_SLICE_SEQUENCES)) addPath('ch2', sequence.asset, 'image')
   // Temporary stages are constructed in functions rather than present in the

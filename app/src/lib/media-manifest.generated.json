@@ -1071,6 +1071,16 @@
       "bytes": 49356,
       "type": "audio"
     },
+    "audio/ch2_mobile_call_v1.mp3": {
+      "sha256": "094b8433a588f638b946c3cd8883b0e52a1a3e7457579404b00ba77d48c23c5d",
+      "bytes": 17133,
+      "type": "audio"
+    },
+    "audio/ch2_mobile_message_v1.mp3": {
+      "sha256": "5c89b17224cc041a42ceeb22bc0bbb0da0f4d858ce3d7525b60eb40751e54fce",
+      "bytes": 6189,
+      "type": "audio"
+    },
     "audio/ch2_terminal_alarm_v1.mp3": {
       "sha256": "6e20289fadb1bcd6d0a1359795ce9d7c6e6bb32e42ffdb2fd9ab860a8a666b65",
       "bytes": 12717,
@@ -1525,6 +1535,8 @@
       "assets/media/stamp.72cf222761ee91c0.webp",
       "audio/badge.mp3",
       "audio/ch2_ct_real_scan_20260924.mp3",
+      "audio/ch2_mobile_call_v1.mp3",
+      "audio/ch2_mobile_message_v1.mp3",
       "audio/ch2_terminal_alarm_v1.mp3",
       "audio/ch2_terminal_receipt_v1.mp3",
       "audio/click.mp3",
