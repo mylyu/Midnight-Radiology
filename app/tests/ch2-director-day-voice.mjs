@@ -8,6 +8,7 @@ import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { beforeThicknessDialogueSource } from './ch2-thickness-dialogue.mjs'
 import { priorDayCasesMediaPaths } from './ch2-day-cases-projection.mjs'
+import { priorCtaCharactersSourcePaths } from './ch2-cta-characters-projection.mjs'
 
 export const DIRECTOR_DAY_BASELINE = '3b6f809c7ce8a598e7a52f22e5d7386e5b7415a7'
 export const DIRECTOR_DAY_AUDIO = 'app/public/audio/vox_ch2_natural_director_day_v3.mp3'
@@ -122,7 +123,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   // The existing ignored image-assets.generated.json is a build cache, not a new module.
   const liveSourcePaths = git('ls-files', '--cached', '--others', '--exclude-standard', '--', 'app/src')
     .toString().trim().split('\n')
-  assert.deepEqual([...new Set(liveSourcePaths)].sort(), sourcePaths.sort(), 'No new production module')
+  assert.deepEqual(priorCtaCharactersSourcePaths([...new Set(liveSourcePaths)]).sort(), sourcePaths.sort(), 'No unreviewed production module after the separately pinned CTA presentation helper')
   for (const path of [scenePath, indexPath]) {
     const live = normalize(read(path))
     assert.throws(() => beforeDirectorDayVoiceSource(path, live.replace(text, text + '错误')), /undocumented mutation/)

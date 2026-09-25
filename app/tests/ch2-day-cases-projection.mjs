@@ -5,6 +5,7 @@ import { createHash } from 'node:crypto'
 import { readFileSync, readdirSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { beforeCtaCharactersSource, priorCtaCharactersMediaPaths, assertCtaCharactersLive } from './ch2-cta-characters-projection.mjs'
 
 export const DAY_CASES_BASELINE = 'b68923b9683b6a90dc946333ca05e248f998fb9a'
 export const DAY_CASES_RETIRED = ['c2d2_8', 'c2d2_9a', 'c2d2_9b', 'c2d2_gut_scan', 'c2d2_10']
@@ -47,9 +48,11 @@ export function dayCasesLedger() {
   return ledger
 }
 export function beforeDayCasesSource(path, source) {
-  if (!paths.includes(path)) return source
-  const current = normalize(source), before = original(path)
+  if (!paths.includes(path)) return beforeCtaCharactersSource(path, source)
+  let current = normalize(source)
+  const before = original(path)
   if (current === before) return source // Only the exact independently known preceding revision.
+  current = normalize(beforeCtaCharactersSource(path, current))
   const row = dayCasesLedger().files.find(row => row.path === path)
   assert.equal(sha(current), row.afterSha256, `${path}: undocumented mutation outside approved day-case source`)
   const lines = current.trimEnd().split('\n')
@@ -69,11 +72,12 @@ export function assertDayCasesImage(bytes = read(DAY_CASES_IMAGE)) {
 }
 export function priorDayCasesMediaPaths(list) {
   assertDayCasesImage()
-  return list.filter(path => path !== DAY_CASES_IMAGE)
+  return priorCtaCharactersMediaPaths(list).filter(path => path !== DAY_CASES_IMAGE)
 }
 export function assertDayCasesLive() {
+  assertCtaCharactersLive()
   for (const row of dayCasesLedger().files) {
-    const current = normalize(read(row.path))
+    const current = normalize(beforeCtaCharactersSource(row.path, read(row.path)))
     assert.equal(sha(current), row.afterSha256, `${row.path}: reviewed day-case edit must actually be live`)
     assert.equal(normalize(beforeDayCasesSource(row.path, current)), original(row.path))
   }
@@ -98,7 +102,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   }
   const filesAt = path => readdirSync(new URL(path + '/', root), { withFileTypes: true }).flatMap(entry =>
     entry.isDirectory() ? filesAt(`${path}/${entry.name}`) : [`${path}/${entry.name}`])
-  assert.deepEqual(filesAt('app/public').sort(), [...publicPaths, DAY_CASES_IMAGE].sort(), 'Exactly one new reviewed image')
+  assert.deepEqual(priorCtaCharactersMediaPaths(filesAt('app/public')).sort(), [...publicPaths, DAY_CASES_IMAGE].sort(), 'Exactly one reviewed wrist image after the separately pinned CTA/characters media')
   for (const row of dayCasesLedger().files) {
     const live = normalize(read(row.path))
     for (const edit of row.edits) {

@@ -5,6 +5,7 @@ import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { assertDirectorDayVoiceLive, priorDirectorDayVoiceMediaPaths } from './ch2-director-day-voice.mjs'
+import { priorCtaCharactersSourcePaths } from './ch2-cta-characters-projection.mjs'
 import { DETAIL_ROOT as root, DETAIL_BASELINE as baseline, DETAIL_EDITED_FILES, DETAIL_ADDED_SOURCE,
   beforeDetailPolishSource, assertDetailAddedSource, normalizeDetail as normalize } from './ch2-detail-polish-projection.mjs'
 
@@ -26,7 +27,7 @@ const additions = prefix => [...new Set([
   textGit('diff', '--no-renames', '--name-only', '--diff-filter=A', baseline, '--', prefix),
   textGit('ls-files', '--others', '--exclude-standard', '--', prefix),
 ].join('\n').split(/\r?\n/).filter(Boolean))].sort()
-assert.deepEqual(additions('app/src'), DETAIL_ADDED_SOURCE, 'Only six individually named and hash-verified production files')
+assert.deepEqual(priorCtaCharactersSourcePaths(additions('app/src')), DETAIL_ADDED_SOURCE, 'Only six original individually pinned files after the separately verified CTA presentation helper')
 assertDetailAddedSource()
 assert.deepEqual(priorDirectorDayVoiceMediaPaths(additions('app/public')), [], 'No new media, previews, or public resources beyond the one independently verified later director voice')
 assert.deepEqual(additions('app/scripts'), [], 'No production build script additions')

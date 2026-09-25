@@ -1,0 +1,470 @@
+{
+  "baseline": "dadc208a703c01f5ffd70b70d2fa492e0f59a926",
+  "files": [
+    {
+      "path": "app/src/App.tsx",
+      "beforeSha256": "da84e4ee821fe6ef44182b501d3c649ef8edf687e180afd98447321b760099f3",
+      "afterSha256": "ed9bcadbcbb12fc4d520d69fe623db09e87f023aaffd0dd7c429c7a63326249f",
+      "edits": [
+        {
+          "beforeStart": 24,
+          "afterStart": 24,
+          "before": [],
+          "after": [
+            "import { ch2ObservationContinuation, ch2ObservationPortrait, ch2ObservationPhone, ch2ObservationResumeStep } from './game/ch2-observation-presentation'"
+          ]
+        },
+        {
+          "beforeStart": 1859,
+          "afterStart": 1860,
+          "before": [
+            "  const savedStep = originalCh2Step(prog.stepId ?? '')"
+          ],
+          "after": [
+            "  const savedStep = ch2ObservationResumeStep(originalCh2Step(prog.stepId ?? ''), prog)"
+          ]
+        },
+        {
+          "beforeStart": 1914,
+          "afterStart": 1915,
+          "before": [],
+          "after": [
+            "      phone: observedChoice ? ch2ObservationPhone(stepId) : undefined,"
+          ]
+        },
+        {
+          "beforeStart": 2074,
+          "afterStart": 2076,
+          "before": [
+            "    if (step.next === '@ch2observe-return') { update(s => acknowledgeCh2Observation(s, stepId)); setShown(0); return }"
+          ],
+          "after": [
+            "    if (step.next === '@ch2observe-return') {",
+            "      update(s => acknowledgeCh2Observation(s, stepId))",
+            "      const continuation = ch2ObservationContinuation(stepId)",
+            "      if (continuation) setStepId(continuation)",
+            "      setShown(0); return",
+            "    }"
+          ]
+        },
+        {
+          "beforeStart": 2138,
+          "afterStart": 2145,
+          "before": [
+            "  const leftSprite = observationPending ? null : spriteOf(giftReply?.sprite ?? view.sprite)"
+          ],
+          "after": [
+            "  const leftSpriteKey = observationPending",
+            "    ? observedChoice && !statReply ? ch2ObservationPortrait(stepId, observation?.speaker) : undefined",
+            "    : giftReply?.sprite ?? view.sprite",
+            "  const leftSprite = spriteOf(leftSpriteKey)"
+          ]
+        },
+        {
+          "beforeStart": 2213,
+          "afterStart": 2223,
+          "before": [
+            "      {leftSprite && <img src={leftSprite} className={`sprite-l absolute bottom-48 portrait:bottom-44 left-4 md:left-24 portrait:h-44 h-64 md:h-96 object-contain pixel drop-shadow-2xl z-10 pointer-events-none ${isPatientBed(view.sprite) ? 'ch2-patient-bed' : isPatientWheelchair(view.sprite) ? 'ch2-patient-wheelchair' : ''}`} alt={isPatientBed(view.sprite) ? '患者躺在转运平车上' : isPatientWheelchair(view.sprite) ? '患者坐在轮椅上' : ''} />}"
+          ],
+          "after": [
+            "      {leftSprite && <img src={leftSprite} className={`sprite-l absolute bottom-48 portrait:bottom-44 left-4 md:left-24 portrait:h-44 h-64 md:h-96 object-contain pixel drop-shadow-2xl z-10 pointer-events-none ${isPatientBed(leftSpriteKey) ? 'ch2-patient-bed' : isPatientWheelchair(leftSpriteKey) ? 'ch2-patient-wheelchair' : ''}`} alt={isPatientBed(leftSpriteKey) ? '患者躺在转运平车上' : isPatientWheelchair(leftSpriteKey) ? '患者坐在轮椅上' : ''} />}"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/game/ch2-dawn.ts",
+      "beforeSha256": "e5b2472816ff533f223a1a69190b1c1c73f3f459beefd87c812b715f98e586df",
+      "afterSha256": "87cd2aa65f910f11ee65abff7454d230675c41e9d1c32f89c10773cc00137353",
+      "edits": [
+        {
+          "beforeStart": 65,
+          "afterStart": 65,
+          "before": [
+            "    text: '太阳从对面的屋顶后露出来。玻璃上的倒影淡了，你们谁也没急着走。街上有人推着自行车，绕过刚打开的卷帘门。', next: 'c2n3_dawn_photo' },"
+          ],
+          "after": [
+            "    text: '太阳从对面的屋顶后露出来，玻璃上的倒影淡了。电梯还在楼上，你们又站了一会儿。街上有人推着自行车，绕过刚打开的卷帘门。', next: 'c2n3_dawn_photo' },"
+          ]
+        },
+        {
+          "beforeStart": 73,
+          "afterStart": 73,
+          "before": [
+            "    text: '你们并肩往电梯口走。白班同事在身后接起电话，小唐抬手挥了挥，顺手替你按住电梯门。',"
+          ],
+          "after": [
+            "    text: '电梯到了，小唐招呼你下楼。白班同事在身后接起电话，你们朝他挥挥手，挤进了刚送完货的电梯。',"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/game/ch2-needles.ts",
+      "beforeSha256": "604546837f00e064993b41e99e0d3ad9e411b42ddbdf1d6c4b0276df5ae55569",
+      "afterSha256": "c9e177c48b9984e0111778df1726d5bbb0e3290479d07fba8fc8daf4ad476b50",
+      "edits": [
+        {
+          "beforeStart": 37,
+          "afterStart": 37,
+          "before": [
+            "    c2d4_needle0: { bg: 'bg_ctcontrol_day', speaker: 'sys', sprite: patient,",
+            "      text: '你刚把分机号贴好，门诊医生带来一位阿姨，说请值班医师再核一下外院的片子。她自己走进来，怀里夹着片袋，开口先问：「你们这椅子能往前挪吗？我脚够不着地。」',"
+          ],
+          "after": [
+            "    c2d4_needle0: { bg: 'bg_ctcontrol_day', speaker: 'sys', sprite: patient, sfx: 'vox_ch2_luo_entrance_20260925',",
+            "      text: '你刚把分机号贴好，门诊医生带来一位阿姨，说请值班医师再核一下外院的片子。她自己走进来，怀里夹着片袋：「大夫，帮我看看。」走到椅子前，又问：「这椅子能往前挪吗？我脚够不着地。」',"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/game/ch2-pacing.ts",
+      "beforeSha256": "5552326175b87107f7e9377f5c3ed807da0246377a4c96557f235beaff053b48",
+      "afterSha256": "e9a2a522b8d07877dc36bafb0c1b5a74664aef4e654f93f6e77b24ec592a5127",
+      "edits": [
+        {
+          "beforeStart": 50,
+          "afterStart": 50,
+          "before": [
+            "    c2d2_gap_phone: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: '机房已经腾好。救护车还在路上，小唐把登记夹摊开，顺手把一直打滑的电话座推回去。', next: 'c2d2_gap_phone_q' },",
+            "    c2d2_gap_phone_q: { speaker: 'tang', sprite: 'char_tang', text: '电话线怎么又绕到我袖子上了。帮我一下。', choices: [",
+            "      { text: '替她解开电话线', next: 'c2d2_gap_phone_a' },"
+          ],
+          "after": [
+            "    c2d2_gap_phone: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: '机房已经腾好，救护车还在路上。小雷来查值班电话，卷成麻花的听筒线刚理开，又绕了回去。', next: 'c2d2_gap_phone_q' },",
+            "    c2d2_gap_phone_q: { speaker: 'lei', sprite: 'char_lei', text: '这根线，比我还拧巴。', choices: [",
+            "      { text: '帮他捋直听筒线', next: 'c2d2_gap_phone_a' },"
+          ]
+        },
+        {
+          "beforeStart": 55,
+          "afterStart": 55,
+          "before": [
+            "    c2d2_gap_phone_a: { speaker: 'me', sprite: 'char_tang', text: '好了。你再转两圈，咱们就得连人带电话一起交班。', next: 'c2d2_t0' },",
+            "    c2d2_gap_phone_b: { speaker: 'tang', sprite: 'char_tang', text: '对，就放这儿。说了半年换无绳的，连根长点的线都没换。', next: 'c2d2_t0' },"
+          ],
+          "after": [
+            "    c2d2_gap_phone_a: { speaker: 'me', sprite: 'char_lei', text: '好了。明天再绕上，可别说是我修坏的。', next: 'c2d2_t0' },",
+            "    c2d2_gap_phone_b: { speaker: 'lei', sprite: 'char_lei', text: '行，先这么放。换根长线的单子，我再催一遍。', next: 'c2d2_t0' },"
+          ]
+        },
+        {
+          "beforeStart": 77,
+          "afterStart": 77,
+          "before": [
+            "    c2n3_coronary_clear: { speaker: 'me', text: '哦，原来绕到后面去了！这么一转，终于跟得上了。', image: 'ct_coronary_cta', next: 'c2n3_h4' },"
+          ],
+          "after": [
+            "    c2n3_coronary_clear: { speaker: 'me', text: '哦，原来绕到后面去了！这么一转，终于跟得上了。', image: 'ct_coronary_cta', next: 'c2n3_recon_question' },",
+            "    c2n3_recon_question: { speaker: 'me', sprite: 'char_zhou', text: '等等，刚才出断层叫重建，现在弄成立体的，也叫重建？', next: 'c2n3_recon_projection' },",
+            "    c2n3_recon_projection: { speaker: 'zhou', sprite: 'char_zhou', text: '前一次，是把各个角度采来的**投影数据算成断层图**。FBP、迭代重建干的是这个。', next: 'c2n3_recon_render' },",
+            "    c2n3_recon_render: { speaker: 'zhou', sprite: 'char_zhou', text: '现在拿已有的断层数据做**三维渲染**，换个立体的看法。口头都叫“重建”，其实是两步。不是又扫了一次。', next: 'c2n3_h4' },"
+          ]
+        },
+        {
+          "beforeStart": 87,
+          "afterStart": 90,
+          "before": [
+            "    c2d4_aorta_resist: { speaker: 'sys', text: '病人摇头，攥着衣服往下拽：「我就是胃疼，给我开点药行不行？别推来推去的。」妻子伸手扶他，他又把手缩了回去。', next: 'c2d4_aorta_wife' },",
+            "    c2d4_aorta_wife: { speaker: 'sys', text: '妻子急了：「在家你说忍一忍，刚才在车上连话都说不出了。人都到这儿了！」他闭着眼，没接话。', next: 'c2d4_aorta_doctor' },",
+            "    c2d4_aorta_doctor: { speaker: 'he', sprite: 'char_he', text: '您刚才说，**突然疼起来，还往后背串**。我担心不只是胃的问题。先躺稳，我在旁边，不会把您一个人留这儿。', next: 'c2d4_aorta_consent' },",
+            "    c2d4_aorta_consent: { speaker: 'sys', text: '医生解释了检查原因和风险。病人缓了一口气，终于点头：「那你跟我说着点，别突然就动。」小何把床栏扶好，示意团队继续准备。', next: 'c2d4_4' },",
+            "    c2d4_gap_thermos: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: '急诊那边确认已经接上专科。午后轮休，你们才有空把饭盒收起来；老周拧开保温杯，盖子里躺着一颗泡开的枸杞。', next: 'c2d4_gap_thermos_q' },"
+          ],
+          "after": [
+            "    c2d4_aorta_resist: { speaker: 'sys', text: '他攥着床栏：「我平时跑半马，还踢球……是不是背上的筋抽了？给我止个疼，缓缓就好了吧？」话没说完，额头又冒出一层汗。', next: 'c2d4_aorta_wife' },",
+            "    c2d4_aorta_wife: { speaker: 'sys', text: '妻子接过话：「刚才坐着不行，站着也不行，趴下还疼。他还非说活动活动就好了。」男人闭着眼，小声回了一句：「哪想到会这样。」', next: 'c2d4_aorta_doctor' },",
+            "    c2d4_aorta_doctor: { speaker: 'he', sprite: 'char_he', text: '您这次是**突然就疼得很厉害，一直不缓解**。不能当普通拉伤。先躺稳，我们得把大血管看清楚。', next: 'c2d4_aorta_consent' },",
+            "    c2d4_aorta_consent: { speaker: 'sys', text: '医生解释了检查原因和风险。男人点头，松开一点床栏：「行。别让我自己挪，我一动就疼。」小何应了一声，和团队确认转床准备。', next: 'c2d4_4' },",
+            "    c2d4_aorta_volume: { speaker: 'sys', sprite: '', sprite2: '', image: 'ch2_aorta_volume_cutaway_v1', imageLabel: '本次CTA · 三维渲染（局部剖切显示）', text: '转运联络没有停。你把同次数据的**三维渲染**补进交接图组：工作站虚拟剖开降主动脉的一部分，里面的分隔沿着血管延伸。不是血管外壁整个裂开了。', next: 'c2d4_aorta_volume_reply' },",
+            "    c2d4_aorta_volume_reply: { speaker: 'director', sprite: 'char_director', text: '这张方便看走向。**薄层和重组图也一起传**，市里的医生要核对完整范围。人先按安排转运，别在这儿等一张漂亮图。', image: 'ch2_aorta_volume_cutaway_v1', imageLabel: '本次CTA · 三维渲染（局部剖切显示）', next: 'c2d4_t3ok' },",
+            "    c2d4_gap_thermos: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: '急诊确认，转运团队已把患者送到市三甲医院接诊。午后轮休，你们才有空把饭盒收起来；老周拧开保温杯，盖子里躺着一颗泡开的枸杞。', next: 'c2d4_gap_thermos_q' },"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/game/ch2-patients.ts",
+      "beforeSha256": "e3f7571ce11d0d77b86b71908c27956fcce5ba62f4512704ca2289e96c14b72b",
+      "afterSha256": "fbefdf8dc95517afa9be47544b8a46895d71702becb18a0c930244b4c71ac8db",
+      "edits": [
+        {
+          "beforeStart": 15,
+          "afterStart": 15,
+          "before": [
+            " {id:'aorta',step:'c2d4_2',sprite:'ch2_patient_aorta_bed',voice:null},"
+          ],
+          "after": [
+            " {id:'aorta',step:'c2d4_2',sprite:'ch2_patient_aorta_middle_bed',voice:null},"
+          ]
+        },
+        {
+          "beforeStart": 31,
+          "afterStart": 31,
+          "before": [
+            "stage('ch2_patient_aorta_bed',['c2d4_3','c2d4_aorta_resist','c2d4_aorta_wife','c2d4_aorta_doctor','c2d4_aorta_consent','c2d4_4','c2d4_5','c2d4_6','c2d4_7','c2d4_8'])"
+          ],
+          "after": [
+            "stage('ch2_patient_aorta_middle_bed',['c2d4_3','c2d4_aorta_resist','c2d4_aorta_wife','c2d4_aorta_doctor','c2d4_aorta_consent','c2d4_4','c2d4_5','c2d4_6','c2d4_7','c2d4_8'])"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/game/ch2-payoffs.ts",
+      "beforeSha256": "0e1a65bb8e02a5037fdb0850169a9cc4717add840c772b1e33bed1f448380aa6",
+      "afterSha256": "7b8b6429f478690f004757106b68c3960d26725840742081c441788526b472f4",
+      "edits": [
+        {
+          "beforeStart": 42,
+          "afterStart": 42,
+          "before": [
+            "  { id: 'tang_meal', title: '小唐留的那份牛肉', flag: 'c2n5_b', icon: '🍱', image: 'item_beef',",
+            "    body: '第五夜，小唐用保温盒给你留了一份切好的牛肉。盒子是借你的，饭是给你的。',",
+            "    use: '这顿已经吃过了，留下的是交接饭的记忆；盒子洗净归还，不是可反复使用的补给。' },"
+          ],
+          "after": [
+            "  { id: 'tang_meal', title: '值班同事分的牛肉', flag: 'c2n5_b', icon: '🍱', image: 'item_beef',",
+            "    body: '第五夜，小唐带了一盒家里卤的牛肉，值班同事分着吃。老周来夹了两回，洗盒子的时候倒没人抢。',",
+            "    use: '这顿已经吃过了，留下的是同事交接饭的记忆；饭盒轮流洗净归还，不是可反复使用的补给。' },"
+          ]
+        },
+        {
+          "beforeStart": 131,
+          "afterStart": 131,
+          "before": [
+            "      text: '你把体模记录摊到桌上。小唐悄悄把椅子往你这边挪：「周老师这称呼……回头再问。」老周听见了：「先看记录。八卦又不会跑。」',"
+          ],
+          "after": [
+            "      text: '你把体模记录摊到桌上。小雷抬起头：「周老师？你们以前认识啊？」老周点点桌子：「先看记录。八卦等会儿。」',"
+          ]
+        },
+        {
+          "beforeStart": 216,
+          "afterStart": 216,
+          "before": [
+            "    text: '（塞给你一个保温盒）上回那袋苹果净被我们吃了，这次给你留点牛肉。老周已经吃掉一半，剩下这半我守住了。' }"
+          ],
+          "after": [
+            "    text: '（把保温盒摆到桌上）上回大家吃了你的苹果，这回尝尝我家卤的牛肉。筷子自己拿，老周已经来过两趟了。' }"
+          ]
+        },
+        {
+          "beforeStart": 218,
+          "afterStart": 218,
+          "before": [
+            "    text: '（塞给你一个保温盒）上回看日出还怕只剩素包子，这回先给你留点牛肉。' }"
+          ],
+          "after": [
+            "    text: '（把保温盒摆到桌上）上回看完日出，包子果然只剩素的。这回家里卤了牛肉，给值班的都带点。' }"
+          ]
+        },
+        {
+          "beforeStart": 220,
+          "afterStart": 220,
+          "before": [
+            "    text: f.c2_apples_shared ? '你掀开保温盒，牛肉切好了，小唐还塞了双筷子。「苹果归苹果，这盒记得洗。」她说完，又从盘里补了一块。' : step.text }"
+          ],
+          "after": [
+            "    text: f.c2_apples_shared ? '你和同事分着吃了几块牛肉。老周拿筷子拨了拨盘底，小唐把盒盖递给他：「苹果不用洗盒子，这个可躲不过去。」' : step.text }"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/game/ch2-playback.ts",
+      "beforeSha256": "09989028e7ffa97461e065871a460a6bcf949820744912550fde9b26d408238d",
+      "afterSha256": "dbe5504f333e8675715494e52a3b4a3a8e095019ad518903762e01f08f7b37ad",
+      "edits": [
+        {
+          "beforeStart": 6,
+          "afterStart": 6,
+          "before": [],
+          "after": [
+            "import { ch2ObservationContinuation } from './ch2-observation-presentation'"
+          ]
+        },
+        {
+          "beforeStart": 39,
+          "afterStart": 40,
+          "before": [
+            "  return patchCh2(s, { observations: { ...s.dlc?.ch2?.observations, [config.id]: { ...answer, acknowledged: true } } })"
+          ],
+          "after": [
+            "  const continuation = s.dlc?.ch2?.stepId === stepId ? ch2ObservationContinuation(stepId) : undefined",
+            "  return patchCh2(s, {",
+            "    observations: { ...s.dlc?.ch2?.observations, [config.id]: { ...answer, acknowledged: true } },",
+            "    // Acknowledgement and its unique continuation are one save, so refreshing",
+            "    // cannot re-open the repeated coronary question or grant another reward.",
+            "    ...(continuation ? { stepId: continuation } : {}),",
+            "  })"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/game/ch2.ts",
+      "beforeSha256": "1c1c7002491019dbe6d0c9fb493df452b671ec6462c9852c87469f940ef17b21",
+      "afterSha256": "e49f217eca9319cd74920fe7165612cb761bf029b53919e1a4e5e40d11bbb7f5",
+      "edits": [
+        {
+          "beforeStart": 656,
+          "afterStart": 656,
+          "before": [
+            "  c2d2_p2: { speaker: 'tang', sprite: 'char_tang', text: \"（下班前探头）还坐着呢？我喊你两遍了。饭再不拿，微波炉都下班了。\", next: 'c2d2_p3' },"
+          ],
+          "after": [
+            "  c2d2_p2: { speaker: 'fan', sprite: 'char_fan', text: \"（下班前探头）你饭盒还在休息室。今天记得拿，别等明天长毛。\", next: 'c2d2_p3' },"
+          ]
+        },
+        {
+          "beforeStart": 737,
+          "afterStart": 737,
+          "before": [
+            "  c2n3_h4: { speaker: 'sys', text: \"老周回到原始薄层和沿血管走向的重组图，逐段核对。右冠状动脉中段见斑块，局部管腔明显变窄。他把对应位置标出来，传给心内科。\", image: 'ch2_ct_coronary_slices', next: 'c2n3_h5' },",
+            "  c2n3_h5: { speaker: 'zhou', sprite: 'char_zhou', text: \"这套**CTA看管腔和斑块**，不能替人把血管打通。要不要进导管室处理，心内结合其他检查定。图传过去吧。\", image: 'ct_coronary_cta', next: 'c2n3_h6' },",
+            "  c2n3_h6: { speaker: 'sys', text: \"心内科接走病人和图像。你看了眼表，三点五十二分。小唐把刚泡好的茶推过来：「别问，新的。」\", effect: { gold: 100 }, next: 'c2n3_gap_cups' },"
+          ],
+          "after": [
+            "  c2n3_h4: { speaker: 'sys', text: \"老周对照薄层断层图和沿血管走向的重组图，逐段核对。右冠状动脉中段见斑块，局部管腔明显变窄。他把对应位置记进报告，传给心内科。\", next: 'c2n3_h5' },",
+            "  c2n3_h5: { speaker: 'zhou', sprite: 'char_zhou', text: \"这套**CTA看管腔和斑块**，不能替人把血管打通。要不要进导管室处理，心内结合其他检查定。图传过去吧。\", next: 'c2n3_h6' },",
+            "  c2n3_h6: { speaker: 'sys', text: \"心内科接走病人和图像。你看了眼表，三点五十二分。杯里的茶已经凉透，你倒掉半杯，重新兑上热水。\", effect: { gold: 100 }, next: 'c2n3_gap_cups' },"
+          ]
+        },
+        {
+          "beforeStart": 767,
+          "afterStart": 767,
+          "before": [
+            "  c2d4_1: {\"speaker\":\"director\",\"sprite\":\"char_director\",\"text\":\"先去CT室。有位上腹痛、往后背串的病人，急诊评估后怀疑主动脉有问题。我过去看片。\",\"next\":\"c2d4_2\"},",
+            "  c2d4_2: {\"bg\":\"bg_ctcontrol_day\",\"speaker\":\"sys\",\"text\":\"推床停在检查室门口。病人攥着床栏，陪来的妻子手里还拎着他的外套。医护正在交接病情、评估增强检查的风险。\",\"next\":\"c2d4_3\"},",
+            "  c2d4_3: {\"speaker\":\"sys\",\"text\":\"「早上还好好的，拿个东西就突然疼起来了。」妻子说到一半，低头把外套又叠了一遍。\",\"next\":\"c2d4_aorta_resist\"},"
+          ],
+          "after": [
+            "  c2d4_1: {\"speaker\":\"director\",\"sprite\":\"char_director\",\"text\":\"先去CT室。有位突然后背剧痛的病人，急诊评估后怀疑主动脉有问题。我过去看片。\",\"next\":\"c2d4_2\"},",
+            "  c2d4_2: {\"bg\":\"bg_ctcontrol_day\",\"speaker\":\"sys\",\"text\":\"推床停在门口。男人四十五岁上下，穿着运动外套，手腕上还戴着跑步表。脸色发白，额头都是汗。妻子跟在旁边，医护正交接病情、评估增强检查的风险。\",\"next\":\"c2d4_3\"},",
+            "  c2d4_3: {\"speaker\":\"sys\",\"text\":\"妻子说：「早上还躺在床上，突然就喊背疼。上周还踢球呢，哪儿都好好的。」她把手里的片袋攥出了褶，又慢慢抚平。\",\"next\":\"c2d4_aorta_resist\"},"
+          ]
+        },
+        {
+          "beforeStart": 779,
+          "afterStart": 779,
+          "before": [
+            "  c2d4_t2: {\"speaker\":\"sys\",\"text\":\"主任对照原始薄层图像和多个切面确认，随即给急诊打电话，说明发现并安排紧急专科评估。你没有再插话，把所需图像逐一传好。\",\"image\":\"ch2_ct_aortic_wide\",\"next\":\"c2d4_t2ok\"},"
+          ],
+          "after": [
+            "  c2d4_t2: {\"speaker\":\"sys\",\"text\":\"主任核对薄层图像和多个切面，随即通知急诊：「**主动脉夹层，马上联系市三甲医院接诊，启动急救转运。**」急诊团队继续监护、处理病情，你先把完整序列传过去。\",\"image\":\"ch2_ct_aortic_wide\",\"next\":\"c2d4_t2ok\"},"
+          ]
+        },
+        {
+          "beforeStart": 781,
+          "afterStart": 781,
+          "before": [
+            "  c2d4_t2no: {\"speaker\":\"zhou\",\"sprite\":\"char_zhou\",\"text\":\"都留。后面还要换方向看，用的也是这一组数据。别只导出那张漂亮的立体图。\",\"next\":\"c2d4_t3ok\"},",
+            "  c2d4_t3ok: {\"speaker\":\"sys\",\"text\":\"推床离开时，妻子追问报告去哪儿领。主任指着同行的医生：「已经联系好了，先跟他走。」她点点头，走了两步又回来拿外套——刚才叠了半天，还是落在椅子上了。\",\"next\":\"c2d4_9\"},"
+          ],
+          "after": [
+            "  c2d4_t2no: {\"speaker\":\"zhou\",\"sprite\":\"char_zhou\",\"text\":\"都留。市里还要沿血管核对范围。你补一张三维剖切图看走向，用的还是这次数据，转运照常准备。\",\"next\":\"c2d4_aorta_volume\"},",
+            "  c2d4_t3ok: {\"speaker\":\"sys\",\"text\":\"转运床离开时，男人问：「我老婆能跟着吧？」妻子连忙应他，转头又问去哪儿领报告。小何说：「**市里已经接上了，图也传了，不等纸报告。**」她这才把攥皱的片袋夹回腋下。\",\"next\":\"c2d4_9\"},"
+          ]
+        },
+        {
+          "beforeStart": 869,
+          "afterStart": 869,
+          "before": [
+            "  c2n5_b1: { speaker: 'tang', sprite: 'char_tang', text: \"（塞给你一个保温盒）夜班交接饭，我卤了牛肉。老周以为都是他的，差点给你吃光。快拿走。\", effect: { ap: -1 }, next: 'c2n5_b2' },",
+            "  c2n5_b2: { speaker: 'sys', text: \"保温盒里是切好的卤牛肉，下面压着小唐的纸条：「给你留了一半。另一半老周已经吃了，别找。」\", effect: { heart: 1, flag: 'c2n5_b' }, next: 'c2n5_hub' },"
+          ],
+          "after": [
+            "  c2n5_b1: { speaker: 'tang', sprite: 'char_tang', text: \"（把保温盒摆到桌上）家里卤了牛肉，给值班的都带点。筷子自己拿，老周已经来过两趟了。\", effect: { ap: -1 }, next: 'c2n5_b2' },",
+            "  c2n5_b2: { speaker: 'sys', text: \"你和同事分着吃了几块牛肉。老周拿筷子拨了拨盘底，小唐把盒盖递给他：「别找了。盒子轮流洗，今天谁先？」\", effect: { heart: 1, flag: 'c2n5_b' }, next: 'c2n5_hub' },"
+          ]
+        },
+        {
+          "beforeStart": 953,
+          "afterStart": 953,
+          "before": [
+            "  c2n5_g5: { speaker: 'zhou', text: \"（按住电梯开门键）我就说那茶怎么一股甜味。……写杯底，别贴个条，洗一次又没了。\", effect: { badge: 'night_keeper2' }, event: 'ch2_solo', next: 'c2n5_g6' },"
+          ],
+          "after": [
+            "  c2n5_g5: { speaker: 'zhou', sprite: 'char_zhou', text: \"（按住电梯开门键）我就说那茶怎么一股甜味。……写杯底，别贴个条，洗一次又没了。\", effect: { badge: 'night_keeper2' }, event: 'ch2_solo', next: 'c2n5_g6' },"
+          ]
+        },
+        {
+          "beforeStart": 966,
+          "afterStart": 966,
+          "before": [
+            "  c2am_5: { speaker: 'zhou', sprite: 'char_zhou', text: \"（看了你一眼）夜班有事照样找我。电话要是没接，再打一个，我可能在洗杯子。\", next: 'c2am_6' },"
+          ],
+          "after": [
+            "  c2am_5: { speaker: 'zhou', sprite: 'char_zhou', text: \"（看了你一眼）夜班有事照样找我。电话要是没接，再打一个，我可能在洗杯子。\", next: 'c2am_ct_reflection' },",
+            "  c2am_ct_reflection: { speaker: 'me', sprite: 'char_zhou', text: '这几班下来，CT真是**急诊神器**。以前没有CT，这些病人得怎么办？', next: 'c2am_ct_before' },",
+            "  c2am_ct_before: { speaker: 'zhou', sprite: 'char_zhou', text: '靠症状、查体和当时能做的检查。有些拿不准又等不起，就往上转。现在图出得快多了，后面的救治还得接得上。', next: 'c2am_6' },"
+          ]
+        },
+        {
+          "beforeStart": 970,
+          "afterStart": 972,
+          "before": [
+            "  c2am_9: { speaker: 'sys', text: \"【回到2025年11月 · 值守后的下一周】市里来的质控专家走到门口，先叫了一声：「周老师，原来您还在这儿带人！」老周把你让到前面：「今天先听年轻人讲。」小唐看看名单上那排头衔，悄悄把椅子往你这边挪了挪。\", end: true },"
+          ],
+          "after": [
+            "  c2am_9: { speaker: 'sys', text: \"【回到2025年11月 · 值守后的下一周】市里来的质控专家走到门口，先叫了一声：「周老师，原来您还在这儿带人！」老周把你让到前面：「今天先听年轻人讲。」小雷看看名单，又看看老周，张了张嘴，先把笔记本打开了。\", end: true },"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/lib/image-assets.catalog.json",
+      "beforeSha256": "0d01b8989146302290f90ffb37a77b364b419ec5b814f233cbbb420d0758f6ae",
+      "afterSha256": "f21fc1246fefab2fe4f5a99da2ab51c68b9baa08092dccc2661dad1e2e2070eb",
+      "edits": [
+        {
+          "beforeStart": 20,
+          "afterStart": 20,
+          "before": [],
+          "after": [
+            "  \"ch2_aorta_volume_cutaway_v1\": \"media/ch2_aorta_volume_cutaway_v1.803620fae1ddcc84.webp\","
+          ]
+        },
+        {
+          "beforeStart": 41,
+          "afterStart": 42,
+          "before": [],
+          "after": [
+            "  \"ch2_patient_aorta_middle_bed\": \"media/ch2_patient_aorta_middle_bed.59b2accc43dacf90.webp\","
+          ]
+        }
+      ]
+    }
+  ],
+  "added": [
+    {
+      "path": "app/src/game/ch2-observation-presentation.ts",
+      "sha256": "52778b89d7028136b97200052549882226103eda1fe82d7abc4c2aea0d2573eb"
+    }
+  ],
+  "media": [
+    {
+      "name": "ch2_aorta_volume_cutaway_v1",
+      "kind": "image",
+      "path": "app/public/assets/media/ch2_aorta_volume_cutaway_v1.803620fae1ddcc84.webp",
+      "bytes": 57982,
+      "sha256": "803620fae1ddcc841ba0ec4ea3c61100c8b60ab32ff3495871351da9fc43b3a8"
+    },
+    {
+      "name": "ch2_patient_aorta_middle_bed",
+      "kind": "image",
+      "path": "app/public/assets/media/ch2_patient_aorta_middle_bed.59b2accc43dacf90.webp",
+      "bytes": 137746,
+      "sha256": "59b2accc43dacf90ae4b73c8277993909c46547b69e2e47f3cbbffe99dc4aa7c"
+    },
+    {
+      "name": "vox_ch2_luo_entrance_20260925",
+      "kind": "audio",
+      "path": "app/public/audio/vox_ch2_luo_entrance_20260925.mp3",
+      "bytes": 33453,
+      "sha256": "6c449784f4505b18d9b05f5281ca2446d7a1020bb885d18b872d43e3981f41d2"
+    }
+  ]
+}

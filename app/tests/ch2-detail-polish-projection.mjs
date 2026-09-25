@@ -7,6 +7,7 @@ import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { beforeDirectorDayVoiceSource } from './ch2-director-day-voice.mjs'
+import { priorCtaCharactersSourcePaths } from './ch2-cta-characters-projection.mjs'
 
 export const DETAIL_ROOT = new URL('../../', import.meta.url)
 export const DETAIL_BASELINE = '5a2b494ed3d0eaaadaeb374ef1536166cbd43b41'
@@ -55,7 +56,7 @@ export function assertDetailAddedSource() {
 }
 export function priorDetailSourcePaths(paths) {
   assertDetailAddedSource()
-  return paths.filter(path => !DETAIL_ADDED_SOURCE.includes(path))
+  return priorCtaCharactersSourcePaths(paths).filter(path => !DETAIL_ADDED_SOURCE.includes(path))
 }
 export function beforeDetailPolishSource(path, source) {
   if (!DETAIL_EDITED_FILES.includes(path)) return beforeDirectorDayVoiceSource(path, source)

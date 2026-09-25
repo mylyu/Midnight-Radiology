@@ -5,6 +5,7 @@ import './game-delivery-data.mjs'
 import { beforeGameDeliverySource } from './game-delivery-projection.mjs'
 import { deliveryManifest, liveMedia, sha256 } from './game-delivery-media.mjs'
 import { DAY_CASES_WRIST, DAY_CASES_IMAGE_BYTES, assertDayCasesImage } from './ch2-day-cases-projection.mjs'
+import { ctaCharactersLedger, assertCtaCharactersMedia } from './ch2-cta-characters-projection.mjs'
 // Historical cache-recovery behavior is retained behind an exact checked
 // inverse of the live pipeline, never by loading old source as current code.
 const pipeline = beforeGameDeliverySource('app/scripts/prepare-images.mjs', readFileSync(new URL('../scripts/prepare-images.mjs', import.meta.url), 'utf8'))
@@ -28,11 +29,20 @@ const generated = JSON.parse(readFileSync(new URL('../src/lib/image-assets.gener
 const catalog = JSON.parse(readFileSync(new URL('../src/lib/image-assets.catalog.json', import.meta.url), 'utf8'))
 const reviewed = deliveryManifest()
 assert.deepEqual(generated, catalog, 'Legacy preview mapping mirrors canonical paths, no old PNG fallback')
-assert.equal(report.count, 198); assert.equal(report.optimized, 195)
-assert.equal(report.images.length, 198)
-assert.equal(report.deliveredBytes, reviewed.stats.deliveredImageBytes + DAY_CASES_IMAGE_BYTES)
+const newImages = ctaCharactersLedger().media.filter(row => row.kind === 'image')
+assert.equal(report.count, 200); assert.equal(report.optimized, 197)
+assert.equal(report.images.length, 200)
+assert.equal(report.deliveredBytes, reviewed.stats.deliveredImageBytes + DAY_CASES_IMAGE_BYTES + newImages.reduce((sum, row) => sum + row.bytes, 0))
 assert.equal(report.pipeline, 'canonical-webp-q78-alpha100-v1')
 for (const row of report.images) {
+  const ctaImage = newImages.find(image => image.name === row.name)
+  if (ctaImage) {
+    const bytes = assertCtaCharactersMedia(row.name)
+    assert.equal(row.path, catalog[row.name]); assert.equal(row.deliveryHash, sha256(bytes))
+    assert.equal(row.deliveredBytes, bytes.length); assert.equal(row.status, 'canonical-webp')
+    assert.deepEqual([row.width, row.height], row.name === 'ch2_aorta_volume_cutaway_v1' ? [1254, 1254] : [1536, 1024])
+    continue // Only the two separately pinned CTA/character images, never a wildcard.
+  }
   if (row.name === DAY_CASES_WRIST) {
     const bytes = assertDayCasesImage()
     assert.equal(row.path, catalog[row.name]); assert.equal(row.deliveryHash, sha256(bytes))
@@ -49,4 +59,4 @@ for (const row of report.images) {
   assert.equal(row.width, entry.width); assert.equal(row.height, entry.height)
   assert.equal(row.status, entry.mode === 'raw-png' ? 'numerical-gray-unchanged' : 'canonical-webp')
 }
-console.log('PASS delivery compatibility: historical corrupt-cache recovery retained; live prepare report/catalog and all 197 original images plus one independently pinned wrist image agree; numerical inputs exact; new wrist lossless source audited separately')
+console.log('PASS delivery compatibility: historical corrupt-cache recovery retained; all 197 original images, one pinned wrist and two pinned CTA/character images agree; numerical inputs exact')

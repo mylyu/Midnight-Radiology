@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { CH2_NEEDLE_STEPS, CH2_NEEDLE_EVIDENCE, ch2NeedleStep } from '../src/game/ch2-needles.ts'
 import { CH2_SOCIAL_STEPS, ch2SocialStep } from '../src/game/ch2-social.ts'
+import { assertCtaCharactersMedia } from './ch2-cta-characters-projection.mjs'
 
 const steps = Object.assign({}, ...Object.values(CH2_NEEDLE_STEPS))
 const external = new Set(['c2d4_chat0', 'c2n5_chat_q', 'c2n5_m0'])
@@ -11,7 +12,12 @@ for (const [shift, rows] of Object.entries(CH2_NEEDLE_STEPS)) {
   assert(['c2d4', 'c2n5'].includes(shift))
   for (const [id, step] of Object.entries(rows)) {
     assert(id.startsWith(`${shift}_needle_`) || id.startsWith(`${shift}_needle`))
-    for (const key of ['sfx', 'sfx2', 'card', 'event', 'windowTask', 'checklist', 'readout', 'end', 'stamp', 'pedal', 'dose']) assert.equal(step[key], undefined, `${id}: no new acquisition, voice or reward system`)
+    for (const key of ['sfx', 'sfx2', 'card', 'event', 'windowTask', 'checklist', 'readout', 'end', 'stamp', 'pedal', 'dose']) {
+      if (id === 'c2d4_needle0' && key === 'sfx') {
+        assert.equal(step.sfx, 'vox_ch2_luo_entrance_20260925')
+        assertCtaCharactersMedia(step.sfx) // Sole separately reviewed entrance voice, not a broad exception.
+      } else assert.equal(step[key], undefined, `${id}: no new acquisition, voice or reward system`)
+    }
     if (step.image) assert(images.has(step.image), `${id}: dedicated versioned asset`)
     if (step.imageLabel) assert(labels.has(step.imageLabel), `${id}: no new scan attribution`)
     for (const effect of [step.effect, ...(step.choices ?? []).map(choice => choice.effect)].filter(Boolean)) {
@@ -119,4 +125,4 @@ assert.match(steps.c2n5_needle_memory.text, /以为针全取掉/)
 assert.match(steps.c2n5_needle_short1.text, /并非有意隐瞒/)
 assert.match(steps.c2n5_needle_short2.text, /针灸不是一回事/)
 assert.doesNotMatch(JSON.stringify(CH2_NEEDLE_STEPS), /1998|匿名|陆舟|环状伪影|三十年.*新扫描/)
-console.log(`PASS needle case: ${Object.keys(steps).length} narrative nodes, 9 Friday routes, 2 full Sunday routes, forced pre-arrival closure, 4 evidence records; no scan/voice/AP/stat/card/badge changes.`)
+console.log(`PASS needle case: ${Object.keys(steps).length} narrative nodes, 9 Friday routes, 2 full Sunday routes, forced pre-arrival closure, 4 evidence records; no scan/AP/stat/card/badge changes; one independently pinned later Luo entrance voice.`)

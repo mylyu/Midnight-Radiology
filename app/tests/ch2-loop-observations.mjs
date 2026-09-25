@@ -128,6 +128,11 @@ assert.match(CH2_CASE_COMPLETIONS.c2d2_t2, /腰椎与骨盆完整序列已交接
 // rewards, and approved voices. Only 14 old CR-style xray SFX retire to CT SFX.
 const baseline = execFileSync('git', ['show', '05889fa:app/src/game/ch2.ts'], { encoding: 'utf8', maxBuffer: 2e6 })
 const baselineRows = [...baseline.matchAll(/^\s+(c2(?:n[135]|d[24]|am)_[\w]+):\s*(\{.*)$/gm)]
+// Each exact later bridge has its own LIVE source pin and behavior assertions.
+const laterBridges = {
+  c2d2_w1ok: 'c2d2_thickness_question', c2d2_w2ok: 'c2d2_wrist_mesh',
+  c2d4_t2no: 'c2d4_aorta_volume', c2am_5: 'c2am_ct_reflection',
+}
 for (const [, id, line] of baselineRows) {
   if (DAY_CASES_RETIRED.includes(id)) {
     assert.equal(steps[id], undefined); assert.equal(originalCh2Step(id), 'c2d2_gap_food')
@@ -135,7 +140,7 @@ for (const [, id, line] of baselineRows) {
   }
   assert(steps[id], `Removed saved node ${id}`)
   const next = line.match(/(?:next|"next")\s*:\s*['"]([^'"]+)['"]/)?.[1]
-  if (next && !line.includes('choices:')) assert.equal(steps[id].next, id === 'c2d2_w1ok' ? 'c2d2_thickness_question' : id === 'c2d2_w2ok' ? 'c2d2_wrist_mesh' : next, `${id}: graph changed`)
+  if (next && !line.includes('choices:')) assert.equal(steps[id].next, laterBridges[id] ?? next, `${id}: graph changed`)
   const voice = line.match(/sfx:\s*'(vox[^']+)'/)?.[1]
   if (voice) assert.equal(steps[id].sfx, id === 'c2d2_1' ? 'vox_ch2_natural_director_day_v3' : voice, `${id}: approved voice changed`)
 }

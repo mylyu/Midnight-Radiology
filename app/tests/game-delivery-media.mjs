@@ -9,6 +9,7 @@ import sharp from 'sharp'
 import { priorDetailSourcePaths } from './ch2-detail-polish-projection.mjs'
 import { priorDirectorDayVoiceMediaPaths } from './ch2-director-day-voice.mjs'
 import { beforeDayCasesSource, DAY_CASES_WRIST, DAY_CASES_IMAGE, assertDayCasesImage } from './ch2-day-cases-projection.mjs'
+import { ctaCharactersLedger, assertCtaCharactersMedia } from './ch2-cta-characters-projection.mjs'
 
 export const DELIVERY_BASELINE = 'c4215b080ec7d5052a86c23cf03b6bd2aa3b980a'
 export const DELIVERY_ROOT = new URL('../../', import.meta.url)
@@ -73,6 +74,8 @@ export function deliveryManifest() {
 }
 
 export function liveMedia(sourcePath) {
+  const addition = ctaCharactersLedger().media.find(row => row.path === sourcePath || row.kind === 'image' && sourcePath === `app/public/assets/${row.name}.png`)
+  if (addition) return { bytes: assertCtaCharactersMedia(addition.name), path: addition.path, row: undefined }
   if ([DAY_CASES_IMAGE, `app/public/assets/${DAY_CASES_WRIST}.png`].includes(sourcePath)) {
     return { bytes: assertDayCasesImage(), path: DAY_CASES_IMAGE, row: undefined }
   }
@@ -119,6 +122,14 @@ export function reviewedMediaChanges(paths) {
   return paths.filter(path => !reviewed.has(path))
 }
 export function logicalImagePath(name) {
+  const addition = ctaCharactersLedger().media.find(row => row.kind === 'image' && row.name === name)
+  if (addition) {
+    assertCtaCharactersMedia(name)
+    const liveCatalog = JSON.parse(read('app/src/lib/image-assets.catalog.json'))
+    beforeDayCasesSource('app/src/lib/image-assets.catalog.json', JSON.stringify(liveCatalog, null, 2))
+    assert.equal(liveCatalog[name], addition.path.replace('app/public/assets/', ''))
+    return liveCatalog[name]
+  }
   if (name === DAY_CASES_WRIST) {
     assertDayCasesImage()
     const liveCatalog = JSON.parse(read('app/src/lib/image-assets.catalog.json'))
