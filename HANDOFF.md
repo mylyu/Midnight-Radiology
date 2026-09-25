@@ -1,5 +1,11 @@
 # 开发交接 · 2026-09-21
 
+## 2026-09-25：立绘修复与开发约定发布批次（作者明确授权）
+
+- 作者本轮要求推送GitHub与Pages；从线上 `a1ed6f8` 快进发布 `54924d6`（第五夜立绘）、`4e409e7`（对应回归）、`1681ea2`（AGENTS与验证指南）及本交接提交。下方“本地未发布”是各开发轮结束时的历史状态，不代表本次授权。
+- 本次无新游戏改动，复用已通过的定点测试与生产构建；只核对远程提交、Pages工作流和线上构建资源，不重复完整通关。开发分支 `codex/development-principles` 一并保留。
+- 部署结果以本批次main提交对应的GitHub Actions `Deploy game to GitHub Pages` 运行记录为准；正式入口 https://mylyu.github.io/Midnight-Radiology/ 。如需回退，按本批次逆序revert相关提交，不清玩家存档、不强推。
+
 ## 2026-09-25：建立跨AI开发约定与验证预算（文档/导出规则）
 
 - 作者要求回顾第一、二章反复返工，固化体验继承、文案/美术/声音、存档数值和工程约定，并减少低价值重复试玩。基点 `4e409e7`，分支 `codex/development-principles`；根目录新增 `AGENTS.md`，专项命令与风险分级见 `docs/validation-guide.md`。
