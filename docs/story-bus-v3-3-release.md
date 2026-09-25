@@ -31,6 +31,15 @@
 - 浏览器证据：仓库旁`story-bus-release-review/certificate/`、`cta/`、`layout/`；测试用独立临时存档，不触及作者浏览器存档。本次为定向发布回归，不宣称又完整通关两章。
 - Git普通推送dry-run成功，远端仍为`5a2b494`且是本分支祖先；后续正常快进发布，不强推。实际部署回执完成后补记。
 
+## 正式发布回执
+
+- `a2be5ec`已普通快进到`origin/main`，同时保存远端`codex/story-bus-v3-3-release`分支，未覆盖历史。远程仓库总线已核对为v3.3。
+- [Pages工作流36104466019](https://github.com/mylyu/Midnight-Radiology/actions/runs/36104466019)的build/deploy均成功，head为`a2be5ec4e2e43ca3e669245ffea0573b65d21482`。
+- 正式地址：[深夜影像科](https://mylyu.github.io/Midnight-Radiology/)。直接访问根地址已返回`index-4_wVb7hl.js` / `index-gs3iXliY.css`，不依赖版本参数。
+- 远端JS与本机文件名不同的原因已查明：现有Kimi检视插件的`code-path`在Linux使用`/`、Windows使用`\\`。仅统一这些注记路径后，两个JS全文逐字符一致；不是丢提交或代码不同。CSS、主任白班/罗阿姨两条音频、腕部细裂图、夹层三维图、白班背景均HTTP200且SHA与本地交付字节一致。
+- 正式Pages原凭证浏览器7夹具全通过，桌面/390px、刷新/旧档/双击/两个教师入口，0页面错误/0素材HTTP失败。首次运行在印章下载尚未完成时立即断言，已修测试驱动为最多20秒等待加载成功后仍执行原完整断言；不改游戏、不删断言。初次失败证据与复跑报告均保留在`story-bus-release-review/live-certificate/`。
+- 本回执与上述测试时序修正为后续文档/测试提交，生产代码仍保持`30e8692`；再次main推送会运行同一Pages工作流并发布同一游戏资源。
+
 ## 回退与交替协作
 
 - 仅撤本轮文档：在本分支日志确定“sync story bus”提交并`git revert`，不要hard reset或强推。

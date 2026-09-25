@@ -53,7 +53,14 @@ async function fit(page) {
   assert(box.x >= 0 && box.x + box.width <= page.viewportSize().width + 1)
   assert(await card.evaluate(el => el.scrollWidth <= el.clientWidth + 1), 'Certificate text fits its paper')
   const stamp = card.locator('img')
-  if (await stamp.count()) assert(await stamp.evaluate(el => el.complete && el.naturalWidth > 0))
+  if (await stamp.count()) {
+    // On Pages the issued DOM can precede image download/decode. Wait for this
+    // specific stamp, then retain the original image and layout assertions.
+    const image = await stamp.elementHandle()
+    await page.waitForFunction(el => el?.complete && el.naturalWidth > 0, image, { timeout: 20000 })
+    assert(await stamp.evaluate(el => el.complete && el.naturalWidth > 0))
+    await image?.dispose()
+  }
 }
 async function fillVerification(page, certificate) {
   for (const [label, value] of [['姓名', certificate.name], ['学号', certificate.studentId], ['金币数', certificate.gold],

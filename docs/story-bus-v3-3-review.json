@@ -17,6 +17,15 @@
     "guard": "assertCtaCharactersLive verifies the previously fixed 737e7fcb204e15804c2a2f7204145b62ca15d69432a27b7a2941d74888d1251e source ledger; original 5fea950 baseline and every reward/choice/task assertion retained.",
     "result": "PASS: 195/286 existing text nodes refined; non-deferred nodes/rewards/tasks preserved; no missing links."
   },
+  "liveBrowserTestMaintenance": {
+    "file": "app/tests/ch2-certificate-browser.mjs",
+    "observed": "a2be5ec上线后，在Pages运行原7夹具时，首次发证DOM已出现但印章图片尚在下载，立即检查complete导致失败；本地同测试通过。",
+    "change": "仅在fit中等待同一印章元素complete且naturalWidth大于0，明确20秒超时；之后保留原完整图像断言，所有溢出、布局、存档与校验断言不变，未修改游戏。",
+    "url": "https://mylyu.github.io/Midnight-Radiology/",
+    "deploymentRun": "https://github.com/mylyu/Midnight-Radiology/actions/runs/36104466019",
+    "result": "重跑线上原7夹具全部通过：桌面/390px、发证/刷新/快照/旧档/尾声及两章教师校验；无页面错误或素材HTTP失败。",
+    "artifacts": "仓库外 ../story-bus-release-review/live-certificate/results.json 及截图；首轮failure.json/png保留。"
+  },
   "review": [
     "独立完整阅读313行v3.3，区分第一/二章、DR/DSA现版事实与第三至五章及远期DLC规划。",
     "核对第二章三夜两白、十四处3秒采集和两处工作站重建、当前15枚现役勋章/17张现役卡片；病例、盒子离线状态、十五针闭环和教具用途与现版相符。",
