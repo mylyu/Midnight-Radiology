@@ -13,7 +13,7 @@ export const CH2_PATIENT_ENTRANCES = [
  {id:'stroke',step:'c2n3_m2',sprite:'ch2_patient_stroke_bed',voice:null},
  {id:'chest',step:'c2n3_h0',sprite:'ch2_patient_chest_wheelchair',voice:null},
  {id:'mystery',step:'c2n3_x1',sprite:'pat_mystery',voice:'vox2_mystery'},
- {id:'aorta',step:'c2d4_2',sprite:'ch2_patient_aorta_bed',voice:null},
+ {id:'aorta',step:'c2d4_2',sprite:'ch2_patient_aorta_middle_bed',voice:null},
  {id:'denture',step:'c2d4_11a',sprite:'pat_grandpa2',voice:null},
  {id:'kid',step:'c2n5_m3',sprite:'pat_kidmom_holding',voice:'cry_child'},
 ] as const
@@ -29,7 +29,7 @@ stage('pat_stone',['c2n1_p1','c2n1_p2','c2n1_p2a','c2n1_p2b','c2n1_p2c'])
 stage('ch2_patient_waiting_elder',['c2d2_q1b','c2d2_q1c'])
 stage('ch2_patient_stroke_bed',['c2n3_m3','c2n3_m4'])
 stage('ch2_patient_chest_wheelchair',['c2n3_h1','c2n3_h2','c2n3_h3a','c2n3_h3b','c2n3_h3c'])
-stage('ch2_patient_aorta_bed',['c2d4_3','c2d4_aorta_resist','c2d4_aorta_wife','c2d4_aorta_doctor','c2d4_aorta_consent','c2d4_4','c2d4_5','c2d4_6','c2d4_7','c2d4_8'])
+stage('ch2_patient_aorta_middle_bed',['c2d4_3','c2d4_aorta_resist','c2d4_aorta_wife','c2d4_aorta_doctor','c2d4_aorta_consent','c2d4_4','c2d4_5','c2d4_6','c2d4_7','c2d4_8'])
 stage('pat_grandpa2',['c2d4_m2'])
 
 const lines: Record<string,string> = {

@@ -63,7 +63,7 @@ export const CH2_DAWN_STEPS: Record<string, Step> = {
   c2n3_dawn_breakfast: { ...view, speaker: 'tang',
     text: '巧了，我也是。刚才一直闻见包子味，忍着没打断你。', next: 'c2n3_dawn_sun' },
   c2n3_dawn_sun: { ...view, speaker: 'sys',
-    text: '太阳从对面的屋顶后露出来。玻璃上的倒影淡了，你们谁也没急着走。街上有人推着自行车，绕过刚打开的卷帘门。', next: 'c2n3_dawn_photo' },
+    text: '太阳从对面的屋顶后露出来，玻璃上的倒影淡了。电梯还在楼上，你们又站了一会儿。街上有人推着自行车，绕过刚打开的卷帘门。', next: 'c2n3_dawn_photo' },
   c2n3_dawn_photo: { ...view, speaker: 'tang',
     text: '手机拍出来肯定没这么好看。算了，懒得掏。', next: 'c2n3_dawn_leave' },
   c2n3_dawn_leave: { ...view, speaker: 'me',
@@ -71,7 +71,7 @@ export const CH2_DAWN_STEPS: Record<string, Step> = {
   c2n3_dawn_last: { ...view, speaker: 'tang',
     text: '走。再磨蹭，包子只剩素的了。', next: 'c2n3_dawn_done' },
   c2n3_dawn_done: { ...view, speaker: 'sys',
-    text: '你们并肩往电梯口走。白班同事在身后接起电话，小唐抬手挥了挥，顺手替你按住电梯门。',
+    text: '电梯到了，小唐招呼你下楼。白班同事在身后接起电话，你们朝他挥挥手，挤进了刚送完货的电梯。',
     effect: { flag: 'c2_dawn_done' }, next: 'c2n3_s1' },
 }
 

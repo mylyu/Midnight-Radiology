@@ -22,6 +22,7 @@ import { getCh2Observation } from './game/ch2-observations'
 import { beginCh2Shift, CH2_CASE_COMPLETIONS, recordCh2Change } from './game/ch2-ledger'
 import { ch2GiftChoices, giveCh2Gift } from './game/ch2-gifts'
 import { startCh2Scan, completeCh2Scan, answerCh2Observation, acknowledgeCh2Observation } from './game/ch2-playback'
+import { ch2ObservationContinuation, ch2ObservationPortrait, ch2ObservationPhone, ch2ObservationResumeStep } from './game/ch2-observation-presentation'
 import { patchCh2, ch2Phase, settleCh2, nextCh2Shift, redeemCh2Coffee, startCh2Quiz, answerCh2Quiz, nextCh2Question, ch2QuizScore } from './game/ch2-session'
 import type { GameState, Step, ShopItem, Choice, DlcProgress } from './game/types'
 import { freshState, loadState, saveState, wipeSave, applyEffect, condOk, dailyCheckin, meterLevel, playSfx, makeCredCode, verifyCredCode } from './game/store'
@@ -1857,7 +1858,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
   const shiftIdx0 = (() => { const i = CH2_SHIFTS.findIndex(s => s.id === prog.shift); return i >= 0 ? i : 0 })()
   const [shiftIdx, setShiftIdx] = useState(shiftIdx0)
   const shift = CH2_SHIFTS[shiftIdx]
-  const savedStep = originalCh2Step(prog.stepId ?? '')
+  const savedStep = ch2ObservationResumeStep(originalCh2Step(prog.stepId ?? ''), prog)
   const resumeStep = !prog.done && prog.shift === shift.id && savedStep && shift.steps[savedStep] ? savedStep : shift.start
   const [stepId, setStepId] = useState(resumeStep)
   const [view, setView] = useState<{ bg: string; sprite?: string; sprite2?: string }>({
@@ -1912,6 +1913,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
     : giftReply ? { speaker: giftReply.speaker as Step['speaker'], sprite: giftReply.sprite, text: giftReply.text, next: '@ch2gift-return' }
     : scanPending ? { ...baseStep, text: scan.mode === 'acquire' ? baseStep.text : CH2_SCAN_TEXT[stepId], image: undefined, windowTask: undefined, choices: undefined, next: undefined }
     : observationPending && observation ? { speaker: observation.speaker, image: observation.image, imageLabel: observation.imageLabel,
+      phone: observedChoice ? ch2ObservationPhone(stepId) : undefined,
       text: observedChoice ? observedChoice.feedback : observation.prompt,
       ...(observedChoice ? { next: '@ch2observe-return' } : { choices: [...ch2StatChoices(state, stepId), ...observation.choices.map(c => ({ text: c.text, next: `@ch2observe:${c.id}` }))] }) }
     : gifts.length ? { ...baseStep, choices: [...gifts, ...(baseStep.choices ?? (baseStep.next ? [{ text: '接着聊', next: baseStep.next }] : []))] } : baseStep
@@ -2072,7 +2074,12 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
     if (!acceptInput(advanceGate.current, performance.now(), 300)) return
     if (step.next === '@ch2stat-return') { update(s => clearCh2StatReply(s, stepId)); setShown(0); return }
     if (step.next === '@ch2gift-return') { update(s => patchCh2(s, { giftReply: undefined })); setShown(0); return }
-    if (step.next === '@ch2observe-return') { update(s => acknowledgeCh2Observation(s, stepId)); setShown(0); return }
+    if (step.next === '@ch2observe-return') {
+      update(s => acknowledgeCh2Observation(s, stepId))
+      const continuation = ch2ObservationContinuation(stepId)
+      if (continuation) setStepId(continuation)
+      setShown(0); return
+    }
     playSfx('click')
     if (step.next === '@shop') { setShopOpen(true); return }
     if (step.next === '@book2') { setBookOpen(true); return }
@@ -2136,7 +2143,10 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
     if (!key) return null
     return IMG(ch2PortraitAsset(key, state.gender))
   }
-  const leftSprite = observationPending ? null : spriteOf(giftReply?.sprite ?? view.sprite)
+  const leftSpriteKey = observationPending
+    ? observedChoice && !statReply ? ch2ObservationPortrait(stepId, observation?.speaker) : undefined
+    : giftReply?.sprite ?? view.sprite
+  const leftSprite = spriteOf(leftSpriteKey)
   const rightSprite = observationPending || giftReply ? null : spriteOf(view.sprite2)
   const speakerMeta = step.speaker ? CHARACTERS[step.speaker] : undefined
   const visibleChoices = (step.choices ?? []).filter(c => condOk(state, c.cond))
@@ -2211,7 +2221,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
           regions={observationPending && observedChoice ? observation?.regions : undefined} />)}
 
       {/* 立绘 */}
-      {leftSprite && <img src={leftSprite} className={`sprite-l absolute bottom-48 portrait:bottom-44 left-4 md:left-24 portrait:h-44 h-64 md:h-96 object-contain pixel drop-shadow-2xl z-10 pointer-events-none ${isPatientBed(view.sprite) ? 'ch2-patient-bed' : isPatientWheelchair(view.sprite) ? 'ch2-patient-wheelchair' : ''}`} alt={isPatientBed(view.sprite) ? '患者躺在转运平车上' : isPatientWheelchair(view.sprite) ? '患者坐在轮椅上' : ''} />}
+      {leftSprite && <img src={leftSprite} className={`sprite-l absolute bottom-48 portrait:bottom-44 left-4 md:left-24 portrait:h-44 h-64 md:h-96 object-contain pixel drop-shadow-2xl z-10 pointer-events-none ${isPatientBed(leftSpriteKey) ? 'ch2-patient-bed' : isPatientWheelchair(leftSpriteKey) ? 'ch2-patient-wheelchair' : ''}`} alt={isPatientBed(leftSpriteKey) ? '患者躺在转运平车上' : isPatientWheelchair(leftSpriteKey) ? '患者坐在轮椅上' : ''} />}
       {rightSprite && <img src={rightSprite} className={`sprite-r absolute bottom-48 portrait:bottom-44 right-4 md:right-24 portrait:h-40 h-56 md:h-80 object-contain pixel opacity-80 drop-shadow-2xl z-10 pointer-events-none ${isPatientBed(view.sprite2) ? 'ch2-patient-bed ch2-patient-companion' : isPatientWheelchair(view.sprite2) ? 'ch2-patient-wheelchair' : ''}`} alt={isPatientBed(view.sprite2) ? '患者躺在转运平车上' : isPatientWheelchair(view.sprite2) ? '患者坐在轮椅上' : ''} />}
 
       {/* 对话框 */}

@@ -1,0 +1,482 @@
+{
+  "asset_id": "vox_ch2_luo_entrance_20260925",
+  "text": "大夫，帮我看看。",
+  "character": "罗阿姨，约68岁，退休缝纫工",
+  "status": "Local newly generated entrance; no user audition approval or deployment yet",
+  "selected_candidate": "d",
+  "output": "app/public/audio/vox_ch2_luo_entrance_20260925.mp3",
+  "sha256": "6c449784f4505b18d9b05f5281ca2446d7a1020bb885d18b872d43e3981f41d2",
+  "bytes": 33453,
+  "reference_audio_used": false,
+  "original_voices_modified": false,
+  "selection_note": "Selected D: complete short transcript and tail; automated perception describes a natural female voice without theatrical tremor or extra sounds. It cannot reliably confirm age. A/B were not selected after a male-voice classification; C was classified as sounding young. These fallible classifications are preserved, not treated as human audition approval.",
+  "script": "scripts/ch2-luo-voice-generate.py",
+  "script_sha256": "9da340fd9f63155dc3d98ccc5dc4b04e7722304c26f147a79af37d0231bdfa23",
+  "human_listened": false,
+  "user_approved": false,
+  "candidates": [
+    {
+      "candidate": "a",
+      "text": "大夫，帮我看看。",
+      "seed": 2026092501,
+      "gen_seconds": 2.3,
+      "description": "六十八岁左右的普通女性，略低、稍有沙感的年长女声，身体还利索，说话清楚。拿着片袋走到熟悉的门诊医生面前，自然地招呼一声，请人帮忙看看。平常音量，口语顺畅，亲切但不撒娇，不夸张颤抖，不故作苍老，不装神秘，不是播音或舞台表演。干净单人普通话，无音乐、无环境音。",
+      "instruction": "请基于下面的描述: \"六十八岁左右的普通女性，略低、稍有沙感的年长女声，身体还利索，说话清楚。拿着片袋走到熟悉的门诊医生面前，自然地招呼一声，请人帮忙看看。平常音量，口语顺畅，亲切但不撒娇，不夸张颤抖，不故作苍老，不装神秘，不是播音或舞台表演。干净单人普通话，无音乐、无环境音。\",生成语音内容\"大夫，帮我看看。\".",
+      "argv": [
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\.venv\\Scripts\\auk-infer.exe",
+        "--ckpt",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\ckpts\\AuK-Flash\\auk_flash.safetensors",
+        "--qwen_path",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\ckpts\\Qwen2.5-Omni-3B",
+        "--dtype",
+        "bf16",
+        "--device",
+        "cuda:0",
+        "--cpu_offload",
+        "--seed",
+        "2026092501",
+        "--gen_seconds",
+        "2.3",
+        "--instruction",
+        "请基于下面的描述: \"六十八岁左右的普通女性，略低、稍有沙感的年长女声，身体还利索，说话清楚。拿着片袋走到熟悉的门诊医生面前，自然地招呼一声，请人帮忙看看。平常音量，口语顺畅，亲切但不撒娇，不夸张颤抖，不故作苍老，不装神秘，不是播音或舞台表演。干净单人普通话，无音乐、无环境音。\",生成语音内容\"大夫，帮我看看。\".",
+        "--output",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-luo-entrance-20260925\\raw\\a.wav"
+      ],
+      "reference_audio": null,
+      "elapsed_seconds": 34.61,
+      "raw": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-luo-entrance-20260925\\raw\\a.wav",
+      "raw_sha256": "21a8c4ff4272b6660f6625dbda388a22e232d2adece0a751fd95a28f4e1aab0d",
+      "wav": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-luo-entrance-20260925\\wav\\a.wav",
+      "wav_sha256": "b3327711e2bfc233479125da951cd2d0e949c9a4cd01da4e271cf5c90a1069bc",
+      "candidate_mp3": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-luo-entrance-20260925\\mp3\\a.mp3",
+      "mp3_sha256": "a72c9136971a565efe6fd25add481cb0fb7ae9ed3e81bd570efe367ffeabdbe2",
+      "mp3_bytes": 38061,
+      "processing": "loudnorm=I=-20:TP=-2:LRA=7",
+      "export_commands": [
+        [
+          "ffmpeg",
+          "-hide_banner",
+          "-loglevel",
+          "error",
+          "-i",
+          "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-luo-entrance-20260925\\raw\\a.wav",
+          "-af",
+          "loudnorm=I=-20:TP=-2:LRA=7",
+          "-ar",
+          "24000",
+          "-ac",
+          "1",
+          "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-luo-entrance-20260925\\wav\\a.wav"
+        ],
+        [
+          "ffmpeg",
+          "-hide_banner",
+          "-loglevel",
+          "error",
+          "-i",
+          "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-luo-entrance-20260925\\wav\\a.wav",
+          "-b:a",
+          "128k",
+          "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-luo-entrance-20260925\\mp3\\a.mp3"
+        ]
+      ],
+      "pitch_change": false,
+      "time_stretch": false,
+      "word_gain": false,
+      "qa": {
+        "sample_rate": 24000,
+        "mono": true,
+        "seconds": 2.3,
+        "finite": true,
+        "peak": 0.730676,
+        "rms": 0.078782,
+        "transcript": "大夫,帮我看看",
+        "words": [
+          {
+            "text": "大",
+            "start": 0.0,
+            "end": 0.38
+          },
+          {
+            "text": "夫,",
+            "start": 0.38,
+            "end": 0.92
+          },
+          {
+            "text": "帮",
+            "start": 1.5,
+            "end": 1.54
+          },
+          {
+            "text": "我",
+            "start": 1.54,
+            "end": 1.76
+          },
+          {
+            "text": "看看",
+            "start": 1.76,
+            "end": 2.1
+          }
+        ],
+        "measured_lufs": "-20.73",
+        "measured_true_peak_dbtp": "-2.40",
+        "clipped_samples": 0,
+        "method": "faster-whisper-medium ASR + soundfile + FFmpeg; not human approval"
+      }
+    },
+    {
+      "candidate": "b",
+      "text": "大夫，帮我看看。",
+      "seed": 2026092502,
+      "gen_seconds": 2.2,
+      "description": "一位接近七十岁的中国老太太，朴素爽利，声音偏中低、略粗，年长女性的自然嗓音。她将自己的检查片递过去，随口向医生请求帮忙，语气温和直接。大夫两个字连贯，帮我看看像日常说话，不逐字强调，句尾平稳收住。不是惊恐、呻吟、卖萌或朗诵，不刻意模仿衰弱。纯净独白，没有其他人声和背景音乐。",
+      "instruction": "请基于下面的描述: \"一位接近七十岁的中国老太太，朴素爽利，声音偏中低、略粗，年长女性的自然嗓音。她将自己的检查片递过去，随口向医生请求帮忙，语气温和直接。大夫两个字连贯，帮我看看像日常说话，不逐字强调，句尾平稳收住。不是惊恐、呻吟、卖萌或朗诵，不刻意模仿衰弱。纯净独白，没有其他人声和背景音乐。\",生成语音内容\"大夫，帮我看看。\".",
+      "argv": [
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\.venv\\Scripts\\auk-infer.exe",
+        "--ckpt",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\ckpts\\AuK-Flash\\auk_flash.safetensors",
+        "--qwen_path",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\ckpts\\Qwen2.5-Omni-3B",
+        "--dtype",
+        "bf16",
+        "--device",
+        "cuda:0",
+        "--cpu_offload",
+        "--seed",
+        "2026092502",
+        "--gen_seconds",
+        "2.2",
+        "--instruction",
+        "请基于下面的描述: \"一位接近七十岁的中国老太太，朴素爽利，声音偏中低、略粗，年长女性的自然嗓音。她将自己的检查片递过去，随口向医生请求帮忙，语气温和直接。大夫两个字连贯，帮我看看像日常说话，不逐字强调，句尾平稳收住。不是惊恐、呻吟、卖萌或朗诵，不刻意模仿衰弱。纯净独白，没有其他人声和背景音乐。\",生成语音内容\"大夫，帮我看看。\".",
+        "--output",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-luo-entrance-20260925\\raw\\b.wav"
+      ],
+      "reference_audio": null,
+      "elapsed_seconds": 38.44,
+      "raw": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-luo-entrance-20260925\\raw\\b.wav",
+      "raw_sha256": "502ace44ba172819ee8272ff5e8f44aa9396596b9b1a45dba022581f3b176a8e",
+      "wav": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-luo-entrance-20260925\\wav\\b.wav",
+      "wav_sha256": "52b6f5f30d6843462aca351b3874bf98025f7c20191ae855b1fe853756d2df76",
+      "candidate_mp3": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-luo-entrance-20260925\\mp3\\b.mp3",
+      "mp3_sha256": "645e5d4e16bf30f1f6a94bd2424710ed9b7ae810f1adf0d956c75dc4c3ab50de",
+      "mp3_bytes": 36909,
+      "processing": "loudnorm=I=-20:TP=-2:LRA=7",
+      "export_commands": [
+        [
+          "ffmpeg",
+          "-hide_banner",
+          "-loglevel",
+          "error",
+          "-i",
+          "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-luo-entrance-20260925\\raw\\b.wav",
+          "-af",
+          "loudnorm=I=-20:TP=-2:LRA=7",
+          "-ar",
+          "24000",
+          "-ac",
+          "1",
+          "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-luo-entrance-20260925\\wav\\b.wav"
+        ],
+        [
+          "ffmpeg",
+          "-hide_banner",
+          "-loglevel",
+          "error",
+          "-i",
+          "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-luo-entrance-20260925\\wav\\b.wav",
+          "-b:a",
+          "128k",
+          "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-luo-entrance-20260925\\mp3\\b.mp3"
+        ]
+      ],
+      "pitch_change": false,
+      "time_stretch": false,
+      "word_gain": false,
+      "qa": {
+        "sample_rate": 24000,
+        "mono": true,
+        "seconds": 2.22,
+        "finite": true,
+        "peak": 0.605531,
+        "rms": 0.077326,
+        "transcript": "大夫 幫我看看",
+        "words": [
+          {
+            "text": "大",
+            "start": 0.0,
+            "end": 0.34
+          },
+          {
+            "text": "夫",
+            "start": 0.34,
+            "end": 1.02
+          },
+          {
+            "text": " 幫",
+            "start": 1.44,
+            "end": 1.58
+          },
+          {
+            "text": "我",
+            "start": 1.58,
+            "end": 1.76
+          },
+          {
+            "text": "看看",
+            "start": 1.76,
+            "end": 2.02
+          }
+        ],
+        "measured_lufs": "-20.44",
+        "measured_true_peak_dbtp": "-4.24",
+        "clipped_samples": 0,
+        "method": "faster-whisper-medium ASR + soundfile + FFmpeg; not human approval"
+      }
+    },
+    {
+      "candidate": "c",
+      "text": "大夫，帮我看看。",
+      "seed": 2026092503,
+      "gen_seconds": 2.1,
+      "description": "An elderly Chinese woman around seventy, with an unmistakably feminine alto voice. Her natural female speaking tone has a lightly weathered texture but clear articulation. She casually hands her films to a doctor and asks a simple favor in conversational Mandarin. Warm, straightforward, unhurried everyday speech, not whispering, not a character impression. Clean solo female speech without background sound or music.",
+      "instruction": "请基于下面的描述: \"An elderly Chinese woman around seventy, with an unmistakably feminine alto voice. Her natural female speaking tone has a lightly weathered texture but clear articulation. She casually hands her films to a doctor and asks a simple favor in conversational Mandarin. Warm, straightforward, unhurried everyday speech, not whispering, not a character impression. Clean solo female speech without background sound or music.\",生成语音内容\"大夫，帮我看看。\".",
+      "argv": [
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\.venv\\Scripts\\auk-infer.exe",
+        "--ckpt",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\ckpts\\AuK-Flash\\auk_flash.safetensors",
+        "--qwen_path",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\ckpts\\Qwen2.5-Omni-3B",
+        "--dtype",
+        "bf16",
+        "--device",
+        "cuda:0",
+        "--cpu_offload",
+        "--seed",
+        "2026092503",
+        "--gen_seconds",
+        "2.1",
+        "--instruction",
+        "请基于下面的描述: \"An elderly Chinese woman around seventy, with an unmistakably feminine alto voice. Her natural female speaking tone has a lightly weathered texture but clear articulation. She casually hands her films to a doctor and asks a simple favor in conversational Mandarin. Warm, straightforward, unhurried everyday speech, not whispering, not a character impression. Clean solo female speech without background sound or music.\",生成语音内容\"大夫，帮我看看。\".",
+        "--output",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-luo-entrance-20260925\\raw\\c.wav"
+      ],
+      "reference_audio": null,
+      "elapsed_seconds": 38.12,
+      "raw": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-luo-entrance-20260925\\raw\\c.wav",
+      "raw_sha256": "51086a3ac476e934c38dad5cf6b5b98138044545d6b8585c5987fdb21c6a3501",
+      "wav": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-luo-entrance-20260925\\wav\\c.wav",
+      "wav_sha256": "47e5f5d223a82882220c689eed96e444a6a97357fbc02b74f0f9234a165ae05d",
+      "candidate_mp3": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-luo-entrance-20260925\\mp3\\c.mp3",
+      "mp3_sha256": "b97cf9188a4aad9dc181b5fece969e7ffca7153446140aa1da42906f081558ae",
+      "mp3_bytes": 34989,
+      "processing": "loudnorm=I=-20:TP=-2:LRA=7",
+      "export_commands": [
+        [
+          "ffmpeg",
+          "-hide_banner",
+          "-loglevel",
+          "error",
+          "-i",
+          "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-luo-entrance-20260925\\raw\\c.wav",
+          "-af",
+          "loudnorm=I=-20:TP=-2:LRA=7",
+          "-ar",
+          "24000",
+          "-ac",
+          "1",
+          "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-luo-entrance-20260925\\wav\\c.wav"
+        ],
+        [
+          "ffmpeg",
+          "-hide_banner",
+          "-loglevel",
+          "error",
+          "-i",
+          "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-luo-entrance-20260925\\wav\\c.wav",
+          "-b:a",
+          "128k",
+          "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-luo-entrance-20260925\\mp3\\c.mp3"
+        ]
+      ],
+      "pitch_change": false,
+      "time_stretch": false,
+      "word_gain": false,
+      "qa": {
+        "sample_rate": 24000,
+        "mono": true,
+        "seconds": 2.1,
+        "finite": true,
+        "peak": 0.75085,
+        "rms": 0.089693,
+        "transcript": "大夫,帮我看看",
+        "words": [
+          {
+            "text": "大",
+            "start": 0.0,
+            "end": 0.36
+          },
+          {
+            "text": "夫,",
+            "start": 0.36,
+            "end": 0.8
+          },
+          {
+            "text": "帮",
+            "start": 1.06,
+            "end": 1.16
+          },
+          {
+            "text": "我",
+            "start": 1.16,
+            "end": 1.42
+          },
+          {
+            "text": "看看",
+            "start": 1.42,
+            "end": 1.8
+          }
+        ],
+        "measured_lufs": "-20.46",
+        "measured_true_peak_dbtp": "-2.46",
+        "clipped_samples": 0,
+        "method": "faster-whisper-medium ASR + soundfile + FFmpeg; not human approval"
+      }
+    },
+    {
+      "candidate": "d",
+      "text": "大夫，帮我看看。",
+      "seed": 2026092504,
+      "gen_seconds": 2.0,
+      "description": "一位七十岁左右的中国女性，明显的女声，音色清亮温厚，略带老年女性的沙感，普通话。像生活中爽快亲切的阿姨，递出片子随口求助。声音自然，有精神，短句一气说完，不压低成男声，不拖长大夫两个字，不撒娇，不哭，不颤抖，不演戏。没有音乐或音效。",
+      "instruction": "请基于下面的描述: \"一位七十岁左右的中国女性，明显的女声，音色清亮温厚，略带老年女性的沙感，普通话。像生活中爽快亲切的阿姨，递出片子随口求助。声音自然，有精神，短句一气说完，不压低成男声，不拖长大夫两个字，不撒娇，不哭，不颤抖，不演戏。没有音乐或音效。\",生成语音内容\"大夫，帮我看看。\".",
+      "argv": [
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\.venv\\Scripts\\auk-infer.exe",
+        "--ckpt",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\ckpts\\AuK-Flash\\auk_flash.safetensors",
+        "--qwen_path",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\ckpts\\Qwen2.5-Omni-3B",
+        "--dtype",
+        "bf16",
+        "--device",
+        "cuda:0",
+        "--cpu_offload",
+        "--seed",
+        "2026092504",
+        "--gen_seconds",
+        "2.0",
+        "--instruction",
+        "请基于下面的描述: \"一位七十岁左右的中国女性，明显的女声，音色清亮温厚，略带老年女性的沙感，普通话。像生活中爽快亲切的阿姨，递出片子随口求助。声音自然，有精神，短句一气说完，不压低成男声，不拖长大夫两个字，不撒娇，不哭，不颤抖，不演戏。没有音乐或音效。\",生成语音内容\"大夫，帮我看看。\".",
+        "--output",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-luo-entrance-20260925\\raw\\d.wav"
+      ],
+      "reference_audio": null,
+      "elapsed_seconds": 37.75,
+      "raw": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-luo-entrance-20260925\\raw\\d.wav",
+      "raw_sha256": "a10613edc6c3899681e646c2ff5206025632153386251f4d6dde33a65e8b906e",
+      "wav": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-luo-entrance-20260925\\wav\\d.wav",
+      "wav_sha256": "83f83a16c6532acfe6161aca7975c8c94ef02a712305e6b04543275a417a0443",
+      "candidate_mp3": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-luo-entrance-20260925\\mp3\\d.mp3",
+      "mp3_sha256": "6c449784f4505b18d9b05f5281ca2446d7a1020bb885d18b872d43e3981f41d2",
+      "mp3_bytes": 33453,
+      "processing": "loudnorm=I=-20:TP=-2:LRA=7",
+      "export_commands": [
+        [
+          "ffmpeg",
+          "-hide_banner",
+          "-loglevel",
+          "error",
+          "-i",
+          "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-luo-entrance-20260925\\raw\\d.wav",
+          "-af",
+          "loudnorm=I=-20:TP=-2:LRA=7",
+          "-ar",
+          "24000",
+          "-ac",
+          "1",
+          "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-luo-entrance-20260925\\wav\\d.wav"
+        ],
+        [
+          "ffmpeg",
+          "-hide_banner",
+          "-loglevel",
+          "error",
+          "-i",
+          "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-luo-entrance-20260925\\wav\\d.wav",
+          "-b:a",
+          "128k",
+          "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch2-luo-entrance-20260925\\mp3\\d.mp3"
+        ]
+      ],
+      "pitch_change": false,
+      "time_stretch": false,
+      "word_gain": false,
+      "qa": {
+        "sample_rate": 24000,
+        "mono": true,
+        "seconds": 2.0,
+        "finite": true,
+        "peak": 0.692331,
+        "rms": 0.076042,
+        "transcript": "大夫,幫我看看",
+        "words": [
+          {
+            "text": "大",
+            "start": 0.0,
+            "end": 0.34
+          },
+          {
+            "text": "夫,",
+            "start": 0.34,
+            "end": 0.92
+          },
+          {
+            "text": "幫",
+            "start": 1.32,
+            "end": 1.32
+          },
+          {
+            "text": "我",
+            "start": 1.32,
+            "end": 1.5
+          },
+          {
+            "text": "看看",
+            "start": 1.5,
+            "end": 1.76
+          }
+        ],
+        "measured_lufs": "-20.45",
+        "measured_true_peak_dbtp": "-3.15",
+        "clipped_samples": 0,
+        "method": "faster-whisper-medium ASR + soundfile + FFmpeg; not human approval"
+      }
+    }
+  ],
+  "automated_audio_perception": [
+    {
+      "id": "a",
+      "sha256": "a72c9136971a565efe6fd25add481cb0fb7ae9ed3e81bd570efe367ffeabdbe2",
+      "answer": "音频内容是“大夫，帮我看看”。声音是男声，比较年轻，是自然口语，没有明显表演腔或夸张颤音。没有重复，漏字，末字截断，也没有音乐或其他声音。如果还有其他音频需要分析，你可以随时告诉我哦。",
+      "method": "Local Qwen2.5-Omni-3B automated perception; fallible, not human listening or approval."
+    },
+    {
+      "id": "b",
+      "sha256": "645e5d4e16bf30f1f6a94bd2424710ed9b7ae810f1adf0d956c75dc4c3ab50de",
+      "answer": "音频内容是“大夫帮我看看”。声音是男声，不确定是年轻还是年长，是自然口语，没有明显表演腔或夸张颤音，没有重复，漏字，末字截断，也没有音乐或其他声音。如果还有其他问题，欢迎随时告诉我。",
+      "method": "Local Qwen2.5-Omni-3B automated perception; fallible, not human listening or approval."
+    },
+    {
+      "id": "c",
+      "sha256": "b97cf9188a4aad9dc181b5fece969e7ffca7153446140aa1da42906f081558ae",
+      "answer": "音频内容是“大夫帮我看看”。声音是女声，比较年轻，是自然口语，没有明显表演腔或夸张颤音。没有重复，漏字，末字截断，也没有音乐或其他声音。如果还有其他问题，欢迎随时问我。",
+      "method": "Local Qwen2.5-Omni-3B automated perception; fallible, not human listening or approval."
+    },
+    {
+      "id": "d",
+      "sha256": "6c449784f4505b18d9b05f5281ca2446d7a1020bb885d18b872d43e3981f41d2",
+      "answer": "音频内容是“大夫，帮我看看。”。声音是女声，不确定是年轻还是年长。是自然口语，没有明显表演腔或夸张颤音。没有重复，漏字，末字截断，也没有音乐或其他声音。如果还有其他音频需要分析，你可以随时告诉我哦。",
+      "method": "Local Qwen2.5-Omni-3B automated perception; fallible, not human listening or approval."
+    }
+  ],
+  "limitations": "ASR and automated audio perception are fallible. They do not prove a specific age, natural performance or human approval."
+}

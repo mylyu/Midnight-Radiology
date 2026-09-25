@@ -1,0 +1,63 @@
+{
+  "date": "2026-09-25",
+  "mode": "built-in image_gen",
+  "skill": "imagegen",
+  "baseline": "dadc208",
+  "constraints": "Versioned chapter-two-only files; all previous media unchanged. Pixel patient sprite, no gore. CTA rendering is a fictional educational cutaway, not a surface rupture, not derived clinically from one axial slice.",
+  "images": [
+    {
+      "id": "ch2_patient_aorta_middle_bed",
+      "prompt": "Use case: precise-object-edit / stylized-concept.\nAsset type: transparent pixel-art patient-on-transport-stretcher sprite for an existing Chinese hospital visual novel.\nInput image 1 is the EDIT TARGET, old patient on stretcher; image2 is ONLY a coarse pixel-art style reference from chapter1.\nReplace ONLY the patient identity and clothes: a Chinese man about 45 years old, healthy athletic build (recreational running/football, not a bodybuilder), short mostly black hair, clean-shaven, slightly weathered face, dark teal athletic zip jacket over a plain light grey T-shirt. He is having severe sudden back pain: pale, sweaty forehead, tense brow, mouth slightly open, one hand gripping bed rail and other hand resting at his side/flank. Alert, worried, not unconscious. Keep the same three-quarter viewing direction, complete wheeled transport stretcher and bedding, head at screen left, feet screen right, all wheels visible and room around edges; lying with modestly raised backrest, no standing hero pose.\nUse genuinely coarse, clearly visible square pixel clusters matching chapter1: dark navy outlines, limited muted palette, blocky cloth shading, hand-drawn high-resolution pixel illustration. NOT smooth digital painting, not photorealistic, not vector, no blur. Natural head/body proportions.\nBackground must be genuinely transparent RGBA around patient plus stretcher. No corridor background, no horizontal speed streaks, no dark rectangular panel; clean pixel edges and preserve alpha. No extra people, no new equipment, no labels, no text, no blood/gore, no grotesque pain expression. Landscape 1536x1024.",
+      "references": [
+        "app/public/assets/media/ch2_patient_aorta_bed.ce8cba1d520bdc52.webp",
+        "app/public/assets/media/char_zhou.ce9ee114b1494be0.webp"
+      ],
+      "generated": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-80342a07-bbff-400d-9a18-cb5c9e7640bc.png",
+      "sourceSha256": "fad863f10370bcab4b73ff643a7d1bfcbc8d2414aa9f4797e380b274c546d2ee",
+      "sourceBytes": 1617287,
+      "width": 1536,
+      "height": 1024,
+      "delivery": "app/public/assets/media/ch2_patient_aorta_middle_bed.59b2accc43dacf90.webp",
+      "sha256": "59b2accc43dacf90ae4b73c8277993909c46547b69e2e47f3cbbffe99dc4aa7c",
+      "bytes": 137746,
+      "quality": 78,
+      "alphaExact": true,
+      "review": "Middle-aged male, dark hair, teal sports jacket, sweat and pain, lying on complete transport stretcher; deliberately coarse pixel edges match chapter-one reference. Transparent exterior; alpha byte identity preserved at import."
+    },
+    {
+      "id": "ch2_aorta_volume_cutaway_v1",
+      "prompt": "Use case: scientific-educational.\nAsset type: a single 3D CTA volume-rendering-style medical teaching image on pure black, for BME game, NOT a diagram of an exposed surgery.\nReference image1 is the EXISTING axial fictional chest CTA: it shows an intimal flap splitting the DESCENDING thoracic aorta adjacent to the vertebra; ascending aorta on this slice is intact. Preserve that location in the new visualization. Reference image2 is only the existing realistic radiology-workstation volume-rendering aesthetic, not the target heart anatomy.\nGenerate a clear three-quarter-oblique 3D rendering of the human thoracic aorta: normal ascending aorta, aortic arch with three plausible main arch branch origins, descending thoracic aorta and short upper abdominal continuation. Frame the whole arch plus long descending segment, generous black margin, not an extreme cropped tube. Pale ivory/golden CT contrast-filled lumens, subtle shaded depth, no decorative cinematic glow. The descending segment below the left subclavian origin has dissection: a thin curved internal flap divides true and false lumen over a length of the descending segment. Show this WITH A DELIBERATE OBLIQUE CLIPPING PLANE through the descending vessel (a digital cutaway view), preserving the overall continuous outer vessel outline. One lumen relatively narrow, the adjacent lumen broad. The flap is internal, not a giant torn-open external wall; no blood escaping, no jagged slash, no rupture. The outer ascending aorta and arch are not dissected. Keep the internal divider visible but fine, anatomy plausible, no extra parallel independent arteries mistaken for double lumen. This is teaching visualization not proof of full extent from one axial slice.\nNo arrows, no circles, no text or letters, no inset axial panel, no patient body or exposed red flesh, no watermark. Black background, square1024x1024. It should look like a clean clinical 3D workstation view with clip plane, not pixel character art.",
+      "references": [
+        "app/public/assets/media/ch2_ct_aortic_wide.157fe422e2d407db.webp",
+        "app/public/assets/media/ct_coronary_cta.84c214bcee91c56d.webp"
+      ],
+      "generated": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-08aef3dc-f74b-44db-93b9-28e543ab07c6.png",
+      "sourceSha256": "d0ef6412918c5c88e6f40cfa431dadfc49e7764a5a9d5ecdb3b48aab587a64b1",
+      "sourceBytes": 1040255,
+      "width": 1254,
+      "height": 1254,
+      "delivery": "app/public/assets/media/ch2_aorta_volume_cutaway_v1.803620fae1ddcc84.webp",
+      "sha256": "803620fae1ddcc841ba0ec4ea3c61100c8b60ab32ff3495871351da9fc43b3a8",
+      "bytes": 57982,
+      "quality": 78,
+      "alphaExact": true,
+      "review": "Arch and long descending segment on black, digitally clipped descending segment exposes a fine internal divider. Display caption explicitly says local cutaway. Axial image and its finding/observation are unchanged. Does not establish full dissection extent or clinical subtype."
+    }
+  ],
+  "encoder": {
+    "script": "app/scripts/import-image.mjs",
+    "command": "node scripts/import-image.mjs <generated-absolute-path> <id>",
+    "sharp": "0.35.3",
+    "webp": "1.6.0",
+    "lossy": true,
+    "alphaQuality": 100,
+    "resize": false
+  },
+  "limitations": "No raw projection/volume was generated. These are fictional game illustrations; original CT observation answer/region remains bound to original axial asset. No repeated AI label in player-facing dialogue. Image hashes verify bytes, not clinical correctness.",
+  "sources": [
+    "https://aapm.org/pubs/CTProtocols/documents/CTTerminologyLexicon.pdf",
+    "https://www.aapm.org/education/documents/curriculum.pdf",
+    "https://www.radiologyinfo.org/en/info/angioct",
+    "https://www.acc.org/About-ACC/Press-Releases/2022/11/02/18/18/ACC-AHA-Issue-Aortic-Disease-Guideline"
+  ]
+}

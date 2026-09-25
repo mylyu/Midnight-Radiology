@@ -35,8 +35,8 @@ export const CH2_NEEDLE_EVIDENCE: Record<string, Evidence> = {
 
 export const CH2_NEEDLE_STEPS: Record<string, Record<string, Step>> = {
   c2d4: {
-    c2d4_needle0: { bg: 'bg_ctcontrol_day', speaker: 'sys', sprite: patient,
-      text: '你刚把分机号贴好，门诊医生带来一位阿姨，说请值班医师再核一下外院的片子。她自己走进来，怀里夹着片袋，开口先问：「你们这椅子能往前挪吗？我脚够不着地。」',
+    c2d4_needle0: { bg: 'bg_ctcontrol_day', speaker: 'sys', sprite: patient, sfx: 'vox_ch2_luo_entrance_20260925',
+      text: '你刚把分机号贴好，门诊医生带来一位阿姨，说请值班医师再核一下外院的片子。她自己走进来，怀里夹着片袋：「大夫，帮我看看。」走到椅子前，又问：「这椅子能往前挪吗？我脚够不着地。」',
       effect: { flag: 'c2_needle_seen' }, next: 'c2d4_needle1' },
     c2d4_needle1: { speaker: 'sys', sprite: patient,
       text: '罗阿姨，六十八岁，退休前做缝纫。片袋边角被她用透明胶补过，封口整整齐齐。她坐稳以后，又把椅背上搭着的外套抻平了一点。', next: 'c2d4_needle2' },

@@ -4,6 +4,7 @@ import { patchCh2 } from './ch2-session'
 import { recordCh2Change } from './ch2-ledger'
 import { CH2_SCANS } from './ch2-scans'
 import { getCh2Observation } from './ch2-observations'
+import { ch2ObservationContinuation } from './ch2-observation-presentation'
 
 export function startCh2Scan(s: GameState, id: string, now: number): GameState {
   if (!CH2_SCANS[id] || s.dlc?.ch2?.scanSessions?.[id]) return s
@@ -37,5 +38,11 @@ export function acknowledgeCh2Observation(s: GameState, stepId: string): GameSta
   const config = getCh2Observation(stepId, s)
   const answer = config && s.dlc?.ch2?.observations?.[config.id]
   if (!config || !answer || answer.acknowledged) return s
-  return patchCh2(s, { observations: { ...s.dlc?.ch2?.observations, [config.id]: { ...answer, acknowledged: true } } })
+  const continuation = s.dlc?.ch2?.stepId === stepId ? ch2ObservationContinuation(stepId) : undefined
+  return patchCh2(s, {
+    observations: { ...s.dlc?.ch2?.observations, [config.id]: { ...answer, acknowledged: true } },
+    // Acknowledgement and its unique continuation are one save, so refreshing
+    // cannot re-open the repeated coronary question or grant another reward.
+    ...(continuation ? { stepId: continuation } : {}),
+  })
 }
