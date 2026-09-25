@@ -1,0 +1,15 @@
+{
+  "baseline": "a1ed6f852714e4b30506c864fb3d04b3c2fae690",
+  "status": "reviewed",
+  "sourceDeltasSha256": "8ee6f0956953b1e9094c03654c0b9c76e34b51ff8f28b7a2ec466f73361bf788",
+  "scope": "Chapter 2 portrait exits only: synchronously resolve the current node using the original scene inference, and explicitly clear seven tea-room/message sprites. No dialogue, branches, rewards, input timing, media, preload manifest or other chapters changed.",
+  "reviewedHunks": 11,
+  "approvedFiles": 4,
+  "pinnedAdditions": 1,
+  "validation": [
+    "Exact reversible source hunks pinned against a1ed6f8; previous review ledgers unchanged",
+    "Independent App function check permits only Ch2Screen, with the sole additional ch2SceneView import",
+    "Independent Step property check permits only sprite on seven named nodes",
+    "Original first/second chapter wording, effects, branches, audio and all public file bytes remain exact outside reviewed presentation changes"
+  ]
+}

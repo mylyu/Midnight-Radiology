@@ -7,6 +7,7 @@ import { readFileSync, readdirSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import ts from 'typescript'
+import { beforeCh2PortraitExitsSource, assertCh2PortraitExitsAdditions, assertCh2PortraitExitsLive, priorCh2PortraitExitsPaths } from './ch2-portrait-exits-projection.mjs'
 
 export const CHAPTER_PRELOAD_BASELINE = 'fa01385ef48ad34dcd2d670d026c4ae35ef46812'
 const ledgerSha = 'd7f739f01a05c0512280eb4b1cd3037cae5e75fc4d5ec58d25b49d86cd42fa2b'
@@ -53,6 +54,9 @@ export function chapterPreloadLedger() {
 }
 
 export function beforeChapterPreloadSource(path, source) {
+  // Older review layers may call us again with this layer already reversed.
+  if (edited.includes(path) && norm(source) === original(path)) return source
+  source = beforeCh2PortraitExitsSource(path, source)
   if (!edited.includes(path)) return source
   const current = norm(source), before = original(path)
   if (current === before) return source
@@ -72,17 +76,19 @@ export function beforeChapterPreloadSource(path, source) {
 }
 
 export function assertChapterPreloadAdditions() {
+  assertCh2PortraitExitsAdditions()
   for (const row of chapterPreloadLedger().added) {
     assert.equal(sha(norm(read(row.path))), row.sha256, `${row.path}: undocumented mutation in pinned new loading/input module`)
   }
 }
 export function priorChapterPreloadPaths(paths) {
   assertChapterPreloadAdditions()
-  return paths.filter(path => !added.includes(path))
+  return priorCh2PortraitExitsPaths(paths).filter(path => !added.includes(path))
 }
 export function assertChapterPreloadLive() {
+  assertCh2PortraitExitsLive()
   for (const row of chapterPreloadLedger().files) {
-    const live = norm(read(row.path))
+    const live = norm(beforeCh2PortraitExitsSource(row.path, read(row.path)))
     assert.equal(sha(live), row.afterSha256, `${row.path}: reviewed loading/input change must be live`)
     assert.equal(norm(beforeChapterPreloadSource(row.path, live)), original(row.path))
   }

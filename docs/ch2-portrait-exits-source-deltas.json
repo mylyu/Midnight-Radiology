@@ -1,0 +1,156 @@
+{
+  "baseline": "a1ed6f852714e4b30506c864fb3d04b3c2fae690",
+  "files": [
+    {
+      "path": "app/src/App.tsx",
+      "beforeSha256": "9ceb7c6c006ce1b159996f103ad80e731b1e03687ca98c217f3edc5acc66e882",
+      "afterSha256": "41c78ffd8ee7e7710c07e380348d379092f9dd4e932b5c22bdb3b18f78156254",
+      "edits": [
+        {
+          "beforeStart": 26,
+          "afterStart": 26,
+          "before": [],
+          "after": [
+            "import { ch2SceneView } from './game/ch2-scene'"
+          ]
+        },
+        {
+          "beforeStart": 2028,
+          "afterStart": 2029,
+          "before": [
+            "    const cur = viewRef.current",
+            "    const speakerSprite = baseStep.speaker === 'luzhou' ? 'luzhou' : baseStep.speaker ? `char_${baseStep.speaker}` : undefined",
+            "    const impliedSprite =",
+            "      baseStep.sprite ??",
+            "      (baseStep.speaker === 'me' ? 'me' : speakerSprite && cur.sprite === speakerSprite ? cur.sprite : undefined)",
+            "    const newView = { bg: baseStep.bg ?? cur.bg, sprite: impliedSprite, sprite2: baseStep.sprite2 }"
+          ],
+          "after": [
+            "    const newView = ch2SceneView(baseStep, viewRef.current)"
+          ]
+        },
+        {
+          "beforeStart": 2202,
+          "afterStart": 2198,
+          "before": [],
+          "after": [
+            "  const currentView = ch2SceneView(baseStep, view)"
+          ]
+        },
+        {
+          "beforeStart": 2204,
+          "afterStart": 2201,
+          "before": [
+            "    : giftReply?.sprite ?? view.sprite"
+          ],
+          "after": [
+            "    : giftReply?.sprite ?? currentView.sprite"
+          ]
+        },
+        {
+          "beforeStart": 2206,
+          "afterStart": 2203,
+          "before": [
+            "  const rightSprite = observationPending || giftReply ? null : spriteOf(view.sprite2)"
+          ],
+          "after": [
+            "  const rightSprite = observationPending || giftReply ? null : spriteOf(currentView.sprite2)"
+          ]
+        },
+        {
+          "beforeStart": 2216,
+          "afterStart": 2213,
+          "before": [
+            "      {dawnShot ? <Ch2DawnScene shot={dawnShot} /> : <BgImg name={ch2BackgroundAsset(view.bg)} />}"
+          ],
+          "after": [
+            "      {dawnShot ? <Ch2DawnScene shot={dawnShot} /> : <BgImg name={ch2BackgroundAsset(currentView.bg)} />}"
+          ]
+        },
+        {
+          "beforeStart": 2283,
+          "afterStart": 2280,
+          "before": [
+            "      {rightSprite && <img src={rightSprite} className={`sprite-r absolute bottom-48 portrait:bottom-44 right-4 md:right-24 portrait:h-40 h-56 md:h-80 object-contain pixel opacity-80 drop-shadow-2xl z-10 pointer-events-none ${isPatientBed(view.sprite2) ? 'ch2-patient-bed ch2-patient-companion' : isPatientWheelchair(view.sprite2) ? 'ch2-patient-wheelchair' : ''}`} alt={isPatientBed(view.sprite2) ? '患者躺在转运平车上' : isPatientWheelchair(view.sprite2) ? '患者坐在轮椅上' : ''} />}"
+          ],
+          "after": [
+            "      {rightSprite && <img src={rightSprite} className={`sprite-r absolute bottom-48 portrait:bottom-44 right-4 md:right-24 portrait:h-40 h-56 md:h-80 object-contain pixel opacity-80 drop-shadow-2xl z-10 pointer-events-none ${isPatientBed(currentView.sprite2) ? 'ch2-patient-bed ch2-patient-companion' : isPatientWheelchair(currentView.sprite2) ? 'ch2-patient-wheelchair' : ''}`} alt={isPatientBed(currentView.sprite2) ? '患者躺在转运平车上' : isPatientWheelchair(currentView.sprite2) ? '患者坐在轮椅上' : ''} />}"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/game/ch2-pacing.ts",
+      "beforeSha256": "e9a2a522b8d07877dc36bafb0c1b5a74664aef4e654f93f6e77b24ec592a5127",
+      "afterSha256": "b6a3595439d6f4dc2b88b43b2194f2f40d9539ad4517e5b21056e05e9ecbf2f8",
+      "edits": [
+        {
+          "beforeStart": 106,
+          "afterStart": 106,
+          "before": [
+            "    c2n5_sms_lei_pending: { speaker: 'lei', text: '号码不认识。先留着，别点陌生链接。明早把这条也交信息科，跟留存日志一起查。终端别接回去。', next: 'c2n5_g0' },"
+          ],
+          "after": [
+            "    c2n5_sms_lei_pending: { speaker: 'lei', sprite: '', text: '号码不认识。先留着，别点陌生链接。明早把这条也交信息科，跟留存日志一起查。终端别接回去。', next: 'c2n5_g0' },"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/game/ch2-social.ts",
+      "beforeSha256": "0d1c0a0e84c49c1a293bedfa28ecb2a39487f75140d56bee503ec779c81d8d94",
+      "afterSha256": "094b4d8d10668bd0f7d38f0fd14fc6b3de2ec75176a22f1bdda77f12c6c952ef",
+      "edits": [
+        {
+          "beforeStart": 70,
+          "afterStart": 70,
+          "before": [
+            "    c2n5_chat_q: { speaker: 'sys', sprite: 'char_lei', text: '开诊前，还有几分钟。', choices: ["
+          ],
+          "after": [
+            "    c2n5_chat_q: { speaker: 'sys', sprite: '', text: '开诊前，还有几分钟。', choices: ["
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/game/ch2.ts",
+      "beforeSha256": "e49f217eca9319cd74920fe7165612cb761bf029b53919e1a4e5e40d11bbb7f5",
+      "afterSha256": "9a96c983e32647bb08e20f77f290fb27d6eb655d15c77946cb20d31f508e4ca7",
+      "edits": [
+        {
+          "beforeStart": 938,
+          "afterStart": 938,
+          "before": [
+            "  c2n5_n7: { speaker: 'lei', sprite: 'char_lei', text: \"终端没接回去，我查的是试运行留下的旧样本。有一份删了姓名，检查号和时间还在，拿院内记录一对，照样找得到人。（小雷停了停）不是画面上看不到名字，就算处理完了。\", next: 'c2n5_n8' },",
+            "  c2n5_n8: { speaker: 'sys', text: '【怎么回复？】', sprite: 'char_lei', choices: ["
+          ],
+          "after": [
+            "  c2n5_n7: { speaker: 'lei', sprite: '', text: \"终端没接回去，我查的是试运行留下的旧样本。有一份删了姓名，检查号和时间还在，拿院内记录一对，照样找得到人。（小雷停了停）不是画面上看不到名字，就算处理完了。\", next: 'c2n5_n8' },",
+            "  c2n5_n8: { speaker: 'sys', text: '【怎么回复？】', sprite: '', choices: ["
+          ]
+        },
+        {
+          "beforeStart": 944,
+          "afterStart": 944,
+          "before": [
+            "  c2n5_n8a: { speaker: 'lei', sprite: 'char_lei', text: \"收到。证据进信息科受控目录，另存离线备份。不给你微信发病人信息了，明早到办公室看。\", next: 'c2n5_g0' },",
+            "  c2n5_n8b: { speaker: 'lei', sprite: 'char_lei', text: \"行。外网不接回去，我拿留存日志再对一轮。明早先报已经确认的，别拖。\", next: 'c2n5_g0' },",
+            "  c2n5_n8c: { speaker: 'lei', sprite: 'char_lei', text: \"线是我接的，查到这一步不能装没看见。你不想在会上说，我来说。……证据我照存，外网也不接回去。\", next: 'c2n5_g0' },"
+          ],
+          "after": [
+            "  c2n5_n8a: { speaker: 'lei', sprite: '', text: \"收到。证据进信息科受控目录，另存离线备份。不给你微信发病人信息了，明早到办公室看。\", next: 'c2n5_g0' },",
+            "  c2n5_n8b: { speaker: 'lei', sprite: '', text: \"行。外网不接回去，我拿留存日志再对一轮。明早先报已经确认的，别拖。\", next: 'c2n5_g0' },",
+            "  c2n5_n8c: { speaker: 'lei', sprite: '', text: \"线是我接的，查到这一步不能装没看见。你不想在会上说，我来说。……证据我照存，外网也不接回去。\", next: 'c2n5_g0' },"
+          ]
+        }
+      ]
+    }
+  ],
+  "added": [
+    {
+      "path": "app/src/game/ch2-scene.ts",
+      "sha256": "f98d2fbc3750de2f675300c9423b2945c002323e7d80e417d51883fb9f5835bc"
+    }
+  ]
+}

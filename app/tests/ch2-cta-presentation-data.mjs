@@ -52,7 +52,8 @@ for (const stepId of ['c2n1_d2', 'c2n3_m1', 'c2n3_m11', 'c2n5_m7a', 'c2n5_m9']) 
   assert(step.phone, `${stepId} remains a phone conversation`)
   assert(!step.sprite, `${stepId} does not move caller into the room`)
 }
-assert.equal(all.c2n5_sms_lei_pending.sprite, undefined)
+// The portrait-exit fix explicitly clears any caller inherited from an old saved view.
+assert.equal(all.c2n5_sms_lei_pending.sprite, '')
 assert.equal(all.c2n3_dawn_light.sprite, '')
 assert.equal(all.c2am_lowdose_teaser1.sprite, '')
 assert.equal(CH2_SCANS.c2n3_coronary_volume.mode, 'reconstruct')

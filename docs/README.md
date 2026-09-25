@@ -13,6 +13,7 @@
 
 ## 常用记录
 
+- [第二章第五夜小雷立绘退场修复](ch2-portrait-exits.md)
 - [当前分章节加载与两章防连击保护](chapter-preload-input-guard.md)
 - [图片交付与加载优化](game-delivery-optimization.md)
 - [CT连续切片来源、许可与模拟方法](ch2-ct-sequences.md)
