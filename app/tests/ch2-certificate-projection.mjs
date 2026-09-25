@@ -6,6 +6,7 @@ import { createHash } from 'node:crypto'
 import { readFileSync, readdirSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { beforeStoryBusRevisionSource } from './story-bus-revision.mjs'
 
 export const CERTIFICATE_BASELINE = 'e34bba4859d1f05b40354f1885c9f36ad53df984'
 const ledgerSha = '398eb1eeda0374b1478927d9aefd13a806fca65c6e62240a37291ec83c4aed03'
@@ -41,7 +42,7 @@ export function certificateLedger() {
   return ledger
 }
 export function beforeCertificateSource(path, source) {
-  if (!edited.includes(path)) return source
+  if (!edited.includes(path)) return beforeStoryBusRevisionSource(path, source)
   const current = norm(source), before = original(path)
   if (current === before) return source // Exact independently known base only.
   const row = certificateLedger().files.find(row => row.path === path)
@@ -86,7 +87,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const configs = ['app/package.json', 'app/package-lock.json', 'app/index.html', 'app/vite.config.ts',
     'app/tsconfig.json', 'app/tsconfig.app.json', '深夜影像科/全书剧情总线.md',
     ...git('ls-tree', '-r', '--name-only', CERTIFICATE_BASELINE, '--', 'app/scripts').toString().trim().split('\n')]
-  for (const path of configs) assert.equal(norm(read(path)), original(path), `${path}: configuration/story-bus unchanged`)
+  for (const path of configs) assert.equal(norm(beforeStoryBusRevisionSource(path, read(path))), original(path), `${path}: configuration unchanged; story-bus only through its exact reviewed revision`)
   const publicPaths = []
   let voices = 0, probes = 0
   for (const entry of git('ls-tree', '-r', '-z', CERTIFICATE_BASELINE, '--', 'app/public').toString().split('\0').filter(Boolean)) {

@@ -1,0 +1,27 @@
+{
+  "baseline": "30e86925115d08a5af99bc20cdf79c6b2bd4504d",
+  "path": "深夜影像科/全书剧情总线.md",
+  "status": "reviewed",
+  "beforeSha256": "d04dcee93858105f123b782f0367da3bfb946f9b735175f19ad9156ad78d6598",
+  "afterSha256": "9dafa09ea4ad5a8672583d3cf54d12677e7dc29247bd4836e0b5492b9388d6c1",
+  "normalization": "UTF-8; CRLF to LF; trimEnd plus one final newline",
+  "authorization": "作者要求修订全书剧情总线并发布已完成的本地游戏版本；本轮总线同步不改任何运行源码或素材。",
+  "historicalPins": "All prior source/media ledger identities and Git baselines remain unchanged. The test adapter accepts exactly the old document or the reviewed v3.3 document, never arbitrary edits.",
+  "testMaintenance": {
+    "file": "app/tests/ch2-data.mjs",
+    "reason": "发布前发现该历史测试漏登记上轮已批准的两个CTA/章末桥接；不是本轮运行逻辑变更。",
+    "exactBridges": {
+      "c2d4_t2no": "c2d4_aorta_volume",
+      "c2am_5": "c2am_ct_reflection"
+    },
+    "guard": "assertCtaCharactersLive verifies the previously fixed 737e7fcb204e15804c2a2f7204145b62ca15d69432a27b7a2941d74888d1251e source ledger; original 5fea950 baseline and every reward/choice/task assertion retained.",
+    "result": "PASS: 195/286 existing text nodes refined; non-deferred nodes/rewards/tasks preserved; no missing links."
+  },
+  "review": [
+    "独立完整阅读313行v3.3，区分第一/二章、DR/DSA现版事实与第三至五章及远期DLC规划。",
+    "核对第二章三夜两白、十四处3秒采集和两处工作站重建、当前15枚现役勋章/17张现役卡片；病例、盒子离线状态、十五针闭环和教具用途与现版相符。",
+    "凭证姓名学号主动确认、章节独立快照、旧通关档兼容与本地校验限制均与30e8692证书实现一致；未承诺联网实名或防作弊。",
+    "退休时间、旧CT与CR、第三方球管、MRI场强/DR聚餐等差异已作明确区分或登记为待裁定，未借文档同步改动第一章或DLC。",
+    "保留原总线Git历史与所有既有测试基点/账本SHA；测试适配仅允许此一文档的两个固定身份，未知文本和其他路径不能获得豁免。"
+  ]
+}

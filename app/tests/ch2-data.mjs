@@ -4,7 +4,9 @@ import ts from 'typescript'
 import { CH2_DEFERRED_STEPS } from '../src/game/ch2-exploration.ts'
 import { CH2_SHIFTS, CH2_IMAGE_CAPTIONS } from '../src/game/ch2.ts'
 import { assertDayCasesLive, DAY_CASES_WRIST } from './ch2-day-cases-projection.mjs'
+import { assertCtaCharactersLive } from './ch2-cta-characters-projection.mjs'
 assertDayCasesLive()
+assertCtaCharactersLive()
 const source = execFileSync('git', ['show', '5fea950:app/src/game/ch2.ts'], { encoding: 'utf8' })
 const js = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 } }).outputText
 const old = await import('data:text/javascript;base64,' + Buffer.from(js).toString('base64'))
@@ -12,6 +14,9 @@ let changedText = 0
 let totalText = 0
 // Only these authored graph changes are allowed; all other old save nodes and rules stay frozen.
 const continuityNext = {
+  // Already approved by the separately pinned CTA/characters round. This
+  // historical audit omitted its two exact bridges; no runtime change here.
+  c2d4_t2no: 'c2d4_aorta_volume', c2am_5: 'c2am_ct_reflection',
   c2d2_w1ok: 'c2d2_thickness_question', // Authored question and answer return to the original patient reply.
   "c2n1_ab6": "c2n1_old_ct",
   "c2n1_an4": "c2n1_old_ct",
