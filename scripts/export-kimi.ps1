@@ -77,7 +77,8 @@ foreach ($file in (Invoke-RepoGit @('ls-files', '--cached', '-z')).Split([char]0
 $candidates = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
 foreach ($file in (Invoke-RepoGit @('ls-files', '--cached', '--others', '--exclude-standard', '-z')).Split([char]0, [StringSplitOptions]::RemoveEmptyEntries)) { [void]$candidates.Add($file) }
 
-$rootFiles = @('.gitignore', 'README.md', 'HANDOFF.md', 'LICENSE', 'NOTICE', '配音台词底稿.md', '配音台词底稿.csv')
+$rootFiles = @('.gitignore', 'README.md', 'HANDOFF.md', 'LICENSE', 'NOTICE')
+$voiceManuscripts = @('docs/voices/配音台词底稿.md', 'docs/voices/配音台词底稿.csv')
 $storyFiles = @('深夜影像科/全书剧情总线.md', '深夜影像科/第二章「快与狠」完整剧本.md', '深夜影像科/游戏设计文档.md')
 $appRootFiles = @('.gitignore', 'index.html', 'README.md', 'package.json', 'package-lock.json', 'components.json',
     'vite.config.ts', 'eslint.config.js', 'postcss.config.js', 'tailwind.config.js', 'tsconfig.json', 'tsconfig.app.json', 'tsconfig.node.json', 'validate.mjs')
@@ -105,7 +106,8 @@ function Test-IncludedPath {
         $File -in @('app/src/lib/image-assets.generated.json', 'app/image-delivery-report.json')) { return $false }
     if ($File -in $rootFiles -or $File -in $storyFiles) { return $true }
     if ($File -match '^\.github/workflows/[^/]+\.ya?ml$') { return $true }
-    if ($File -match '^pw_[^/]+\.js$') { return $true }
+    # Legacy one-off pw_ scripts and auditions live in archive/ and are not part
+    # of the current source handoff. Active regression tests stay in app/tests/.
     if ($File -match '^app/([^/]+)$' -and $Matches[1] -in $appRootFiles) { return $true }
     if ($File -match '^app/[^/]+\.(py|mjs|cjs|js|ps1)$') { return $true }
     if ($File -match '^app/src/.+\.(ts|tsx|js|jsx|css|json|svg)$') { return $true }
@@ -123,9 +125,9 @@ function Test-IncludedPath {
 [Array]::Sort($selected, [StringComparer]::Ordinal)
 $selectedSet = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
 foreach ($file in $selected) { [void]$selectedSet.Add($file) }
-$required = @('README.md', 'HANDOFF.md', 'LICENSE', 'NOTICE', '配音台词底稿.md', '配音台词底稿.csv',
+$required = @('README.md', 'HANDOFF.md', 'LICENSE', 'NOTICE',
     'app/index.html', 'app/package.json', 'app/package-lock.json', 'app/src/lib/image-assets.catalog.json',
-    'app/src/lib/image-previews.catalog.json', 'app/scripts/import-image.mjs', 'docs/media-import.md', 'app/public/ct-sequences-sources.txt') + $storyFiles + @($canonicalImages)
+    'app/src/lib/image-previews.catalog.json', 'app/scripts/import-image.mjs', 'docs/media-import.md', 'app/public/ct-sequences-sources.txt') + $voiceManuscripts + $storyFiles + @($canonicalImages)
 foreach ($file in $required) { if (-not $selectedSet.Contains($file)) { throw "Required tracked/nonignored file missing from export: $file" } }
 if (-not @($selected | Where-Object { $_ -match '^\.github/workflows/[^/]+\.ya?ml$' }).Count) { throw 'GitHub Pages workflow missing from export.' }
 $untrackedIncluded = @($selected | Where-Object { -not $tracked.Contains($_) })
@@ -169,6 +171,8 @@ try {
 # 给 Kimi 的项目导入与交接说明
 
 请以本包 `app/` 为唯一可运行源码，先读根目录 `HANDOFF.md`、`README.md` 和 `REVISION.txt`，再读 `深夜影像科/全书剧情总线.md`。不要从旧压缩包、根目录旧稿或历史PNG恢复游戏。该包是源码交接，不是包含Git历史的仓库备份。
+
+配音底稿位于 `docs/voices/`。仓库的旧试听、图像备份和早期临时脚本已归入 `archive/`，不放入本包；当前回归测试在 `app/tests/`，归档脚本不是当前验证入口。
 
 ## 本地启动与构建
 

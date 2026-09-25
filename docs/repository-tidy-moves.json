@@ -1,0 +1,410 @@
+{
+  "baseline": "485bc41d2c2ff3f17b7f9414756f74aa16f866dc",
+  "moves": [
+    {
+      "from": "auto_reg8.log",
+      "to": "archive/original-development/logs/auto_reg8.log",
+      "gitBlob": "bb91f0eadda28733fde57d2acf421afd24f7ea3f"
+    },
+    {
+      "from": "bg_control_原图备份.png",
+      "to": "archive/original-development/images/bg_control_原图备份.png",
+      "gitBlob": "4b207bd5f565008c1e6895a813f92ddc8c6c294b"
+    },
+    {
+      "from": "bg_control_维修中.png",
+      "to": "archive/original-development/images/bg_control_维修中.png",
+      "gitBlob": "1d4e4348049c6bd7e80ddda0ee1c47af1ee13ec5"
+    },
+    {
+      "from": "gen_imgs.sh",
+      "to": "archive/original-development/generation/gen_imgs.sh",
+      "gitBlob": "e6580b9f53ab9e3f1203e70927be508ad034ea65"
+    },
+    {
+      "from": "gen_imgs2.sh",
+      "to": "archive/original-development/generation/gen_imgs2.sh",
+      "gitBlob": "ea0a23aceb91bf396bfe64404711d26f0f452f8e"
+    },
+    {
+      "from": "gen_voices.py",
+      "to": "archive/original-development/generation/gen_voices.py",
+      "gitBlob": "4c64e2650945b36f0dede8fb3d38a780c8c8609f"
+    },
+    {
+      "from": "pw_ap_test.js",
+      "to": "archive/original-development/tests/pw_ap_test.js",
+      "gitBlob": "e1db0465a7095cc988898cdc200df184a0a2564b"
+    },
+    {
+      "from": "pw_book20.js",
+      "to": "archive/original-development/tests/pw_book20.js",
+      "gitBlob": "d498251dc8b44b1201231c5db28b9d2885c4137c"
+    },
+    {
+      "from": "pw_ch2fix.js",
+      "to": "archive/original-development/tests/pw_ch2fix.js",
+      "gitBlob": "fbd0c97b120c7645ebb83e19d857a92e46c04c68"
+    },
+    {
+      "from": "pw_ch2fix2.js",
+      "to": "archive/original-development/tests/pw_ch2fix2.js",
+      "gitBlob": "633dd8c24e3905169113f6504f257f77376248b2"
+    },
+    {
+      "from": "pw_d4.js",
+      "to": "archive/original-development/tests/pw_d4.js",
+      "gitBlob": "663c37659c2798958bb10294102df29488518365"
+    },
+    {
+      "from": "pw_debug_p2.js",
+      "to": "archive/original-development/tests/pw_debug_p2.js",
+      "gitBlob": "4a26ca1c7685275585f442a0869c8ca0331acb54"
+    },
+    {
+      "from": "pw_debug_p2c.js",
+      "to": "archive/original-development/tests/pw_debug_p2c.js",
+      "gitBlob": "db5736e764e6248108c03f89a9a2437c7eb19ffd"
+    },
+    {
+      "from": "pw_expand_test.js",
+      "to": "archive/original-development/tests/pw_expand_test.js",
+      "gitBlob": "37efadb76693d6fb585a0630d27f607560b31003"
+    },
+    {
+      "from": "pw_sprites.js",
+      "to": "archive/original-development/tests/pw_sprites.js",
+      "gitBlob": "ed87d46e50afe51ed4f1db224655bdd72db5ddd3"
+    },
+    {
+      "from": "pw_voice_check.js",
+      "to": "archive/original-development/tests/pw_voice_check.js",
+      "gitBlob": "fcdfa24f02ea264f8027a98903f6d12f77e4baf6"
+    },
+    {
+      "from": "pw_voice_steps.js",
+      "to": "archive/original-development/tests/pw_voice_steps.js",
+      "gitBlob": "22df0be621de09df301d9cd95b1d70a2d64525f8"
+    },
+    {
+      "from": "pw_voice_walk.js",
+      "to": "archive/original-development/tests/pw_voice_walk.js",
+      "gitBlob": "94bba7e6b77983e3d1de5454440874dadd59b96b"
+    },
+    {
+      "from": "reg053.log",
+      "to": "archive/original-development/logs/reg053.log",
+      "gitBlob": "a09e8360d65934248b6798cec8fc2d4de869d20c"
+    },
+    {
+      "from": "voice_original/vox2_director.mp3",
+      "to": "archive/original-development/voices/original/vox2_director.mp3",
+      "gitBlob": "0397b0b3fa6129bcae4f29ce7d9edc7446eb8bf2"
+    },
+    {
+      "from": "voice_original/vox2_director_am.mp3",
+      "to": "archive/original-development/voices/original/vox2_director_am.mp3",
+      "gitBlob": "0243aadbb4ef0fe2ad44a1d8e5346e8451ff7eea"
+    },
+    {
+      "from": "voice_original/vox2_fan_a.mp3",
+      "to": "archive/original-development/voices/original/vox2_fan_a.mp3",
+      "gitBlob": "326e1f3956aebb0287aca56a83544ba0d05b8880"
+    },
+    {
+      "from": "voice_original/vox2_fan_b.mp3",
+      "to": "archive/original-development/voices/original/vox2_fan_b.mp3",
+      "gitBlob": "1f223e9356a5bf0b7e9b36f9ed0ed87ac879bfae"
+    },
+    {
+      "from": "voice_original/vox2_he.mp3",
+      "to": "archive/original-development/voices/original/vox2_he.mp3",
+      "gitBlob": "f01f9de6dec1ecc95ae3c0e44fb854a22f11bc39"
+    },
+    {
+      "from": "voice_original/vox2_kai.mp3",
+      "to": "archive/original-development/voices/original/vox2_kai.mp3",
+      "gitBlob": "8c84da0b18054c6675ced292268cb6236bdf4508"
+    },
+    {
+      "from": "voice_original/vox2_lei.mp3",
+      "to": "archive/original-development/voices/original/vox2_lei.mp3",
+      "gitBlob": "28745ec068753429ce354c1366e7d52a4ea25a18"
+    },
+    {
+      "from": "voice_original/vox2_mystery.mp3",
+      "to": "archive/original-development/voices/original/vox2_mystery.mp3",
+      "gitBlob": "dc31671902d9d64c458ad7fa9df19bac9ea81136"
+    },
+    {
+      "from": "voice_original/vox2_tang.mp3",
+      "to": "archive/original-development/voices/original/vox2_tang.mp3",
+      "gitBlob": "57122ebae55522eca7d0b9b64d73ce1e9c05e952"
+    },
+    {
+      "from": "voice_original/vox2_wen.mp3",
+      "to": "archive/original-development/voices/original/vox2_wen.mp3",
+      "gitBlob": "4c332c7c45cd4bd86184b665a36a380eda358f88"
+    },
+    {
+      "from": "voice_original/vox2_zhou.mp3",
+      "to": "archive/original-development/voices/original/vox2_zhou.mp3",
+      "gitBlob": "22e12dfb5df4df5bb1bcbba27335a1095565b6b3"
+    },
+    {
+      "from": "voice_original/vox_aunt.mp3",
+      "to": "archive/original-development/voices/original/vox_aunt.mp3",
+      "gitBlob": "4b63d6fc77aa699add7118b6ca773fc6cf5d38f5"
+    },
+    {
+      "from": "voice_original/vox_bai.mp3",
+      "to": "archive/original-development/voices/original/vox_bai.mp3",
+      "gitBlob": "dba6e960091a6752889a5c597b4d501a79b21027"
+    },
+    {
+      "from": "voice_original/vox_dad.mp3",
+      "to": "archive/original-development/voices/original/vox_dad.mp3",
+      "gitBlob": "428ddce7fb1493e2dee74f8e93daa4a6c6926547"
+    },
+    {
+      "from": "voice_original/vox_director.mp3",
+      "to": "archive/original-development/voices/original/vox_director.mp3",
+      "gitBlob": "caf1e5dd247399207d45eb01989830f77bdd46fd"
+    },
+    {
+      "from": "voice_original/vox_du.mp3",
+      "to": "archive/original-development/voices/original/vox_du.mp3",
+      "gitBlob": "52475a2e51a332d4457b2db31eb86454387f700d"
+    },
+    {
+      "from": "voice_original/vox_duty.mp3",
+      "to": "archive/original-development/voices/original/vox_duty.mp3",
+      "gitBlob": "8b189fd2490ff82d6ea9189deea1fd2b2cab95af"
+    },
+    {
+      "from": "voice_original/vox_enh.mp3",
+      "to": "archive/original-development/voices/original/vox_enh.mp3",
+      "gitBlob": "87b343f4e4a9c7323b809c69a27b59582626788a"
+    },
+    {
+      "from": "voice_original/vox_fan.mp3",
+      "to": "archive/original-development/voices/original/vox_fan.mp3",
+      "gitBlob": "95b613f72b9b676404efbb23c7ab08167fe523be"
+    },
+    {
+      "from": "voice_original/vox_grandpa.mp3",
+      "to": "archive/original-development/voices/original/vox_grandpa.mp3",
+      "gitBlob": "d17b7f9cad5a890b7d63474f9c17c2b46264f1d5"
+    },
+    {
+      "from": "voice_original/vox_guy.mp3",
+      "to": "archive/original-development/voices/original/vox_guy.mp3",
+      "gitBlob": "228d9664fcb293e39db775e43c21cda836ec0b11"
+    },
+    {
+      "from": "voice_original/vox_he.mp3",
+      "to": "archive/original-development/voices/original/vox_he.mp3",
+      "gitBlob": "092d0eff9238f601435831677248e7d6ab116147"
+    },
+    {
+      "from": "voice_original/vox_jiang.mp3",
+      "to": "archive/original-development/voices/original/vox_jiang.mp3",
+      "gitBlob": "a01b2054afe8f408c6b59a3180048c0fe949b5c7"
+    },
+    {
+      "from": "voice_original/vox_kai.mp3",
+      "to": "archive/original-development/voices/original/vox_kai.mp3",
+      "gitBlob": "47e18b0eb8ee49af18a08774162ca8330916dc7d"
+    },
+    {
+      "from": "voice_original/vox_kid.mp3",
+      "to": "archive/original-development/voices/original/vox_kid.mp3",
+      "gitBlob": "bba6757b5f919f840d3ceed2425e34ab48a70829"
+    },
+    {
+      "from": "voice_original/vox_kiddad.mp3",
+      "to": "archive/original-development/voices/original/vox_kiddad.mp3",
+      "gitBlob": "482873b56a436321673f79b3b2a55621c6bdc8d3"
+    },
+    {
+      "from": "voice_original/vox_kidmom.mp3",
+      "to": "archive/original-development/voices/original/vox_kidmom.mp3",
+      "gitBlob": "06d40da8b04b7df0239fd838f34424e05624968a"
+    },
+    {
+      "from": "voice_original/vox_lei.mp3",
+      "to": "archive/original-development/voices/original/vox_lei.mp3",
+      "gitBlob": "32549f54581284149934ac037b2ca54b14b3ae77"
+    },
+    {
+      "from": "voice_original/vox_liao.mp3",
+      "to": "archive/original-development/voices/original/vox_liao.mp3",
+      "gitBlob": "95730491a3858e0e8d94d1129bb6408a01565413"
+    },
+    {
+      "from": "voice_original/vox_luzhou_f.mp3",
+      "to": "archive/original-development/voices/original/vox_luzhou_f.mp3",
+      "gitBlob": "9689c1e0f751804a06eb1ce5c6614954833b6ce3"
+    },
+    {
+      "from": "voice_original/vox_luzhou_m.mp3",
+      "to": "archive/original-development/voices/original/vox_luzhou_m.mp3",
+      "gitBlob": "4be5ac9e6baacb42ec385e9bb85a92c4bf274d65"
+    },
+    {
+      "from": "voice_original/vox_mom.mp3",
+      "to": "archive/original-development/voices/original/vox_mom.mp3",
+      "gitBlob": "9961d42535a6809cf36911bcd05d78ca43bc7b6e"
+    },
+    {
+      "from": "voice_original/vox_mystery.mp3",
+      "to": "archive/original-development/voices/original/vox_mystery.mp3",
+      "gitBlob": "fd955e94c585c16c209d2ad3e1e25d91445332e6"
+    },
+    {
+      "from": "voice_original/vox_qian.mp3",
+      "to": "archive/original-development/voices/original/vox_qian.mp3",
+      "gitBlob": "1c73b97848f730fb4b9f31f615e403b984a48dde"
+    },
+    {
+      "from": "voice_original/vox_qin.mp3",
+      "to": "archive/original-development/voices/original/vox_qin.mp3",
+      "gitBlob": "5d87d1d68f833feda1f1194a554f730ff18ad977"
+    },
+    {
+      "from": "voice_original/vox_shao.mp3",
+      "to": "archive/original-development/voices/original/vox_shao.mp3",
+      "gitBlob": "3938eda7d4a5b1d378b4ea78af7560fa600c83f1"
+    },
+    {
+      "from": "voice_original/vox_tang.mp3",
+      "to": "archive/original-development/voices/original/vox_tang.mp3",
+      "gitBlob": "df47e2cc4b80419fac3df2a6e0a7090ff3d8a9e6"
+    },
+    {
+      "from": "voice_original/vox_thin.mp3",
+      "to": "archive/original-development/voices/original/vox_thin.mp3",
+      "gitBlob": "d6a97d8fa0ad5b7776e4474e4c269d5ffe625182"
+    },
+    {
+      "from": "voice_original/vox_uncle.mp3",
+      "to": "archive/original-development/voices/original/vox_uncle.mp3",
+      "gitBlob": "580ef900cb66768aee736016d2f84edba4aff372"
+    },
+    {
+      "from": "voice_original/vox_wen.mp3",
+      "to": "archive/original-development/voices/original/vox_wen.mp3",
+      "gitBlob": "6e658dec50b7f4783d211c605c5b9d186312d6ab"
+    },
+    {
+      "from": "voice_original/vox_worker.mp3",
+      "to": "archive/original-development/voices/original/vox_worker.mp3",
+      "gitBlob": "8af5600d1d682a35a58cb4e61dd9a81a2098b86e"
+    },
+    {
+      "from": "voice_original/vox_zhou.mp3",
+      "to": "archive/original-development/voices/original/vox_zhou.mp3",
+      "gitBlob": "0aaf104e7c02ac54d1ffb2824f6ed5d5906fdcd7"
+    },
+    {
+      "from": "老周60岁候选_A_Kai醇厚大叔.mp4",
+      "to": "archive/original-development/voices/candidates/老周60岁候选_A_Kai醇厚大叔.mp4",
+      "gitBlob": "007e35d49e207252faa2b488ecb21b1676a048c1"
+    },
+    {
+      "from": "老周60岁候选_B_Moon温和打趣.mp4",
+      "to": "archive/original-development/voices/candidates/老周60岁候选_B_Moon温和打趣.mp4",
+      "gitBlob": "1d27c043ab8f975621e3cf71ba6946cccb7208a2"
+    },
+    {
+      "from": "老周60岁候选_C_Vincent烟嗓幽默.mp4",
+      "to": "archive/original-development/voices/candidates/老周60岁候选_C_Vincent烟嗓幽默.mp4",
+      "gitBlob": "61dcda31c870609d080618c7a36b87855dcf6c5e"
+    },
+    {
+      "from": "老周60岁候选_D_Neil厚实唠嗑.mp4",
+      "to": "archive/original-development/voices/candidates/老周60岁候选_D_Neil厚实唠嗑.mp4",
+      "gitBlob": "74812161296676ecdc9e0c8ca0b054ce13caf570"
+    },
+    {
+      "from": "老周Qwen候选_A_Arthur乡村老者.mp4",
+      "to": "archive/original-development/voices/candidates/老周Qwen候选_A_Arthur乡村老者.mp4",
+      "gitBlob": "1a978fe8f4902e2ddb7ae19866285fe598992f5e"
+    },
+    {
+      "from": "老周Qwen候选_B_Vincent沙哑烟嗓.mp4",
+      "to": "archive/original-development/voices/candidates/老周Qwen候选_B_Vincent沙哑烟嗓.mp4",
+      "gitBlob": "7891feb9620840eeda1fe4fcf1cdf7e0e65bbd89"
+    },
+    {
+      "from": "老周Qwen候选_C_EldricSage年迈.mp4",
+      "to": "archive/original-development/voices/candidates/老周Qwen候选_C_EldricSage年迈.mp4",
+      "gitBlob": "046924a7adc6b2eba73d24e56cfab9a901f72aab"
+    },
+    {
+      "from": "老周语音候选_A_粗粝解说腔.mp4",
+      "to": "archive/original-development/voices/candidates/老周语音候选_A_粗粝解说腔.mp4",
+      "gitBlob": "9556e592ca6333c3aa18420f82de5817c4099327"
+    },
+    {
+      "from": "老周语音候选_B_港普老医师.mp4",
+      "to": "archive/original-development/voices/candidates/老周语音候选_B_港普老医师.mp4",
+      "gitBlob": "ed3016d40f25fd353381671368cd0543d6955f32"
+    },
+    {
+      "from": "老周语音候选_C_港普更苍老.mp4",
+      "to": "archive/original-development/voices/candidates/老周语音候选_C_港普更苍老.mp4",
+      "gitBlob": "474522daa22a8e2c754c77dd2028a67c7a276b1c"
+    },
+    {
+      "from": "老周语音候选_D_台湾腔老者.mp4",
+      "to": "archive/original-development/voices/candidates/老周语音候选_D_台湾腔老者.mp4",
+      "gitBlob": "766b1cb26d2f800e75bfd7cc03921748ad4cf35c"
+    },
+    {
+      "from": "老周语音候选_E_原腔少压多慢.mp4",
+      "to": "archive/original-development/voices/candidates/老周语音候选_E_原腔少压多慢.mp4",
+      "gitBlob": "4b89650194b76493ce10c5a2881b49c704f8d152"
+    },
+    {
+      "from": "语音样张/sfx_小孩啼哭.mp3",
+      "to": "archive/original-development/voices/samples/sfx_小孩啼哭.mp3",
+      "gitBlob": "49c5620cd473c0023136adcbe3625587bef14736"
+    },
+    {
+      "from": "语音样张/sfx_男人呻吟.mp3",
+      "to": "archive/original-development/voices/samples/sfx_男人呻吟.mp3",
+      "gitBlob": "988a442909cfa2092a167704a457677711f40848"
+    },
+    {
+      "from": "语音样张/tts_中年女病人.mp3",
+      "to": "archive/original-development/voices/samples/tts_中年女病人.mp3",
+      "gitBlob": "ea383245b86169527192c7ebe1dd7e1550628600"
+    },
+    {
+      "from": "语音样张/tts_中年男病人.mp3",
+      "to": "archive/original-development/voices/samples/tts_中年男病人.mp3",
+      "gitBlob": "df79aa9b354cb0c159fd410f763c86ed1ebb7e6b"
+    },
+    {
+      "from": "语音样张/tts_年轻男病人.mp3",
+      "to": "archive/original-development/voices/samples/tts_年轻男病人.mp3",
+      "gitBlob": "f7070aa83a820413aaa106667a8a2692706ba371"
+    },
+    {
+      "from": "语音样张/tts_急性子女病人.mp3",
+      "to": "archive/original-development/voices/samples/tts_急性子女病人.mp3",
+      "gitBlob": "6c0a5750ad5464ffebe53663b2aa983673fe4e14"
+    },
+    {
+      "from": "配音台词底稿.csv",
+      "to": "docs/voices/配音台词底稿.csv",
+      "gitBlob": "68641252e999d36e772066fa80ecb63cbbc0134e"
+    },
+    {
+      "from": "配音台词底稿.md",
+      "to": "docs/voices/配音台词底稿.md",
+      "gitBlob": "86f791978df6ee3a956baeff8ee40b8c6711766f"
+    }
+  ]
+}

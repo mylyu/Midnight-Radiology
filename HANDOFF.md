@@ -1,5 +1,11 @@
 # 开发交接 · 2026-09-21
 
+## 2026-09-25：仓库首页整理与README游玩入口
+
+- 基点`485bc41`，分支`codex/repository-tidy`；用户要求整理GitHub仓库首页并突出Pages链接。本轮只有归档、导航和导出路径适配，没有修改游戏、声音、图片、剧情或部署方式。
+- 根目录早期候选/旧脚本/日志及两组旧语音移到`archive/original-development/`，底稿移到`docs/voices/`，81个文件均原样保留；逐文件原路径与blob见`docs/repository-tidy-moves.json`。`深夜影像科/`、现行`docs/`审计路径与`app/tests/`保持稳定，不能以整理为由删旧证据。
+- README最上方为在线游玩链接；新增`docs/README.md`与`archive/README.md`。Kimi导出继续保留当前源码/测试/底稿，归档的一次性旧测试不再装入轻量包；运行`-PlanOnly`检查，不在本轮另生成ZIP。详细验证和回退见`docs/repository-tidy.md`。
+
 ## 2026-09-25：总线v3.3同步与正式发布（本轮明确授权）
 
 发布已核验：`a2be5ec`已普通快进到main并保存同名远端开发分支，Pages工作流`36104466019`成功。正式根网址已是新版，第二章凭证线上7夹具通过；关键图片/音频HTTP200且哈希匹配。Linux/Windows构建JS仅Kimi检视注记的路径分隔符不同，规范化后全文一致。此后只补发布回执与印章加载等待的测试驱动修正，游戏资源不再改；详见下述发布说明。

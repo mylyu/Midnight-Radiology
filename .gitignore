@@ -1,2 +1,9 @@
 # Local bytecode from the audio generation/check scripts; not game assets.
 /scripts/__pycache__/
+
+# Keep new local logs/cache out of the repository front page. Existing tracked
+# historical logs remain preserved under archive/original-development/logs/.
+__pycache__/
+*.pyc
+/*.log
+/*.tmp
