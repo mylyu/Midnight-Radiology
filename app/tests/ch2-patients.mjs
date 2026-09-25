@@ -13,7 +13,7 @@ const errors=[]
 try {
  assert.equal(CH2_PATIENT_ENTRANCES.filter(p=>isPatientBed(p.sprite)).length,4)
  assert.equal(CH2_PATIENT_ENTRANCES.filter(p=>isPatientWheelchair(p.sprite)).length,2)
- assert.equal(CH2_PATIENT_ENTRANCES.filter(p=>p.voice?.startsWith('vox_ch2_')).length,2)
+ assert.equal(CH2_PATIENT_ENTRANCES.filter(p=>p.voice?.startsWith('vox_ch2_')).length,1)
  for(const shift of CH2_SHIFTS) for(const [id,raw] of Object.entries(shift.steps)) {
   const step=ch2StepForState(id,raw,{flags:{},badges:[],gender:'m',finished:true})
   assert(![step.sfx,step.sfx2].some(s=>CH2_RETIRED_PATIENT_VOICES.includes(s)),id+' has retired patient voice')
@@ -66,5 +66,5 @@ try {
  await preview.screenshot({path:`${output}/restrained-gallery.png`})
  await preview.close()
  assert.deepEqual(errors,[])
- console.log('PASS: 14 patient entrances on 3 viewports; 4 beds/2 wheelchairs; 9 added voices retired, only 2 new voices retained; quiet entries stay quiet; review page agrees.')
+ console.log('PASS: 13 patient entrances on 3 viewports after gut retirement; 4 beds/2 wheelchairs; 9 added voices retired, only 1 new entrance voice retained; quiet entries stay quiet; historical review page agrees.')
 } finally {await browser.close()}

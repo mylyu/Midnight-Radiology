@@ -41,7 +41,6 @@ export const CH2_SLICE_SEQUENCES: Record<string, Ch2SliceSequence> = {
   c2n1_m7: atlas('c2n1_m7', 'adult-head-plain-v1', 24, 4, '头颅 · 断层序列'),
   c2n1_p_scan: atlas('c2n1_p_scan', 'urinary-plain-v1', 24, 6, '肾区 · 断层序列'),
   c2d2_lung_scan: atlas('c2d2_lung_scan', 'chest-plain-v1', 24, 6, '胸部 · 肺窗序列'),
-  c2d2_gut_scan: atlas('c2d2_gut_scan', 'abdomen-plain-v1', 24, 6, '腹部 · 断层序列'),
   c2d2_trauma_scan: atlas('c2d2_trauma_scan', 'lumbar-pelvis-plain-v1', 24, 6, '腰椎骨盆 · 骨窗序列'),
   c2d2_wrist_scan: atlas('c2d2_wrist_scan', 'wrist-bone-v1', 20, 5, '腕部 · 骨结构教学序列'),
   c2n3_m5: atlas('c2n3_m5', 'adult-head-motion-v1', 24, 4, '头颅 · 本次采集'),

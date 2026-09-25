@@ -54,7 +54,6 @@ export const CH2_PORTRAITS: Record<string, string> = {
   char_luzhou_m: 'ch2_pixel_char_luzhou_m',
   char_luzhou_f: 'ch2_pixel_char_luzhou_f',
   pat_grandpa2: 'ch2_pixel_pat_grandpa2',
-  pat_gut: 'ch2_pixel_pat_gut',
   pat_kiddad: 'ch2_pixel_pat_kiddad',
   pat_mystery: 'ch2_pixel_pat_mystery',
   pat_stone: 'ch2_pixel_pat_stone',
@@ -207,7 +206,7 @@ export const CH2_CARDS: Record<string, KnowledgeCard> = {
   window_advanced: {
     title: '窗口进阶：骨窗/肺窗/腹窗',
     body: '同一组CT数据，换窗如换眼镜：骨窗WW4000/WL250让骨皮质纤毫毕现，肺窗WW1500/WL-500看肺纹理，腹窗WW350/WL0让肝脾肠子各归各位，CTA窗WW450/WL150看亮起来的血管。拿错窗，等于戴着墨镜找针。',
-    image: 'ct_abdomen',
+    image: 'ct_wrist_fracture_v2',
   },
   fbp_iterative: {
     title: 'FBP vs 迭代重建',
@@ -584,11 +583,6 @@ const C2D2_QUEUE1 = [
   { name: '候诊大爷 · 门诊复查', tag: '门诊' },
   { name: '手腕摔伤学生', tag: '门诊' },
 ]
-const C2D2_QUEUE2 = [
-  { name: '腹痛小伙 · 疑肠梗阻', tag: '急诊', note: '插单' },
-  { name: '候诊大爷 · 门诊复查', tag: '门诊' },
-  { name: '手腕摔伤学生', tag: '门诊' },
-]
 const C2D2_QUEUE3 = [
   { name: '候诊大爷 · 门诊复查', tag: '门诊', note: '已等五十分钟' },
   { name: '手腕摔伤学生', tag: '门诊' },
@@ -635,15 +629,7 @@ const C2D2: Record<string, Step> = {
   c2d2_thickness_question: { speaker: 'me', text: '既然薄层这么好，干嘛还要重建厚层的？', image: 'ct_lung', imageLabel: '本次数据 · 1 mm 薄层重建', next: 'c2d2_thickness_reply' },
   c2d2_thickness_reply: { speaker: 'zhou', sprite: 'char_zhou', text: '同一套数据，其他设置不变，厚层的**噪点通常更少**，图也少些，先浏览一遍方便。薄层留着找细节，像这枚小结节，就不能只看厚层。两套都留，不冲突。', image: 'ct_lung', imageLabel: '本次数据 · 1 mm 薄层重建', next: 'c2d2_7' },
   c2d2_7: { speaker: 'uncle', sprite: 'pat_uncle2', text: "哦，这回看清了。（大爷凑近薄层重建的图，手指悬在屏幕前）去年说看不见，我还当它没了。", effect: { gold: 80 }, image: 'ct_lung', imageLabel: '本次数据 · 1 mm 薄层重建', next: 'c2d2_gap_shift' },
-  c2d2_8: { bg: 'bg_waiting', speaker: 'sys', text: '【队列事件】急诊插单：「腹痛待查，怀疑肠梗阻，加急！」——前面还有两位门诊病人在等。', queue: C2D2_QUEUE2, sfx: 'ring', choices: [
-    { text: '按规矩，急重症优先，立刻插队。', next: 'c2d2_9a', effect: { heart: 1 }, tag: 'good' },
-    { text: '让他按号排，先来后到。', next: 'c2d2_9b', effect: { heart: -1, flag: 'queue_wait' } },
-  ]},
-  c2d2_9a: { speaker: 'sys', text: "你跟候诊的大爷大妈挨个解释，多数人都点头：「疼成这样，先看他的吧。」队列重排，机房没有空转一分钟。", queue: C2D2_QUEUE2, next: 'c2d2_gut_scan' },
-  c2d2_9b: { speaker: 'guy', sprite: 'pat_gut', sfx: 'vox_guy', text: '（四十分钟后才轮到他，已经疼得蜷在椅子上）疼死我了……急诊电话追过来，小何的声音不太好听：「肠梗阻等四十分钟？下次我让病人自己爬上去？」', queue: C2D2_QUEUE2, next: 'c2d2_gut_scan' },
-  c2d2_gut_scan: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: "急诊团队把腹痛病人送上床。你启动确认好的方案，工作站开始接收腹部数据。", next: 'c2d2_10' },
-  c2d2_10: { bg: 'bg_ctcontrol_day', speaker: 'me', text: "刚才的肺窗还没切回来，难怪看着别扭。换**腹窗**，肠管和周围组织才好分。图传给急诊。", image: 'ct_abdomen', card: 'window_advanced', next: 'c2d2_gap_food' },
-  // —— 队列事件2 ——
+  // —— 候诊与加急交接 ——
   c2d2_q0: { bg: 'bg_waiting', speaker: 'sys', text: '【队列事件】候诊区炸锅了：一位等了五十分钟的大爷拍着分诊台喊「再不上就投诉」；住院部电话同时进来：「术后复查的病人已经推到电梯口」；分诊台又喊：「**120刚出发，车祸伤，十分钟后到！**」', queue: C2D2_QUEUE3, sfx: 'ring', choices: [
     { text: '「先接电梯口那位术后加急，车祸伤一到直接进机房——大爷这边我亲自去解释，下一个门诊号就是他。」', next: 'c2d2_gap_lift', effect: { heart: 1 }, tag: 'good' },
     { text: '「大爷等得最久，先给他做——术后的回病房再等等。」', next: 'c2d2_q1b', effect: { flag: 'queue_wait' } },
@@ -659,9 +645,13 @@ const C2D2: Record<string, Step> = {
   c2d2_t2: { speaker: 'sys', text: '急诊来电话：「腰椎和骨盆的图都收到了，医生正看着呢。」候诊区的大爷把刚才拍桌子的手收回来，朝你比了个大拇指：「这回算你忙正事。」', effect: { heart: 1, gold: 60 }, queue: C2D2_QUEUE4.filter(patient => patient.name !== '车祸伤患者'), next: 'c2d2_gap_pen' },
   c2d2_11: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: "手腕摔伤的学生终于叫到了号。他用左手收起没写完的作业：「明天还得交，能给我证明不是偷懒吗？」普通片仍有疑点，医师申请了腕部CT；你先把上一位的检查关掉，确认腕部协议。", next: 'c2d2_wrist_scan' },
   c2d2_wrist_scan: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: "学生把伤腕放稳。检查床移动到采集位置，工作站开始接收腕部数据。", next: 'c2d2_wrist_result' },
-  c2d2_wrist_result: { speaker: 'zhou', sprite: 'char_zhou', text: '图到了。先试骨窗，别把骨头调成一团白。', image: 'ct_wrist_simulated', next: 'c2d2_w2' },
-  c2d2_w2: { speaker: 'sys', text: "【腕部调窗】调调窗宽和窗位，看看骨头里面的层次。", image: 'ct_wrist_simulated', windowTask: { image: 'ct_wrist_simulated', targetW: 4000, targetL: 250, tolW: 400, tolL: 80, success: 'c2d2_w2ok' }, next: 'c2d2_w2ok' },
-  c2d2_w2ok: { speaker: 'zhou', sprite: 'char_zhou', text: "嗯，这样层次出来了。把这组留着，我再翻翻相邻几层。", image: 'ct_wrist_simulated', next: 'c2d2_lunch0' },
+  c2d2_wrist_result: { speaker: 'zhou', sprite: 'char_zhou', text: '图到了。先试骨窗，别把骨头调成一团白。', image: 'ct_wrist_fracture_v2', next: 'c2d2_w2' },
+  c2d2_w2: { speaker: 'sys', text: "【腕部调窗】调调窗宽和窗位，看看骨头里面的层次。", image: 'ct_wrist_fracture_v2', windowTask: { image: 'ct_wrist_fracture_v2', targetW: 4000, targetL: 250, tolW: 400, tolL: 80, success: 'c2d2_w2ok' }, next: 'c2d2_w2ok' },
+  c2d2_w2ok: { speaker: 'me', text: '骨头里这些像**蜘蛛网**的，是裂了吗？那怎么才看得出骨折？', image: 'ct_wrist_fracture_v2', next: 'c2d2_wrist_mesh' },
+  c2d2_wrist_mesh: { speaker: 'zhou', sprite: 'char_zhou', text: '这片网是**骨小梁**，正常就长这样，撑着骨头呢。外面那圈更白、更密的，叫**骨皮质**。', image: 'ct_wrist_fracture_v2', next: 'c2d2_wrist_crack' },
+  c2d2_wrist_crack: { speaker: 'zhou', sprite: 'char_zhou', text: '看**屏幕左边这块骨头的右上缘**：白边有个小缺口，里面还延进去一条细缝。要找的是这种**连续性中断**，不是见着黑线就算骨折。', image: 'ct_wrist_fracture_v2', next: 'c2d2_wrist_compare' },
+  c2d2_wrist_compare: { speaker: 'me', text: '哦，网是原装的，断口才得留神。还得换个方向看看？', image: 'ct_wrist_fracture_v2', next: 'c2d2_wrist_review' },
+  c2d2_wrist_review: { speaker: 'zhou', sprite: 'char_zhou', text: '对。相邻几层、换个方向都得对上，还要结合摔伤的位置。把这组留着，我来核对完整序列。', image: 'ct_wrist_fracture_v2', card: 'window_advanced', next: 'c2d2_lunch0' },
   // —— 下午收梢 ——
   c2d2_p1: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: "一下午，电话没停过。你刚排好三个号，小唐又从门缝里递进来一张加急单。", next: 'c2d2_p2' },
   c2d2_p2: { speaker: 'tang', sprite: 'char_tang', text: "（下班前探头）还坐着呢？我喊你两遍了。饭再不拿，微波炉都下班了。", next: 'c2d2_p3' },

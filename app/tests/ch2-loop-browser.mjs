@@ -209,7 +209,7 @@ try {
     assert.equal(questionsAnswered, 5)
     assert.deepEqual([...scans].sort(), Object.keys(CH2_SCANS).sort())
     assert.deepEqual(frozen(final), frozen(start), 'Chapter 1 and other chapter progress frozen')
-    assert.deepEqual(final.dlc.ch2.loop.entries.filter(row => row.kind === 'case').map(row => row.label).sort(), Object.values(CH2_CASE_COMPLETIONS).sort(), 'Every one of the 12 completed patient cases has a receipt')
+    assert.deepEqual(final.dlc.ch2.loop.entries.filter(row => row.kind === 'case').map(row => row.label).sort(), Object.values(CH2_CASE_COMPLETIONS).sort(), 'Every one of the 11 retained patient cases has a receipt')
     assert.deepEqual([...observations].sort(), Object.values(CH2_OBSERVATIONS).map(row => row.id).sort(), 'Every configured observation was answered')
     assert(log.some(row => row.kind === 'story' && row.id === CH2_OBSERVATION_WINDOW_CASES.wrist), 'Wrist keeps its existing window interaction')
     assert.equal(new Set(final.dlc.ch2.loop.entries.map(row => row.id)).size, final.dlc.ch2.loop.entries.length)
@@ -219,7 +219,7 @@ try {
     await page.locator('[data-ch2-complete="true"]').waitFor()
     await page.screenshot({ path: `${output}/whole-chapter-summary.png` })
     log.push({ kind: 'complete', iterations, scans: [...scans], observations: [...observations], settlements: [...settlements], questionsAnswered })
-    console.log('PASS actual 5 shifts, 17 scan/reconstruction hooks, observations, 5 quiz questions, epilogue, protected chapter progress.')
+    console.log('PASS actual 5 shifts, 16 retained scan/reconstruction hooks, observations, 5 quiz questions, epilogue, protected chapter progress.')
     await context.close()
   }
 

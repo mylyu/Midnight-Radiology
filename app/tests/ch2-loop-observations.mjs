@@ -9,16 +9,19 @@ import { CH2_CASE_COMPLETIONS } from '../src/game/ch2-ledger.ts'
 import { freshState } from '../src/game/store.ts'
 import { assertDirectorDayVoiceLive } from './ch2-director-day-voice.mjs'
 import { assertThicknessDialogueLive } from './ch2-thickness-dialogue.mjs'
+import { DAY_CASES_RETIRED, assertDayCasesLive } from './ch2-day-cases-projection.mjs'
+import { originalCh2Step } from '../src/game/ch2-exploration.ts'
 
 assertDirectorDayVoiceLive()
 assertThicknessDialogueLive()
+assertDayCasesLive()
 
 const steps = Object.assign({}, ...CH2_SHIFTS.map(shift => shift.steps))
 const state = freshState('f')
 const snapshot = JSON.stringify(state)
-assert.equal(Object.keys(CH2_OBSERVATIONS).length, 12)
-assert.equal(new Set(Object.values(CH2_OBSERVATIONS).map(x => x.id)).size, 12)
-assert.equal(new Set([...Object.values(CH2_OBSERVATIONS).map(x => x.caseId), ...Object.keys(CH2_OBSERVATION_WINDOW_CASES)]).size, 12)
+assert.equal(Object.keys(CH2_OBSERVATIONS).length, 11)
+assert.equal(new Set(Object.values(CH2_OBSERVATIONS).map(x => x.id)).size, 11)
+assert.equal(new Set([...Object.values(CH2_OBSERVATIONS).map(x => x.caseId), ...Object.keys(CH2_OBSERVATION_WINDOW_CASES)]).size, 11)
 
 for (const [stepId, config] of Object.entries(CH2_OBSERVATIONS)) {
   assert(steps[stepId], `Missing saved story node: ${stepId}`)
@@ -74,7 +77,7 @@ assert.equal(getCh2Observation('c2d4_t1').rewardEligible, true)
 assert.equal(steps.c2d4_8.next, 'c2d4_aorta_scan')
 assert.equal(steps.c2d4_aorta_scan.next, 'c2d4_t1')
 
-const scanNodes = ['c2n1_m7', 'c2n1_p_scan', 'c2d2_lung_scan', 'c2d2_gut_scan', 'c2d2_trauma_scan', 'c2d2_wrist_scan',
+const scanNodes = ['c2n1_m7', 'c2n1_p_scan', 'c2d2_lung_scan', 'c2d2_trauma_scan', 'c2d2_wrist_scan',
   'c2n3_m5', 'c2n3_repeat_scan', 'c2n3_cta_scan', 'c2n3_coronary_scan', 'c2n3_mystery_scan',
   'c2d4_aorta_scan', 'c2d4_metal_scan', 'c2d4_m1', 'c2n5_child_scan']
 for (const id of scanNodes) {
@@ -126,9 +129,13 @@ assert.match(CH2_CASE_COMPLETIONS.c2d2_t2, /腰椎与骨盆完整序列已交接
 const baseline = execFileSync('git', ['show', '05889fa:app/src/game/ch2.ts'], { encoding: 'utf8', maxBuffer: 2e6 })
 const baselineRows = [...baseline.matchAll(/^\s+(c2(?:n[135]|d[24]|am)_[\w]+):\s*(\{.*)$/gm)]
 for (const [, id, line] of baselineRows) {
+  if (DAY_CASES_RETIRED.includes(id)) {
+    assert.equal(steps[id], undefined); assert.equal(originalCh2Step(id), 'c2d2_gap_food')
+    continue // Only these five author-retired cursors, not arbitrary missing nodes.
+  }
   assert(steps[id], `Removed saved node ${id}`)
   const next = line.match(/(?:next|"next")\s*:\s*['"]([^'"]+)['"]/)?.[1]
-  if (next && !line.includes('choices:')) assert.equal(steps[id].next, id === 'c2d2_w1ok' ? 'c2d2_thickness_question' : next, `${id}: graph changed`)
+  if (next && !line.includes('choices:')) assert.equal(steps[id].next, id === 'c2d2_w1ok' ? 'c2d2_thickness_question' : id === 'c2d2_w2ok' ? 'c2d2_wrist_mesh' : next, `${id}: graph changed`)
   const voice = line.match(/sfx:\s*'(vox[^']+)'/)?.[1]
   if (voice) assert.equal(steps[id].sfx, id === 'c2d2_1' ? 'vox_ch2_natural_director_day_v3' : voice, `${id}: approved voice changed`)
 }
@@ -138,4 +145,4 @@ for (const shift of CH2_SHIFTS) for (const [id, step] of Object.entries(shift.st
     assert.equal(rendered.text, '【几天后 · 午休】你的手机亮了。来电显示：陆舟——本科时住一间宿舍的老同学。', 'Only the approved named-contact invitation may mention Lu Zhou')
   } else assert.doesNotMatch(rendered.text ?? '', /陆舟|陆川|环状伪影/, `${id}: deferred story revived`)
 }
-console.log('PASS ch2-loop-observations: 12 configurations / 12 cases including wrist; reviewed-image hashes; safe feedback; 15 acquisition texts; preserved graph and voices')
+console.log('PASS ch2-loop-observations: 11 configurations / 11 cases including wrist; reviewed-image hashes; safe feedback; 14 acquisition texts; five precisely retired cursors migrate, all other graph/voices preserved')

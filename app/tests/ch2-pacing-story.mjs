@@ -6,6 +6,10 @@ import { CH2_SOCIAL_STEPS } from '../src/game/ch2-social.ts'
 import { CH2_PATIENT_ENTRANCES, isPatientBed } from '../src/game/ch2-patients.ts'
 import { CH2_SCANS } from '../src/game/ch2-scans.ts'
 import { applyEffect, freshState } from '../src/game/store.ts'
+import { DAY_CASES_RETIRED, assertDayCasesLive } from './ch2-day-cases-projection.mjs'
+import { originalCh2Step } from '../src/game/ch2-exploration.ts'
+
+assertDayCasesLive()
 
 const steps = Object.assign({}, ...CH2_SHIFTS.map(s => s.steps))
 const pacing = Object.assign({}, ...Object.values(CH2_PACING_STEPS))
@@ -21,7 +25,11 @@ const targets = s => [s.next, s.windowTask?.success, s.checklist?.next,
 for (const source of ['ch2.ts', 'ch2-social.ts']) {
   const prior = execFileSync('git', ['show', `1452d78:app/src/game/${source}`], { encoding: 'utf8', maxBuffer: 2e6 })
   const priorIds = [...prior.matchAll(/^\s+(c2(?:n[135]|d[24]|am)_[\w]+):\s*\{/gm)].map(m => m[1])
-  for (const id of priorIds) assert(steps[id], `Removed persisted ID: ${id}`)
+  for (const id of priorIds) {
+    if (DAY_CASES_RETIRED.includes(id)) {
+      assert.equal(steps[id], undefined); assert.equal(originalCh2Step(id), 'c2d2_gap_food')
+    } else assert(steps[id], `Removed persisted ID: ${id}`)
+  }
 }
 for (const shift of CH2_SHIFTS) {
   for (const [id, s] of Object.entries(shift.steps)) {
@@ -37,6 +45,8 @@ assert.equal(CH2_PATIENT_BRIDGES.filter(b => b.conditional).length, 1)
 for (const bridge of CH2_PATIENT_BRIDGES) {
   if (bridge.from === 'c2d2_q1a/b/c') {
     for (const id of ['c2d2_q1a', 'c2d2_q1b', 'c2d2_q1c']) assert.equal(steps[id].next, bridge.entry)
+  } else if (bridge.from === 'c2d2_gap_shift_a/b') {
+    for (const id of ['c2d2_gap_shift_a', 'c2d2_gap_shift_b']) assert.equal(steps[id].next, bridge.entry)
   } else if (bridge.conditional) {
     assert(steps[bridge.from].choices.some(c => c.next === bridge.entry))
   } else assert.equal(steps[bridge.from].next, bridge.entry)

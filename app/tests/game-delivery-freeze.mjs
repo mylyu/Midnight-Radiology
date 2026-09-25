@@ -10,6 +10,7 @@ import ts from 'typescript'
 import { DELIVERY_ROOT as root, DELIVERY_BASELINE as baseline, DELIVERY_ADDED_SOURCE,
   deliveryManifest, deliveryAddedMedia, assertHistoricalMedia, priorMediaPaths } from './game-delivery-media.mjs'
 import { beforeGameDeliverySource, DELIVERY_EDITED_FILES } from './game-delivery-projection.mjs'
+import { priorDayCasesMediaPaths } from './ch2-day-cases-projection.mjs'
 
 const manifest = deliveryManifest()
 const git = (...args) => execFileSync('git', args, { cwd: fileURLToPath(root), encoding: 'utf8', maxBuffer: 32e6 })
@@ -43,7 +44,7 @@ const additions = prefix => [...new Set([
   git('ls-files', '--others', '--exclude-standard', '--', prefix),
 ].join('\n').split(/\r?\n/).filter(Boolean))].sort()
 assert.deepEqual(priorDetailSourcePaths(additions('app/src')), DELIVERY_ADDED_SOURCE, 'Only two exact runtime data catalogs after the separately LIVE-verified detail-polish additions')
-assert.deepEqual(additions('app/public/assets'), deliveryAddedMedia(), 'Only the 194 precisely reviewed replacement paths')
+assert.deepEqual(priorDayCasesMediaPaths(additions('app/public/assets')), deliveryAddedMedia(), 'Only the 194 precisely reviewed replacement paths after the independently pinned later wrist image')
 assert.deepEqual(priorMediaPaths(additions('app/public/audio'), baseline), [], 'No added/replaced audio beyond the independently verified later voice')
 const removedAssets = git('diff', '--no-renames', '--name-only', '--diff-filter=D', baseline, '--', 'app/public/assets').trim().split('\n').filter(Boolean).sort()
 assert.deepEqual(removedAssets, manifest.images.filter(row => row.mode !== 'raw-png').map(row => row.sourcePath).sort())

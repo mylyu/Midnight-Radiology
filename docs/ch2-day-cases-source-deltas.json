@@ -1,0 +1,291 @@
+{
+  "baseline": "b68923b9683b6a90dc946333ca05e248f998fb9a",
+  "files": [
+    {
+      "path": "app/src/App.tsx",
+      "beforeSha256": "2bd3b2a550e6deaccce780119c57bfeb5f6d7ee735b59c142603201b6c647a70",
+      "afterSha256": "da84e4ee821fe6ef44182b501d3c649ef8edf687e180afd98447321b760099f3",
+      "edits": [
+        {
+          "beforeStart": 2301,
+          "afterStart": 2301,
+          "before": [
+            "    for (let g = 0; g < 256; g++) t[g] = Math.round(grayToHU(g, task.image === 'ct_wrist_simulated'))"
+          ],
+          "after": [
+            "    for (let g = 0; g < 256; g++) t[g] = Math.round(grayToHU(g, task.image === 'ct_wrist_simulated' || task.image === 'ct_wrist_fracture_v2'))"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/game/ch2-exploration.ts",
+      "beforeSha256": "57192164a4cc5a7ed333d0a156e16929b32a128b6dfb33f83bdd752f80c50151",
+      "afterSha256": "ea28907848e47fb6c1838a523e2eb24d0a9874e54315b7a2f81381507b133f83",
+      "edits": [
+        {
+          "beforeStart": 88,
+          "afterStart": 88,
+          "before": [],
+          "after": [
+            " // Removed daytime abdomen-window case: continue at the quiet colleague pause.",
+            " // Preserve old rewards/records; no scan, patient entrance or effect is replayed.",
+            " c2d2_8: 'c2d2_gap_food',",
+            " c2d2_9a: 'c2d2_gap_food',",
+            " c2d2_9b: 'c2d2_gap_food',",
+            " c2d2_gut_scan: 'c2d2_gap_food',",
+            " c2d2_10: 'c2d2_gap_food',"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/game/ch2-ledger.ts",
+      "beforeSha256": "acebaa46f26d57f5734d4ae68f7ff67ecbaae15f6c611fb7656c7f7bb6ee722f",
+      "afterSha256": "9eb48ad5eb55c40e1249483834cba90728dbacf8419c4d92cbf74f50d3f04139",
+      "edits": [
+        {
+          "beforeStart": 10,
+          "afterStart": 10,
+          "before": [
+            "  c2d2_10: '腹痛患者 · 窗口调整与检查交接',"
+          ],
+          "after": []
+        }
+      ]
+    },
+    {
+      "path": "app/src/game/ch2-observations.ts",
+      "beforeSha256": "e77aa411fdc2cd96026bbaf86ac4c0034b93bbaa733e786af742b60551f87d14",
+      "afterSha256": "4705b066f522e9c17adfedd0ff1cbbf08fc22ac09ee0c00ddc37bac27fe1ecf9",
+      "edits": [
+        {
+          "beforeStart": 85,
+          "afterStart": 85,
+          "before": [
+            "  c2d2_10: {",
+            "    id: 'abdomen-display-v1', caseId: 'gut', kind: 'image', image: 'ct_abdomen',",
+            "    assetVersion: 'a7b1cc1851e1917c4012d977c84d85eab2d5cf87b3116c96071228cc5c2f75cc',",
+            "    prompt: '上一位的肺窗设置还留着，腹部看着不太对劲。你先动哪儿？', speaker: 'zhou', rewardEligible: true,",
+            "    choices: [",
+            "      { id: 'rescan', text: '把病人叫回来，再扫一次', feedback: '先别叫人。数据已经有了，先把显示窗口切回来看看。' },",
+            "      { id: 'window', text: '先切回腹窗，重新看这组数据', feedback: '对，先改显示，不急着再照一次。完整序列我来接着看。', correct: true },",
+            "      ask('这回先看工作站设置。肺窗还没换回腹窗，不用因此重新扫描。'),",
+            "    ],",
+            "  },"
+          ],
+          "after": []
+        }
+      ]
+    },
+    {
+      "path": "app/src/game/ch2-pacing.ts",
+      "beforeSha256": "964400b676ecdc749934d4ae883fca4d7582f112704f3a75953b410d8078eb5c",
+      "afterSha256": "5552326175b87107f7e9377f5c3ed807da0246377a4c96557f235beaff053b48",
+      "edits": [
+        {
+          "beforeStart": 6,
+          "afterStart": 6,
+          "before": [
+            "  { from: 'c2d2_7', entry: 'c2d2_gap_shift', to: 'c2d2_8' },",
+            "  { from: 'c2d2_10', entry: 'c2d2_gap_food', to: 'c2d2_q0' },"
+          ],
+          "after": [
+            "  { from: 'c2d2_7', entry: 'c2d2_gap_shift', to: 'c2d2_gap_food' },",
+            "  { from: 'c2d2_gap_shift_a/b', entry: 'c2d2_gap_food', to: 'c2d2_q0' },"
+          ]
+        },
+        {
+          "beforeStart": 34,
+          "afterStart": 34,
+          "before": [
+            "    c2d2_gap_shift_a: { speaker: 'tang', sprite: 'char_tang', text: '困啊。我现在睁着眼，全靠这杯咖啡有点烫。', next: 'c2d2_8' },",
+            "    c2d2_gap_shift_b: { speaker: 'tang', sprite: 'char_tang', text: '行。你也盯着我，刚才差点跟大爷说晚安。', next: 'c2d2_8' },",
+            "    c2d2_gap_food: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: '腹痛小伙回急诊了。下一张单还没递进来，小唐从袋子里摸出一个饭团，包装刚拆开，又停住。', next: 'c2d2_gap_food_q' },"
+          ],
+          "after": [
+            "    c2d2_gap_shift_a: { speaker: 'tang', sprite: 'char_tang', text: '困啊。我现在睁着眼，全靠这杯咖啡有点烫。', next: 'c2d2_gap_food' },",
+            "    c2d2_gap_shift_b: { speaker: 'tang', sprite: 'char_tang', text: '行。你也盯着我，刚才差点跟大爷说晚安。', next: 'c2d2_gap_food' },",
+            "    c2d2_gap_food: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: '小唐趁整理下一位的申请单，摸出早上买的饭团，捏了捏，又放回去。', next: 'c2d2_gap_food_q' },"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/game/ch2-patients.ts",
+      "beforeSha256": "89a286516d67df629fada52d555c812fa7d743ae3479f1552c23f2da9ddaa780",
+      "afterSha256": "e3f7571ce11d0d77b86b71908c27956fcce5ba62f4512704ca2289e96c14b72b",
+      "edits": [
+        {
+          "beforeStart": 8,
+          "afterStart": 8,
+          "before": [
+            " {id:'gut',step:'c2d2_8',sprite:'pat_gut',voice:'vox_ch2_gut'},"
+          ],
+          "after": []
+        },
+        {
+          "beforeStart": 29,
+          "afterStart": 28,
+          "before": [
+            "stage('pat_gut',['c2d2_9a','c2d2_9b'])"
+          ],
+          "after": []
+        },
+        {
+          "beforeStart": 37,
+          "afterStart": 35,
+          "before": [
+            " c2d2_8:'小伙子弯着腰挪到门边，攥着腹部的衣服：「哎哟……肚子疼死了。」',"
+          ],
+          "after": []
+        },
+        {
+          "beforeStart": 56,
+          "afterStart": 53,
+          "before": [
+            " // The existing delayed branch complaint belongs to this patient now; the",
+            " // voice has already accompanied his arrival, not just the wrong queue choice.",
+            " if (id==='c2d2_9b') next.sfx=undefined"
+          ],
+          "after": []
+        }
+      ]
+    },
+    {
+      "path": "app/src/game/ch2-playback.ts",
+      "beforeSha256": "eff73bb014568efa589544c54a84b2ef774b6c6ea43c6aaa82c1ccbbdf39eac4",
+      "afterSha256": "09989028e7ffa97461e065871a460a6bcf949820744912550fde9b26d408238d",
+      "edits": [
+        {
+          "beforeStart": 30,
+          "afterStart": 30,
+          "before": [
+            "  const caseNames: Record<string, string> = { fall: '坠床老人', stone: '腹痛结石', lung: '肺结节复查', gut: '腹痛患者', trauma: '腰胯撞伤',"
+          ],
+          "after": [
+            "  const caseNames: Record<string, string> = { fall: '坠床老人', stone: '腹痛结石', lung: '肺结节复查', trauma: '腰胯撞伤',"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/game/ch2-scan-sequences.ts",
+      "beforeSha256": "1b2d6df57fb9c24cc3668a20085ca8b7c5f8c47072e98a98f5941089e3db8b9a",
+      "afterSha256": "6f6c67e02d158d8955c31abaadd233c7ab71fa5faa530631676d6c4562035260",
+      "edits": [
+        {
+          "beforeStart": 43,
+          "afterStart": 43,
+          "before": [
+            "  c2d2_gut_scan: atlas('c2d2_gut_scan', 'abdomen-plain-v1', 24, 6, '腹部 · 断层序列'),"
+          ],
+          "after": []
+        }
+      ]
+    },
+    {
+      "path": "app/src/game/ch2-scans.ts",
+      "beforeSha256": "7fd2194f156d52fcbcc603290c68f0d705b8285a0d07bc785809e27d162ea1c5",
+      "afterSha256": "4b77f1c6289b150ef5fbaa9d5b8aa03bc70c568290f12964c3665fbaddc7f569",
+      "edits": [
+        {
+          "beforeStart": 31,
+          "afterStart": 31,
+          "before": [
+            "  c2d2_gut_scan: acquisition('c2d2_gut_scan', '腹部扫描', '腹痛病人准备好，按确认的腹部方案采集。'),"
+          ],
+          "after": []
+        }
+      ]
+    },
+    {
+      "path": "app/src/game/ch2.ts",
+      "beforeSha256": "d334dfce86b3cab43b5f3bcbcc505c685c28e3ac560d26eca7f1be657c03dd53",
+      "afterSha256": "1c1c7002491019dbe6d0c9fb493df452b671ec6462c9852c87469f940ef17b21",
+      "edits": [
+        {
+          "beforeStart": 56,
+          "afterStart": 56,
+          "before": [
+            "  pat_gut: 'ch2_pixel_pat_gut',"
+          ],
+          "after": []
+        },
+        {
+          "beforeStart": 209,
+          "afterStart": 208,
+          "before": [
+            "    image: 'ct_abdomen',"
+          ],
+          "after": [
+            "    image: 'ct_wrist_fracture_v2',"
+          ]
+        },
+        {
+          "beforeStart": 586,
+          "afterStart": 585,
+          "before": [
+            "const C2D2_QUEUE2 = [",
+            "  { name: '腹痛小伙 · 疑肠梗阻', tag: '急诊', note: '插单' },",
+            "  { name: '候诊大爷 · 门诊复查', tag: '门诊' },",
+            "  { name: '手腕摔伤学生', tag: '门诊' },",
+            "]"
+          ],
+          "after": []
+        },
+        {
+          "beforeStart": 637,
+          "afterStart": 631,
+          "before": [
+            "  c2d2_8: { bg: 'bg_waiting', speaker: 'sys', text: '【队列事件】急诊插单：「腹痛待查，怀疑肠梗阻，加急！」——前面还有两位门诊病人在等。', queue: C2D2_QUEUE2, sfx: 'ring', choices: [",
+            "    { text: '按规矩，急重症优先，立刻插队。', next: 'c2d2_9a', effect: { heart: 1 }, tag: 'good' },",
+            "    { text: '让他按号排，先来后到。', next: 'c2d2_9b', effect: { heart: -1, flag: 'queue_wait' } },",
+            "  ]},",
+            "  c2d2_9a: { speaker: 'sys', text: \"你跟候诊的大爷大妈挨个解释，多数人都点头：「疼成这样，先看他的吧。」队列重排，机房没有空转一分钟。\", queue: C2D2_QUEUE2, next: 'c2d2_gut_scan' },",
+            "  c2d2_9b: { speaker: 'guy', sprite: 'pat_gut', sfx: 'vox_guy', text: '（四十分钟后才轮到他，已经疼得蜷在椅子上）疼死我了……急诊电话追过来，小何的声音不太好听：「肠梗阻等四十分钟？下次我让病人自己爬上去？」', queue: C2D2_QUEUE2, next: 'c2d2_gut_scan' },",
+            "  c2d2_gut_scan: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: \"急诊团队把腹痛病人送上床。你启动确认好的方案，工作站开始接收腹部数据。\", next: 'c2d2_10' },",
+            "  c2d2_10: { bg: 'bg_ctcontrol_day', speaker: 'me', text: \"刚才的肺窗还没切回来，难怪看着别扭。换**腹窗**，肠管和周围组织才好分。图传给急诊。\", image: 'ct_abdomen', card: 'window_advanced', next: 'c2d2_gap_food' },",
+            "  // —— 队列事件2 ——"
+          ],
+          "after": [
+            "  // —— 候诊与加急交接 ——"
+          ]
+        },
+        {
+          "beforeStart": 661,
+          "afterStart": 647,
+          "before": [
+            "  c2d2_wrist_result: { speaker: 'zhou', sprite: 'char_zhou', text: '图到了。先试骨窗，别把骨头调成一团白。', image: 'ct_wrist_simulated', next: 'c2d2_w2' },",
+            "  c2d2_w2: { speaker: 'sys', text: \"【腕部调窗】调调窗宽和窗位，看看骨头里面的层次。\", image: 'ct_wrist_simulated', windowTask: { image: 'ct_wrist_simulated', targetW: 4000, targetL: 250, tolW: 400, tolL: 80, success: 'c2d2_w2ok' }, next: 'c2d2_w2ok' },",
+            "  c2d2_w2ok: { speaker: 'zhou', sprite: 'char_zhou', text: \"嗯，这样层次出来了。把这组留着，我再翻翻相邻几层。\", image: 'ct_wrist_simulated', next: 'c2d2_lunch0' },"
+          ],
+          "after": [
+            "  c2d2_wrist_result: { speaker: 'zhou', sprite: 'char_zhou', text: '图到了。先试骨窗，别把骨头调成一团白。', image: 'ct_wrist_fracture_v2', next: 'c2d2_w2' },",
+            "  c2d2_w2: { speaker: 'sys', text: \"【腕部调窗】调调窗宽和窗位，看看骨头里面的层次。\", image: 'ct_wrist_fracture_v2', windowTask: { image: 'ct_wrist_fracture_v2', targetW: 4000, targetL: 250, tolW: 400, tolL: 80, success: 'c2d2_w2ok' }, next: 'c2d2_w2ok' },",
+            "  c2d2_w2ok: { speaker: 'me', text: '骨头里这些像**蜘蛛网**的，是裂了吗？那怎么才看得出骨折？', image: 'ct_wrist_fracture_v2', next: 'c2d2_wrist_mesh' },",
+            "  c2d2_wrist_mesh: { speaker: 'zhou', sprite: 'char_zhou', text: '这片网是**骨小梁**，正常就长这样，撑着骨头呢。外面那圈更白、更密的，叫**骨皮质**。', image: 'ct_wrist_fracture_v2', next: 'c2d2_wrist_crack' },",
+            "  c2d2_wrist_crack: { speaker: 'zhou', sprite: 'char_zhou', text: '看**屏幕左边这块骨头的右上缘**：白边有个小缺口，里面还延进去一条细缝。要找的是这种**连续性中断**，不是见着黑线就算骨折。', image: 'ct_wrist_fracture_v2', next: 'c2d2_wrist_compare' },",
+            "  c2d2_wrist_compare: { speaker: 'me', text: '哦，网是原装的，断口才得留神。还得换个方向看看？', image: 'ct_wrist_fracture_v2', next: 'c2d2_wrist_review' },",
+            "  c2d2_wrist_review: { speaker: 'zhou', sprite: 'char_zhou', text: '对。相邻几层、换个方向都得对上，还要结合摔伤的位置。把这组留着，我来核对完整序列。', image: 'ct_wrist_fracture_v2', card: 'window_advanced', next: 'c2d2_lunch0' },"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/lib/image-assets.catalog.json",
+      "beforeSha256": "0f71dca0518621109a7d24f546d1958acc355dcb4156338e2b50ad6d6e02d3c0",
+      "afterSha256": "0d01b8989146302290f90ffb37a77b364b419ec5b814f233cbbb420d0758f6ae",
+      "edits": [
+        {
+          "beforeStart": 126,
+          "afterStart": 126,
+          "before": [],
+          "after": [
+            "  \"ct_wrist_fracture_v2\": \"media/ct_wrist_fracture_v2.698399ce035053ac.webp\","
+          ]
+        }
+      ]
+    }
+  ]
+}

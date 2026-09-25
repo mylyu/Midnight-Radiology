@@ -5,6 +5,7 @@ import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { beforeDayCasesSource } from './ch2-day-cases-projection.mjs'
 
 export const THICKNESS_BASELINE = '3d522c5b25f9d37c95e478372ba3b974c7266c21'
 export const THICKNESS_QUESTION = '既然薄层这么好，干嘛还要重建厚层的？'
@@ -24,15 +25,16 @@ assert.equal(before.split(bridge).length, 2)
 const after = before.replace(bridge, [bridge.replace("next: 'c2d2_7'", "next: 'c2d2_thickness_question'"), ...additions].join('\n'))
 
 export function beforeThicknessDialogueSource(path, source) {
-  if (path !== scene) return source
-  const current = normalize(source)
+  if (path !== scene) return beforeDayCasesSource(path, source)
+  let current = normalize(source)
   if (current === before) return source
+  current = normalize(beforeDayCasesSource(path, current))
   assert.equal(current, after, `${path}: undocumented mutation outside the two exact thickness-dialogue nodes`)
   return before
 }
 
 export function assertThicknessDialogueLive() {
-  const source = normalize(read(scene))
+  const source = normalize(beforeDayCasesSource(scene, read(scene)))
   assert.equal(source, after, 'Thickness dialogue: exact authored question/reply and single bridge must be live')
   assert.equal(normalize(beforeThicknessDialogueSource(scene, source)), before)
 }

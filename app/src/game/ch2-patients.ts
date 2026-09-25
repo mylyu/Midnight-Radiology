@@ -6,7 +6,6 @@ export const CH2_PATIENT_ENTRANCES = [
  {id:'fall',step:'c2n1_m0',sprite:'ch2_patient_fall_bandaged_bed',voice:null},
  {id:'stone',step:'c2n1_pain',sprite:'pat_stone',voice:'vox_guy'},
  {id:'lung',step:'c2d2_3',sprite:'pat_uncle2',voice:null},
- {id:'gut',step:'c2d2_8',sprite:'pat_gut',voice:'vox_ch2_gut'},
  {id:'waiting',step:'c2d2_q0',sprite:'ch2_patient_waiting_elder',voice:'vox_ch2_waiting'},
  {id:'postop',step:'c2d2_q1a',sprite:'ch2_patient_postop_wheelchair',voice:null},
  {id:'trauma',step:'c2d2_t0',sprite:'ch2_patient_trauma_bed',voice:null},
@@ -27,7 +26,6 @@ const beforeScan: Record<string,string> = {}
 function stage(sprite: string, ids: string[]) { for (const id of ids) beforeScan[id]=sprite }
 stage('ch2_patient_fall_bandaged_bed',['c2n1_m1','c2n1_m2','c2n1_m3a','c2n1_m3b'])
 stage('pat_stone',['c2n1_p1','c2n1_p2','c2n1_p2a','c2n1_p2b','c2n1_p2c'])
-stage('pat_gut',['c2d2_9a','c2d2_9b'])
 stage('ch2_patient_waiting_elder',['c2d2_q1b','c2d2_q1c'])
 stage('ch2_patient_stroke_bed',['c2n3_m3','c2n3_m4'])
 stage('ch2_patient_chest_wheelchair',['c2n3_h1','c2n3_h2','c2n3_h3a','c2n3_h3b','c2n3_h3c'])
@@ -35,7 +33,6 @@ stage('ch2_patient_aorta_bed',['c2d4_3','c2d4_aorta_resist','c2d4_aorta_wife','c
 stage('pat_grandpa2',['c2d4_m2'])
 
 const lines: Record<string,string> = {
- c2d2_8:'小伙子弯着腰挪到门边，攥着腹部的衣服：「哎哟……肚子疼死了。」',
  c2d2_q0:'大爷又探过头：「哎，到我没有啊？」',
  c2d2_q1a:'电梯门一开，术后复查的病人坐着轮椅进来，把申请单递给小唐。',
 }
@@ -54,9 +51,6 @@ export function patientStep(id:string, step:Step):Step {
   else next.sfx2=entrance.voice
  }
  if (lines[id]) next.text=id==='c2d2_q1a' ? lines[id]+'\n'+step.text : step.text+'\n'+lines[id]
- // The existing delayed branch complaint belongs to this patient now; the
- // voice has already accompanied his arrival, not just the wrong queue choice.
- if (id==='c2d2_9b') next.sfx=undefined
  return next
 }
 

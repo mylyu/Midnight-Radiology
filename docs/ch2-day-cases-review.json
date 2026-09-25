@@ -1,0 +1,16 @@
+{
+  "baseline": "b68923b9683b6a90dc946333ca05e248f998fb9a",
+  "status": "reviewed",
+  "scope": "Remove only the day-two abdominal case, preserve its saved cursors as redirects, add the authored wrist conversation and versioned lossless window image; keep all previous media and historical certifications unchanged.",
+  "sourceDeltasSha256": "ab13efacd7929bcb7f0490480f371016212725dcd4a42a3eafed48ebbb1a7b16",
+  "asset": {
+    "name": "ct_wrist_fracture_v2",
+    "path": "app/public/assets/media/ct_wrist_fracture_v2.698399ce035053ac.webp",
+    "sha256": "698399ce035053ace6978775cc314848046db9730072a03d8381c6320c7caa3f",
+    "bytes": 361196,
+    "width": 768,
+    "height": 768,
+    "encoding": "lossless-webp",
+    "limitation": "Synthetic teaching display, not measured CT values or a real patient. Lossless relative to the reviewed 768px prepared source, not a claim that downsampling preserved the 1254px generator output pixel-for-pixel."
+  }
+}

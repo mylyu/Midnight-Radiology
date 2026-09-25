@@ -3,6 +3,8 @@ import { execFileSync } from 'node:child_process'
 import ts from 'typescript'
 import { CH2_DEFERRED_STEPS } from '../src/game/ch2-exploration.ts'
 import { CH2_SHIFTS, CH2_IMAGE_CAPTIONS } from '../src/game/ch2.ts'
+import { assertDayCasesLive, DAY_CASES_WRIST } from './ch2-day-cases-projection.mjs'
+assertDayCasesLive()
 const source = execFileSync('git', ['show', '5fea950:app/src/game/ch2.ts'], { encoding: 'utf8' })
 const js = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 } }).outputText
 const old = await import('data:text/javascript;base64,' + Buffer.from(js).toString('base64'))
@@ -36,7 +38,7 @@ const continuityNext = {
   "c2d4_e8": "c2d4_reg",
   "c2n5_n5": "c2n5_phone_break",
   c2n1_c4a: "c2n1_chat0", c2n1_c4b: "c2n1_chat0", c2n1_c4c: "c2n1_chat0", c2n1_c4d: "c2n1_chat0",
-  c2d2_w2ok: "c2d2_lunch0", c2n3_a4a: "c2n3_chat_wen_q", c2n3_a4b: "c2n3_chat_wen_q",
+  c2d2_w2ok: "c2d2_wrist_mesh", c2n3_a4a: "c2n3_chat_wen_q", c2n3_a4b: "c2n3_chat_wen_q",
   c2d4_reg2: "c2d4_chat0", c2am_6: "c2am_8",
   // Pacing round: exact bridge endpoints; rewards and tasks remain checked below.
   c2n1_d4: 'c2n1_gap_chair', c2d2_7: 'c2d2_gap_shift', c2d2_10: 'c2d2_gap_food',
@@ -45,6 +47,7 @@ const continuityNext = {
   c2d4_3: 'c2d4_aorta_resist', c2d4_10: 'c2d4_gap_thermos',
 }
 const continuityFields = {
+  c2d2_w2: { windowTask: { image: DAY_CASES_WRIST, targetW: 4000, targetL: 250, tolW: 400, tolL: 80, success: 'c2d2_w2ok' } },
   c2d4_p3b: { card: 'fbp_iterative' },
   c2n5_a1: { effect: undefined }, // mainline cabinet must not be gated by spent AP
   c2d4_e8: { event: 'ch2_data_showdown' }, // neutral chronicle for all three decisions

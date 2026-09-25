@@ -6,6 +6,7 @@ import { readFileSync, readdirSync, statSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import sharp from 'sharp'
 import { DIRECTOR_DAY_AUDIO, assertDirectorDayVoiceLive } from './ch2-director-day-voice.mjs'
+import { DAY_CASES_IMAGE, assertDayCasesLive } from './ch2-day-cases-projection.mjs'
 import { DELIVERY_BASELINE, DELIVERY_ROOT, RAW_IMAGES, deliveryManifest, liveMedia,
   historicalReference, sha256, gitBlob, assertDeliveryBytes, assertDeliveryCatalog } from './game-delivery-media.mjs'
 
@@ -128,6 +129,8 @@ function filesAt(path) {
 const actualPublic = filesAt('app/public')
 assertDirectorDayVoiceLive()
 expectedPublic.push(DIRECTOR_DAY_AUDIO)
+assertDayCasesLive()
+expectedPublic.push(DAY_CASES_IMAGE)
 assert.deepEqual(actualPublic.sort(), expectedPublic.sort(), 'Actual public inventory: no forgotten originals, stale cache or unreviewed deletion/addition')
 const publicBytes = actualPublic.reduce((sum, path) => sum + statSync(new URL(path, DELIVERY_ROOT)).size, 0)
 assert(publicBytes <= 40 * 1024 * 1024, 'Actual complete public delivery <=40 MiB')

@@ -3,7 +3,6 @@ export const ALL_BADGES_CHOICES = {
   c2n1_hub: ['c2n1_c1', 'c2n1_b1', 'c2n1_e1', 'c2n1_m0'],
   c2n1_chat_q: ['c2n1_chat_sign1', 'c2n1_chat_roster1', 'c2n1_c5'],
   c2n1_gap_chair_q: ['c2n1_gap_chair_fix'],
-  c2d2_8: ['c2d2_9a'],
   c2d2_q0: ['c2d2_gap_lift'],
   c2d2_lunch_q: ['c2d2_chat_lei1', 'c2d2_chat_fan1', 'c2d2_lunch_end'],
   c2n3_hub: ['c2n3_k1', 'c2n3_a1', 'c2n3_chat0', 'c2n3_m0'],

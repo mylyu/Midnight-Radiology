@@ -7,6 +7,7 @@ import { readFileSync, readdirSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { beforeThicknessDialogueSource } from './ch2-thickness-dialogue.mjs'
+import { priorDayCasesMediaPaths } from './ch2-day-cases-projection.mjs'
 
 export const DIRECTOR_DAY_BASELINE = '3b6f809c7ce8a598e7a52f22e5d7386e5b7415a7'
 export const DIRECTOR_DAY_AUDIO = 'app/public/audio/vox_ch2_natural_director_day_v3.mp3'
@@ -55,7 +56,7 @@ function revised(path) {
 }
 
 export function beforeDirectorDayVoiceSource(path, source) {
-  if (![scenePath, indexPath].includes(path)) return source
+  if (![scenePath, indexPath].includes(path)) return beforeThicknessDialogueSource(path, source)
   let current = normalize(source)
   const before = original(path)
   if (current === before) return source // Exact prior revision only; not arbitrary old-looking text.
@@ -71,7 +72,7 @@ export function assertDirectorDayVoiceBytes(bytes = read(DIRECTOR_DAY_AUDIO)) {
 
 export function priorDirectorDayVoiceMediaPaths(paths) {
   assertDirectorDayVoiceBytes()
-  return paths.filter(path => path !== DIRECTOR_DAY_AUDIO)
+  return priorDayCasesMediaPaths(paths).filter(path => path !== DIRECTOR_DAY_AUDIO)
 }
 
 export function assertDirectorDayVoiceLive() {
@@ -117,7 +118,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   }
   const filesAt = path => readdirSync(new URL(path + '/', root), { withFileTypes: true }).flatMap(entry =>
     entry.isDirectory() ? filesAt(`${path}/${entry.name}`) : [`${path}/${entry.name}`])
-  assert.deepEqual(filesAt('app/public').sort(), [...publicPaths, DIRECTOR_DAY_AUDIO].sort(), 'Exactly one new public MP3, no other additions/deletions')
+  assert.deepEqual(priorDayCasesMediaPaths(filesAt('app/public')).sort(), [...publicPaths, DIRECTOR_DAY_AUDIO].sort(), 'Exactly one new public MP3 after the independently pinned later wrist addition')
   // The existing ignored image-assets.generated.json is a build cache, not a new module.
   const liveSourcePaths = git('ls-files', '--cached', '--others', '--exclude-standard', '--', 'app/src')
     .toString().trim().split('\n')

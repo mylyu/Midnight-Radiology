@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url'
 import sharp from 'sharp'
 import { priorDetailSourcePaths } from './ch2-detail-polish-projection.mjs'
 import { priorDirectorDayVoiceMediaPaths } from './ch2-director-day-voice.mjs'
+import { beforeDayCasesSource, DAY_CASES_WRIST, DAY_CASES_IMAGE, assertDayCasesImage } from './ch2-day-cases-projection.mjs'
 
 export const DELIVERY_BASELINE = 'c4215b080ec7d5052a86c23cf03b6bd2aa3b980a'
 export const DELIVERY_ROOT = new URL('../../', import.meta.url)
@@ -60,7 +61,7 @@ export function deliveryManifest() {
     assert(typeof row.reason === 'string' && row.reason.trim())
     assert(!existsSync(new URL(row.path, DELIVERY_ROOT)), `${row.path}: reviewed removal must actually be absent`)
   }
-  catalog = JSON.parse(read('app/src/lib/image-assets.catalog.json'))
+  catalog = JSON.parse(beforeDayCasesSource('app/src/lib/image-assets.catalog.json', read('app/src/lib/image-assets.catalog.json')))
   assertDeliveryCatalog(catalog, manifest.images)
   const tree = execFileSync('git', ['ls-tree', '-r', '-z', DELIVERY_BASELINE], { cwd: fileURLToPath(DELIVERY_ROOT), encoding: 'utf8', maxBuffer: 32e6 })
   baselineBlobs = new Map(tree.split('\0').filter(Boolean).map(entry => {
@@ -72,6 +73,9 @@ export function deliveryManifest() {
 }
 
 export function liveMedia(sourcePath) {
+  if ([DAY_CASES_IMAGE, `app/public/assets/${DAY_CASES_WRIST}.png`].includes(sourcePath)) {
+    return { bytes: assertDayCasesImage(), path: DAY_CASES_IMAGE, row: undefined }
+  }
   deliveryManifest()
   const row = manifest.images.find(image => image.sourcePath === sourcePath || image.deliveryPath === sourcePath)
   const path = row?.deliveryPath ?? sourcePath
@@ -115,6 +119,13 @@ export function reviewedMediaChanges(paths) {
   return paths.filter(path => !reviewed.has(path))
 }
 export function logicalImagePath(name) {
+  if (name === DAY_CASES_WRIST) {
+    assertDayCasesImage()
+    const liveCatalog = JSON.parse(read('app/src/lib/image-assets.catalog.json'))
+    beforeDayCasesSource('app/src/lib/image-assets.catalog.json', JSON.stringify(liveCatalog, null, 2))
+    assert.equal(liveCatalog[name], DAY_CASES_IMAGE.replace('app/public/assets/', ''))
+    return liveCatalog[name]
+  }
   deliveryManifest()
   assert(Object.hasOwn(catalog, name), `Missing logical image ID: ${name}`)
   liveMedia(`app/public/assets/${name}.png`)

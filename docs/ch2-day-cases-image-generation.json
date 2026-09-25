@@ -1,0 +1,55 @@
+{
+  "date": "2026-09-25",
+  "tool": "image_gen built-in",
+  "skill": "imagegen",
+  "mode": "edit",
+  "purpose": "Second-day wrist CT bone-window teaching illustration",
+  "rejectedDraft": {
+    "path": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-04c9a0af-4ab0-4c19-8370-bcabe0187bd0.png",
+    "reason": "Author rejected the exaggerated full-width fracture; not imported into game."
+  },
+  "original": {
+    "path": "app/public/assets/ct_wrist_simulated.png",
+    "sha256": "b0d7a3f9bc93392a9393ad2b0546fedf1bde88bed7966f2cd0932ea5aece84aa",
+    "width": 1254,
+    "height": 1254,
+    "unchanged": true
+  },
+  "generated": {
+    "path": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-b75a06bb-9527-41fd-ab60-4f650d72f92c.png",
+    "sha256": "7a4402373d4e6576f61aa1be53158abbdb3505a0aa16c461b1b5bdd2873724d3",
+    "bytes": 1380871,
+    "width": 1254,
+    "height": 1254
+  },
+  "prompt": "Use case: precise-object-edit / scientific-educational.\nImage1 is the ORIGINAL intact fictional CT edit target. Preserve its composition exactly: same two distal forearm bones, larger radius on screen left, smaller ulna on right, muscle/fat, black background, grayscale, trabecular mesh.\nUser correction: the last trial was MUCH TOO OBVIOUS, looked like a saw-cut splitting the bone. Do NOT reproduce it.\nChange ONLY one tiny region of the larger screen-left bone near its upper-right cortical rim (around 2 o'clock). Show a very SUBTLE, NONDISPLACED, INCOMPLETE HAIRLINE CRACK: a barely-there focal interruption of the bright outer cortical boundary, about 1-2 pixels wide when the image is displayed at 512px, with a short faint oblique lucency extending inward only about 10-15% of that bone's diameter. No full-width line. No exit through the opposite cortex. No big black gap. No angular step-off, no fragment, no displacement, no swelling. The rest of the cortical rim remains smooth and intact and the normal trabecular mesh remains undisturbed. The finding should need careful inspection, while still locally recognizable when pointed out in dialogue. The crack must NOT be darker/wider than all the normal marrow spaces.\nKeep the same soft tissue, bone scale, image framing, anatomy, contrast and grayscale texture as the original. Not an X-ray projection or 3D rendering. No extra lesions, no blood, no labels, no arrows, no rings, no UI, no text, no watermark. Output a single square grayscale teaching illustration, not real patient data.",
+  "preprocessing": {
+    "resize": [
+      768,
+      768
+    ],
+    "kernel": "lanczos3",
+    "quantization": "none",
+    "preparedPath": "C:/Users/lvmen/Documents/New project/ch2-day-cases-review/wrist-subtle-768.png",
+    "preparedSha256": "3314a8c4a07213c338ff5d6ccd475d7ba49b183af7dc0d3eb007de9d31de24e3",
+    "command": "sharp(source).resize(768,768,{kernel:'lanczos3'}).png({compressionLevel:9}).toFile(preparedPath)"
+  },
+  "import": {
+    "command": "node scripts/import-image.mjs \"C:/Users/lvmen/Documents/New project/ch2-day-cases-review/wrist-subtle-768.png\" ct_wrist_fracture_v2 --lossless",
+    "sharp": "0.35.3",
+    "webp": "1.6.0",
+    "encoding": "lossless WebP",
+    "rgbaExactAgainstPrepared": true,
+    "redLevels": 255
+  },
+  "delivery": {
+    "id": "ct_wrist_fracture_v2",
+    "path": "app/public/assets/media/ct_wrist_fracture_v2.698399ce035053ac.webp",
+    "sha256": "698399ce035053ace6978775cc314848046db9730072a03d8381c6320c7caa3f",
+    "bytes": 361196,
+    "width": 768,
+    "height": 768
+  },
+  "limits": "Fictional 8-bit image, not measured CT HU. The existing wrist-specific piecewise gray mapping is retained for both old and new IDs. Lossless describes encoding of the prepared 768px image, not the intentional resize from 1254px. No new locating quiz; final medical review remains with the physician. Existing transient wrist atlas is illustrative acquisition material, not corroborating patient/fracture evidence.",
+  "review": "Final image has a short subtle cortical lucency near the screen-left bone's upper-right rim, not a full-width gap. No arrow, circle, text or new AI disclaimer."
+}

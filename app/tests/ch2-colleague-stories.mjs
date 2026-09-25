@@ -8,7 +8,8 @@ import {readFileSync} from 'node:fs'
 import {createHash} from 'node:crypto'
 import {beforePacing as live, beforePacingSocial, beforePacingSource} from './ch2-pacing-projection.mjs'
 const {CH2_SOCIAL_STEPS, ch2SocialShifts} = beforePacingSocial
-import {CH2_DEFERRED_STEPS, originalCh2Step, restartCh2} from '../src/game/ch2-exploration.ts'
+import {CH2_DEFERRED_STEPS as currentDeferred, originalCh2Step, restartCh2} from '../src/game/ch2-exploration.ts'
+import { DAY_CASES_RETIRED, assertDayCasesLive } from './ch2-day-cases-projection.mjs'
 import {applyEffect, condOk, freshState} from '../src/game/store.ts'
 import {beforeSocial as old} from './ch2-colleague-projection.mjs'
 import { payoffMediaHashes } from './ch2-payoffs-freeze.mjs'
@@ -17,6 +18,10 @@ import { REWARDS_ROUND_ADDED_MEDIA } from './ch2-rewards-round-projection.mjs'
 import { CT_SEQUENCES_ADDED_MEDIA } from './ch2-ct-sequences-projection.mjs'
 
 const root = new URL('../../', import.meta.url)
+assertDayCasesLive()
+// The story below is historical projected data; use its matching retirement
+// boundary. The five new live redirects have independent exact/restore tests.
+const CH2_DEFERRED_STEPS = Object.fromEntries(Object.entries(currentDeferred).filter(([id]) => !DAY_CASES_RETIRED.includes(id)))
 const steps = Object.assign({}, ...live.CH2_SHIFTS.map(s => s.steps))
 const oldSteps = Object.assign({}, ...old.CH2_SHIFTS.map(s => s.steps))
 const added = Object.assign({}, ...Object.values(CH2_SOCIAL_STEPS))

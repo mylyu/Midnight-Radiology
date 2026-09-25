@@ -4,8 +4,8 @@ import type { GameState, Step } from './types'
 // arrival; they do not spend AP, alter patient priority, or grant stat rewards.
 export const CH2_PATIENT_BRIDGES = [
   { from: 'c2n1_d4', entry: 'c2n1_gap_chair', to: 'c2n1_p0' },
-  { from: 'c2d2_7', entry: 'c2d2_gap_shift', to: 'c2d2_8' },
-  { from: 'c2d2_10', entry: 'c2d2_gap_food', to: 'c2d2_q0' },
+  { from: 'c2d2_7', entry: 'c2d2_gap_shift', to: 'c2d2_gap_food' },
+  { from: 'c2d2_gap_shift_a/b', entry: 'c2d2_gap_food', to: 'c2d2_q0' },
   { from: 'c2d2_q0', entry: 'c2d2_gap_lift', to: 'c2d2_q1a', conditional: true },
   { from: 'c2d2_q1a/b/c', entry: 'c2d2_gap_phone', to: 'c2d2_t0' },
   { from: 'c2d2_t2', entry: 'c2d2_gap_pen', to: 'c2d2_11' },
@@ -32,9 +32,9 @@ export const CH2_PACING_STEPS: Record<string, Record<string, Step>> = {
       { text: '「你怎么不困？」', next: 'c2d2_gap_shift_a' },
       { text: '「等会儿帮我盯着，别把日期写成昨天。」', next: 'c2d2_gap_shift_b' },
     ] },
-    c2d2_gap_shift_a: { speaker: 'tang', sprite: 'char_tang', text: '困啊。我现在睁着眼，全靠这杯咖啡有点烫。', next: 'c2d2_8' },
-    c2d2_gap_shift_b: { speaker: 'tang', sprite: 'char_tang', text: '行。你也盯着我，刚才差点跟大爷说晚安。', next: 'c2d2_8' },
-    c2d2_gap_food: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: '腹痛小伙回急诊了。下一张单还没递进来，小唐从袋子里摸出一个饭团，包装刚拆开，又停住。', next: 'c2d2_gap_food_q' },
+    c2d2_gap_shift_a: { speaker: 'tang', sprite: 'char_tang', text: '困啊。我现在睁着眼，全靠这杯咖啡有点烫。', next: 'c2d2_gap_food' },
+    c2d2_gap_shift_b: { speaker: 'tang', sprite: 'char_tang', text: '行。你也盯着我，刚才差点跟大爷说晚安。', next: 'c2d2_gap_food' },
+    c2d2_gap_food: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: '小唐趁整理下一位的申请单，摸出早上买的饭团，捏了捏，又放回去。', next: 'c2d2_gap_food_q' },
     c2d2_gap_food_q: { speaker: 'tang', sprite: 'char_tang', text: '买的时候还是热的。现在能拿来镇纸。', choices: [
       { text: '「去热一下，我在这儿接电话。」', next: 'c2d2_gap_food_a' },
       { text: '「我的包子也凉了，凑一桌？」', next: 'c2d2_gap_food_b' },

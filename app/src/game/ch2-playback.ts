@@ -28,7 +28,7 @@ export function answerCh2Observation(s: GameState, stepId: string, choiceId: str
     observations: { ...s.dlc?.ch2?.observations, [config.id]: { choiceId } },
     observationRewardShifts: reward ? [...rewarded, shift] : rewarded,
   })
-  const caseNames: Record<string, string> = { fall: '坠床老人', stone: '腹痛结石', lung: '肺结节复查', gut: '腹痛患者', trauma: '腰胯撞伤',
+  const caseNames: Record<string, string> = { fall: '坠床老人', stone: '腹痛结石', lung: '肺结节复查', trauma: '腰胯撞伤',
     stroke: '卒中急诊', chest: '冠脉CTA', mystery: '神秘病人', aorta: '主动脉检查', denture: '金属伪影', kid: '儿童复查' }
   return recordCh2Change(s, after, `observe:${config.id}`, `${config.kind === 'plan' ? '方案选择' : '影像观察'}：${caseNames[config.caseId] ?? config.caseId}${choice.hint ? '（请同事带看）' : ''}`, 'story')
 }

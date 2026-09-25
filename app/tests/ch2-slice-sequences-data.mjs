@@ -6,10 +6,13 @@ import { createRequire } from 'node:module'
 import { CH2_SCANS, CH2_SCAN_AUDIO, ch2ScanFrame } from '../src/game/ch2-scans.ts'
 import { CH2_SHIFTS } from '../src/game/ch2.ts'
 import { CH2_SLICE_SEQUENCES, getCh2SliceSequence, ch2SliceFrameIndex } from '../src/game/ch2-scan-sequences.ts'
+import { assertDayCasesLive } from './ch2-day-cases-projection.mjs'
+
+assertDayCasesLive()
 
 const sharp = createRequire(import.meta.url)('sharp')
 export const expectedAcquisitions = [
-  'c2n1_m7', 'c2n1_p_scan', 'c2d2_lung_scan', 'c2d2_gut_scan', 'c2d2_trauma_scan',
+  'c2n1_m7', 'c2n1_p_scan', 'c2d2_lung_scan', 'c2d2_trauma_scan',
   'c2d2_wrist_scan', 'c2n3_m5', 'c2n3_repeat_scan', 'c2n3_cta_scan', 'c2n3_coronary_scan',
   'c2n3_mystery_scan', 'c2d4_aorta_scan', 'c2d4_metal_scan', 'c2n5_child_scan', 'c2d4_m1',
 ]
@@ -26,7 +29,7 @@ const sorted = values => [...values].sort()
 assert.deepEqual(sorted(Object.keys(CH2_SCANS).filter(id => CH2_SCANS[id].mode === 'acquire')), sorted(expectedAcquisitions))
 assert.deepEqual(sorted(Object.keys(CH2_SCANS).filter(id => CH2_SCANS[id].mode === 'reconstruct')), sorted(expectedReconstruction))
 assert.deepEqual(sorted(expectedAcquisitions.filter(id => CH2_SCANS[id].presentation === 'console')), sorted(expectedConsole))
-assert.equal(expectedAcquisitions.filter(id => CH2_SCANS[id].presentation === 'dual').length, 11)
+assert.equal(expectedAcquisitions.filter(id => CH2_SCANS[id].presentation === 'dual').length, 10)
 assert.deepEqual(expectedAcquisitions.filter(id => CH2_SCANS[id].presentation === 'machine'), [approvedMachineOnly])
 
 const checkedAssets = new Map()
@@ -119,12 +122,47 @@ for (const id of expectedAcquisitions) {
   assert(meanAbsoluteError < 25, `${id}: compressed inline fallback remains the same atlas first frame, not another body region`)
 }
 
-assert.equal(assetAudits.length, 12, 'Fourteen slice-enabled acquisitions use exactly twelve reviewed static atlases')
-assert(assetAudits.reduce((sum, asset) => sum + asset.bytes, 0) <= totalByteLimit, 'The twelve unique atlases fit the 1.2 MiB delivery budget')
+assert.equal(assetAudits.length, 11, 'Thirteen active slice-enabled acquisitions use eleven atlases after the one approved case retirement')
 
 // This checks recorded provenance and actual delivered bytes. It cannot clinically
 // establish anatomy, protocol suitability or diagnostic correctness from pixel hashes.
 const manifest = JSON.parse(readFileSync(new URL('../../docs/ch2-ct-sequences-assets.json', import.meta.url), 'utf8'))
+// Preserve the old atlas/provenance byte check without pretending its removed
+// case is still an active acquisition. Only this exact historical binding retires.
+const retiredId = 'c2d2_gut_scan', retiredPath = 'assets/ct-sequences/abdomen-plain-v1.webp'
+assert.equal(CH2_SCANS[retiredId], undefined); assert.equal(CH2_SLICE_SEQUENCES[retiredId], undefined)
+const retired = manifest.sequences.find(row => row.asset === retiredPath)
+assert.deepEqual(retired.scanIds, [retiredId])
+const retiredBytes = readFileSync(new URL(`../public/${retiredPath}`, import.meta.url))
+const retiredMeta = await sharp(retiredBytes).metadata()
+assert.equal(createHash('sha256').update(retiredBytes).digest('hex'), retired.sha256)
+assert.equal(retiredBytes.length, retired.bytes); assert(retiredBytes.length <= perAssetByteLimit)
+assert.equal(retiredMeta.width, retired.columns * retired.frameWidth)
+assert.equal(retiredMeta.height, retired.rows * retired.frameHeight)
+const preview = readFileSync(new URL('../src/game/ch2-scan-sequences.ts', import.meta.url), 'utf8')
+  .match(/"abdomen-plain-v1": "([^"]+)"/)[1]
+const retiredPreview = Buffer.from(preview.split(',')[1], 'base64')
+assert.equal(retiredPreview.length, retired.processing.delivery.previewBytes)
+const retiredPreviewMeta = await sharp(retiredPreview).metadata()
+const retiredRaw = await sharp(retiredBytes).raw().toBuffer({ resolveWithObject: true }), fingerprints = []
+for (let frame = 0; frame < retired.frameCount; frame++) {
+  const hash = createHash('sha256'), x = frame % retired.columns * retired.frameWidth, y = Math.floor(frame / retired.columns) * retired.frameHeight
+  for (let row = 0; row < retired.frameHeight; row++) {
+    const offset = ((y + row) * retiredRaw.info.width + x) * retiredRaw.info.channels
+    hash.update(retiredRaw.data.subarray(offset, offset + retired.frameWidth * retiredRaw.info.channels))
+  }
+  fingerprints.push(hash.digest('hex'))
+}
+assert(new Set(fingerprints).size >= 16)
+const first = await sharp(retiredBytes).extract({ left: 0, top: 0, width: retired.frameWidth, height: retired.frameHeight })
+  .resize(retiredPreviewMeta.width, retiredPreviewMeta.height).removeAlpha().greyscale().raw().toBuffer()
+const tiny = await sharp(retiredPreview).removeAlpha().greyscale().raw().toBuffer()
+assert(first.reduce((sum, value, i) => sum + Math.abs(value - tiny[i]), 0) / first.length < 25)
+const retiredAudit = { asset: retiredPath, sha256: retired.sha256, bytes: retiredBytes.length, width: retiredMeta.width,
+  height: retiredMeta.height, frames: retired.frameCount, distinctFrames: new Set(fingerprints).size, preview, retired: true }
+checkedAssets.set(retiredPath, retiredAudit); assetAudits.push(retiredAudit)
+assert.equal(assetAudits.length, 12, 'All twelve existing atlases still audited; one no longer binds to a case')
+assert(assetAudits.reduce((sum, asset) => sum + asset.bytes, 0) <= totalByteLimit)
 const textOrList = value => typeof value === 'string' ? value.trim().length > 0
   : Array.isArray(value) && value.length > 0 && value.every(item => typeof item === 'string' && item.trim().length > 0)
 assert.equal(manifest.status, 'reviewed')
@@ -154,7 +192,7 @@ for (const row of manifest.sequences) {
   assert.equal(row.sha256, actual.sha256, `${row.asset}: provenance is for the actual delivered atlas`)
   assert.equal(row.bytes, actual.bytes)
   assert(Array.isArray(row.scanIds) && row.scanIds.length > 0)
-  covered.push(...row.scanIds)
+  covered.push(...row.scanIds.filter(id => id !== retiredId))
   assert(row.processing && typeof row.processing === 'object' && Object.keys(row.processing).length > 0)
   assert(row.processing.delivery && typeof row.processing.delivery === 'object', 'Weak-network delivery processing is recorded')
   assert.equal(row.processing.delivery.bytes, actual.bytes)
@@ -164,6 +202,7 @@ for (const row of manifest.sequences) {
   for (const key of ['anatomy', 'protocol', 'ageGroup', 'note']) assert(textOrList(row.review?.[key]), `${row.asset}: review records ${key}`)
   assert(['none', 'simulated-motion', 'simulated-metal'].includes(row.review.artifact))
   for (const id of row.scanIds) {
+    if (id === retiredId) { assert.equal(row.asset, retiredPath); continue }
     assert(expectedSequenceAcquisitions.includes(id), `${row.asset}: only the fourteen approved scan bindings`)
     const sequence = getCh2SliceSequence(CH2_SCANS[id].sequence)
     assert.equal(sequence.asset, row.asset)
@@ -203,4 +242,4 @@ assert.equal(audioProvenance.playbackGain, 0.24)
 const component = readFileSync(new URL('../src/components/Ch2SliceSequence.tsx', import.meta.url), 'utf8')
 assert.doesNotMatch(component, /setInterval|setTimeout|requestAnimationFrame|animationend|onDone|new Audio|\.play\(/,
   'The atlas component must not add a lifecycle clock, finish callback or sound')
-console.log(`PASS slice data: 15 real 3s acquisitions (11 dual/3 console with real sequences; 1 explicitly approved pediatric machine-only exception), 2 unchanged 1.5s reconstructions, ${assetAudits.length} decoded/provenance-matched atlases <=100KiB each and <=1.2MiB total, same-source inline first frames, monotonic same-clock frames and original recording SHA. Clinical suitability is recorded review, not established by this software check.`)
+console.log(`PASS slice data: 14 real 3s acquisitions (10 dual/3 console with real sequences; 1 approved pediatric machine-only exception), 2 unchanged 1.5s reconstructions, ${assetAudits.length} decoded/provenance-matched atlases including one explicitly retired binding <=100KiB each and <=1.2MiB total, same-source inline first frames, monotonic same-clock frames and original recording SHA. Clinical suitability is recorded review, not established by this software check.`)

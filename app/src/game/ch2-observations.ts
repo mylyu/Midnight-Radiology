@@ -83,16 +83,6 @@ export const CH2_OBSERVATIONS: Record<string, Ch2Observation> = {
     ],
     regions: [{ x: .735, y: .325, width: .075, height: .075, label: '与邻层、旧片对照的小结节' }],
   },
-  c2d2_10: {
-    id: 'abdomen-display-v1', caseId: 'gut', kind: 'image', image: 'ct_abdomen',
-    assetVersion: 'a7b1cc1851e1917c4012d977c84d85eab2d5cf87b3116c96071228cc5c2f75cc',
-    prompt: '上一位的肺窗设置还留着，腹部看着不太对劲。你先动哪儿？', speaker: 'zhou', rewardEligible: true,
-    choices: [
-      { id: 'rescan', text: '把病人叫回来，再扫一次', feedback: '先别叫人。数据已经有了，先把显示窗口切回来看看。' },
-      { id: 'window', text: '先切回腹窗，重新看这组数据', feedback: '对，先改显示，不急着再照一次。完整序列我来接着看。', correct: true },
-      ask('这回先看工作站设置。肺窗还没换回腹窗，不用因此重新扫描。'),
-    ],
-  },
   c2d2_t1: {
     id: 'trauma-sequence-v1', caseId: 'trauma', kind: 'image', image: 'ch2_ct_lumbar_pelvis_v1',
     assetVersion: 'feb30785667c1c6f5743c2256f0405c61e25c93bca9456595e09f3619ae95ae0',

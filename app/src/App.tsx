@@ -2299,7 +2299,7 @@ function WindowGame({ task, progress, onConfirm }: {
   const huLut = useRef<Int16Array | null>(null)
   if (!huLut.current) {
     const t = new Int16Array(256)
-    for (let g = 0; g < 256; g++) t[g] = Math.round(grayToHU(g, task.image === 'ct_wrist_simulated'))
+    for (let g = 0; g < 256; g++) t[g] = Math.round(grayToHU(g, task.image === 'ct_wrist_simulated' || task.image === 'ct_wrist_fracture_v2'))
     huLut.current = t
   }
 

@@ -6,7 +6,7 @@ import { CH2_SCANS, CH2_SCAN_TEXT, CH2_SCAN_AUDIO, CH2_SCAN_ILLUSTRATION, ch2Sca
 import { CH2_SHIFTS } from '../src/game/ch2.ts'
 
 const expectedAcquisitions = [
-  'c2n1_m7', 'c2n1_p_scan', 'c2d2_lung_scan', 'c2d2_gut_scan', 'c2d2_trauma_scan',
+  'c2n1_m7', 'c2n1_p_scan', 'c2d2_lung_scan', 'c2d2_trauma_scan',
   'c2d2_wrist_scan', 'c2n3_m5', 'c2n3_repeat_scan', 'c2n3_cta_scan', 'c2n3_coronary_scan',
   'c2n3_mystery_scan', 'c2d4_aorta_scan', 'c2d4_metal_scan', 'c2n5_child_scan', 'c2d4_m1',
 ]
@@ -71,4 +71,4 @@ assert.doesNotMatch(component, /onSkip|skipRef|scan-skip|跳过|finish\(true\)/,
 assert.match(component, /if \(next\.complete\) finish\(\)/, 'Completion is gated by elapsed animation time')
 assert.doesNotMatch(readFileSync('src/components/Ch2ScanOverlay.css', 'utf8'), /scan-skip/)
 assert.doesNotMatch(readFileSync('src/App.tsx', 'utf8').match(/<Ch2ScanOverlay[^>]+\/>/)?.[0] ?? '', /onSkip/)
-console.log('PASS 15 three-second acquisition / 2 reconstruction hooks, dedicated pixel scene, real 81-84s recording exact hash/provenance, one-shot sound, wall-clock recovery, retired foley hashes preserved, cleanup guards.')
+console.log('PASS 14 three-second acquisition / 2 reconstruction hooks after the approved abdomen-case retirement; dedicated pixel scene, real 81-84s recording exact hash/provenance, one-shot sound, wall-clock recovery, retired foley hashes preserved, cleanup guards.')

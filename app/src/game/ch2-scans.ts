@@ -29,7 +29,6 @@ export const CH2_SCANS: Record<string, Ch2ScanConfig> = {
   c2n1_m7: acquisition('c2n1_m7', '头颅平扫', '检查床进到位，机架开始采集头颅数据。'),
   c2n1_p_scan: acquisition('c2n1_p_scan', '泌尿系平扫', '小伙子躺稳，按确认的范围采集数据。'),
   c2d2_lung_scan: acquisition('c2d2_lung_scan', '胸部平扫', '大爷按提示屏气，检查床缓缓通过机架。'),
-  c2d2_gut_scan: acquisition('c2d2_gut_scan', '腹部扫描', '腹痛病人准备好，按确认的腹部方案采集。'),
   c2d2_trauma_scan: acquisition('c2d2_trauma_scan', '腰椎与骨盆扫描', '按医师确认的腰椎与骨盆范围采集，工作站准备骨窗与多平面重组。'),
   c2d2_wrist_scan: acquisition('c2d2_wrist_scan', '腕部扫描', '伤腕放稳，采集腕部数据。'),
   c2n3_m5: acquisition('c2n3_m5', '卒中急诊 · 头颅平扫', '头颅定位完成，机架开始采集。'),

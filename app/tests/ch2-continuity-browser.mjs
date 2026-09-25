@@ -42,7 +42,7 @@ async function backgroundLoaded(page, name) {
 }
 try {
  const pairs = [
-  ['c2n1_p_scan','c2n1_p3'], ['c2d2_lung_scan','c2d2_4'], ['c2d2_gut_scan','c2d2_10'],
+  ['c2n1_p_scan','c2n1_p3'], ['c2d2_lung_scan','c2d2_4'],
   ['c2d2_trauma_scan','c2d2_t1'], ['c2d2_wrist_scan','c2d2_wrist_result'],
   ['c2n3_repeat_scan','c2n3_m8'], ['c2n3_cta_scan','c2n3_m10'], ['c2n3_coronary_scan','c2n3_h4'],
   ['c2n3_mystery_scan','c2n3_x8'], ['c2d4_aorta_scan','c2d4_t1'], ['c2d4_metal_scan','c2d4_12a'],

@@ -86,6 +86,13 @@ export function originalCh2Step(id: string): string {
 // Author deferred these scenes on 2026-09-21. Resume beyond the removed arc;
 // never replay its rewards, clear historical collections or restart the shift.
 export const CH2_DEFERRED_STEPS: Readonly<Record<string, string>> = {
+ // Removed daytime abdomen-window case: continue at the quiet colleague pause.
+ // Preserve old rewards/records; no scan, patient entrance or effect is replayed.
+ c2d2_8: 'c2d2_gap_food',
+ c2d2_9a: 'c2d2_gap_food',
+ c2d2_9b: 'c2d2_gap_food',
+ c2d2_gut_scan: 'c2d2_gap_food',
+ c2d2_10: 'c2d2_gap_food',
  c2d2_n0: 'c2d2_p1',
  c2d2_n1: 'c2d2_p1',
  c2d2_n2: 'c2d2_p1',
