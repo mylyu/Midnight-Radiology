@@ -27,6 +27,9 @@ import type { GameState, Step, ShopItem, Choice, DlcProgress } from './game/type
 import { freshState, loadState, saveState, wipeSave, applyEffect, condOk, dailyCheckin, meterLevel, playSfx, makeCredCode, verifyCredCode } from './game/store'
 import { imageAsset } from './lib/image-assets'
 import { SceneBackground } from './components/SceneBackground'
+import { acceptInput } from './game/input-gate'
+import { readCh1Book, buyCh1Item, maintainCh1, commitCh1Choice, commitCh1Advance,
+  commitCh2Choice, commitCh2Advance, type ChoiceCommitResult } from './game/interaction-transactions'
 
 type Screen = 'title' | 'select' | 'checkin' | 'night' | 'day' | 'badges' | 'quiz' | 'epilogue' | 'chapterEnd' | 'verify' | 'dlcHall' | 'dlc' | 'ch2'
 
@@ -48,7 +51,15 @@ export default function App() {
     }
   }, [])
   const [screen, setScreen] = useState<Screen>('title')
-  const [state, setState] = useState<GameState | null>(null)
+  const [state, renderState] = useState<GameState | null>(null)
+  const liveState = useRef<GameState | null>(null)
+  const dialogueGate = useRef({ until: 0 })
+  // Load/new run/route replacement is not a reward. Keep the action store in
+  // sync without interpreting the imported totals as changes to the old save.
+  const setState = (next: GameState | null) => {
+    liveState.current = next
+    renderState(next)
+  }
   const [checkinReward, setCheckinReward] = useState(0)
   const [dlcId, setDlcId] = useState<string | null>(null)
 
@@ -94,12 +105,16 @@ export default function App() {
   }
 
   const update = (fn: (s: GameState) => GameState) => {
-    setState(prev => {
-      if (!prev) return prev
-      const next = fn(prev)
-      saveState(next)
-      return next
-    })
+    // Execute the transaction exactly once against the latest committed save,
+    // not inside a replayable React state updater. Cursor and effects are one
+    // localStorage value even if another tap arrives before React paints.
+    const prev = liveState.current
+    if (!prev) return
+    const next = fn(prev)
+    if (next === prev) return
+    liveState.current = next
+    saveState(next)
+    renderState(next)
   }
 
   // 勋章弹窗：全局监听 badges 差分——剧情中、结算时、考核后获得的勋章都会即时弹出
@@ -212,9 +227,10 @@ export default function App() {
       {screen === 'checkin' && state && <CheckinScreen state={state} reward={checkinReward} onDone={doCheckin} />}
       {screen === 'night' && state && (
         <NightScreen
-          key={`n${state.night}-${state.resumeKey ?? 'fresh'}`}
+          key={`n${state.night}`}
           state={state}
           update={update}
+          inputGate={dialogueGate}
           onFinish={settleNight}
           onExit={() => setScreen('title')}
         />
@@ -227,6 +243,7 @@ export default function App() {
           key="epilogue"
           state={state}
           update={update}
+          inputGate={dialogueGate}
           onFinish={() => { update(s => ({ ...s, screenHint: 'chapterEnd' as const, stepId: undefined, resumeKey: undefined })); setScreen('chapterEnd') }}
           onExit={() => setScreen('chapterEnd')}
         />
@@ -450,7 +467,7 @@ function BookOverlay({ state, update, onClose }: { state: GameState; update: (f:
   // 首次翻到本夜新解锁的那一页:医术 +1(每夜一次)
   useEffect(() => {
     if (firstReadRef.current && !granted && page === unlocked - 1) {
-      update(s => ({ ...s, skill: Math.min(5, s.skill + 1), flags: { ...s.flags, [readKey]: true } }))
+      update(s => readCh1Book(s, state.night))
       setGranted(true)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -494,39 +511,17 @@ function BookOverlay({ state, update, onClose }: { state: GameState; update: (f:
 /* ================= 商店（夜晚小卖部 / 白天均可打开） ================= */
 function ShopOverlay({ state, update, onClose }: { state: GameState; update: (f: (s: GameState) => GameState) => void; onClose: () => void }) {
   const [msg, setMsg] = useState('')
-  const buy = (item: ShopItem) => {
-    if (state.gold < item.price) { setMsg('金币不够……今晚多接几个病人吧。'); return }
-    // 刮刮乐每日限购5张（按夜次计数）
-    if (item.id === 'lottery') {
-      const played = state.lotteryNight === state.night ? (state.lotteryCount ?? 0) : 0
-      if (played >= 5) { setMsg('老板娘按住刮刮乐：「一天最多五张——玄学也要讲剂量。」'); playSfx('click'); return }
-    }
-    let lotteryMsg = ''
+  const purchaseGate = useRef({ until: 0 })
+  const buy = (item: ShopItem, now: number, roll?: number) => {
+    if (!acceptInput(purchaseGate.current, now, 500)) return
+    let message = ''
     update(s => {
-      let next: GameState = { ...s, gold: s.gold - item.price, buyCount: s.buyCount + 1 }
-      if (item.id === 'coffee') next = applyEffect(next, { ap: 1 })
-      else if (item.id === 'milktea') next = applyEffect(next, { heart: 2 })
-      else if (item.id === 'book') next = applyEffect(next, { skill: 2 })
-      else if (item.id === 'lottery') {
-        // 返奖率约 68%（期望返奖 34.2 / 售价 50）——期望仍为负，久刮必亏
-        const roll = Math.random()
-        const win = roll < 0.42 ? 0 : roll < 0.70 ? 20 : roll < 0.88 ? 50 : roll < 0.96 ? 120 : 250
-        const played = s.lotteryNight === s.night ? (s.lotteryCount ?? 0) : 0
-        next = { ...next, gold: next.gold + win, lotteryNight: s.night, lotteryCount: played + 1 }
-        lotteryMsg =
-          win === 0 ? '「谢谢惠顾」……夜班玄学失败了。'
-            : win === 20 ? '中了 20 金币，回了个零头。'
-              : win === 50 ? '中了 50 金币，正好回本！'
-                : win === 120 ? '🎉 中了 120 金币！小赚一笔！'
-                  : '🎉🎉 250 金币！单车变摩托！'
-      } else {
-        next = applyEffect(next, { item: item.id })
-      }
-      if (next.buyCount >= 3 && !next.badges.includes('shopaholic')) next = { ...next, badges: [...next.badges, 'shopaholic'] }
-      return next
+      const result = buyCh1Item(s, item.id, roll)
+      message = result.message
+      return result.state
     })
     playSfx('click')
-    setMsg(lotteryMsg || `已购入：${item.icon} ${item.name}（${item.desc}）`)
+    setMsg(message)
   }
   const visible = SHOP_ITEMS.filter(i => state.night >= (i.minNight ?? 1))
   return (
@@ -540,6 +535,7 @@ function ShopOverlay({ state, update, onClose }: { state: GameState; update: (f:
         <div className="flex flex-col gap-2">
           {visible.map(item => {
             const owned = state.items.includes(item.id)
+            const noBenefit = owned && !['coffee', 'milktea', 'book', 'lottery'].includes(item.id)
             const lotteryPlayed = item.id === 'lottery' && state.lotteryNight === state.night ? (state.lotteryCount ?? 0) : 0
             const soldOut = item.id === 'lottery' && lotteryPlayed >= 5
             return (
@@ -552,9 +548,9 @@ function ShopOverlay({ state, update, onClose }: { state: GameState; update: (f:
                   <p className="text-xs text-slate-400">{item.desc}</p>
                   {item.id === 'lottery' && <p className={`text-xs ${soldOut ? 'text-rose-400' : 'text-slate-500'}`}>今日已刮 {lotteryPlayed}/5</p>}
                 </div>
-                <button onClick={() => buy(item)} disabled={state.gold < item.price || soldOut}
+                <button onClick={() => buy(item, performance.now(), item.id === 'lottery' ? Math.random() : undefined)} disabled={state.gold < item.price || soldOut || noBenefit}
                   className="px-3 py-1.5 rounded-md bg-amber-500/90 text-slate-950 text-sm font-bold disabled:opacity-40 hover:bg-amber-400 shrink-0">
-                  {soldOut ? '售罄' : `${item.price}💰`}
+                  {soldOut ? '售罄' : noBenefit ? '已持有' : `${item.price}💰`}
                 </button>
               </div>
             )
@@ -571,7 +567,7 @@ function ShopOverlay({ state, update, onClose }: { state: GameState; update: (f:
 }
 
 /* ================= 夜晚剧情（对话引擎 · 每步自动存档） ================= */
-function NightScreen({ state, update, onFinish, onExit }: { state: GameState; update: (f: (s: GameState) => GameState) => void; onFinish: (skip: boolean) => void; onExit: () => void }) {
+function NightScreen({ state, update, inputGate, onFinish, onExit }: { state: GameState; update: (f: (s: GameState) => GameState) => void; inputGate: { current: { until: number } }; onFinish: (skip: boolean) => void; onExit: () => void }) {
   const night = NIGHTS[Math.min(state.night, LAST_NIGHT) - 1]
   const resumeStep = state.screenHint === 'night' && state.stepId && night.steps[state.stepId] ? state.stepId : night.start
   const [stepId, setStepId] = useState(resumeStep)
@@ -583,11 +579,8 @@ function NightScreen({ state, update, onFinish, onExit }: { state: GameState; up
   const [shown, setShown] = useState(0)
   const [skipArmed, setSkipArmed] = useState(false)
   const [shopOpen, setShopOpen] = useState(false)
-  const [choicesLocked, setChoicesLocked] = useState(false)
-  // 防连点误选:捕获阶段记录最近两次点击时间;选项点击若距「上一次」点击过近(说明在连点快进)则忽略。
-  // 手指停下超过 0.7s 后,下一次点击才生效——连点不止,选项永远不响应。
-  const lastTapAt = useRef(0)
-  const prevTapAt = useRef(0)
+  const [choiceReadyStep, setChoiceReadyStep] = useState<string | null>(null)
+  const choiceReadyAt = useRef({ id: resumeStep, time: Infinity })
   const [readout, setReadout] = useState<{ img: string; p: number } | null>(null)
   const [bookOpen, setBookOpen] = useState(false)
   const [manualOpen, setManualOpen] = useState(false)
@@ -600,13 +593,13 @@ function NightScreen({ state, update, onFinish, onExit }: { state: GameState; up
   const fullText = step.text ?? ''
   const plainLen = fullText.replaceAll('**', '').length
   const done = shown >= plainLen
+  const choicesLocked = !!step.choices && (!done || choiceReadyStep !== stepId)
 
   // 换步时在渲染期同步重置打字机进度——避免第一帧用旧 shown 渲染出新文本的一大段残影再清空重打
   const [prevStepId, setPrevStepId] = useState(stepId)
   if (prevStepId !== stepId) {
     setPrevStepId(stepId)
     setShown(0)
-    if (step.choices) setChoicesLocked(true)
   }
 
   // 进入某一步：更新视图、应用效果（每步一次）、写入存档（打字机重置已在渲染期完成）
@@ -661,9 +654,18 @@ function NightScreen({ state, update, onFinish, onExit }: { state: GameState; up
 
   // 选项出现后设一段不可点击的缓冲，防止误触
   useEffect(() => {
-    if (!step.choices || !done) return
-    const t = setTimeout(() => setChoicesLocked(false), 900)
-    return () => clearTimeout(t)
+    if (!step.choices || !done) { setChoiceReadyStep(null); return }
+    const readyAt = performance.now() + 900
+    choiceReadyAt.current = { id: stepId, time: readyAt }
+    const unlock = () => { if (performance.now() >= readyAt) setChoiceReadyStep(stepId) }
+    const t = setTimeout(unlock, 900)
+    window.addEventListener('focus', unlock)
+    document.addEventListener('visibilitychange', unlock)
+    return () => {
+      clearTimeout(t)
+      window.removeEventListener('focus', unlock)
+      document.removeEventListener('visibilitychange', unlock)
+    }
   }, [stepId, done, step.choices])
 
   // CR 读取流程：等本步文本播完，稍停一拍再启动扫描动画（先看到"送去扫描仪"，再看到扫描）
@@ -683,7 +685,11 @@ function NightScreen({ state, update, onFinish, onExit }: { state: GameState; up
       const t = setTimeout(() => {
         readoutGate.current = 'done'
         setReadout(null)
-        if (step.next && !step.choices && !step.end) { playSfx('click'); setStepId(step.next) }
+        if (step.next && !step.choices && !step.end) {
+          let result: ChoiceCommitResult | undefined
+          update(s => { result = commitCh1Advance(s, { expectedNight: state.night, expectedStep: stepId, readoutComplete: true }); return result.state })
+          if (result?.accepted && result.nextStep) { playSfx('click'); setStepId(result.nextStep) }
+        }
       }, 1200)
       return () => clearTimeout(t)
     }
@@ -706,26 +712,31 @@ function NightScreen({ state, update, onFinish, onExit }: { state: GameState; up
   }, [step.end])
 
   const advance = () => {
-    // 读取步骤在动画完整播完前（pending/running）一律禁止推进，防止连点跳过扫描动画
-    if (step.choices || step.end || shopOpen || bookOpen || manualOpen || readout) return
+    if (shopOpen || bookOpen || manualOpen || readout) return
+    if (!done) {
+      if (acceptInput(inputGate.current, performance.now(), 300)) setShown(plainLen)
+      return
+    }
+    if (step.choices && choiceReadyAt.current.id === stepId && performance.now() >= choiceReadyAt.current.time) setChoiceReadyStep(stepId)
+    if (step.choices || step.end) return
+    // Revealing instructions never skips the actual CR readout.
     if (readoutGate.current === 'pending' || readoutGate.current === 'running') return
-    if (!done) { setShown(plainLen); return }
-    if (step.next) { playSfx('click'); setStepId(step.next) }
+    if (!step.next || !acceptInput(inputGate.current, performance.now(), 300)) return
+    let result: ChoiceCommitResult | undefined
+    update(s => { result = commitCh1Advance(s, { expectedNight: state.night, expectedStep: stepId }); return result.state })
+    if (result?.accepted && result.nextStep) { playSfx('click'); setStepId(result.nextStep) }
   }
 
   const pick = (c: Choice) => {
-    if (choicesLocked) return
-    if (Date.now() - prevTapAt.current < 300) return // 连点快进中:上一次点击距今太近,视为误触
+    if (choicesLocked || !done || !acceptInput(inputGate.current, performance.now(), 300)) return
+    const randomValue = c.risk ? Math.random() : undefined
+    let result: ChoiceCommitResult | undefined
+    update(s => { result = commitCh1Choice(s, { expectedNight: state.night, expectedStep: stepId, choice: c, randomValue }); return result.state })
+    if (!result?.accepted) return
     playSfx('click')
-    if (c.next === '@shop') { setShopOpen(true); return }
-    if (c.next === '@book') { setBookOpen(true); return }
-    if (c.effect) update(s => applyEffect(s, c.effect))
-    if (c.risk && Math.random() < c.risk.chance) {
-      if (c.risk.effect) update(s => applyEffect(s, c.risk!.effect))
-      setStepId(c.risk.next)
-      return
-    }
-    setStepId(c.next)
+    if (result.action === 'shop') { setShopOpen(true); return }
+    if (result.action === 'book') { setBookOpen(true); return }
+    if (result.nextStep) setStepId(result.nextStep)
   }
 
   const spriteOf = (key?: string) => {
@@ -739,7 +750,7 @@ function NightScreen({ state, update, onFinish, onExit }: { state: GameState; up
   const visibleChoices = (step.choices ?? []).filter(c => condOk(state, c.cond))
 
   return (
-    <div className="relative w-full h-full cursor-pointer" onClickCapture={() => { prevTapAt.current = lastTapAt.current; lastTapAt.current = Date.now() }} onClick={advance}>
+    <div className="relative w-full h-full cursor-pointer" data-ch1-step={stepId} onClick={advance}>
       <BgImg name={view.bg} />
       <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-slate-950/80 to-transparent pointer-events-none" />
 
@@ -863,6 +874,7 @@ function NightScreen({ state, update, onFinish, onExit }: { state: GameState; up
 /* ================= 白天经营 ================= */
 function DayScreen({ state, update, onNextNight, onBadges }: { state: GameState; update: (f: (s: GameState) => GameState) => void; onNextNight: () => void; onBadges: () => void }) {
   const [msg, setMsg] = useState('')
+  const maintenanceGate = useRef({ until: 0 })
   const [penalty, setPenalty] = useState('')
   const [shopOpen, setShopOpen] = useState(false)
   const [manualOpen, setManualOpen] = useState(false)
@@ -875,9 +887,10 @@ function DayScreen({ state, update, onNextNight, onBadges }: { state: GameState;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   const maintain = () => {
-    if (state.gold < 50) { setMsg('金币不够，今晚多接几个病人吧。'); return }
-    update(s => ({ ...s, gold: s.gold - 50, durability: Math.min(100, s.durability + 25), wealth: s.wealth + 1 }))
-    setMsg('你给老伙计做了保养，它今晚的嗡嗡声都精神了些。（耐久+25）')
+    if (!acceptInput(maintenanceGate.current, performance.now(), 500)) return
+    let message = ''
+    update(s => { const result = maintainCh1(s, state.night); message = result.message; return result.state })
+    setMsg(message)
     playSfx('click')
   }
   return (
@@ -899,7 +912,8 @@ function DayScreen({ state, update, onNextNight, onBadges }: { state: GameState;
           <h3 className="text-amber-200 mb-3 tracking-wider">设备间</h3>
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <span className="text-slate-300">老伙计（CR · X光机）{state.durability < 40 ? '—— 它今天咳嗽得厉害，该保养了' : '—— 运转正常'}</span>
-            <button onClick={maintain} className="px-4 py-2 rounded-lg bg-slate-800 border border-slate-500 hover:border-amber-400">保养（-50金币）</button>
+            <button onClick={maintain} disabled={state.durability >= 100}
+              className="px-4 py-2 rounded-lg bg-slate-800 border border-slate-500 hover:border-amber-400 disabled:opacity-50">{state.durability >= 100 ? '状态已满，无需保养' : '保养（-50金币）'}</button>
           </div>
           {msg && <p className="text-emerald-300 text-sm mt-2">{msg}</p>}
           {penalty && <p className="text-red-300 text-sm mt-2">⚠️ {penalty}</p>}
@@ -1841,6 +1855,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
   const phase = ch2Phase(state)
   // A duplicate-tap guard must expire even if a transition was interrupted.
   const pickedGate = useRef({ id: '', until: 0 })
+  const advanceGate = useRef({ until: 0 })
   const heardVoices = useRef(new Set<string>())
   const pendingVoices = useRef(new Map<string, string>())
   const startingVoices = useRef(new Set<string>())
@@ -2027,9 +2042,10 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
     if (shopOpen || bookOpen || manualOpen || badgeOpen || backpackOpen || phase !== 'story') return
     // Reveal text even on choices, tasks and settlement nodes. Those nodes must
     // block navigation, not the user's attempt to finish the typewriter text.
-    if (!done) { setShown(plainLen); return }
+    if (!done) { if (acceptInput(advanceGate.current, performance.now(), 300)) setShown(plainLen); return }
     if (hasChoices && choiceReadyAt.current.id === stepId && performance.now() >= choiceReadyAt.current.time) setChoiceReadyStep(stepId)
     if (blocked) return
+    if (!acceptInput(advanceGate.current, performance.now(), 300)) return
     if (step.next === '@ch2gift-return') { update(s => patchCh2(s, { giftReply: undefined })); setShown(0); return }
     if (step.next === '@ch2observe-return') { update(s => acknowledgeCh2Observation(s, stepId)); setShown(0); return }
     playSfx('click')
@@ -2039,7 +2055,11 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
       const quizSeed = Math.floor(Math.random() * 0xffffffff)
       update(s => startCh2Quiz(s, quizSeed)); return
     }
-    if (step.next) setStepId(step.next)
+    if (step.next) {
+      let result: ChoiceCommitResult | undefined
+      update(s => { result = commitCh2Advance(s, { expectedShift: shift.id, expectedStep: stepId }); return result.state })
+      if (result?.accepted && result.nextStep) setStepId(result.nextStep)
+    }
   }
 
   const pick = (c: Choice) => {
@@ -2051,17 +2071,13 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
     if (c.next.startsWith('@ch2observe:')) { update(s => answerCh2Observation(s, stepId, c.next.slice('@ch2observe:'.length))); setShown(0); return }
     if (c.next.startsWith('@ch2gift:')) { update(s => giveCh2Gift(s, stepId, c.next).state); setShown(0); return }
     playSfx('click')
-    const risk = !!c.risk && Math.random() < c.risk.chance
-    if (c.effect || risk && c.risk?.effect) update(s => recordCh2Change(s,
-      applyEffect(applyEffect(s, c.effect), risk ? c.risk?.effect : undefined), `choice:${stepId}`,
-      c.text.replaceAll('**', ''), 'story'))
-    if (risk && c.risk) {
-      setStepId(c.risk.next)
-      return
-    }
-    if (c.next === '@shop') { setShopOpen(true); return }
-    if (c.next === '@book2') { setBookOpen(true); return }
-    setStepId(c.next)
+    const randomValue = c.risk ? Math.random() : undefined
+    let result: ChoiceCommitResult | undefined
+    update(s => { result = commitCh2Choice(s, { expectedShift: shift.id, expectedStep: stepId, choice: c, randomValue }); return result.state })
+    if (!result?.accepted) return
+    if (result.action === 'shop') { setShopOpen(true); return }
+    if (result.action === 'book2') { setBookOpen(true); return }
+    if (result.nextStep) setStepId(result.nextStep)
   }
 
   const confirmWindow = (task: NonNullable<Step['windowTask']>, attempts: number, width: number, level: number) => {

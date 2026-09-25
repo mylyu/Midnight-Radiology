@@ -1,21 +1,23 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { SHOP_ITEMS } from '../game/data'
 import { buyCh2Item, CH2_ITEM_DESCRIPTIONS, ch2ItemUnavailable } from '../game/ch2-session'
 import { ch2GiftSalesEnded } from '../game/ch2-gifts'
 import { ch2PayoffKeepsakes } from '../game/ch2-payoffs'
 import type { GameState } from '../game/types'
 import { imageAsset as image } from '../lib/image-assets'
+import { acceptInput } from '../game/input-gate'
 
 type Props = { state: GameState; update: (f: (s: GameState) => GameState) => void; onClose: () => void }
 
 /** Separate from Chapter 1's shop: its prices are shared, its counters are not. */
 export function Ch2Shop({ state, update, onClose }: Props) {
   const [message, setMessage] = useState('')
-  const buy = (id: string) => {
-    // eslint-disable-next-line react-hooks/purity -- Invoked only by the buy button, never during render.
-    const roll = Math.random(), result = buyCh2Item(state, id, roll)
-    setMessage(result.message)
-    update(s => buyCh2Item(s, id, roll).state)
+  const purchaseGate = useRef({ until: 0 })
+  const buy = (id: string, now: number, roll: number) => {
+    if (!acceptInput(purchaseGate.current, now, 500)) return
+    let message = ''
+    update(s => { const result = buyCh2Item(s, id, roll); message = result.message; return result.state })
+    setMessage(message)
   }
   const progress = state.dlc?.ch2
   const count = progress?.shop?.shift === progress?.shift ? progress?.shop?.lotteryCount ?? 0 : 0
@@ -33,7 +35,7 @@ export function Ch2Shop({ state, update, onClose }: Props) {
               {item.id === 'lottery' && <p className="text-xs text-slate-400 mt-1">本班已刮 {count}/5</p>}
               {reason && <p className="text-xs text-amber-200/80 mt-1">{reason}</p>}
             </div>
-            <button aria-label={`购买${item.name}`} disabled={!!reason || state.gold < item.price} onClick={() => buy(item.id)} className="shrink-0 rounded bg-amber-400 px-2 py-2 text-xs font-bold text-slate-950 disabled:opacity-35">{item.price}💰</button>
+            <button aria-label={`购买${item.name}`} disabled={!!reason || state.gold < item.price} onClick={() => buy(item.id, performance.now(), Math.random())} className="shrink-0 rounded bg-amber-400 px-2 py-2 text-xs font-bold text-slate-950 disabled:opacity-35">{item.price}💰</button>
           </div>
         })}
       </div>

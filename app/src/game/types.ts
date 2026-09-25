@@ -136,6 +136,14 @@ export interface GameState {
 }
 
 export interface DlcProgress {
+  /** 第二章轻量属性互动；提示不等于答题，旧档不补发完成奖励。 */
+  statInteractions?: {
+    seenHints?: string[]
+    pending?: { stepId: string; token: string }
+    colleagueCoffee?: boolean
+    supplyOrganized?: boolean
+    wealthRewards?: string[]
+  }
   /** 第二章调窗：本轮每次确认立即保存；旧档不补造阶段成绩。 */
   windowTasks?: Record<string, { attempts: number; completed: boolean; width: number; level: number; stage?: number }>
   /** 第二章经营账本；旧存档缺省，从恢复点起记，不补造历史。 */
