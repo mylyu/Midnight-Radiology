@@ -1,0 +1,15 @@
+{
+  "baseline": "fa01385ef48ad34dcd2d670d026c4ae35ef46812",
+  "status": "reviewed",
+  "sourceDeltasSha256": "d7f739f01a05c0512280eb4b1cd3037cae5e75fc4d5ec58d25b49d86cd42fa2b",
+  "scope": "Chapter-complete asset admission and restored fresh-gesture option protection only. Stories, numerical effects, CT timing, approved voices and DR/DSA gameplay unchanged.",
+  "reviewedHunks": 54,
+  "approvedFiles": 10,
+  "pinnedAdditions": 8,
+  "validation": [
+    "Exact reversible source hunks verified against fa01385",
+    "App function boundary limited to App entry, NightScreen and Ch2Screen option guard",
+    "Store function boundary limited to playSfx prepared-media resolution",
+    "No public media additions/deletions/replacements; no historical ledger/pin changes"
+  ]
+}

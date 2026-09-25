@@ -1,0 +1,826 @@
+{
+  "baseline": "fa01385ef48ad34dcd2d670d026c4ae35ef46812",
+  "files": [
+    {
+      "path": "app/index.html",
+      "beforeSha256": "089e0b28888aecade647b9a3e53b0bf64df5aec1eb4836c8c8f844ef72995f1b",
+      "afterSha256": "64f230fb1eb21b0d898ecd08103bc04cec1cf30d6b90a6bed0d633ae8e0d3300",
+      "edits": [
+        {
+          "beforeStart": 8,
+          "afterStart": 8,
+          "before": [
+            "    <div id=\"root\"></div>"
+          ],
+          "after": [
+            "    <div id=\"root\"><div role=\"status\" style=\"position:fixed;inset:0;display:grid;place-content:center;background:#020617;color:#cbd5e1;font:16px system-ui,sans-serif;text-align:center;gap:12px\"><strong style=\"color:#5eead4\">深夜影像科</strong><span>正在准备游戏…</span></div></div>",
+            "    <noscript>本游戏需要启用 JavaScript 才能加载章节。</noscript>"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/package.json",
+      "beforeSha256": "f1fe8f95ae1365061996280f2ad7ae3f956c1124fdbbf083ee827de17ccbdf77",
+      "afterSha256": "03d11da3701f5895b94b22bd85b37487de6e141117081a843db445b8529cb181",
+      "edits": [
+        {
+          "beforeStart": 7,
+          "afterStart": 7,
+          "before": [
+            "    \"predev\": \"npm run images:prepare\","
+          ],
+          "after": [
+            "    \"media:prepare\": \"node --import tsx scripts/generate-chapter-assets.mjs\",",
+            "    \"predev\": \"npm run images:prepare && npm run media:prepare\","
+          ]
+        },
+        {
+          "beforeStart": 9,
+          "afterStart": 10,
+          "before": [
+            "    \"prebuild\": \"npm run images:prepare\","
+          ],
+          "after": [
+            "    \"prebuild\": \"npm run images:prepare && npm run media:prepare\","
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/App.tsx",
+      "beforeSha256": "d1464c91d680fdca0bb0cb7598bba8c9c2ccd7a77c85a15f415da49b0790c049",
+      "afterSha256": "9ceb7c6c006ce1b159996f103ad80e731b1e03687ca98c217f3edc5acc66e882",
+      "edits": [
+        {
+          "beforeStart": 34,
+          "afterStart": 34,
+          "before": [],
+          "after": [
+            "import { useDialogueChoiceGuard } from './hooks/use-dialogue-choice-guard'"
+          ]
+        },
+        {
+          "beforeStart": 37,
+          "afterStart": 38,
+          "before": [],
+          "after": [
+            "import { useChapterEntry } from './hooks/use-chapter-entry'",
+            "import { chapterSaveAssets } from './game/chapter-save-assets'",
+            "import { ChapterLoadingScreen } from './components/ChapterLoadingScreen'"
+          ]
+        },
+        {
+          "beforeStart": 58,
+          "afterStart": 62,
+          "before": [],
+          "after": [
+            "  const [booted, setBooted] = useState(false)",
+            "  const { progress: loading, request: requestEntry, retry: retryEntry, enter: finishEntry, cancel: cancelEntry } = useChapterEntry()"
+          ]
+        },
+        {
+          "beforeStart": 65,
+          "afterStart": 71,
+          "before": [
+            "  const setState = (next: GameState | null) => {"
+          ],
+          "after": [
+            "  const setState = useCallback((next: GameState | null) => {"
+          ]
+        },
+        {
+          "beforeStart": 69,
+          "afterStart": 75,
+          "before": [
+            "  }"
+          ],
+          "after": [
+            "  }, [])"
+          ]
+        },
+        {
+          "beforeStart": 78,
+          "afterStart": 84,
+          "before": [],
+          "after": [
+            "      const s = loadState()",
+            "      const extras = chapterSaveAssets(s)"
+          ]
+        },
+        {
+          "beforeStart": 79,
+          "afterStart": 87,
+          "before": [
+            "        const s = loadState()",
+            "        if (s) setState(s)"
+          ],
+          "after": []
+        },
+        {
+          "beforeStart": 82,
+          "afterStart": 88,
+          "before": [
+            "        if (s && ch2Unlocked()) setScreen('ch2')",
+            "        else setScreen('dlcHall')"
+          ],
+          "after": [
+            "        if (s && ch2Unlocked()) requestEntry('ch2', extras, () => { setState(s); setScreen('ch2'); setBooted(true) })",
+            "        else requestEntry('shell', extras, () => { setState(s); setScreen('dlcHall'); setBooted(true) }, true)"
+          ]
+        },
+        {
+          "beforeStart": 86,
+          "afterStart": 92,
+          "before": [
+            "      if (h.startsWith('#/hall')) { const s = loadState(); if (s) setState(s); setScreen('dlcHall'); return }",
+            "      if (!h.startsWith('#/dlc')) return",
+            "      const id = h.split('/')[2] ?? ''",
+            "      const s = loadState()",
+            "      if (s) setState(s)",
+            "      if (s && id && getDlc(id)) { setDlcId(id); setScreen('dlc') }",
+            "      else setScreen('dlcHall')"
+          ],
+          "after": [
+            "      if (h.startsWith('#/dlc') || h.startsWith('#/hall')) {",
+            "        const id = h.startsWith('#/dlc') ? h.split('/')[2] : ''",
+            "        if (s && (id === 'dr' || id === 'dsa') && getDlc(id)) {",
+            "          requestEntry(id, extras, () => { setState(s); setDlcId(id); setScreen('dlc'); setBooted(true) })",
+            "        } else requestEntry('shell', extras, () => { setState(s); setScreen('dlcHall'); setBooted(true) }, true)",
+            "        return",
+            "      }",
+            "      requestEntry('shell', extras, () => { setScreen('title'); setBooted(true) }, true)"
+          ]
+        },
+        {
+          "beforeStart": 97,
+          "afterStart": 104,
+          "before": [
+            "  }, [])"
+          ],
+          "after": [
+            "  }, [requestEntry, setState])",
+            "",
+            "  useEffect(() => {",
+            "    const recoverAsset = (event: Event) => {",
+            "      const path = (event as CustomEvent<{ path: string }>).detail?.path",
+            "      if (!path) return",
+            "      const saved = liveState.current ?? loadState()",
+            "      const chapter = screen === 'ch2' ? 'ch2' : screen === 'dlc' && (dlcId === 'dr' || dlcId === 'dsa') ? dlcId",
+            "        : ['checkin', 'night', 'day', 'quiz', 'epilogue', 'chapterEnd'].includes(screen) ? 'ch1' : 'shell'",
+            "      requestEntry(chapter, [...chapterSaveAssets(saved), path], () => { setState(saved); setScreen(screen); setBooted(true) })",
+            "    }",
+            "    window.addEventListener('midnight-radiology:asset-missing', recoverAsset)",
+            "    return () => window.removeEventListener('midnight-radiology:asset-missing', recoverAsset)",
+            "  }, [screen, dlcId, requestEntry, setState])"
+          ]
+        },
+        {
+          "beforeStart": 100,
+          "afterStart": 120,
+          "before": [
+            "    saveState(s)",
+            "    setState(s)",
+            "    setDlcId(id)",
+            "    window.location.hash = `#/dlc/${id}`",
+            "    setScreen('dlc')"
+          ],
+          "after": [
+            "    if (id !== 'dr' && id !== 'dsa') return",
+            "    requestEntry(id, chapterSaveAssets(s), () => {",
+            "      saveState(s)",
+            "      setState(s)",
+            "      setDlcId(id)",
+            "      window.history.replaceState(null, '', `#/dlc/${id}`)",
+            "      setScreen('dlc')",
+            "    })"
+          ]
+        },
+        {
+          "beforeStart": 108,
+          "afterStart": 131,
+          "before": [
+            "    if (s.dlc?.ch2?.done) s = restartCh2(s)",
+            "    saveState(s)",
+            "    setState(s)",
+            "    window.location.hash = '#/ch2'",
+            "    setScreen('ch2')"
+          ],
+          "after": [
+            "    requestEntry('ch2', chapterSaveAssets(s), () => {",
+            "      const next = s.dlc?.ch2?.done ? restartCh2(s) : s",
+            "      saveState(next)",
+            "      setState(next)",
+            "      window.history.replaceState(null, '', '#/ch2')",
+            "      setScreen('ch2')",
+            "    })"
+          ]
+        },
+        {
+          "beforeStart": 179,
+          "afterStart": 204,
+          "before": [
+            "    const { state: s, reward } = dailyCheckin(freshState(gender))",
+            "    saveState(s)",
+            "    setState(s)",
+            "    setCheckinReward(reward)",
+            "    playSfx('stamp')",
+            "    setScreen('checkin')"
+          ],
+          "after": [
+            "    requestEntry('ch1', [], () => {",
+            "      const { state: s, reward } = dailyCheckin(freshState(gender))",
+            "      saveState(s)",
+            "      setState(s)",
+            "      setCheckinReward(reward)",
+            "      playSfx('stamp')",
+            "      setScreen('checkin')",
+            "    })"
+          ]
+        },
+        {
+          "beforeStart": 190,
+          "afterStart": 217,
+          "before": [
+            "      const { state: next, reward } = dailyCheckin(s)",
+            "      saveState(next)",
+            "      setState(next)",
+            "      setCheckinReward(reward)",
+            "      playSfx('click')",
+            "      setScreen('checkin')"
+          ],
+          "after": [
+            "      requestEntry('ch1', chapterSaveAssets(s), () => {",
+            "        const { state: next, reward } = dailyCheckin(s)",
+            "        saveState(next)",
+            "        setState(next)",
+            "        setCheckinReward(reward)",
+            "        playSfx('click')",
+            "        setScreen('checkin')",
+            "      })"
+          ]
+        },
+        {
+          "beforeStart": 242,
+          "afterStart": 271,
+          "before": [],
+          "after": [
+            "  // Admission precedes mounting: story entry effects can save rewards and",
+            "  // consume voices even when an overlay would hide their controls.",
+            "  if (loading || !booted) return <ChapterLoadingScreen",
+            "    progress={loading ?? { chapter: 'shell', status: 'loading', loadedBytes: 0, totalBytes: 0, completed: 0, total: 0, failed: [] }}",
+            "    onRetry={retryEntry} onEnter={finishEntry} onBack={() => {",
+            "      cancelEntry()",
+            "      window.history.replaceState(null, '', '#/dlc')",
+            "      const saved = loadState()",
+            "      requestEntry('shell', chapterSaveAssets(saved), () => { setState(saved); setScreen('dlcHall'); setBooted(true) }, true)",
+            "    }} />",
+            ""
+          ]
+        },
+        {
+          "beforeStart": 259,
+          "afterStart": 299,
+          "before": [
+            "      {screen === 'badges' && <BadgeScreen state={state} onBack={() => setScreen(backTarget(state))} />}"
+          ],
+          "after": [
+            "      {screen === 'badges' && <BadgeScreen state={state} onBack={() => {",
+            "        const target = backTarget(state)",
+            "        if (target === 'title') setScreen(target)",
+            "        else requestEntry('ch1', chapterSaveAssets(state), () => setScreen(target))",
+            "      }} />}"
+          ]
+        },
+        {
+          "beforeStart": 619,
+          "afterStart": 663,
+          "before": [],
+          "after": [
+            "  const choiceGuard = useDialogueChoiceGuard(`ch1:${night.id}:${stepId}`, !choicesLocked && done && !shopOpen && !bookOpen && !manualOpen && !readout)"
+          ]
+        },
+        {
+          "beforeStart": 752,
+          "afterStart": 797,
+          "before": [
+            "  const pick = (c: Choice) => {",
+            "    if (choicesLocked || !done || !acceptInput(inputGate.current, performance.now(), 300)) return"
+          ],
+          "after": [
+            "  const pick = (c: Choice, index: number) => {",
+            "    if (choicesLocked || !done || !choiceGuard.accept(index) || !acceptInput(inputGate.current, performance.now(), 300)) return"
+          ]
+        },
+        {
+          "beforeStart": 775,
+          "afterStart": 820,
+          "before": [
+            "    <div className=\"relative w-full h-full cursor-pointer\" data-ch1-step={stepId} onClick={advance}>"
+          ],
+          "after": [
+            "    <div className=\"relative w-full h-full cursor-pointer\" data-ch1-step={stepId}",
+            "      onPointerDownCapture={choiceGuard.pointerDown} onPointerCancelCapture={choiceGuard.cancel}",
+            "      onKeyDownCapture={choiceGuard.keyDown} onClickCapture={choiceGuard.click} onClick={advance}>"
+          ]
+        },
+        {
+          "beforeStart": 852,
+          "afterStart": 899,
+          "before": [
+            "                <button key={i} onClick={() => pick(c)}"
+          ],
+          "after": [
+            "                <button key={i} data-dialogue-choice={i} onClick={() => pick(c, i)}"
+          ]
+        },
+        {
+          "beforeStart": 1932,
+          "afterStart": 1979,
+          "before": [
+            "  const choicesLocked = hasChoices && (!done || choiceReadyStep !== stepId)"
+          ],
+          "after": [
+            "  // Replies, observations and ordinary dialogue may share a stored step ID.",
+            "  // A changed choice presentation must receive its own full-text buffer.",
+            "  const choiceScope = JSON.stringify([shift.id, stepId, fullText, (step.choices ?? []).map(c => [c.text, c.next])])",
+            "  const choicesLocked = hasChoices && (!done || choiceReadyStep !== choiceScope)",
+            "  const choiceGuard = useDialogueChoiceGuard(choiceScope, !choicesLocked && done && !checkinPending && !scanPending &&",
+            "    !shopOpen && !bookOpen && !manualOpen && !badgeOpen && !backpackOpen && phase === 'story')"
+          ]
+        },
+        {
+          "beforeStart": 2055,
+          "afterStart": 2107,
+          "before": [
+            "    choiceReadyAt.current = { id: stepId, time: readyAt }"
+          ],
+          "after": [
+            "    choiceReadyAt.current = { id: choiceScope, time: readyAt }"
+          ]
+        },
+        {
+          "beforeStart": 2057,
+          "afterStart": 2109,
+          "before": [
+            "      if (performance.now() >= readyAt) setChoiceReadyStep(stepId)"
+          ],
+          "after": [
+            "      if (performance.now() >= readyAt) setChoiceReadyStep(choiceScope)"
+          ]
+        },
+        {
+          "beforeStart": 2059,
+          "afterStart": 2111,
+          "before": [
+            "    const t = setTimeout(() => setChoiceReadyStep(stepId), 900)"
+          ],
+          "after": [
+            "    const t = setTimeout(unlock, 900)"
+          ]
+        },
+        {
+          "beforeStart": 2067,
+          "afterStart": 2119,
+          "before": [
+            "  }, [stepId, done, hasChoices])"
+          ],
+          "after": [
+            "  }, [stepId, choiceScope, done, hasChoices])"
+          ]
+        },
+        {
+          "beforeStart": 2076,
+          "afterStart": 2128,
+          "before": [
+            "    if (hasChoices && choiceReadyAt.current.id === stepId && performance.now() >= choiceReadyAt.current.time) setChoiceReadyStep(stepId)"
+          ],
+          "after": [
+            "    if (hasChoices && choiceReadyAt.current.id === choiceScope && performance.now() >= choiceReadyAt.current.time) setChoiceReadyStep(choiceScope)"
+          ]
+        },
+        {
+          "beforeStart": 2101,
+          "afterStart": 2153,
+          "before": [
+            "  const pick = (c: Choice) => {"
+          ],
+          "after": [
+            "  const pick = (c: Choice, index: number) => {"
+          ]
+        },
+        {
+          "beforeStart": 2103,
+          "afterStart": 2155,
+          "before": [
+            "    // The visible-choice delay already prevents accidental selection. Do not",
+            "    // extend a lock on every rejected tap: rapid taps could otherwise starve it.",
+            "    if (choicesLocked || !done || (pickedGate.current.id === stepId && performance.now() < pickedGate.current.until)) return"
+          ],
+          "after": [
+            "    // The 900ms reveal buffer and fresh-gesture guard serve different purposes:",
+            "    // continuing fast-forward taps must not select the newly visible answers.",
+            "    if (choicesLocked || !done || !choiceGuard.accept(index) || (pickedGate.current.id === stepId && performance.now() < pickedGate.current.until)) return"
+          ]
+        },
+        {
+          "beforeStart": 2161,
+          "afterStart": 2213,
+          "before": [
+            "    <div ref={stageRef} className=\"relative w-full h-full cursor-pointer\" data-ch2-step={stepId} data-ch2-phase={phase} data-ch2-observation={observationPending ? observation?.id : undefined} onClickCapture={retryVoices} onClick={advance}>"
+          ],
+          "after": [
+            "    <div ref={stageRef} className=\"relative w-full h-full cursor-pointer\" data-ch2-step={stepId} data-ch2-phase={phase} data-ch2-observation={observationPending ? observation?.id : undefined}",
+            "      onPointerDownCapture={choiceGuard.pointerDown} onPointerCancelCapture={choiceGuard.cancel}",
+            "      onKeyDownCapture={choiceGuard.keyDown} onClickCapture={event => { choiceGuard.click(event); retryVoices() }} onClick={advance}>"
+          ]
+        },
+        {
+          "beforeStart": 2246,
+          "afterStart": 2300,
+          "before": [
+            "                <button key={i} onClick={() => pick(c)}"
+          ],
+          "after": [
+            "                <button key={i} data-dialogue-choice={i} onClick={() => pick(c, i)}"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/components/Ch2MysteryMedia.tsx",
+      "beforeSha256": "a6c69fe2093865cc2c8a52bc999f477614a21863be07d8b12e91efcc957c1977",
+      "afterSha256": "7e0ac950886b0e959c66a1e5279a99b20b20025fee086d020b9ce810bad77426",
+      "edits": [
+        {
+          "beforeStart": 3,
+          "afterStart": 3,
+          "before": [],
+          "after": [
+            "import { assetUrl } from '../lib/chapter-assets'"
+          ]
+        },
+        {
+          "beforeStart": 34,
+          "afterStart": 35,
+          "before": [
+            "      const audio = new Audio(`${import.meta.env.BASE_URL}audio/ch2_terminal_${cue.kind}_v1.mp3`)"
+          ],
+          "after": [
+            "      const audio = new Audio(assetUrl(`audio/ch2_terminal_${cue.kind}_v1.mp3`))"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/components/Ch2ScanOverlay.tsx",
+      "beforeSha256": "2272deafc33bd6720f826f8a263a1fa0d3fb1dc46801c5d8982724076925ffdf",
+      "afterSha256": "a3ca2220edd75f5cee18adf2af7b99975c7efaef7d002e50dd855565e33bfc3d",
+      "edits": [
+        {
+          "beforeStart": 8,
+          "afterStart": 8,
+          "before": [],
+          "after": [
+            "import { assetUrl } from '../lib/chapter-assets'"
+          ]
+        },
+        {
+          "beforeStart": 17,
+          "afterStart": 18,
+          "before": [
+            "const soundUrl = (name: string) => `${import.meta.env.BASE_URL}audio/${name}.mp3`"
+          ],
+          "after": [
+            "const soundUrl = (name: string) => assetUrl(`audio/${name}.mp3`)"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/components/Ch2SliceSequence.tsx",
+      "beforeSha256": "872bc5ddfd6f83332906ade3a3d4c085c05f3c4f92cf49689623ab348ed83a2d",
+      "afterSha256": "6cdc38be8f6eada589ad4d300b8d33decebf2f3402fe021fb09e01a88c6120a4",
+      "edits": [
+        {
+          "beforeStart": 4,
+          "afterStart": 4,
+          "before": [],
+          "after": [
+            "import { assetUrl } from '../lib/chapter-assets'"
+          ]
+        },
+        {
+          "beforeStart": 40,
+          "afterStart": 41,
+          "before": [
+            "      <img key={sequence.asset} className=\"ch2-slice-atlas\" src={`${import.meta.env.BASE_URL}${sequence.asset}`}"
+          ],
+          "after": [
+            "      <img key={sequence.asset} className=\"ch2-slice-atlas\" src={assetUrl(sequence.asset)}"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/components/SceneBackground.tsx",
+      "beforeSha256": "bbc2560e6757daf14866627190cc110fc9eb18aeba8bc39a29c5de364f6f2b77",
+      "afterSha256": "bc529081d796ca5735dbcb42fd5c5701d859be45ce0c99bb1a6fa9fb8ed01314",
+      "edits": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "before": [
+            "import { useEffect, useRef, useState } from 'react'"
+          ],
+          "after": [
+            "import { useState } from 'react'"
+          ]
+        },
+        {
+          "beforeStart": 3,
+          "afterStart": 3,
+          "before": [
+            "type Frame = { name: string; url: string }",
+            "const TIMEOUT = 20_000",
+            "",
+            "function decodeWithAbort(image: HTMLImageElement, signal: AbortSignal): Promise<void> {",
+            "  return new Promise((resolve, reject) => {",
+            "    const abort = () => { signal.removeEventListener('abort', abort); reject(new Error('Image decode aborted')) }",
+            "    // A response body can finish just as its deadline expires. Do not wait for an event that already fired.",
+            "    if (signal.aborted) { abort(); return }",
+            "    signal.addEventListener('abort', abort, { once: true })",
+            "    if (signal.aborted) { abort(); return }",
+            "    void Promise.resolve().then(() => image.decode()).then(() => {",
+            "      signal.removeEventListener('abort', abort)",
+            "      if (signal.aborted) reject(new Error('Image decode aborted'))",
+            "      else resolve()",
+            "    }, error => { signal.removeEventListener('abort', abort); reject(error) })",
+            "  })",
+            "}",
+            "",
+            "/** On-demand, high-priority scene image. Never gates story, sound or save state. */"
+          ],
+          "after": [
+            "/** Chapter admission already fetched and validated the image. Display the local",
+            " * compressed blob without restarting a scene-time HTTP download. */"
+          ]
+        },
+        {
+          "beforeStart": 23,
+          "afterStart": 6,
+          "before": [
+            "  const [frame, setFrame] = useState<Frame | null>(null)"
+          ],
+          "after": []
+        },
+        {
+          "beforeStart": 26,
+          "afterStart": 8,
+          "before": [
+            "  const activeUrl = useRef<string | null>(null)"
+          ],
+          "after": []
+        },
+        {
+          "beforeStart": 28,
+          "afterStart": 9,
+          "before": [
+            "  const ready = frame?.name === name",
+            "",
+            "  useEffect(() => {",
+            "    let alive = true",
+            "    let request: AbortController | undefined",
+            "    let retryTimer: ReturnType<typeof setTimeout> | undefined",
+            "    let deadline: ReturnType<typeof setTimeout> | undefined",
+            "    let pendingUrl: string | undefined",
+            "    let pendingImage: HTMLImageElement | undefined",
+            "    const preferred = imageAsset(name)",
+            "    const load = async (index: number) => {",
+            "      request = new AbortController()",
+            "      deadline = setTimeout(() => request?.abort(), TIMEOUT)",
+            "      try {",
+            "        // Retry the same small content-hashed asset; bypass a stale response, not the size budget.",
+            "        const response = await fetch(preferred, { signal: request.signal, priority: 'high', cache: index > 0 || attempt > 0 ? 'reload' : 'default' } as RequestInit)",
+            "        if (!response.ok) throw new Error(`Image HTTP ${response.status}`)",
+            "        const blob = await response.blob()",
+            "        if (!alive) return",
+            "        pendingUrl = URL.createObjectURL(blob)",
+            "        pendingImage = new Image()",
+            "        pendingImage.src = pendingUrl",
+            "        await decodeWithAbort(pendingImage, request.signal)",
+            "        if (!alive) return",
+            "        if (request.signal.aborted) throw new Error('Image request timed out')",
+            "        clearTimeout(deadline)",
+            "        const old = activeUrl.current",
+            "        activeUrl.current = pendingUrl",
+            "        setFrame({ name, url: pendingUrl })",
+            "        pendingUrl = undefined",
+            "        if (old) URL.revokeObjectURL(old)",
+            "      } catch {",
+            "        if (!alive) return",
+            "        clearTimeout(deadline)",
+            "        if (pendingUrl) { URL.revokeObjectURL(pendingUrl); pendingUrl = undefined }",
+            "        if (index < 2) retryTimer = setTimeout(() => { void load(index + 1) }, (index + 1) * 700)",
+            "        else setFailed(name)",
+            "      }",
+            "    }",
+            "    void load(0)",
+            "    return () => {",
+            "      alive = false",
+            "      request?.abort()",
+            "      clearTimeout(deadline)",
+            "      clearTimeout(retryTimer)",
+            "      if (pendingImage) pendingImage.src = ''",
+            "      if (pendingUrl) URL.revokeObjectURL(pendingUrl)",
+            "    }",
+            "  }, [name, attempt])",
+            "",
+            "  useEffect(() => () => { if (activeUrl.current) URL.revokeObjectURL(activeUrl.current) }, [])",
+            ""
+          ],
+          "after": [
+            "  const url = imageAsset(name)"
+          ]
+        },
+        {
+          "beforeStart": 81,
+          "afterStart": 11,
+          "before": [
+            "    {!frame && <div aria-hidden className={`${pos} inset-0 pointer-events-none bg-gradient-to-br from-slate-700 via-slate-900 to-cyan-950`} />}",
+            "    {!frame && imagePreview(name) && <img src={imagePreview(name)} data-scene-preview={name} aria-hidden className={`${pos} inset-0 w-full h-full object-cover ${landscapeOnly ? '' : 'portrait:object-contain portrait:scale-[1.65] portrait:-translate-y-[5%]'} pixel pointer-events-none`} alt=\"\" />}",
+            "    {frame && <>",
+            "      {!landscapeOnly && <img src={frame.url} data-scene-backdrop={frame.name} aria-hidden className={`${pos} inset-0 w-full h-full object-cover blur-2xl scale-125 opacity-60 pixel hidden portrait:block pointer-events-none`} alt=\"\" />}",
+            "      <img src={frame.url} data-scene-background={frame.name} fetchPriority=\"high\" className={`${pos} inset-0 w-full h-full object-cover ${landscapeOnly ? '' : 'portrait:object-contain portrait:scale-[1.65] portrait:-translate-y-[5%]'} pixel pointer-events-none`} alt=\"\" />",
+            "    </>}",
+            "    {!ready && <div data-scene-load-status={failed === name ? 'error' : 'loading'} className={`${pos} top-14 right-3 z-[45] max-w-[min(80vw,320px)] rounded-lg border border-slate-500 bg-slate-950/95 px-3 py-2 text-xs text-slate-100 shadow-lg pointer-events-auto`}"
+          ],
+          "after": [
+            "    <div aria-hidden className={`${pos} inset-0 pointer-events-none bg-gradient-to-br from-slate-700 via-slate-900 to-cyan-950`} />",
+            "    {imagePreview(name) && <img src={imagePreview(name)} data-scene-preview={name} aria-hidden className={`${pos} inset-0 w-full h-full object-cover ${landscapeOnly ? '' : 'portrait:object-contain portrait:scale-[1.65] portrait:-translate-y-[5%]'} pixel pointer-events-none`} alt=\"\" />}",
+            "    {!landscapeOnly && <img src={url} data-scene-backdrop={name} aria-hidden className={`${pos} inset-0 w-full h-full object-cover blur-2xl scale-125 opacity-60 pixel hidden portrait:block pointer-events-none`} alt=\"\" />}",
+            "    <img key={`${name}:${attempt}`} src={url} data-scene-background={name} fetchPriority=\"high\" className={`${pos} inset-0 w-full h-full object-cover ${landscapeOnly ? '' : 'portrait:object-contain portrait:scale-[1.65] portrait:-translate-y-[5%]'} pixel pointer-events-none`}",
+            "      onError={() => setFailed(name)} alt=\"\" />",
+            "    {failed === name && <div data-scene-load-status=\"error\" className={`${pos} inset-0 z-[110] flex items-center justify-center bg-slate-950/90 p-6`}"
+          ]
+        },
+        {
+          "beforeStart": 89,
+          "afterStart": 18,
+          "before": [
+            "      <p role=\"status\">{failed === name ? '背景暂未载入，剧情可以继续。' : frame ? '正在加载新场景，暂留上一场景。' : '正在加载场景图片…'}</p>",
+            "      {failed === name && <button className=\"mt-2 min-h-10 rounded border border-teal-500 px-3 text-teal-200\" onClick={() => { setFailed(null); setAttempt(value => value + 1) }}>重试背景</button>}"
+          ],
+          "after": [
+            "      <div className=\"rounded-xl border border-slate-500 bg-slate-900 p-5 text-center text-sm text-slate-100\">",
+            "        <p role=\"alert\">场景图片暂时无法显示，请重试。</p>",
+            "        <button className=\"mt-3 min-h-11 rounded border border-teal-500 px-4 text-teal-200\" onClick={() => { setFailed(null); setAttempt(value => value + 1) }}>重新显示</button>",
+            "      </div>"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/game/ch2-scan-sequences.ts",
+      "beforeSha256": "6f6c67e02d158d8955c31abaadd233c7ab71fa5faa530631676d6c4562035260",
+      "afterSha256": "58783cfd91b6b3a278c9fe6283e55ca74eb7553bd9d956ab30cd7f73a1137e80",
+      "edits": [
+        {
+          "beforeStart": 0,
+          "afterStart": 0,
+          "before": [],
+          "after": [
+            "import { assetUrl } from '../lib/chapter-assets'",
+            ""
+          ]
+        },
+        {
+          "beforeStart": 67,
+          "afterStart": 69,
+          "before": [
+            "/** Begin during this scan's preceding dialogue; never preload the whole chapter.",
+            " * The timer never waits for this resource. Late decoding uses the current frame.",
+            " */"
+          ],
+          "after": [
+            "/** Optional local decode warmup only; admission has already fetched the full chapter. */"
+          ]
+        },
+        {
+          "beforeStart": 78,
+          "afterStart": 78,
+          "before": [
+            "  image.src = `${import.meta.env.BASE_URL}${sequence.asset}`"
+          ],
+          "after": [
+            "  const url = assetUrl(sequence.asset)",
+            "  // Legacy previews may run without admission; never restart lazy network loading.",
+            "  if (!url.startsWith('blob:')) return",
+            "  image.src = url"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/game/store.ts",
+      "beforeSha256": "66db6255cd28d8409bf23a695b37b57279705724a0c08a29949a857a3229c810",
+      "afterSha256": "428c49cc5f1f2777e63006b1bc597eb8ff42ca99e2a5ed8bf0a0353b42a3377b",
+      "edits": [
+        {
+          "beforeStart": 1,
+          "afterStart": 1,
+          "before": [],
+          "after": [
+            "import { assetUrl } from '../lib/chapter-assets'"
+          ]
+        },
+        {
+          "beforeStart": 168,
+          "afterStart": 169,
+          "before": [
+            "    // ?v=2：2025年11月 16 条配音重制后破除浏览器旧缓存（同名文件内容已变）",
+            "    // Chapter 1 voice-only revision: retain old assets and volume, use new filenames to avoid stale audio caches."
+          ],
+          "after": [
+            "    // Keep the approved Chapter 1 voices. The chapter manifest versions every audio",
+            "    // file by its content hash; after admission playback uses its prepared local blob."
+          ]
+        },
+        {
+          "beforeStart": 175,
+          "afterStart": 176,
+          "before": [
+            "    const src = `${import.meta.env.BASE_URL}audio/${revisedVoiceFiles[name] ?? name}.mp3?v=2`",
+            "    if (!audioCache[name]) audioCache[name] = new Audio(src)"
+          ],
+          "after": [
+            "    const src = assetUrl(`audio/${revisedVoiceFiles[name] ?? name}.mp3`)",
+            "    if (!audioCache[name] || audioCache[name].src !== new URL(src, document.baseURI).href) {",
+            "      audioCache[name]?.pause()",
+            "      audioCache[name] = new Audio(src)",
+            "    }"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/lib/image-assets.ts",
+      "beforeSha256": "2f8c76369d30a66e32d694f406aeded14ef9ceccaa23ec3ed32539a9978af931",
+      "afterSha256": "bf1a6b6d73f5c9cdf5b6aba5ed81cd8e8ed8b6f14b7e25b6f0a2c52bef3e705a",
+      "edits": [
+        {
+          "beforeStart": 2,
+          "afterStart": 2,
+          "before": [],
+          "after": [
+            "import { assetUrl } from './chapter-assets'"
+          ]
+        },
+        {
+          "beforeStart": 6,
+          "afterStart": 7,
+          "before": [
+            "export const imageAsset = (name: string) => `${import.meta.env.BASE_URL}assets/${assets[name] ?? `${name}.png`}`"
+          ],
+          "after": [
+            "export const imageAsset = (name: string) => assetUrl(`assets/${assets[name] ?? `${name}.png`}`)"
+          ]
+        }
+      ]
+    }
+  ],
+  "added": [
+    {
+      "path": "app/scripts/generate-chapter-assets.mjs",
+      "sha256": "c1f2a9880e6b0dbed5ec38985312c81562cc71859a255c25462c7fc4f32c3d5e"
+    },
+    {
+      "path": "app/src/components/ChapterLoadingScreen.tsx",
+      "sha256": "507a41fea5302c5f2a95aac8995c1e11403187280a0c5de35244bf5aeae43073"
+    },
+    {
+      "path": "app/src/game/chapter-save-assets.ts",
+      "sha256": "c830a7925d21af455ace3fa51c8eb185b0330b8d4ec6ff08d143231bdd894268"
+    },
+    {
+      "path": "app/src/game/choice-input.ts",
+      "sha256": "e4df0ff684782018b7d5a41d0b36c310d0cb6290c396fc1ba870c0cbcfa268d9"
+    },
+    {
+      "path": "app/src/hooks/use-chapter-entry.ts",
+      "sha256": "bb128d9062250377c72f1587d76638402e424050775ee1bef3018f18d797d05f"
+    },
+    {
+      "path": "app/src/hooks/use-dialogue-choice-guard.ts",
+      "sha256": "3bcf1d5ede2c5282d11b4bee6f5d24b482631bc12aa7faf0b4922bc0567536f7"
+    },
+    {
+      "path": "app/src/lib/chapter-assets.ts",
+      "sha256": "bb5b39ebc46d2cd6c6a40848fc1d6970f5ef472b4080ec294e17b9f8f4003fe3"
+    },
+    {
+      "path": "app/src/lib/media-manifest.generated.json",
+      "sha256": "46f3cdaf76cd926c69d2bbda7a49bb7d2608666c566bfcba5840a6467af08b55"
+    }
+  ]
+}

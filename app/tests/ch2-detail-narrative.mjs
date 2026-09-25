@@ -49,8 +49,9 @@ for (const gender of ['m', 'f']) for (const flags of [{}, optionalHistory]) {
   assert.deepEqual(s, before, 'Narrative rendering cannot invent call, gift, or cross-chapter state')
 }
 
-const sunriseReply = '（塞给你一个保温盒）上回看日出还怕只剩素包子，这回先给你留点牛肉。'
-const applesReply = '（塞给你一个保温盒）上回那袋苹果净被我们吃了，这次给你留点牛肉。老周已经吃掉一半，剩下这半我守住了。'
+// These exact, already-approved lines are present in the published fa01385 baseline.
+const sunriseReply = '（把保温盒摆到桌上）上回看完日出，包子果然只剩素的。这回家里卤了牛肉，给值班的都带点。'
+const applesReply = '（把保温盒摆到桌上）上回大家吃了你的苹果，这回尝尝我家卤的牛肉。筷子自己拿，老周已经来过两趟了。'
 for (const gender of ['m', 'f']) for (const dawn of [false, true]) for (const apples of [false, true]) {
   const s = state(gender, { c2_dawn_done: dawn, c2_apples_shared: apples })
   const step = render('c2n5_b1', s)

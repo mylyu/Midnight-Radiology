@@ -7,6 +7,7 @@ import { CH2_SCANS } from '../src/game/ch2-scans.ts'
 import { freshState } from '../src/game/store.ts'
 import { answerCh2Observation, acknowledgeCh2Observation } from '../src/game/ch2-playback.ts'
 import { ch2ObservationContinuation, ch2ObservationPortrait, ch2ObservationPhone, ch2ObservationResumeStep } from '../src/game/ch2-observation-presentation.ts'
+import { beforeChapterPreloadSource } from './chapter-preload-projection.mjs'
 
 const coronary = 'c2n3_coronary_where', observation = 'coronary-reconstruction-v1'
 const state = () => ({ ...freshState('m'), skill: 4,
@@ -60,7 +61,7 @@ assert.equal(CH2_SCANS.c2n3_coronary_volume.durationMs, 1500)
 // Compare untouched screen engines to the actual approved parent, not a newly
 // generated pin; changes in this revision must remain inside Ch2Screen.
 const base = execFileSync('git', ['show', 'dadc208:app/src/App.tsx'], { encoding: 'utf8' }).replaceAll('\r\n', '\n')
-const current = readFileSync(new URL('../src/App.tsx', import.meta.url), 'utf8').replaceAll('\r\n', '\n')
+const current = beforeChapterPreloadSource('app/src/App.tsx', readFileSync(new URL('../src/App.tsx', import.meta.url), 'utf8')).replaceAll('\r\n', '\n')
 for (const [from, to] of [['function NightScreen(', 'function DayScreen('], ['function ScriptScreen(', 'function Ch2Screen(']]) {
   const segment = text => text.slice(text.indexOf(from), text.indexOf(to))
   assert(base.includes(from) && current.includes(from) && base.includes(to) && current.includes(to))

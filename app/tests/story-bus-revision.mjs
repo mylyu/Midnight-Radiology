@@ -7,6 +7,7 @@ import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { beforeChapterPreloadSource, priorChapterPreloadPaths, assertChapterPreloadLive } from './chapter-preload-projection.mjs'
 
 export const STORY_BUS_PATH = '深夜影像科/全书剧情总线.md'
 export const STORY_BUS_BASELINE = '30e86925115d08a5af99bc20cdf79c6b2bd4504d'
@@ -62,9 +63,17 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   }
   const protectedPaths = ['app/src', 'app/public', 'app/scripts', 'app/package.json', 'app/package-lock.json',
     'app/index.html', 'app/vite.config.ts', 'app/tsconfig.json', 'app/tsconfig.app.json', '.github/workflows']
-  execFileSync('git', ['diff', '--exit-code', '--quiet', STORY_BUS_BASELINE, '--', ...protectedPaths],
-    { cwd: fileURLToPath(root) })
-  assert.equal(execFileSync('git', ['ls-files', '--others', '--exclude-standard', '--', ...protectedPaths],
-    { cwd: fileURLToPath(root) }).toString().trim(), '', 'Documentation round adds no unreviewed runtime/build/public file')
+  assertChapterPreloadLive()
+  const git = (...args) => execFileSync('git', args, { cwd: fileURLToPath(root), maxBuffer: 32e6 })
+  const previousPaths = git('ls-tree', '-r', '--name-only', STORY_BUS_BASELINE, '--', ...protectedPaths)
+    .toString().trim().split('\n')
+  for (const path of previousPaths) {
+    const live = readFileSync(new URL(path, root)), before = git('show', `${STORY_BUS_BASELINE}:${path}`)
+    if (path.startsWith('app/public/') && !/\.(?:html|svg|txt)$/.test(path)) assert.deepEqual(live, before, `${path}: media exact`)
+    else assert.equal(norm(beforeChapterPreloadSource(path, live)), norm(before), `${path}: only separately pinned later loading/input revisions allowed`)
+  }
+  const livePaths = [...new Set(git('ls-files', '--cached', '--others', '--exclude-standard', '--', ...protectedPaths)
+    .toString().trim().split('\n'))]
+  assert.deepEqual(priorChapterPreloadPaths(livePaths).sort(), previousPaths.sort(), 'Documentation round adds no unreviewed runtime/build/public file')
   console.log('PASS story-bus v3.3 documentation gate: exact previous/new identities; one-path inverse; runtime passthrough; mutation rejection; production/source/media/build exact at 30e8692')
 }

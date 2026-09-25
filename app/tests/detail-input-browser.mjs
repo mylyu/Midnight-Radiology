@@ -8,6 +8,7 @@ import { resolve } from 'node:path'
 import { NIGHTS, SHOP_ITEMS } from '../src/game/data.ts'
 import { CH2_SHIFTS } from '../src/game/ch2.ts'
 import { applyEffect, freshState } from '../src/game/store.ts'
+import { awaitChapterEntry } from './chapter-entry-driver.mjs'
 
 const { chromium } = createRequire(import.meta.url)(process.env.PLAYWRIGHT_MODULE || 'C:/Users/lvmen/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright')
 const url = (process.env.GAME_URL || 'http://127.0.0.1:8798/').replace(/\/$/, '') + '/'
@@ -38,6 +39,7 @@ const ch2 = (id, shift = 'c2n1') => ({ ...base(5, 'n5_end'), finished: true, scr
 
 async function resume(page) {
   await page.getByRole('button', { name: '▶ 继续夜班（自动存档）', exact: true }).click()
+  await awaitChapterEntry(page)
   await page.getByRole('button', { name: /^(出发，上夜班|回到夜班现场) →$/ }).click()
 }
 async function open(save, { chapter = 1, roll = .8, viewport = { width: 1280, height: 900 }, timing } = {}) {
@@ -81,6 +83,7 @@ async function open(save, { chapter = 1, roll = .8, viewport = { width: 1280, he
   page.on('requestfailed', request => failedRequests.push({ url: request.url(), error: request.failure()?.errorText }))
   await page.goto(`${url}${chapter === 2 ? '#/ch2' : ''}`, { waitUntil: 'domcontentloaded' })
   if (chapter === 1) await resume(page)
+  else await awaitChapterEntry(page)
   if (save.screenHint === 'day' && chapter === 1) await page.getByText('白天 · 科室经营', { exact: true }).waitFor()
   else await stateAt(page, readCursor(save, chapter), chapter).waitFor()
   return page
@@ -231,6 +234,7 @@ try {
     assert.equal(trace[0].state.dlc.ch2.loop.entries.filter(e => e.id === `choice:${id}`).length, 1)
     for (const entry of trace) if (entry.state.dlc.ch2.stepId === id) assert.deepEqual(money(entry.state), money(before))
     await page.reload({ waitUntil: 'domcontentloaded' })
+    await awaitChapterEntry(page)
     await stateAt(page, choice.next, 2).waitFor()
     await frame(page)
     assert.deepEqual(await read(page), saved)

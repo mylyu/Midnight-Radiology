@@ -6,6 +6,7 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { assertDirectorDayVoiceLive, priorDirectorDayVoiceMediaPaths } from './ch2-director-day-voice.mjs'
 import { priorCtaCharactersSourcePaths } from './ch2-cta-characters-projection.mjs'
+import { priorChapterPreloadPaths } from './chapter-preload-projection.mjs'
 import { DETAIL_ROOT as root, DETAIL_BASELINE as baseline, DETAIL_EDITED_FILES, DETAIL_ADDED_SOURCE,
   beforeDetailPolishSource, assertDetailAddedSource, normalizeDetail as normalize } from './ch2-detail-polish-projection.mjs'
 
@@ -30,7 +31,7 @@ const additions = prefix => [...new Set([
 assert.deepEqual(priorCtaCharactersSourcePaths(additions('app/src')), DETAIL_ADDED_SOURCE, 'Only six original individually pinned files after the separately verified CTA presentation helper')
 assertDetailAddedSource()
 assert.deepEqual(priorDirectorDayVoiceMediaPaths(additions('app/public')), [], 'No new media, previews, or public resources beyond the one independently verified later director voice')
-assert.deepEqual(additions('app/scripts'), [], 'No production build script additions')
+assert.deepEqual(priorChapterPreloadPaths(additions('app/scripts')), [], 'No production build script additions beyond the independently pinned chapter manifest generator')
 let media = 0
 for (const entry of textGit('ls-tree', '-r', '-z', baseline, '--', 'app/public').split('\0').filter(Boolean)) {
   const [, blob, path] = /^\d+ blob ([0-9a-f]+)\t(.+)$/.exec(entry)

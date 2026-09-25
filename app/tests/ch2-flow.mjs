@@ -2,10 +2,13 @@ import { createRequire } from 'node:module'
 import { mkdirSync, writeFileSync } from 'node:fs'
 import assert from 'node:assert/strict'
 import { swipeCh2Checkin } from './ch2-checkin-driver.mjs'
+import { awaitChapterEntry } from './chapter-entry-driver.mjs'
 import { CH2_SHIFTS, ch2StepForState, QUIZ2 } from '../src/game/ch2.ts'
 import { CH2_SCANS } from '../src/game/ch2-scans.ts'
 import { getCh2Observation } from '../src/game/ch2-observations.ts'
+import { ch2ObservationContinuation } from '../src/game/ch2-observation-presentation.ts'
 import { logicalImagePath } from './game-delivery-media.mjs'
+import { resolveMediaIdentities, waitForImageAsset } from './media-identity-driver.mjs'
 const require = createRequire(import.meta.url)
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright')
 const browser = await chromium.launch({ headless: true, ...(process.env.EDGE_TEST === '1' ? {channel:'msedge'} : process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : {}) })
@@ -34,6 +37,7 @@ async function open(shift, stepId, mobile = false, rejectVoice = false) {
   const page = await context.newPage()
   page.on('pageerror', e => errors.push(e.message))
   await page.goto(url + '#/ch2')
+  await awaitChapterEntry(page)
   await page.locator('.dialog-box').waitFor()
   return { context, page }
 }
@@ -42,6 +46,7 @@ async function advance(page, expected) {
   // in-scene exchange, then advance the original story exactly as before.
   await completeObservation(page)
   await page.locator('.dialog-box > span.animate-bounce').waitFor({ timeout: 15000 })
+  await page.waitForTimeout(350)
   await page.locator('.dialog-box > p').click()
   await page.waitForFunction(expected => JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).dlc.ch2.stepId === expected, expected, { timeout: 3000 })
 }
@@ -58,6 +63,7 @@ async function completeObservation(page) {
     const choice = config.choices.find(c => c.correct) ?? config.choices.find(c => c.hint)
     assert(choice, `${p.stepId}: observation must have an available response`)
     if (config.regions?.length) assert.equal(await page.getByLabel(config.regions[0].label, { exact: true }).count(), 0, 'No answer ring before choice')
+    await page.waitForTimeout(350)
     await page.locator('.choice-in').getByRole('button', { name: choice.text.replaceAll('**', ''), exact: true }).click()
     await page.waitForFunction(key => !!JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).dlc.ch2.observations[key], config.id)
     answer = { choiceId: choice.id }
@@ -66,9 +72,11 @@ async function completeObservation(page) {
   if (await dialog.textContent() !== feedback) await dialog.click()
   await page.waitForFunction(text => document.querySelector('.dialog-box > p')?.textContent === text, feedback)
   await page.locator('.dialog-box > span.animate-bounce').waitFor({ timeout: 15000 })
+  await page.waitForTimeout(350)
   await dialog.click()
   await page.waitForFunction(key => JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).dlc.ch2.observations[key].acknowledged, config.id)
-  assert.equal(await current(page), p.stepId, 'Acknowledging observation must return to, not skip, original node')
+  assert.equal(await current(page), ch2ObservationContinuation(p.stepId) ?? p.stepId,
+    'Observation returns to its exact approved continuation; coronary CTA must not replay the already-shown slices')
   return config.id
 }
 try {
@@ -78,12 +86,14 @@ try {
     assert.equal(await page.getByRole('button', { name: /显示全文|继续 →/ }).count(), 0)
     await page.locator('.dialog-box > p').click()
     await page.waitForFunction(() => window.__voiceCalls.length === 2)
-    assert.ok((await page.evaluate(() => window.__voiceCalls)).every(src => src.includes(`${CH2_SHIFTS[0].steps.c2n1_4.sfx}.mp3`)))
+    const voices = await resolveMediaIdentities(page, await page.evaluate(() => window.__voiceCalls))
+    assert.ok(voices.every(row => row.paths.includes(`audio/${CH2_SHIFTS[0].steps.c2n1_4.sfx}.mp3`)), 'Both initial voice and retry use the exact approved audio bytes')
     await context.close()
     console.log('PASS: old heard flag does not suppress entrance; rejected audio retries on click; original dialogue UI restored.')
   }
-  // Repro: the old guard uses every tap, including rejected ones. Repeated taps
-  // after revealing a choice perpetually extend the 300 ms rejection window.
+  // Choices require the player to stop fast-forward tapping before selecting.
+  // Rejected taps intentionally retain a 300ms quiet-gap requirement; this is
+  // not a permanent lock, and one deliberate click after a pause must work.
   {
     const { context, page } = await open('c2n1', 'c2n1_p2')
     const choice = page.getByRole('button', { name: '「怀疑结石，先请周老师确认平扫方案。」', exact: true })
@@ -93,7 +103,10 @@ try {
       await page.evaluate(() => [...document.querySelectorAll('button')].find(b => b.textContent.includes('怀疑结石，先请周老师'))?.click())
       await page.waitForTimeout(100)
     }
-    assert.equal(await current(page), 'c2n1_p2a', 'Rapid taps must select once, not perpetually reset a click lock')
+    assert.equal(await current(page), 'c2n1_p2', 'Continuing rapid taps must not select an answer')
+    await page.waitForTimeout(350)
+    await choice.click()
+    assert.equal(await current(page), 'c2n1_p2a', 'A fresh deliberate click after a pause must work exactly once')
     await context.close()
   }
   for (const mobile of [false, true]) {
@@ -102,12 +115,13 @@ try {
     await page.getByRole('button', { name: '📚 旧书', exact: true }).click()
     await page.getByRole('button', { name: '合上书，回科室', exact: true }).click()
     await page.reload()
+    await awaitChapterEntry(page)
     assert.equal(await current(page), 'c2n5_a2')
     await advance(page, 'c2n5_a3')
     await advance(page, 'c2n5_a4')
     await advance(page, 'c2n5_a5')
     await advance(page, 'c2n5_a6')
-    await page.getByRole('button', { name: '「最边上那个，是您吧？」', exact: true }).click()
+    await page.getByRole('button', { name: '「原来这一片片能拼起来。底座呢？」', exact: true }).click()
     await page.waitForFunction(() => JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).dlc.ch2.stepId === 'c2n5_a7')
     for (const next of ['c2n5_a8', 'c2n5_a9', 'c2n5_a10', 'c2n5_hub']) await advance(page, next)
     assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).flags.c2n5_cabinet), true)
@@ -115,12 +129,13 @@ try {
   }
   {
     const { context, page } = await open('c2n1', 'c2n1_p0')
-    await page.locator(`img[src$="assets/${logicalImagePath('ch2_pixel_pat_stone')}"]`).waitFor()
+    await waitForImageAsset(page, `assets/${logicalImagePath('ch2_pixel_pat_stone')}`)
     await advance(page, 'c2n1_pain')
     await page.getByText('哎呦，疼死我了。', { exact: true }).waitFor()
-    assert.equal(await page.evaluate(() => window.__voiceCalls.filter(src => src.includes('/vox_guy.mp3')).length), 1)
+    const voices = await resolveMediaIdentities(page, await page.evaluate(() => window.__voiceCalls))
+    assert.equal(voices.filter(row => row.paths.includes('audio/vox_guy.mp3')).length, 1)
     await advance(page, 'c2n1_p1')
-    await page.locator(`img[src$="assets/${logicalImagePath('ch2_pixel_char_he')}"]`).waitFor()
+    await waitForImageAsset(page, `assets/${logicalImagePath('ch2_pixel_char_he')}`)
     await context.close()
   }
   {
@@ -131,7 +146,7 @@ try {
   }
   {
     const { context, page } = await open('c2n5', 'c2n5_m17')
-    await page.locator(`img[src$="assets/${logicalImagePath('ct_head_child_followup')}"]`).waitFor()
+    await waitForImageAsset(page, `assets/${logicalImagePath('ct_head_child_followup')}`)
     await advance(page, 'c2n5_m18')
     await context.close()
   }
@@ -153,6 +168,7 @@ try {
         settlements.add(progress.shift)
         fullLog.push({kind:'settlement',shift:progress.shift,step:progress.stepId,gold:state.gold})
         await page.reload()
+        await awaitChapterEntry(page)
         await page.locator('[data-ch2-settlement]').waitFor()
         const resumed = await page.evaluate(() => JSON.parse(localStorage.getItem('midnight-radiology-save-v1')))
         assert.equal(resumed.dlc.ch2.shift,progress.shift)
@@ -168,7 +184,7 @@ try {
         if (quiz.completed) {
           fullLog.push({kind:'grade',grade:quiz.grade,gold:state.gold})
           await page.screenshot({path:`${output}/flow-quiz-grade.png`})
-          await page.reload();await page.locator('[data-ch2-quiz]').waitFor()
+          await page.reload();await awaitChapterEntry(page);await page.locator('[data-ch2-quiz]').waitFor()
           assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).gold),state.gold)
           await page.getByRole('button',{name:'回到晨会 →',exact:true}).click()
           await page.locator('[data-ch2-step="c2am_3"]').waitFor()
@@ -223,6 +239,7 @@ try {
         if (pick < 0) pick = labels.findIndex(t => t.includes('【开诊】') && !t.includes('还有件事'))
         if (pick < 0) pick = labels.findIndex(t => step.choices.some(c => c.tag === 'good' && c.text.replaceAll('**', '') === t))
         if (pick < 0) pick = labels.findIndex(t => !['小卖部', '翻书'].some(s => t.includes(s)))
+        await page.waitForTimeout(350)
         await buttons.nth(Math.max(0, pick)).click()
       } else if (step.end) {
         // A click must reveal even end text, without skipping settlement.
@@ -235,6 +252,7 @@ try {
         if(await page.locator('.dialog-box > p').textContent()!==expected)await page.locator('.dialog-box > p').click()
         await page.waitForFunction(expected=>document.querySelector('.dialog-box > p')?.textContent===expected,expected)
         await page.locator('.dialog-box > span.animate-bounce').waitFor({ timeout: 15000 })
+        await page.waitForTimeout(350)
         await page.locator('.dialog-box > p').click()
       }
       await page.waitForFunction(before => {
@@ -251,8 +269,8 @@ try {
     assert.equal(questionsAnswered,5)
     assert.equal(final.dlc.ch2.quiz.grade,'S')
     assert.equal(final.flags.quiz2_grade,'S')
-    assert.deepEqual([...scans].sort(), Object.keys(CH2_SCANS).sort(), 'Full walk must still exercise all 15 acquisitions and 2 reconstructions')
-    assert.equal(observations.size, 12, 'Every added observation/plan gate is played')
+    assert.deepEqual([...scans].sort(), Object.keys(CH2_SCANS).sort(), 'Full walk must still exercise all 14 acquisitions and 2 reconstructions')
+    assert.equal(observations.size, 11, 'Every current observation/plan gate is played; the approved abdominal-window case was removed')
     fullLog.push({kind:'summary',iterations:visited,storyNodes:fullLog.filter(row=>row.kind==='story').length,settlements:[...settlements],scans:[...scans],observations:[...observations],questionsAnswered,done:true})
     console.log('PASS: continuous five-shift walk + 5 saved settlements + all 5 exam questions + entire ending, iterations:', visited)
     await context.close()

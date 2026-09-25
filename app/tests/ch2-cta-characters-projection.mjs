@@ -7,6 +7,7 @@ import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { beforeCertificateSource, priorCertificateSourcePaths, assertCertificateLive } from './ch2-certificate-projection.mjs'
 import { beforeStoryBusRevisionSource } from './story-bus-revision.mjs'
+import { beforeChapterPreloadSource } from './chapter-preload-projection.mjs'
 
 export const CTA_CHARACTERS_BASELINE = 'dadc208a703c01f5ffd70b70d2fa492e0f59a926'
 const ledgerSha = '737e7fcb204e15804c2a2f7204145b62ca15d69432a27b7a2941d74888d1251e'
@@ -120,7 +121,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const configs = ['app/package.json', 'app/package-lock.json', 'app/.gitignore', 'app/index.html', 'app/vite.config.ts',
     'app/tsconfig.json', 'app/tsconfig.app.json', '深夜影像科/全书剧情总线.md',
     ...git('ls-tree', '-r', '--name-only', CTA_CHARACTERS_BASELINE, '--', 'app/scripts').toString().trim().split('\n')]
-  for (const path of configs) assert.equal(norm(beforeStoryBusRevisionSource(path, read(path))), original(path), `${path}: config unchanged; story-bus only through its exact reviewed revision`)
+  for (const path of configs) assert.equal(norm(beforeStoryBusRevisionSource(path, beforeChapterPreloadSource(path, read(path)))), original(path), `${path}: config unchanged outside exact reviewed story-bus and loading revisions`)
   const publicPaths = []
   for (const entry of git('ls-tree', '-r', '-z', CTA_CHARACTERS_BASELINE, '--', 'app/public').toString().split('\0').filter(Boolean)) {
     const [, expected, path] = /^\d+ blob ([0-9a-f]+)\t(.+)$/.exec(entry), bytes = read(path)

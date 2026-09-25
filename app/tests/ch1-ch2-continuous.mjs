@@ -1,6 +1,7 @@
 // Fresh UI-only Chapter 1 -> Chapter 2 journeys in one isolated browser/storage.
 // No injected save, chapter unlock flag, shortened animation or mocked media.
 import assert from 'node:assert/strict'
+import { awaitChapterEntry } from './chapter-entry-driver.mjs'
 import { swipeCh2Checkin } from './ch2-checkin-driver.mjs'
 import { createRequire } from 'node:module'
 import { mkdirSync, writeFileSync } from 'node:fs'
@@ -66,6 +67,7 @@ async function settlementImages(page) {
 }
 async function resumeCh1(page) {
   await click(page, page.getByRole('button', { name: '▶ 继续夜班（自动存档）', exact: true }))
+  await awaitChapterEntry(page)
   await click(page, page.getByRole('button', { name: /^(出发，上夜班|回到夜班现场) →$/ }))
 }
 function preserved(s) {
@@ -96,6 +98,7 @@ async function runCh1(page, variant, log) {
   assert.equal(await read(page), null, 'Actual empty context, no fixture')
   await click(page, page.getByRole('button', { name: '▶ 开始游戏', exact: true }))
   await click(page, page.getByRole('button', { name: variant.gender === 'f' ? /林小满.*细心温和/ : /陈一帆/ }))
+  await awaitChapterEntry(page)
   await click(page, page.getByRole('button', { name: '出发，上夜班 →', exact: true }))
   let loops = 0, readouts = 0
   while (++loops < 720) {
@@ -213,7 +216,7 @@ async function observation(page, variant, log, refreshed) {
   }
   if (!refreshed.has('observation')) {
     const before = await read(page)
-    await page.reload(); await dialog(page).waitFor()
+    await page.reload(); await awaitChapterEntry(page); await dialog(page).waitFor()
     assert.equal((await read(page)).gold, before.gold)
     assert.equal((await read(page)).skill, before.skill)
     assert.deepEqual((await read(page)).dlc.ch2.observations, before.dlc.ch2.observations)
@@ -225,7 +228,8 @@ async function observation(page, variant, log, refreshed) {
   await page.locator('.dialog-box > span.animate-bounce').waitFor()
   await click(page, dialog(page))
   await page.waitForFunction(id => JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).dlc.ch2.observations[id].acknowledged, config.id)
-  assert.equal((await read(page)).dlc.ch2.stepId, p.stepId)
+  // Approved CTA de-duplication proceeds directly to the single VR reconstruction.
+  assert.equal((await read(page)).dlc.ch2.stepId, p.stepId === 'c2n3_coronary_where' ? 'c2n3_coronary_volume' : p.stepId)
   log.push({ kind: 'ch2-observation', id: config.id, choice: answer.choiceId })
   return config.id
 }
@@ -259,6 +263,7 @@ async function runCh2(page, variant, inherited, log) {
   const card = page.locator('div.border-2.rounded-2xl').filter({ has: page.getByText('第二章 · 快与狠', { exact: true }) })
   assert.deepEqual(await read(page), inherited, 'Entering/unlocking hall cannot replace Chapter 1 save')
   await click(page, card.getByRole('button', { name: '开始 →', exact: true }))
+  await awaitChapterEntry(page)
   await dialog(page).waitFor()
   const initial = await read(page)
   assertInherited(inherited, initial)
@@ -276,7 +281,7 @@ async function runCh2(page, variant, inherited, log) {
       shifts.add(p.shift)
       await buyAtSettlement(page, log)
       const settled = await read(page)
-      await page.reload(); await page.locator('[data-ch2-settlement]').waitFor()
+      await page.reload(); await awaitChapterEntry(page); await page.locator('[data-ch2-settlement]').waitFor()
       assert.deepEqual(await read(page), settled, `Ch2 ${p.shift} settlement+purchases survive refresh once`)
       assert.equal(settled.dlc.ch2.loop.entries.filter(e => e.id === `settle:${p.shift}`).length, 1)
       await settlementImages(page)
@@ -291,7 +296,7 @@ async function runCh2(page, variant, inherited, log) {
       const q = p.quiz
       if (q.completed) {
         assert.equal(q.grade, 'S')
-        await page.reload(); await page.locator('[data-ch2-quiz]').waitFor()
+        await page.reload(); await awaitChapterEntry(page); await page.locator('[data-ch2-quiz]').waitFor()
         assert.deepEqual(await read(page), s, 'Ch2 quiz award survives reload once')
         await click(page, page.getByRole('button', { name: '回到晨会 →', exact: true }))
       } else {
@@ -300,7 +305,7 @@ async function runCh2(page, variant, inherited, log) {
         questions++
         if (!refresh.has('quiz')) {
           const answered = await read(page)
-          await page.reload(); await page.locator('[data-ch2-quiz]').waitFor()
+          await page.reload(); await awaitChapterEntry(page); await page.locator('[data-ch2-quiz]').waitFor()
           assert.deepEqual((await read(page)).dlc.ch2.quiz, answered.dlc.ch2.quiz, 'Answered question/order remains stable')
           assert.equal((await read(page)).gold, answered.gold)
           refresh.add('quiz')
@@ -313,7 +318,7 @@ async function runCh2(page, variant, inherited, log) {
     if (p.statInteractions?.pending) {
       const before = await read(page), pending = before.dlc.ch2.statInteractions.pending
       if (!refresh.has('stat-interaction')) {
-        await page.reload(); await dialog(page).waitFor()
+        await page.reload(); await awaitChapterEntry(page); await dialog(page).waitFor()
         assert.deepEqual((await read(page)).dlc.ch2.statInteractions, before.dlc.ch2.statInteractions)
         assert.equal((await read(page)).ap, before.ap, 'Stat assistance survives refresh once')
         refresh.add('stat-interaction')
@@ -326,7 +331,7 @@ async function runCh2(page, variant, inherited, log) {
     if (p.giftReply) {
       const before = await read(page)
       if (!refresh.has('gift')) {
-        await page.reload(); await dialog(page).waitFor()
+        await page.reload(); await awaitChapterEntry(page); await dialog(page).waitFor()
         assert.deepEqual((await read(page)).items, before.items)
         assert.equal((await read(page)).heart, before.heart)
         assert.deepEqual((await read(page)).dlc.ch2.giftReply, before.dlc.ch2.giftReply)
@@ -353,6 +358,7 @@ async function runCh2(page, variant, inherited, log) {
         await page.waitForTimeout(900)
         const running = await read(page)
         await page.reload()
+        await awaitChapterEntry(page)
         await page.waitForFunction(id => !!JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).dlc.ch2.scanSessions[id], p.stepId)
         assert.equal((await read(page)).gold, running.gold)
         assert.equal((await read(page)).dlc.ch2.scanSessions[p.stepId].startedAt, running.dlc.ch2.scanSessions[p.stepId].startedAt)
@@ -371,7 +377,7 @@ async function runCh2(page, variant, inherited, log) {
       if (allBadges && p.stepId === 'c2n1_m11' && !refresh.has('window-failed')) {
         await click(page, page.getByRole('button', { name: /^就这个窗口 · 确认/ }))
         await page.waitForFunction(() => JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).dlc.ch2.windowTasks?.c2n1_m11?.attempts === 1)
-        await page.reload(); await dialog(page).waitFor(); await dialog(page).click()
+        await page.reload(); await awaitChapterEntry(page); await dialog(page).waitFor(); await dialog(page).click()
         await page.getByRole('button', { name: /^就这个窗口 · 确认（已试 1 次）$/ }).waitFor()
         refresh.add('window-failed')
       }
@@ -435,7 +441,7 @@ async function runCh2(page, variant, inherited, log) {
   assert.equal([...seen].filter(id => id.startsWith('c2n3_dawn')).length, 20, 'One complete 20-node dawn path')
   assert.equal(final.flags.c2_dawn_seen, true)
   assert.equal(final.flags.c2_dawn_done, true)
-  assert.equal(observations.size, 12)
+  assert.equal(observations.size, 11, 'The approved abdominal-window case was removed; all eleven remaining observations still play')
   assert.deepEqual([...scans].sort(), Object.keys(CH2_SCANS).sort(), 'Every acquisition/reconstruction remains played')
   assert.equal(new Set(loop.entries.map(e => e.id)).size, loop.entries.length, 'No duplicate transaction receipts')
   assert.equal(loop.entries.filter(e => e.id === 'quiz:reward').length, 1)
@@ -447,7 +453,7 @@ async function runCh2(page, variant, inherited, log) {
   for (const key of ['gold', 'skill', 'heart', 'wealth', 'ap']) assert.equal(final[key] - start[key], loop.entries.reduce((sum, e) => sum + e.delta[key], 0), `All ${key} changes reconciled from inherited save`)
   assertInherited(inherited, final)
   await page.locator('[data-ch2-settlement]').waitFor()
-  await page.reload(); await page.locator('[data-ch2-settlement]').waitFor()
+  await page.reload(); await awaitChapterEntry(page); await page.locator('[data-ch2-settlement]').waitFor()
   assert.deepEqual(await read(page), final, 'Whole chapter completion reload does not reset or reward')
   await settlementImages(page)
   await page.screenshot({ path: `${output}/${variant.id}-ch2-end.png` })
@@ -489,6 +495,7 @@ try {
         assert.equal(await read(page), null, 'Actual empty browser context')
         await click(page, page.getByRole('button', { name: '▶ 开始游戏', exact: true }))
         await click(page, page.getByRole('button', { name: /林小满.*细心温和/ }))
+        await awaitChapterEntry(page)
         first = { state: await read(page), nodes: 0, readouts: 0, explorationEvents: 0 }
         assert.deepEqual(first.state.badges, [])
         assert.deepEqual(first.state.items, [])

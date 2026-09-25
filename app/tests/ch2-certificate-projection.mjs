@@ -7,6 +7,7 @@ import { readFileSync, readdirSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { beforeStoryBusRevisionSource } from './story-bus-revision.mjs'
+import { beforeChapterPreloadSource, priorChapterPreloadPaths, assertChapterPreloadAdditions } from './chapter-preload-projection.mjs'
 
 export const CERTIFICATE_BASELINE = 'e34bba4859d1f05b40354f1885c9f36ad53df984'
 const ledgerSha = '398eb1eeda0374b1478927d9aefd13a806fca65c6e62240a37291ec83c4aed03'
@@ -42,9 +43,10 @@ export function certificateLedger() {
   return ledger
 }
 export function beforeCertificateSource(path, source) {
-  if (!edited.includes(path)) return beforeStoryBusRevisionSource(path, source)
-  const current = norm(source), before = original(path)
-  if (current === before) return source // Exact independently known base only.
+  if (!edited.includes(path)) return beforeStoryBusRevisionSource(path, beforeChapterPreloadSource(path, source))
+  const before = original(path)
+  if (norm(source) === before) return source // Exact independently known base only.
+  const current = norm(beforeChapterPreloadSource(path, source))
   const row = certificateLedger().files.find(row => row.path === path)
   assert.equal(sha(current), row.afterSha256, `${path}: undocumented mutation outside reviewed certificate source`)
   const lines = current.trimEnd().split('\n')
@@ -58,17 +60,18 @@ export function beforeCertificateSource(path, source) {
   return restored
 }
 export function assertCertificateSourceAdditions() {
+  assertChapterPreloadAdditions()
   for (const row of certificateLedger().added) {
     assert.equal(sha(norm(read(row.path))), row.sha256, `${row.path}: undocumented mutation in new certificate module`)
   }
 }
 export function priorCertificateSourcePaths(paths) {
   assertCertificateSourceAdditions()
-  return paths.filter(path => !added.includes(path))
+  return priorChapterPreloadPaths(paths).filter(path => !added.includes(path))
 }
 export function assertCertificateLive() {
   for (const row of certificateLedger().files) {
-    const current = norm(read(row.path))
+    const current = norm(beforeChapterPreloadSource(row.path, read(row.path)))
     assert.equal(sha(current), row.afterSha256, `${row.path}: reviewed certificate edit must actually be live`)
     assert.equal(norm(beforeCertificateSource(row.path, current)), original(row.path))
   }
@@ -83,11 +86,11 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   }
   const currentSources = [...new Set(git('ls-files', '--cached', '--others', '--exclude-standard', '--', 'app/src')
     .toString().trim().split('\n'))].sort()
-  assert.deepEqual(currentSources, [...sourcePaths, ...added].sort(), 'Exactly two reviewed chapter-2 certificate source modules')
+  assert.deepEqual(priorChapterPreloadPaths(currentSources), [...sourcePaths, ...added].sort(), 'Exactly two reviewed chapter-2 certificate source modules after separately pinned loading/input additions')
   const configs = ['app/package.json', 'app/package-lock.json', 'app/index.html', 'app/vite.config.ts',
     'app/tsconfig.json', 'app/tsconfig.app.json', '深夜影像科/全书剧情总线.md',
     ...git('ls-tree', '-r', '--name-only', CERTIFICATE_BASELINE, '--', 'app/scripts').toString().trim().split('\n')]
-  for (const path of configs) assert.equal(norm(beforeStoryBusRevisionSource(path, read(path))), original(path), `${path}: configuration unchanged; story-bus only through its exact reviewed revision`)
+  for (const path of configs) assert.equal(norm(beforeStoryBusRevisionSource(path, beforeChapterPreloadSource(path, read(path)))), original(path), `${path}: configuration unchanged outside exact reviewed story-bus and loading revisions`)
   const publicPaths = []
   let voices = 0, probes = 0
   for (const entry of git('ls-tree', '-r', '-z', CERTIFICATE_BASELINE, '--', 'app/public').toString().split('\0').filter(Boolean)) {
