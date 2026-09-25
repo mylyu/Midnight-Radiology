@@ -285,7 +285,10 @@ export default function App() {
     }} />
 
   return (
-    <div className="w-full h-full bg-slate-950 text-slate-100 overflow-hidden select-none font-sans">
+    <div className="w-full h-full bg-slate-950 text-slate-100 overflow-hidden select-none font-sans"
+      // Hidden overflow still allows focus-induced scrolling of the whole stage.
+      // Clip only the first-chapter viewport; menus retain their own scroll areas.
+      style={['checkin', 'night', 'epilogue'].includes(screen) ? { overflow: 'clip', display: 'flow-root' } : undefined}>
       <RotateHint />
       {screen === 'title' && <TitleScreen hasSave={!!loadState()} onNew={() => setScreen('select')} onContinue={continueGame} onBadges={() => setScreen('badges')} onVerify={() => setScreen('verify')} onDlc={() => { window.location.hash = '#/dlc' }} />}
       {screen === 'select' && <SelectScreen onPick={startGame} onBack={() => setScreen('title')} />}
@@ -461,7 +464,7 @@ function TitleScreen({ hasSave, onNew, onContinue, onBadges, onVerify, onDlc }: 
         {hasSave && <MenuBtn onClick={onContinue} primary>▶ 继续夜班（自动存档）</MenuBtn>}
         <MenuBtn onClick={onNew} primary={!hasSave}>{hasSave ? '↺ 重新开始' : '▶ 开始游戏'}</MenuBtn>
         <MenuBtn onClick={onBadges}>🏅 勋章墙</MenuBtn>
-        <p className="text-slate-500 text-xs mt-6">教学试玩版 v0.6.0-dev · 进度自动保存在本浏览器 · 随时退出随时续玩</p>
+        <p className="text-slate-500 text-xs mt-6">教学试玩版 v0.7 · 进度自动保存在本浏览器 · 随时退出随时续玩</p>
         <div className="flex items-center gap-4">
           <FullscreenBtn />
           <button onClick={onVerify} className="text-slate-600 hover:text-slate-400 text-xs underline">教师验证入口</button>
@@ -820,7 +823,7 @@ function NightScreen({ state, update, inputGate, onFinish, onExit }: { state: Ga
   const leftSprite = spriteOf(view.sprite)
   const rightSprite = spriteOf(view.sprite2)
   const speakerMeta = step.speaker ? CHARACTERS[step.speaker] : undefined
-  const visibleChoices = (step.choices ?? []).filter(c => condOk(state, c.cond))
+  const visibleChoices = (step.choices ?? []).filter(c => c.disabledReason || condOk(state, c.cond))
 
   return (
     <div className="relative w-full h-full cursor-pointer" data-ch1-step={stepId}
@@ -900,10 +903,10 @@ function NightScreen({ state, update, inputGate, onFinish, onExit }: { state: Ga
           <p key={stepId} className="text-slate-100 leading-relaxed text-base md:text-lg whitespace-pre-wrap min-h-[4.9rem] md:min-h-[5.4rem] text-in"><RichText text={fullText} shown={shown} /></p>
           {!step.choices && !step.end && done && <span className="absolute bottom-3 right-4 text-amber-300 animate-bounce">▼</span>}
           {step.choices && done && !choicesLocked && (
-            <div className="mt-4 flex flex-col gap-2 choice-in" onClick={e => e.stopPropagation()}>
+            <div className="mt-4 flex flex-col gap-2 choice-in max-h-[38dvh] overflow-y-auto md:max-h-none" onClick={e => e.stopPropagation()}>
               {visibleChoices.map((c, i) => (
-                <button key={i} data-dialogue-choice={i} onClick={() => pick(c, i)}
-                  className="text-left px-4 py-2.5 rounded-lg bg-slate-800 border border-slate-600 hover:border-amber-400 hover:bg-slate-700 transition-all text-slate-100">
+                <button key={i} data-dialogue-choice={i} onClick={() => pick(c, i)} disabled={!!c.disabledReason} title={c.disabledReason}
+                  className="shrink-0 text-left px-4 py-2.5 rounded-lg bg-slate-800 border border-slate-600 hover:border-amber-400 hover:bg-slate-700 transition-all text-slate-100 disabled:opacity-60 disabled:cursor-not-allowed">
                   <RichText text={c.text} />
                 </button>
               ))}

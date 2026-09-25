@@ -14,7 +14,7 @@ const initial = save()
 assert.equal(enter(initial).state.ap, 0, 'First visit still costs exactly one AP')
 const empty = save({}, [], 0)
 assert.equal(entrance(empty), undefined, 'Do not secretly grant a free first visit')
-assert.match(ch1ExplorationStep('n3_hub', hub, empty).text, /咖啡/)
+assert.match(ch1ExplorationStep('n3_hub', hub, empty).choices.find(c => c.next === 'n3_arc0').disabledReason, /咖啡/)
 assert(entrance(buyCh1Item(empty, 'coffee').state), 'Coffee restores the original entry condition')
 const leftEarly = save({ n3_arc: true }, [], 0)
 assert.equal(hub.choices.filter(c => c.next === 'n3_arc0' && condOk(leftEarly, c.cond)).length, 0,

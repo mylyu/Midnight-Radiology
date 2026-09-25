@@ -114,7 +114,7 @@ function choiceForState(s: GameState, step: Step, supplied: Choice, allowContinu
   const candidate = step.choices?.find(c => c.next === supplied.next && c.text === supplied.text)
     ?? (allowContinue && !step.choices && step.next === supplied.next && supplied.text === '接着聊'
       ? { text: '接着聊', next: step.next } : undefined)
-  return candidate && condOk(s, candidate.cond) ? candidate : undefined
+  return candidate && !candidate.disabledReason && condOk(s, candidate.cond) ? candidate : undefined
 }
 
 function modalAction(s: GameState, next: string): ChoiceCommitResult | undefined {

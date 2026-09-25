@@ -33,6 +33,8 @@ export interface Cond {
 export interface Choice {
   text: string
   next: string
+  /** Keep a locked exploration entry visible, with an actionable explanation. */
+  disabledReason?: string
   effect?: Effect
   tag?: 'good' | 'bad' | 'neutral'
   cond?: Cond

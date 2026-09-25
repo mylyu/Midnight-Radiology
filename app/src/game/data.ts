@@ -1,4 +1,5 @@
 import type { Night, ShopItem } from './types'
+import { extendCh1ArchiveWindow } from './ch1-exploration'
 
 export const CHARACTERS: Record<string, { name: string; color: string }> = {
   me: { name: '我', color: '#7dd3fc' },
@@ -65,7 +66,7 @@ export const SHOP_ITEMS: ShopItem[] = [
   { id: 'key', icon: '🗝️', image: 'item_key', name: '黄铜钥匙', price: 120, desc: '老板娘代收的旧货，据说能开旧片库角落里的小铁柜', minNight: 2 },
 ]
 
-export const NIGHTS: Night[] = [
+export const NIGHTS: Night[] = extendCh1ArchiveWindow([
   // ================= 第 1 夜 =================
   {
     id: 1,
@@ -627,7 +628,7 @@ export const NIGHTS: Night[] = [
       n5_end: { end: true },
     },
   },
-]
+])
 
 /* ================= 晨会考核（第5夜后 · 20题题库随机抽5） ================= */
 export interface QuizQuestion { q: string; options: string[]; answer: number; explain: string }
