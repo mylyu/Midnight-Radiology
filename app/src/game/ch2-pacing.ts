@@ -14,6 +14,13 @@ export const CH2_PATIENT_BRIDGES = [
   { from: 'c2d4_10', entry: 'c2d4_gap_thermos', to: 'c2d4_11a' },
 ] as const
 
+// Keep retired interlude cursors resumable, without replaying its conversation.
+const dayMealPause: Step = {
+  bg: 'bg_ctcontrol_day', speaker: 'sys', sprite: '', sprite2: '',
+  text: '机房已经腾好，救护车还在路上。你刚坐下来，打开饭盒，还没吃上两口，门外就传来了推车声。',
+  next: 'c2d2_t0',
+}
+
 export const CH2_PACING_STEPS: Record<string, Record<string, Step>> = {
   c2n1: {
     c2n1_gap_chair: { speaker: 'sys', text: '交接完，控制室空了下来。你刚往椅子上一坐，扶手就往下一歪。老周伸手托住：「慢点，这位也上岁数了。」', next: 'c2n1_gap_chair_q' },
@@ -48,13 +55,10 @@ export const CH2_PACING_STEPS: Record<string, Record<string, Step>> = {
     ] },
     c2d2_gap_lift_a: { speaker: 'tang', sprite: 'char_tang', text: '行。（她放开话筒）还是东边病床梯，出门右拐。对，我知道门口两盆树长得一样。', next: 'c2d2_q1a' },
     c2d2_gap_lift_b: { speaker: 'tang', sprite: 'char_tang', text: '快去，我告诉他认你。别挥单子，上回有人以为咱在发传单。', next: 'c2d2_q1a' },
-    c2d2_gap_phone: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: '机房已经腾好，救护车还在路上。小雷来查值班电话，卷成麻花的听筒线刚理开，又绕了回去。', next: 'c2d2_gap_phone_q' },
-    c2d2_gap_phone_q: { speaker: 'lei', sprite: 'char_lei', text: '这根线，比我还拧巴。', choices: [
-      { text: '帮他捋直听筒线', next: 'c2d2_gap_phone_a' },
-      { text: '把电话座挪近一点', next: 'c2d2_gap_phone_b' },
-    ] },
-    c2d2_gap_phone_a: { speaker: 'me', sprite: 'char_lei', text: '好了。明天再绕上，可别说是我修坏的。', next: 'c2d2_t0' },
-    c2d2_gap_phone_b: { speaker: 'lei', sprite: 'char_lei', text: '行，先这么放。换根长线的单子，我再催一遍。', next: 'c2d2_t0' },
+    c2d2_gap_phone: dayMealPause,
+    c2d2_gap_phone_q: dayMealPause,
+    c2d2_gap_phone_a: dayMealPause,
+    c2d2_gap_phone_b: dayMealPause,
     c2d2_gap_pen: { speaker: 'sys', text: '腰胯撞伤的患者由急诊团队接回。机房整理的空当，主任伸手去胸前口袋摸了两遍。', next: 'c2d2_gap_pen_q' },
     c2d2_gap_pen_q: { speaker: 'director', sprite: 'char_director', text: '谁看见我的笔了？刚才还在。', choices: [
       { text: '把自己这支递过去', next: 'c2d2_gap_pen_a' },

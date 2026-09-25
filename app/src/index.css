@@ -96,6 +96,22 @@
   [data-ch2-step] .ch2-patient-companion { width: 72vw; left: auto; right: 2vw; }
 }
 
+/* Phone patient staging must not follow typewriter wrapping/choice expansion.
+   Reserve a stable lower region; long dialogue scrolls instead of lifting the bed.
+   Keep the measured height for desktop, scan images and other scene overlays. */
+@media (max-width: 767px), (max-height: 620px) and (max-width: 950px) {
+  [data-ch2-step] .ch2-patient-bed,
+  [data-ch2-step] .ch2-patient-wheelchair {
+    bottom: calc(42% + 0.5rem) !important;
+  }
+  [data-ch2-step]:has(.ch2-patient-bed, .ch2-patient-wheelchair) .dialog-wrap {
+    max-height: 42%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-top: 1.25rem !important;
+  }
+}
+
 /* 选项延迟出现时的柔和淡入 */
 @keyframes choiceIn {
   from { opacity: 0; transform: translateY(6px); }

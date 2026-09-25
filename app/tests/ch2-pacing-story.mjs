@@ -76,7 +76,8 @@ for (const bridge of CH2_PATIENT_BRIDGES) {
       next.forEach(n => walk(n, depth + 1))
     }
     walk(bridge.entry)
-    assert.equal(choiceCount, 1, `${bridge.entry}: exactly one choice prompt`)
+    // Author retired the whole phone-cord detour; its meal transition has no choice.
+    assert.equal(choiceCount, bridge.entry === 'c2d2_gap_phone' ? 0 : 1, `${bridge.entry}: choice prompt count`)
   }
 }
 assert.doesNotMatch(steps.c2d4_10.text, /下一位到门口/)
