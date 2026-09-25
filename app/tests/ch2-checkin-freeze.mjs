@@ -72,7 +72,7 @@ const additions = prefix => [...new Set([
 ].join('\n').split(/\r?\n/).filter(Boolean))].sort()
 assert.deepEqual(priorSourcePaths(additions('app/src')).filter(path => !POLISH_ADDED_SOURCE.includes(path) && !REWARDS_ROUND_ADDED_SOURCE.includes(path) && !CT_SEQUENCES_ADDED_SOURCE.includes(path)), CHECKIN_ADDED_FILES, 'Only three isolated check-in source files after the newer LIVE audit')
 assert.deepEqual(priorMediaPaths(additions('app/public/assets'), baseline).filter(path => !POLISH_ADDED_MEDIA.includes(path) && !REWARDS_ROUND_ADDED_MEDIA.includes(path) && !CT_SEQUENCES_ADDED_MEDIA.includes(path)), [], 'Check-in adds no image assets')
-assert.deepEqual(additions('app/public/audio'), [], 'Check-in adds no audio assets')
+assert.deepEqual(priorMediaPaths(additions('app/public/audio'), baseline), [], 'Check-in adds no audio assets; only the independently verified later voice is projected out')
 let mediaCount = 0
 for (const entry of git('ls-tree', '-r', '-z', baseline, '--', 'app/public/assets', 'app/public/audio')
   .toString('utf8').split('\0').filter(Boolean)) {

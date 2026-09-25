@@ -1,0 +1,17 @@
+[
+  {
+    "id": "vox_ch2_natural_director_day_v3",
+    "sha256": "66b30306bf99dc22cd94cc4db31cda7405d7953e0b824c79af223dd8222f2929",
+    "expected": "年轻人，白班动作要快！",
+    "asr": "年轻人白班动作要快",
+    "seconds": 2.978,
+    "sample_rate": 24000,
+    "mono": true,
+    "peak": 0.44421,
+    "rms": 0.08941,
+    "finite": true,
+    "first_active": 0.02,
+    "last_active": 2.8,
+    "human_listened": false
+  }
+]

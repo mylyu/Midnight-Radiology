@@ -1,0 +1,16 @@
+{
+  "lines": [
+    {
+      "key": "director",
+      "role": "主任",
+      "step": "c2d2_1",
+      "old_id": "vox_ch2_natural_director_v2",
+      "id": "vox_ch2_natural_director_day_v3",
+      "text": "年轻人，白班动作要快！",
+      "reference": "selected:director",
+      "seconds": 3.1,
+      "max_han": 9,
+      "seed_base": 2026092550
+    }
+  ]
+}

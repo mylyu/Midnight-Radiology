@@ -7,6 +7,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import sharp from 'sharp'
 import { priorDetailSourcePaths } from './ch2-detail-polish-projection.mjs'
+import { priorDirectorDayVoiceMediaPaths } from './ch2-director-day-voice.mjs'
 
 export const DELIVERY_BASELINE = 'c4215b080ec7d5052a86c23cf03b6bd2aa3b980a'
 export const DELIVERY_ROOT = new URL('../../', import.meta.url)
@@ -94,6 +95,7 @@ export const deliveryAddedMedia = () => deliveryManifest().images.filter(row => 
 // A historical additions check compares logical source identities, not pretend
 // current PNG paths. Only independently verified migrations can be translated.
 export function priorMediaPaths(paths, baseline) {
+  paths = priorDirectorDayVoiceMediaPaths(paths)
   deliveryManifest()
   assert(baseline, 'Historical additions require their own fixed baseline')
   const originalPaths = new Set(execFileSync('git', ['ls-tree', '-r', '--name-only', baseline], {

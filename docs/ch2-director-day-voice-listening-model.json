@@ -1,0 +1,8 @@
+[
+  {
+    "id": "vox_ch2_natural_director_day_v3",
+    "sha256": "66b30306bf99dc22cd94cc4db31cda7405d7953e0b824c79af223dd8222f2929",
+    "answer": "嗯…我听不清你说的啥。你再重复一遍呗。",
+    "method": "Local Qwen2.5-Omni-3B automated perception; fallible, not human listening or approval."
+  }
+]

@@ -60,7 +60,7 @@ export const payoffMediaHashes = new Map([
   ['app/public/assets/ch2_zhou_expert_handshake_v1.png', '29087f82840f13010859ede3e157276d3ae93fc4553a8a16409f1caf33e84bdf'],
 ])
 assert.deepEqual(priorMediaPaths(additions('app/public/assets'), baseline).filter(path => !POLISH_ADDED_MEDIA.includes(path) && !REWARDS_ROUND_ADDED_MEDIA.includes(path) && !CT_SEQUENCES_ADDED_MEDIA.includes(path)), [...payoffMediaHashes.keys()].sort(), 'Only six exact reviewed images after newer LIVE audit')
-assert.deepEqual(additions('app/public/audio'), [], 'No sound is added or replaced in this round')
+assert.deepEqual(priorMediaPaths(additions('app/public/audio'), baseline), [], 'No sound is added or replaced in this round; only the independently verified later voice is projected out')
 for (const [path, expected] of payoffMediaHashes) {
   assertHistoricalMedia(path, { sha256: expected })
 }

@@ -7,11 +7,12 @@ import ts from 'typescript'
 import {beforeSocial as live, beforeSocialSource} from './ch2-colleague-projection.mjs'
 import {beforePacingPatientUrl} from './ch2-pacing-projection.mjs'
 import {beforeAuthorPass} from './ch2-voice-author-projection.mjs'
+import { beforeDirectorDayVoiceSource } from './ch2-director-day-voice.mjs'
 const root=new URL('../../',import.meta.url), baseline='7032d58'
 const read=p=>readFileSync(new URL(p,root),'utf8')
 const json=p=>JSON.parse(read('docs/'+p+'.json'))
 const plan=json('ch2-voice-author-lines'), edits=json('ch2-voice-author-changes')
-const current=json('ch2-voice-current'), generated=json('ch2-voice-author-generation'), qa=json('ch2-voice-author-qa')
+const current=JSON.parse(beforeDirectorDayVoiceSource('docs/ch2-voice-current.json',read('docs/ch2-voice-current.json'))), generated=json('ch2-voice-author-generation'), qa=json('ch2-voice-author-qa')
 const perceptions=json('ch2-voice-author-listening-model')
 const oldGen=json('ch2-natural-voices-generation')
 const source=execFileSync('git',['show',baseline+':app/src/game/ch2.ts'],{encoding:'utf8',maxBuffer:4e6})

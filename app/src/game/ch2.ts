@@ -607,7 +607,7 @@ const C2D2: Record<string, Step> = {
   ...CH2_SOCIAL_STEPS.c2d2,
   ...CH2_PACING_STEPS.c2d2,
   c2d2_0: { bg: 'bg_ctcontrol_day', speaker: 'sys', text: '三天后，周一。主任把你从夜班临时调来支援白班：新CT的名声传开了，门诊开单量翻倍，候诊长队从CT室门口排到电梯间。', next: 'c2d2_1' },
-  c2d2_1: { speaker: 'director', sprite: 'char_director', sfx: 'vox_ch2_natural_director_v2', text: "年轻人，动作快起来！（主任朝候诊区看了一眼）队列你先接着，急诊来了叫我。", effect: { flag: 'day_shift' }, queue: C2D2_QUEUE0, next: 'c2d2_reg0' },
+  c2d2_1: { speaker: 'director', sprite: 'char_director', sfx: 'vox_ch2_natural_director_day_v3', text: "年轻人，白班动作要快！（主任朝候诊区看了一眼）队列你先接着，急诊来了叫我。", effect: { flag: 'day_shift' }, queue: C2D2_QUEUE0, next: 'c2d2_reg0' },
   c2d2_reg0: { bg: 'bg_office_day', speaker: 'director', sprite: 'char_director', text: "开诊前，先说一件事。去年登记本少的那页，检查记录补齐了，后续办法却一直悬着。这次市里专项督查到院，医务科要核清。老周，材料你带来了吧？", next: 'c2d2_reg1' },
   c2d2_reg1: { speaker: 'zhou', sprite: 'char_zhou', text: '页是我撕的。老人没证件，也没钱，我先给他拍了，没走登记申请。后来怕查，又想把这事盖过去。……不是这孩子的主意。', next: 'c2d2_reg2' },
   c2d2_reg2: { speaker: 'sys', text: '主任转向你，等你把自己知道的说清楚。', choices: [

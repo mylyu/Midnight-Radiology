@@ -28,7 +28,7 @@ const additions = prefix => [...new Set([
 ].join('\n').split(/\r?\n/).filter(Boolean))].sort()
 assert.deepEqual(priorSourcePaths(additions('app/src')).filter(path => !REWARDS_ROUND_ADDED_SOURCE.includes(path) && !CT_SEQUENCES_ADDED_SOURCE.includes(path)), POLISH_ADDED_SOURCE)
 assert.deepEqual(priorMediaPaths(additions('app/public/assets'), baseline).filter(path => !REWARDS_ROUND_ADDED_MEDIA.includes(path) && !CT_SEQUENCES_ADDED_MEDIA.includes(path)), POLISH_ADDED_MEDIA)
-assert.deepEqual(additions('app/public/audio'), [])
+assert.deepEqual(priorMediaPaths(additions('app/public/audio'), baseline), [])
 let mediaCount = 0
 for (const entry of git('ls-tree', '-r', '-z', baseline, '--', 'app/public/assets', 'app/public/audio').toString().split('\0').filter(Boolean)) {
   const [, expected, path] = /^\d+ blob ([0-9a-f]+)\t(.+)$/.exec(entry)

@@ -30,7 +30,7 @@ const additions = prefix => [...new Set([
   git('ls-files', '--others', '--exclude-standard', '--', prefix),
 ].join('\n').split(/\r?\n/).filter(Boolean))].sort()
 assert.deepEqual(priorSourcePaths(additions('app/src')), CT_SEQUENCES_ADDED_SOURCE, 'Exactly two isolated new chapter-two modules')
-assert.deepEqual(additions('app/public/audio'), [], 'Original CT sound and all approved voices stay exact; no new sound')
+assert.deepEqual(priorMediaPaths(additions('app/public/audio'), baseline), [], 'Original CT sound and all approved voices stay exact; only the independently verified later voice is projected out')
 
 const parse = (path, source) => ts.createSourceFile(path, source, ts.ScriptTarget.Latest, true,
   path.endsWith('.tsx') ? ts.ScriptKind.TSX : ts.ScriptKind.TS)

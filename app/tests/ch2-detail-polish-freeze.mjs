@@ -4,10 +4,12 @@ import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
+import { assertDirectorDayVoiceLive, priorDirectorDayVoiceMediaPaths } from './ch2-director-day-voice.mjs'
 import { DETAIL_ROOT as root, DETAIL_BASELINE as baseline, DETAIL_EDITED_FILES, DETAIL_ADDED_SOURCE,
   beforeDetailPolishSource, assertDetailAddedSource, normalizeDetail as normalize } from './ch2-detail-polish-projection.mjs'
 
 const git = (...args) => execFileSync('git', args, { cwd: fileURLToPath(root), maxBuffer: 32e6 })
+assertDirectorDayVoiceLive()
 const textGit = (...args) => git(...args).toString('utf8')
 const tracked = prefix => textGit('ls-tree', '-r', '--name-only', baseline, '--', prefix).trim().split('\n').filter(Boolean)
 const files = [...tracked('app/src'), ...tracked('app/scripts'), 'app/package.json', 'app/package-lock.json',
@@ -26,7 +28,7 @@ const additions = prefix => [...new Set([
 ].join('\n').split(/\r?\n/).filter(Boolean))].sort()
 assert.deepEqual(additions('app/src'), DETAIL_ADDED_SOURCE, 'Only six individually named and hash-verified production files')
 assertDetailAddedSource()
-assert.deepEqual(additions('app/public'), [], 'No new media, previews, or public resources')
+assert.deepEqual(priorDirectorDayVoiceMediaPaths(additions('app/public')), [], 'No new media, previews, or public resources beyond the one independently verified later director voice')
 assert.deepEqual(additions('app/scripts'), [], 'No production build script additions')
 let media = 0
 for (const entry of textGit('ls-tree', '-r', '-z', baseline, '--', 'app/public').split('\0').filter(Boolean)) {

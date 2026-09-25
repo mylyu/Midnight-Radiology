@@ -75,7 +75,7 @@ const additions = prefix => [...new Set([
   git('ls-files', '--others', '--exclude-standard', '--', prefix).toString(),
 ].join('\n').split(/\r?\n/).filter(Boolean))].sort()
 assert.deepEqual(priorSourcePaths(additions('app/src')).filter(path => !CT_SEQUENCES_ADDED_SOURCE.includes(path)), REWARDS_ROUND_ADDED_SOURCE, 'Only exact approved new source paths')
-assert.deepEqual(additions('app/public/audio'), [], 'No voices or sound assets may change')
+assert.deepEqual(priorMediaPaths(additions('app/public/audio'), baseline), [], 'No voices or sound assets may change beyond the independently verified later voice')
 let mediaCount = 0
 for (const entry of git('ls-tree', '-r', '-z', baseline, '--', 'app/public/assets', 'app/public/audio').toString().split('\0').filter(Boolean)) {
   const match = /^\d+ blob ([0-9a-f]+)\t(.+)$/.exec(entry)
