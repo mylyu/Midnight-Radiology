@@ -32,6 +32,7 @@ import { SceneBackground } from './components/SceneBackground'
 import { StatFeedback } from './components/StatFeedback'
 import { statChanges, statChangeReason, appendStatNotice, type StatNotice } from './game/stat-feedback'
 import { acceptInput } from './game/input-gate'
+import { useDialogueChoiceGuard } from './hooks/use-dialogue-choice-guard'
 import { readCh1Book, buyCh1Item, maintainCh1, commitCh1Choice, commitCh1Advance,
   commitCh2Choice, commitCh2Advance, type ChoiceCommitResult } from './game/interaction-transactions'
 import { ch2StatChoices, ch2StatReply, takeCh2StatInteraction, clearCh2StatReply, grantCh2WealthOnEntry } from './game/ch2-stat-interactions'
@@ -617,6 +618,7 @@ function NightScreen({ state, update, inputGate, onFinish, onExit }: { state: Ga
   const plainLen = fullText.replaceAll('**', '').length
   const done = shown >= plainLen
   const choicesLocked = !!step.choices && (!done || choiceReadyStep !== stepId)
+  const choiceGuard = useDialogueChoiceGuard(`ch1:${night.id}:${stepId}`, !choicesLocked && done && !shopOpen && !bookOpen && !manualOpen && !readout)
 
   // 换步时在渲染期同步重置打字机进度——避免第一帧用旧 shown 渲染出新文本的一大段残影再清空重打
   const [prevStepId, setPrevStepId] = useState(stepId)
@@ -750,8 +752,8 @@ function NightScreen({ state, update, inputGate, onFinish, onExit }: { state: Ga
     if (result?.accepted && result.nextStep) { playSfx('click'); setStepId(result.nextStep) }
   }
 
-  const pick = (c: Choice) => {
-    if (choicesLocked || !done || !acceptInput(inputGate.current, performance.now(), 300)) return
+  const pick = (c: Choice, index: number) => {
+    if (choicesLocked || !done || !choiceGuard.accept(index) || !acceptInput(inputGate.current, performance.now(), 300)) return
     const randomValue = c.risk ? Math.random() : undefined
     let result: ChoiceCommitResult | undefined
     update(s => { result = commitCh1Choice(s, { expectedNight: state.night, expectedStep: stepId, choice: c, randomValue }); return result.state })
@@ -773,7 +775,9 @@ function NightScreen({ state, update, inputGate, onFinish, onExit }: { state: Ga
   const visibleChoices = (step.choices ?? []).filter(c => condOk(state, c.cond))
 
   return (
-    <div className="relative w-full h-full cursor-pointer" data-ch1-step={stepId} onClick={advance}>
+    <div className="relative w-full h-full cursor-pointer" data-ch1-step={stepId}
+      onPointerDownCapture={choiceGuard.pointerDown} onPointerCancelCapture={choiceGuard.cancel}
+      onKeyDownCapture={choiceGuard.keyDown} onClickCapture={choiceGuard.click} onClick={advance}>
       <BgImg name={view.bg} />
       <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-slate-950/80 to-transparent pointer-events-none" />
 
@@ -850,7 +854,7 @@ function NightScreen({ state, update, inputGate, onFinish, onExit }: { state: Ga
           {step.choices && done && !choicesLocked && (
             <div className="mt-4 flex flex-col gap-2 choice-in" onClick={e => e.stopPropagation()}>
               {visibleChoices.map((c, i) => (
-                <button key={i} onClick={() => pick(c)}
+                <button key={i} data-dialogue-choice={i} onClick={() => pick(c, i)}
                   className="text-left px-4 py-2.5 rounded-lg bg-slate-800 border border-slate-600 hover:border-amber-400 hover:bg-slate-700 transition-all text-slate-100">
                   <RichText text={c.text} />
                 </button>
@@ -1930,7 +1934,12 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
   const setShown = (count: number) => setTextProgress({ id: stepId, shown: count })
   const done = shown >= plainLen
   const hasChoices = !!step.choices
-  const choicesLocked = hasChoices && (!done || choiceReadyStep !== stepId)
+  // Replies, observations and ordinary dialogue may share a stored step ID.
+  // A changed choice presentation must receive its own full-text buffer.
+  const choiceScope = JSON.stringify([shift.id, stepId, fullText, (step.choices ?? []).map(c => [c.text, c.next])])
+  const choicesLocked = hasChoices && (!done || choiceReadyStep !== choiceScope)
+  const choiceGuard = useDialogueChoiceGuard(choiceScope, !choicesLocked && done && !checkinPending && !scanPending &&
+    !shopOpen && !bookOpen && !manualOpen && !badgeOpen && !backpackOpen && phase === 'story')
 
   const updProg = (s: GameState, patch: Partial<DlcProgress>): GameState => ({
     ...s,
@@ -2053,11 +2062,11 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
     pickedGate.current = { id: stepId, until: 0 }
     if (!hasChoices || !done) { setChoiceReadyStep(null); return }
     const readyAt = performance.now() + 900
-    choiceReadyAt.current = { id: stepId, time: readyAt }
+    choiceReadyAt.current = { id: choiceScope, time: readyAt }
     const unlock = () => {
-      if (performance.now() >= readyAt) setChoiceReadyStep(stepId)
+      if (performance.now() >= readyAt) setChoiceReadyStep(choiceScope)
     }
-    const t = setTimeout(() => setChoiceReadyStep(stepId), 900)
+    const t = setTimeout(unlock, 900)
     window.addEventListener('focus', unlock)
     document.addEventListener('visibilitychange', unlock)
     return () => {
@@ -2065,7 +2074,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
       window.removeEventListener('focus', unlock)
       document.removeEventListener('visibilitychange', unlock)
     }
-  }, [stepId, done, hasChoices])
+  }, [stepId, choiceScope, done, hasChoices])
 
   const blocked = checkinPending || scanPending || !!(step.choices || step.end || step.windowTask || step.checklist) || shopOpen || bookOpen || manualOpen || badgeOpen || backpackOpen || phase !== 'story'
 
@@ -2074,7 +2083,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
     // Reveal text even on choices, tasks and settlement nodes. Those nodes must
     // block navigation, not the user's attempt to finish the typewriter text.
     if (!done) { if (acceptInput(advanceGate.current, performance.now(), 300)) setShown(plainLen); return }
-    if (hasChoices && choiceReadyAt.current.id === stepId && performance.now() >= choiceReadyAt.current.time) setChoiceReadyStep(stepId)
+    if (hasChoices && choiceReadyAt.current.id === choiceScope && performance.now() >= choiceReadyAt.current.time) setChoiceReadyStep(choiceScope)
     if (blocked) return
     if (!acceptInput(advanceGate.current, performance.now(), 300)) return
     if (step.next === '@ch2stat-return') { update(s => clearCh2StatReply(s, stepId)); setShown(0); return }
@@ -2099,11 +2108,11 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
     }
   }
 
-  const pick = (c: Choice) => {
+  const pick = (c: Choice, index: number) => {
     if (checkinPending) return
-    // The visible-choice delay already prevents accidental selection. Do not
-    // extend a lock on every rejected tap: rapid taps could otherwise starve it.
-    if (choicesLocked || !done || (pickedGate.current.id === stepId && performance.now() < pickedGate.current.until)) return
+    // The 900ms reveal buffer and fresh-gesture guard serve different purposes:
+    // continuing fast-forward taps must not select the newly visible answers.
+    if (choicesLocked || !done || !choiceGuard.accept(index) || (pickedGate.current.id === stepId && performance.now() < pickedGate.current.until)) return
     if (c.next !== '@shop' && c.next !== '@book2') pickedGate.current = { id: stepId, until: performance.now() + 250 }
     if (c.next.startsWith('@ch2stat:')) { update(s => takeCh2StatInteraction(s, stepId, c.next)); setShown(0); return }
     if (c.next.startsWith('@ch2observe:')) { update(s => answerCh2Observation(s, stepId, c.next.slice('@ch2observe:'.length))); setShown(0); return }
@@ -2159,7 +2168,9 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
   const dawnShot = phase === 'story' ? CH2_DAWN_SHOTS[stepId] : undefined
 
   return (
-    <div ref={stageRef} className="relative w-full h-full cursor-pointer" data-ch2-step={stepId} data-ch2-phase={phase} data-ch2-observation={observationPending ? observation?.id : undefined} onClickCapture={retryVoices} onClick={advance}>
+    <div ref={stageRef} className="relative w-full h-full cursor-pointer" data-ch2-step={stepId} data-ch2-phase={phase} data-ch2-observation={observationPending ? observation?.id : undefined}
+      onPointerDownCapture={choiceGuard.pointerDown} onPointerCancelCapture={choiceGuard.cancel}
+      onKeyDownCapture={choiceGuard.keyDown} onClickCapture={event => { choiceGuard.click(event); retryVoices() }} onClick={advance}>
       {dawnShot ? <Ch2DawnScene shot={dawnShot} /> : <BgImg name={ch2BackgroundAsset(view.bg)} />}
       <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-slate-950/80 to-transparent pointer-events-none" />
 
@@ -2244,7 +2255,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
           {step.choices && done && !choicesLocked && (
             <div className="mt-4 flex flex-col gap-2 choice-in max-h-[38vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
               {visibleChoices.map((c, i) => (
-                <button key={i} onClick={() => pick(c)}
+                <button key={i} data-dialogue-choice={i} onClick={() => pick(c, i)}
                   className="text-left px-4 py-2.5 rounded-lg bg-slate-800 border border-slate-600 hover:border-teal-400 hover:bg-slate-700 transition-all text-slate-100">
                   <RichText text={c.text} />
                 </button>
