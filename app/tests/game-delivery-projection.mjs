@@ -4,6 +4,7 @@ import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { DELIVERY_ROOT, DELIVERY_BASELINE, deliveryManifest } from './game-delivery-media.mjs'
+import { beforeDetailPolishSource } from './ch2-detail-polish-projection.mjs'
 export const DELIVERY_EDITED_FILES = ['app/scripts/prepare-images.mjs', 'app/src/App.tsx', 'app/src/components/SceneBackground.tsx', 'app/src/lib/image-assets.ts']
 const normalize = value => value.replaceAll('\r\n', '\n').trimEnd() + '\n'
 const old = new Map()
@@ -12,6 +13,8 @@ const original = path => {
   return old.get(path)
 }
 export function beforeGameDeliverySource(path, source) {
+  if (DELIVERY_EDITED_FILES.includes(path) && normalize(source) === original(path)) return source
+  source = beforeDetailPolishSource(path, source)
   if (!DELIVERY_EDITED_FILES.includes(path)) return source
   deliveryManifest() // Validate the independently pinned live ledger before using its inverse.
   const ledger = JSON.parse(readFileSync(new URL('docs/game-delivery-source-deltas.json', DELIVERY_ROOT), 'utf8'))

@@ -95,7 +95,7 @@ try {
       await context.close()
     }
 
-    for (const id of ['c2am_payoff_end', 'c2am_lowdose_teaser0', 'c2am_lowdose_teaser1', 'c2am_lowdose_teaser2']) {
+    for (const id of ['c2am_payoff_end', 'c2am_lowdose_teaser0', 'c2am_lowdose_teaser1', 'c2am_lowdose_meet', 'c2am_lowdose_dinner', 'c2am_lowdose_teaser2']) {
       const { page, context } = await open(fixture(id, 'story'), mobile)
       await noReading(page)
       assert.equal((await read(page)).dlc.ch2.stepId, id)
@@ -164,13 +164,13 @@ try {
       await context.close()
     }
   }
-  assert.equal(results.length, 22)
+  assert.equal(results.length, 26)
   assert.equal(externalRequests.length, 4)
   assert.deepEqual(errors, [])
   writeFileSync(resolve(output, 'results.json'), JSON.stringify({ gameURL, results, errors, externalRequests,
     fixtureSavesExplicit: true, fullPlaythroughClaimed: false, playerProfileUsed: false,
     mockedAudio: true, externalArticleContentMocked: true, externalArticleContentVerified: false }, null, 2))
-  console.log('PASS case reading: 22 explicit seeded UI scenarios, all five shift settlements and unfinished epilogue hide reading; current/legacy done desktop/390px show it; four real new-tab clicks to the exact mocked PMC URL, noopener/noreferrer, unchanged save/storage, refresh stays completed.')
+  console.log('PASS case reading: 26 explicit seeded UI scenarios, all five shift settlements and unfinished epilogue hide reading; current/legacy done desktop/390px show it; four real new-tab clicks to the exact mocked PMC URL, noopener/noreferrer, unchanged save/storage, refresh stays completed.')
 } catch (error) {
   if (activePage && !activePage.isClosed()) await activePage.screenshot({ path: resolve(output, 'failure.png') }).catch(() => {})
   writeFileSync(resolve(output, 'failure.json'), JSON.stringify({ message: error.message, stack: error.stack, errors, externalRequests, results }, null, 2))

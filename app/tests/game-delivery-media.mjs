@@ -6,6 +6,7 @@ import { execFileSync } from 'node:child_process'
 import { existsSync, readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import sharp from 'sharp'
+import { priorDetailSourcePaths } from './ch2-detail-polish-projection.mjs'
 
 export const DELIVERY_BASELINE = 'c4215b080ec7d5052a86c23cf03b6bd2aa3b980a'
 export const DELIVERY_ROOT = new URL('../../', import.meta.url)
@@ -105,7 +106,7 @@ export function priorMediaPaths(paths, baseline) {
     return originalPaths.has(row.sourcePath) ? [] : [row.sourcePath]
   }))].sort()
 }
-export function priorSourcePaths(paths) { return paths.filter(path => !DELIVERY_ADDED_SOURCE.includes(path)) }
+export function priorSourcePaths(paths) { return priorDetailSourcePaths(paths).filter(path => !DELIVERY_ADDED_SOURCE.includes(path)) }
 export function reviewedMediaChanges(paths) {
   const rows = deliveryManifest().images.filter(row => row.deliveryPath !== row.sourcePath)
   const reviewed = new Set(rows.flatMap(row => [row.sourcePath, row.deliveryPath]))

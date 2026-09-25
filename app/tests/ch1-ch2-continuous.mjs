@@ -26,19 +26,36 @@ const variants = [
 assert(variants.length, 'CHAIN_VARIANT must name one of the two fixed routes')
 const results = []
 const allBadges = process.env.CHAIN_ALL_BADGES === '1'
-const chapter2Only = allBadges && process.env.CHAIN_CH2_ONLY === '1'
+const chapter2Only = process.env.CHAIN_CH2_ONLY === '1'
 const read = page => page.evaluate(() => JSON.parse(localStorage.getItem('midnight-radiology-save-v1')))
 const plain = text => (text ?? '').replaceAll('**', '')
 const dialog = page => page.locator('.dialog-box > p')
 const buttons = page => page.locator('.dialog-box .choice-in button')
 async function click(page, locator) { await page.waitForTimeout(340); await locator.click() }
 async function reveal(page) {
+  // A real separate gesture, not a second click inside the 300ms fast-tap guard.
+  await page.waitForTimeout(310)
   const arrow = page.locator('.dialog-box > span.animate-bounce')
   if (!(await arrow.count()) && !(await buttons(page).count())) await dialog(page).click()
 }
 async function advance(page) {
+  const currentNode = () => page.evaluate(() => {
+    const root = document.querySelector('[data-ch2-step], [data-ch1-step]')
+    const p = JSON.parse(localStorage.getItem('midnight-radiology-save-v1'))?.dlc?.ch2
+    return JSON.stringify([root?.getAttribute('data-ch2-step') ?? root?.getAttribute('data-ch1-step'), p?.giftReply, p?.statInteractions?.pending])
+  })
+  const before = await currentNode()
   await reveal(page)
-  await page.locator('.dialog-box > span.animate-bounce').waitFor({ timeout: 20000 })
+  // Natural typewriter completion can land between inspecting the arrow and
+  // dispatching a trusted mouse click. That click already advanced normally;
+  // never wait for an arrow on the following (possibly choice-only) node.
+  await page.waitForFunction(id => {
+    const root = document.querySelector('[data-ch2-step], [data-ch1-step]')
+    const p = JSON.parse(localStorage.getItem('midnight-radiology-save-v1'))?.dlc?.ch2
+    const now = JSON.stringify([root?.getAttribute('data-ch2-step') ?? root?.getAttribute('data-ch1-step'), p?.giftReply, p?.statInteractions?.pending])
+    return now !== id || !!document.querySelector('.dialog-box > span.animate-bounce')
+  }, before, { timeout: 20000 })
+  if (await currentNode() !== before) return
   await click(page, dialog(page))
 }
 async function settlementImages(page) {
@@ -102,6 +119,7 @@ async function runCh1(page, variant, log) {
     }
     const night = NIGHTS.find(n => n.id === s.night), step = night.steps[s.stepId]
     assert(step, `Ch1 missing ${s.stepId}`)
+    await page.locator(`[data-ch1-step="${s.stepId}"]`).waitFor()
     seen.add(s.stepId)
     if (step.end) {
       await page.waitForFunction(id => JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).stepId !== id, s.stepId)
@@ -219,6 +237,8 @@ async function buyAtSettlement(page, log) {
   for (const id of purchases) {
     const item = SHOP_ITEMS.find(i => i.id === id), button = page.getByRole('button', { name: `购买${item.name}`, exact: true })
     if (await button.isEnabled()) {
+      // Separate intended purchases from the new 500ms accidental-double-tap gate.
+      await page.waitForTimeout(200)
       const a = await read(page)
       await click(page, button)
       const b = await read(page)
@@ -249,6 +269,7 @@ async function runCh2(page, variant, inherited, log) {
     const s = await read(page), p = s.dlc.ch2
     assertInherited(inherited, s)
     if (p.done) break
+    if ((p.phase ?? 'story') === 'story') await page.locator(`[data-ch2-step="${p.stepId}"]`).waitFor()
     if (await swipeCh2Checkin(page, s)) { log.push({ kind: 'checkin', id: p.stepId }); continue }
     if (p.phase === 'settle') {
       await page.locator('[data-ch2-settlement]').waitFor()
@@ -287,6 +308,19 @@ async function runCh2(page, variant, inherited, log) {
         await click(page, page.getByRole('button', { name: q.index === 4 ? '查看成绩 →' : '下一题 →', exact: true }))
         await page.waitForFunction(index => { const q = JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).dlc.ch2.quiz; return q.completed || q.index !== index }, q.index)
       }
+      continue
+    }
+    if (p.statInteractions?.pending) {
+      const before = await read(page), pending = before.dlc.ch2.statInteractions.pending
+      if (!refresh.has('stat-interaction')) {
+        await page.reload(); await dialog(page).waitFor()
+        assert.deepEqual((await read(page)).dlc.ch2.statInteractions, before.dlc.ch2.statInteractions)
+        assert.equal((await read(page)).ap, before.ap, 'Stat assistance survives refresh once')
+        refresh.add('stat-interaction')
+      }
+      await advance(page)
+      await page.waitForFunction(() => !JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).dlc.ch2.statInteractions?.pending)
+      log.push({ kind: 'ch2-stat-interaction', ...pending })
       continue
     }
     if (p.giftReply) {
@@ -382,7 +416,7 @@ async function runCh2(page, variant, inherited, log) {
     } else await advance(page)
     await page.waitForFunction(before => {
       const now = JSON.parse(localStorage.getItem('midnight-radiology-save-v1')).dlc.ch2
-      return now.stepId !== before.stepId || now.shift !== before.shift || now.phase !== before.phase || now.done || !!now.giftReply
+      return now.stepId !== before.stepId || now.shift !== before.shift || now.phase !== before.phase || now.done || !!now.giftReply || !!now.statInteractions?.pending
     }, p, { timeout: 15000 })
     if (count % 50 === 0) console.log(variant.id, 'Ch2', count, (await read(page)).dlc.ch2.stepId)
   }
@@ -466,7 +500,7 @@ try {
       const result = { variant, first, second, errors, networkFailures }
       results.push(result)
       writeFileSync(`${output}/${variant.id}-result.json`, JSON.stringify(result, null, 2))
-      console.log(chapter2Only ? 'PASS FRESH CH2 ALL BADGES' : 'PASS CONTINUOUS CH1->CH2', variant.id, first.nodes, second.nodes, second.iterations, 'same live save')
+      console.log(chapter2Only ? (allBadges ? 'PASS FRESH CH2 ALL BADGES' : 'PASS FRESH CH2 HELP ROUTE') : 'PASS CONTINUOUS CH1->CH2', variant.id, first.nodes, second.nodes, second.iterations, 'same live save')
     } catch (error) {
       log.push({ kind: 'failure', error: String(error), state: await read(page), body: await page.locator('body').innerText() })
       await page.screenshot({ path: `${output}/${variant.id}-failure.png` })

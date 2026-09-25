@@ -108,6 +108,12 @@ export const CH2_PACING_STEPS: Record<string, Record<string, Step>> = {
 type PacingState = Pick<GameState, 'flags'> & Partial<Pick<GameState, 'items'>>
 
 export function ch2PacingStep(id: string, step: Step, { flags: f, items = [] }: PacingState): Step {
+  if (id === 'c2n5_n3') return { ...step,
+    text: '申请单到了。我先调出既往影像，把申请单交给值班医师确认方案，再把机房腾好。' }
+  if (id === 'c2n5_n4') return { ...step,
+    text: '等医师回话的空当，急诊又打来电话：「有个病人投诉你们CT室空调太冷！」' }
+  if (id === 'c2am_6') return { ...step,
+    text: '晨会散了。你把椅子推回桌下，同事们陆续出了门。' }
   if (id === 'c2n1_gap_chair_q' && items.includes('toolbox') && !f.c2_chair_fixed) {
     return { ...step, choices: step.choices?.map(c => c.next === 'c2n1_gap_chair_check'
       ? { ...c, text: '用元件盒里的螺丝刀看看', next: 'c2n1_gap_chair_fix' } : c) }

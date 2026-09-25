@@ -25,7 +25,9 @@ for (const source of ['ch2.ts', 'ch2-social.ts']) {
 }
 for (const shift of CH2_SHIFTS) {
   for (const [id, s] of Object.entries(shift.steps)) {
-    assert.doesNotMatch(s.text ?? '', /陆舟|陆川|环状伪影|第217号/, `${id}: deferred plot revived`)
+    if (id === 'c2am_lowdose_teaser0') {
+      assert.equal(s.text, '【几天后 · 午休】你的手机亮了。来电显示：陆舟——本科时住一间宿舍的老同学。', 'Only the approved named-contact invitation may mention Lu Zhou')
+    } else assert.doesNotMatch(s.text ?? '', /陆舟|陆川|环状伪影|第217号/, `${id}: deferred plot revived`)
     for (const next of targets(s)) if (!next.startsWith('@')) assert(shift.steps[next], `${id} -> ${next}: invalid shift edge`)
   }
 }

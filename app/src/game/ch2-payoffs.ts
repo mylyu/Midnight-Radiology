@@ -131,12 +131,19 @@ export const CH2_PAYOFF_STEPS: Record<string, Record<string, Step>> = {
     c2am_payoff_end: { ...clear, bg: 'bg_office_day', speaker: 'sys',
       text: '你把体模记录摊到桌上。小唐悄悄把椅子往你这边挪：「周老师这称呼……回头再问。」老周听见了：「先看记录。八卦又不会跑。」',
       effect: { flag: 'c2_payoff_expert_done' }, next: 'c2am_lowdose_teaser0' },
-    c2am_lowdose_teaser0: { ...clear, bg: 'bg_ctcontrol_day', speaker: 'sys',
-      text: '【几天后】小雷拿来一份新安排，压在你的茶杯底下。标题圈了三个字：**低剂量**。你翻到后面——体模、重建方案，还有一整页待比较的图。', next: 'c2am_lowdose_teaser1' },
-    c2am_lowdose_teaser1: { ...clear, speaker: 'lei', sprite: 'char_lei',
-      text: '先拿体模试。参数怎么选、图还能看清多少，慢慢比。你可别一听“新项目”，又把包背上准备下班。', next: 'c2am_lowdose_teaser2' },
-    c2am_lowdose_teaser2: { ...clear, speaker: 'me',
-      text: '“我包还没放下呢。”你把那张安排抽出来，夹进本子。\n\n**DLC预告 · 低剂量CT**\n新的图像、新的取舍。尚未开放，故事留待后续。', end: true },
+    c2am_lowdose_teaser0: { ...clear, bg: 'ch2_bg_breakroom_day', speaker: 'sys',
+      text: '【几天后 · 午休】你的手机亮了。来电显示：陆舟——本科时住一间宿舍的老同学。', next: 'c2am_lowdose_teaser1' },
+    c2am_lowdose_teaser1: { ...clear, speaker: 'luzhou',
+      text: '哪天歇？出来吃个饭。我那低剂量CT课题，见面跟你吐槽。', choices: [
+        { text: '「行，我把排班发你。」', next: 'c2am_lowdose_meet' },
+        { text: '「聊研究可以，你请饭。」', next: 'c2am_lowdose_dinner' },
+      ] },
+    c2am_lowdose_meet: { ...clear, speaker: 'luzhou',
+      text: '行，挑你睡醒的时候。别对着菜单打哈欠啊。', next: 'c2am_lowdose_teaser2' },
+    c2am_lowdose_dinner: { ...clear, speaker: 'luzhou',
+      text: '我请。先吃饭，别一见面就查我进度。', next: 'c2am_lowdose_teaser2' },
+    c2am_lowdose_teaser2: { ...clear, speaker: 'sys',
+      text: '挂了电话，你把排班发过去，约好休息日再见。\n\n**DLC预告 · 低剂量CT**\n新的图像、新的取舍。尚未开放，故事留待后续。', end: true },
   },
 }
 
@@ -208,6 +215,8 @@ function payoffStep(id: string, step: Step, s: PayoffState): Step {
     text: '你把教具底座的小摇柄收进窄格，正合适。小雷看了一眼：「挺好，别跟转接头放一块儿，下次我真会装错。」' }
   if (id === 'c2n5_b1' && f.c2_apples_shared) return { ...step,
     text: '（塞给你一个保温盒）上回那袋苹果净被我们吃了，这次给你留点牛肉。老周已经吃掉一半，剩下这半我守住了。' }
+  if (id === 'c2n5_b1' && f.c2_dawn_done) return { ...step,
+    text: '（塞给你一个保温盒）上回看日出还怕只剩素包子，这回先给你留点牛肉。' }
   if (id === 'c2n5_b2') return { ...step, image: 'item_beef',
     text: f.c2_apples_shared ? '你掀开保温盒，牛肉切好了，小唐还塞了双筷子。「苹果归苹果，这盒记得洗。」她说完，又从盘里补了一块。' : step.text }
   if (id === 'c2n5_g1') return { ...step, image: 'ch2_gift_zhou_cup_v1',

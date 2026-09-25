@@ -22,7 +22,7 @@ const protectedState = s => ({ night: s.night, finished: s.finished, buyCount: s
 const render = (id, s) => ch2PayoffStep(id, nodes[id], s)
 
 for (const [id, step] of Object.entries(additions)) {
-  if (!['c2am_lowdose_teaser0', 'c2am_lowdose_teaser1', 'c2am_lowdose_teaser2'].includes(id)) assert.match(id, /^c2(?:d2|n5|am)_payoff_/)
+  if (!['c2am_lowdose_teaser0', 'c2am_lowdose_teaser1', 'c2am_lowdose_meet', 'c2am_lowdose_dinner', 'c2am_lowdose_teaser2'].includes(id)) assert.match(id, /^c2(?:d2|n5|am)_payoff_/)
   assert.equal(step.sfx, undefined)
   assert.equal(step.sfx2, undefined)
   for (const field of ['windowTask', 'checklist', 'readout', 'pedal', 'dose', 'dnt', 'card']) assert.equal(step[field], undefined)
@@ -149,7 +149,7 @@ for (const item of CH2_PAYOFF_KEEPSAKES) {
 
 // Next-week payoff: original saves without this revision's objects get no made-up receipt.
 let epilogueRoutes = 0
-for (const model of [false, true]) for (const base of [false, true]) for (const glasses of [false, true]) {
+for (const model of [false, true]) for (const base of [false, true]) for (const glasses of [false, true]) for (const callReply of ['c2am_lowdose_meet', 'c2am_lowdose_dinner']) {
   let s = { ...old, flags: { ...inherited, n5_fan: glasses, c2_payoff_model: model,
     c2_payoff_base: base, c2_payoff_zhou_cup: true } }
   const before = score(s), frozen = protectedState(s)
@@ -160,12 +160,18 @@ for (const model of [false, true]) for (const base of [false, true]) for (const 
     const step = render(id, s)
     s = JSON.parse(JSON.stringify(applyEffect(s, step.effect)))
     if (step.end) break
-    id = step.choices ? step.choices[base ? step.choices.length - 1 : 0].next : step.next
+    if (id === 'c2am_lowdose_teaser1') {
+      assert.deepEqual(step.choices, [
+        { text: '「行，我把排班发你。」', next: 'c2am_lowdose_meet' },
+        { text: '「聊研究可以，你请饭。」', next: 'c2am_lowdose_dinner' },
+      ])
+      id = callReply
+    } else id = step.choices ? step.choices[base ? step.choices.length - 1 : 0].next : step.next
     assert(nodes[id], `Ending must not strand the player at ${id}`)
   }
   assert.equal(seen.at(-1), 'c2am_lowdose_teaser2')
   assert(seen.length <= 11)
-  assert.deepEqual(seen.slice(-3), ['c2am_lowdose_teaser0', 'c2am_lowdose_teaser1', 'c2am_lowdose_teaser2'])
+  assert.deepEqual(seen.slice(-4), ['c2am_lowdose_teaser0', 'c2am_lowdose_teaser1', callReply, 'c2am_lowdose_teaser2'])
   assert(seen.includes('c2am_payoff_handshake'))
   assert.equal(seen.includes('c2am_payoff_rotate'), model && base)
   assert.equal(seen.includes('c2am_payoff_layers'), model && !base)

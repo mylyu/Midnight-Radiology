@@ -2,16 +2,16 @@
 // Browser contexts do not read or write the player's real browser profile.
 import assert from 'node:assert/strict'
 import { createRequire } from 'node:module'
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { mkdirSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { CH2_SHIFTS, ch2StepForState } from '../src/game/ch2.ts'
 import { CH2_PAYOFF_KEEPSAKES, CH2_PAYOFF_EVIDENCE, ch2PayoffKeepsakes } from '../src/game/ch2-payoffs.ts'
 import { freshState } from '../src/game/store.ts'
+import { logicalImagePath, logicalImageUrl } from './game-delivery-media.mjs'
 
 const { chromium } = createRequire(import.meta.url)(process.env.PLAYWRIGHT_MODULE || 'C:/Users/lvmen/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright')
 const output = resolve(process.env.GIFT_GALLERY_OUTPUT || '../../ch2-gift-gallery-review')
 const gameURL = (process.env.GAME_URL || 'http://127.0.0.1:8798/').replace(/\/$/, '') + '/#/ch2'
-const optimizedAssets = JSON.parse(readFileSync(new URL('../src/lib/image-assets.generated.json', import.meta.url), 'utf8'))
 const allFlags = Object.fromEntries(CH2_PAYOFF_KEEPSAKES.map(item => [item.flag, true]))
 const metrics = s => Object.fromEntries(['gold', 'skill', 'heart', 'wealth', 'ap', 'durability', 'items', 'badges', 'cards', 'events', 'stamps', 'buyCount'].map(key => [key, s[key]]))
 const clean = text => (text ?? '').replaceAll('**', '')
@@ -76,8 +76,21 @@ async function reveal(page) {
   return { s, id, step }
 }
 async function advance(page, target) {
-  const { step } = await reveal(page)
-  assert.equal(step.choices, undefined, 'These fixtures use existing linear receipt/teaser nodes')
+  const { id, step } = await reveal(page)
+  // Keep deliberate gestures outside the approved 300 ms input guard.
+  await page.waitForTimeout(310)
+  if (id === 'c2am_lowdose_teaser1') {
+    assert.deepEqual(step.choices, [
+      { text: '「行，我把排班发你。」', next: 'c2am_lowdose_meet' },
+      { text: '「聊研究可以，你请饭。」', next: 'c2am_lowdose_dinner' },
+    ], 'Only the approved caller node introduces two replies')
+    const choice = step.choices.find(row => row.next === target)
+    assert(choice, 'The call fixture selects its explicit approved route')
+    await page.locator('.choice-in').getByRole('button', { name: choice.text, exact: true }).click()
+    await page.locator(`[data-ch2-step="${target}"]`).waitFor()
+    return
+  }
+  assert.equal(step.choices, undefined, 'All other receipt/teaser nodes remain linear')
   if (step.end) {
     assert.equal(target, '@complete')
     await page.getByRole('button', { name: /第二章 · 完 —— 结算/ }).click()
@@ -90,10 +103,10 @@ async function advance(page, target) {
   }
 }
 async function imageReady(page, scope, name) {
-  // The generated delivery map is shared by imageAsset and the production build.
+  // Resolve through the reviewed canonical catalog and verify live delivery hashes.
   // Resolve against the actual page prefix; production serves no /src modules.
-  const assetPath = optimizedAssets[name] ?? `${name}.png`
-  const expectedURL = new URL(`assets/${assetPath}`, page.url()).href
+  const assetPath = logicalImagePath(name)
+  const expectedURL = logicalImageUrl(name, page.url())
   const img = scope.locator(`img[src$=${JSON.stringify(`/${assetPath}`)}]`).first()
   await img.waitFor()
   await img.scrollIntoViewIfNeeded()
@@ -186,24 +199,27 @@ try {
     await context.close()
   }
 
-  const teaser = await open(fixture('c2am_payoff_end'))
-  const teaserBefore = await read(teaser.page), visited = ['c2am_payoff_end']
-  for (const id of ['c2am_lowdose_teaser0', 'c2am_lowdose_teaser1', 'c2am_lowdose_teaser2']) {
-    await advance(teaser.page, id)
-    visited.push(id)
-    assert.equal((await read(teaser.page)).dlc.ch2.done, false)
-    assert.deepEqual(metrics(await read(teaser.page)), metrics(teaserBefore), 'The teaser grants no economy or award')
+  for (const callReply of ['c2am_lowdose_meet', 'c2am_lowdose_dinner']) {
+    const teaser = await open(fixture('c2am_payoff_end'), callReply === 'c2am_lowdose_dinner')
+    const teaserBefore = await read(teaser.page), visited = ['c2am_payoff_end']
+    for (const id of ['c2am_lowdose_teaser0', 'c2am_lowdose_teaser1', callReply, 'c2am_lowdose_teaser2']) {
+      await advance(teaser.page, id)
+      visited.push(id)
+      assert.equal((await read(teaser.page)).dlc.ch2.done, false)
+      assert.deepEqual(metrics(await read(teaser.page)), metrics(teaserBefore), 'The teaser grants no economy or award')
+      await refresh(teaser.page)
+    }
+    assert.deepEqual(visited, ['c2am_payoff_end', 'c2am_lowdose_teaser0', 'c2am_lowdose_teaser1', callReply, 'c2am_lowdose_teaser2'])
+    await reveal(teaser.page)
+    await teaser.page.screenshot({ path: resolve(output, callReply === 'c2am_lowdose_meet' ? 'lowdose-teaser-final.png' : 'lowdose-teaser-dinner-390.png') })
+    await advance(teaser.page, '@complete')
+    assert.equal((await read(teaser.page)).dlc.ch2.done, true)
+    assert.deepEqual(metrics(await read(teaser.page)), metrics(teaserBefore))
+    assert.equal(await teaser.page.locator('[data-equipment="ldct"][data-unlock="locked"]').count(), 1)
     await refresh(teaser.page)
+    results.push({ kind: 'teaser-continuation-from-seeded-ending', fullPlaythrough: false, callReply, visited, done: true, noNewEconomyOrAwards: true })
+    await teaser.context.close()
   }
-  await reveal(teaser.page)
-  await teaser.page.screenshot({ path: resolve(output, 'lowdose-teaser-final.png') })
-  await advance(teaser.page, '@complete')
-  assert.equal((await read(teaser.page)).dlc.ch2.done, true)
-  assert.deepEqual(metrics(await read(teaser.page)), metrics(teaserBefore))
-  assert.equal(await teaser.page.locator('[data-equipment="ldct"][data-unlock="locked"]').count(), 1)
-  await refresh(teaser.page)
-  results.push({ kind: 'teaser-continuation-from-seeded-ending', fullPlaythrough: false, visited, done: true, noNewEconomyOrAwards: true })
-  await teaser.context.close()
 
   for (const mobile of [false, true]) {
     const old = fixture('c2am_9', { completed: true })
@@ -227,7 +243,7 @@ try {
   assert.deepEqual(imageRequests, [], 'No image requests fail')
   writeFileSync(resolve(output, 'results.json'), JSON.stringify({ results, errors, failedImageRequests: imageRequests,
     fixtureSavesExplicit: true, fullPlaythroughClaimed: false, playerProfileUsed: false, mockedAudio: true }, null, 2))
-  console.log(`PASS gift gallery: ${results.length} explicit seeded scenarios; seven decoded gifts on desktop/390px, five actual UI receipts, three-step teaser, unchanged old completed saves.`)
+  console.log(`PASS gift gallery: ${results.length} explicit seeded scenarios; seven decoded gifts on desktop/390px, five actual UI receipts, both exact four-node call routes, unchanged old completed saves.`)
 } catch (error) {
   if (activePage && !activePage.isClosed()) await activePage.screenshot({ path: resolve(output, 'failure.png') }).catch(() => {})
   writeFileSync(resolve(output, 'failure.json'), JSON.stringify({ message: error.message, stack: error.stack, errors, imageRequests, results }, null, 2))

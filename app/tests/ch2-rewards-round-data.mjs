@@ -54,13 +54,21 @@ assert.deepEqual(restored.dlc.dr, legacy.dlc.dr)
 assert.deepEqual(restored.dlc.dsa, legacy.dlc.dsa)
 for (const key of ['gold', 'skill', 'heart', 'wealth', 'ap', 'flags', 'items', 'night', 'finished']) assert.deepEqual(restored[key], legacy[key])
 
-const teaser = ['c2am_lowdose_teaser0', 'c2am_lowdose_teaser1', 'c2am_lowdose_teaser2']
+const teaser = ['c2am_lowdose_teaser0', 'c2am_lowdose_teaser1', 'c2am_lowdose_meet', 'c2am_lowdose_dinner', 'c2am_lowdose_teaser2']
 assert.equal(render('c2am_payoff_end').next, teaser[0])
-for (const [i, id] of teaser.entries()) {
+for (const id of teaser) {
   const step = render(id)
   assert(!step.effect && !step.event && !step.vox && !step.scan && !step.sfx, 'Teaser has no rewards, scan or new audio')
-  if (i < 2) assert.equal(step.next, teaser[i + 1])
-  else { assert.equal(step.end, true); assert.match(step.text, /DLC预告 · 低剂量CT/); assert.match(step.text, /尚未开放/) }
+  if (id === 'c2am_lowdose_teaser0') assert.equal(step.next, 'c2am_lowdose_teaser1')
+  else if (id === 'c2am_lowdose_teaser1') {
+    assert.equal(step.next, undefined)
+    assert.deepEqual(step.choices, [
+      { text: '「行，我把排班发你。」', next: 'c2am_lowdose_meet' },
+      { text: '「聊研究可以，你请饭。」', next: 'c2am_lowdose_dinner' },
+    ], 'Exactly two approved, reward-free call replies')
+  } else if (id === 'c2am_lowdose_teaser2') {
+    assert.equal(step.end, true); assert.match(step.text, /DLC预告 · 低剂量CT/); assert.match(step.text, /尚未开放/)
+  } else assert.equal(step.next, 'c2am_lowdose_teaser2', 'Both call replies return to the original final teaser')
 }
 const provenance = JSON.parse(readFileSync(new URL('../../docs/ch2-rewards-round-assets.json', import.meta.url)))
 for (const asset of provenance.assets) {

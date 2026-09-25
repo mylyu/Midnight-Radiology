@@ -1,6 +1,8 @@
 // New LIVE boundary. Older round guards keep their original baselines and may
 // reverse only independently reviewed exact transport/UI-removal hunks.
 import assert from 'node:assert/strict'
+import './ch2-detail-polish-freeze.mjs'
+import { beforeDetailPolishSource, priorDetailSourcePaths } from './ch2-detail-polish-projection.mjs'
 import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
@@ -12,7 +14,7 @@ import { beforeGameDeliverySource, DELIVERY_EDITED_FILES } from './game-delivery
 const manifest = deliveryManifest()
 const git = (...args) => execFileSync('git', args, { cwd: fileURLToPath(root), encoding: 'utf8', maxBuffer: 32e6 })
 const normalize = source => source.replaceAll('\r\n', '\n').trimEnd() + '\n'
-const current = path => normalize(readFileSync(new URL(path, root), 'utf8'))
+const current = path => normalize(beforeDetailPolishSource(path, readFileSync(new URL(path, root), 'utf8')))
 const original = path => normalize(git('show', `${baseline}:${path}`))
 const tracked = prefix => git('ls-tree', '-r', '--name-only', baseline, '--', prefix).trim().split('\n').filter(Boolean)
 const files = [...tracked('app/src'), ...tracked('app/scripts'), 'app/package.json', 'app/package-lock.json', 'app/.gitignore',
@@ -40,7 +42,7 @@ const additions = prefix => [...new Set([
   git('diff', '--no-renames', '--name-only', '--diff-filter=A', baseline, '--', prefix),
   git('ls-files', '--others', '--exclude-standard', '--', prefix),
 ].join('\n').split(/\r?\n/).filter(Boolean))].sort()
-assert.deepEqual(additions('app/src'), DELIVERY_ADDED_SOURCE, 'Only two exact runtime data catalogs')
+assert.deepEqual(priorDetailSourcePaths(additions('app/src')), DELIVERY_ADDED_SOURCE, 'Only two exact runtime data catalogs after the separately LIVE-verified detail-polish additions')
 assert.deepEqual(additions('app/public/assets'), deliveryAddedMedia(), 'Only the 194 precisely reviewed replacement paths')
 assert.deepEqual(additions('app/public/audio'), [], 'No added/replaced audio')
 const removedAssets = git('diff', '--no-renames', '--name-only', '--diff-filter=D', baseline, '--', 'app/public/assets').trim().split('\n').filter(Boolean).sort()

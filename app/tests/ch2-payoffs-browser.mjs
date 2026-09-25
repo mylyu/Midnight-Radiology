@@ -3,18 +3,18 @@
 // as a fresh Chapter 1 playthrough. Existing full-walk assertions are reused intact.
 import assert from 'node:assert/strict'
 import { createRequire } from 'node:module'
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { mkdirSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { CH2_SHIFTS, ch2StepForState } from '../src/game/ch2.ts'
 import { CH2_PAYOFF_KEEPSAKES } from '../src/game/ch2-payoffs.ts'
 import { freshState, condOk } from '../src/game/store.ts'
 import { walkChapterTwo } from './ch2-repeat-walk.mjs'
+import { logicalImagePath, logicalImageUrl } from './game-delivery-media.mjs'
 
 const { chromium } = createRequire(import.meta.url)(process.env.PLAYWRIGHT_MODULE || 'C:/Users/lvmen/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright')
 const browser = await chromium.launch({ channel: 'msedge', headless: true })
 const output = resolve(process.env.PAYOFF_OUTPUT || '../../ch2-payoffs-browser-review')
 const url = (process.env.GAME_URL || 'http://127.0.0.1:8798/').replace(/\/$/, '') + '/#/ch2'
-const optimizedAssets = JSON.parse(readFileSync(new URL('../src/lib/image-assets.generated.json', import.meta.url), 'utf8'))
 const errors = [], results = []
 mkdirSync(output, { recursive: true })
 let activePage
@@ -72,6 +72,8 @@ async function reveal(page) {
 
 async function advance(page, target) {
   const { id, step, state, progress } = await reveal(page)
+  // Reveal and advance are separate accepted gestures under the 300 ms guard.
+  await page.waitForTimeout(310)
   if (step.choices) {
     const choice = step.choices.filter(row => condOk(state, row.cond)).find(row => row.next === target)
     assert(choice, `${id}: visible option for ${target}`)
@@ -112,8 +114,8 @@ async function layout(page) {
 }
 
 async function imageReady(page, filename) {
-  const assetPath = optimizedAssets[filename] ?? `${filename}.png`
-  const expectedURL = new URL(`assets/${assetPath}`, page.url()).href
+  const assetPath = logicalImagePath(filename)
+  const expectedURL = logicalImageUrl(filename, page.url())
   const img = page.locator(`img[src$=${JSON.stringify(`/${assetPath}`)}]`).first()
   await img.waitFor()
   await img.evaluate(image => image.decode())
@@ -121,7 +123,8 @@ async function imageReady(page, filename) {
   assert(await img.evaluate(image => image.naturalWidth > 0))
 }
 
-async function ending(page, { base, model, glasses, mobile, prefix }) {
+async function ending(page, { base, model, glasses, mobile, prefix, callReply }) {
+  assert(['c2am_lowdose_meet', 'c2am_lowdose_dinner'].includes(callReply), 'An explicit approved call reply is required')
   const start = await read(page), visited = []
   for (let guard = 0; guard < 12; guard++) {
     const { state, id, step } = await reveal(page)
@@ -141,6 +144,14 @@ async function ending(page, { base, model, glasses, mobile, prefix }) {
       assert.equal(labels.some(text => text.includes('底座')), base)
       await page.screenshot({ path: resolve(output, `${prefix}-demonstration-${mobile ? '390' : 'desktop'}.png`) })
       await advance(page, base ? 'c2am_payoff_rotate' : 'c2am_payoff_layers')
+    } else if (id === 'c2am_lowdose_teaser1') {
+      assert.deepEqual(step.choices, [
+        { text: '「行，我把排班发你。」', next: 'c2am_lowdose_meet' },
+        { text: '「聊研究可以，你请饭。」', next: 'c2am_lowdose_dinner' },
+      ])
+      await layout(page)
+      await refresh(page, 'known-caller choice reload')
+      await advance(page, callReply)
     } else {
       if (id === 'c2am_payoff_rotate') await imageReady(page, 'ch2_slice_model_assembled_v1')
       if (id === 'c2am_payoff_reply') {
@@ -159,9 +170,15 @@ async function ending(page, { base, model, glasses, mobile, prefix }) {
   assert(final.flags.c2_payoff_expert_done)
   assert.equal(visited.includes('c2am_payoff_rotate'), model && base)
   assert.equal(visited.includes('c2am_payoff_layers'), model && !base)
-  assert.deepEqual(visited.slice(-4), ['c2am_payoff_end', 'c2am_lowdose_teaser0', 'c2am_lowdose_teaser1', 'c2am_lowdose_teaser2'])
-  assert.deepEqual(metrics(final), withBadges(metrics(start), model ? ['c2_model_demo'] : []),
-    'The model demonstration may add only its specific new badge; the teaser adds no economy or awards')
+  assert.deepEqual(visited.slice(-5), ['c2am_payoff_end', 'c2am_lowdose_teaser0', 'c2am_lowdose_teaser1', callReply, 'c2am_lowdose_teaser2'])
+  const newTeaching = model && !start.dlc.ch2.statInteractions?.wealthRewards?.includes('teaching')
+  const expectedMetrics = withBadges(metrics(start), model ? ['c2_model_demo'] : [])
+  expectedMetrics.wealth += newTeaching ? 1 : 0
+  assert.deepEqual(metrics(final), expectedMetrics,
+    'Only the model badge and approved one-time teaching wealth +1 may change; the call adds no economy or awards')
+  assert.deepEqual(final.dlc.ch2.statInteractions?.wealthRewards ?? [],
+    [...(start.dlc.ch2.statInteractions?.wealthRewards ?? []), ...(newTeaching ? ['teaching'] : [])],
+    'Teaching records once, never once per choice or call reply')
   assert.deepEqual(protectedState(final), protectedState(start))
   await refresh(page, 'completed ending')
   await page.locator('[data-ch2-complete="true"]').waitFor()
@@ -242,7 +259,7 @@ try {
 
   const endingWith = await open(fixture('c2am_9', cupReceived.flags,
     { items: cupReceived.items, badges: cupReceived.badges }), true)
-  const completed = await ending(endingWith.page, { base: true, model: true, glasses: true, mobile: true, prefix: 'owned' })
+  const completed = await ending(endingWith.page, { base: true, model: true, glasses: true, mobile: true, prefix: 'owned', callReply: 'c2am_lowdose_meet' })
   await endingWith.page.getByRole('button', { name: '查看背包用途', exact: true }).click()
   const backpack = endingWith.page.getByRole('dialog', { name: '第二章背包' })
   await backpack.waitFor()
@@ -262,7 +279,8 @@ try {
 
   for (const model of [false, true]) {
     const legacy = await open(fixture('c2am_9', { quiz2_grade: 'A', ...(model ? { c2_payoff_model: true } : {}) }))
-    const result = await ending(legacy.page, { base: false, model, glasses: false, mobile: false, prefix: model ? 'model-no-base' : 'legacy-no-receipts' })
+    const result = await ending(legacy.page, { base: false, model, glasses: false, mobile: false, prefix: model ? 'model-no-base' : 'legacy-no-receipts',
+      callReply: model ? 'c2am_lowdose_meet' : 'c2am_lowdose_dinner' })
     assert.equal(result.final.flags.c2_payoff_base, undefined)
     assert.equal(result.final.flags.n5_fan, undefined)
     assert.equal(result.final.flags.c2_payoff_zhou_cup, undefined)

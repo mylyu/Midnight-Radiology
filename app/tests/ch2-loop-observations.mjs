@@ -122,6 +122,8 @@ for (const [, id, line] of baselineRows) {
 }
 for (const shift of CH2_SHIFTS) for (const [id, step] of Object.entries(shift.steps)) {
   const rendered = ch2StepForState(id, step, state)
-  assert.doesNotMatch(rendered.text ?? '', /陆舟|陆川|环状伪影/, `${id}: deferred story revived`)
+  if (id === 'c2am_lowdose_teaser0') {
+    assert.equal(rendered.text, '【几天后 · 午休】你的手机亮了。来电显示：陆舟——本科时住一间宿舍的老同学。', 'Only the approved named-contact invitation may mention Lu Zhou')
+  } else assert.doesNotMatch(rendered.text ?? '', /陆舟|陆川|环状伪影/, `${id}: deferred story revived`)
 }
 console.log('PASS ch2-loop-observations: 12 configurations / 12 cases including wrist; reviewed-image hashes; safe feedback; 15 acquisition texts; preserved graph and voices')
