@@ -1,3 +1,5 @@
+import { assetUrl } from '../lib/chapter-assets'
+
 /** Preview-only slice atlases. Case observations and diagnostic images stay separate.
  * Each admitted atlas must be backed by a reviewed, licensed volume and provenance.
  * No fallback to another body part, a different age group, or a fabricated stack.
@@ -65,9 +67,7 @@ export function ch2SliceFrameIndex(sequence: Ch2SliceSequence, progress: number)
 
 const prefetched = new Set<string>()
 
-/** Begin during this scan's preceding dialogue; never preload the whole chapter.
- * The timer never waits for this resource. Late decoding uses the current frame.
- */
+/** Optional local decode warmup only; admission has already fetched the full chapter. */
 export function preloadCh2SliceSequence(id: string | undefined): void {
   const sequence = getCh2SliceSequence(id)
   if (!sequence || typeof Image === 'undefined' || prefetched.has(sequence.asset)) return
@@ -76,5 +76,8 @@ export function preloadCh2SliceSequence(id: string | undefined): void {
   image.decoding = 'async'
   // A failed optional request must not be retried for every typewriter update.
   image.onerror = () => undefined
-  image.src = `${import.meta.env.BASE_URL}${sequence.asset}`
+  const url = assetUrl(sequence.asset)
+  // Legacy previews may run without admission; never restart lazy network loading.
+  if (!url.startsWith('blob:')) return
+  image.src = url
 }

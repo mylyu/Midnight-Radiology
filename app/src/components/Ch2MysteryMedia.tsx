@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { CH2_TERMINAL_CUES, CH2_TERMINAL_PANELS } from '../game/ch2-terminal'
 import { imageAsset } from '../lib/image-assets'
+import { assetUrl } from '../lib/chapter-assets'
 
 const quietKey = 'midnight-radiology-ch2-terminal-muted-v1'
 
@@ -32,7 +33,7 @@ export function Ch2MysterySound({ stepId, consumed, onConsumed }: {
       started.current = true
       callback.current()
       if (quietRef.current || document.hidden) return
-      const audio = new Audio(`${import.meta.env.BASE_URL}audio/ch2_terminal_${cue.kind}_v1.mp3`)
+      const audio = new Audio(assetUrl(`audio/ch2_terminal_${cue.kind}_v1.mp3`))
       recording.current = audio
       // Files themselves are quietly mastered; do not attenuate them twice
       // into an inaudible whisper. Alarm decoded peak at this gain is < -23 dBFS.

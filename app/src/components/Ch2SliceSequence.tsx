@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import type { CSSProperties } from 'react'
 import { ch2SliceFrameIndex } from '../game/ch2-scan-sequences'
 import type { Ch2SliceSequence as SliceSequence } from '../game/ch2-scan-sequences'
+import { assetUrl } from '../lib/chapter-assets'
 
 type Props = { sequence: SliceSequence; progress: number }
 type ImageStatus = { asset: string; ready: boolean; failed: boolean }
@@ -38,7 +39,7 @@ export function Ch2SliceSequence({ sequence, progress }: Props) {
           data-slice-preview="true" />
         <span className="ch2-slice-receiving">{failed ? '低清预览 · 断层未载入' : '断层接收中'}</span>
       </> : <p className="ch2-slice-placeholder">{failed ? '教学序列暂未载入' : '正在接收断层图像'}<span>采集继续进行</span></p>)}
-      <img key={sequence.asset} className="ch2-slice-atlas" src={`${import.meta.env.BASE_URL}${sequence.asset}`}
+      <img key={sequence.asset} className="ch2-slice-atlas" src={assetUrl(sequence.asset)}
         alt="" aria-hidden="true" draggable={false} decoding="async" fetchPriority="high"
         style={{ width: `${sequence.columns * 100}%`, height: `${sequence.rows * 100}%`,
           transform: `translate(${-column / sequence.columns * 100}%, ${-row / sequence.rows * 100}%)`,

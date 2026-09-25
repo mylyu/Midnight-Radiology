@@ -6,6 +6,7 @@ import { getCh2SliceSequence } from '../game/ch2-scan-sequences'
 import { Ch2CtMotion } from './Ch2CtMotion'
 import { Ch2SliceSequence } from './Ch2SliceSequence'
 import './Ch2ScanOverlay.css'
+import { assetUrl } from '../lib/chapter-assets'
 
 export interface Ch2ScanOverlayProps {
   config: Ch2ScanConfig
@@ -15,7 +16,7 @@ export interface Ch2ScanOverlayProps {
   muted?: boolean
 }
 
-const soundUrl = (name: string) => `${import.meta.env.BASE_URL}audio/${name}.mp3`
+const soundUrl = (name: string) => assetUrl(`audio/${name}.mp3`)
 
 export function Ch2ScanOverlay({ config, startedAt, onDone, muted = false }: Ch2ScanOverlayProps) {
   const [frame, setFrame] = useState(() => ch2ScanFrame(config, startedAt))

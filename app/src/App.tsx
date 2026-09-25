@@ -36,6 +36,9 @@ import { useDialogueChoiceGuard } from './hooks/use-dialogue-choice-guard'
 import { readCh1Book, buyCh1Item, maintainCh1, commitCh1Choice, commitCh1Advance,
   commitCh2Choice, commitCh2Advance, type ChoiceCommitResult } from './game/interaction-transactions'
 import { ch2StatChoices, ch2StatReply, takeCh2StatInteraction, clearCh2StatReply, grantCh2WealthOnEntry } from './game/ch2-stat-interactions'
+import { useChapterEntry } from './hooks/use-chapter-entry'
+import { chapterSaveAssets } from './game/chapter-save-assets'
+import { ChapterLoadingScreen } from './components/ChapterLoadingScreen'
 
 type Screen = 'title' | 'select' | 'checkin' | 'night' | 'day' | 'badges' | 'quiz' | 'epilogue' | 'chapterEnd' | 'verify' | 'dlcHall' | 'dlc' | 'ch2'
 
@@ -57,6 +60,8 @@ export default function App() {
     }
   }, [])
   const [screen, setScreen] = useState<Screen>('title')
+  const [booted, setBooted] = useState(false)
+  const { progress: loading, request: requestEntry, retry: retryEntry, enter: finishEntry, cancel: cancelEntry } = useChapterEntry()
   const [state, renderState] = useState<GameState | null>(null)
   const liveState = useRef<GameState | null>(null)
   const [statNotices, setStatNotices] = useState<StatNotice[]>([])
@@ -64,11 +69,11 @@ export default function App() {
   const dialogueGate = useRef({ until: 0 })
   // Load/new run/route replacement is not a reward. Keep the action store in
   // sync without interpreting the imported totals as changes to the old save.
-  const setState = (next: GameState | null) => {
+  const setState = useCallback((next: GameState | null) => {
     liveState.current = next
     setStatNotices([])
     renderState(next)
-  }
+  }, [])
   const expireNotice = useCallback((id: number) => setStatNotices(rows => rows.filter(row => row.id !== id)), [])
   const [checkinReward, setCheckinReward] = useState(0)
   const [dlcId, setDlcId] = useState<string | null>(null)
@@ -77,41 +82,60 @@ export default function App() {
   useEffect(() => {
     const applyHash = () => {
       const h = window.location.hash
+      const s = loadState()
+      const extras = chapterSaveAssets(s)
       if (h.startsWith('#/ch2')) {
-        const s = loadState()
-        if (s) setState(s)
         // 第二章口令解锁：任何入口（大厅卡片/直达链接）都先过口令，与第一章进度无关
-        if (s && ch2Unlocked()) setScreen('ch2')
-        else setScreen('dlcHall')
+        if (s && ch2Unlocked()) requestEntry('ch2', extras, () => { setState(s); setScreen('ch2'); setBooted(true) })
+        else requestEntry('shell', extras, () => { setState(s); setScreen('dlcHall'); setBooted(true) }, true)
         return
       }
-      if (h.startsWith('#/hall')) { const s = loadState(); if (s) setState(s); setScreen('dlcHall'); return }
-      if (!h.startsWith('#/dlc')) return
-      const id = h.split('/')[2] ?? ''
-      const s = loadState()
-      if (s) setState(s)
-      if (s && id && getDlc(id)) { setDlcId(id); setScreen('dlc') }
-      else setScreen('dlcHall')
+      if (h.startsWith('#/dlc') || h.startsWith('#/hall')) {
+        const id = h.startsWith('#/dlc') ? h.split('/')[2] : ''
+        if (s && (id === 'dr' || id === 'dsa') && getDlc(id)) {
+          requestEntry(id, extras, () => { setState(s); setDlcId(id); setScreen('dlc'); setBooted(true) })
+        } else requestEntry('shell', extras, () => { setState(s); setScreen('dlcHall'); setBooted(true) }, true)
+        return
+      }
+      requestEntry('shell', extras, () => { setScreen('title'); setBooted(true) }, true)
     }
     applyHash()
     window.addEventListener('hashchange', applyHash)
     return () => window.removeEventListener('hashchange', applyHash)
-  }, [])
+  }, [requestEntry, setState])
+
+  useEffect(() => {
+    const recoverAsset = (event: Event) => {
+      const path = (event as CustomEvent<{ path: string }>).detail?.path
+      if (!path) return
+      const saved = liveState.current ?? loadState()
+      const chapter = screen === 'ch2' ? 'ch2' : screen === 'dlc' && (dlcId === 'dr' || dlcId === 'dsa') ? dlcId
+        : ['checkin', 'night', 'day', 'quiz', 'epilogue', 'chapterEnd'].includes(screen) ? 'ch1' : 'shell'
+      requestEntry(chapter, [...chapterSaveAssets(saved), path], () => { setState(saved); setScreen(screen); setBooted(true) })
+    }
+    window.addEventListener('midnight-radiology:asset-missing', recoverAsset)
+    return () => window.removeEventListener('midnight-radiology:asset-missing', recoverAsset)
+  }, [screen, dlcId, requestEntry, setState])
 
   const enterDlc = (id: string, s: GameState) => {
-    saveState(s)
-    setState(s)
-    setDlcId(id)
-    window.location.hash = `#/dlc/${id}`
-    setScreen('dlc')
+    if (id !== 'dr' && id !== 'dsa') return
+    requestEntry(id, chapterSaveAssets(s), () => {
+      saveState(s)
+      setState(s)
+      setDlcId(id)
+      window.history.replaceState(null, '', `#/dlc/${id}`)
+      setScreen('dlc')
+    })
   }
 
   const enterCh2 = (s: GameState) => {
-    if (s.dlc?.ch2?.done) s = restartCh2(s)
-    saveState(s)
-    setState(s)
-    window.location.hash = '#/ch2'
-    setScreen('ch2')
+    requestEntry('ch2', chapterSaveAssets(s), () => {
+      const next = s.dlc?.ch2?.done ? restartCh2(s) : s
+      saveState(next)
+      setState(next)
+      window.history.replaceState(null, '', '#/ch2')
+      setScreen('ch2')
+    })
   }
 
   const update = (fn: (s: GameState) => GameState) => {
@@ -178,23 +202,27 @@ export default function App() {
   }, [cardToast])
 
   const startGame = (gender: 'm' | 'f') => {
-    const { state: s, reward } = dailyCheckin(freshState(gender))
-    saveState(s)
-    setState(s)
-    setCheckinReward(reward)
-    playSfx('stamp')
-    setScreen('checkin')
+    requestEntry('ch1', [], () => {
+      const { state: s, reward } = dailyCheckin(freshState(gender))
+      saveState(s)
+      setState(s)
+      setCheckinReward(reward)
+      playSfx('stamp')
+      setScreen('checkin')
+    })
   }
 
   const continueGame = () => {
     const s = loadState()
     if (s) {
-      const { state: next, reward } = dailyCheckin(s)
-      saveState(next)
-      setState(next)
-      setCheckinReward(reward)
-      playSfx('click')
-      setScreen('checkin')
+      requestEntry('ch1', chapterSaveAssets(s), () => {
+        const { state: next, reward } = dailyCheckin(s)
+        saveState(next)
+        setState(next)
+        setCheckinReward(reward)
+        playSfx('click')
+        setScreen('checkin')
+      })
     }
   }
 
@@ -241,6 +269,17 @@ export default function App() {
     setScreen(curNight >= LAST_NIGHT ? 'quiz' : 'day')
   }
 
+  // Admission precedes mounting: story entry effects can save rewards and
+  // consume voices even when an overlay would hide their controls.
+  if (loading || !booted) return <ChapterLoadingScreen
+    progress={loading ?? { chapter: 'shell', status: 'loading', loadedBytes: 0, totalBytes: 0, completed: 0, total: 0, failed: [] }}
+    onRetry={retryEntry} onEnter={finishEntry} onBack={() => {
+      cancelEntry()
+      window.history.replaceState(null, '', '#/dlc')
+      const saved = loadState()
+      requestEntry('shell', chapterSaveAssets(saved), () => { setState(saved); setScreen('dlcHall'); setBooted(true) }, true)
+    }} />
+
   return (
     <div className="w-full h-full bg-slate-950 text-slate-100 overflow-hidden select-none font-sans">
       <RotateHint />
@@ -258,7 +297,11 @@ export default function App() {
         />
       )}
       {screen === 'day' && state && <DayScreen state={state} update={update} onNextNight={() => setScreen('night')} onBadges={() => setScreen('badges')} />}
-      {screen === 'badges' && <BadgeScreen state={state} onBack={() => setScreen(backTarget(state))} />}
+      {screen === 'badges' && <BadgeScreen state={state} onBack={() => {
+        const target = backTarget(state)
+        if (target === 'title') setScreen(target)
+        else requestEntry('ch1', chapterSaveAssets(state), () => setScreen(target))
+      }} />}
       {screen === 'quiz' && state && <QuizScreen state={state} update={update} onDone={() => setScreen('epilogue')} />}
       {screen === 'epilogue' && state && (
         <NightScreen

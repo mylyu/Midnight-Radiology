@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "images:prepare": "node scripts/prepare-images.mjs",
-    "predev": "npm run images:prepare",
+    "media:prepare": "node --import tsx scripts/generate-chapter-assets.mjs",
+    "predev": "npm run images:prepare && npm run media:prepare",
     "dev": "vite",
-    "prebuild": "npm run images:prepare",
+    "prebuild": "npm run images:prepare && npm run media:prepare",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"

@@ -1,4 +1,5 @@
 import type { GameState, Effect, Cond } from './types'
+import { assetUrl } from '../lib/chapter-assets'
 
 const KEY = 'midnight-radiology-save-v1'
 
@@ -166,15 +167,18 @@ const SFX_VOLUME: Partial<Record<SfxName, number>> = {
 
 export function playSfx(name: SfxName): Promise<boolean> {
   try {
-    // ?v=2：2025年11月 16 条配音重制后破除浏览器旧缓存（同名文件内容已变）
-    // Chapter 1 voice-only revision: retain old assets and volume, use new filenames to avoid stale audio caches.
+    // Keep the approved Chapter 1 voices. The chapter manifest versions every audio
+    // file by its content hash; after admission playback uses its prepared local blob.
     const revisedVoiceFiles: Partial<Record<SfxName, string>> = {
       vox_fan: 'vox_ch1_fan_mature_20260923',
       vox_worker: 'vox_ch1_worker_bass_20260923',
       vox_thin: 'vox_ch1_thin_breathless_20260923',
     }
-    const src = `${import.meta.env.BASE_URL}audio/${revisedVoiceFiles[name] ?? name}.mp3?v=2`
-    if (!audioCache[name]) audioCache[name] = new Audio(src)
+    const src = assetUrl(`audio/${revisedVoiceFiles[name] ?? name}.mp3`)
+    if (!audioCache[name] || audioCache[name].src !== new URL(src, document.baseURI).href) {
+      audioCache[name]?.pause()
+      audioCache[name] = new Audio(src)
+    }
     const a = audioCache[name]
     a.currentTime = 0
     a.volume = SFX_VOLUME[name] ?? (name.startsWith('vox_ch2_natural_') ? 0.45 : 0.22)

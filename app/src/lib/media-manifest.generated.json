@@ -1,0 +1,1597 @@
+{
+  "version": 1,
+  "assets": {
+    "assets/ct_head_hema.png": {
+      "sha256": "29d27622513ced4dd7adf3d6d398801c1470872b166845bbb5fb07a003837ef3",
+      "bytes": 670756,
+      "type": "image"
+    },
+    "assets/ct_lung.png": {
+      "sha256": "c498df11cc94766ffe110d13cd20fce379eb73cf23eeb926d5e611bd3d559135",
+      "bytes": 936950,
+      "type": "image"
+    },
+    "assets/ct_wrist_simulated.png": {
+      "sha256": "b0d7a3f9bc93392a9393ad2b0546fedf1bde88bed7966f2cd0932ea5aece84aa",
+      "bytes": 1081682,
+      "type": "image"
+    },
+    "assets/ct-sequences/adult-head-dental-repeat-v1.webp": {
+      "sha256": "58973f275abbb412ea5b07a02c12b4fcf9de748e4e555b71c171961ba837413f",
+      "bytes": 51798,
+      "type": "image"
+    },
+    "assets/ct-sequences/adult-head-dental-v1.webp": {
+      "sha256": "502b9475c8890861e989cbbb9f45c9eb1b7ca3f62523c51b758e2b5fe0bf605f",
+      "bytes": 52090,
+      "type": "image"
+    },
+    "assets/ct-sequences/adult-head-motion-v1.webp": {
+      "sha256": "a1591285e01d7cd17d321e311956395ec9edd09556f989b872a3556e6e6cadfc",
+      "bytes": 68926,
+      "type": "image"
+    },
+    "assets/ct-sequences/adult-head-plain-v1.webp": {
+      "sha256": "67568ef2ebe20ee0f2fb0a1ba533808267807cbb98a3d8621bc30b50ea45140a",
+      "bytes": 68914,
+      "type": "image"
+    },
+    "assets/ct-sequences/adult-neck-cta-v1.webp": {
+      "sha256": "5815e47d50f583e3ab4655d20dce49c72f7dbba5effaca717689422014da445e",
+      "bytes": 46136,
+      "type": "image"
+    },
+    "assets/ct-sequences/aorta-cta-v1.webp": {
+      "sha256": "45c8eb37b02efdde04d5e0e6cede5c8fdd75fd092b0b153e32c08b3688c8bd70",
+      "bytes": 70108,
+      "type": "image"
+    },
+    "assets/ct-sequences/chest-plain-v1.webp": {
+      "sha256": "594c5c120328659c92f997600820ac45bb17b3870e42e2ddfad752d4088611c6",
+      "bytes": 59538,
+      "type": "image"
+    },
+    "assets/ct-sequences/coronary-cta-v1.webp": {
+      "sha256": "bc6802700cd653f5447423d47cebd3d114ff5a2527116dc3aed47e196bc1164d",
+      "bytes": 67746,
+      "type": "image"
+    },
+    "assets/ct-sequences/lumbar-pelvis-plain-v1.webp": {
+      "sha256": "224c9d7536b4de8cc8ce04833c73c416a64b4b4cedbf32cb7554b21c3a394acb",
+      "bytes": 27308,
+      "type": "image"
+    },
+    "assets/ct-sequences/urinary-plain-v1.webp": {
+      "sha256": "bf8dbc6f4206ec754badc3ceb11bc629198eb790fe45300f77d8624b223c97a0",
+      "bytes": 50010,
+      "type": "image"
+    },
+    "assets/ct-sequences/wrist-bone-v1.webp": {
+      "sha256": "59888351812d4d8f8c09c81645e4c6d38f517634395bf5047f9319d1623abfd1",
+      "bytes": 36052,
+      "type": "image"
+    },
+    "assets/media/bg_archive.d2d3bcd87c795189.webp": {
+      "sha256": "d2d3bcd87c7951899eb9a38c235aaeef3afdb36386e792b282ef4018ad80be81",
+      "bytes": 98320,
+      "type": "image"
+    },
+    "assets/media/bg_breakroom.f19b1fc1673eec35.webp": {
+      "sha256": "f19b1fc1673eec35136cac8226918090026329f79e701fef894c8742fb8a64e3",
+      "bytes": 105390,
+      "type": "image"
+    },
+    "assets/media/bg_cathlab.2a3492deec624a63.webp": {
+      "sha256": "2a3492deec624a6386af7449e12db9b17b22c75229855664404eaf6f6c11f76f",
+      "bytes": 145338,
+      "type": "image"
+    },
+    "assets/media/bg_control.3db97844471e5de7.webp": {
+      "sha256": "3db97844471e5de7c71a6db2f00b8add8488e5832e3aed4c4a4a2114878e8336",
+      "bytes": 102384,
+      "type": "image"
+    },
+    "assets/media/bg_corridor_cr_covered.de886af4c1d2203d.webp": {
+      "sha256": "de886af4c1d2203dec53bf090981907db1af27c343746a0ec61c058e6f3de5b8",
+      "bytes": 49170,
+      "type": "image"
+    },
+    "assets/media/bg_corridor.1e4e7ec83daa8ed6.webp": {
+      "sha256": "1e4e7ec83daa8ed6a42a3d30ce524d07dd56cc7ed813b9c1d1bf9390b0651851",
+      "bytes": 65902,
+      "type": "image"
+    },
+    "assets/media/bg_ctcontrol_day_ready.fabf4508bb37ff4a.webp": {
+      "sha256": "fabf4508bb37ff4a70e3d750f0eda42ab8831a8277188f73e4b65889f9b7f6f4",
+      "bytes": 157334,
+      "type": "image"
+    },
+    "assets/media/bg_ctcontrol_day.51fb77aa1bd9cfc1.webp": {
+      "sha256": "51fb77aa1bd9cfc1b27a7e225892f242d7aa86831c8e8520f73ec55f7f17818f",
+      "bytes": 266754,
+      "type": "image"
+    },
+    "assets/media/bg_ctcontrol_ready.08e6e3aa41372671.webp": {
+      "sha256": "08e6e3aa413726710327f3236eb825a6a8d69529ebc24f2902ef5fded39cbbca",
+      "bytes": 72792,
+      "type": "image"
+    },
+    "assets/media/bg_ctcontrol.bc288546e76ffac2.webp": {
+      "sha256": "bc288546e76ffac232288b613114c6b9f474133d53099ec03f27066ceda90347",
+      "bytes": 99004,
+      "type": "image"
+    },
+    "assets/media/bg_ctroom.24562baf6359a3fc.webp": {
+      "sha256": "24562baf6359a3fc6ecd9ea64ddeee43400e57c55280872f7e2b9dfa0c202f10",
+      "bytes": 93702,
+      "type": "image"
+    },
+    "assets/media/bg_day.b70b32edf4b34bca.webp": {
+      "sha256": "b70b32edf4b34bca779308a1f3e0406eb3f136732e17727a1a0f9364546466aa",
+      "bytes": 170336,
+      "type": "image"
+    },
+    "assets/media/bg_drroom.b04f94a3cf958719.webp": {
+      "sha256": "b04f94a3cf958719893f42d3b0c16836a920f7b4b6adfda8be9f1f08edea1b5e",
+      "bytes": 189118,
+      "type": "image"
+    },
+    "assets/media/bg_morning.0f805e95e53ffbec.webp": {
+      "sha256": "0f805e95e53ffbecb411c5d6c30218588d6580677b7edf31a6330892a76512e9",
+      "bytes": 103888,
+      "type": "image"
+    },
+    "assets/media/bg_office_day.c2eb260586f6d97e.webp": {
+      "sha256": "c2eb260586f6d97e49669fb987857b2eb852922ea51ce608f9153839bf03a396",
+      "bytes": 331604,
+      "type": "image"
+    },
+    "assets/media/bg_office.c82a5fdcf9741a50.webp": {
+      "sha256": "c82a5fdcf9741a50bd454660a928053e93277a2a257298a8fecda99f641d8d0b",
+      "bytes": 99474,
+      "type": "image"
+    },
+    "assets/media/bg_title.1efef9d5c52ba116.webp": {
+      "sha256": "1efef9d5c52ba1164f223b5d4395d8dacd8a35c7cdf5085d7dfccfab1dc03612",
+      "bytes": 117206,
+      "type": "image"
+    },
+    "assets/media/bg_waiting.d0e027d7fcdd5938.webp": {
+      "sha256": "d0e027d7fcdd5938064ca13d7c193829f08ee69a46ebed8d493471aabf51afa2",
+      "bytes": 245434,
+      "type": "image"
+    },
+    "assets/media/bg_xrayroom.6f3dacb4a82f8678.webp": {
+      "sha256": "6f3dacb4a82f8678bdedd86d4f496f7d4de93d503e23d4d5f0a7681194252f95",
+      "bytes": 101390,
+      "type": "image"
+    },
+    "assets/media/ch2_aorta_volume_cutaway_v1.803620fae1ddcc84.webp": {
+      "sha256": "803620fae1ddcc841ba0ec4ea3c61100c8b60ab32ff3495871351da9fc43b3a8",
+      "bytes": 57982,
+      "type": "image"
+    },
+    "assets/media/ch2_bg_breakroom_day.ae9dd0f0001d72b9.webp": {
+      "sha256": "ae9dd0f0001d72b9fb1fc9a0fa724e1371095332c105efbac2524d51b2fafc16",
+      "bytes": 155888,
+      "type": "image"
+    },
+    "assets/media/ch2_ct_aortic_wide.157fe422e2d407db.webp": {
+      "sha256": "157fe422e2d407dba3f0c7ee3cc45bcc19537ed24719aa896b84157c8bb8ca25",
+      "bytes": 90788,
+      "type": "image"
+    },
+    "assets/media/ch2_ct_coronary_slices.17d8f9005a2ca2d8.webp": {
+      "sha256": "17d8f9005a2ca2d812205bae42243b432a77b4b6122dff005048c53f49b32d86",
+      "bytes": 121824,
+      "type": "image"
+    },
+    "assets/media/ch2_ct_lumbar_pelvis_v1.5e59e66cb03acd6d.webp": {
+      "sha256": "5e59e66cb03acd6daf62fc1400d8cd17f837efad8728ee3b46be9779ed43c819",
+      "bytes": 140906,
+      "type": "image"
+    },
+    "assets/media/ch2_ct_motion_bed_v1.f1eaee8617eb5678.webp": {
+      "sha256": "f1eaee8617eb567863a8390a2360f22bccd994b324ad0b2b536002f0d5f9bc2f",
+      "bytes": 38644,
+      "type": "image"
+    },
+    "assets/media/ch2_ct_motion_room_v1.3e7727b60fc9d2ab.webp": {
+      "sha256": "3e7727b60fc9d2ab13d10c6db3b3214841ead02840fac276b6a4da6d49a3d21f",
+      "bytes": 84974,
+      "type": "image"
+    },
+    "assets/media/ch2_ct_scan_room_pixel_v2.9fdcd583a59db479.webp": {
+      "sha256": "9fdcd583a59db479502cff697d3ad8fa83e415613afba3ed42ede3499d87b6c6",
+      "bytes": 91048,
+      "type": "image"
+    },
+    "assets/media/ch2_dawn_window_portrait_v1.536ffb44292374c8.webp": {
+      "sha256": "536ffb44292374c83833e4c6c87595351ca92bdc3ba86298842918ecab0e4c51",
+      "bytes": 133858,
+      "type": "image"
+    },
+    "assets/media/ch2_dawn_window_v1.1f913806e2acfeff.webp": {
+      "sha256": "1f913806e2acfeff6dde4dddc0eab926fb7d37e695b955e15f95dd65c3b6d2ee",
+      "bytes": 142386,
+      "type": "image"
+    },
+    "assets/media/ch2_gift_jiang_sleeve_v1.5261312fcd9fbbeb.webp": {
+      "sha256": "5261312fcd9fbbeb46716b340c30621916dc0ef65a66bf48279a83dfbeb9bda6",
+      "bytes": 60058,
+      "type": "image"
+    },
+    "assets/media/ch2_gift_lei_pouch_v1.8962a6d34d8bd908.webp": {
+      "sha256": "8962a6d34d8bd908bdcd2eba60f43746222e6a9989199c2dffab42469d479a2c",
+      "bytes": 99080,
+      "type": "image"
+    },
+    "assets/media/ch2_gift_luo_pouch_v1.7ca4615e93235159.webp": {
+      "sha256": "7ca4615e932351593e3c2121437dd38d272afee69bf674322455981c574d1e52",
+      "bytes": 112004,
+      "type": "image"
+    },
+    "assets/media/ch2_gift_zhou_cup_v1.a284cf5b8e68b11f.webp": {
+      "sha256": "a284cf5b8e68b11f6a0436ba4635a893d577022bbee245b6e413db5fe3bd8834",
+      "bytes": 36782,
+      "type": "image"
+    },
+    "assets/media/ch2_lung_thick_v2.9ac7961a026f6f5a.webp": {
+      "sha256": "9ac7961a026f6f5a3afa0c190cd4534648973475833b9f8030b1fde8de1024c6",
+      "bytes": 50156,
+      "type": "image"
+    },
+    "assets/media/ch2_model_base_v1.4ae57c07fedc4441.webp": {
+      "sha256": "4ae57c07fedc44414d11fe13e812f205b1ec6082bf30113158b15d2ca810e784",
+      "bytes": 105622,
+      "type": "image"
+    },
+    "assets/media/ch2_needle_axial_v1.afd72c5cdf444303.webp": {
+      "sha256": "afd72c5cdf444303294923abc69df118f97781ab785b0a7a76fb5f63afcd62ad",
+      "bytes": 77774,
+      "type": "image"
+    },
+    "assets/media/ch2_needle_mpr_v1.0c813996f3cb889b.webp": {
+      "sha256": "0c813996f3cb889b6ef3a7080ed2ee6574898ff0909f99acd305f07f701df3e0",
+      "bytes": 136664,
+      "type": "image"
+    },
+    "assets/media/ch2_needle_record_v1.599c58eabb1b59bc.webp": {
+      "sha256": "599c58eabb1b59bc3278dd8897a3bb663f7097e67f223ab110c3316c121cbdcd",
+      "bytes": 26928,
+      "type": "image"
+    },
+    "assets/media/ch2_needle_vr_v1.73c32e0cf56798cf.webp": {
+      "sha256": "73c32e0cf56798cf99edf613143df58a6d113622578a48c423efecfa074f5dc8",
+      "bytes": 125436,
+      "type": "image"
+    },
+    "assets/media/ch2_pat_luo_v1.9217bc801fb8170d.webp": {
+      "sha256": "9217bc801fb8170d7405ccb405c498de5488736aa6fc05d2c5d3949a084e7ecb",
+      "bytes": 66546,
+      "type": "image"
+    },
+    "assets/media/ch2_patient_aorta_bed.ce8cba1d520bdc52.webp": {
+      "sha256": "ce8cba1d520bdc5276462fa551ae8edc3ff835d1091257ceaf3269bee21ba02e",
+      "bytes": 132484,
+      "type": "image"
+    },
+    "assets/media/ch2_patient_aorta_middle_bed.59b2accc43dacf90.webp": {
+      "sha256": "59b2accc43dacf90ae4b73c8277993909c46547b69e2e47f3cbbffe99dc4aa7c",
+      "bytes": 137746,
+      "type": "image"
+    },
+    "assets/media/ch2_patient_chest_bed.e74cf2845e1fe212.webp": {
+      "sha256": "e74cf2845e1fe212eb89f7e1430b43265e17aa06b39e4c3134799efee45991a3",
+      "bytes": 129070,
+      "type": "image"
+    },
+    "assets/media/ch2_patient_chest_wheelchair.147e16d42000ec2d.webp": {
+      "sha256": "147e16d42000ec2d104e90bf9a122935eec1c154304fdf9e4906483bc8b2199a",
+      "bytes": 159328,
+      "type": "image"
+    },
+    "assets/media/ch2_patient_fall_bandaged_bed.b11cda233434d3a5.webp": {
+      "sha256": "b11cda233434d3a51ce502be2f228460ea7fde4d6988a73f6b2f5bbc39024e99",
+      "bytes": 128868,
+      "type": "image"
+    },
+    "assets/media/ch2_patient_fall_bed.58a005d2e880aada.webp": {
+      "sha256": "58a005d2e880aada1d98fc76e43d917d8d15f7824ca9f30c00f122b31f11eee7",
+      "bytes": 137612,
+      "type": "image"
+    },
+    "assets/media/ch2_patient_gut_bed.60f4c66d23f9e03c.webp": {
+      "sha256": "60f4c66d23f9e03c1d11d77d3b68b540c0a9b16869dce32bffbc338e232cf677",
+      "bytes": 147586,
+      "type": "image"
+    },
+    "assets/media/ch2_patient_postop_bed.57d8a695df454295.webp": {
+      "sha256": "57d8a695df454295fc31b8aba6fdd234e06786c18e61b9a3d085c0209c8952b5",
+      "bytes": 127978,
+      "type": "image"
+    },
+    "assets/media/ch2_patient_postop_wheelchair.0dc0b373fb754225.webp": {
+      "sha256": "0dc0b373fb754225b9abeacc71749d0e0752f99b562e440d34cd4cd511e19651",
+      "bytes": 160934,
+      "type": "image"
+    },
+    "assets/media/ch2_patient_stroke_bed.707d2e9de0547985.webp": {
+      "sha256": "707d2e9de0547985848c1943dbc225f6418568a2944490e9fd67d73518f8a8f9",
+      "bytes": 142892,
+      "type": "image"
+    },
+    "assets/media/ch2_patient_trauma_bed.490638b5a4e9d1ca.webp": {
+      "sha256": "490638b5a4e9d1ca3b62deea4b1cb3d9bc425229a9f09dbdd7f7e4749679966a",
+      "bytes": 136508,
+      "type": "image"
+    },
+    "assets/media/ch2_patient_waiting_elder.75f756ceb2cdd66c.webp": {
+      "sha256": "75f756ceb2cdd66c20ac302debc84eb6d8584b4e2437306ba5d34fb47e41b072",
+      "bytes": 79016,
+      "type": "image"
+    },
+    "assets/media/ch2_patient_wrist_student.3817b6aad6efb18f.webp": {
+      "sha256": "3817b6aad6efb18f3fac36e30099001bc0a0470c755c16eb453b55723a30c0a1",
+      "bytes": 81300,
+      "type": "image"
+    },
+    "assets/media/ch2_pixel_char_director.c11253a0826463f8.webp": {
+      "sha256": "c11253a0826463f8e1eb69690d9f49e2031b390bb15285394300a98066d01142",
+      "bytes": 67726,
+      "type": "image"
+    },
+    "assets/media/ch2_pixel_char_duty.fad26744fb7cfb4a.webp": {
+      "sha256": "fad26744fb7cfb4a20f4605e33f1abbfafaea101495c611caaab0afa27368941",
+      "bytes": 108834,
+      "type": "image"
+    },
+    "assets/media/ch2_pixel_char_f.edb407efe8390bbb.webp": {
+      "sha256": "edb407efe8390bbba6e3d3d17daedc9ec365ba5764c44817fc943d962f4d29c3",
+      "bytes": 84268,
+      "type": "image"
+    },
+    "assets/media/ch2_pixel_char_fan.53ceb5b20e36569f.webp": {
+      "sha256": "53ceb5b20e36569f711b321928ea006a3d7daf86724c2f1203443f613fdad158",
+      "bytes": 89562,
+      "type": "image"
+    },
+    "assets/media/ch2_pixel_char_he.dac9321ea26517bc.webp": {
+      "sha256": "dac9321ea26517bc2d770bee5823624c99f298e604996c90c5b6448e0601ddb3",
+      "bytes": 106430,
+      "type": "image"
+    },
+    "assets/media/ch2_pixel_char_kai.ce82dbf513c12d78.webp": {
+      "sha256": "ce82dbf513c12d7828711f4beb3c702feb195b629dfee3132959839c06d60099",
+      "bytes": 76926,
+      "type": "image"
+    },
+    "assets/media/ch2_pixel_char_lei.26df73ba04261fa5.webp": {
+      "sha256": "26df73ba04261fa59a0b3da21a00ed1152a127f173bb275183f7623bd122109a",
+      "bytes": 79502,
+      "type": "image"
+    },
+    "assets/media/ch2_pixel_char_luzhou_f.a573763779169cd3.webp": {
+      "sha256": "a573763779169cd39056318d2baf24912c44d790bc4f11e24344868c3901ceb1",
+      "bytes": 90134,
+      "type": "image"
+    },
+    "assets/media/ch2_pixel_char_luzhou_m.a55aa12318f4ea9f.webp": {
+      "sha256": "a55aa12318f4ea9fec76435464c43a245a6da2c9052c67ee3d1d69c0b21e94ef",
+      "bytes": 85148,
+      "type": "image"
+    },
+    "assets/media/ch2_pixel_char_m.46b67a54e8833438.webp": {
+      "sha256": "46b67a54e883343878f9e9fc04fde16b6715dcf11a0ff889cb744f1f71fac423",
+      "bytes": 75150,
+      "type": "image"
+    },
+    "assets/media/ch2_pixel_char_tang.8999389104958aca.webp": {
+      "sha256": "8999389104958aca6c4ff8d93ded37bbb4e37a3086de113d4f7c4d7572503170",
+      "bytes": 88584,
+      "type": "image"
+    },
+    "assets/media/ch2_pixel_char_wen.f27f711c0775154e.webp": {
+      "sha256": "f27f711c0775154ed9c98b0b5b42faa975488ed3a12bd381c7fc8780079e7646",
+      "bytes": 80712,
+      "type": "image"
+    },
+    "assets/media/ch2_pixel_char_zhou.1bceacc8f0b01942.webp": {
+      "sha256": "1bceacc8f0b019427f574061e6d81c3289ef947c8d2490a8b5e6f8c4bbe79f20",
+      "bytes": 85684,
+      "type": "image"
+    },
+    "assets/media/ch2_pixel_pat_grandpa2.8f8e9b168f94f73f.webp": {
+      "sha256": "8f8e9b168f94f73f04d63af10faa01a3542cf7db7a98f3020fe858b4ab7127c8",
+      "bytes": 83372,
+      "type": "image"
+    },
+    "assets/media/ch2_pixel_pat_gut.81f155595deaaa93.webp": {
+      "sha256": "81f155595deaaa9326b37ba5f879ed1a6e59db8f6a5d7e255beec67fcd20ceff",
+      "bytes": 98158,
+      "type": "image"
+    },
+    "assets/media/ch2_pixel_pat_kid6.527180aa6eff50dc.webp": {
+      "sha256": "527180aa6eff50dc774084d205fedf3ea460fe6aebaf6d3d8610dee3f87c10f6",
+      "bytes": 107302,
+      "type": "image"
+    },
+    "assets/media/ch2_pixel_pat_kiddad.8bada7b8bef00a3d.webp": {
+      "sha256": "8bada7b8bef00a3d6a3e6912873a1a59d173ddc90a4922880720ca72abf61395",
+      "bytes": 109916,
+      "type": "image"
+    },
+    "assets/media/ch2_pixel_pat_kidmom.0fbf4eb7a6ffb682.webp": {
+      "sha256": "0fbf4eb7a6ffb68223921b2ca584b75ae2cfa2d3893b77136f45fa66243d443f",
+      "bytes": 132066,
+      "type": "image"
+    },
+    "assets/media/ch2_pixel_pat_mystery.dd3bbfd138def470.webp": {
+      "sha256": "dd3bbfd138def4702bf921a5b249e5647c6508ecf50fc615e7ad90dca21d79f7",
+      "bytes": 67452,
+      "type": "image"
+    },
+    "assets/media/ch2_pixel_pat_stone.ea86dba3bf05aefe.webp": {
+      "sha256": "ea86dba3bf05aefedcb4119bb2b15ed31d4c0d2c8850d1e9ea1935d942679645",
+      "bytes": 107936,
+      "type": "image"
+    },
+    "assets/media/ch2_pixel_pat_uncle2.11c22a062e431f24.webp": {
+      "sha256": "11c22a062e431f2410e2101f0f83227032a25f7df573468d67dd05b1fef7d27e",
+      "bytes": 94176,
+      "type": "image"
+    },
+    "assets/media/ch2_remote_rack_offline.99c26e204761530d.webp": {
+      "sha256": "99c26e204761530da2c6e2649af1e30d6f81af39cb485e2e2395f2b56429144c",
+      "bytes": 93598,
+      "type": "image"
+    },
+    "assets/media/ch2_remote_rack.abcfa60d92dfcd34.webp": {
+      "sha256": "abcfa60d92dfcd34c9ab9329967f3542d6a6915a82f92bb6b6e5f84484be884f",
+      "bytes": 97114,
+      "type": "image"
+    },
+    "assets/media/ch2_slice_model_assembled_v1.ac9e363ec08f9070.webp": {
+      "sha256": "ac9e363ec08f9070fbe620491eb418b3f43606f598c59181319b8f708b6dd712",
+      "bytes": 131632,
+      "type": "image"
+    },
+    "assets/media/ch2_slice_model_v1.9c7b14729de8f3ca.webp": {
+      "sha256": "9c7b14729de8f3cafce9ef47c62b21fb5a12ae4d34dda441dfd5fc0680c13b53",
+      "bytes": 122250,
+      "type": "image"
+    },
+    "assets/media/ch2_terminal_closeup_v1.435d6d5f5f5b11f2.webp": {
+      "sha256": "435d6d5f5f5b11f2c3418ed70056c51b0d1a735049101d02ccd31f32ab6b70f4",
+      "bytes": 83866,
+      "type": "image"
+    },
+    "assets/media/ch2_terminal_online_v1.ca9902b8c6028fb0.webp": {
+      "sha256": "ca9902b8c6028fb04adb4a36050ea93e0e383f272ba650997c03ff4a762068c3",
+      "bytes": 81228,
+      "type": "image"
+    },
+    "assets/media/ch2_zhou_expert_handshake_v1.19c4daea0b8f7bc8.webp": {
+      "sha256": "19c4daea0b8f7bc8404a3cea8b469ce1c85f61f5f5cdcdc84e37582d14747f9a",
+      "bytes": 139468,
+      "type": "image"
+    },
+    "assets/media/char_bai.e52dc141e46d198e.webp": {
+      "sha256": "e52dc141e46d198eb997b298fb13410e4c24be49fccc03dcb44d59820969d096",
+      "bytes": 164128,
+      "type": "image"
+    },
+    "assets/media/char_director.0d23cc88e4972e3f.webp": {
+      "sha256": "0d23cc88e4972e3f945d3441134925844fa152344d2361f3bab39e201ee35504",
+      "bytes": 162290,
+      "type": "image"
+    },
+    "assets/media/char_du.b2dd30f78f39380c.webp": {
+      "sha256": "b2dd30f78f39380c8fb413d971e996cc99565486e434297cfb446016fc1c8dab",
+      "bytes": 179258,
+      "type": "image"
+    },
+    "assets/media/char_duty.bfdf77e1de2c24db.webp": {
+      "sha256": "bfdf77e1de2c24db0ebf36083300430a8d0f760af7b29862d91842a927973752",
+      "bytes": 67670,
+      "type": "image"
+    },
+    "assets/media/char_f.d65f9821d5222886.webp": {
+      "sha256": "d65f9821d5222886d7bb67d91f21c11498354762b983c0ded2b7466f57db0c24",
+      "bytes": 203408,
+      "type": "image"
+    },
+    "assets/media/char_fan.b6c379fd058e2916.webp": {
+      "sha256": "b6c379fd058e2916475afe6cbc602bc528407add03a80ee4a9db19d941e2096b",
+      "bytes": 194096,
+      "type": "image"
+    },
+    "assets/media/char_he.0f7e45bec36b39ef.webp": {
+      "sha256": "0f7e45bec36b39eff6e6a05d49ef6dd5f295ad624c78d771c567ce4e7220a183",
+      "bytes": 191372,
+      "type": "image"
+    },
+    "assets/media/char_jiang.db7fb1ad6c3c46f1.webp": {
+      "sha256": "db7fb1ad6c3c46f19d4dde3fe1e61b3c9d574f30f98d925de4b682a4bc5db6c3",
+      "bytes": 237930,
+      "type": "image"
+    },
+    "assets/media/char_kai.59a14b34e2e70e0e.webp": {
+      "sha256": "59a14b34e2e70e0e88b8c320f8de462c485b51f746b8774743bcdd38f025f6b1",
+      "bytes": 173774,
+      "type": "image"
+    },
+    "assets/media/char_lei.1df2cc5db415b2ca.webp": {
+      "sha256": "1df2cc5db415b2cadc3dbbf987207b09199c9c5b207a8cdaf29eebee35054468",
+      "bytes": 179612,
+      "type": "image"
+    },
+    "assets/media/char_liao.d7adaed6cfd9a199.webp": {
+      "sha256": "d7adaed6cfd9a199764ac817b55863502500ffce459eff57faaf499f806e5c42",
+      "bytes": 188334,
+      "type": "image"
+    },
+    "assets/media/char_luzhou_f.d42bee597a4154f7.webp": {
+      "sha256": "d42bee597a4154f7a656292d668a11c4c6b915250185df4ebf356e788d5b18cc",
+      "bytes": 168588,
+      "type": "image"
+    },
+    "assets/media/char_luzhou_m.b020373a065afc60.webp": {
+      "sha256": "b020373a065afc604f9e47cc92a468f19b8d328256707757fb6cb0bd9ae134b5",
+      "bytes": 185374,
+      "type": "image"
+    },
+    "assets/media/char_m.62c60525b8437541.webp": {
+      "sha256": "62c60525b8437541164dc557eacd69655af449292ebd2b8f56ed15bb9483d6f4",
+      "bytes": 178842,
+      "type": "image"
+    },
+    "assets/media/char_qian.e426ab13e938aa45.webp": {
+      "sha256": "e426ab13e938aa453280dbefef89a0d19ee1f4fbbf168a126f096da5b828a39d",
+      "bytes": 229418,
+      "type": "image"
+    },
+    "assets/media/char_qin.2bcf054e970c5d70.webp": {
+      "sha256": "2bcf054e970c5d706fe5fe0a1ada110ecb50d413acc5baafd9ed962db281af03",
+      "bytes": 156292,
+      "type": "image"
+    },
+    "assets/media/char_shao.93fd473a4a26a2df.webp": {
+      "sha256": "93fd473a4a26a2df91fca898a8d23bf3bd27c8cc57444871845bb96e27ae3cef",
+      "bytes": 179492,
+      "type": "image"
+    },
+    "assets/media/char_tang.0ff55c72510a3556.webp": {
+      "sha256": "0ff55c72510a35566c0aa01ad55b3a06dcb31773b380545bcdcf3f47c3455b4f",
+      "bytes": 177768,
+      "type": "image"
+    },
+    "assets/media/char_wen.2b56af2cc528d49b.webp": {
+      "sha256": "2b56af2cc528d49b2cebb95f7bc0b94a3d05b4ef48ef19e310441085a1bb19a8",
+      "bytes": 189686,
+      "type": "image"
+    },
+    "assets/media/char_zhou.ce9ee114b1494be0.webp": {
+      "sha256": "ce9ee114b1494be090b01ba12e12ebc7d9cde6374fe3db54ec443cc44316bbe9",
+      "bytes": 206200,
+      "type": "image"
+    },
+    "assets/media/ct_abdomen_trauma.7f7be72647c75d74.webp": {
+      "sha256": "7f7be72647c75d74001edb36e6d4b190b1a5f54771b3e748ee2f4618eb209374",
+      "bytes": 51420,
+      "type": "image"
+    },
+    "assets/media/ct_abdomen.f2d113a7ed952765.webp": {
+      "sha256": "f2d113a7ed952765a9d47171920d757294e7e2d85dc8137fae7f39896fec7d48",
+      "bytes": 57856,
+      "type": "image"
+    },
+    "assets/media/ct_aortic_dissection_teaching.1772e416759995e0.webp": {
+      "sha256": "1772e416759995e085162d9bbf024eec828d7ad6233917d10db78b9f9a8d53b9",
+      "bytes": 75204,
+      "type": "image"
+    },
+    "assets/media/ct_bone.334db1519a27a145.webp": {
+      "sha256": "334db1519a27a145d1de98e44bdb3752f98cf912b3caacdc0b9022262c721d4d",
+      "bytes": 28890,
+      "type": "image"
+    },
+    "assets/media/ct_ch2_stone_v2.947711d2d826f1a3.webp": {
+      "sha256": "947711d2d826f1a3bfa7466184368ac9bec2890171c1b0fef23be21265da5a99",
+      "bytes": 92630,
+      "type": "image"
+    },
+    "assets/media/ct_ch2_stroke_cta_v2.dfd46390f552be84.webp": {
+      "sha256": "dfd46390f552be84c28b35bb17c54cb1de1c3711889580e1e2f7521a82726690",
+      "bytes": 55074,
+      "type": "image"
+    },
+    "assets/media/ct_ch2_stroke_plain_v2.13e1e97f18daff99.webp": {
+      "sha256": "13e1e97f18daff99458051c956a70d865b62e1647c0748f76b6cc861c4114277",
+      "bytes": 81072,
+      "type": "image"
+    },
+    "assets/media/ct_coronary_cta.84c214bcee91c56d.webp": {
+      "sha256": "84c214bcee91c56ddae6b55bd00d648f10c5eaec404c9867db59bd23e55a2ffb",
+      "bytes": 68722,
+      "type": "image"
+    },
+    "assets/media/ct_cta.db9d397dd6983963.webp": {
+      "sha256": "db9d397dd698396384d8c0ee85cea7ac1bf939aa4e6c2f099287cf0c7d417824",
+      "bytes": 61392,
+      "type": "image"
+    },
+    "assets/media/ct_dental_metal_teaching.d08a47288ae6c4b7.webp": {
+      "sha256": "d08a47288ae6c4b743ef80ff31f1eb76ee371182a931747da2e59ea263b465d0",
+      "bytes": 65650,
+      "type": "image"
+    },
+    "assets/media/ct_head_bleed.a83378bce620cbf6.webp": {
+      "sha256": "a83378bce620cbf69c5dbf4b653d488b20c4aa9900e85b46567b004512cc1ae1",
+      "bytes": 53558,
+      "type": "image"
+    },
+    "assets/media/ct_head_child_followup.97b97ceaae405346.webp": {
+      "sha256": "97b97ceaae405346e23970434ba468f6ddc36585c09d4fdef2bc96692e2ed6f7",
+      "bytes": 69790,
+      "type": "image"
+    },
+    "assets/media/ct_head_child.491f42f90a46344a.webp": {
+      "sha256": "491f42f90a46344ad8fdce673ca13b6016dff76888a347d9354f029920c17529",
+      "bytes": 28456,
+      "type": "image"
+    },
+    "assets/media/ct_head_clean.70a23ef5f6188953.webp": {
+      "sha256": "70a23ef5f61889539d13ec89854b02d0dfa176127f69de2c071b62b8a4e38ab2",
+      "bytes": 40202,
+      "type": "image"
+    },
+    "assets/media/ct_head_normal.b7c09c4b5a3697d0.webp": {
+      "sha256": "b7c09c4b5a3697d0e060abe303a13ce6e001bb3c4a4ded333184bf40649be074",
+      "bytes": 32532,
+      "type": "image"
+    },
+    "assets/media/ct_head_stroke.405e6b3c47113f13.webp": {
+      "sha256": "405e6b3c47113f13e9ec604899d440d1aa048803dd6cf2d87463f97f51f3c137",
+      "bytes": 50448,
+      "type": "image"
+    },
+    "assets/media/ct_kidney_stone.928d71392ac2fddd.webp": {
+      "sha256": "928d71392ac2fddd0616c24b3e5d7b77ec3f33e886b02497393077be91ee2eaf",
+      "bytes": 66422,
+      "type": "image"
+    },
+    "assets/media/ct_liver_enhanced.c7684d8e243abe1e.webp": {
+      "sha256": "c7684d8e243abe1e828eb18372708f4d0f5735232caeccb49cc60350f19ca41a",
+      "bytes": 74700,
+      "type": "image"
+    },
+    "assets/media/ct_liver_hemangioma.987374d1c6d2cdbb.webp": {
+      "sha256": "987374d1c6d2cdbbd612d256049f1e3225bdf301e2604bad28ff06030d816ede",
+      "bytes": 55268,
+      "type": "image"
+    },
+    "assets/media/ct_liver_plain.9816bdc9b5eb208c.webp": {
+      "sha256": "9816bdc9b5eb208c89853d90056691f468c29fdeb423faf214d3c0d90a187245",
+      "bytes": 62302,
+      "type": "image"
+    },
+    "assets/media/ct_motion.4bc37e8fbd3d2a1a.webp": {
+      "sha256": "4bc37e8fbd3d2a1a69b5d448d690b815fb9e12bb80e86e9b6c0bf9f0bad515c6",
+      "bytes": 38612,
+      "type": "image"
+    },
+    "assets/media/ct_phantom.0dd97fd5a5054b4a.webp": {
+      "sha256": "0dd97fd5a5054b4a779c838ba61bd8715a98af2ed73e8575c9134b03ab9efc1a",
+      "bytes": 10464,
+      "type": "image"
+    },
+    "assets/media/ct_ring_artifact.85384ddb6f36866d.webp": {
+      "sha256": "85384ddb6f36866de52552804d2c177865902610cf9a6865154549bc2e0c53fe",
+      "bytes": 46346,
+      "type": "image"
+    },
+    "assets/media/ct_water_ring_teaching.8c76ecd2f2946d19.webp": {
+      "sha256": "8c76ecd2f2946d199f36b4819e3f843a9ab51af790b533cd12dba39395694911",
+      "bytes": 37710,
+      "type": "image"
+    },
+    "assets/media/ct_wrist_fracture_v2.698399ce035053ac.webp": {
+      "sha256": "698399ce035053ace6978775cc314848046db9730072a03d8381c6320c7caa3f",
+      "bytes": 361196,
+      "type": "image"
+    },
+    "assets/media/ev_ch2_teaching_archive.d88e83a1f96700d6.webp": {
+      "sha256": "d88e83a1f96700d66f5d0e1b33a0e33588220295007cd9d183eaaa016df1bd1a",
+      "bytes": 109700,
+      "type": "image"
+    },
+    "assets/media/ev_ch2_team_1997.42a40549fecc4c25.webp": {
+      "sha256": "42a40549fecc4c25bd4d9e2c8953ac7b0c2901a755a0390e7455d22430b0c9a4",
+      "bytes": 182708,
+      "type": "image"
+    },
+    "assets/media/ev_kai_survey.ab6f3a79e2680499.webp": {
+      "sha256": "ab6f3a79e2680499adb153fb6318c7b0f014bd89a8f951f995acf20190a8d996",
+      "bytes": 6384,
+      "type": "image"
+    },
+    "assets/media/ev_maintenance_draft.89dfd8187bf107c3.webp": {
+      "sha256": "89dfd8187bf107c3efb40da29efa7ab815323cc1db773f8fcc44af8c400305a9",
+      "bytes": 8654,
+      "type": "image"
+    },
+    "assets/media/ev_mystery_sign.5c337bfa13ad0e0c.webp": {
+      "sha256": "5c337bfa13ad0e0c4437d9327521a05a48054fc8936282c0480501bf4cd46fbd",
+      "bytes": 6372,
+      "type": "image"
+    },
+    "assets/media/ev_nameless_films_fixed.6ba05b095f547a3a.webp": {
+      "sha256": "6ba05b095f547a3a65fff1526518fad46bb98f6ed9d082f7be976cd052354cf2",
+      "bytes": 165532,
+      "type": "image"
+    },
+    "assets/media/ev_nameless_films.7d5598e2775aca2b.webp": {
+      "sha256": "7d5598e2775aca2b64654276a8cf9c4ff72b23ce61b50cbaa9fdcee1b8bb57b5",
+      "bytes": 6554,
+      "type": "image"
+    },
+    "assets/media/ev_old_ct_retired.4439a2758bb45c2d.webp": {
+      "sha256": "4439a2758bb45c2de6fc3f89fe150eddf4cddf9fcc3be9a0f589344fc43b5b02",
+      "bytes": 93562,
+      "type": "image"
+    },
+    "assets/media/ev_old_photo.7ca441df7ffded30.webp": {
+      "sha256": "7ca441df7ffded30b59fd0f189a215933f108ddaa0ef6b2a93e3445d8a7875d2",
+      "bytes": 21512,
+      "type": "image"
+    },
+    "assets/media/ev_old_register_fixed.4fec209e214d7605.webp": {
+      "sha256": "4fec209e214d760515e859e10c9ff39dddb9be65d865c82992f748bcebeecf49",
+      "bytes": 202738,
+      "type": "image"
+    },
+    "assets/media/ev_old_register.44b166ad03e1cedb.webp": {
+      "sha256": "44b166ad03e1cedb59924a3b07368329c612e2cb00e0b8acee9aa1751f6db8c0",
+      "bytes": 6678,
+      "type": "image"
+    },
+    "assets/media/ev_pacs_log.18e36240cd6d16fd.webp": {
+      "sha256": "18e36240cd6d16fd06b427b502de820c219fd976882a8d985bdddc79644cbbf2",
+      "bytes": 8660,
+      "type": "image"
+    },
+    "assets/media/ev_remote_proposal.7ccd90e9a9a31298.webp": {
+      "sha256": "7ccd90e9a9a31298b28d0d65c53d4e54a9c0e33b2a4ab2889f12d14b1ad2b3d4",
+      "bytes": 5702,
+      "type": "image"
+    },
+    "assets/media/ev_wen_card.86c455081bc09e33.webp": {
+      "sha256": "86c455081bc09e3335b4b572e14a211fa28deb72b3442353697153e6d0a1b467",
+      "bytes": 4016,
+      "type": "image"
+    },
+    "assets/media/ev_zhou_note.818be207137ee70b.webp": {
+      "sha256": "818be207137ee70b786ba8e1ac30fa1fd3a61fcedb1e77081d1360facd9a320c",
+      "bytes": 6148,
+      "type": "image"
+    },
+    "assets/media/img_dsa_normal.e5c8b1a4ef4d469b.webp": {
+      "sha256": "e5c8b1a4ef4d469b745e4f9a0dc10533a6edf0dbb722e69eeb0f568c9ca3a322",
+      "bytes": 89008,
+      "type": "image"
+    },
+    "assets/media/img_dsa_stenosis.d573b6d229f216eb.webp": {
+      "sha256": "d573b6d229f216ebbf2de6d19f8f4b75b02d783fc1fb3a60a90b9fa880247939",
+      "bytes": 55138,
+      "type": "image"
+    },
+    "assets/media/img_dsa_stent.4d78231a56e24534.webp": {
+      "sha256": "4d78231a56e2453497c84354a109ed01d1213e7da24bc5838099ed7d330cfeee",
+      "bytes": 72736,
+      "type": "image"
+    },
+    "assets/media/img_sinogram.783fcd61bf671c1b.webp": {
+      "sha256": "783fcd61bf671c1bcb2f94b0bae56a3772215bc51b94000073001f96e7a94dbd",
+      "bytes": 150854,
+      "type": "image"
+    },
+    "assets/media/img_teaser.48db3d7de35be3c9.webp": {
+      "sha256": "48db3d7de35be3c94cbce4e3c6653e9ea74dc1756433565bf2d6051534541646",
+      "bytes": 59752,
+      "type": "image"
+    },
+    "assets/media/item_apple.bc685373bf8d9367.webp": {
+      "sha256": "bc685373bf8d9367fa2262af15c123c3c8d3d74a9fda1d93661a980b7293e5c4",
+      "bytes": 78532,
+      "type": "image"
+    },
+    "assets/media/item_beef.f880752681540078.webp": {
+      "sha256": "f8807526815400782c63c443d5ba02e8dd2d15bba0b18661c065d4e4c6dcc488",
+      "bytes": 8238,
+      "type": "image"
+    },
+    "assets/media/item_book.187687ec1a6afb13.webp": {
+      "sha256": "187687ec1a6afb137aa3ce530ed4e621cf2af6789ebc30ffad6bb77e903c32f6",
+      "bytes": 8774,
+      "type": "image"
+    },
+    "assets/media/item_coffee.4bfa5ee4be355484.webp": {
+      "sha256": "4bfa5ee4be35548492b0f942820b537628b1732b14a7726ae487bbf10e83ad21",
+      "bytes": 5228,
+      "type": "image"
+    },
+    "assets/media/item_disc.0cb7d0d6bafd5207.webp": {
+      "sha256": "0cb7d0d6bafd52079e0abeab7587801bff423dd50b01a29b21601612e21127e3",
+      "bytes": 5194,
+      "type": "image"
+    },
+    "assets/media/item_dosimeter.14fadaefa9c34236.webp": {
+      "sha256": "14fadaefa9c342367210a17c765c0a27ce38fd9f675dcaf71bee9ff0b328ab89",
+      "bytes": 4468,
+      "type": "image"
+    },
+    "assets/media/item_film.25a57a94eb2856c3.webp": {
+      "sha256": "25a57a94eb2856c3f3071053be7ea9be9475629f160cb2ebb34a11d03e8ba916",
+      "bytes": 292998,
+      "type": "image"
+    },
+    "assets/media/item_glasses.cd3a466aac16633f.webp": {
+      "sha256": "cd3a466aac16633f9bce4415a77b96407698267b181841b1b83f410617ab4666",
+      "bytes": 68532,
+      "type": "image"
+    },
+    "assets/media/item_key.c792ddef4fd32366.webp": {
+      "sha256": "c792ddef4fd32366d4debda2d5dc13f32eab0fabac3e9f29f56f37e8864b71e6",
+      "bytes": 3266,
+      "type": "image"
+    },
+    "assets/media/item_lottery.0b84e70536627c23.webp": {
+      "sha256": "0b84e70536627c238566b251b9ec6c31ef2edf16a242e0309d340a1c3fa5bb9d",
+      "bytes": 10724,
+      "type": "image"
+    },
+    "assets/media/item_milktea.fcbc1f6bb6a0c4d3.webp": {
+      "sha256": "fcbc1f6bb6a0c4d3ee934a7779b367a897e051d23027e181218e42f2aaf734e7",
+      "bytes": 4962,
+      "type": "image"
+    },
+    "assets/media/item_notebook.a3aeeb2f5c463bea.webp": {
+      "sha256": "a3aeeb2f5c463bea4df37876738a9de6abc9fbaa3ec1ccf76c71c14fac8ac896",
+      "bytes": 79148,
+      "type": "image"
+    },
+    "assets/media/item_photo.213cbf7d23b08d0f.webp": {
+      "sha256": "213cbf7d23b08d0fc90facaf72e80409c0f9c3b1f99cb653a1ce8cd795c9ebc9",
+      "bytes": 238288,
+      "type": "image"
+    },
+    "assets/media/item_remote.024b8d24e4195ce2.webp": {
+      "sha256": "024b8d24e4195ce2eda639a88fabbb13d6383863aa4bdd14d38132385f309c34",
+      "bytes": 1882,
+      "type": "image"
+    },
+    "assets/media/item_screen.fcdb45abee4290d0.webp": {
+      "sha256": "fcdb45abee4290d079b42f346285707208f5bdff1a544d73c2c5d880de062008",
+      "bytes": 125708,
+      "type": "image"
+    },
+    "assets/media/item_snack.3aca3e0ec3d1fc2e.webp": {
+      "sha256": "3aca3e0ec3d1fc2eea63c45d11a35faf7d94dcce05980620bd40ff1cad61874c",
+      "bytes": 10076,
+      "type": "image"
+    },
+    "assets/media/item_tea.d2183e08464869c7.webp": {
+      "sha256": "d2183e08464869c71bc13935ac4691db9e17a90ed86182bfbd41382f01dc106a",
+      "bytes": 65664,
+      "type": "image"
+    },
+    "assets/media/item_thermos.8e2424635990e2b2.webp": {
+      "sha256": "8e2424635990e2b28f415b0a6739833508798a7c7e89339d8220c79897aedcde",
+      "bytes": 2424,
+      "type": "image"
+    },
+    "assets/media/item_toolbox.4ef0a4278483e495.webp": {
+      "sha256": "4ef0a4278483e495339932e10200645fc2e18e8a87a055591cc37add7ee6b28f",
+      "bytes": 7520,
+      "type": "image"
+    },
+    "assets/media/item_zhou_key_fixed.58e57ab20630389e.webp": {
+      "sha256": "58e57ab20630389e4d4d21404f59825207a5830495701605ddb9adef6d273d26",
+      "bytes": 105654,
+      "type": "image"
+    },
+    "assets/media/item_zhou_key.a4c819357d451998.webp": {
+      "sha256": "a4c819357d4519983c8d618fb1aa6f5a52078a321cfe489371a7528dfd2dfe70",
+      "bytes": 6932,
+      "type": "image"
+    },
+    "assets/media/machine_mammo.8243079eef5448df.webp": {
+      "sha256": "8243079eef5448df3bf2c95b9f397a3796fd81451cd0d0134852dd2dd8eb01f5",
+      "bytes": 133832,
+      "type": "image"
+    },
+    "assets/media/machine_mobile.70101eb607383dc6.webp": {
+      "sha256": "70101eb607383dc6d28df182b1aa1db2436e0b18ebce044ab9cbe9b145ad6740",
+      "bytes": 181202,
+      "type": "image"
+    },
+    "assets/media/machine_reader.ff6cb3bb2a62fb34.webp": {
+      "sha256": "ff6cb3bb2a62fb34a8550a7dac90f5462710f2549e159be69a88247aafd2986c",
+      "bytes": 129012,
+      "type": "image"
+    },
+    "assets/media/pat_aunt.cfb0b3c4db527d18.webp": {
+      "sha256": "cfb0b3c4db527d18f2dfcc84787e41bffbf05d616c4e220a7910c73778e60aee",
+      "bytes": 132966,
+      "type": "image"
+    },
+    "assets/media/pat_child.0d8dd24535f50abf.webp": {
+      "sha256": "0d8dd24535f50abfe9e46c49baae90339fb2af24b82a97a57a7cfc574730d376",
+      "bytes": 526650,
+      "type": "image"
+    },
+    "assets/media/pat_dad.0012075f2438100e.webp": {
+      "sha256": "0012075f2438100e10ae44b5862f723084546eabca96758f2b15857d33977aed",
+      "bytes": 274654,
+      "type": "image"
+    },
+    "assets/media/pat_enh.d683ce71f6cf3caf.webp": {
+      "sha256": "d683ce71f6cf3caf7ea21db0229c09bd044d16eb686efbce4f62e1d2adc10504",
+      "bytes": 111268,
+      "type": "image"
+    },
+    "assets/media/pat_ge.0d9c6c528eade291.webp": {
+      "sha256": "0d9c6c528eade29126f48f71799260eb69615b3ed558dd5ca22324c0ed3f5ed2",
+      "bytes": 202732,
+      "type": "image"
+    },
+    "assets/media/pat_grandpa2.d6eff71a6aef2a8b.webp": {
+      "sha256": "d6eff71a6aef2a8bd67eb54adff46b5c112a1fd369209eda40c257be24286086",
+      "bytes": 158896,
+      "type": "image"
+    },
+    "assets/media/pat_gut.a4f1b350819f3abb.webp": {
+      "sha256": "a4f1b350819f3abb9c4c7dcef2c95a078c2a0c49f679ec8340b5df3829eff10e",
+      "bytes": 171700,
+      "type": "image"
+    },
+    "assets/media/pat_kid6.0f878a29a857952c.webp": {
+      "sha256": "0f878a29a857952c3a16076777db2aa030cc9e91b2ff974a963d6f1dd8d2e79e",
+      "bytes": 155280,
+      "type": "image"
+    },
+    "assets/media/pat_kiddad.f2c946acff3be1c7.webp": {
+      "sha256": "f2c946acff3be1c7d2a038f7bd743516b7d070c1e0fe60155a9c650ff6ca5d11",
+      "bytes": 185176,
+      "type": "image"
+    },
+    "assets/media/pat_kidmom.162f9aa6767c8149.webp": {
+      "sha256": "162f9aa6767c814953be7a4be826009fbc36d36c4f34e5c85233d3af5183e9c7",
+      "bytes": 147824,
+      "type": "image"
+    },
+    "assets/media/pat_mom.d936dee54695e7a2.webp": {
+      "sha256": "d936dee54695e7a27ac28ea2dbb84e8fe5a859f0b2608b30c0115179e3eea73e",
+      "bytes": 147680,
+      "type": "image"
+    },
+    "assets/media/pat_mystery.0b39587be23c329d.webp": {
+      "sha256": "0b39587be23c329d9ad45e4f9148193c28391371bbdc8766744496925658f1ae",
+      "bytes": 135194,
+      "type": "image"
+    },
+    "assets/media/pat_oldman.90bcf08f326783a0.webp": {
+      "sha256": "90bcf08f326783a032e72994c9f180ca1db5f9f586ab6f8ffa9ac654e7fdc1a0",
+      "bytes": 233028,
+      "type": "image"
+    },
+    "assets/media/pat_regular.dba671604a9493f8.webp": {
+      "sha256": "dba671604a9493f86970b1004b29f7a89f7c7b88bba570413c3449ec50b309a3",
+      "bytes": 146970,
+      "type": "image"
+    },
+    "assets/media/pat_stone.2c44a91bd4b2b740.webp": {
+      "sha256": "2c44a91bd4b2b740c65e268a07bdb44ac0afa2477684d9cc8f265cf672f1d004",
+      "bytes": 196830,
+      "type": "image"
+    },
+    "assets/media/pat_thin.b77446017e63646f.webp": {
+      "sha256": "b77446017e63646f51f7a86cccdfdfa8794a79ad3810f3f8068f95fd0f935c13",
+      "bytes": 347162,
+      "type": "image"
+    },
+    "assets/media/pat_trauma.e506c1c21b09f89c.webp": {
+      "sha256": "e506c1c21b09f89c19fc6ce0b42b6d3b8a13c1e6415cff62d631a5557f1d2efa",
+      "bytes": 242946,
+      "type": "image"
+    },
+    "assets/media/pat_uncle2.f0f1fff363961cb2.webp": {
+      "sha256": "f0f1fff363961cb270b16f49086b9e9caeeb2dfd24375c9601311a3daea91e89",
+      "bytes": 128488,
+      "type": "image"
+    },
+    "assets/media/pat_worker.3c43646b098d36de.webp": {
+      "sha256": "3c43646b098d36de5d625308b77ea8d2bf9f8cecf00f74ca50bbda985ad12027",
+      "bytes": 521286,
+      "type": "image"
+    },
+    "assets/media/stamp.72cf222761ee91c0.webp": {
+      "sha256": "72cf222761ee91c0875919d4383d102b41393765b6cefd3edd87fdf0c6b97114",
+      "bytes": 106542,
+      "type": "image"
+    },
+    "assets/media/xray_battery.4854ddbc8984dfe3.webp": {
+      "sha256": "4854ddbc8984dfe32cd339cd06829e798bb4702d68f61a1a19e0a47d26be1638",
+      "bytes": 37774,
+      "type": "image"
+    },
+    "assets/media/xray_coin.faecba192e793b25.webp": {
+      "sha256": "faecba192e793b25ad4e3a9c9d71fab5796474e893fcf743c64fc7a226a6bfbe",
+      "bytes": 52004,
+      "type": "image"
+    },
+    "assets/media/xray_fog.325dd387013a7b83.webp": {
+      "sha256": "325dd387013a7b839d1230d2d9b170f75363efd6fed1403e01e1d95fadfca4a6",
+      "bytes": 51152,
+      "type": "image"
+    },
+    "assets/media/xray_fracture.ca5337013e877990.webp": {
+      "sha256": "ca5337013e877990491a4c9d3a366d5ba936489eb840f1951099b39581763209",
+      "bytes": 36108,
+      "type": "image"
+    },
+    "assets/media/xray_ghost.980f69ab147fcd0c.webp": {
+      "sha256": "980f69ab147fcd0cf3f00469162aefba3d1562771cfaeac5914269e94532ae59",
+      "bytes": 36748,
+      "type": "image"
+    },
+    "assets/media/xray_normal.8e5d0577d0527049.webp": {
+      "sha256": "8e5d0577d0527049244aebe1c1cd842e6b761923d01e0aa24ce2b7f3487c4294",
+      "bytes": 56988,
+      "type": "image"
+    },
+    "assets/media/xray_pneumo.9671893e339e169c.webp": {
+      "sha256": "9671893e339e169c5f91dfdeb2b744f4fde46ca688e064de6a3f817ab84e1f4e",
+      "bytes": 60290,
+      "type": "image"
+    },
+    "audio/badge.mp3": {
+      "sha256": "901882ce57b8c16e1b1222472ff37804f893bd4ff789454816489c148f31cf81",
+      "bytes": 32853,
+      "type": "audio"
+    },
+    "audio/buzz.mp3": {
+      "sha256": "fc752d51e2f342685e6df5abbfeb13077900bfd07da3e83325da4b007ba1d141",
+      "bytes": 3458,
+      "type": "audio"
+    },
+    "audio/ch2_ct_real_scan_20260924.mp3": {
+      "sha256": "27ce2978e81ab5a2ada579e528219814243e86fedd5da554e6cf4d8df862f633",
+      "bytes": 49356,
+      "type": "audio"
+    },
+    "audio/ch2_terminal_alarm_v1.mp3": {
+      "sha256": "6e20289fadb1bcd6d0a1359795ce9d7c6e6bb32e42ffdb2fd9ab860a8a666b65",
+      "bytes": 12717,
+      "type": "audio"
+    },
+    "audio/ch2_terminal_receipt_v1.mp3": {
+      "sha256": "6904a94a505dbcefa2803a95f8c63bd4134842777f3e457262cdac9fa28205a8",
+      "bytes": 26925,
+      "type": "audio"
+    },
+    "audio/click.mp3": {
+      "sha256": "542b2d5ca914e3549e55b9d02b311dc91341e21f59d3239ede7657cb743cb241",
+      "bytes": 13836,
+      "type": "audio"
+    },
+    "audio/cry_child.mp3": {
+      "sha256": "afb6e80ae54b66d2e99f71105c2831accb476365076be40c4f345905f6ef57ee",
+      "bytes": 48945,
+      "type": "audio"
+    },
+    "audio/groan_man.mp3": {
+      "sha256": "b74237fbb3a7bacb27fa9695c17f3540487f489c3dc9cca4fb43046af283cf1a",
+      "bytes": 48945,
+      "type": "audio"
+    },
+    "audio/radio.mp3": {
+      "sha256": "4937ea73713a7f541e736196def3d4389030c283ec467466c028d87e68e9d659",
+      "bytes": 32853,
+      "type": "audio"
+    },
+    "audio/ring.mp3": {
+      "sha256": "9bb510b6669be41de9f5bbe4a04d84755e38f97b2d3c11b31286f2a84ff2d867",
+      "bytes": 48736,
+      "type": "audio"
+    },
+    "audio/stamp.mp3": {
+      "sha256": "4ef060ef68d64370b81ffdcd3f4f2bfd0e1efbbe73712935449c6be43de09967",
+      "bytes": 24703,
+      "type": "audio"
+    },
+    "audio/vox_aunt.mp3": {
+      "sha256": "40e4b5ee50c11af0f24b4556eefa4e8f83219096b2818359623344425cf8b9f5",
+      "bytes": 21933,
+      "type": "audio"
+    },
+    "audio/vox_bai.mp3": {
+      "sha256": "84b8bcc12159a6d2d909a2250f3eaaf7f3c6c2fc724b167660ea1691ca101451",
+      "bytes": 26541,
+      "type": "audio"
+    },
+    "audio/vox_ch1_fan_mature_20260923.mp3": {
+      "sha256": "d930972c651850a77ddc95f8b7d8319f5a3dcca90d6eb46d072e18171feaa42b",
+      "bytes": 49197,
+      "type": "audio"
+    },
+    "audio/vox_ch1_thin_breathless_20260923.mp3": {
+      "sha256": "939970bea5252a7cc14c096b3973cd7d8fc7f220b8f3c6358e6ec97a43c72659",
+      "bytes": 97197,
+      "type": "audio"
+    },
+    "audio/vox_ch1_worker_bass_20260923.mp3": {
+      "sha256": "0d2f96f356c470547b2ff6ad6e9d758cd201c63b2c019aab7a18b3624aec4b47",
+      "bytes": 73389,
+      "type": "audio"
+    },
+    "audio/vox_ch2_luo_entrance_20260925.mp3": {
+      "sha256": "6c449784f4505b18d9b05f5281ca2446d7a1020bb885d18b872d43e3981f41d2",
+      "bytes": 33453,
+      "type": "audio"
+    },
+    "audio/vox_ch2_natural_director_day_v3.mp3": {
+      "sha256": "66b30306bf99dc22cd94cc4db31cda7405d7953e0b824c79af223dd8222f2929",
+      "bytes": 49197,
+      "type": "audio"
+    },
+    "audio/vox_ch2_natural_fan_a.mp3": {
+      "sha256": "529c1c03cc55c4a316f847b589fe4a13a176e6c414e49754a08c8d91ec0ef3a6",
+      "bytes": 31149,
+      "type": "audio"
+    },
+    "audio/vox_ch2_natural_fan_b.mp3": {
+      "sha256": "fbb7b1c47eae74e159d12da0e5b4c1f59a62dd7680a82e877d3fe711a95d3500",
+      "bytes": 29997,
+      "type": "audio"
+    },
+    "audio/vox_ch2_natural_he_v2.mp3": {
+      "sha256": "1615a7282f5da44f7c9413ccd732458371f0f4653e27cf2e42712804c9d14dd1",
+      "bytes": 45741,
+      "type": "audio"
+    },
+    "audio/vox_ch2_natural_kai_noref_b_v9.mp3": {
+      "sha256": "236c804dc8f4137c8c5763ac72e54417d893b9ca6182ba7aed66aa9d9a7f812b",
+      "bytes": 22317,
+      "type": "audio"
+    },
+    "audio/vox_ch2_natural_kiddad.mp3": {
+      "sha256": "35cac28936fbefcdeebd2e2d1f22dfdb3a078d86986d65bcfb155df03ec95e14",
+      "bytes": 32685,
+      "type": "audio"
+    },
+    "audio/vox_ch2_natural_kidmom.mp3": {
+      "sha256": "a27dc49852ff5111d73f9a98e46da6f162107055c6e3dd3fbcbf2ea81c61d39f",
+      "bytes": 30765,
+      "type": "audio"
+    },
+    "audio/vox_ch2_natural_lei_v2.mp3": {
+      "sha256": "ccd01be669e58851eca747e5797b93b647147fb2a1ccb5c364ed3da00887747a",
+      "bytes": 36141,
+      "type": "audio"
+    },
+    "audio/vox_ch2_natural_tang.mp3": {
+      "sha256": "e55696ec9ff88200976ab5791d3cf39fdf4a4010fc81f72ff77feb87372d4194",
+      "bytes": 23853,
+      "type": "audio"
+    },
+    "audio/vox_ch2_natural_zhou_v2.mp3": {
+      "sha256": "0fe5f92c337438dc20f01a6092acfd302e06735a12d5d7bcc5fbcd7a040d583c",
+      "bytes": 43053,
+      "type": "audio"
+    },
+    "audio/vox_ch2_waiting.mp3": {
+      "sha256": "dde79cc446b2a23e2981af9f26f62d0072176688e0d735cc565a7be4a1b955b1",
+      "bytes": 39213,
+      "type": "audio"
+    },
+    "audio/vox_dad.mp3": {
+      "sha256": "8408892dca4f3ae83a3ea2f140194da70ab5a3c9c96e511b994482fbf6111353",
+      "bytes": 24429,
+      "type": "audio"
+    },
+    "audio/vox_director.mp3": {
+      "sha256": "ab6885554c91469e9ef993b0a45ec85fd6fdff9702e988b9081238f931023faf",
+      "bytes": 32301,
+      "type": "audio"
+    },
+    "audio/vox_du.mp3": {
+      "sha256": "e8ae6a15c14ab5495e8a1ef6a6b615e032b2b744beea63c2de775c30fb0be024",
+      "bytes": 27885,
+      "type": "audio"
+    },
+    "audio/vox_guy.mp3": {
+      "sha256": "a6ae4c25d5b5218509709031396e9697c3cc88d046ea6b58cf54e92ca9e01d94",
+      "bytes": 23085,
+      "type": "audio"
+    },
+    "audio/vox_he.mp3": {
+      "sha256": "8b6908f9111f32ee03c7cd1afa9bedfd1126d5ae86b740bcf13c826d7c896121",
+      "bytes": 37677,
+      "type": "audio"
+    },
+    "audio/vox_jiang.mp3": {
+      "sha256": "835661e660120770b6235550c822d4a421843fc873aca2f4029fda565c032c24",
+      "bytes": 23277,
+      "type": "audio"
+    },
+    "audio/vox_kai.mp3": {
+      "sha256": "73359237b5ac0a3b1f4fb0f15ebec40f8a29bb3af205c6382072475c067ab567",
+      "bytes": 31725,
+      "type": "audio"
+    },
+    "audio/vox_kid.mp3": {
+      "sha256": "7a67c4f3a0b3c7e8b62d3e9c49198e6fa28e91b3fc0f763491d2766814450803",
+      "bytes": 44205,
+      "type": "audio"
+    },
+    "audio/vox_lei.mp3": {
+      "sha256": "6b5033eae0f0c707340a227e9737eab34fec5d445a72011a60975e2e198b5ffc",
+      "bytes": 43437,
+      "type": "audio"
+    },
+    "audio/vox_liao.mp3": {
+      "sha256": "567326f6ff01134455c46bbdcc333f930a2c09896142055607dc88acf7cc4dd3",
+      "bytes": 29805,
+      "type": "audio"
+    },
+    "audio/vox_mom.mp3": {
+      "sha256": "6c5cac9fc9d56911b994c900383fd52f7c7402c906c8d9802c738f0d7bf0058a",
+      "bytes": 27885,
+      "type": "audio"
+    },
+    "audio/vox_mystery.mp3": {
+      "sha256": "285e09f020802be5197ee9d858a45c2ce0205a868c04dd69d43d5c87c0cc79ad",
+      "bytes": 64557,
+      "type": "audio"
+    },
+    "audio/vox_qian.mp3": {
+      "sha256": "5ad2ae488724a73536846b8ca49e57cda0ec405c84ca5603b2f07c167592b8c9",
+      "bytes": 29997,
+      "type": "audio"
+    },
+    "audio/vox_qin.mp3": {
+      "sha256": "0992b5d8a2b4eecfa99385480b2a4145e1d9d4b219c864c8a7d496b6926a2e26",
+      "bytes": 43821,
+      "type": "audio"
+    },
+    "audio/vox_shao.mp3": {
+      "sha256": "bba5e82f43a6f6fc701780634c1654e210cf74c90f79dbeed7217ab399af0415",
+      "bytes": 43821,
+      "type": "audio"
+    },
+    "audio/vox_tang.mp3": {
+      "sha256": "3b7f695898a4ba2365c7d95aa9f9695716f56780567178db2ca7a0416f72e01b",
+      "bytes": 44973,
+      "type": "audio"
+    },
+    "audio/vox_wen.mp3": {
+      "sha256": "10459bf8676ffee0c247edfcf83f5d216de16e51dc45f04c3f8249d69e63a95c",
+      "bytes": 30189,
+      "type": "audio"
+    },
+    "audio/vox_zhou.mp3": {
+      "sha256": "00d74c9f9e8b717b08786f602a32095fe51cabdec65672c70464f3b0fe3c75fc",
+      "bytes": 43437,
+      "type": "audio"
+    },
+    "audio/vox2_director_am.mp3": {
+      "sha256": "517155ad66ebc29e65f020644acff467c342fee00504ef1b95b3e4f08d6ad89b",
+      "bytes": 58029,
+      "type": "audio"
+    },
+    "audio/vox2_mystery.mp3": {
+      "sha256": "b99ef994e16e6d0121bdf32a37085b22cabe5315736433f7b34e4c3769e7317e",
+      "bytes": 44589,
+      "type": "audio"
+    },
+    "audio/vox2_wen.mp3": {
+      "sha256": "3f3caddc0df40b1f854b111802069db7f41129c7a249674a63b8241ea327f23a",
+      "bytes": 25197,
+      "type": "audio"
+    },
+    "audio/xray.mp3": {
+      "sha256": "34b84ffdbfd3a150bbee7cdf2be94da0e4f9e9dd455d151007da83246a8a4ce8",
+      "bytes": 40377,
+      "type": "audio"
+    }
+  },
+  "chapters": {
+    "shell": [
+      "assets/media/bg_control.3db97844471e5de7.webp",
+      "assets/media/bg_corridor.1e4e7ec83daa8ed6.webp",
+      "assets/media/bg_day.b70b32edf4b34bca.webp",
+      "assets/media/bg_title.1efef9d5c52ba116.webp",
+      "assets/media/char_f.d65f9821d5222886.webp",
+      "assets/media/char_m.62c60525b8437541.webp",
+      "assets/media/stamp.72cf222761ee91c0.webp",
+      "audio/badge.mp3",
+      "audio/buzz.mp3",
+      "audio/click.mp3",
+      "audio/stamp.mp3"
+    ],
+    "ch1": [
+      "assets/media/bg_archive.d2d3bcd87c795189.webp",
+      "assets/media/bg_breakroom.f19b1fc1673eec35.webp",
+      "assets/media/bg_control.3db97844471e5de7.webp",
+      "assets/media/bg_corridor.1e4e7ec83daa8ed6.webp",
+      "assets/media/bg_day.b70b32edf4b34bca.webp",
+      "assets/media/bg_morning.0f805e95e53ffbec.webp",
+      "assets/media/bg_xrayroom.6f3dacb4a82f8678.webp",
+      "assets/media/char_bai.e52dc141e46d198e.webp",
+      "assets/media/char_director.0d23cc88e4972e3f.webp",
+      "assets/media/char_f.d65f9821d5222886.webp",
+      "assets/media/char_fan.b6c379fd058e2916.webp",
+      "assets/media/char_he.0f7e45bec36b39ef.webp",
+      "assets/media/char_jiang.db7fb1ad6c3c46f1.webp",
+      "assets/media/char_kai.59a14b34e2e70e0e.webp",
+      "assets/media/char_lei.1df2cc5db415b2ca.webp",
+      "assets/media/char_m.62c60525b8437541.webp",
+      "assets/media/char_qian.e426ab13e938aa45.webp",
+      "assets/media/char_tang.0ff55c72510a3556.webp",
+      "assets/media/char_wen.2b56af2cc528d49b.webp",
+      "assets/media/char_zhou.ce9ee114b1494be0.webp",
+      "assets/media/ev_kai_survey.ab6f3a79e2680499.webp",
+      "assets/media/ev_mystery_sign.5c337bfa13ad0e0c.webp",
+      "assets/media/ev_pacs_log.18e36240cd6d16fd.webp",
+      "assets/media/ev_wen_card.86c455081bc09e33.webp",
+      "assets/media/ev_zhou_note.818be207137ee70b.webp",
+      "assets/media/img_teaser.48db3d7de35be3c9.webp",
+      "assets/media/item_apple.bc685373bf8d9367.webp",
+      "assets/media/item_book.187687ec1a6afb13.webp",
+      "assets/media/item_coffee.4bfa5ee4be355484.webp",
+      "assets/media/item_dosimeter.14fadaefa9c34236.webp",
+      "assets/media/item_film.25a57a94eb2856c3.webp",
+      "assets/media/item_glasses.cd3a466aac16633f.webp",
+      "assets/media/item_key.c792ddef4fd32366.webp",
+      "assets/media/item_lottery.0b84e70536627c23.webp",
+      "assets/media/item_milktea.fcbc1f6bb6a0c4d3.webp",
+      "assets/media/item_notebook.a3aeeb2f5c463bea.webp",
+      "assets/media/item_photo.213cbf7d23b08d0f.webp",
+      "assets/media/item_screen.fcdb45abee4290d0.webp",
+      "assets/media/item_snack.3aca3e0ec3d1fc2e.webp",
+      "assets/media/item_tea.d2183e08464869c7.webp",
+      "assets/media/item_toolbox.4ef0a4278483e495.webp",
+      "assets/media/machine_mammo.8243079eef5448df.webp",
+      "assets/media/machine_mobile.70101eb607383dc6.webp",
+      "assets/media/machine_reader.ff6cb3bb2a62fb34.webp",
+      "assets/media/pat_aunt.cfb0b3c4db527d18.webp",
+      "assets/media/pat_child.0d8dd24535f50abf.webp",
+      "assets/media/pat_dad.0012075f2438100e.webp",
+      "assets/media/pat_mystery.0b39587be23c329d.webp",
+      "assets/media/pat_oldman.90bcf08f326783a0.webp",
+      "assets/media/pat_regular.dba671604a9493f8.webp",
+      "assets/media/pat_thin.b77446017e63646f.webp",
+      "assets/media/pat_trauma.e506c1c21b09f89c.webp",
+      "assets/media/pat_worker.3c43646b098d36de.webp",
+      "assets/media/stamp.72cf222761ee91c0.webp",
+      "assets/media/xray_battery.4854ddbc8984dfe3.webp",
+      "assets/media/xray_coin.faecba192e793b25.webp",
+      "assets/media/xray_fog.325dd387013a7b83.webp",
+      "assets/media/xray_fracture.ca5337013e877990.webp",
+      "assets/media/xray_ghost.980f69ab147fcd0c.webp",
+      "assets/media/xray_normal.8e5d0577d0527049.webp",
+      "assets/media/xray_pneumo.9671893e339e169c.webp",
+      "audio/badge.mp3",
+      "audio/buzz.mp3",
+      "audio/cry_child.mp3",
+      "audio/groan_man.mp3",
+      "audio/radio.mp3",
+      "audio/ring.mp3",
+      "audio/stamp.mp3",
+      "audio/vox_aunt.mp3",
+      "audio/vox_bai.mp3",
+      "audio/vox_ch1_fan_mature_20260923.mp3",
+      "audio/vox_ch1_thin_breathless_20260923.mp3",
+      "audio/vox_ch1_worker_bass_20260923.mp3",
+      "audio/vox_dad.mp3",
+      "audio/vox_director.mp3",
+      "audio/vox_he.mp3",
+      "audio/vox_jiang.mp3",
+      "audio/vox_kai.mp3",
+      "audio/vox_lei.mp3",
+      "audio/vox_mom.mp3",
+      "audio/vox_mystery.mp3",
+      "audio/vox_qian.mp3",
+      "audio/vox_tang.mp3",
+      "audio/vox_wen.mp3",
+      "audio/vox_zhou.mp3",
+      "audio/xray.mp3"
+    ],
+    "ch2": [
+      "assets/ct-sequences/adult-head-dental-repeat-v1.webp",
+      "assets/ct-sequences/adult-head-dental-v1.webp",
+      "assets/ct-sequences/adult-head-motion-v1.webp",
+      "assets/ct-sequences/adult-head-plain-v1.webp",
+      "assets/ct-sequences/adult-neck-cta-v1.webp",
+      "assets/ct-sequences/aorta-cta-v1.webp",
+      "assets/ct-sequences/chest-plain-v1.webp",
+      "assets/ct-sequences/coronary-cta-v1.webp",
+      "assets/ct-sequences/lumbar-pelvis-plain-v1.webp",
+      "assets/ct-sequences/urinary-plain-v1.webp",
+      "assets/ct-sequences/wrist-bone-v1.webp",
+      "assets/ct_head_hema.png",
+      "assets/ct_lung.png",
+      "assets/media/bg_archive.d2d3bcd87c795189.webp",
+      "assets/media/bg_breakroom.f19b1fc1673eec35.webp",
+      "assets/media/bg_corridor.1e4e7ec83daa8ed6.webp",
+      "assets/media/bg_corridor_cr_covered.de886af4c1d2203d.webp",
+      "assets/media/bg_ctcontrol_day_ready.fabf4508bb37ff4a.webp",
+      "assets/media/bg_ctcontrol_ready.08e6e3aa41372671.webp",
+      "assets/media/bg_ctroom.24562baf6359a3fc.webp",
+      "assets/media/bg_day.b70b32edf4b34bca.webp",
+      "assets/media/bg_morning.0f805e95e53ffbec.webp",
+      "assets/media/bg_office_day.c2eb260586f6d97e.webp",
+      "assets/media/bg_waiting.d0e027d7fcdd5938.webp",
+      "assets/media/ch2_aorta_volume_cutaway_v1.803620fae1ddcc84.webp",
+      "assets/media/ch2_bg_breakroom_day.ae9dd0f0001d72b9.webp",
+      "assets/media/ch2_ct_aortic_wide.157fe422e2d407db.webp",
+      "assets/media/ch2_ct_coronary_slices.17d8f9005a2ca2d8.webp",
+      "assets/media/ch2_ct_lumbar_pelvis_v1.5e59e66cb03acd6d.webp",
+      "assets/media/ch2_ct_motion_bed_v1.f1eaee8617eb5678.webp",
+      "assets/media/ch2_ct_motion_room_v1.3e7727b60fc9d2ab.webp",
+      "assets/media/ch2_ct_scan_room_pixel_v2.9fdcd583a59db479.webp",
+      "assets/media/ch2_dawn_window_portrait_v1.536ffb44292374c8.webp",
+      "assets/media/ch2_dawn_window_v1.1f913806e2acfeff.webp",
+      "assets/media/ch2_gift_jiang_sleeve_v1.5261312fcd9fbbeb.webp",
+      "assets/media/ch2_gift_lei_pouch_v1.8962a6d34d8bd908.webp",
+      "assets/media/ch2_gift_luo_pouch_v1.7ca4615e93235159.webp",
+      "assets/media/ch2_gift_zhou_cup_v1.a284cf5b8e68b11f.webp",
+      "assets/media/ch2_lung_thick_v2.9ac7961a026f6f5a.webp",
+      "assets/media/ch2_model_base_v1.4ae57c07fedc4441.webp",
+      "assets/media/ch2_needle_axial_v1.afd72c5cdf444303.webp",
+      "assets/media/ch2_needle_mpr_v1.0c813996f3cb889b.webp",
+      "assets/media/ch2_needle_record_v1.599c58eabb1b59bc.webp",
+      "assets/media/ch2_needle_vr_v1.73c32e0cf56798cf.webp",
+      "assets/media/ch2_pat_luo_v1.9217bc801fb8170d.webp",
+      "assets/media/ch2_patient_aorta_middle_bed.59b2accc43dacf90.webp",
+      "assets/media/ch2_patient_chest_wheelchair.147e16d42000ec2d.webp",
+      "assets/media/ch2_patient_fall_bandaged_bed.b11cda233434d3a5.webp",
+      "assets/media/ch2_patient_postop_wheelchair.0dc0b373fb754225.webp",
+      "assets/media/ch2_patient_stroke_bed.707d2e9de0547985.webp",
+      "assets/media/ch2_patient_trauma_bed.490638b5a4e9d1ca.webp",
+      "assets/media/ch2_patient_waiting_elder.75f756ceb2cdd66c.webp",
+      "assets/media/ch2_patient_wrist_student.3817b6aad6efb18f.webp",
+      "assets/media/ch2_pixel_char_director.c11253a0826463f8.webp",
+      "assets/media/ch2_pixel_char_duty.fad26744fb7cfb4a.webp",
+      "assets/media/ch2_pixel_char_f.edb407efe8390bbb.webp",
+      "assets/media/ch2_pixel_char_fan.53ceb5b20e36569f.webp",
+      "assets/media/ch2_pixel_char_he.dac9321ea26517bc.webp",
+      "assets/media/ch2_pixel_char_kai.ce82dbf513c12d78.webp",
+      "assets/media/ch2_pixel_char_lei.26df73ba04261fa5.webp",
+      "assets/media/ch2_pixel_char_luzhou_f.a573763779169cd3.webp",
+      "assets/media/ch2_pixel_char_luzhou_m.a55aa12318f4ea9f.webp",
+      "assets/media/ch2_pixel_char_m.46b67a54e8833438.webp",
+      "assets/media/ch2_pixel_char_tang.8999389104958aca.webp",
+      "assets/media/ch2_pixel_char_wen.f27f711c0775154e.webp",
+      "assets/media/ch2_pixel_char_zhou.1bceacc8f0b01942.webp",
+      "assets/media/ch2_pixel_pat_grandpa2.8f8e9b168f94f73f.webp",
+      "assets/media/ch2_pixel_pat_kid6.527180aa6eff50dc.webp",
+      "assets/media/ch2_pixel_pat_kiddad.8bada7b8bef00a3d.webp",
+      "assets/media/ch2_pixel_pat_kidmom.0fbf4eb7a6ffb682.webp",
+      "assets/media/ch2_pixel_pat_mystery.dd3bbfd138def470.webp",
+      "assets/media/ch2_pixel_pat_stone.ea86dba3bf05aefe.webp",
+      "assets/media/ch2_pixel_pat_uncle2.11c22a062e431f24.webp",
+      "assets/media/ch2_remote_rack.abcfa60d92dfcd34.webp",
+      "assets/media/ch2_remote_rack_offline.99c26e204761530d.webp",
+      "assets/media/ch2_slice_model_assembled_v1.ac9e363ec08f9070.webp",
+      "assets/media/ch2_slice_model_v1.9c7b14729de8f3ca.webp",
+      "assets/media/ch2_terminal_closeup_v1.435d6d5f5f5b11f2.webp",
+      "assets/media/ch2_terminal_online_v1.ca9902b8c6028fb0.webp",
+      "assets/media/ch2_zhou_expert_handshake_v1.19c4daea0b8f7bc8.webp",
+      "assets/media/char_jiang.db7fb1ad6c3c46f1.webp",
+      "assets/media/ct_ch2_stone_v2.947711d2d826f1a3.webp",
+      "assets/media/ct_ch2_stroke_cta_v2.dfd46390f552be84.webp",
+      "assets/media/ct_ch2_stroke_plain_v2.13e1e97f18daff99.webp",
+      "assets/media/ct_coronary_cta.84c214bcee91c56d.webp",
+      "assets/media/ct_dental_metal_teaching.d08a47288ae6c4b7.webp",
+      "assets/media/ct_head_child.491f42f90a46344a.webp",
+      "assets/media/ct_head_child_followup.97b97ceaae405346.webp",
+      "assets/media/ct_head_clean.70a23ef5f6188953.webp",
+      "assets/media/ct_head_normal.b7c09c4b5a3697d0.webp",
+      "assets/media/ct_liver_enhanced.c7684d8e243abe1e.webp",
+      "assets/media/ct_motion.4bc37e8fbd3d2a1a.webp",
+      "assets/media/ct_phantom.0dd97fd5a5054b4a.webp",
+      "assets/media/ct_water_ring_teaching.8c76ecd2f2946d19.webp",
+      "assets/media/ct_wrist_fracture_v2.698399ce035053ac.webp",
+      "assets/media/ev_ch2_teaching_archive.d88e83a1f96700d6.webp",
+      "assets/media/ev_ch2_team_1997.42a40549fecc4c25.webp",
+      "assets/media/ev_maintenance_draft.89dfd8187bf107c3.webp",
+      "assets/media/ev_old_ct_retired.4439a2758bb45c2d.webp",
+      "assets/media/ev_remote_proposal.7ccd90e9a9a31298.webp",
+      "assets/media/img_sinogram.783fcd61bf671c1b.webp",
+      "assets/media/item_beef.f880752681540078.webp",
+      "assets/media/item_book.187687ec1a6afb13.webp",
+      "assets/media/item_coffee.4bfa5ee4be355484.webp",
+      "assets/media/item_dosimeter.14fadaefa9c34236.webp",
+      "assets/media/item_key.c792ddef4fd32366.webp",
+      "assets/media/item_lottery.0b84e70536627c23.webp",
+      "assets/media/item_milktea.fcbc1f6bb6a0c4d3.webp",
+      "assets/media/item_notebook.a3aeeb2f5c463bea.webp",
+      "assets/media/item_snack.3aca3e0ec3d1fc2e.webp",
+      "assets/media/item_toolbox.4ef0a4278483e495.webp",
+      "assets/media/item_zhou_key_fixed.58e57ab20630389e.webp",
+      "assets/media/stamp.72cf222761ee91c0.webp",
+      "audio/badge.mp3",
+      "audio/ch2_ct_real_scan_20260924.mp3",
+      "audio/ch2_terminal_alarm_v1.mp3",
+      "audio/ch2_terminal_receipt_v1.mp3",
+      "audio/click.mp3",
+      "audio/cry_child.mp3",
+      "audio/ring.mp3",
+      "audio/stamp.mp3",
+      "audio/vox2_director_am.mp3",
+      "audio/vox2_mystery.mp3",
+      "audio/vox2_wen.mp3",
+      "audio/vox_ch2_luo_entrance_20260925.mp3",
+      "audio/vox_ch2_natural_director_day_v3.mp3",
+      "audio/vox_ch2_natural_fan_a.mp3",
+      "audio/vox_ch2_natural_fan_b.mp3",
+      "audio/vox_ch2_natural_he_v2.mp3",
+      "audio/vox_ch2_natural_kai_noref_b_v9.mp3",
+      "audio/vox_ch2_natural_kiddad.mp3",
+      "audio/vox_ch2_natural_kidmom.mp3",
+      "audio/vox_ch2_natural_lei_v2.mp3",
+      "audio/vox_ch2_natural_tang.mp3",
+      "audio/vox_ch2_natural_zhou_v2.mp3",
+      "audio/vox_ch2_waiting.mp3",
+      "audio/vox_guy.mp3",
+      "audio/vox_kid.mp3"
+    ],
+    "dr": [
+      "assets/media/bg_control.3db97844471e5de7.webp",
+      "assets/media/bg_day.b70b32edf4b34bca.webp",
+      "assets/media/bg_drroom.b04f94a3cf958719.webp",
+      "assets/media/bg_waiting.d0e027d7fcdd5938.webp",
+      "assets/media/char_du.b2dd30f78f39380c.webp",
+      "assets/media/char_f.d65f9821d5222886.webp",
+      "assets/media/char_m.62c60525b8437541.webp",
+      "assets/media/char_shao.93fd473a4a26a2df.webp",
+      "assets/media/char_wen.2b56af2cc528d49b.webp",
+      "assets/media/pat_ge.0d9c6c528eade291.webp",
+      "assets/media/xray_fracture.ca5337013e877990.webp",
+      "assets/media/xray_normal.8e5d0577d0527049.webp",
+      "assets/media/xray_pneumo.9671893e339e169c.webp",
+      "audio/badge.mp3",
+      "audio/buzz.mp3",
+      "audio/click.mp3",
+      "audio/vox_du.mp3",
+      "audio/vox_shao.mp3",
+      "audio/vox_wen.mp3",
+      "audio/xray.mp3"
+    ],
+    "dsa": [
+      "assets/media/bg_cathlab.2a3492deec624a63.webp",
+      "assets/media/bg_control.3db97844471e5de7.webp",
+      "assets/media/bg_corridor.1e4e7ec83daa8ed6.webp",
+      "assets/media/char_f.d65f9821d5222886.webp",
+      "assets/media/char_he.0f7e45bec36b39ef.webp",
+      "assets/media/char_kai.59a14b34e2e70e0e.webp",
+      "assets/media/char_liao.d7adaed6cfd9a199.webp",
+      "assets/media/char_m.62c60525b8437541.webp",
+      "assets/media/char_qin.2bcf054e970c5d70.webp",
+      "assets/media/img_dsa_normal.e5c8b1a4ef4d469b.webp",
+      "assets/media/img_dsa_stenosis.d573b6d229f216eb.webp",
+      "assets/media/img_dsa_stent.4d78231a56e24534.webp",
+      "audio/badge.mp3",
+      "audio/buzz.mp3",
+      "audio/click.mp3",
+      "audio/ring.mp3",
+      "audio/vox_kai.mp3",
+      "audio/vox_liao.mp3",
+      "audio/vox_qin.mp3",
+      "audio/xray.mp3"
+    ]
+  }
+}
