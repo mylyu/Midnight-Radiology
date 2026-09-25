@@ -1,0 +1,31 @@
+.stat-feedback {
+  position: fixed; z-index: 99; top: 0.2rem; left: 0.5rem; right: 0.5rem;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 0.3rem;
+  pointer-events: none;
+}
+.stat-feedback-notice {
+  background: #0f172af2; border: 1px solid #64748b; border-radius: 0.45rem;
+  padding: 0.1rem 0.5rem; font-size: 0.75rem; line-height: 1.5;
+  display: flex; align-items: center; gap: 0.6rem; max-width: 100%;
+  box-shadow: 0 2px 8px #0005; animation: stat-feedback-float 2s ease-out both;
+}
+.stat-feedback-values { display: flex; flex-wrap: nowrap; gap: 0 0.5rem; font-weight: 600; }
+.stat-feedback-values > span { white-space: nowrap; }
+.stat-feedback-gain { color: #6ee7b7; }
+.stat-feedback-loss { color: #fda4af; }
+.stat-feedback-reason { color: #cbd5e1; font-size: 0.68rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+@keyframes stat-feedback-float {
+  0% { opacity: 0; transform: translateY(5px); }
+  12%, 80% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-4px); }
+}
+/* On a phone use the HUD band, not the central CT image or bottom choices. */
+@media (max-width: 600px), (max-height: 480px) {
+  .stat-feedback { top: 0.2rem; left: 0.25rem; right: 0.25rem; max-width: none; gap: 0.15rem; }
+  .stat-feedback-notice { padding: 0.1rem 0.4rem; font-size: 0.72rem; display: flex; gap: 0.6rem; max-width: 100%; }
+  .stat-feedback-values { gap: 0 0.4rem; }
+  .stat-feedback-reason { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stat-feedback-notice { animation: none; }
+}

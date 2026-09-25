@@ -9,6 +9,7 @@ import { CH2_DAWN_STEPS, CH2_DAWN_LEADIN_STEPS, ch2DawnStep } from './ch2-dawn.t
 import { CH2_PAYOFF_STEPS, CH2_PAYOFF_EVIDENCE, ch2PayoffStep } from './ch2-payoffs.ts'
 import { CH2_ARCHIVE_RETURN_STEPS } from './ch2-exploration.ts'
 import { CH2_SIDE_BADGES } from './ch2-side-badges.ts'
+import { ch2StatStep } from './ch2-stat-interactions.ts'
 
 /* ================= 第二章「快与狠」· CT篇 =================
  * 故事时间：2025年11月，新CT启用初期，五个值班跨约十天。
@@ -115,7 +116,7 @@ export function ch2BackgroundAsset(key: string): string {
 }
 
 /** Resolve patient staging, remembered choices and optional social branches from saved state. */
-export function ch2StepForState(id: string, step: Step, state: Pick<GameState, 'flags' | 'badges' | 'gender' | 'finished'> & Partial<Pick<GameState,'ap'|'items'|'dlc'>>): Step {
+export function ch2StepForState(id: string, step: Step, state: Pick<GameState, 'flags' | 'badges' | 'gender' | 'finished'> & Partial<Pick<GameState,'ap'|'items'|'dlc'|'skill'|'heart'|'wealth'>>): Step {
   step = patientStep(id, step)
   const { flags, badges } = state
   let text = step.text
@@ -159,7 +160,7 @@ export function ch2StepForState(id: string, step: Step, state: Pick<GameState, '
     text = '周一早上八点，办公室先过昨夜交班：CT正常交接；远程终端保持离线。信息科今天接手查日志，周五反馈。' + reply + '老周把排班表推过来，你的名字在主值栏，他的在备班栏。'
   }
   const rendered = text === step.text && queue === step.queue ? step : { ...step, text, queue }
-  return ch2PayoffStep(id, ch2DawnStep(id, ch2TerminalStep(id, ch2NeedleStep(id, ch2PacingStep(id, ch2SocialStep(id, rendered, state), state), state), state), state), state)
+  return ch2StatStep(id, ch2PayoffStep(id, ch2DawnStep(id, ch2TerminalStep(id, ch2NeedleStep(id, ch2PacingStep(id, ch2SocialStep(id, rendered, state), state), state), state), state), state), state)
 }
 
 /* 旧版停颁（病例替换及支线撤出）：保留定义与老存档记录，不计入收集分母。 */

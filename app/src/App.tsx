@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { NIGHTS, BADGES, CHARACTERS, SHOP_ITEMS, QUIZ, BOOK_PAGES } from './game/data'
 import { DLCS, getDlc, DLC_BADGES, CARDS, EVENTS, EVIDENCE, DR_QUEUE, queueWaits } from './game/dlc'
 import { ch2StepForState, ch2BackgroundAsset, CH2_META, CH2_SHIFTS, CH2_BADGES, CH2_ACTIVE_BADGES, CH2_BADGES_LEGACY, CH2_BOOK_PAGES, CH2_IMAGE_CAPTIONS, QUIZ2, grayToHU, ch2Unlocked, tryUnlockCh2, ch2BookUnlocked, ch2PortraitAsset } from './game/ch2'
@@ -27,9 +27,12 @@ import type { GameState, Step, ShopItem, Choice, DlcProgress } from './game/type
 import { freshState, loadState, saveState, wipeSave, applyEffect, condOk, dailyCheckin, meterLevel, playSfx, makeCredCode, verifyCredCode } from './game/store'
 import { imageAsset } from './lib/image-assets'
 import { SceneBackground } from './components/SceneBackground'
+import { StatFeedback } from './components/StatFeedback'
+import { statChanges, statChangeReason, appendStatNotice, type StatNotice } from './game/stat-feedback'
 import { acceptInput } from './game/input-gate'
 import { readCh1Book, buyCh1Item, maintainCh1, commitCh1Choice, commitCh1Advance,
   commitCh2Choice, commitCh2Advance, type ChoiceCommitResult } from './game/interaction-transactions'
+import { ch2StatChoices, ch2StatReply, takeCh2StatInteraction, clearCh2StatReply, grantCh2WealthOnEntry } from './game/ch2-stat-interactions'
 
 type Screen = 'title' | 'select' | 'checkin' | 'night' | 'day' | 'badges' | 'quiz' | 'epilogue' | 'chapterEnd' | 'verify' | 'dlcHall' | 'dlc' | 'ch2'
 
@@ -53,13 +56,17 @@ export default function App() {
   const [screen, setScreen] = useState<Screen>('title')
   const [state, renderState] = useState<GameState | null>(null)
   const liveState = useRef<GameState | null>(null)
+  const [statNotices, setStatNotices] = useState<StatNotice[]>([])
+  const nextNotice = useRef(0)
   const dialogueGate = useRef({ until: 0 })
   // Load/new run/route replacement is not a reward. Keep the action store in
   // sync without interpreting the imported totals as changes to the old save.
   const setState = (next: GameState | null) => {
     liveState.current = next
+    setStatNotices([])
     renderState(next)
   }
+  const expireNotice = useCallback((id: number) => setStatNotices(rows => rows.filter(row => row.id !== id)), [])
   const [checkinReward, setCheckinReward] = useState(0)
   const [dlcId, setDlcId] = useState<string | null>(null)
 
@@ -115,6 +122,18 @@ export default function App() {
     liveState.current = next
     saveState(next)
     renderState(next)
+    if (['night', 'day', 'quiz', 'epilogue', 'chapterEnd', 'ch2'].includes(screen)) {
+      const changes = statChanges(prev, next, screen === 'ch2')
+      if (changes.length) {
+        const now = Date.now()
+        const progress = next.dlc?.ch2
+        const context = screen === 'ch2' ? `ch2:${progress?.shift}:${progress?.phase}:${progress?.stepId}`
+          : `ch1:${screen}:${next.night}:${next.stepId}`
+        const notice = { id: ++nextNotice.current, createdAt: now, context, expiresAt: now + 2000,
+          changes, reason: statChangeReason(prev, next) }
+        setStatNotices(rows => appendStatNotice(rows, notice))
+      }
+    }
   }
 
   // 勋章弹窗：全局监听 badges 差分——剧情中、结算时、考核后获得的勋章都会即时弹出
@@ -271,6 +290,8 @@ export default function App() {
       )}
 
       {/* 全局知识卡片 toast（第一章与 DLC 共用） */}
+      <StatFeedback notices={statNotices} onExpire={expireNotice}
+        active={['night', 'day', 'quiz', 'epilogue', 'chapterEnd', 'ch2'].includes(screen)} />
       {cardToast && (
         <div className="fixed top-14 left-1/2 -translate-x-1/2 z-[100] bg-slate-900/95 border-2 border-amber-400/70 rounded-xl px-4 py-2 shadow-2xl text-sm text-amber-200 pointer-events-none">
           📖 知识卡片已收入夜班手册：{cardToast}
@@ -1884,15 +1905,17 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
   const observationPending = phase === 'story' && !scanPending && !!observation && !observationAnswer?.acknowledged
   const observedChoice = observation?.choices.find(c => c.id === observationAnswer?.choiceId)
   const giftReply = prog.giftReply?.stepId === stepId ? prog.giftReply : undefined
-  const gifts = phase === 'story' && !scanPending && !observationPending && !giftReply ? ch2GiftChoices(state, stepId) : []
+  const statReply = ch2StatReply(state, stepId)
+  const gifts = phase === 'story' && !scanPending && !observationPending && !giftReply && !statReply ? ch2GiftChoices(state, stepId) : []
   const step: Step = checkinPending ? { ...baseStep, text: `${shift.kind === 'night' ? '夜班' : '白班'}到岗。新打卡机的屏幕亮着，向右滑动签到。`, next: undefined }
+    : statReply ? { ...statReply, ...(observationPending ? { image: observation?.image, imageLabel: observation?.imageLabel } : {}) }
     : giftReply ? { speaker: giftReply.speaker as Step['speaker'], sprite: giftReply.sprite, text: giftReply.text, next: '@ch2gift-return' }
     : scanPending ? { ...baseStep, text: scan.mode === 'acquire' ? baseStep.text : CH2_SCAN_TEXT[stepId], image: undefined, windowTask: undefined, choices: undefined, next: undefined }
     : observationPending && observation ? { speaker: observation.speaker, image: observation.image, imageLabel: observation.imageLabel,
       text: observedChoice ? observedChoice.feedback : observation.prompt,
-      ...(observedChoice ? { next: '@ch2observe-return' } : { choices: observation.choices.map(c => ({ text: c.text, next: `@ch2observe:${c.id}` })) }) }
+      ...(observedChoice ? { next: '@ch2observe-return' } : { choices: [...ch2StatChoices(state, stepId), ...observation.choices.map(c => ({ text: c.text, next: `@ch2observe:${c.id}` }))] }) }
     : gifts.length ? { ...baseStep, choices: [...gifts, ...(baseStep.choices ?? (baseStep.next ? [{ text: '接着聊', next: baseStep.next }] : []))] } : baseStep
-  const presentationBlocked = checkinPending || scanPending || observationPending || !!giftReply
+  const presentationBlocked = checkinPending || scanPending || observationPending || !!giftReply || !!statReply
   // hub 横幅的行动力跟随时实数值渲染，别再硬编码×3（否则玩家花了AP文本不变，像没扣）
   const fullText = (step.text ?? '').replaceAll('行动力⚡×3', `行动力⚡×${state.ap}`)
   const plainLen = fullText.replaceAll('**', '').length
@@ -1956,6 +1979,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
     update(s => {
       const before = beginCh2Shift(s, shift.id, { recovered: !s.dlc?.ch2?.loop && !!s.dlc?.ch2?.stepId && s.dlc.ch2.stepId !== shift.start })
       let next = !already && !deferEffects && baseStep.effect ? applyEffect(before, baseStep.effect) : before
+      if (!already && !deferEffects) next = grantCh2WealthOnEntry(before, next, stepId)
       // These two flags describe this queue decision only, including on replay.
       // They affect the displayed patients, never rewards or later choices.
       if (['c2d2_q1a', 'c2d2_q1b', 'c2d2_q1c'].includes(stepId)) {
@@ -2046,6 +2070,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
     if (hasChoices && choiceReadyAt.current.id === stepId && performance.now() >= choiceReadyAt.current.time) setChoiceReadyStep(stepId)
     if (blocked) return
     if (!acceptInput(advanceGate.current, performance.now(), 300)) return
+    if (step.next === '@ch2stat-return') { update(s => clearCh2StatReply(s, stepId)); setShown(0); return }
     if (step.next === '@ch2gift-return') { update(s => patchCh2(s, { giftReply: undefined })); setShown(0); return }
     if (step.next === '@ch2observe-return') { update(s => acknowledgeCh2Observation(s, stepId)); setShown(0); return }
     playSfx('click')
@@ -2068,6 +2093,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
     // extend a lock on every rejected tap: rapid taps could otherwise starve it.
     if (choicesLocked || !done || (pickedGate.current.id === stepId && performance.now() < pickedGate.current.until)) return
     if (c.next !== '@shop' && c.next !== '@book2') pickedGate.current = { id: stepId, until: performance.now() + 250 }
+    if (c.next.startsWith('@ch2stat:')) { update(s => takeCh2StatInteraction(s, stepId, c.next)); setShown(0); return }
     if (c.next.startsWith('@ch2observe:')) { update(s => answerCh2Observation(s, stepId, c.next.slice('@ch2observe:'.length))); setShown(0); return }
     if (c.next.startsWith('@ch2gift:')) { update(s => giveCh2Gift(s, stepId, c.next).state); setShown(0); return }
     playSfx('click')
