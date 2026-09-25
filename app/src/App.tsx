@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { NIGHTS, BADGES, CHARACTERS, SHOP_ITEMS, QUIZ, BOOK_PAGES } from './game/data'
+import { ch1ExplorationStep } from './game/ch1-exploration'
 import { DLCS, getDlc, DLC_BADGES, CARDS, EVENTS, EVIDENCE, DR_QUEUE, queueWaits } from './game/dlc'
 import { ch2StepForState, ch2BackgroundAsset, CH2_META, CH2_SHIFTS, CH2_BADGES, CH2_ACTIVE_BADGES, CH2_BADGES_LEGACY, CH2_BOOK_PAGES, CH2_IMAGE_CAPTIONS, QUIZ2, grayToHU, ch2Unlocked, tryUnlockCh2, ch2BookUnlocked, ch2PortraitAsset } from './game/ch2'
 import type { DlcDef, QueuePatient } from './game/dlc'
@@ -657,7 +658,8 @@ function NightScreen({ state, update, inputGate, onFinish, onExit }: { state: Ga
 
   const finishFired = useRef(false)
 
-  const step: Step = night.steps[stepId] ?? { end: true }
+  // Preserve the choice-array identity while the typewriter/900ms guard updates.
+  const step: Step = useMemo(() => ch1ExplorationStep(stepId, night.steps[stepId] ?? { end: true }, state), [night, stepId, state])
   const fullText = step.text ?? ''
   const plainLen = fullText.replaceAll('**', '').length
   const done = shown >= plainLen

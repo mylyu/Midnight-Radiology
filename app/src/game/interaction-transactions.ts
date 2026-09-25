@@ -1,4 +1,5 @@
 import { NIGHTS, SHOP_ITEMS } from './data'
+import { ch1ExplorationStep } from './ch1-exploration'
 import { CH2_SHIFTS, ch2StepForState } from './ch2'
 import { ch2CheckinPending } from './ch2-checkin'
 import { recordCh2Change } from './ch2-ledger'
@@ -92,7 +93,8 @@ function ch1Source(s: GameState, input: Ch1InteractionSource): Step | undefined 
   if (s.night !== input.expectedNight || s.screenHint !== 'night' || s.stepId !== input.expectedStep) return undefined
   // Finished saves may continue the existing epilogue, never re-enter a paid night.
   if (s.finished && !/^n5_epi(?:\d+|_end)$/.test(input.expectedStep)) return undefined
-  return NIGHTS.find(n => n.id === s.night)?.steps[input.expectedStep]
+  const raw = NIGHTS.find(n => n.id === s.night)?.steps[input.expectedStep]
+  return raw && ch1ExplorationStep(input.expectedStep, raw, s)
 }
 
 function ch2Source(s: GameState, input: Ch2InteractionSource): Step | undefined {

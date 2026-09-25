@@ -475,7 +475,7 @@ const C2N1: Record<string, Step> = {
     { text: '【开诊】回到控制室', next: 'c2n1_m0', tag: 'good' },
   ]},
   // —— A. 老伙计（买了老白球管的分支） ——
-  c2n1_ab1: { bg: 'bg_corridor', speaker: 'sys', text: "走廊尽头的凹位里停着老CR的读片器和封存零件箱，没挡着通道。箱上贴着设备科封条：「停用待查」。老范蹲在旁边收拾。", effect: { ap: -1 }, next: 'c2n1_ab2' },
+  c2n1_ab1: { bg: 'bg_corridor_cr_covered', speaker: 'sys', text: "走廊尽头的凹位里，老CR读片器罩着防尘布。老范正收拾旁边的封存零件箱，箱上贴着「停用待查」——去年从老白买的那根半价球管出了事。", effect: { ap: -1 }, next: 'c2n1_ab2' },
   c2n1_ab2: { speaker: 'fan', sprite: 'char_fan', sfx: 'vox_ch2_natural_fan_a', text: "才三天，就坏了。（老范蹲着收拾零件）上个月白班忙，让它顶了两天。第三天中午烧的，老白那根半价球管。", next: 'c2n1_ab3' },
   c2n1_ab3: { speaker: 'fan', sprite: 'char_fan', text: '靶面熔了个坑，连带着把高压发生器也撂倒了。老白？电话停机，人找不着。院里立了项，**设备科资质核查，这批第三方件的账，一笔一笔过**。', next: 'c2n1_ab4' },
   c2n1_ab4: { speaker: 'me', sprite: 'char_fan', text: "（摸出手机，翻到老白的聊天记录。最后一句还是「放心，用坏了找我」。）", next: 'c2n1_ab5' },
