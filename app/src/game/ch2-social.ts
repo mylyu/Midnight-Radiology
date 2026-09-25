@@ -68,7 +68,7 @@ export const CH2_SOCIAL_STEPS: Record<string, Record<string, Step>> = {
   },
   c2n5: {
     c2n5_chat0: { bg: 'bg_breakroom', speaker: 'sys', text: '小唐刚擦完桌子，小雷端着两杯热水挤进来。他把靠门的凳子留给你：「坐不坐？不坐我放包了。」', effect: { ap: -1 }, next: 'c2n5_chat_q' },
-    c2n5_chat_q: { speaker: 'sys', sprite: 'char_lei', text: '开诊前，还有几分钟。', choices: [
+    c2n5_chat_q: { speaker: 'sys', sprite: '', text: '开诊前，还有几分钟。', choices: [
       { text: '「雯雯那边我也问了，单子后来分开了吗？」', next: 'c2n5_chat_both1', cond: { notFlag: 'c2n5_chat_sign' } },
       { text: '「前几天吵的那件事，怎么样了？」', next: 'c2n5_chat_plain', cond: { notFlag: 'c2n5_chat_sign' } },
       { text: '问小唐：「老周的排班，这回看全没有？」', next: 'c2n5_chat_roster1', cond: { notFlag: 'c2n5_chat_roster' } },

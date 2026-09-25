@@ -24,6 +24,7 @@ import { beginCh2Shift, CH2_CASE_COMPLETIONS, recordCh2Change } from './game/ch2
 import { ch2GiftChoices, giveCh2Gift } from './game/ch2-gifts'
 import { startCh2Scan, completeCh2Scan, answerCh2Observation, acknowledgeCh2Observation } from './game/ch2-playback'
 import { ch2ObservationContinuation, ch2ObservationPortrait, ch2ObservationPhone, ch2ObservationResumeStep } from './game/ch2-observation-presentation'
+import { ch2SceneView } from './game/ch2-scene'
 import { patchCh2, ch2Phase, settleCh2, nextCh2Shift, redeemCh2Coffee, startCh2Quiz, answerCh2Quiz, nextCh2Question, ch2QuizScore } from './game/ch2-session'
 import type { GameState, Step, ShopItem, Choice, DlcProgress } from './game/types'
 import { freshState, loadState, saveState, wipeSave, applyEffect, condOk, dailyCheckin, meterLevel, playSfx, makeCredCode, verifyCredCode } from './game/store'
@@ -2026,12 +2027,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
       } else if (!already) void playSfx(resolveSfx(n).play as Parameters<typeof playSfx>[0])
     })
     retryVoices()
-    const cur = viewRef.current
-    const speakerSprite = baseStep.speaker === 'luzhou' ? 'luzhou' : baseStep.speaker ? `char_${baseStep.speaker}` : undefined
-    const impliedSprite =
-      baseStep.sprite ??
-      (baseStep.speaker === 'me' ? 'me' : speakerSprite && cur.sprite === speakerSprite ? cur.sprite : undefined)
-    const newView = { bg: baseStep.bg ?? cur.bg, sprite: impliedSprite, sprite2: baseStep.sprite2 }
+    const newView = ch2SceneView(baseStep, viewRef.current)
     viewRef.current = newView
     setView(newView)
     const newCard = !deferEffects && baseStep.card && !(state.cards ?? []).includes(baseStep.card) ? baseStep.card : undefined
@@ -2200,11 +2196,12 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
     if (!key) return null
     return IMG(ch2PortraitAsset(key, state.gender))
   }
+  const currentView = ch2SceneView(baseStep, view)
   const leftSpriteKey = observationPending
     ? observedChoice && !statReply ? ch2ObservationPortrait(stepId, observation?.speaker) : undefined
-    : giftReply?.sprite ?? view.sprite
+    : giftReply?.sprite ?? currentView.sprite
   const leftSprite = spriteOf(leftSpriteKey)
-  const rightSprite = observationPending || giftReply ? null : spriteOf(view.sprite2)
+  const rightSprite = observationPending || giftReply ? null : spriteOf(currentView.sprite2)
   const speakerMeta = step.speaker ? CHARACTERS[step.speaker] : undefined
   const visibleChoices = (step.choices ?? []).filter(c => condOk(state, c.cond))
   const nextShiftDef = CH2_SHIFTS[shiftIdx + 1]
@@ -2214,7 +2211,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
     <div ref={stageRef} className="relative w-full h-full cursor-pointer" data-ch2-step={stepId} data-ch2-phase={phase} data-ch2-observation={observationPending ? observation?.id : undefined}
       onPointerDownCapture={choiceGuard.pointerDown} onPointerCancelCapture={choiceGuard.cancel}
       onKeyDownCapture={choiceGuard.keyDown} onClickCapture={event => { choiceGuard.click(event); retryVoices() }} onClick={advance}>
-      {dawnShot ? <Ch2DawnScene shot={dawnShot} /> : <BgImg name={ch2BackgroundAsset(view.bg)} />}
+      {dawnShot ? <Ch2DawnScene shot={dawnShot} /> : <BgImg name={ch2BackgroundAsset(currentView.bg)} />}
       <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-slate-950/80 to-transparent pointer-events-none" />
 
       {/* 顶部信息条 */}
@@ -2281,7 +2278,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
 
       {/* 立绘 */}
       {leftSprite && <img src={leftSprite} className={`sprite-l absolute bottom-48 portrait:bottom-44 left-4 md:left-24 portrait:h-44 h-64 md:h-96 object-contain pixel drop-shadow-2xl z-10 pointer-events-none ${isPatientBed(leftSpriteKey) ? 'ch2-patient-bed' : isPatientWheelchair(leftSpriteKey) ? 'ch2-patient-wheelchair' : ''}`} alt={isPatientBed(leftSpriteKey) ? '患者躺在转运平车上' : isPatientWheelchair(leftSpriteKey) ? '患者坐在轮椅上' : ''} />}
-      {rightSprite && <img src={rightSprite} className={`sprite-r absolute bottom-48 portrait:bottom-44 right-4 md:right-24 portrait:h-40 h-56 md:h-80 object-contain pixel opacity-80 drop-shadow-2xl z-10 pointer-events-none ${isPatientBed(view.sprite2) ? 'ch2-patient-bed ch2-patient-companion' : isPatientWheelchair(view.sprite2) ? 'ch2-patient-wheelchair' : ''}`} alt={isPatientBed(view.sprite2) ? '患者躺在转运平车上' : isPatientWheelchair(view.sprite2) ? '患者坐在轮椅上' : ''} />}
+      {rightSprite && <img src={rightSprite} className={`sprite-r absolute bottom-48 portrait:bottom-44 right-4 md:right-24 portrait:h-40 h-56 md:h-80 object-contain pixel opacity-80 drop-shadow-2xl z-10 pointer-events-none ${isPatientBed(currentView.sprite2) ? 'ch2-patient-bed ch2-patient-companion' : isPatientWheelchair(currentView.sprite2) ? 'ch2-patient-wheelchair' : ''}`} alt={isPatientBed(currentView.sprite2) ? '患者躺在转运平车上' : isPatientWheelchair(currentView.sprite2) ? '患者坐在轮椅上' : ''} />}
 
       {/* 对话框 */}
       <div ref={dialogRef} className="dialog-wrap absolute bottom-0 inset-x-0 z-20 p-4 md:p-6">

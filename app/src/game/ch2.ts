@@ -936,15 +936,15 @@ const C2N5: Record<string, Step> = {
     { text: '暂不回复，先收起手机', next: 'c2n5_g0' },
   ]},
   c2n5_p2a: { speaker: 'sys', text: "小雷连发三条。先是一句「你还在科里吧」，接着又撤回一张图，换成文字：**「别在微信看。留存样本有问题。」**", next: 'c2n5_n7' },
-  c2n5_n7: { speaker: 'lei', sprite: 'char_lei', text: "终端没接回去，我查的是试运行留下的旧样本。有一份删了姓名，检查号和时间还在，拿院内记录一对，照样找得到人。（小雷停了停）不是画面上看不到名字，就算处理完了。", next: 'c2n5_n8' },
-  c2n5_n8: { speaker: 'sys', text: '【怎么回复？】', sprite: 'char_lei', choices: [
+  c2n5_n7: { speaker: 'lei', sprite: '', text: "终端没接回去，我查的是试运行留下的旧样本。有一份删了姓名，检查号和时间还在，拿院内记录一对，照样找得到人。（小雷停了停）不是画面上看不到名字，就算处理完了。", next: 'c2n5_n8' },
+  c2n5_n8: { speaker: 'sys', text: '【怎么回复？】', sprite: '', choices: [
     { text: '「保存证据，等周一主任会上摊牌。」', next: 'c2n5_n8a', effect: { flag: 'audit_evidence' }, tag: 'good' },
     { text: '「先别声张，我们再核实一轮。」', next: 'c2n5_n8b' },
     { text: '「……要不，就算了吧？」', next: 'c2n5_n8c', effect: { heart: -1 } },
   ]},
-  c2n5_n8a: { speaker: 'lei', sprite: 'char_lei', text: "收到。证据进信息科受控目录，另存离线备份。不给你微信发病人信息了，明早到办公室看。", next: 'c2n5_g0' },
-  c2n5_n8b: { speaker: 'lei', sprite: 'char_lei', text: "行。外网不接回去，我拿留存日志再对一轮。明早先报已经确认的，别拖。", next: 'c2n5_g0' },
-  c2n5_n8c: { speaker: 'lei', sprite: 'char_lei', text: "线是我接的，查到这一步不能装没看见。你不想在会上说，我来说。……证据我照存，外网也不接回去。", next: 'c2n5_g0' },
+  c2n5_n8a: { speaker: 'lei', sprite: '', text: "收到。证据进信息科受控目录，另存离线备份。不给你微信发病人信息了，明早到办公室看。", next: 'c2n5_g0' },
+  c2n5_n8b: { speaker: 'lei', sprite: '', text: "行。外网不接回去，我拿留存日志再对一轮。明早先报已经确认的，别拖。", next: 'c2n5_g0' },
+  c2n5_n8c: { speaker: 'lei', sprite: '', text: "线是我接的，查到这一步不能装没看见。你不想在会上说，我来说。……证据我照存，外网也不接回去。", next: 'c2n5_g0' },
   // —— 清晨 · 告别 ——
   c2n5_g0: { bg: 'bg_morning', speaker: 'sys', text: "早上六点，白班的人到了。你交完班走出控制室，老周正从值班室出来，手里一新一旧两个保温杯。", next: 'c2n5_g1' },
   c2n5_g1: { speaker: 'zhou', sprite: 'char_zhou', text: "（把新的那个递给你）夜班茶，自己泡。旧的这个我还用呢，别惦记。", next: 'c2n5_g2' },

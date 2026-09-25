@@ -104,7 +104,7 @@ export const CH2_PACING_STEPS: Record<string, Record<string, Step>> = {
   },
   c2n5: {
     c2n5_sms_save: { speaker: 'sys', text: '你保存了号码和短信截图，给小雷发去：「这谁？他怎么知道终端断了？」对面很快显示正在输入。', effect: { flag: 'c2_sms_saved' }, next: 'c2n5_sms_lei_pending' },
-    c2n5_sms_lei_pending: { speaker: 'lei', text: '号码不认识。先留着，别点陌生链接。明早把这条也交信息科，跟留存日志一起查。终端别接回去。', next: 'c2n5_g0' },
+    c2n5_sms_lei_pending: { speaker: 'lei', sprite: '', text: '号码不认识。先留着，别点陌生链接。明早把这条也交信息科，跟留存日志一起查。终端别接回去。', next: 'c2n5_g0' },
     c2n5_sms_reply: { speaker: 'sys', text: '你打下「你是谁？」发过去。等了半分钟，没有回音。屏幕暗下去，玻璃里的倒影反而清楚了。', effect: { flag: 'c2_sms_replied' }, next: 'c2n5_sms_after' },
     c2n5_sms_after: { speaker: 'sys', text: '你把手机翻扣在桌上，又翻回来。没有新消息。周五那张核查单，到底还有谁看过？你还是没把屏幕按灭。', next: 'c2n5_g0' },
   },
