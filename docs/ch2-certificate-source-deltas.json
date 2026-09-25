@@ -1,0 +1,142 @@
+{
+  "baseline": "e34bba4859d1f05b40354f1885c9f36ad53df984",
+  "files": [
+    {
+      "path": "app/src/App.tsx",
+      "beforeSha256": "ed9bcadbcbb12fc4d520d69fe623db09e87f023aaffd0dd7c429c7a63326249f",
+      "afterSha256": "d1464c91d680fdca0bb0cb7598bba8c9c2ccd7a77c85a15f415da49b0790c049",
+      "edits": [
+        {
+          "beforeStart": 11,
+          "afterStart": 11,
+          "before": [],
+          "after": [
+            "import { Ch2CertificateVerify } from './components/Ch2Certificate'"
+          ]
+        },
+        {
+          "beforeStart": 1247,
+          "afterStart": 1248,
+          "before": [],
+          "after": [
+            "  const [chapter2, setChapter2] = useState(false)"
+          ]
+        },
+        {
+          "beforeStart": 1261,
+          "afterStart": 1263,
+          "before": [],
+          "after": [
+            "  if (chapter2) return <Ch2CertificateVerify onBack={() => setChapter2(false)} />",
+            ""
+          ]
+        },
+        {
+          "beforeStart": 1267,
+          "afterStart": 1271,
+          "before": [],
+          "after": [
+            "        <button onClick={() => setChapter2(true)} className=\"rounded-lg border border-teal-500/60 px-4 py-2 text-sm text-teal-200 hover:bg-teal-900/30\">校验第二章凭证</button>"
+          ]
+        },
+        {
+          "beforeStart": 2274,
+          "afterStart": 2279,
+          "before": [
+            "      {(phase === 'settle' && nextShiftDef || phase === 'done') && <Ch2Settlement state={state} onNext={nextShift} onShop={() => setShopOpen(true)} onBackpack={() => setBackpackOpen(true)} onManual={() => setManualOpen(true)} onBadges={() => setBadgeOpen(true)} onBook={() => setBookOpen(true)} onExit={onExit} />}"
+          ],
+          "after": [
+            "      {(phase === 'settle' && nextShiftDef || phase === 'done') && <Ch2Settlement state={state} update={update} onNext={nextShift} onShop={() => setShopOpen(true)} onBackpack={() => setBackpackOpen(true)} onManual={() => setManualOpen(true)} onBadges={() => setBadgeOpen(true)} onBook={() => setBookOpen(true)} onExit={onExit} />}"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/components/Ch2Settlement.tsx",
+      "beforeSha256": "644bf2b0b62ae5c710d411d40f47ccc19c71e4244c6e5764eb1045a2441e40c5",
+      "afterSha256": "867835f081d963a9619d8d02d6e0b52f9759bfdd64b89a0a0b0939d342d79453",
+      "edits": [
+        {
+          "beforeStart": 8,
+          "afterStart": 8,
+          "before": [],
+          "after": [
+            "import { Ch2Certificate } from './Ch2Certificate'"
+          ]
+        },
+        {
+          "beforeStart": 11,
+          "afterStart": 12,
+          "before": [],
+          "after": [
+            "  update: (change: (state: GameState) => GameState) => void"
+          ]
+        },
+        {
+          "beforeStart": 25,
+          "afterStart": 27,
+          "before": [
+            "export function Ch2Settlement({ state, onNext, onShop, onBackpack, onManual, onBadges, onBook, onExit }: Props) {"
+          ],
+          "after": [
+            "export function Ch2Settlement({ state, update, onNext, onShop, onBackpack, onManual, onBadges, onBook, onExit }: Props) {"
+          ]
+        },
+        {
+          "beforeStart": 59,
+          "afterStart": 61,
+          "before": [],
+          "after": [
+            "      {complete && <div className=\"mb-4 flex justify-center\"><Ch2Certificate state={state} update={update} /></div>}",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "path": "app/src/game/types.ts",
+      "beforeSha256": "39e0adb32332f06716ad078cd6181c6fc669f9ee8ca53165897e3f771203004d",
+      "afterSha256": "70e357c9f885b5ad939c367d6df3a503aad14a5eb7bbe3ee94b435043bef31b3",
+      "edits": [
+        {
+          "beforeStart": 138,
+          "afterStart": 138,
+          "before": [],
+          "after": [
+            "  /** 第二章独立通关凭证：盖章时的快照，不随之后的消费、收集或第一章姓名变动。 */",
+            "  certificate?: Ch2CertificateRecord"
+          ]
+        },
+        {
+          "beforeStart": 181,
+          "afterStart": 183,
+          "before": [],
+          "after": [
+            "export interface Ch2CertificateRecord {",
+            "  version: 1",
+            "  name: string",
+            "  studentId: string",
+            "  gold: number",
+            "  badgeCount: number",
+            "  shiftCount: 5",
+            "  grade: 'S' | 'A' | 'B' | 'C' | '未记录'",
+            "  seed: number",
+            "  code: string",
+            "}",
+            ""
+          ]
+        }
+      ]
+    }
+  ],
+  "added": [
+    {
+      "path": "app/src/components/Ch2Certificate.tsx",
+      "sha256": "ed75503a79ad4a4a42486a9431846d95c92a4936f143b74910bd60188cc748f0"
+    },
+    {
+      "path": "app/src/game/ch2-certificate.ts",
+      "sha256": "1c1613ea091679eafaa86325112bf673c7fd058fb18909e0d6c73377056145ab"
+    }
+  ]
+}

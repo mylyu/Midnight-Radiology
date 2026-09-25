@@ -9,6 +9,7 @@ import { ch2SideBadgeBackfill } from './game/ch2-side-badges'
 import { isPatientBed, isPatientWheelchair } from './game/ch2-patients'
 import { Ch2Shop, Ch2Backpack } from './components/Ch2Shop'
 import { Ch2Settlement } from './components/Ch2Settlement'
+import { Ch2CertificateVerify } from './components/Ch2Certificate'
 import { Ch2ScanOverlay } from './components/Ch2ScanOverlay'
 import { preloadCh2SliceSequence } from './game/ch2-scan-sequences'
 import { Ch2ObservationImage } from './components/Ch2ObservationImage'
@@ -1245,6 +1246,7 @@ function ChapterEndScreen({ state, update, onBadges, onRestart, onDlc, onHome }:
 
 /* ================= 教师验证 ================= */
 function VerifyScreen({ onBack }: { onBack: () => void }) {
+  const [chapter2, setChapter2] = useState(false)
   const [name, setName] = useState('')
   const [sid, setSid] = useState('')
   const [gold, setGold] = useState('')
@@ -1259,12 +1261,15 @@ function VerifyScreen({ onBack }: { onBack: () => void }) {
     playSfx(ok ? 'badge' : 'click')
   }
 
+  if (chapter2) return <Ch2CertificateVerify onBack={() => setChapter2(false)} />
+
   return (
     <div className="relative w-full h-full overflow-y-auto">
       <BgImg name="bg_day" fixed />
       <div className="absolute inset-0 bg-slate-950/70" />
       <div className="relative z-10 min-h-full flex flex-col items-center justify-center px-4 py-10 gap-4">
         <h2 className="text-2xl text-amber-100 tracking-widest">通关凭证 · 教师验证</h2>
+        <button onClick={() => setChapter2(true)} className="rounded-lg border border-teal-500/60 px-4 py-2 text-sm text-teal-200 hover:bg-teal-900/30">校验第二章凭证</button>
         <p className="text-slate-400 text-sm max-w-md text-center">输入学生凭证卡上的信息，校验是否为本游戏真实生成的通关记录</p>
         <div className="bg-slate-900/90 border border-slate-600 rounded-xl p-6 w-full max-w-md flex flex-col gap-2">
           {([['姓名', name, setName], ['学号', sid, setSid], ['金币数', gold, setGold], ['勋章数', badges, setBadges], ['夜班数（日志）', stamps, setStamps], ['通关码（YSK-XXXXX-XXXX）', code, setCode]] as const).map(([label, val, set]) => (
@@ -2272,7 +2277,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
       {phase === 'quiz' && <Ch2Quiz state={state} update={update} onDone={quizDone} />}
 
       {/* 班次结算 */}
-      {(phase === 'settle' && nextShiftDef || phase === 'done') && <Ch2Settlement state={state} onNext={nextShift} onShop={() => setShopOpen(true)} onBackpack={() => setBackpackOpen(true)} onManual={() => setManualOpen(true)} onBadges={() => setBadgeOpen(true)} onBook={() => setBookOpen(true)} onExit={onExit} />}
+      {(phase === 'settle' && nextShiftDef || phase === 'done') && <Ch2Settlement state={state} update={update} onNext={nextShift} onShop={() => setShopOpen(true)} onBackpack={() => setBackpackOpen(true)} onManual={() => setManualOpen(true)} onBadges={() => setBadgeOpen(true)} onBook={() => setBookOpen(true)} onExit={onExit} />}
 
       {scanPending && scanSession && <Ch2ScanOverlay key={`${prog.loop?.runId}:${stepId}`} config={scan} startedAt={scanSession.startedAt} onDone={finishScan} />}
       {checkinPending && done && <Ch2Checkin key={stepId} title={`${shift.icon} ${shift.title} · ${shift.subtitle}`} rewardText={checkin.rewardText} onComplete={finishCheckin} />}

@@ -5,6 +5,7 @@ import { createHash } from 'node:crypto'
 import { readFileSync, readdirSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { beforeCertificateSource, priorCertificateSourcePaths, assertCertificateLive } from './ch2-certificate-projection.mjs'
 
 export const CTA_CHARACTERS_BASELINE = 'dadc208a703c01f5ffd70b70d2fa492e0f59a926'
 const ledgerSha = '737e7fcb204e15804c2a2f7204145b62ca15d69432a27b7a2941d74888d1251e'
@@ -46,9 +47,11 @@ export function ctaCharactersLedger() {
   return ledger
 }
 export function beforeCtaCharactersSource(path, source) {
-  if (!edited.includes(path)) return source
-  const current = norm(source), before = original(path)
+  if (!edited.includes(path)) return beforeCertificateSource(path, source)
+  let current = norm(source)
+  const before = original(path)
   if (current === before) return source // Exact independently known baseline only.
+  current = norm(beforeCertificateSource(path, current))
   const row = ctaCharactersLedger().files.find(row => row.path === path)
   assert.equal(sha(current), row.afterSha256, `${path}: undocumented mutation outside reviewed CTA/characters source`)
   const lines = current.trimEnd().split('\n')
@@ -68,7 +71,7 @@ export function assertCtaCharactersSourceAdditions() {
 }
 export function priorCtaCharactersSourcePaths(paths) {
   assertCtaCharactersSourceAdditions()
-  return paths.filter(path => !added.includes(path))
+  return priorCertificateSourcePaths(paths).filter(path => !added.includes(path))
 }
 export function assertCtaCharactersMedia(name, bytes) {
   const row = ctaCharactersLedger().media.find(row => row.name === name)
@@ -84,8 +87,9 @@ export function priorCtaCharactersMediaPaths(paths) {
   return paths.filter(path => !rows.some(row => row.path === path))
 }
 export function assertCtaCharactersLive() {
+  assertCertificateLive()
   for (const row of ctaCharactersLedger().files) {
-    const current = norm(read(row.path))
+    const current = norm(beforeCertificateSource(row.path, read(row.path)))
     assert.equal(sha(current), row.afterSha256, `${row.path}: reviewed CTA/characters edit must actually be live`)
     assert.equal(norm(beforeCtaCharactersSource(row.path, current)), original(row.path))
   }
@@ -111,7 +115,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   }
   const currentSources = [...new Set(git('ls-files', '--cached', '--others', '--exclude-standard', '--', 'app/src')
     .toString().trim().split('\n'))].sort()
-  assert.deepEqual(currentSources, [...sourcePaths, ...added].sort(), 'Only one reviewed new source module')
+  assert.deepEqual(priorCertificateSourcePaths(currentSources), [...sourcePaths, ...added].sort(), 'Only one reviewed new source module after the separately pinned certificate modules')
   const configs = ['app/package.json', 'app/package-lock.json', 'app/.gitignore', 'app/index.html', 'app/vite.config.ts',
     'app/tsconfig.json', 'app/tsconfig.app.json', '深夜影像科/全书剧情总线.md',
     ...git('ls-tree', '-r', '--name-only', CTA_CHARACTERS_BASELINE, '--', 'app/scripts').toString().trim().split('\n')]

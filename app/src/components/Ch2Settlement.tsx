@@ -6,9 +6,11 @@ import { ch2PayoffKeepsakes } from '../game/ch2-payoffs'
 import type { GameState } from '../game/types'
 import { SceneBackground } from './SceneBackground'
 import { imageAsset } from '../lib/image-assets'
+import { Ch2Certificate } from './Ch2Certificate'
 
 type Props = {
   state: GameState
+  update: (change: (state: GameState) => GameState) => void
   onNext: () => void
   onShop: () => void
   onBackpack: () => void
@@ -23,7 +25,7 @@ const metricStyle = 'rounded-xl border border-slate-600/90 bg-slate-900/90 p-3 s
 const buttonStyle = 'min-h-11 rounded-lg border border-slate-500 bg-slate-800/95 px-3 py-3 text-xs md:text-sm whitespace-nowrap text-slate-100 hover:border-teal-300'
 
 /** Chapter 2's management screen, intentionally independent of Chapter 1's shop/repair engine. */
-export function Ch2Settlement({ state, onNext, onShop, onBackpack, onManual, onBadges, onBook, onExit }: Props) {
+export function Ch2Settlement({ state, update, onNext, onShop, onBackpack, onManual, onBadges, onBook, onExit }: Props) {
   const progress = state.dlc?.ch2, complete = progress?.done || progress?.phase === 'done'
   const shift = CH2_SHIFTS.find(row => row.id === progress?.shift) ?? CH2_SHIFTS[0]
   const loop = progress?.loop
@@ -56,6 +58,8 @@ export function Ch2Settlement({ state, onNext, onShop, onBackpack, onManual, onB
         <h2 className="mt-1 text-xl text-amber-100 md:text-2xl">{complete ? '🌅 夜班交接完成 · 全章汇总' : `${shift.icon} ${shift.title}「${shift.subtitle}」 · 班后经营`}</h2>
         <p className="mt-1 text-xs text-slate-300">进度已保存。{complete ? '新机器要你看着，老周还在科里。' : '先歇一会儿，下一班等你亲自开始。'}</p>
       </header>
+
+      {complete && <div className="mb-4 flex justify-center"><Ch2Certificate state={state} update={update} /></div>}
 
       {complete && <section data-ch2-case-reading className={`${metricStyle} mb-3`} aria-labelledby="ch2-case-reading-title">
         <h3 id="ch2-case-reading-title" className="text-sm text-amber-200">延伸阅读 · “十五根针”的真实原型</h3>

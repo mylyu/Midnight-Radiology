@@ -136,6 +136,8 @@ export interface GameState {
 }
 
 export interface DlcProgress {
+  /** 第二章独立通关凭证：盖章时的快照，不随之后的消费、收集或第一章姓名变动。 */
+  certificate?: Ch2CertificateRecord
   /** 第二章轻量属性互动；提示不等于答题，旧档不补发完成奖励。 */
   statInteractions?: {
     seenHints?: string[]
@@ -177,6 +179,18 @@ export interface DlcProgress {
   gone?: string[]
   /** DR：AI 初诊决策记录（patientId → 玩家是否采纳） */
   aiChoices?: Record<string, boolean>
+}
+
+export interface Ch2CertificateRecord {
+  version: 1
+  name: string
+  studentId: string
+  gold: number
+  badgeCount: number
+  shiftCount: 5
+  grade: 'S' | 'A' | 'B' | 'C' | '未记录'
+  seed: number
+  code: string
 }
 
 export interface Ch2LedgerSnapshot {
