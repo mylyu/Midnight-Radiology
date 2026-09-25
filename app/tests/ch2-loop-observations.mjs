@@ -7,6 +7,11 @@ import { CH2_SHIFTS, CH2_CARDS, ch2StepForState } from '../src/game/ch2.ts'
 import { CH2_OBSERVATIONS, CH2_OBSERVATION_WINDOW_CASES, getCh2Observation } from '../src/game/ch2-observations.ts'
 import { CH2_CASE_COMPLETIONS } from '../src/game/ch2-ledger.ts'
 import { freshState } from '../src/game/store.ts'
+import { assertDirectorDayVoiceLive } from './ch2-director-day-voice.mjs'
+import { assertThicknessDialogueLive } from './ch2-thickness-dialogue.mjs'
+
+assertDirectorDayVoiceLive()
+assertThicknessDialogueLive()
 
 const steps = Object.assign({}, ...CH2_SHIFTS.map(shift => shift.steps))
 const state = freshState('f')
@@ -54,6 +59,13 @@ assert.equal(steps.c2n1_m11.windowTask.success, 'c2n1_w1ok')
 assert.equal(steps.c2n1_w1ok.next, 'c2n1_w2')
 assert.equal(steps.c2n1_w2ok.choices.length, 3)
 assert.equal(steps.c2d2_w1.windowTask.success, 'c2d2_w1ok')
+assert.equal(steps.c2d2_w1ok.next, 'c2d2_thickness_question')
+assert.equal(steps.c2d2_thickness_question.next, 'c2d2_thickness_reply')
+assert.equal(steps.c2d2_thickness_reply.next, 'c2d2_7')
+for (const id of ['c2d2_thickness_question', 'c2d2_thickness_reply']) {
+  assert.equal(getCh2Observation(id), undefined, 'A conversation, not an additional question/reward interface')
+  for (const field of ['effect', 'card', 'event', 'windowTask', 'choices', 'sfx']) assert.equal(steps[id][field], undefined)
+}
 assert.equal(steps.c2n3_coronary_where.next, 'c2n3_coronary_volume')
 assert(getCh2Observation('c2n3_coronary_where'))
 assert.equal(getCh2Observation('c2n3_coronary_volume'), undefined)
@@ -116,9 +128,9 @@ const baselineRows = [...baseline.matchAll(/^\s+(c2(?:n[135]|d[24]|am)_[\w]+):\s
 for (const [, id, line] of baselineRows) {
   assert(steps[id], `Removed saved node ${id}`)
   const next = line.match(/(?:next|"next")\s*:\s*['"]([^'"]+)['"]/)?.[1]
-  if (next && !line.includes('choices:')) assert.equal(steps[id].next, next, `${id}: graph changed`)
+  if (next && !line.includes('choices:')) assert.equal(steps[id].next, id === 'c2d2_w1ok' ? 'c2d2_thickness_question' : next, `${id}: graph changed`)
   const voice = line.match(/sfx:\s*'(vox[^']+)'/)?.[1]
-  if (voice) assert.equal(steps[id].sfx, voice, `${id}: approved voice changed`)
+  if (voice) assert.equal(steps[id].sfx, id === 'c2d2_1' ? 'vox_ch2_natural_director_day_v3' : voice, `${id}: approved voice changed`)
 }
 for (const shift of CH2_SHIFTS) for (const [id, step] of Object.entries(shift.steps)) {
   const rendered = ch2StepForState(id, step, state)

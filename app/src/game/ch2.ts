@@ -631,7 +631,9 @@ const C2D2: Record<string, Step> = {
   c2d2_6b: { speaker: 'me', text: "厚层把周围组织混到一块儿了。原始数据还在，先做**1mm薄层重建**，不用马上把大爷叫回来重扫。", card: 'slice_partial', image: 'ch2_lung_thick_v2', imageLabel: '本次数据 · 5 mm 厚层', next: 'c2d2_w1' },
   c2d2_6c: { speaker: 'zhou', sprite: 'char_zhou', text: "窗可以调，但这次先查层厚。薄层数据还在，重建一套再比。别急着按曝光键。", card: 'slice_partial', image: 'ch2_lung_thick_v2', imageLabel: '本次数据 · 5 mm 厚层', next: 'c2d2_w1' },
   c2d2_w1: { speaker: 'sys', text: '薄层重建完成。老周敲敲屏幕：「**窗口调到肺窗，亲手把那枚『消失』的结节给我找出来。**」', image: 'ct_lung', imageLabel: '本次数据 · 1 mm 薄层重建', windowTask: { image: 'ct_lung', targetW: 1500, targetL: -500, tolW: 220, tolL: 60, success: 'c2d2_w1ok' }, next: 'c2d2_w1ok' },
-  c2d2_w1ok: { speaker: 'sys', text: '老周把这一层和旧片并排放好，又翻过前后相邻的几层。不是结节跟人捉迷藏，是刚才那组图把它藏住了。', image: 'ct_lung', imageLabel: '本次数据 · 1 mm 薄层重建', next: 'c2d2_7' },
+  c2d2_w1ok: { speaker: 'sys', text: '老周把这一层和旧片并排放好，又翻过前后相邻的几层。不是结节跟人捉迷藏，是刚才那组图把它藏住了。', image: 'ct_lung', imageLabel: '本次数据 · 1 mm 薄层重建', next: 'c2d2_thickness_question' },
+  c2d2_thickness_question: { speaker: 'me', text: '既然薄层这么好，干嘛还要重建厚层的？', image: 'ct_lung', imageLabel: '本次数据 · 1 mm 薄层重建', next: 'c2d2_thickness_reply' },
+  c2d2_thickness_reply: { speaker: 'zhou', sprite: 'char_zhou', text: '同一套数据，其他设置不变，厚层的**噪点通常更少**，图也少些，先浏览一遍方便。薄层留着找细节，像这枚小结节，就不能只看厚层。两套都留，不冲突。', image: 'ct_lung', imageLabel: '本次数据 · 1 mm 薄层重建', next: 'c2d2_7' },
   c2d2_7: { speaker: 'uncle', sprite: 'pat_uncle2', text: "哦，这回看清了。（大爷凑近薄层重建的图，手指悬在屏幕前）去年说看不见，我还当它没了。", effect: { gold: 80 }, image: 'ct_lung', imageLabel: '本次数据 · 1 mm 薄层重建', next: 'c2d2_gap_shift' },
   c2d2_8: { bg: 'bg_waiting', speaker: 'sys', text: '【队列事件】急诊插单：「腹痛待查，怀疑肠梗阻，加急！」——前面还有两位门诊病人在等。', queue: C2D2_QUEUE2, sfx: 'ring', choices: [
     { text: '按规矩，急重症优先，立刻插队。', next: 'c2d2_9a', effect: { heart: 1 }, tag: 'good' },

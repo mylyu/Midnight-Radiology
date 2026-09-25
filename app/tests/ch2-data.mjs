@@ -10,6 +10,7 @@ let changedText = 0
 let totalText = 0
 // Only these authored graph changes are allowed; all other old save nodes and rules stay frozen.
 const continuityNext = {
+  c2d2_w1ok: 'c2d2_thickness_question', // Authored question and answer return to the original patient reply.
   "c2n1_ab6": "c2n1_old_ct",
   "c2n1_an4": "c2n1_old_ct",
   "c2n1_p2a": "c2n1_p_scan",

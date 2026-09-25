@@ -13,6 +13,11 @@ import { beforeImagePolishSource } from './image-polish-projection.mjs'
 import { CH2_DAWN_LEADIN_STEPS } from '../src/game/ch2-dawn.ts'
 import { CH2_ARCHIVE_RETURN_STEPS } from '../src/game/ch2-exploration.ts'
 import { CH2_SIDE_BADGES } from '../src/game/ch2-side-badges.ts'
+import { assertThicknessDialogueLive } from './ch2-thickness-dialogue.mjs'
+import { assertDirectorDayVoiceLive } from './ch2-director-day-voice.mjs'
+
+assertThicknessDialogueLive()
+assertDirectorDayVoiceLive()
 
 const root = new URL('../../', import.meta.url)
 const ch2Path = 'app/src/game/ch2.ts'
@@ -44,7 +49,8 @@ assert.deepEqual(Object.keys(live.CH2_EVIDENCE).filter(id => !old.CH2_EVIDENCE[i
 
 const oldSteps = Object.assign({}, ...old.CH2_SHIFTS.map(shift => shift.steps))
 const liveSteps = Object.assign({}, ...live.CH2_SHIFTS.map(shift => shift.steps))
-const newSteps = Object.assign({}, ...Object.values(CH2_PAYOFF_STEPS), CH2_DAWN_LEADIN_STEPS, CH2_ARCHIVE_RETURN_STEPS)
+const newSteps = Object.assign({}, ...Object.values(CH2_PAYOFF_STEPS), CH2_DAWN_LEADIN_STEPS, CH2_ARCHIVE_RETURN_STEPS,
+  { c2d2_thickness_question: liveSteps.c2d2_thickness_question, c2d2_thickness_reply: liveSteps.c2d2_thickness_reply })
 assert.deepEqual(Object.keys(liveSteps).filter(id => !oldSteps[id]).sort(), Object.keys(newSteps).sort())
 assert.equal(live.CH2_SHIFTS.length, old.CH2_SHIFTS.length)
 for (let i = 0; i < live.CH2_SHIFTS.length; i++) {
@@ -53,6 +59,12 @@ for (let i = 0; i < live.CH2_SHIFTS.length; i++) {
   assert.deepEqual(newMeta, oldMeta, 'Same three night/two day shifts, quiz and original starting points')
   for (const [id, step] of Object.entries(oldRows)) {
     const projected = { ...newRows[id] }
+    // Only the independently checked later bridge and approved director take.
+    if (id === 'c2d2_w1ok') projected.next = 'c2d2_7'
+    if (id === 'c2d2_1') {
+      projected.sfx = 'vox_ch2_natural_director_v2'
+      projected.text = projected.text.replace('年轻人，白班动作要快！', '年轻人，动作快起来！')
+    }
     if (['c2d2_4','c2d2_5','c2d2_6a','c2d2_6b','c2d2_6c','c2d2_w1','c2d2_w1ok','c2d2_7'].includes(id)) {
       // The imported image-polish test checks exact new labels/images first.
       projected.image = step.image

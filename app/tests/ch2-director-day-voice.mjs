@@ -6,6 +6,7 @@ import { createHash } from 'node:crypto'
 import { readFileSync, readdirSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { beforeThicknessDialogueSource } from './ch2-thickness-dialogue.mjs'
 
 export const DIRECTOR_DAY_BASELINE = '3b6f809c7ce8a598e7a52f22e5d7386e5b7415a7'
 export const DIRECTOR_DAY_AUDIO = 'app/public/audio/vox_ch2_natural_director_day_v3.mp3'
@@ -55,8 +56,10 @@ function revised(path) {
 
 export function beforeDirectorDayVoiceSource(path, source) {
   if (![scenePath, indexPath].includes(path)) return source
-  const current = normalize(source), before = original(path)
+  let current = normalize(source)
+  const before = original(path)
   if (current === before) return source // Exact prior revision only; not arbitrary old-looking text.
+  current = normalize(beforeThicknessDialogueSource(path, current))
   assert.equal(current, revised(path), `${path}: undocumented mutation outside the single director-day voice revision`)
   return before
 }
@@ -74,7 +77,7 @@ export function priorDirectorDayVoiceMediaPaths(paths) {
 export function assertDirectorDayVoiceLive() {
   assertDirectorDayVoiceBytes()
   for (const path of [scenePath, indexPath]) {
-    const current = normalize(read(path))
+    const current = normalize(beforeThicknessDialogueSource(path, read(path)))
     assert.equal(current, revised(path), `${path}: the new voice must actually be live`)
     assert.equal(normalize(beforeDirectorDayVoiceSource(path, current)), original(path))
   }
