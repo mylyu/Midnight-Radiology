@@ -463,6 +463,7 @@ function TitleScreen({ hasSave, onNew, onContinue, onBadges, onVerify, onDlc }: 
         <p className="text-slate-300 text-sm tracking-wider mb-6">Midnight Radiology · 第一章 老伙计</p>
         {hasSave && <MenuBtn onClick={onContinue} primary>▶ 继续夜班（自动存档）</MenuBtn>}
         <MenuBtn onClick={onNew} primary={!hasSave}>{hasSave ? '↺ 重新开始' : '▶ 开始游戏'}</MenuBtn>
+        <MenuBtn onClick={onDlc}>🗂️ 内容大厅</MenuBtn>
         <MenuBtn onClick={onBadges}>🏅 勋章墙</MenuBtn>
         <p className="text-slate-500 text-xs mt-6">教学试玩版 v0.7 · 进度自动保存在本浏览器 · 随时退出随时续玩</p>
         <div className="flex items-center gap-4">
