@@ -10,6 +10,7 @@
     "dev": "vite",
     "prebuild": "npm run images:prepare && npm run media:prepare",
     "build": "tsc -b && vite build",
+    "postbuild": "node scripts/check-delivery-size.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },

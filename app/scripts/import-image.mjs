@@ -19,25 +19,27 @@ const inside = (parent, child) => {
   return relative === '' || (!relative.startsWith(`..${path.sep}`) && relative !== '..' && !path.isAbsolute(relative))
 }
 const message = `用法（在 app/ 下）：
-  node scripts/import-image.mjs <仓库外原图绝对路径> <逻辑ID> [--replace] [--lossless]
+  node scripts/import-image.mjs <仓库外原图绝对路径> <逻辑ID> [--replace] [--lossless | --keep-webp]
 
 默认 WebP q78 → 72 → 66 → 60，alphaQuality=100，effort=6，原尺寸，最大600 KiB。
 已有逻辑ID必须 --replace；小字证物可加 --lossless（超限拒绝，不偷偷降为有损）。
 仅更新图片catalog及适用的背景预览catalog；不改剧情、历史manifest或原图。
+--keep-webp 原样导入已单独审核的WebP交付图，避免二次有损编码；尺寸/alpha/哈希检查仍保留。
 三个调窗数值图拒绝导入。旧压缩文件不会自动删除。
 详见 ../docs/media-import.md。`
 
 function argumentsFor(argv) {
   if (argv.length === 1 && ['--help', '-h'].includes(argv[0])) return { help: true }
   const flags = argv.filter(arg => arg.startsWith('--'))
-  if (flags.some(flag => !['--replace', '--lossless'].includes(flag)) || new Set(flags).size !== flags.length) throw new Error(message)
+  if (flags.some(flag => !['--replace', '--lossless', '--keep-webp'].includes(flag)) || new Set(flags).size !== flags.length
+    || flags.includes('--lossless') && flags.includes('--keep-webp')) throw new Error(message)
   const positional = argv.filter(arg => !arg.startsWith('--'))
   if (positional.length !== 2) throw new Error(message)
   const [source, name] = positional
   if (!path.isAbsolute(source)) throw new Error('原图必须使用仓库外的绝对路径。')
   if (!/^[a-z][a-z0-9_]{0,95}$/.test(name) || ['constructor', 'prototype'].includes(name)) throw new Error('逻辑ID只允许小写字母开头、字母/数字/下划线，最长96字符。')
   if (lockedRaw.has(name)) throw new Error(`${name} 是调窗数值源，禁止通过此工具覆盖；--lossless 也不例外。`)
-  return { source, name, replace: flags.includes('--replace'), lossless: flags.includes('--lossless') }
+  return { source, name, replace: flags.includes('--replace'), lossless: flags.includes('--lossless'), keepWebp: flags.includes('--keep-webp') }
 }
 
 function readDictionary(bytes, label, validateValue) {
@@ -76,7 +78,7 @@ function comparePixels(input, result) {
 }
 
 async function importImage(options) {
-  const { name, replace, lossless } = options
+  const { name, replace, lossless, keepWebp } = options
   const source = await realpath(options.source)
   if (inside(await realpath(repo), source)) throw new Error('请保留仓库外原图并从外部导入；不接受仓库内路径或指向仓库的链接。')
   if (!(await stat(source)).isFile()) throw new Error('原图路径不是普通文件。')
@@ -117,7 +119,11 @@ async function importImage(options) {
       if (metadata.width !== previous.width || metadata.height !== previous.height) throw new Error('CT运动层依赖固定机架坐标；替换图必须维持旧文件的画布尺寸。')
     }
     let encoded, quality = null
-    if (lossless) encoded = await sharp(original).keepIccProfile().webp({ lossless: true, alphaQuality: 100, effort: 6 }).toBuffer()
+    if (keepWebp) {
+      if (metadata.format !== 'webp') throw new Error('--keep-webp 仅接受已审核的静态WebP。')
+      encoded = original
+    }
+    else if (lossless) encoded = await sharp(original).keepIccProfile().webp({ lossless: true, alphaQuality: 100, effort: 6 }).toBuffer()
     else for (const q of [78, 72, 66, 60]) {
       encoded = await sharp(original).keepIccProfile().webp({ quality: q, alphaQuality: 100, effort: 6 }).toBuffer()
       quality = q
@@ -167,8 +173,8 @@ async function importImage(options) {
     }
     const oldPathStillReferenced = oldPath && Object.values(updatedCatalog).includes(oldPath)
     console.log(JSON.stringify({ name, replaced: !!oldPath, sourcePath: source, sourceSha256: sha(original), sourceBytes: original.length,
-      pipeline: lossless ? 'manual-import-lossless-webp-v1' : 'manual-import-webp-q78-alpha100-v1',
-      encoder: { sharp: sharp.versions.sharp, webp: sharp.versions.webp }, mode: lossless ? 'lossless-webp' : 'lossy-webp', quality,
+      pipeline: keepWebp ? 'reviewed-webp-passthrough-v1' : lossless ? 'manual-import-lossless-webp-v1' : 'manual-import-webp-q78-alpha100-v1',
+      encoder: { sharp: sharp.versions.sharp, webp: sharp.versions.webp }, mode: keepWebp ? 'reviewed-webp-unchanged' : lossless ? 'lossless-webp' : 'lossy-webp', quality,
       width: metadata.width, height: metadata.height, ...pixels,
       deliveryPath: `app/public/assets/${relative}`, deliverySha256: deliveryHash, deliveryBytes: encoded.length,
       previewUpdated: needsPreview, previousDeliveryPath: oldPath,

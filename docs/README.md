@@ -14,6 +14,7 @@
 
 ## 常用记录
 
+- [2026-09-26：完整部署压至15 MB以内](media-compression-20260926.md)
 - [第二章第五夜小雷立绘退场修复](ch2-portrait-exits.md)
 - [当前分章节加载与两章防连击保护](chapter-preload-input-guard.md)
 - [图片交付与加载优化](game-delivery-optimization.md)

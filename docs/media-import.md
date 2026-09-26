@@ -10,6 +10,7 @@
 node scripts/import-image.mjs "C:/素材工作区/新场景.png" bg_new_scene
 node scripts/import-image.mjs "C:/素材工作区/重画老周.png" ch2_pixel_char_zhou --replace
 node scripts/import-image.mjs "C:/素材工作区/新证物记录.png" ev_new_record --lossless
+node scripts/import-image.mjs "C:/素材工作区/已审核压缩图.webp" bg_new_scene --replace --keep-webp
 ```
 
 替换已存在ID必须带 `--replace`；错拼的新ID不会被当成替换。逻辑ID使用小写字母开头的字母、数字、下划线，最长96字符。用 `--help` 查看帮助。不要让两个任务同时编辑图片catalog。
@@ -18,6 +19,7 @@ node scripts/import-image.mjs "C:/素材工作区/新证物记录.png" ev_new_re
 
 - 默认 WebP `quality=78, alphaQuality=100, effort=6`，保留画布尺寸，不裁剪、不旋转、不缩小。超过 **600 KiB（614400字节）** 时依次试 q72、q66、q60；仍超限则报错。
 - `--lossless` 适合小字、证物记录。使用无损WebP，验证可见RGB不变；超限直接拒绝，不偷偷改成有损。完全透明像素下看不见的RGB不保证保留，但透明度逐像素必须相同。
+- `--keep-webp` 原样导入已在外部压缩并审核的静态WebP，避免二次有损编码；不能与 `--lossless` 同用，仍检查尺寸、alpha、600 KiB上限、保护ID和哈希。审核应比较压缩前原图，不是仅比较这个工具的输入与输出。
 - 解码比较输入/输出的尺寸及全部alpha值，不符合即拒绝。带EXIF旋转标记、动画或多页原图会拒绝，须先在外部明确整理。
 - 文件保存为 `app/public/assets/media/<逻辑ID>.<内容SHA256前16位>.webp`，更新受版本控制的 `image-assets.catalog.json`。同名内容不覆盖不同文件。
 - ID包含 `bg_` 或 `ch2_dawn_window`，或原本已有预览条目时，同步更新 `image-previews.catalog.json`：48像素宽的内嵌WebP预览。全尺寸图片本身不缩放。
@@ -38,3 +40,9 @@ CT扫描运动的床图和机架图仍依赖固定坐标。替换 `ch2_ct_motion
 6. 提交新交付图、变更的catalog、新的审核记录和必要的配置/测试；不要提交外部原图或批量删旧文件。先本地验收，再按用户授权发布。历史测试需要完整Git历史，Kimi源码ZIP不能凭缺少历史而宣称保护已通过。
 
 本工具不推送、不部署，不购买素材，不修改音频，也不自动更新游戏剧情或数值。
+
+## 当前交付预算
+
+2026-09-26压缩批次见 [完整记录](media-compression-20260926.md)。完整 `app/dist/` 为14.934 MB；`npm run build` 的postbuild检查全部文件合计必须小于15,000,000字节（不是ZIP大小）。新增章节确需提高预算时须明确说明并获作者同意，不能删素材、降低调窗精度或移除检查来凑数。
+
+本批次辅助脚本 `prepare-small-media` / `refine-small-media` / `prepare-small-audio` 只生成仓库外候选；`review-small-media` 生成前后对照，人工审核后才可运行 `install-small-media --apply-reviewed --with-audio`。不要把它们作为每次构建步骤，也不要对现有有损文件反复压缩。安装器核对批准报告哈希、清理经逐项审核的旧路径并外部备份；普通图片导入仍不自动清理。
