@@ -20,6 +20,10 @@ SIZE = 160
 SPACING = 1.2
 ANGLES = np.linspace(0, 180, SIZE, endpoint=False)
 WINDOW = [0.005, 0.030]
+VERSION = "ldct-short-v2-display"
+# One fixed, offset window per object, shared by every BP direction count and
+# all three unfiltered signal levels. No per-frame stretching or sharpening.
+BP_WINDOWS = {"phantom": [1.6, 4.0], "face": [1.6, 4.0], "nut": [1.7, 4.5]}
 SIGNALS = {"low": 3200, "medium": 8000, "high": 32000}
 COUNTS = [1, 2, 4, 8, 24, 160]
 ITERATIONS = [0, 1, 2, 4, 8]
@@ -74,18 +78,16 @@ def phantom(dataset: str) -> np.ndarray:
     return image
 
 
-def gray(a: np.ndarray, window):
-    return np.rint(np.clip((a-window[0])/(window[1]-window[0]), 0, 1)*255).astype(np.uint8)
+def gray(a: np.ndarray, window, *, exponent: float = 1):
+    scaled = np.clip((a-window[0])/(window[1]-window[0]), 0, 1)
+    return np.rint(scaled**exponent*255).astype(np.uint8)
 
 
 def compute(dataset: str, output: Path):
     config = DATASETS[dataset]
     truth = phantom(dataset)
     clean = radon(truth * SPACING, theta=ANGLES, circle=True)
-    full_bp = iradon(clean, theta=ANGLES, filter_name=None, circle=True)/SPACING
-    # BP genuinely spreads the large body too. A fixed non-saturating display
-    # avoids a glaring white disk; it does not remove low frequencies or sharpen.
-    bp_window = [0, float(full_bp.max()*1.7)]
+    bp_window = BP_WINDOWS[dataset]
     projection_window = [0, float(clean.max()*1.06)]
     frames = {"truth": gray(truth, WINDOW), "sinogram:clean": gray(clean, projection_window)}
     numeric = {"truth": truth, "clean": clean, "angles": ANGLES}
@@ -111,7 +113,11 @@ def compute(dataset: str, output: Path):
     order = list(order_angles_golden_ratio(ANGLES))
     for count in COUNTS:
         indices = order[:count]
-        result = iradon(clean[:, indices], theta=ANGLES[indices], filter_name=None, circle=True)/SPACING
+        # Same measured projections as the filter comparison, not a noiseless
+        # alternative. At all angles reuse the exact computed unfiltered result
+        # to avoid even floating-point accumulation-order differences.
+        result = (numeric["fbp:high:none"].copy() if count == len(ANGLES) else
+                  iradon(projections["high"][:, indices], theta=ANGLES[indices], filter_name=None, circle=True)/SPACING)
         numeric[f"bp:{count}"] = result
         frames[f"bp:{count}"] = gray(result, bp_window)
     measured = projections["low"]
@@ -129,7 +135,9 @@ def compute(dataset: str, output: Path):
         for prefix, value, window in [("iteration", estimate, WINDOW), ("forward", predicted, projection_window), ("residual", abs(residual), residual_window)]:
             key = f"{prefix}:{n}"
             numeric[key] = value.copy()
-            frames[key] = gray(value, window)
+            # Fixed square-root display exposes small residuals while preserving
+            # their ordering and cross-iteration scale. Numerical data stay raw.
+            frames[key] = gray(value, window, exponent=.5 if prefix == "residual" else 1)
         iteration_metrics.append({"iteration": n, "relative_residual": float(np.linalg.norm(residual)/np.linalg.norm(measured)), "rmse": float(np.sqrt(np.mean((estimate-truth)**2)))})
     # Point-coordinate geometry is independently checked against single-pixel
     # projections; a point is not falsely treated as the centroid of a whole nut.
@@ -150,19 +158,21 @@ def compute(dataset: str, output: Path):
     frame_stack = np.stack([frames[key] for key in FRAME_KEYS])
     np.savez_compressed(output/f"{dataset}-numerics.npz", **numeric)
     np.savez_compressed(output/f"{dataset}-frames.npz", frames=frame_stack)
-    meta = {"version": "ldct-short-v1", "dataset": dataset, "media_id": config["media_id"], "seed": config["seed"],
+    meta = {"version": VERSION, "dataset": dataset, "media_id": config["media_id"], "seed": config["seed"],
         "size": SIZE, "spacing_mm": SPACING, "angles": len(ANGLES), "signals": SIGNALS,
         "display_window": WINDOW, "bp_window": bp_window, "projection_window": projection_window,
         "residual_window": residual_window, "truth_hash": fingerprint(truth), "clean_projection_hash": fingerprint(clean),
+        "bp_projection_hash": fingerprint(projections["high"]), "bp_signal": "high",
+        "residual_display_exponent": .5,
         "bp_counts": COUNTS, "iterations": iteration_metrics, "point_checks": point_checks, "metrics": metrics,
         "frame_keys": FRAME_KEYS, "columns": 8, "rows": 6,
         "legacy_aliases": {f"filter:sparse:{f}": f"fbp:high:{f}" for f in FILTERS},
-        "note": "Same full grey circular holder in every stage. BP has fixed separate amplitude window; no background subtraction/sharpening. Nut is a geometric test object, not a polychromatic metal simulation."}
+        "note": "Same full grey circular holder in every stage. BP and high-signal unfiltered FBP are identical. BP uses a fixed offset window; residual uses a fixed square-root display. No background subtraction/sharpening. Nut is a geometric test object, not a polychromatic metal simulation."}
     (output/f"{dataset}-metadata.json").write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps({"dataset": dataset, "frames": len(frames), "iterations": iteration_metrics}, ensure_ascii=False), flush=True)
 
 
-CRITICAL = ["truth", "sinogram:clean", "bp:4", "bp:160", "fbp:high:ramp", "fbp:high:hann", "sinogram:low", "fbp:low:ramp", "iteration:1", "iteration:8"]
+CRITICAL = ["truth", "bp:4", "bp:160", "fbp:high:none", "fbp:high:ramp", "fbp:high:hann", "iteration:1", "iteration:8", "residual:1", "residual:8"]
 
 
 def review(output: Path):
@@ -207,8 +217,21 @@ def verify(output: Path):
         assert np.array_equal(numeric["trace:sinogram"], numeric["clean"])
         assert np.array_equal(frames[0], frames[2]) and np.array_equal(frames[1], frames[3])
         np.testing.assert_allclose(radon(numeric["truth"]*SPACING, theta=ANGLES, circle=True), numeric["clean"], rtol=0, atol=1e-12)
-        np.testing.assert_allclose(iradon(numeric["clean"], theta=ANGLES, filter_name=None, circle=True)/SPACING,
+        np.testing.assert_allclose(iradon(numeric["sinogram:high"], theta=ANGLES, filter_name=None, circle=True)/SPACING,
                                    numeric["bp:160"], rtol=0, atol=1e-12)
+        assert np.array_equal(numeric["bp:160"], numeric["fbp:high:none"])
+        assert np.array_equal(frames[FRAME_KEYS.index("bp:160")], frames[FRAME_KEYS.index("fbp:high:none")])
+        assert meta["bp_projection_hash"] == fingerprint(numeric["sinogram:high"])
+        assert meta["bp_window"] == BP_WINDOWS[dataset]
+        for key in FRAME_KEYS:
+            if key.startswith("bp:") or key.endswith(":none"):
+                assert np.array_equal(frames[FRAME_KEYS.index(key)], gray(numeric[key], BP_WINDOWS[dataset]))
+        assert frames[FRAME_KEYS.index("fbp:high:none")].max() > 195
+        for n in ITERATIONS:
+            residual_frame = frames[FRAME_KEYS.index(f"residual:{n}")]
+            assert np.array_equal(residual_frame, gray(numeric[f"residual:{n}"], meta["residual_window"], exponent=.5))
+            if n:
+                assert np.percentile(residual_frame, 95) > 30
         assert np.count_nonzero(numeric["iteration:0"]) == 0
         for level in SIGNALS:
             expected_hash = fingerprint(numeric[f"sinogram:{level}"])

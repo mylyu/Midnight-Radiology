@@ -115,6 +115,8 @@ try {
     await page.getByRole('button', { name: '不滤波', exact: true }).click()
     assert.equal(await page.locator('.ldct-lab__pair [data-frame="fbp:high:none"]').count(), 1)
     assert.equal(await page.locator('.ldct-lab__pair [data-frame="truth"]').count(), 1)
+    assert.match(await page.locator('.ldct-lab__status').innerText(), /固定显示窗/)
+    assert.doesNotMatch(await page.locator('.ldct-lab').innerText(), /单独归一化/)
     await labLayout(); await shot(`unfiltered-${orientation}`)
     await page.getByRole('button', { name: '柔一些', exact: true }).click()
     assert.equal(await page.locator('.ldct-lab__pair [data-frame="fbp:high:hann"]').count(), 1)
@@ -132,6 +134,16 @@ try {
     await page.getByRole('button', { name: '再改到第2轮 →', exact: true }).click()
     assert.equal(await page.locator('[data-frame="iteration:2"]').count(), 1)
     await labLayout(); await shot(`iteration-two-${orientation}`)
+    await page.getByText('它到底在比较什么？', { exact: true }).click()
+    assert.equal(await page.getByTestId('ldct-residual-scale').count(), 0, 'enhancement caption belongs only to residual display')
+    await page.getByRole('button', { name: '看看差别图', exact: true }).click()
+    for (const [label, count] of [['初始', 0], ['2轮', 2]]) {
+      await page.getByRole('button', { name: label, exact: true }).click()
+      assert.equal(await page.locator(`[data-frame="residual:${count}"]`).count(), 1)
+      assert.equal(await page.getByTestId('ldct-residual-scale').innerText(), '差异增强显示（各轮同一尺度）')
+    }
+    await page.locator('.ldct-lab__single').scrollIntoViewIfNeeded()
+    await page.screenshot({ path: resolve(output, `residual-two-${orientation}.png`) })
   }
   assert.deepEqual(errors, [], 'no page errors')
   assert.deepEqual(failed, [], 'no failed resources')

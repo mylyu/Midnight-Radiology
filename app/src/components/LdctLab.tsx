@@ -36,7 +36,7 @@ const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(mi
 const hints: Record<LdctLabRound, [string, string]> = {
   1: ['点一个编号，看看它的影子', '也可以拖动角度。物体、机架落点、正弦图白线上的同色点，对应的是同一个位置；正弦图仍包含整个物体。'],
   2: ['点「把投影铺回来」', '左边始终是完整参照。把同一物体的各方向投影直接叠回来，先看看不滤波是什么样。'],
-  3: ['换一种处理，看轮廓怎么变', '完整物体和投影都没换。这里只改滤波方式；不滤波的图单独归一化显示，不拿灰度亮暗直接比较。'],
+  3: ['换一种处理，看轮廓怎么变', '完整物体和投影都没换，只改滤波方式。不滤波使用固定显示窗，先看轮廓和糊边。'],
   4: ['点「把光子调少」', '一起看正弦图和重建结果。改变的是模拟入射计数，角度、物体都没动；不是把检查少转几个角度。'],
   5: ['点「改第一轮」，看图怎么回来', '把猜的图算成投影，和实测投影比较，再改图。每次展示真正算出的中间结果，不重新扫描。'],
 }
@@ -126,7 +126,7 @@ function Backproject({ value, choose, dataset, concealTruth }: Controls) {
   return <>
     <div className="ldct-lab__pair">
       <Tile label={concealTruth ? '暂不揭开参照' : '完整物体 · 参照'}><Truth dataset={dataset} concealTruth={concealTruth} /></Tile>
-      <Tile label={`直接反投影 · ${count}个方向`}><Frame frame={`bp:${count}`} dataset={dataset} /></Tile>
+      <Tile label={`直接反投影 · ${count}个方向`} note="固定显示窗 · 先看轮廓与糊边"><Frame frame={`bp:${count}`} dataset={dataset} /></Tile>
     </div>
     <div className="ldct-lab__transport"><button className="ldct-lab__primary" disabled={value.bpStep === LDCT_BP_COUNTS.length - 1}
       onClick={() => choose({ bpStep: LDCT_BP_COUNTS.length - 1 })}>{value.bpStep === LDCT_BP_COUNTS.length - 1 ? '已经铺回这组完整投影' : '把投影铺回来 →'}</button></div>
@@ -152,14 +152,14 @@ function Filter({ value, change, choose, dataset, concealTruth }: Controls) {
         <div className="ldct-lab__image"><Split left="fbp:high:ramp" right={`fbp:high:${value.filter}`} divider={value.divider} onChange={divider => change({ divider })} dataset={dataset} /></div></div>
       <Range label="拖开比较" max={100} value={value.divider} onChange={divider => change({ divider })} suffix="%" /></details>
     <LdctFilterResponse filter={value.filter} compact />
-    {value.filter === 'none' && <p className="ldct-lab__status">不滤波这版单独归一化显示。先比较形状和糊边，不直接比亮暗。</p>}
+    {value.filter === 'none' && <p className="ldct-lab__status">不滤波使用固定显示窗。先比轮廓与糊边，不直接比亮暗。</p>}
   </>
 }
 function Noise({ value, choose, dataset, concealTruth }: Controls) {
   const setSignal = (signal: LdctLabState['signal']) => choose({ signal, seenSignals: addSeen(value.seenSignals, signal) })
   return <>
     <div className="ldct-lab__pair"><Tile label={`完整正弦图 · ${{ high: '多', medium: '中', low: '少' }[value.signal]}光子`}><Frame frame={`sinogram:${value.signal}`} dataset={dataset} /></Tile>
-      <Tile label={`重建图 · ${LDCT_FILTER_LABELS[value.filter]}`}><Frame frame={`fbp:${value.signal}:${value.filter}`} dataset={dataset} /></Tile></div>
+      <Tile label={`重建图 · ${LDCT_FILTER_LABELS[value.filter]}`} note={value.filter === 'none' ? '固定显示窗 · 不随信号水平自动拉伸' : undefined}><Frame frame={`fbp:${value.signal}:${value.filter}`} dataset={dataset} /></Tile></div>
     <div className="ldct-lab__transport"><button className="ldct-lab__primary" onClick={() => setSignal(value.signal === 'low' ? 'high' : 'low')}>{value.signal === 'low' ? '对一下光子多的那版' : '把光子调少 →'}</button></div>
     <Reference dataset={dataset} concealTruth={concealTruth} />
     <details className="ldct-lab__extra"><summary>再试信号水平与滤波器</summary>
@@ -180,6 +180,7 @@ function Iterate({ value, change, choose, dataset, concealTruth }: Controls) {
     <details className="ldct-lab__extra"><summary>它到底在比较什么？</summary>
       <div className="ldct-lab__single"><div className="ldct-lab__split-labels"><span>{residual ? '实测与预测的差别' : '左：实测投影'}</span><span>{residual ? `第${count}轮` : '右：当前图算出的投影'}</span></div>
         <div className="ldct-lab__image">{residual ? <Frame frame={`residual:${count}`} dataset={dataset} /> : <Split left="sinogram:low" right={`forward:${count}`} divider={value.divider} onChange={divider => change({ divider })} dataset={dataset} />}</div></div>
+      {residual && <p data-testid="ldct-residual-scale">差异增强显示（各轮同一尺度）</p>}
       {!residual && <Range label="对比实测与预测" max={100} value={value.divider} onChange={divider => change({ divider })} suffix="%" />}
       <button className="ldct-lab__compare" aria-pressed={residual} onClick={() => { setResidual(!residual); void playSfx('click') }}>{residual ? '回到两份投影' : '看看差别图'}</button>
       <div className="ldct-lab__chips">{LDCT_ITERATIONS.map((n, i) => <button key={n} aria-pressed={value.iterationStep === i} onClick={() => jump(i)}>{n === 0 ? '初始' : `${n}轮`}</button>)}</div>

@@ -34,4 +34,13 @@ if (process.env.LDCT_PROJECTION_METADATA) {
       metadata.frames.find(f => f.key === 'bp:160').numeric_hash, 'Do not substitute the three-insert BP image')
   }
 }
+// Display-only revisions must not invalidate the author's existing short-story records.
+for (const dataset of ['phantom', 'face', 'nut']) {
+  const draft = { ...createLdctLabState(3), filter: 'none', seenFilters: ['ramp', 'none'] }
+  const current = createLdctRecord(draft, 3, 'different', dataset)
+  assert.equal(current.sourceVersion, 'ldct-short-v2-display')
+  const oldRecord = { ...current, sourceVersion: 'ldct-short-v1' }
+  assert(isValidLdctRecord(oldRecord, 3), 'v1 record remains valid without relabelling its source')
+  assert(labStateValid({ ...draft, saved: oldRecord }, 3), 'saved v1 controls survive this media update')
+}
 console.log('LDCT filter responses: flat None vs Ramp, six actual options, same projections, legacy filter saves passed.')

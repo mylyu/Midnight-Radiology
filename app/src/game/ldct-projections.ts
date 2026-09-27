@@ -2,7 +2,7 @@
 export const LDCT_PROJECTION_VERSION = 'ldct-projection-v2' as const
 export const LDCT_PROJECTION_SEED = 2258 as const
 export type LdctDataset = 'phantom' | 'face' | 'nut'
-export const LDCT_DATASET_VERSION = 'ldct-short-v1' as const
+export const LDCT_DATASET_VERSION = 'ldct-short-v2-display' as const
 export const LDCT_DATASET_SEEDS = { phantom: 2258, face: 2259, nut: 2260 } as const
 export const LDCT_DATASET_MEDIA_IDS = {
   phantom: 'ldct_short_phantom_v1', face: 'ldct_short_face_v1', nut: 'ldct_short_nut_v1',

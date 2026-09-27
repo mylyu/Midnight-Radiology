@@ -34,7 +34,7 @@ export type LdctLabRecord = {
   iterationStep: number
   helped: boolean
   verdict: 'different' | 'uncertain'
-  sourceVersion: typeof LDCT_PHANTOM_VERSION | 'ldct-projection-v2'
+  sourceVersion: typeof LDCT_PHANTOM_VERSION | 'ldct-short-v1' | 'ldct-projection-v2'
   seed: typeof LDCT_DATASET_SEEDS[LdctDataset]
   dataset?: LdctDataset | 'sparse-filter-v1' | 'full-projection-v2'
 }
@@ -71,7 +71,7 @@ const validStructure = (id: unknown) => id === null || LDCT_STRUCTURES.some(s =>
 
 export function isValidLdctRecord(record: LdctLabRecord, round: LdctLabRound): boolean {
   return Boolean([1, 2, 3, 4, 5].includes(round) && record && record.round === round && record.stage === LDCT_LAB_STAGES[round] &&
-    ((record.sourceVersion === LDCT_PHANTOM_VERSION && record.dataset !== undefined && record.dataset in LDCT_DATASET_SEEDS &&
+    (((record.sourceVersion === LDCT_PHANTOM_VERSION || record.sourceVersion === 'ldct-short-v1') && record.dataset !== undefined && record.dataset in LDCT_DATASET_SEEDS &&
       record.seed === LDCT_DATASET_SEEDS[record.dataset as LdctDataset]) ||
       (record.sourceVersion === 'ldct-projection-v2' && record.seed === LDCT_PHANTOM_SEED)) &&
     validStructure(record.structure) && finiteBetween(record.angle, 0, 179) &&
