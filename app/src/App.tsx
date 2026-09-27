@@ -43,8 +43,13 @@ import { ch2StatChoices, ch2StatReply, takeCh2StatInteraction, clearCh2StatReply
 import { useChapterEntry } from './hooks/use-chapter-entry'
 import { chapterSaveAssets } from './game/chapter-save-assets'
 import { ChapterLoadingScreen } from './components/ChapterLoadingScreen'
+import { LdctScreen } from './components/LdctScreen'
+import { LdctHallCard } from './components/LdctHallCard'
+import { ldctUnlocked } from './game/ldct-access'
+import { initializeLdct } from './game/ldct-session'
+import { LDCT_BADGES } from './game/ldct'
 
-type Screen = 'title' | 'select' | 'checkin' | 'night' | 'day' | 'badges' | 'quiz' | 'epilogue' | 'chapterEnd' | 'verify' | 'dlcHall' | 'dlc' | 'ch2'
+type Screen = 'title' | 'select' | 'checkin' | 'night' | 'day' | 'badges' | 'quiz' | 'epilogue' | 'chapterEnd' | 'verify' | 'dlcHall' | 'dlc' | 'ch2' | 'ldct'
 
 const IMG = imageAsset
 const LAST_NIGHT = NIGHTS.length
@@ -88,6 +93,14 @@ export default function App() {
       const h = window.location.hash
       const s = loadState()
       const extras = chapterSaveAssets(s)
+      if (h === '#/dlc/ldct') {
+        if (s && ldctUnlocked()) requestEntry('ldct', extras, () => {
+          const next = initializeLdct(s)
+          saveState(next); setState(next); setScreen('ldct'); setBooted(true)
+        })
+        else requestEntry('shell', extras, () => { setState(s); setScreen('dlcHall'); setBooted(true) }, true)
+        return
+      }
       if (h.startsWith('#/ch2')) {
         // 第二章口令解锁：任何入口（大厅卡片/直达链接）都先过口令，与第一章进度无关
         if (s && ch2Unlocked()) requestEntry('ch2', extras, () => { setState(s); setScreen('ch2'); setBooted(true) })
@@ -113,7 +126,7 @@ export default function App() {
       const path = (event as CustomEvent<{ path: string }>).detail?.path
       if (!path) return
       const saved = liveState.current ?? loadState()
-      const chapter = screen === 'ch2' ? 'ch2' : screen === 'dlc' && (dlcId === 'dr' || dlcId === 'dsa') ? dlcId
+      const chapter = screen === 'ldct' ? 'ldct' : screen === 'ch2' ? 'ch2' : screen === 'dlc' && (dlcId === 'dr' || dlcId === 'dsa') ? dlcId
         : ['checkin', 'night', 'day', 'quiz', 'epilogue', 'chapterEnd'].includes(screen) ? 'ch1' : 'shell'
       requestEntry(chapter, [...chapterSaveAssets(saved), path], () => { setState(saved); setScreen(screen); setBooted(true) })
     }
@@ -122,6 +135,16 @@ export default function App() {
   }, [screen, dlcId, requestEntry, setState])
 
   const enterDlc = (id: string, s: GameState) => {
+    if (id === 'ldct') {
+      if (!ldctUnlocked()) return
+      requestEntry('ldct', chapterSaveAssets(s), () => {
+        const next = initializeLdct(s)
+        saveState(next); setState(next)
+        window.history.replaceState(null, '', '#/dlc/ldct')
+        setScreen('ldct')
+      })
+      return
+    }
     if (id !== 'dr' && id !== 'dsa') return
     requestEntry(id, chapterSaveAssets(s), () => {
       saveState(s)
@@ -153,16 +176,16 @@ export default function App() {
     liveState.current = next
     saveState(next)
     renderState(next)
-    if (['night', 'day', 'quiz', 'epilogue', 'chapterEnd', 'ch2'].includes(screen)) {
+    if (['night', 'day', 'quiz', 'epilogue', 'chapterEnd', 'ch2', 'ldct'].includes(screen)) {
       const changes = statChanges(prev, next, screen === 'ch2')
       const message = giftFeedback(prev, next)
       if (changes.length || message) {
         const now = Date.now()
         const progress = next.dlc?.ch2
-        const context = screen === 'ch2' ? `ch2:${progress?.shift}:${progress?.phase}:${progress?.stepId}`
+        const context = screen === 'ldct' ? `ldct:${next.dlc?.ldct?.ldct?.revision}` : screen === 'ch2' ? `ch2:${progress?.shift}:${progress?.phase}:${progress?.stepId}`
           : `ch1:${screen}:${next.night}:${next.stepId}`
         const notice = { id: ++nextNotice.current, createdAt: now, context, expiresAt: now + 2800,
-          changes, message, reason: statChangeReason(prev, next) }
+          changes, message, reason: screen === 'ldct' ? (message ? '同事间的心意' : next.gold < prev.gold ? '小卖部购物' : '实验记录') : statChangeReason(prev, next) }
         setStatNotices(rows => appendStatNotice(rows, notice))
       }
     }
@@ -335,6 +358,9 @@ export default function App() {
           onExit={() => { window.location.hash = '#/dlc'; setScreen('dlcHall') }}
         />
       )}
+      {screen === 'ldct' && state && <LdctScreen state={state} update={update}
+        renderText={(text, shown) => <RichText text={text} shown={shown} />}
+        onExit={() => { window.location.hash = '#/dlc'; setScreen('dlcHall') }} />}
       {screen === 'dlc' && state && dlcId && getDlc(dlcId) && (
         <ScriptScreen
           key={dlcId}
@@ -347,7 +373,7 @@ export default function App() {
 
       {/* 全局知识卡片 toast（第一章与 DLC 共用） */}
       <StatFeedback notices={statNotices} onExpire={expireNotice}
-        active={['night', 'day', 'quiz', 'epilogue', 'chapterEnd', 'ch2'].includes(screen)} />
+        active={['night', 'day', 'quiz', 'epilogue', 'chapterEnd', 'ch2', 'ldct'].includes(screen)} />
       {cardToast && (
         <div className="fixed top-14 left-1/2 -translate-x-1/2 z-[100] bg-slate-900/95 border-2 border-amber-400/70 rounded-xl px-4 py-2 shadow-2xl text-sm text-amber-200 pointer-events-none">
           📖 知识卡片已收入夜班手册：{cardToast}
@@ -360,7 +386,7 @@ export default function App() {
           <div className="bg-slate-900/95 border-2 border-amber-400 rounded-2xl px-8 py-6 shadow-[0_0_40px_rgba(251,191,36,0.4)] flex flex-col items-center gap-2 rotate-[-1deg]">
             <p className="text-amber-300 tracking-[0.3em] text-xs">获得勋章</p>
             {badgePop.map(id => {
-              const b = BADGES[id] ?? DLC_BADGES[id] ?? CH2_BADGES[id]
+              const b = BADGES[id] ?? DLC_BADGES[id] ?? CH2_BADGES[id] ?? LDCT_BADGES[id as keyof typeof LDCT_BADGES]
               return b ? (
                 <div key={id} className="flex items-center gap-3">
                   <span className="text-4xl">{b.icon}</span>
@@ -1083,6 +1109,13 @@ function BadgeScreen({ state, onBack }: { state: GameState | null; onBack: () =>
             )
           })}
         </div>
+        {state?.dlc?.ldct?.ldct && <section className="max-w-3xl text-center">
+          <h3 className="text-cyan-200 mb-3">◐ 低剂量CT · 开场体验</h3>
+          {Object.entries(LDCT_BADGES).map(([id, b]) => <div key={id} className="rounded-xl border border-cyan-700 bg-slate-900/80 p-4">
+            <p className="text-amber-100">{b.icon} {owned.includes(id) ? b.name : '尚未解锁'}</p>
+            <p className="text-xs text-slate-400 mt-2">{b.desc}</p>
+          </div>)}
+        </section>}
         <MenuBtn onClick={onBack}>← 返回</MenuBtn>
       </div>
     </div>
@@ -2741,6 +2774,7 @@ function DlcHallScreen({ onEnter, onEnterCh2, onBack }: { onEnter: (id: string, 
         {save && (
           <div className="max-w-3xl w-full flex flex-col gap-3">
             <p className="text-amber-300/70 text-xs tracking-widest">—— 番外篇 ——</p>
+            <LdctHallCard state={save} onEnter={() => onEnter('ldct', save)} />
             <div className="grid md:grid-cols-2 gap-4 w-full">
             {DLCS.map(d => {
               const p = save.dlc?.[d.id]

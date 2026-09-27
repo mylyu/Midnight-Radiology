@@ -1,6 +1,6 @@
 import type { ChapterLoadProgress } from '../lib/chapter-assets'
 
-const titles = { shell: '准备游戏', ch1: '第一章 · 老伙计', ch2: '第二章 · 快与狠', dr: '番外篇 · DR 白班', dsa: '番外篇 · DSA 导管室' }
+const titles = { shell: '准备游戏', ch1: '第一章 · 老伙计', ch2: '第二章 · 快与狠', dr: '番外篇 · DR 白班', dsa: '番外篇 · DSA 导管室', ldct: '低剂量CT：噪声之外 · 开场体验' }
 const mb = (bytes: number) => (bytes / 1048576).toFixed(1)
 
 export function ChapterLoadingScreen({ progress, onRetry, onBack, onEnter }: {

@@ -21,6 +21,8 @@ import { CH2_CT_MOTION } from '../src/game/ch2-ct-motion.ts'
 import { CH2_TERMINAL_CUES } from '../src/game/ch2-terminal.ts'
 import { CH2_PAYOFF_KEEPSAKES } from '../src/game/ch2-payoffs.ts'
 import { CH2_COMMUNICATION_AUDIO } from '../src/game/ch2-communications.ts'
+import { LDCT_STEPS, LDCT_MEDIA_IDS } from '../src/game/ldct.ts'
+import { LDCT_LAB_MEDIA_IDS } from '../src/game/ldct-experiments.ts'
 
 export const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 export const manifestPath = path.join(appRoot, 'src/lib/media-manifest.generated.json')
@@ -66,7 +68,7 @@ async function voiceAliases() {
 export async function buildChapterManifest() {
   const catalog = JSON.parse(await read('src/lib/image-assets.catalog.json'))
   const aliases = await voiceAliases()
-  const groups = Object.fromEntries(['shell', 'ch1', 'ch2', 'dr', 'dsa'].map(id => [id, new Set()]))
+  const groups = Object.fromEntries(['shell', 'ch1', 'ch2', 'dr', 'dsa', 'ldct'].map(id => [id, new Set()]))
   const candidates = new Map()
   const imagePath = id => {
     assert(catalog[id], `Unknown image ID in preload data: ${id}`)
@@ -79,6 +81,10 @@ export async function buildChapterManifest() {
   }
   const addImage = (group, id, translate = true) => {
     if (!id || id === 'none') return
+    if (group === 'ldct' && id === '@luzhou') {
+      for (const gender of ['m', 'f']) addImage(group, `ch2_pixel_char_luzhou_${gender}`, false)
+      return
+    }
     if (id === 'me' || id === 'luzhou') {
       for (const gender of ['m', 'f']) addImage(group, id === 'me' ? `char_${gender}` : `char_luzhou_${gender}`, translate)
       return
@@ -165,6 +171,11 @@ export async function buildChapterManifest() {
     }
     visit(tree)
   }
+
+  // This opening owns its chapter group, never the hall or another chapter.
+  // Story literals plus explicit dynamic lab/portrait registries cover all paths.
+  collect('ldct', LDCT_STEPS)
+  for (const image of [...LDCT_MEDIA_IDS, ...LDCT_LAB_MEDIA_IDS]) addImage('ldct', image, false)
 
   // All legacy canonical artwork can be requested through save-derived extras.
   // This is an index only, NOT a preload group and NOT a public-directory scan.

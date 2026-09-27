@@ -906,6 +906,16 @@
       "bytes": 5728,
       "type": "image"
     },
+    "assets/media/ldct_bg_restaurant.1e0f0d5b98e52a90.webp": {
+      "sha256": "1e0f0d5b98e52a908e08fc93445777803784cc49450e43b92f85a87f9b9b6574",
+      "bytes": 103186,
+      "type": "image"
+    },
+    "assets/media/ldct_phantom_v1_atlas.099971caf68d7010.webp": {
+      "sha256": "099971caf68d70109c1d0991941e4cff50d9670187ff37dc66b5ec6c4b615b45",
+      "bytes": 328424,
+      "type": "image"
+    },
     "assets/media/machine_mammo.266d8db738a5f2b5.webp": {
       "sha256": "266d8db738a5f2b5d469771d3a6017c31ca1eddf0952d90166503bef62e38ba1",
       "bytes": 20678,
@@ -1604,6 +1614,21 @@
       "audio/vox_liao.mp3",
       "audio/vox_qin.mp3",
       "audio/xray.mp3"
+    ],
+    "ldct": [
+      "assets/media/bg_breakroom.6e71e372d1ef1b9d.webp",
+      "assets/media/bg_office.a9e1a85d95a882a3.webp",
+      "assets/media/ch2_bg_breakroom_day.194c9d3ccafbe9ff.webp",
+      "assets/media/ch2_pixel_char_director.5c2ab917a089a1f0.webp",
+      "assets/media/ch2_pixel_char_he.8f56bc6a4628a25e.webp",
+      "assets/media/ch2_pixel_char_lei.f3965b6cdad7e5d6.webp",
+      "assets/media/ch2_pixel_char_luzhou_f.5e1498bbdd027005.webp",
+      "assets/media/ch2_pixel_char_luzhou_m.818dc622d0fb6918.webp",
+      "assets/media/item_coffee.4368d5294285e799.webp",
+      "assets/media/item_milktea.52cc8d6958e2f14b.webp",
+      "assets/media/item_snack.f16943baf3b6bdb3.webp",
+      "assets/media/ldct_bg_restaurant.1e0f0d5b98e52a90.webp",
+      "assets/media/ldct_phantom_v1_atlas.099971caf68d7010.webp"
     ]
   }
 }
