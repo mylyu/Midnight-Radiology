@@ -71,99 +71,99 @@
       "bytes": 36052,
       "type": "image"
     },
-    "assets/media/bg_archive.0b495287ba6a9788.webp": {
-      "sha256": "0b495287ba6a9788be2ce2be79ac19afc9f2da27389d4aa0d95446e1de898ac5",
-      "bytes": 34920,
+    "assets/media/bg_archive.71910b10c72e59b9.webp": {
+      "sha256": "71910b10c72e59b95b7b2003744d8e2f05cfc9bf4f88e19ea857e9718ee1e691",
+      "bytes": 87186,
       "type": "image"
     },
-    "assets/media/bg_breakroom.82af0ed5c121fa3b.webp": {
-      "sha256": "82af0ed5c121fa3b87d5d87b208de3aaa3687ccf11254806f6f58ab52dad69e5",
-      "bytes": 40292,
+    "assets/media/bg_breakroom.6e71e372d1ef1b9d.webp": {
+      "sha256": "6e71e372d1ef1b9d2fcf5d9c81ca6b1791722a4d2700faf554596e8ac230b330",
+      "bytes": 92740,
       "type": "image"
     },
-    "assets/media/bg_cathlab.760430d8645c39ff.webp": {
-      "sha256": "760430d8645c39ff427432b5b5e7280f6da9e8fa9064e9cbff941d9fac78c071",
-      "bytes": 49650,
+    "assets/media/bg_cathlab.820b4679ce3afe6d.webp": {
+      "sha256": "820b4679ce3afe6d5af8e98e708ab10d2793fcc6d815a4379c7eddbecfc24549",
+      "bytes": 127320,
       "type": "image"
     },
-    "assets/media/bg_control.fe6e7b07dae31536.webp": {
-      "sha256": "fe6e7b07dae315361cceeb6dd5c58f38fada73d0eda4865b55d781383d541812",
-      "bytes": 35650,
+    "assets/media/bg_control.f9b61cead622380c.webp": {
+      "sha256": "f9b61cead622380c254810a803c8638c5605089ab93441aa749a945e33afe688",
+      "bytes": 88194,
       "type": "image"
     },
-    "assets/media/bg_corridor_cr_covered.ef953fabbf300087.webp": {
-      "sha256": "ef953fabbf300087474bba54a563a3d1d6a8f14e657351f598d5f802b10a7c65",
-      "bytes": 23868,
+    "assets/media/bg_corridor_cr_covered.f6555060c067f477.webp": {
+      "sha256": "f6555060c067f4778def0083447258321f229919205652ba9afd1c5345815ba2",
+      "bytes": 42868,
       "type": "image"
     },
-    "assets/media/bg_corridor.c757fe002937baaf.webp": {
-      "sha256": "c757fe002937baaf20f4ae6e3a02df6c0af0541df138daa4a25983b333a20b6c",
-      "bytes": 26698,
+    "assets/media/bg_corridor.970560e65398bdf4.webp": {
+      "sha256": "970560e65398bdf4751c0fb1b85c66974373712dc52167ce61b8eb49da3232cf",
+      "bytes": 57746,
       "type": "image"
     },
-    "assets/media/bg_ctcontrol_day_ready.e26cf3f64e2f4c2b.webp": {
-      "sha256": "e26cf3f64e2f4c2b8e08a3acc9879ab058113d43eaa3f4bf577237982d17cf21",
-      "bytes": 78940,
+    "assets/media/bg_ctcontrol_day_ready.b611bff5d0912f7b.webp": {
+      "sha256": "b611bff5d0912f7b2df53fd6679f4ddb473a058321cb84b507d145900e7fc60e",
+      "bytes": 141286,
       "type": "image"
     },
-    "assets/media/bg_ctcontrol_day.9e3bf180f19c25ec.webp": {
-      "sha256": "9e3bf180f19c25ecf05e41d4e8bc4815fe18d0c88f8c3d0dd6e7b8393d3b5854",
-      "bytes": 81564,
+    "assets/media/bg_ctcontrol_day.1d4444a65f52f9d8.webp": {
+      "sha256": "1d4444a65f52f9d8b4c82422c45d99461e7751c0adbc12860eb51672444c124f",
+      "bytes": 234348,
       "type": "image"
     },
-    "assets/media/bg_ctcontrol_ready.35fee9f9c3f44899.webp": {
-      "sha256": "35fee9f9c3f44899a8e9dcf51b1635003506bf40e7fda6125d3140200f9e3927",
-      "bytes": 32278,
+    "assets/media/bg_ctcontrol_ready.10ebe6364699f572.webp": {
+      "sha256": "10ebe6364699f572d314ecd7d63ff099bd78a28cc2bcf53567f299a55a44873f",
+      "bytes": 62972,
       "type": "image"
     },
-    "assets/media/bg_ctcontrol.ee38807fa281d79e.webp": {
-      "sha256": "ee38807fa281d79ec45a7e264b7b76e693ed2a913aa538d9f73ebd78f1fbb0ed",
-      "bytes": 32952,
+    "assets/media/bg_ctcontrol.8c11ac5bcfb5d935.webp": {
+      "sha256": "8c11ac5bcfb5d935e123b4b67e27b08122d7122ddd26af3fb3202c8ce185cb89",
+      "bytes": 85238,
       "type": "image"
     },
-    "assets/media/bg_ctroom.dbd5dfc733affe65.webp": {
-      "sha256": "dbd5dfc733affe65d081e74716055bb2be9d12a63e320690f3431173cf0bd90a",
-      "bytes": 31300,
+    "assets/media/bg_ctroom.10e83e9dd908c8ab.webp": {
+      "sha256": "10e83e9dd908c8ab0db86a9743fa5a0c910fb0f86281f87df88b7b0c20912d60",
+      "bytes": 82572,
       "type": "image"
     },
-    "assets/media/bg_day.74f7de10fc2e0f80.webp": {
-      "sha256": "74f7de10fc2e0f80bcf5b3bf44e8ab4f84c3eba64b65466fe029943cb014ae49",
-      "bytes": 63740,
+    "assets/media/bg_day.bb8e2f2392fbc58a.webp": {
+      "sha256": "bb8e2f2392fbc58a4c873a2255c048fde123a7b7ef6044392bcbfd243ab8a806",
+      "bytes": 148992,
       "type": "image"
     },
-    "assets/media/bg_drroom.82b37ae8ada1a033.webp": {
-      "sha256": "82b37ae8ada1a03392269b5a168c48d95ceaa8f47a6761a18e66d8f364c79f10",
-      "bytes": 67976,
+    "assets/media/bg_drroom.4451e35a14e7165e.webp": {
+      "sha256": "4451e35a14e7165e1bed8872536ae68f464318b0bcb43838c24baaef9220d684",
+      "bytes": 165728,
       "type": "image"
     },
-    "assets/media/bg_morning.95b5d757d7600267.webp": {
-      "sha256": "95b5d757d76002672a119882a22680ce8ae2130ad943502e00b721b9e68b427b",
-      "bytes": 53604,
+    "assets/media/bg_morning.d5fbcd6a415a903d.webp": {
+      "sha256": "d5fbcd6a415a903d4b0a45cce300a50842d253b879df70b63ccfaf078976ceba",
+      "bytes": 91444,
       "type": "image"
     },
-    "assets/media/bg_office_day.32875bb2d1400a26.webp": {
-      "sha256": "32875bb2d1400a264d5353c58a429fe6d57a158ef52025879ce02bb011f81151",
-      "bytes": 94596,
+    "assets/media/bg_office_day.c715845d3a833f50.webp": {
+      "sha256": "c715845d3a833f50b1a67d4b2048c1d9a80005ce048ab0bbbe549bf57bc4162f",
+      "bytes": 291402,
       "type": "image"
     },
-    "assets/media/bg_office.253e5516fc6e5507.webp": {
-      "sha256": "253e5516fc6e5507e7175752952feb1f4720233a7754b55a3de28ceb73b40c84",
-      "bytes": 31004,
+    "assets/media/bg_office.a9e1a85d95a882a3.webp": {
+      "sha256": "a9e1a85d95a882a3f55f1960486a98ecb3657612f4ef1e0f9c0fced1618ea222",
+      "bytes": 84710,
       "type": "image"
     },
-    "assets/media/bg_title.809ebcbc33387d7d.webp": {
-      "sha256": "809ebcbc33387d7d602871f584a0ee3d447c3b07ecb09c6c0b192aa7fa4f8d00",
-      "bytes": 42888,
+    "assets/media/bg_title.6b9bcff0508f32af.webp": {
+      "sha256": "6b9bcff0508f32af8eadd379075557f313203748734f064185ce5e179d8d6f66",
+      "bytes": 101000,
       "type": "image"
     },
-    "assets/media/bg_waiting.a1851a4d68621bb2.webp": {
-      "sha256": "a1851a4d68621bb26eaedee8e988f119e17e8667d17290532595f875c45666cc",
-      "bytes": 73312,
+    "assets/media/bg_waiting.e9b68c8f6d71b8e7.webp": {
+      "sha256": "e9b68c8f6d71b8e77c89304efbfcd7f3e247a5949157a7aa3a93b1736e5650b0",
+      "bytes": 213618,
       "type": "image"
     },
-    "assets/media/bg_xrayroom.529b0d31f79e90dd.webp": {
-      "sha256": "529b0d31f79e90dd478e0131b5203ad33458eb416bc7a2419c12008334b34cbb",
-      "bytes": 36604,
+    "assets/media/bg_xrayroom.bfd0e0a881cb1966.webp": {
+      "sha256": "bfd0e0a881cb1966aa791a73c1e809556c68745ae49c610f7a94aae2212d6bfe",
+      "bytes": 90068,
       "type": "image"
     },
     "assets/media/ch2_aorta_volume_cutaway_v1.e88db59e537282d3.webp": {
@@ -171,9 +171,9 @@
       "bytes": 31742,
       "type": "image"
     },
-    "assets/media/ch2_bg_breakroom_day.6664fdcf364a74ae.webp": {
-      "sha256": "6664fdcf364a74ae3484ef9969f9aa602684d03d9041e5d4435ab7e3ac6b3173",
-      "bytes": 59768,
+    "assets/media/ch2_bg_breakroom_day.194c9d3ccafbe9ff.webp": {
+      "sha256": "194c9d3ccafbe9ff7e51ccb475c28734febaf47de7f90c6df2b1337891aa59d0",
+      "bytes": 139152,
       "type": "image"
     },
     "assets/media/ch2_ct_aortic_wide.1c28017f34e8d969.webp": {
@@ -206,14 +206,14 @@
       "bytes": 32930,
       "type": "image"
     },
-    "assets/media/ch2_dawn_window_portrait_v1.d66af2af34742536.webp": {
-      "sha256": "d66af2af3474253671d7aa78b3a636361bbf7afdab41354599b32aba04befe98",
-      "bytes": 69258,
+    "assets/media/ch2_dawn_window_portrait_v1.681cdf2b9b57e93d.webp": {
+      "sha256": "681cdf2b9b57e93d3f033c42f10fc9fdc8c9dd0f6cae83494e2efc507dda872a",
+      "bytes": 116972,
       "type": "image"
     },
-    "assets/media/ch2_dawn_window_v1.4c44048927c4bdf4.webp": {
-      "sha256": "4c44048927c4bdf44889ed9dda6b631a95fc8fe5aca52822a0274b653a312a02",
-      "bytes": 67000,
+    "assets/media/ch2_dawn_window_v1.08b6642c0b84fe54.webp": {
+      "sha256": "08b6642c0b84fe5493fc60f7f1474096248ec706014f7011c27c6ba1f8d45276",
+      "bytes": 125536,
       "type": "image"
     },
     "assets/media/ch2_gift_jiang_sleeve_v1.95bcca722a397ba0.webp": {
@@ -1319,10 +1319,10 @@
   },
   "chapters": {
     "shell": [
-      "assets/media/bg_control.fe6e7b07dae31536.webp",
-      "assets/media/bg_corridor.c757fe002937baaf.webp",
-      "assets/media/bg_day.74f7de10fc2e0f80.webp",
-      "assets/media/bg_title.809ebcbc33387d7d.webp",
+      "assets/media/bg_control.f9b61cead622380c.webp",
+      "assets/media/bg_corridor.970560e65398bdf4.webp",
+      "assets/media/bg_day.bb8e2f2392fbc58a.webp",
+      "assets/media/bg_title.6b9bcff0508f32af.webp",
       "assets/media/char_f.aa652822daf1d5e4.webp",
       "assets/media/char_m.7fd8c4d18c105c36.webp",
       "assets/media/stamp.72cf222761ee91c0.webp",
@@ -1332,13 +1332,13 @@
       "audio/stamp.mp3"
     ],
     "ch1": [
-      "assets/media/bg_archive.0b495287ba6a9788.webp",
-      "assets/media/bg_breakroom.82af0ed5c121fa3b.webp",
-      "assets/media/bg_control.fe6e7b07dae31536.webp",
-      "assets/media/bg_corridor.c757fe002937baaf.webp",
-      "assets/media/bg_day.74f7de10fc2e0f80.webp",
-      "assets/media/bg_morning.95b5d757d7600267.webp",
-      "assets/media/bg_xrayroom.529b0d31f79e90dd.webp",
+      "assets/media/bg_archive.71910b10c72e59b9.webp",
+      "assets/media/bg_breakroom.6e71e372d1ef1b9d.webp",
+      "assets/media/bg_control.f9b61cead622380c.webp",
+      "assets/media/bg_corridor.970560e65398bdf4.webp",
+      "assets/media/bg_day.bb8e2f2392fbc58a.webp",
+      "assets/media/bg_morning.d5fbcd6a415a903d.webp",
+      "assets/media/bg_xrayroom.bfd0e0a881cb1966.webp",
       "assets/media/char_bai.aae1555459768a4a.webp",
       "assets/media/char_director.2ef1885993e5b0e7.webp",
       "assets/media/char_f.aa652822daf1d5e4.webp",
@@ -1433,27 +1433,27 @@
       "assets/ct-sequences/wrist-bone-v1.webp",
       "assets/ct_head_hema.png",
       "assets/ct_lung.png",
-      "assets/media/bg_archive.0b495287ba6a9788.webp",
-      "assets/media/bg_breakroom.82af0ed5c121fa3b.webp",
-      "assets/media/bg_corridor.c757fe002937baaf.webp",
-      "assets/media/bg_corridor_cr_covered.ef953fabbf300087.webp",
-      "assets/media/bg_ctcontrol_day_ready.e26cf3f64e2f4c2b.webp",
-      "assets/media/bg_ctcontrol_ready.35fee9f9c3f44899.webp",
-      "assets/media/bg_ctroom.dbd5dfc733affe65.webp",
-      "assets/media/bg_day.74f7de10fc2e0f80.webp",
-      "assets/media/bg_morning.95b5d757d7600267.webp",
-      "assets/media/bg_office_day.32875bb2d1400a26.webp",
-      "assets/media/bg_waiting.a1851a4d68621bb2.webp",
+      "assets/media/bg_archive.71910b10c72e59b9.webp",
+      "assets/media/bg_breakroom.6e71e372d1ef1b9d.webp",
+      "assets/media/bg_corridor.970560e65398bdf4.webp",
+      "assets/media/bg_corridor_cr_covered.f6555060c067f477.webp",
+      "assets/media/bg_ctcontrol_day_ready.b611bff5d0912f7b.webp",
+      "assets/media/bg_ctcontrol_ready.10ebe6364699f572.webp",
+      "assets/media/bg_ctroom.10e83e9dd908c8ab.webp",
+      "assets/media/bg_day.bb8e2f2392fbc58a.webp",
+      "assets/media/bg_morning.d5fbcd6a415a903d.webp",
+      "assets/media/bg_office_day.c715845d3a833f50.webp",
+      "assets/media/bg_waiting.e9b68c8f6d71b8e7.webp",
       "assets/media/ch2_aorta_volume_cutaway_v1.e88db59e537282d3.webp",
-      "assets/media/ch2_bg_breakroom_day.6664fdcf364a74ae.webp",
+      "assets/media/ch2_bg_breakroom_day.194c9d3ccafbe9ff.webp",
       "assets/media/ch2_ct_aortic_wide.1c28017f34e8d969.webp",
       "assets/media/ch2_ct_coronary_slices.b73ecd81c7666ff4.webp",
       "assets/media/ch2_ct_lumbar_pelvis_v1.e2361f156ca5d432.webp",
       "assets/media/ch2_ct_motion_bed_v1.f1eaee8617eb5678.webp",
       "assets/media/ch2_ct_motion_room_v1.3e7727b60fc9d2ab.webp",
       "assets/media/ch2_ct_scan_room_pixel_v2.c0cd3195ba72e15e.webp",
-      "assets/media/ch2_dawn_window_portrait_v1.d66af2af34742536.webp",
-      "assets/media/ch2_dawn_window_v1.4c44048927c4bdf4.webp",
+      "assets/media/ch2_dawn_window_portrait_v1.681cdf2b9b57e93d.webp",
+      "assets/media/ch2_dawn_window_v1.08b6642c0b84fe54.webp",
       "assets/media/ch2_gift_jiang_sleeve_v1.95bcca722a397ba0.webp",
       "assets/media/ch2_gift_lei_pouch_v1.c1594e1855f3eff2.webp",
       "assets/media/ch2_gift_luo_pouch_v1.150b86b9fa808179.webp",
@@ -1562,10 +1562,10 @@
       "audio/vox_kid.mp3"
     ],
     "dr": [
-      "assets/media/bg_control.fe6e7b07dae31536.webp",
-      "assets/media/bg_day.74f7de10fc2e0f80.webp",
-      "assets/media/bg_drroom.82b37ae8ada1a033.webp",
-      "assets/media/bg_waiting.a1851a4d68621bb2.webp",
+      "assets/media/bg_control.f9b61cead622380c.webp",
+      "assets/media/bg_day.bb8e2f2392fbc58a.webp",
+      "assets/media/bg_drroom.4451e35a14e7165e.webp",
+      "assets/media/bg_waiting.e9b68c8f6d71b8e7.webp",
       "assets/media/char_du.ef5fbff05ccbbece.webp",
       "assets/media/char_f.aa652822daf1d5e4.webp",
       "assets/media/char_m.7fd8c4d18c105c36.webp",
@@ -1584,9 +1584,9 @@
       "audio/xray.mp3"
     ],
     "dsa": [
-      "assets/media/bg_cathlab.760430d8645c39ff.webp",
-      "assets/media/bg_control.fe6e7b07dae31536.webp",
-      "assets/media/bg_corridor.c757fe002937baaf.webp",
+      "assets/media/bg_cathlab.820b4679ce3afe6d.webp",
+      "assets/media/bg_control.f9b61cead622380c.webp",
+      "assets/media/bg_corridor.970560e65398bdf4.webp",
       "assets/media/char_f.aa652822daf1d5e4.webp",
       "assets/media/char_he.49cf19abecad1659.webp",
       "assets/media/char_kai.6d316a4e32e7b024.webp",

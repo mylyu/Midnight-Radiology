@@ -1,0 +1,485 @@
+{
+  "baseline": "444a19e3a1a7084defee5b4f0b4a36766ff92113",
+  "approval": "Author approved all 22 comparison C images on 2026-09-27; uniform full-resolution WebP, no adaptive tier.",
+  "pipeline": {
+    "source": "Original PNG git blobs, not previously compressed WebP",
+    "quality": 75,
+    "alphaQuality": 100,
+    "effort": 6,
+    "resize": false
+  },
+  "totals": {
+    "count": 22,
+    "currentDist": 14933871,
+    "currentBackgrounds": 1127862,
+    "pngBackgrounds": 49894733,
+    "candidateBackgrounds": 2671092,
+    "replaceDelta": 1543230,
+    "estimatedReplaceDist": 16477101,
+    "estimatedTwoTierDist": 17604963
+  },
+  "images": [
+    {
+      "id": "bg_archive",
+      "name": "bg_archive",
+      "sourceBlob": "dde63565c76affc98100fc64a9abba7007e8adbf",
+      "sourceHash": "30a6d98683d45488f7914fb6a347092998a3eb548cb2bfea8360feb8f28e0065",
+      "originalBytes": 2376331,
+      "currentBytes": 34920,
+      "candidateBytes": 87186,
+      "width": 2048,
+      "height": 1152,
+      "candidateHash": "71910b10c72e59b95b7b2003744d8e2f05cfc9bf4f88e19ea857e9718ee1e691",
+      "crop": {
+        "left": 1065,
+        "top": 288,
+        "width": 400,
+        "height": 240
+      },
+      "previous": "media/bg_archive.0b495287ba6a9788.webp",
+      "delivery": "app/public/assets/media/bg_archive.71910b10c72e59b9.webp",
+      "oldHash": "0b495287ba6a9788be2ce2be79ac19afc9f2da27389d4aa0d95446e1de898ac5"
+    },
+    {
+      "id": "bg_breakroom",
+      "name": "夜间休息室",
+      "sourceBlob": "df0a2157f8b29568764d904a65c010c6135720c9",
+      "sourceHash": "1b6e374999a8112b1fa698936d78c9fbfe396d83f460f9d9e4d1c9e15f0ef41a",
+      "originalBytes": 2465559,
+      "currentBytes": 40292,
+      "candidateBytes": 92740,
+      "width": 2048,
+      "height": 1152,
+      "candidateHash": "6e71e372d1ef1b9d2fcf5d9c81ca6b1791722a4d2700faf554596e8ac230b330",
+      "crop": {
+        "left": 1065,
+        "top": 288,
+        "width": 400,
+        "height": 240
+      },
+      "previous": "media/bg_breakroom.82af0ed5c121fa3b.webp",
+      "delivery": "app/public/assets/media/bg_breakroom.6e71e372d1ef1b9d.webp",
+      "oldHash": "82af0ed5c121fa3b87d5d87b208de3aaa3687ccf11254806f6f58ab52dad69e5"
+    },
+    {
+      "id": "bg_cathlab",
+      "name": "bg_cathlab",
+      "sourceBlob": "f934f4c5357eac86caa97d435eb71e54093b5744",
+      "sourceHash": "89a25471d1e14ba9e64bb97dc94c8cd86e85b959ddd39301c3494b3ce3562645",
+      "originalBytes": 2982247,
+      "currentBytes": 49650,
+      "candidateBytes": 127320,
+      "width": 2048,
+      "height": 1152,
+      "candidateHash": "820b4679ce3afe6d5af8e98e708ab10d2793fcc6d815a4379c7eddbecfc24549",
+      "crop": {
+        "left": 1065,
+        "top": 288,
+        "width": 400,
+        "height": 240
+      },
+      "previous": "media/bg_cathlab.760430d8645c39ff.webp",
+      "delivery": "app/public/assets/media/bg_cathlab.820b4679ce3afe6d.webp",
+      "oldHash": "760430d8645c39ff427432b5b5e7280f6da9e8fa9064e9cbff941d9fac78c071"
+    },
+    {
+      "id": "bg_control",
+      "name": "bg_control",
+      "sourceBlob": "1d4e4348049c6bd7e80ddda0ee1c47af1ee13ec5",
+      "sourceHash": "74c2bdd4686865cabfc0cbcb911db998b943367252e09956ced3645b6e408ef0",
+      "originalBytes": 2755892,
+      "currentBytes": 35650,
+      "candidateBytes": 88194,
+      "width": 2048,
+      "height": 1152,
+      "candidateHash": "f9b61cead622380c254810a803c8638c5605089ab93441aa749a945e33afe688",
+      "crop": {
+        "left": 1065,
+        "top": 288,
+        "width": 400,
+        "height": 240
+      },
+      "previous": "media/bg_control.fe6e7b07dae31536.webp",
+      "delivery": "app/public/assets/media/bg_control.f9b61cead622380c.webp",
+      "oldHash": "fe6e7b07dae315361cceeb6dd5c58f38fada73d0eda4865b55d781383d541812"
+    },
+    {
+      "id": "bg_corridor",
+      "name": "bg_corridor",
+      "sourceBlob": "80cb3dc212a54fdfeccc261fc24d0247f29c3996",
+      "sourceHash": "2f76e25038eb69e569744315d2cac00f8ccdc8abcb5d64e5e4bf8fbd8eaad0f0",
+      "originalBytes": 1580556,
+      "currentBytes": 26698,
+      "candidateBytes": 57746,
+      "width": 2048,
+      "height": 1152,
+      "candidateHash": "970560e65398bdf4751c0fb1b85c66974373712dc52167ce61b8eb49da3232cf",
+      "crop": {
+        "left": 1065,
+        "top": 288,
+        "width": 400,
+        "height": 240
+      },
+      "previous": "media/bg_corridor.c757fe002937baaf.webp",
+      "delivery": "app/public/assets/media/bg_corridor.970560e65398bdf4.webp",
+      "oldHash": "c757fe002937baaf20f4ae6e3a02df6c0af0541df138daa4a25983b333a20b6c"
+    },
+    {
+      "id": "bg_corridor_cr_covered",
+      "name": "蒙布老机器走廊",
+      "sourceBlob": "cff2762127a45c55c9c6e0035044d63d32272734",
+      "sourceHash": "4165fab299c606050e513f96eee6a9af54f8be8ea81253b4edbe7e178de2a912",
+      "originalBytes": 1297207,
+      "currentBytes": 23868,
+      "candidateBytes": 42868,
+      "width": 1672,
+      "height": 941,
+      "candidateHash": "f6555060c067f4778def0083447258321f229919205652ba9afd1c5345815ba2",
+      "crop": {
+        "left": 869,
+        "top": 235,
+        "width": 400,
+        "height": 240
+      },
+      "previous": "media/bg_corridor_cr_covered.ef953fabbf300087.webp",
+      "delivery": "app/public/assets/media/bg_corridor_cr_covered.f6555060c067f477.webp",
+      "oldHash": "ef953fabbf300087474bba54a563a3d1d6a8f14e657351f598d5f802b10a7c65"
+    },
+    {
+      "id": "bg_ctcontrol",
+      "name": "bg_ctcontrol",
+      "sourceBlob": "2d3d04afd2d0c6ec81349426b380b1a1c3d6d886",
+      "sourceHash": "5cabcc8e3f925750448447711d9ccdaaafb39c4b192a77be495e3c6cc233b633",
+      "originalBytes": 2598107,
+      "currentBytes": 32952,
+      "candidateBytes": 85238,
+      "width": 2048,
+      "height": 1152,
+      "candidateHash": "8c11ac5bcfb5d935e123b4b67e27b08122d7122ddd26af3fb3202c8ce185cb89",
+      "crop": {
+        "left": 1065,
+        "top": 288,
+        "width": 400,
+        "height": 240
+      },
+      "previous": "media/bg_ctcontrol.ee38807fa281d79e.webp",
+      "delivery": "app/public/assets/media/bg_ctcontrol.8c11ac5bcfb5d935.webp",
+      "oldHash": "ee38807fa281d79ec45a7e264b7b76e693ed2a913aa538d9f73ebd78f1fbb0ed"
+    },
+    {
+      "id": "bg_ctcontrol_day",
+      "name": "白班CT控制室",
+      "sourceBlob": "96038fd341bf22ccf0595bfa975abcb8bf2cd6d1",
+      "sourceHash": "6fdca91e2e8a4eefca916758150ff483cc15587dd59125d057267f0ffc996de8",
+      "originalBytes": 772667,
+      "currentBytes": 81564,
+      "candidateBytes": 234348,
+      "width": 2048,
+      "height": 1152,
+      "candidateHash": "1d4444a65f52f9d8b4c82422c45d99461e7751c0adbc12860eb51672444c124f",
+      "crop": {
+        "left": 1000,
+        "top": 800,
+        "width": 400,
+        "height": 240
+      },
+      "previous": "media/bg_ctcontrol_day.9e3bf180f19c25ec.webp",
+      "delivery": "app/public/assets/media/bg_ctcontrol_day.1d4444a65f52f9d8.webp",
+      "oldHash": "9e3bf180f19c25ecf05e41d4e8bc4815fe18d0c88f8c3d0dd6e7b8393d3b5854"
+    },
+    {
+      "id": "bg_ctcontrol_day_ready",
+      "name": "新CT白班控制室",
+      "sourceBlob": "5de5412185bee6770fd04b3625dc6e6033d172a4",
+      "sourceHash": "bd410e28d6c86e4d356510af67d5a6b2125997900526ef1f29edb5d0375f4c2f",
+      "originalBytes": 2150294,
+      "currentBytes": 78940,
+      "candidateBytes": 141286,
+      "width": 1672,
+      "height": 941,
+      "candidateHash": "b611bff5d0912f7b2df53fd6679f4ddb473a058321cb84b507d145900e7fc60e",
+      "crop": {
+        "left": 869,
+        "top": 235,
+        "width": 400,
+        "height": 240
+      },
+      "previous": "media/bg_ctcontrol_day_ready.e26cf3f64e2f4c2b.webp",
+      "delivery": "app/public/assets/media/bg_ctcontrol_day_ready.b611bff5d0912f7b.webp",
+      "oldHash": "e26cf3f64e2f4c2b8e08a3acc9879ab058113d43eaa3f4bf577237982d17cf21"
+    },
+    {
+      "id": "bg_ctcontrol_ready",
+      "name": "bg_ctcontrol_ready",
+      "sourceBlob": "8c647f525409f5b07f20ba9005a03dc442b0f57a",
+      "sourceHash": "48730d3404620d834f2feb2c13744d274e5134bd80ab8a65979b2cc64ba02d0b",
+      "originalBytes": 1686316,
+      "currentBytes": 32278,
+      "candidateBytes": 62972,
+      "width": 1672,
+      "height": 941,
+      "candidateHash": "10ebe6364699f572d314ecd7d63ff099bd78a28cc2bcf53567f299a55a44873f",
+      "crop": {
+        "left": 869,
+        "top": 235,
+        "width": 400,
+        "height": 240
+      },
+      "previous": "media/bg_ctcontrol_ready.35fee9f9c3f44899.webp",
+      "delivery": "app/public/assets/media/bg_ctcontrol_ready.10ebe6364699f572.webp",
+      "oldHash": "35fee9f9c3f44899a8e9dcf51b1635003506bf40e7fda6125d3140200f9e3927"
+    },
+    {
+      "id": "bg_ctroom",
+      "name": "bg_ctroom",
+      "sourceBlob": "e029bd05b216f828a944876c5bee842e27be39df",
+      "sourceHash": "ff032b8219b20135dd173fe1704100a2f5842ef309703aac0b848cc22d3babac",
+      "originalBytes": 2518080,
+      "currentBytes": 31300,
+      "candidateBytes": 82572,
+      "width": 2048,
+      "height": 1152,
+      "candidateHash": "10e83e9dd908c8ab0db86a9743fa5a0c910fb0f86281f87df88b7b0c20912d60",
+      "crop": {
+        "left": 1065,
+        "top": 288,
+        "width": 400,
+        "height": 240
+      },
+      "previous": "media/bg_ctroom.dbd5dfc733affe65.webp",
+      "delivery": "app/public/assets/media/bg_ctroom.10e83e9dd908c8ab.webp",
+      "oldHash": "dbd5dfc733affe65d081e74716055bb2be9d12a63e320690f3431173cf0bd90a"
+    },
+    {
+      "id": "bg_day",
+      "name": "白天科室",
+      "sourceBlob": "a02d05b95ca61ad88734193095bd0a028d2659f4",
+      "sourceHash": "82e4070d60b7a4b3610b83729dfcea9513c3c760f703b451d2ff91cdf17cbc16",
+      "originalBytes": 3145564,
+      "currentBytes": 63740,
+      "candidateBytes": 148992,
+      "width": 2048,
+      "height": 1152,
+      "candidateHash": "bb8e2f2392fbc58a4c873a2255c048fde123a7b7ef6044392bcbfd243ab8a806",
+      "crop": {
+        "left": 1100,
+        "top": 220,
+        "width": 400,
+        "height": 240
+      },
+      "previous": "media/bg_day.74f7de10fc2e0f80.webp",
+      "delivery": "app/public/assets/media/bg_day.bb8e2f2392fbc58a.webp",
+      "oldHash": "74f7de10fc2e0f80bcf5b3bf44e8ab4f84c3eba64b65466fe029943cb014ae49"
+    },
+    {
+      "id": "bg_drroom",
+      "name": "bg_drroom",
+      "sourceBlob": "7897f0b26af2610b44162be53ab0bcfe2907c4ca",
+      "sourceHash": "544e07a355f1307079886092f5d1947003e927fc04e07623f33f675cc20a9ffb",
+      "originalBytes": 3348904,
+      "currentBytes": 67976,
+      "candidateBytes": 165728,
+      "width": 2048,
+      "height": 1152,
+      "candidateHash": "4451e35a14e7165e1bed8872536ae68f464318b0bcb43838c24baaef9220d684",
+      "crop": {
+        "left": 1065,
+        "top": 288,
+        "width": 400,
+        "height": 240
+      },
+      "previous": "media/bg_drroom.82b37ae8ada1a033.webp",
+      "delivery": "app/public/assets/media/bg_drroom.4451e35a14e7165e.webp",
+      "oldHash": "82b37ae8ada1a03392269b5a168c48d95ceaa8f47a6761a18e66d8f364c79f10"
+    },
+    {
+      "id": "bg_morning",
+      "name": "bg_morning",
+      "sourceBlob": "38e5b56b7287f813d5c2bacfdf1d373ba5362580",
+      "sourceHash": "28cbb54d28e69d14259395f614b13dd0d8dcea9a760742f5a34e9522e91a8e7a",
+      "originalBytes": 1781178,
+      "currentBytes": 53604,
+      "candidateBytes": 91444,
+      "width": 1536,
+      "height": 1024,
+      "candidateHash": "d5fbcd6a415a903d4b0a45cce300a50842d253b879df70b63ccfaf078976ceba",
+      "crop": {
+        "left": 799,
+        "top": 256,
+        "width": 400,
+        "height": 240
+      },
+      "previous": "media/bg_morning.95b5d757d7600267.webp",
+      "delivery": "app/public/assets/media/bg_morning.d5fbcd6a415a903d.webp",
+      "oldHash": "95b5d757d76002672a119882a22680ce8ae2130ad943502e00b721b9e68b427b"
+    },
+    {
+      "id": "bg_office",
+      "name": "bg_office",
+      "sourceBlob": "ad41dd17849879442f3dfcd12375fc541aeecfa1",
+      "sourceHash": "4678070da749ac655871751c2f4f41b7ac0ca3ee0040421fa90500050571816f",
+      "originalBytes": 2800383,
+      "currentBytes": 31004,
+      "candidateBytes": 84710,
+      "width": 2048,
+      "height": 1152,
+      "candidateHash": "a9e1a85d95a882a3f55f1960486a98ecb3657612f4ef1e0f9c0fced1618ea222",
+      "crop": {
+        "left": 1065,
+        "top": 288,
+        "width": 400,
+        "height": 240
+      },
+      "previous": "media/bg_office.253e5516fc6e5507.webp",
+      "delivery": "app/public/assets/media/bg_office.a9e1a85d95a882a3.webp",
+      "oldHash": "253e5516fc6e5507e7175752952feb1f4720233a7754b55a3de28ceb73b40c84"
+    },
+    {
+      "id": "bg_office_day",
+      "name": "bg_office_day",
+      "sourceBlob": "3435f59aaa27c3f0d891d7c33827f8599a570339",
+      "sourceHash": "d46542f4371e86c0d356dfc28b500c4f59af78461e552652ee6fdc668842ca90",
+      "originalBytes": 900407,
+      "currentBytes": 94596,
+      "candidateBytes": 291402,
+      "width": 2048,
+      "height": 1152,
+      "candidateHash": "c715845d3a833f50b1a67d4b2048c1d9a80005ce048ab0bbbe549bf57bc4162f",
+      "crop": {
+        "left": 1065,
+        "top": 288,
+        "width": 400,
+        "height": 240
+      },
+      "previous": "media/bg_office_day.32875bb2d1400a26.webp",
+      "delivery": "app/public/assets/media/bg_office_day.c715845d3a833f50.webp",
+      "oldHash": "32875bb2d1400a264d5353c58a429fe6d57a158ef52025879ce02bb011f81151"
+    },
+    {
+      "id": "bg_title",
+      "name": "首页夜景",
+      "sourceBlob": "cd8c89c5550362af96c10a0a82409fc9ba4584f2",
+      "sourceHash": "02c9d2e33e843f03f582810e757d3ae964637b7463993aa414a8febbd1be4f53",
+      "originalBytes": 2401081,
+      "currentBytes": 42888,
+      "candidateBytes": 101000,
+      "width": 2048,
+      "height": 1152,
+      "candidateHash": "6b9bcff0508f32af8eadd379075557f313203748734f064185ce5e179d8d6f66",
+      "crop": {
+        "left": 1065,
+        "top": 288,
+        "width": 400,
+        "height": 240
+      },
+      "previous": "media/bg_title.809ebcbc33387d7d.webp",
+      "delivery": "app/public/assets/media/bg_title.6b9bcff0508f32af.webp",
+      "oldHash": "809ebcbc33387d7d602871f584a0ee3d447c3b07ecb09c6c0b192aa7fa4f8d00"
+    },
+    {
+      "id": "bg_waiting",
+      "name": "bg_waiting",
+      "sourceBlob": "8b0ec55c8f3d96bf6656ce9fe5e51a6739ffc10e",
+      "sourceHash": "ff107940b068a2c0af31b1f7f6eabc7e2c4209673a3a13db5eafecaa9586ca16",
+      "originalBytes": 3645097,
+      "currentBytes": 73312,
+      "candidateBytes": 213618,
+      "width": 2048,
+      "height": 1152,
+      "candidateHash": "e9b68c8f6d71b8e77c89304efbfcd7f3e247a5949157a7aa3a93b1736e5650b0",
+      "crop": {
+        "left": 1065,
+        "top": 288,
+        "width": 400,
+        "height": 240
+      },
+      "previous": "media/bg_waiting.a1851a4d68621bb2.webp",
+      "delivery": "app/public/assets/media/bg_waiting.e9b68c8f6d71b8e7.webp",
+      "oldHash": "a1851a4d68621bb26eaedee8e988f119e17e8667d17290532595f875c45666cc"
+    },
+    {
+      "id": "bg_xrayroom",
+      "name": "bg_xrayroom",
+      "sourceBlob": "758bb97188c94c3bb8b1d00f6fd440ad6d631149",
+      "sourceHash": "5d624bafa6c40ea561ea27930c3fe107bf0ee7b965ec6836d13843b4e258afba",
+      "originalBytes": 2382841,
+      "currentBytes": 36604,
+      "candidateBytes": 90068,
+      "width": 2048,
+      "height": 1152,
+      "candidateHash": "bfd0e0a881cb1966aa791a73c1e809556c68745ae49c610f7a94aae2212d6bfe",
+      "crop": {
+        "left": 1065,
+        "top": 288,
+        "width": 400,
+        "height": 240
+      },
+      "previous": "media/bg_xrayroom.529b0d31f79e90dd.webp",
+      "delivery": "app/public/assets/media/bg_xrayroom.bfd0e0a881cb1966.webp",
+      "oldHash": "529b0d31f79e90dd478e0131b5203ad33458eb416bc7a2419c12008334b34cbb"
+    },
+    {
+      "id": "ch2_bg_breakroom_day",
+      "name": "白天休息室",
+      "sourceBlob": "2117b4549dc5c21706a1b948f278d510da094229",
+      "sourceHash": "472eec793f2a5408ea8e573494118500e49b14c82f72702886e76cca9cfb0c14",
+      "originalBytes": 2155004,
+      "currentBytes": 59768,
+      "candidateBytes": 139152,
+      "width": 1672,
+      "height": 941,
+      "candidateHash": "194c9d3ccafbe9ff7e51ccb475c28734febaf47de7f90c6df2b1337891aa59d0",
+      "crop": {
+        "left": 869,
+        "top": 235,
+        "width": 400,
+        "height": 240
+      },
+      "previous": "media/ch2_bg_breakroom_day.6664fdcf364a74ae.webp",
+      "delivery": "app/public/assets/media/ch2_bg_breakroom_day.194c9d3ccafbe9ff.webp",
+      "oldHash": "6664fdcf364a74ae3484ef9969f9aa602684d03d9041e5d4435ab7e3ac6b3173"
+    },
+    {
+      "id": "ch2_dawn_window_portrait_v1",
+      "name": "ch2_dawn_window_portrait_v1",
+      "sourceBlob": "1a9e1897c2ab0782551f298c7748c78dc871a68f",
+      "sourceHash": "ab69cdbf532644e175328b13cd2baa350e1eef77b5352441e6c1854642d15206",
+      "originalBytes": 2101935,
+      "currentBytes": 69258,
+      "candidateBytes": 116972,
+      "width": 1024,
+      "height": 1536,
+      "candidateHash": "681cdf2b9b57e93d3f033c42f10fc9fdc8c9dd0f6cae83494e2efc507dda872a",
+      "crop": {
+        "left": 532,
+        "top": 384,
+        "width": 400,
+        "height": 240
+      },
+      "previous": "media/ch2_dawn_window_portrait_v1.d66af2af34742536.webp",
+      "delivery": "app/public/assets/media/ch2_dawn_window_portrait_v1.681cdf2b9b57e93d.webp",
+      "oldHash": "d66af2af3474253671d7aa78b3a636361bbf7afdab41354599b32aba04befe98"
+    },
+    {
+      "id": "ch2_dawn_window_v1",
+      "name": "日出横屏",
+      "sourceBlob": "d63e94448f6917548ea008c9de5d925b1447eb07",
+      "sourceHash": "3729695006bdf69b72d98fdcf2bed0bee7c986aa41164b710fd738c568f578bc",
+      "originalBytes": 2049083,
+      "currentBytes": 67000,
+      "candidateBytes": 125536,
+      "width": 1672,
+      "height": 941,
+      "candidateHash": "08b6642c0b84fe5493fc60f7f1474096248ec706014f7011c27c6ba1f8d45276",
+      "crop": {
+        "left": 869,
+        "top": 235,
+        "width": 400,
+        "height": 240
+      },
+      "previous": "media/ch2_dawn_window_v1.4c44048927c4bdf4.webp",
+      "delivery": "app/public/assets/media/ch2_dawn_window_v1.08b6642c0b84fe54.webp",
+      "oldHash": "4c44048927c4bdf44889ed9dda6b631a95fc8fe5aca52822a0274b653a312a02"
+    }
+  ]
+}

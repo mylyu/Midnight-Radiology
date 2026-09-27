@@ -43,6 +43,6 @@ CT扫描运动的床图和机架图仍依赖固定坐标。替换 `ch2_ct_motion
 
 ## 当前交付预算
 
-2026-09-26压缩批次见 [完整记录](media-compression-20260926.md)。完整 `app/dist/` 为14.934 MB；`npm run build` 的postbuild检查全部文件合计必须小于15,000,000字节（不是ZIP大小）。新增章节确需提高预算时须明确说明并获作者同意，不能删素材、降低调窗精度或移除检查来凑数。
+2026-09-26压缩批次见 [历史记录](media-compression-20260926.md)。2026-09-27作者批准22张背景统一换为原分辨率WebP，完整 `app/dist/` 约16.48 MB，详见 [高清背景记录](hd-backgrounds-20260927.md)。postbuild预算随本次批准替换调整为17,000,000字节（不是ZIP大小），保留约0.52 MB余量。不要为了恢复旧15 MB目标再次降低背景分辨率；后续确需提高预算时须明确说明并获作者同意，不能删素材、降低调窗精度或移除检查来凑数。
 
 本批次辅助脚本 `prepare-small-media` / `refine-small-media` / `prepare-small-audio` 只生成仓库外候选；`review-small-media` 生成前后对照，人工审核后才可运行 `install-small-media --apply-reviewed --with-audio`。不要把它们作为每次构建步骤，也不要对现有有损文件反复压缩。安装器核对批准报告哈希、清理经逐项审核的旧路径并外部备份；普通图片导入仍不自动清理。
