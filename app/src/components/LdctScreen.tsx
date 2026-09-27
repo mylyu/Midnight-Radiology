@@ -52,7 +52,7 @@ export function LdctScreen({ state, update, onExit, renderText }: Props) {
   return <DialogueStage className="ldct-root" data-ldct-screen data-ldct-node={p.nodeId} data-ldct-phase={p.phase}
     onPointerDownCapture={dialogue.guard.pointerDown} onPointerCancelCapture={dialogue.guard.cancel}
     onKeyDownCapture={dialogue.guard.keyDown} onClickCapture={dialogue.guard.click} onClick={dialogue.advance}>
-    <SceneBackground name={settled ? 'ch2_bg_breakroom_day' : node.bg} />
+    <SceneBackground name={node.bg} />
     <DialogueShade />
     <DialogueHeader title="◐ 低剂量CT · 噪声之外"><span>💰 {state.gold}</span>{menu}</DialogueHeader>
     {p.phase === 'lab' ? <div className="ldct-lab-wrap" onClick={e => e.stopPropagation()}><LdctLab round={p.labRound} value={p.labDraft}

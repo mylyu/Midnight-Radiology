@@ -1,5 +1,5 @@
-import { createLdctLabState, isValidLdctRecord } from './ldct-experiments'
-import type { LdctLabConfig, LdctLabState } from './ldct-experiments'
+import { createLdctLabState, isValidLdctRecord, labStateValid } from './ldct-experiments'
+import type { LdctLabRound } from './ldct-experiments'
 import { getLdctChoices, getLdctNode, LDCT_START, LDCT_STEPS } from './ldct'
 import type { LdctAction, LdctPerson, LdctProduct, LdctProgress } from './ldct-types'
 import type { GameState } from './types'
@@ -16,9 +16,21 @@ function patch(state: GameState, progress: LdctProgress): GameState {
 
 export function initializeLdct(state: GameState, replay = false): GameState {
   const previous = getLdctProgress(state)
-  if (previous && !replay) return state
+  if (previous && !replay) {
+    if (previous.openingRevision === 2) return state
+    // The rejected two-picture exercise cannot be resumed as a projection task.
+    // Keep conversations, gifts, earned receipts and global state; restart only
+    // the experimental sequence (completed old sample stays at its ending).
+    const beforeLab = !previous.records?.[1] && previous.phase === 'story'
+      && !previous.nodeId.startsWith('lab_') && !previous.nodeId.startsWith('after_')
+    const settled = previous.phase === 'settle'
+    return patch(state, { ...previous, openingRevision: 2,
+      phase: settled ? 'settle' : 'story', nodeId: settled ? 'stage_end' : beforeLab ? previous.nodeId : 'lab_intro_0',
+      labRound: 1, labDraft: createLdctLabState(1), records: {}, labReturn: undefined, reply: undefined,
+      decisions: { ...previous.decisions, migratedProjection: 'yes' }, revision: previous.revision + 1 })
+  }
   return patch(state, {
-    version: 1, run: (previous?.run ?? 0) + 1, seed: 2258, phase: 'story', nodeId: LDCT_START,
+    version: 1, openingRevision: 2, run: (previous?.run ?? 0) + 1, seed: 2258, phase: 'story', nodeId: LDCT_START,
     revision: 0, fatigue: 2, completed: [], decisions: {}, receipts: [], gifts: [],
     labRound: 1, labDraft: createLdctLabState(), records: {},
     start: { gold: state.gold, skill: state.skill, heart: state.heart, wealth: state.wealth },
@@ -45,21 +57,18 @@ function move(state: GameState, p: LdctProgress, nextId: string): GameState {
   if (node.enterLab) {
     const round = node.enterLab
     return patch(state, changed(p, { nodeId: nextId, phase: 'lab', reply: undefined, labRound: round,
-      labDraft: p.labRound === round ? p.labDraft : createLdctLabState(), labReturn: undefined }))
+      labDraft: p.labRound === round ? p.labDraft : createLdctLabState(round), labReturn: undefined }))
   }
   return patch(state, changed(p, { nodeId: nextId, phase: node.settle ? 'settle' : 'story', reply: undefined }))
 }
 
-function configValid(c: LdctLabConfig | undefined): c is LdctLabConfig {
-  return !!c && ['low', 'medium', 'high'].includes(c.signal) && ['fbp', 'iterative'].includes(c.algorithm)
-    && [1, 2, 3].includes(c.strength)
+const labAfter: Record<LdctLabRound, string> = {
+  1: 'after_first_0', 2: 'after_backproject_0', 3: 'after_filter_0',
+  4: 'after_noise_0', 5: 'after_second_0',
 }
-function labStateValid(v: LdctLabState): boolean {
-  return configValid(v.candidate) && (v.pinned === null || configValid(v.pinned)) && [0, 1, 2].includes(v.slice)
-    && Number.isFinite(v.divider) && v.divider >= 0 && v.divider <= 100
-    && (v.mark === null || Number.isFinite(v.mark.x) && Number.isFinite(v.mark.y)
-      && v.mark.x >= 0 && v.mark.x <= 100 && v.mark.y >= 0 && v.mark.y <= 100)
-    && typeof v.helped === 'boolean'
+const labBefore: Record<LdctLabRound, string> = {
+  1: 'lab_intro_3', 2: 'after_first_3', 3: 'filter_intro_2',
+  4: 'noise_intro_2', 5: 'iterate_intro_2',
 }
 
 export const LDCT_PRODUCTS = [
@@ -119,7 +128,7 @@ export function ldctAction(state: GameState, action: LdctAction): GameState {
     return move(nextState, withDecision, selected.next)
   }
   if (action.type === 'lab:update') {
-    if (p.phase !== 'lab' || !labStateValid(action.value) || action.value.saved !== null && !isValidLdctRecord(action.value.saved, p.labRound)) return state
+    if (p.phase !== 'lab' || !labStateValid(action.value, p.labRound) || action.value.saved !== null && !isValidLdctRecord(action.value.saved, p.labRound)) return state
     return patch(state, { ...p, labDraft: action.value })
   }
   if (action.type === 'lab:submit') {
@@ -132,17 +141,17 @@ export function ldctAction(state: GameState, action: LdctAction): GameState {
     const nextProgress = { ...p, records: { ...p.records, [record.round]: record },
       receipts: first ? [...p.receipts, 'reward:comparison'] : p.receipts }
     if (p.labReturn) return move(nextState, { ...nextProgress, labReturn: undefined }, p.labReturn)
-    return move(nextState, nextProgress, record.round === 1 ? 'after_first_0' : 'after_second_0')
+    return move(nextState, nextProgress, labAfter[record.round])
   }
   if (action.type === 'lab:open') {
-    if (p.phase !== 'settle' || !p.records[action.round]) return state
+    if (p.phase !== 'settle' || !p.records[action.round] && p.decisions.migratedProjection !== 'yes') return state
     return patch(state, changed(p, { phase: 'lab', labRound: action.round,
-      labDraft: createLdctLabState(), labReturn: p.nodeId }))
+      labDraft: createLdctLabState(action.round), labReturn: p.nodeId }))
   }
   if (action.type === 'lab:close') {
     if (p.phase !== 'lab') return state
     if (p.labReturn) return move(state, { ...p, labReturn: undefined }, p.labReturn)
-    return move(state, p, p.labRound === 1 ? 'lab_intro_5' : 'after_first_4')
+    return move(state, p, labBefore[p.labRound])
   }
   if (action.type === 'gift') {
     const available = ldctGiftChoices(state).find(g => g.person === action.person && g.item === action.item)

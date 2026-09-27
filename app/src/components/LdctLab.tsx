@@ -103,7 +103,7 @@ function Trace({ value, change, frozen }: Controls) {
         </svg>}
         {LDCT_STRUCTURES.map((structure, i) => <button key={structure.id} className={`ldct-lab__point ${selected?.id === structure.id ? 'is-selected' : ''}`}
           style={{ left: `${structure.x}%`, top: `${structure.y}%`, '--point-color': structure.color } as CSSProperties}
-          aria-label={`追踪${structure.label}`} aria-pressed={value.structure === structure.id} disabled={frozen} onClick={() => select(structure.id)}>{i + 1}</button>)}
+          aria-label={`追踪${structure.label}`} aria-pressed={value.structure === structure.id} disabled={frozen} onClick={() => select(structure.id)}><span>{i + 1}</span></button>)}
       </Tile>
       <Tile label="正弦图 · 每一列是一个角度" note="横向：角度 →　纵向：探测器位置 ↓">
         <Frame frame="trace:sinogram" />

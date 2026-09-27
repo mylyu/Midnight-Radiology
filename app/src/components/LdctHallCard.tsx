@@ -15,7 +15,7 @@ export function LdctHallCard({ state, onEnter }: { state: GameState; onEnter: ()
   return <section data-ldct-entry className="bg-slate-900/90 border-2 border-cyan-700 rounded-2xl p-5 flex flex-col gap-3">
     <div className="flex items-center gap-3"><span className="text-3xl">{open ? '◐' : '🔒'}</span><div>
       <h3 className="text-lg text-cyan-100 font-bold">低剂量CT：噪声之外 · 开场体验</h3>
-      <p className="text-xs text-slate-400">先吃饭 · 约 8–12 分钟 · 独立加载</p>
+      <p className="text-xs text-slate-400">先吃饭 · 五段投影小实验 · 独立加载</p>
     </div></div>
     <p className="text-sm text-slate-300 leading-relaxed">老同学约了顿饭。饭还没上齐，你们已经问起了对方的进度。图像越来越干净，有个细节却越来越难找。</p>
     <p className="text-xs text-amber-200/80">故事在第二章之后、第三章之前；无需通关解锁。当前仅含第一段，后三段待制作。</p>

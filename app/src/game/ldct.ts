@@ -4,7 +4,7 @@ import type { LdctChoice, LdctNode, LdctPerson } from './ldct-types'
 export const LDCT_TITLE = '低剂量CT：噪声之外'
 export const LDCT_START = 'dinner_0'
 export const LDCT_BADGES = {
-  ldct_first_comparison: { name: '第一份对照', icon: '🔍', desc: '把同源数据的两版结果一起留下，而不只存最好看的那张。' },
+  ldct_first_comparison: { name: '第一份对照', icon: '🔍', desc: '留下结构与投影的对应记录，而不只存最后那张图。' },
 }
 export const LDCT_MEDIA_IDS = [
   'ldct_bg_restaurant', 'bg_breakroom', 'ch2_bg_breakroom_day', 'bg_office',
@@ -30,7 +30,7 @@ function choice(id: string, text: string, next: string, extra: Partial<LdctChoic
 function node(id: string, data: Omit<LdctNode, 'id'>) { steps[id] = { id, ...data } }
 
 sequence('dinner', [
-  [undefined, '2025年冬。好不容易凑到同一个休息日，陆舟把见面地点定在医院后门的小饭馆。\n你晚了十分钟。锅里的豆腐还在冒泡。'],
+  [undefined, '2025年冬。好不容易凑到一个都不用值夜班的晚上，陆舟把见面地点定在医院后门的小饭馆。\n你晚了十分钟。锅里的豆腐还在冒泡。'],
   ['luzhou', '来，坐里面。你刚才发我“请患者稍候”是什么意思？'],
   ['me', '回错人了。我本来想说，别等我，先吃。'],
   ['luzhou', '那我这位患者，可以先加一碗饭吗？'],
@@ -59,14 +59,14 @@ sequence('cv', [
   ['me', '你那低剂量CT，卡哪儿了？'],
   ['luzhou', '图上那些沙沙的噪声，想压下去。可有时候压得太狠，看什么都挺顺眼……又觉得少了点东西。'],
   ['me', '你这个说法，很像修自拍。'],
-  ['luzhou', '所以想找个人一起看。你每天跟图像打交道，可能能发现我盯久了看不见的东西。'],
+  ['luzhou', '所以想找个人一起折腾。先从最简单的影子玩起。我这套东西，可能光顾着自己看懂了。'],
 ], restaurant, lu, 'cooperate_q', { giftPerson: 'luzhou' })
 node('cooperate_q', { bg: restaurant, sprite: lu, speaker: 'me', text: '陆舟把电脑包往脚边踢了踢，仍旧没打开。', giftPerson: 'luzhou', choices: [
   choice('small', '“先试一点，别一上来给我排三个月的活。”', 'cooperate_small_0', { decision: { key: 'pace', value: 'small' } }),
   choice('credit', '“我真参与的话，具体做什么，先说好。”', 'cooperate_credit_0', { decision: { key: 'pace', value: 'credit' } }),
 ] })
 sequence('cooperate_small', [
-  ['luzhou', '今晚最多试一组。不好玩就关，我也不想下次约你只收到“请患者稍候”。'],
+  ['luzhou', '今晚先玩两下。后面的改天再说，不好玩就关。'],
   ['me', '还有，别拿“就五分钟”骗我。你本科那五分钟，最后搞到早上。'],
 ], restaurant, lu, 'dinner_end_0')
 sequence('cooperate_credit', [
@@ -80,11 +80,13 @@ sequence('dinner_end', [
   [undefined, '你夹起一块肉，手机又亮了。是普通排班通知。你看了一眼，把屏幕按灭。\n这回，饭总算吃完了。'],
 ], restaurant, lu, 'arrival_0')
 sequence('arrival', [
-  [undefined, '饭后，你们回医院取外套。交班已经结束，值班室暂时空着。陆舟按访客登记进来，把自己的电脑摆在靠墙的小桌上。'],
+  [undefined, '饭后，你们回医院取白天落下的充电器。交班已经结束，值班室暂时空着。陆舟按访客登记进来，把自己的电脑摆在靠墙的小桌上。'],
   ['luzhou', '我连自己的热点就行，今天也没有病人资料。实验离线能看。'],
   ['me', '先让我坐会儿。刚刚说补过觉，是补了，不是补够了。'],
   [undefined, '小雷来还充电器，看见电脑，脚步慢了下来。\n离你们约好的回家时间还有一会儿。聊聊、补点吃的，或者现在开始，都来得及。'],
 ], room, null, 'hub')
+steps.arrival_1.sprite = lu
+steps.arrival_2.sprite = lu
 node('hub', { bg: room, sprite: null, kind: 'hub', text: '电脑放在小桌上。今晚没有临床任务，不用赶。', choices: [
   choice('lu', '跟陆舟聊聊他的课题', 'chat_lu_0', { unless: 'chat_lu' }),
   choice('lei', '问小雷怎么还没走', 'chat_lei_0', { unless: 'chat_lei' }),
@@ -123,27 +125,67 @@ sequence('chief_later', [
   ['luzhou', '那先把问题写清楚。到要排时间、用院里东西的时候，再一起把事情讲明白。'],
 ], room, lu, 'hub')
 sequence('lab_intro', [
-  ['luzhou', '这组里面有什么，我先不告诉你。你自己拖着看，也可以往前后翻两层。'],
-  ['me', '真不考试？'],
-  ['luzhou', '不考试。看不准就圈出来，或者喊我。咱俩先留住一版，再改另一版，不然眨眼就忘了刚才长什么样。'],
-  ['me', '这几个选项呢？'],
-  ['luzhou', '**信号水平**，还有出断层用的算法。先试FBP，再试这组迭代方法。那个深度学习的还没训练好，今天先不吹它。'],
-  [undefined, '屏幕亮起。你把椅子往前挪了一点。\n先找那些容易辨认的形状，存下两版，让它们留在同一张桌上。'],
+  ['luzhou', '先找一颗小亮点。左边是它原来的位置，右边是机器从不同方向收到的影子。'],
+  ['me', '右边这个弯弯曲曲的，是心电图？'],
+  ['luzhou', '**正弦图**。每一列是一个角度的投影，换角度就往旁边记一列。你转转看，那颗点会跑到哪儿。'],
+  [undefined, '陆舟把电脑转向你。先不管算法，就盯住一颗点，跟着它转半圈。'],
 ], room, lu, 'lab_first')
 node('lab_first', { bg: room, sprite: null, text: '', enterLab: 1 })
 sequence('after_first', [
-  ['luzhou', '两版都留下了。你刚才有哪处拿不准？'],
-  ['me', '换完之后确实没那么沙了。不过我得来回看，不能只凭第一眼。'],
-  ['luzhou', '嗯。这里面的大轮廓本来就比较明显。再找一组更淡的小东西，看看还顺不顺利。'],
-  ['me', '你终于开始加难度了。'],
-  ['luzhou', '我没加，刚才也在。就是我自己第一遍没太留意。'],
+  ['me', '点没动，影子倒是绕出一条弯。离中心远的，还跑得挺远。'],
+  ['luzhou', '对。原图的位置，变成了这条轨迹。现在我把原图收起来，只剩影子呢？'],
+  ['lei', '找失主？那我把充电器拿走，你们慢慢找。'],
+  ['luzhou', '先别走。你看，把每个方向收到的东西沿原路摊回去，多摊几个方向，交会的地方就慢慢亮起来了。'],
 ], room, lu, 'lab_second', { giftPerson: 'luzhou' })
+steps.after_first_2.sprite = lei
+steps.after_first_2.giftPerson = undefined
 node('lab_second', { bg: room, sprite: null, text: '', enterLab: 2 })
+// A short interlude separates each operation; no screen exposes all five tools.
+sequence('after_backproject', [
+  ['me', '位置找回来了，但每颗点都自带一圈雾。再多加方向，也不见得就清楚。'],
+  ['luzhou', '这就是**直接反投影**留下的模糊。今天先到这儿，明天换个做法。'],
+  ['me', '你真的主动说收工了？我得记一下日期。'],
+], room, lu, 'go_home_0', { giftPerson: 'luzhou' })
+sequence('filter_intro', [
+  [undefined, '午休还剩一会儿。陆舟昨晚把后半段发了过来，你打开电脑，小雷端着杯子坐到旁边。'],
+  ['lei', '他说这次给点加了个外壳，还放了几根细条。投回去之前，先处理一下每个方向的投影。'],
+  ['me', '**滤波反投影，FBP**。不是最后给图片美颜。来，看看哪种滤波还认得出那几根细条。'],
+], day, lei, 'lab_filter', { giftPerson: 'lei' })
+node('lab_filter', { bg: day, sprite: null, text: '', enterLab: 3 })
+sequence('after_filter', [
+  ['me', '换成柔一点的，颗粒没那么扎眼了，最细那根也淡了，边缘钝了。'],
+  ['lei', '别急着选冠军。你把两种都留着，等信号少了再看。'],
+  [undefined, '食堂群跳出一条“今日特价”。小雷看了眼时间，把空杯子拿走了。\n你合上电脑。这次真的只占了午休的后半截。'],
+], day, lei, 'noise_intro_0')
+sequence('noise_intro', [
+  [undefined, '两天后，下班。陆舟来取落在你这里的转接头，顺手把上次那份实验打开了。'],
+  ['luzhou', '今天不换模体，也不减少角度。只把每个角度收到的光子数调低。先看正弦图，不急着看成片。'],
+  ['me', '昨天还能追的弯线，今天像隔着雪花。再用刚才那个锐一点的滤波，会怎么样？'],
+], room, lu, 'lab_noise', { giftPerson: 'luzhou' })
+node('lab_noise', { bg: room, sprite: null, text: '', enterLab: 4 })
+sequence('after_noise', [
+  ['me', '原来不是出图以后才凭空长了颗粒。投影就开始抖了，重建还会把它带进去。'],
+  ['luzhou', '对。软一点能压些噪声，可你刚才一直找的细条也得看着。'],
+], room, lu, 'iteration_break', { giftPerson: 'luzhou' })
+node('iteration_break', { bg: room, sprite: lu, speaker: 'luzhou', text: '还有个办法，不是一下投完。想试试吗？', choices: [
+  choice('tea', '“等我倒杯水。你也别老盯着屏幕。”', 'iteration_tea_0'),
+  choice('try', '“试一下，这回我来决定停在哪轮。”', 'iterate_intro_0'),
+] })
+sequence('iteration_tea', [
+  [undefined, '你去接了两杯水。回来时陆舟正把一封催进度的邮件往下划。'],
+  ['me', '先放下吧。咱俩现在给它发过去，也不能让这图自己变好。'],
+  ['luzhou', '……也是。'],
+], room, lu, 'iterate_intro_0')
+sequence('iterate_intro', [
+  ['luzhou', '接着用刚才那份**低信号投影**。先猜一张图，算算它会投出什么影子，跟测到的比一比，再改一轮。'],
+  ['me', '不是把同一张图反复磨皮，是每轮都回去**对投影**。'],
+  ['luzhou', '嗯。你一轮一轮往前走，也可以停住、倒回去看。别因为轮数大，就替它说好话。'],
+], room, lu, 'lab_iterate')
+node('lab_iterate', { bg: room, sprite: null, text: '', enterLab: 5 })
 sequence('after_second', [
-  [undefined, '两版结果并排停住。刚才追着鼠标走的那点灰影，现在终于有了一个可以回头看的位置。'],
-  ['luzhou', '我把模体的原始布局打开。现在可以对着看看了。'],
-  ['me', '所以它本来就在那儿，不是我盯久了看花眼？'],
-  ['luzhou', '对。但换了信号和处理强度，有时候不太好认。看着干净的那版，也得把这里留下来比。'],
+  [undefined, '你停下迭代，把前后的结果留在屏幕上。那几根细条和淡淡的小块，现在成了你反复回头看的地方。'],
+  ['me', '再迭代，也不会凭空知道这块本来是什么。'],
+  ['luzhou', '是啊。我之前老盯着图干不干净。你把前后两版一摆，我反倒不敢那么快说“好了”。'],
 ], room, lu, 'result_q', { giftPerson: 'luzhou' })
 node('result_q', { bg: room, sprite: lu, speaker: 'me', text: '鼠标停在两版结果之间。', giftPerson: 'luzhou', choices: [
   choice('keep_both', '“别删，这两张一起留。”', 'record_keep_0', { decision: { key: 'comparison', value: 'both' } }),
@@ -154,7 +196,7 @@ sequence('record_keep', [
   ['me', '乱可以收拾。删了再想起来，可别让我凭记忆画。'],
 ], room, lu, 'organize_q')
 sequence('record_uncertain', [
-  ['luzhou', '可以。今天这一个模体，说明不了别的图都这样。你圈的地方也先存着。'],
+  ['luzhou', '可以。今天这一个模体，说明不了别的图都这样。拿不准的地方也先记着。'],
   ['me', '下次我睡醒了再看。现在连鼠标指针都快有重影了。'],
 ], room, lu, 'organize_q')
 node('organize_q', { bg: room, sprite: lu, speaker: 'luzhou', text: '存个什么名字？“最终版”？', choices: [
@@ -162,13 +204,13 @@ node('organize_q', { bg: room, sprite: lu, speaker: 'luzhou', text: '存个什�
   choice('later', '先留草稿，明天吃完饭再整理', 'draft_0', { decision: { key: 'notes', value: 'draft' } }),
 ] })
 sequence('organized', [
-  ['me', '信号、算法、强度都写上。以后问起来，别回答“凭感觉调的”。'],
+  ['me', '信号、滤波器、停在哪一轮，都写上。以后问起来，别回答“凭感觉调的”。'],
   ['luzhou', '好。你这份名字长得像小作文，但比“最终版改2”靠谱。'],
-], room, lu, 'go_home_0')
+], room, lu, 'ending_0')
 sequence('draft', [
   ['luzhou', '草稿和参数都自动留下了，明天补上备注。别把“不确定”那张漏了。'],
   ['me', '行。现在先救一下我的睡眠。'],
-], room, lu, 'go_home_0')
+], room, lu, 'ending_0')
 sequence('go_home', [
   [undefined, '你们收电脑时，窗外的小饭馆已经关了一半灯。陆舟把电源线绕了三次，又放开重新绕。'],
   ['me', '回去别又跑一宿。'],
@@ -178,8 +220,8 @@ sequence('go_home', [
 sequence('nextday', [
   [undefined, '次日午饭。你热饭热到一半，微波炉停了。小何把自己的饭盒往旁边让了让：“你的先。”'],
   ['he', '听小雷说，你跟同学弄了个新东西？'],
-  ['me', '还没有“东西”。就是两张图，把一个小地方来回看了半天。'],
-  ['he', '那挺费饭的。你看你这盒，又凉了。'],
+  ['me', '还没有“东西”。昨晚刚学会把几个影子拼回去，拼出来还糊。'],
+  ['he', '你一边吃一边比划，我还以为汤里有东西。勺子拿稳。'],
 ], day, he, 'nextday_q', { giftPerson: 'he' })
 node('nextday_q', { bg: day, sprite: he, speaker: 'he', text: '“真要往下做，哪天给我看看。电脑里的活我帮不上，图在急诊怎么用，我倒可以说两句。”', giftPerson: 'he', choices: [
   choice('invite', '“行，你先挑我们的毛病，别光夸。”', 'nextday_invite_0', { decision: { key: 'colleague', value: 'invite' } }),
@@ -195,23 +237,23 @@ sequence('nextday_wait', [
 ], day, he, 'nextday_lei_0', { giftPerson: 'he' })
 sequence('nextday_lei', [
   ['lei', '群名简单：“不改最终版”。'],
-  ['me', '你从哪儿冒出来的？'],
-  ['lei', '门口。我来拿饭。昨天那份参数记好了吗？'],
+  ['me', '刚说到你。吃完来看看他发的下一组？'],
+  ['lei', '行，我热个饭。昨天那份参数记好了吗？'],
 ], day, lei, 'nextday_notes', { giftPerson: 'lei' })
 node('nextday_notes', { bg: day, sprite: lei, speaker: 'me', text: '先吃完饭，再把手头这点事收个尾。', giftPerson: 'lei', choices: [
   choice('organize', '补齐第一份实验记录', 'notes_done_0', { unless: 'organized', complete: 'organized' }),
-  choice('finish', '“都留着呢。吃饭，下午还有班。”', 'ending_0'),
+  choice('finish', '“都留着呢。吃完看看他发来的下一组。”', 'filter_intro_0'),
 ] })
 sequence('notes_done', [
-  ['lei', '两版、参数、你圈的地方，都在。下回打开不用先猜哪个文件是什么了。'],
+  ['lei', '昨晚追的轨迹、反投影的过程，都在。下回打开不用先猜哪个文件是什么了。'],
   ['me', '今天的研究进度：终于敢关文件夹了。'],
-], day, lei, 'ending_0', { giftPerson: 'lei' })
+], day, lei, 'filter_intro_0', { giftPerson: 'lei' })
 sequence('ending', [
-  [undefined, '手机轻轻亮了一下。陆舟发来普通消息：“我想再试几组，别急着把这组当结论。”'],
-  ['me', '我回：“等排班出来再约。下次先吃饭，真的先吃。”'],
-  [undefined, '第一份对照已经留下。它还不够写进任何临床报告，也不够撑起一篇论文。\n但下次见面，终于有个具体的东西可以接着谈。'],
-], day, null, 'stage_end')
-node('stage_end', { bg: day, sprite: null, text: '第一段 · 先吃饭', settle: true })
+  [undefined, '陆舟收好转接头，这次没再落东西。走到门口，又回头说：“我想换几个模体再试，别急着下结论。”'],
+  ['me', '“等排班出来再约。下次先吃饭，真的先吃。”'],
+  [undefined, '桌上的水已经凉了。你关掉电脑，给文件夹补了今天的日期。\n下次不用从“哪张看着更漂亮”开始吵了。'],
+], room, null, 'stage_end')
+node('stage_end', { bg: room, sprite: null, text: '第一段 · 先吃饭', settle: true })
 
 export const LDCT_STEPS: Readonly<Record<string, LdctNode>> = steps
 
@@ -219,20 +261,20 @@ export function getLdctNode(state: GameState): LdctNode {
   const p = state.dlc?.ldct?.ldct
   const original = LDCT_STEPS[p?.nodeId ?? LDCT_START] ?? LDCT_STEPS[LDCT_START]
   let text = original.text
-  if (original.id === 'after_second_2' && p?.records[2]?.verdict === 'uncertain') {
-    text = '我刚才圈的地方，得对着原始布局才能放心。只看一张，真不敢说。'
+  if (original.id === 'after_second_2' && p?.records[5]?.verdict === 'uncertain') {
+    text = '拿不准也留着。下次换位置、换模体再试，不能光靠这一张给方法下结论。'
   }
   if (original.id === 'go_home_0' && p && p.fatigue < 2) {
     text = '刚才靠着歇了一会儿，总算没再把消息发错人。你们收好电脑。窗外的小饭馆已经关了一半灯。'
   }
   if (original.id === 'after_first_0' && p?.records[1]?.helped) {
-    text = '刚才一起看的地方也记下了。还有别的拿不准吗？别急着把圈擦掉。'
+    text = '刚才跟着你转了半圈，总算没丢。是点的位置决定了轨迹怎么弯，不是它真的在里面跑。'
   }
   if (original.id === 'nextday_lei_2' && p?.completed.includes('organized')) {
-    text = '门口。我来拿饭。昨天那份记录看到了，名字虽然长，倒是不用猜了。'
+    text = '行，我热个饭。昨天那份记录看到了，名字虽然长，倒是不用猜了。'
   }
   if (original.id === 'ending_1' && p?.decisions.chief === 'told') {
-    text = '我回：“先把要做什么列出来，排班出来再跟主任说。下次先吃饭，真的先吃。”'
+    text = '“先把要做什么列出来，排班出来再跟主任说。下次先吃饭，真的先吃。”'
   }
   return { ...original, text, sprite: original.sprite === '@luzhou' ? `ch2_pixel_char_luzhou_${state.gender}` : original.sprite }
 }
@@ -243,9 +285,11 @@ export function getLdctChoices(state: GameState): LdctChoice[] {
 }
 
 export const LDCT_MANUAL = [
-  { title: '今晚在做什么', text: '这是原创数字模体的离线比较，不是患者影像，也没有新扫描。几何、显示窗固定，低／中／高通过同源投影上的计数噪声模拟信号水平。游戏中的档位不是临床剂量建议。' },
-  { title: '两种重建，先放在同一张桌上', text: 'FBP从投影得到断层；本样段的迭代示例反复比较计算投影与测量投影，并带有限度的平滑约束。它不是给FBP图像套滤镜，也不代表任何厂商的临床算法。减少颗粒感与保住弱小结构需要一起观察。' },
-  { title: '不确定的地方可以留下', text: '固定一版，再调另一版；沿相邻层核对，圈出拿不准的位置。保存的是比较过程，不按图像是否漂亮评分。求助不会扣分。深度学习方案尚未开放，后三段才继续这场讨论。' },
+  { title: '影子怎么变成正弦图', text: '从一个方向测得一列投影。把不同角度的列排在一起，就是正弦图：横轴是投影角度，纵轴是探测器位置。一个偏离中心的小结构，会留下弯曲的轨迹；它并没有在物体里移动。开头暂时隐去外壳，方便看清几个结构各自的贡献。' },
+  { title: '投回去以后为什么还糊', text: '直接反投影把各方向的信息沿原路摊回去、叠加。方向多了，位置逐渐显现，但仍有模糊。FBP先对投影滤波，再反投影；不是给最终断层贴一层美颜滤镜。Ramp、Shepp–Logan、Hann对细节和噪声的取舍不同，没有在所有任务里都最好的选项。' },
+  { title: '低信号先改变了什么', text: '这里固定角度数和物体，用光子计数的泊松波动模拟不同信号水平，再取对数得到投影。信号少，投影更不稳定，重建也会受到影响。它是简化的平行束数字模体实验，不是完整临床低剂量模型，档位不对应临床剂量建议。' },
+  { title: '多改几轮，不是反复磨皮', text: '本例迭代重建每轮把当前图像正投影，与已测投影比较，再调整图像。屏幕展示实际计算出的中间结果、预测投影和差异，并不是对成片反复套滤镜。轮数越多不等于临床表现越好：既要看数据相符程度，也要看细节和噪声。本例不是任何厂商算法，深度学习方案尚未开放。' },
+  { title: '记录，不是考试', text: '每次留下你实际试过的过程或请陆舟一起看，不以选“最漂亮”的图打分。每个场景只做一件事；参数、结果和求助都会保存。重新尝试不重复发奖励。' },
   { title: '如果以后要用真实资料', text: '向主任说明合作、取得机构数据授权、伦理审查与知情同意或相应豁免要求，是不同的问题。具体按项目与机构要求处理。此开场没有患者资料，不把“暂时没告诉主任”当成违规结论。' },
 ]
 export const LDCT_PARTS = [

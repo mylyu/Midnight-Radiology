@@ -911,9 +911,9 @@
       "bytes": 103186,
       "type": "image"
     },
-    "assets/media/ldct_phantom_v1_atlas.099971caf68d7010.webp": {
-      "sha256": "099971caf68d70109c1d0991941e4cff50d9670187ff37dc66b5ec6c4b615b45",
-      "bytes": 328424,
+    "assets/media/ldct_projection_v2_atlas.ddba040635243231.webp": {
+      "sha256": "ddba040635243231f91a51148ab0c0917d53338cc355a755a433d00ab2acbc10",
+      "bytes": 367058,
       "type": "image"
     },
     "assets/media/machine_mammo.266d8db738a5f2b5.webp": {
@@ -1628,7 +1628,7 @@
       "assets/media/item_milktea.52cc8d6958e2f14b.webp",
       "assets/media/item_snack.f16943baf3b6bdb3.webp",
       "assets/media/ldct_bg_restaurant.1e0f0d5b98e52a90.webp",
-      "assets/media/ldct_phantom_v1_atlas.099971caf68d7010.webp"
+      "assets/media/ldct_projection_v2_atlas.ddba040635243231.webp"
     ]
   }
 }

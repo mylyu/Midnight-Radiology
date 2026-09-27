@@ -1,10 +1,12 @@
-import type { LdctLabRecord, LdctLabState } from './ldct-experiments'
+import type { LdctLabRecord, LdctLabState, LdctLabRound } from './ldct-experiments'
 
 export type LdctPerson = 'luzhou' | 'lei' | 'he'
 export type LdctProduct = 'coffee' | 'milktea' | 'snack'
 
 export interface LdctProgress {
   version: 1
+  /** Content migration is separate from cross-chapter save version. */
+  openingRevision?: 2
   run: number
   seed: 2258
   phase: 'story' | 'lab' | 'settle'
@@ -17,9 +19,9 @@ export interface LdctProgress {
   receipts: string[]
   gifts: { person: LdctPerson; item: 'milktea' | 'snack'; nodeId: string }[]
   reply?: { nodeId: string; speaker: string; text: string }
-  labRound: 1 | 2
+  labRound: LdctLabRound
   labDraft: LdctLabState
-  records: Partial<Record<1 | 2, LdctLabRecord>>
+  records: Partial<Record<LdctLabRound, LdctLabRecord>>
   labReturn?: string
   start: { gold: number; skill: number; heart: number; wealth: number }
 }
@@ -46,7 +48,7 @@ export interface LdctNode {
   kind?: 'hub'
   giftPerson?: LdctPerson
   complete?: string
-  enterLab?: 1 | 2
+  enterLab?: LdctLabRound
   settle?: boolean
 }
 
@@ -55,7 +57,7 @@ export type LdctAction =
   | { type: 'choose'; nodeId: string; choiceId: string }
   | { type: 'lab:update'; value: LdctLabState }
   | { type: 'lab:submit'; record: LdctLabRecord }
-  | { type: 'lab:open'; round: 1 | 2 }
+  | { type: 'lab:open'; round: LdctLabRound }
   | { type: 'lab:close' }
   | { type: 'buy'; item: LdctProduct }
   | { type: 'gift'; person: LdctPerson; item: 'milktea' | 'snack'; nodeId: string }

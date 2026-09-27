@@ -89,8 +89,7 @@ while (getLdctProgress(s).phase !== 'settle') {
   assert(++visited < 200, 'opening must reach a stayable ending')
   const p = getLdctProgress(s), node = getLdctNode(s)
   if (p.phase === 'lab') {
-    const draft = { ...createLdctLabState(), pinned: { signal: 'medium', algorithm: 'fbp', strength: 1 },
-      candidate: { signal: 'medium', algorithm: 'iterative', strength: 2 }, helped: true, mark: { x: 40, y: 60 } }
+    const draft = { ...createLdctLabState(p.labRound), helped: true, mark: { x: 40, y: 60 } }
     s = act(s, 'lab:update', { value: draft })
     s = JSON.parse(JSON.stringify(s))
     assert.deepEqual(getLdctProgress(s).labDraft, draft)
@@ -116,7 +115,7 @@ assert.equal(s.wealth, runStart.wealth + 1, 'deferred organization grants its ow
 assert.equal(s.gold, runStart.gold)
 assert.equal(s.heart, runStart.heart)
 assert(s.badges.includes('ldct_first_comparison'))
-assert.deepEqual(Object.keys(getLdctProgress(s).records), ['1', '2'])
+assert.deepEqual(Object.keys(getLdctProgress(s).records), ['1', '2', '3', '4', '5'])
 assert.deepEqual(protectedState(s), protectedBase)
 assert.match(ldctItemUnavailable(s, 'snack'), /机会已过/)
 assert.equal(getLdctProgress(initializeLdct(JSON.parse(JSON.stringify(s)))).phase, 'settle')
@@ -136,5 +135,26 @@ assert.equal(getLdctProgress(newRun).run, getLdctProgress(s).run + 1)
 assert.equal(getLdctProgress(newRun).records[1], undefined)
 assert.equal(newRun.skill, s.skill)
 assert.deepEqual(protectedState(newRun), protectedBase)
+
+// v1 two-static-image saves have no valid sinogram controls. Migrate once without
+// resetting other chapters, replaying old gifts or issuing another reward.
+const legacy = structuredClone(completed)
+delete legacy.dlc.ldct.ldct.openingRevision
+legacy.dlc.ldct.ldct.records = { 1: { round: 1, sourceVersion: 'ldct-phantom-v1' } }
+legacy.dlc.ldct.ldct.labDraft = { candidate: { algorithm: 'fbp' } }
+legacy.dlc.ldct.ldct.phase = 'lab'
+legacy.dlc.ldct.ldct.nodeId = 'lab_second'
+const migrated = initializeLdct(legacy)
+assert.equal(getLdctProgress(migrated).nodeId, 'lab_intro_0')
+assert.equal(getLdctProgress(migrated).openingRevision, 2)
+assert.deepEqual(getLdctProgress(migrated).records, {})
+assert.deepEqual(getLdctProgress(migrated).receipts, getLdctProgress(legacy).receipts)
+assert.equal(migrated.skill, legacy.skill)
+assert.deepEqual(protectedState(migrated), protectedBase)
+assert.equal(initializeLdct(migrated), migrated, 'migration is idempotent')
+legacy.dlc.ldct.ldct.phase = 'settle'
+const finishedLegacy = initializeLdct(legacy)
+assert.equal(getLdctProgress(finishedLegacy).phase, 'settle', 'completed old sample never forced backwards')
+assert.equal(getLdctProgress(act(finishedLegacy, 'lab:open', { round: 5 })).phase, 'lab', 'old sample can try new tools without replay rewards')
 
 console.log(`LDCT session: graph, ${visited} progression steps, atomic choices/gifts/rewards, reload/revisit/replay, and other-chapter isolation passed.`)
