@@ -5,13 +5,13 @@
 export const LDCT_FILTER_OPTIONS = ['none', 'ramp', 'shepp-logan', 'cosine', 'hamming', 'hann'] as const
 export type LdctFilter = typeof LDCT_FILTER_OPTIONS[number]
 export const LDCT_FILTER_NAMES: Record<LdctFilter, string> = {
-  none: 'None', ramp: 'Ramp', 'shepp-logan': 'Shepp–Logan', cosine: 'Cosine', hamming: 'Hamming', hann: 'Hann',
+  none: 'None', ramp: 'Ram-Lak / Ramp', 'shepp-logan': 'Shepp–Logan', cosine: 'Cosine', hamming: 'Hamming', hann: 'Hann',
 }
 export const LDCT_FILTER_COLORS: Record<LdctFilter, string> = {
   none: '#f8fafc', ramp: '#fbbf24', 'shepp-logan': '#5eead4', cosine: '#60a5fa', hamming: '#f9a8d4', hann: '#c4b5fd',
 }
 export const LDCT_FILTER_DESCRIPTIONS: Record<LdctFilter, string> = {
-  none: '平坦通过，不做滤波，直接反投影；所以仍留着那圈糊边。',
+  none: '矩形响应：平坦通过、不做滤波 → 直接反投影；所以仍留着那圈糊边。',
   ramp: '越靠两端的细变化，给的权重越大；细节和噪声都容易显出来。',
   'shepp-logan': '在Ramp上稍压高频，比Ramp柔一点。',
   cosine: '在Ramp上再乘余弦窗，高频端逐渐压到零。',
