@@ -33,7 +33,7 @@ const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(mi
 const stageHelp: Record<LdctLabRound, string> = {
   1: '陆舟把鼠标往旁边挪：“先点黄色的1，再拉‘绕着看’。机架上的彩色点是它在探测器上的位置，正弦图白线上的点也是这个位置。小点没动，绕着它看的方向在动。”',
   2: '“先铺一个方向，只知道它落在一整条线上。再铺几个方向，交在一起的位置就亮起来了。不过……这糊边还真不是少扫几个角度的问题。”',
-  3: '“先点None，投影不加工，直接铺回来。然后换Ramp、Hann，拖开看看细杆边缘。下面那条响应曲线，说的就是哪些变化留得多、哪些压得多。”',
+  3: '“先点不滤波，投影不加工，直接铺回来。然后换Ramp、Hann，拖开看看细杆边缘。想看它们怎么处理的，再展开响应曲线。”',
   4: '“先把光子调少，盯右边那堆噪点，再回来看左边的投影。现在换柔和滤波器，别只看它干不干净，也看看小东西还剩多少。”',
   5: '“先猜一张，再算出它应该留下什么投影。拿这个猜的跟测到的比，有差别就回去改图。咱们一轮一轮看，不用一口气信最后那张。”',
 }
@@ -50,13 +50,14 @@ function Guidance({ round, value }: { round: LdctLabRound; value: LdctLabState }
       ['不用先看懂整张图。点一个小结构，右边就会亮出属于它的轨迹。', '也可以点下面的90°。看看球管转到哪里、影子落在探测器哪里。', '小结构位置不同，弯出来的轨迹也不同；它们自己并没有移动。', '小结构 → 探测器上的落点 → 正弦图当前这一列。颜色相同的是同一个对象。'][traceStep],
     ],
     2: ['点「再铺几个方向」', '每点一次，加进更多方向的投影。看这些长条在哪里相交；这一步不加滤波。'],
-    3: ['先试 None，再换一个滤波器', '左边固定Ramp，右边跟着按钮换。拖动分界比较图像，再看下面对应的响应曲线。'],
+    3: ['先试「不滤波」，再换一种', '左边固定Ramp，右边跟着选项换。拖动分界比较小结构，需要时展开响应曲线。'],
     4: ['先把光子点到「少」', '看正弦图怎样变毛躁，再换滤波器。不是多拍几次，只是在比较同一组模拟条件。'],
     5: ['点「改第一轮」，再一轮轮看', '左边是当前猜的图；右边拿它算出的投影，和实测投影对一对。不用猜一个“标准轮数”。'],
   }
-  return <div className="ldct-lab__guidance" data-testid="ldct-action-guide" data-guide-step={round === 1 ? traceStep : round} aria-live="polite">
-    <span aria-hidden="true">☞</span><div><strong>{guide[round][0]}</strong><p>{guide[round][1]}</p></div>
-  </div>
+  return <details className="ldct-lab__guidance" data-testid="ldct-action-guide" data-guide-step={round === 1 ? traceStep : round} aria-live="polite">
+    <summary><span aria-hidden="true">☞</span><strong>{guide[round][0]}</strong><span className="ldct-lab__guide-more">提示</span></summary>
+    <p>{guide[round][1]}</p>
+  </details>
 }
 const stageNudge: Record<LdctLabRound, string> = {
   1: '换两个小结构，拖动一下角度，看看它们各自走哪条路。',
@@ -68,7 +69,7 @@ const stageNudge: Record<LdctLabRound, string> = {
 const stageReflection: Record<LdctLabRound, string> = {
   1: '同一个小结构，在不同角度留下的位置会变；正弦图把这些投影按角度排在一起。',
   2: '轮廓回来了，糊边却没全走。直接把投影铺回去，还不是完整的FBP。',
-  3: '同一份投影。None直接铺回来，其余先滤波再反投影，不是又扫描了一遍；None单独归一化显示，只比较结构。',
+  3: '同一份投影。不滤波就直接铺回来，其余先滤波再反投影，不是又扫描了一遍。这里对照小结构的形状，不比较灰度值。',
   4: '光子变少，测量更容易起伏；滤波后的图像也会把这些起伏带出来。柔和不等于没有代价。',
   5: '留下的是每轮真正算出的估计图和预测投影。多改几轮不等于无限接近真相，噪声也在那份测量里。',
 }
@@ -175,21 +176,26 @@ function Backproject({ value, choose, frozen }: Controls) {
 }
 
 function FilterButtons({ value, choose, frozen }: Controls) {
-  return <div className="ldct-lab__chips ldct-lab__filter-chips" aria-label="反投影滤波器">{LDCT_FILTER_OPTIONS.map(filter =>
-    <button key={filter} disabled={frozen} aria-pressed={value.filter === filter} onClick={() => choose({ filter, seenFilters: addSeen(value.seenFilters, filter) })}>
+  const select = (filter: LdctLabState['filter']) => choose({ filter, seenFilters: addSeen(value.seenFilters, filter) })
+  return <><label className="ldct-lab__mobile-filter"><span>重建方式</span><select aria-label="选择反投影滤波器" disabled={frozen}
+    value={value.filter} onChange={event => select(event.target.value as LdctLabState['filter'])}>
+    {LDCT_FILTER_OPTIONS.map(filter => <option key={filter} value={filter}>{LDCT_FILTER_LABELS[filter]}</option>)}
+  </select></label>
+  <div className="ldct-lab__chips ldct-lab__filter-chips" aria-label="反投影滤波器">{LDCT_FILTER_OPTIONS.map(filter =>
+    <button key={filter} disabled={frozen} aria-pressed={value.filter === filter} onClick={() => select(filter)}>
       {LDCT_FILTER_LABELS[filter]}
-    </button>)}</div>
+    </button>)}</div></>
 }
 
 function Filter({ value, change, choose, frozen }: Controls) {
   return <>
     <div className="ldct-lab__single"><div className="ldct-lab__split-labels"><span>固定 · Ramp</span><span>{LDCT_FILTER_LABELS[value.filter]}</span></div>
-      <div className="ldct-lab__image"><Split left="fbp:high:ramp" right={`fbp:high:${value.filter}`} divider={value.divider} onChange={divider => change({ divider })} frozen={frozen} /></div>
+      <div className="ldct-lab__image"><Split left="filter:sparse:ramp" right={`filter:sparse:${value.filter}`} divider={value.divider} onChange={divider => change({ divider })} frozen={frozen} /></div>
     </div>
     <FilterButtons value={value} change={change} choose={choose} frozen={frozen} />
     <Range label="拖开比较" max={100} value={value.divider} onChange={divider => change({ divider })} disabled={frozen} suffix="%" />
     <LdctFilterResponse filter={value.filter} />
-    <p className="ldct-lab__status">{value.filter === 'none' ? 'None就是不加滤波的直接反投影。为看清轮廓，这一版单独归一化显示，只比结构，不比灰度值。' : value.filter === 'ramp' ? '两边现在一样。换到柔一些，再看细杆的边缘。' : '同一份投影换了滤波器。别急着挑“最好”，拖着看边缘和细节。'}</p>
+    <p className="ldct-lab__status">{value.filter === 'none' ? '不滤波就是直接反投影。看小结构周围散开的亮影；这里只比形状，不比灰度值。' : value.filter === 'ramp' ? '两边现在一样。换到柔一些，再看细杆的边缘。' : '同一份投影换了滤波器。别急着挑“最好”，拖着看边缘和细节。'}</p>
   </>
 }
 

@@ -5,7 +5,7 @@
 export const LDCT_FILTER_OPTIONS = ['none', 'ramp', 'shepp-logan', 'cosine', 'hamming', 'hann'] as const
 export type LdctFilter = typeof LDCT_FILTER_OPTIONS[number]
 export const LDCT_FILTER_NAMES: Record<LdctFilter, string> = {
-  none: 'None', ramp: 'Ram-Lak / Ramp', 'shepp-logan': 'Shepp–Logan', cosine: 'Cosine', hamming: 'Hamming', hann: 'Hann',
+  none: '不滤波 · 直接反投影', ramp: 'Ram-Lak / Ramp', 'shepp-logan': 'Shepp–Logan', cosine: 'Cosine', hamming: 'Hamming', hann: 'Hann',
 }
 export const LDCT_FILTER_COLORS: Record<LdctFilter, string> = {
   none: '#f8fafc', ramp: '#fbbf24', 'shepp-logan': '#5eead4', cosine: '#60a5fa', hamming: '#f9a8d4', hann: '#c4b5fd',
