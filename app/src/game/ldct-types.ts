@@ -7,7 +7,8 @@ export type LdctProduct = 'coffee' | 'milktea' | 'snack'
 export interface LdctProgress {
   version: 1
   /** Content migration is separate from cross-chapter save version. */
-  openingRevision?: 2
+  openingRevision?: 2 | 3
+  storyId?: 'face' | 'dinner' | 'patient'
   run: number
   seed: 2258
   phase: 'story' | 'lab' | 'research' | 'settle'
@@ -61,6 +62,19 @@ export interface LdctNode {
   part?: 1 | 2 | 3 | 4
   enterResearch?: LdctResearchStage
   finale?: boolean
+  storyEnd?: boolean
+  goal?: string
+}
+
+/** Three alternative drafts, never three successive canonical events. */
+export interface LdctStoryShelf {
+  version: 1
+  active?: 'face' | 'dinner' | 'patient'
+  slots: Partial<Record<'face' | 'dinner' | 'patient', LdctProgress>>
+  legacy?: LdctProgress
+  /** Learning awards are shared across drafts and replays; purchases are not. */
+  receipts: string[]
+  experienced: LdctLabRound[]
 }
 
 export type LdctAction =
