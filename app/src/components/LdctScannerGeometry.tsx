@@ -1,11 +1,14 @@
-import { LDCT_STRUCTURES, detectorPosition, ldctScannerGeometry, type LdctStructureId } from '../game/ldct-projections'
+import { getLdctDatasetStructures, detectorPosition, ldctScannerGeometry, type LdctDataset, type LdctStructureId } from '../game/ldct-projections'
 
 /** SVG is intentionally light: rotating equipment and the sinogram use the same persisted angle. */
-export function LdctScannerGeometry({ angle, structure }: { angle: number; structure: LdctStructureId | null }) {
-  const point = LDCT_STRUCTURES.find(item => item.id === structure)
-  const geometry = ldctScannerGeometry(angle, structure)
+export function LdctScannerGeometry({ angle, structure, dataset = 'phantom', concealTruth = false }: {
+  angle: number; structure: LdctStructureId | null; dataset?: LdctDataset; concealTruth?: boolean
+}) {
+  const structures = getLdctDatasetStructures(dataset)
+  const point = concealTruth ? undefined : structures.find(item => item.id === structure)
+  const geometry = ldctScannerGeometry(angle, point?.id ?? null, dataset)
   const color = point?.color ?? '#94a3b8'
-  return <aside className="ldct-scanner" aria-label="球管与探测器角度示意" data-angle={angle} data-detector-position={structure ? detectorPosition(structure, angle) : undefined}>
+  return <aside className="ldct-scanner" aria-label="球管与探测器角度示意" data-angle={angle} data-detector-position={point ? detectorPosition(point.id, angle, dataset) : undefined}>
     <div className="ldct-scanner__picture">
       <svg viewBox="0 0 260 260" role="img" aria-label={`从机架正面看，当前${Math.round(angle)}度，球管和探测器绕固定小结构转动`}>
         <circle cx="130" cy="130" r="101" fill="#0b1524" stroke="#344457" strokeWidth="15" />
@@ -26,7 +29,7 @@ export function LdctScannerGeometry({ angle, structure }: { angle: number; struc
         <circle cx="130" cy="130" r="51" fill="#17233699" stroke="#64748b" strokeWidth="1" strokeDasharray="3 3" />
         {point && <line x1={130 + point.x - 50 - geometry.beam.x * 45} y1={130 + point.y - 50 - geometry.beam.y * 45}
           x2={geometry.hit.x} y2={geometry.hit.y} stroke={color} strokeWidth="2" strokeDasharray="3 2" />}
-        {LDCT_STRUCTURES.map(item => <circle key={item.id} cx={130 + item.x - 50} cy={130 + item.y - 50} r={item.radius}
+        {!concealTruth && structures.map(item => <circle key={item.id} cx={130 + item.x - 50} cy={130 + item.y - 50} r={item.radius}
           fill={item.color} opacity={item.id === structure ? 1 : .45} stroke={item.id === structure ? '#f8fafc' : 'none'} strokeWidth="1.5" />)}
         {point && <circle cx={geometry.hit.x} cy={geometry.hit.y} r="4.5" fill={color} stroke="#071321" strokeWidth="1.5" />}
         <text x="130" y="246" textAnchor="middle" fill="#e2e8f0" fontSize="18">当前角度 {Math.round(angle)}°</text>
@@ -35,7 +38,7 @@ export function LdctScannerGeometry({ angle, structure }: { angle: number; struc
     <div className="ldct-scanner__explanation">
       <strong>从机架正面看 · {Math.round(angle)}°</strong>
       <div className="ldct-scanner__legend"><span>▰ 球管</span><span>▰ 探测器（接收器）</span></div>
-      <p>物体不动，球管和探测器一起转。彩色落点对应正弦图白线上的同色点。</p>
+      <p>{concealTruth ? '物体不动，球管和探测器一起转；白线标出当前角度。' : '物体不动，球管和探测器一起转。彩色落点对应正弦图白线上的同色点。'}</p>
       <small>教学平行束示意；真实CT常用扇束或锥束。这里的0°表示射线从上往下。</small>
     </div>
   </aside>

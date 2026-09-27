@@ -1,28 +1,51 @@
 /** Reproducible numerical frames, not postprocessed pictures of CT patients. */
 export const LDCT_PROJECTION_VERSION = 'ldct-projection-v2' as const
 export const LDCT_PROJECTION_SEED = 2258 as const
-export const LDCT_PROJECTION_MEDIA_ID = 'ldct_projection_v2_atlas' as const
-export const LDCT_PROJECTION_MEDIA_IDS = [LDCT_PROJECTION_MEDIA_ID] as const
+export type LdctDataset = 'phantom' | 'face' | 'nut'
+export const LDCT_DATASET_VERSION = 'ldct-short-v1' as const
+export const LDCT_DATASET_SEEDS = { phantom: 2258, face: 2259, nut: 2260 } as const
+export const LDCT_DATASET_MEDIA_IDS = {
+  phantom: 'ldct_short_phantom_v1', face: 'ldct_short_face_v1', nut: 'ldct_short_nut_v1',
+} as const
+export const LDCT_PROJECTION_MEDIA_ID = LDCT_DATASET_MEDIA_IDS.phantom
+export const LDCT_PROJECTION_MEDIA_IDS = Object.values(LDCT_DATASET_MEDIA_IDS)
 export const LDCT_PROJECTION_SIZE = 160
-export const LDCT_PROJECTION_ATLAS = { columns: 8, rows: 7 } as const
+export const LDCT_PROJECTION_ATLAS = { columns: 8, rows: 6 } as const
 export const LDCT_BP_COUNTS = [1, 2, 4, 8, 24, 160] as const
 export const LDCT_ITERATIONS = [0, 1, 2, 4, 8] as const
 export type { LdctFilter as LdctProjectionFilter } from './ldct-filter-response'
 export type LdctProjectionSignal = 'low' | 'medium' | 'high'
 export type LdctStructureId = 'bead' | 'rod' | 'faint'
+export interface LdctProjectionStructure {
+  id: LdctStructureId; label: string; x: number; y: number; radius: number; color: string
+}
 
 /** All positions are percentages from the upper-left of the image. */
-export const LDCT_STRUCTURES: readonly {
-  id: LdctStructureId; label: string; x: number; y: number; radius: number; color: string
-}[] = [
+export const LDCT_STRUCTURES: readonly LdctProjectionStructure[] = [
   { id: 'bead', label: '左上的圆块', x: 35, y: 37.5, radius: 6.5, color: '#fbbf24' },
   { id: 'rod', label: '左下的小细棒', x: 30.5, y: 63, radius: 2.4, color: '#67e8f9' },
   { id: 'faint', label: '右下的浅圆块', x: 64.5, y: 63, radius: 4.1, color: '#f9a8d4' },
 ]
+const DATASET_STRUCTURES: Record<LdctDataset, readonly LdctProjectionStructure[]> = {
+  phantom: LDCT_STRUCTURES,
+  face: [
+    { id: 'bead', label: '左上的亮点', x: 34.375, y: 37.5, radius: 5, color: '#fbbf24' },
+    { id: 'rod', label: '右上的亮点', x: 64.375, y: 39.375, radius: 4.6875, color: '#67e8f9' },
+    { id: 'faint', label: '中间的浅点', x: 50, y: 51.25, radius: 2.5, color: '#f9a8d4' },
+  ],
+  nut: [
+    { id: 'bead', label: '上缘这一点', x: 50, y: 33.125, radius: 2, color: '#fbbf24' },
+    { id: 'rod', label: '左下缘这一点', x: 35.625, y: 58.125, radius: 2, color: '#67e8f9' },
+    { id: 'faint', label: '右侧这一点', x: 61.25, y: 50, radius: 2, color: '#f9a8d4' },
+  ],
+}
+export function getLdctDatasetStructures(dataset: LdctDataset = 'phantom') {
+  return DATASET_STRUCTURES[dataset]
+}
 
 /** Detector location in the displayed sinogram, measured downward in %. */
-export function detectorPosition(id: LdctStructureId, angleDegrees: number): number {
-  const point = LDCT_STRUCTURES.find(structure => structure.id === id)!
+export function detectorPosition(id: LdctStructureId, angleDegrees: number, dataset: LdctDataset = 'phantom'): number {
+  const point = getLdctDatasetStructures(dataset).find(structure => structure.id === id)!
   const theta = angleDegrees * Math.PI / 180
   // skimage radon columns use detector = cx*cos(theta) - cy*sin(theta),
   // where screen x increases rightward and screen y increases downward.
@@ -30,11 +53,11 @@ export function detectorPosition(id: LdctStructureId, angleDegrees: number): num
 }
 
 /** SVG gantry coordinates, sharing the generated Radon columns' angle convention. */
-export function ldctScannerGeometry(angle: number, structure: LdctStructureId | null) {
+export function ldctScannerGeometry(angle: number, structure: LdctStructureId | null, dataset: LdctDataset = 'phantom') {
   const theta = angle * Math.PI / 180
   const beam = { x: Math.sin(theta), y: Math.cos(theta) }
   const detectorAxis = { x: Math.cos(theta), y: -Math.sin(theta) }
-  const detectorOffset = structure ? detectorPosition(structure, angle) - 50 : 0
+  const detectorOffset = structure ? detectorPosition(structure, angle, dataset) - 50 : 0
   const center = 130, detectorDistance = 78
   return {
     beam,
@@ -50,11 +73,11 @@ export function ldctScannerGeometry(angle: number, structure: LdctStructureId | 
 }
 
 /** SVG path in viewBox="0 0 100 100". Image columns sample 0 <= theta < 180. */
-export function detectorPath(id: LdctStructureId, untilDegrees = 180): string {
+export function detectorPath(id: LdctStructureId, untilDegrees = 180, dataset: LdctDataset = 'phantom'): string {
   const maximum = Math.min(180, Math.max(0, untilDegrees))
   const angles = Array.from({ length: Math.floor(maximum / 1.125) + 1 }, (_, index) => index * 1.125)
   if (angles[angles.length - 1] !== maximum) angles.push(maximum)
-  return angles.map((angle, index) => `${index ? 'L' : 'M'}${(angle / 180 * 100).toFixed(3)},${detectorPosition(id, angle).toFixed(3)}`).join(' ')
+  return angles.map((angle, index) => `${index ? 'L' : 'M'}${(angle / 180 * 100).toFixed(3)},${detectorPosition(id, angle, dataset).toFixed(3)}`).join(' ')
 }
 
 export const LDCT_PROJECTION_FRAME_KEYS = [
@@ -76,11 +99,13 @@ export const LDCT_PROJECTION_FRAME_KEYS = [
 ] as const
 export type LdctProjectionFrameKey = typeof LDCT_PROJECTION_FRAME_KEYS[number]
 
-export function ldctProjectionFrame(key: string) {
-  const index = (LDCT_PROJECTION_FRAME_KEYS as readonly string[]).indexOf(key)
+export function ldctProjectionFrame(key: string, dataset: LdctDataset = 'phantom') {
+  // Historical callers keep compiling; there is no sparse replacement object.
+  const canonical = key.startsWith('filter:sparse:') ? key.replace('filter:sparse:', 'fbp:high:') : key
+  const index = (LDCT_PROJECTION_FRAME_KEYS as readonly string[]).indexOf(canonical)
   if (index < 0) throw new Error(`Unknown LDCT projection frame: ${key}`)
   return {
-    mediaId: LDCT_PROJECTION_MEDIA_ID,
+    mediaId: LDCT_DATASET_MEDIA_IDS[dataset],
     ...LDCT_PROJECTION_ATLAS,
     column: index % LDCT_PROJECTION_ATLAS.columns,
     row: Math.floor(index / LDCT_PROJECTION_ATLAS.columns),
@@ -88,8 +113,8 @@ export function ldctProjectionFrame(key: string) {
 }
 
 /** Supply backgroundImage using the preloaded I(LDCT_PROJECTION_MEDIA_ID). */
-export function ldctProjectionFrameStyle(key: string) {
-  const frame = ldctProjectionFrame(key)
+export function ldctProjectionFrameStyle(key: string, dataset: LdctDataset = 'phantom') {
+  const frame = ldctProjectionFrame(key, dataset)
   return {
     backgroundSize: `${frame.columns * 100}% ${frame.rows * 100}%`,
     backgroundPosition: `${frame.column / (frame.columns - 1) * 100}% ${frame.row / (frame.rows - 1) * 100}%`,
@@ -99,14 +124,19 @@ export function ldctProjectionFrameStyle(key: string) {
 
 /** These are measured simulation values, not a game score or diagnostic test. */
 export const LDCT_ITERATION_RESIDUAL: Record<typeof LDCT_ITERATIONS[number], number> = {
-  0: 1, 1: .1125111991, 2: .1082900646, 4: .1029887766, 8: .0967202660,
+  0: 1, 1: .0283602836, 2: .0245923376, 4: .0227426738, 8: .0210660612,
 }
+export const LDCT_DATASET_ITERATION_RESIDUAL = {
+  phantom: LDCT_ITERATION_RESIDUAL,
+  face: { 0: 1, 1: .0282868977, 2: .0245960127, 4: .0227498064, 8: .0211019238 },
+  nut: { 0: 1, 1: .0308020962, 2: .0258831241, 4: .0237450397, 8: .0219139644 },
+} as const
 
 export const LDCT_PROJECTION_NOTES = [
-  '开头只放三个小结构，便于追踪投影轨迹；后面给同样的位置加外壳和其他结构。这里是数字模体，没有患者数据。',
+  '每个故事的投影、反投影、滤波、噪声和迭代都使用同一个完整物体，灰色圆形背景不会中途换掉。这里是数字模体，没有患者数据。',
   '正弦图横向是投影角度，纵向是探测器位置。图中一个点在不同角度会投到不同位置；看到的轨迹不是这个点在人体里移动。',
   '直接反投影把每个角度的投影沿原方向铺回去。本台的1、2、4、8、24、160表示参与叠加的角度数，不把少角度等同低剂量。',
-  '不滤波就是直接反投影。第三段用稀疏模体比较六种处理，避免大外壳淹没小结构；六种都读同一份投影。FBP先滤波再反投影，并非在成片上套锐化、美颜滤镜。',
+  '不滤波就是直接反投影，会把背景也一起铺开；单独用固定亮度范围显示，不能拿它的灰度和FBP定量比较。六种处理都读完整物体的同一份投影，不更换稀疏物体或偷做锐化。',
   '低、中、高信号改变模拟入射计数，角度和几何不变。通过泊松计数及取对数得到带噪投影；本台不把计数换算成临床剂量。',
   '迭代示例是SART：从零开始，反复正投影、核对测量、更新图像。第1、2、4、8轮显示实际中间结果；差异变小也可能是在追逐噪声，多迭代不保证更好。',
   '二维平行束、单能、固定显示窗的简化演示，不包含真实CT所有散射、能谱、运动、探测器响应等效应，不可用于选择患者检查参数。',

@@ -35,3 +35,48 @@
  .ldct-lab{padding:12px 18px;max-width:820px}.ldct-lab__header{margin-bottom:6px}.ldct-lab__header h2{font-size:18px}.ldct-lab__eyebrow{font-size:10px}.ldct-lab button.ldct-lab__quiet{min-height:32px;padding:5px 9px}.ldct-lab__pair{max-width:480px;gap:18px}.ldct-lab__tile figcaption{font-size:11px;min-height:20px;margin-bottom:4px}.ldct-lab__tile small{font-size:10px;min-height:16px}.ldct-lab__single{max-width:250px}.ldct-lab__range{max-width:480px;margin:6px auto}.ldct-lab__range input{height:24px}.ldct-lab__chips{max-width:600px;margin:6px auto}.ldct-lab__chips button{min-height:35px;padding:6px 8px}.ldct-lab__transport{margin:8px auto}.ldct-lab__transport button{min-height:36px;padding:7px 9px}.ldct-lab__status{font-size:12px;margin:7px 0}.ldct-lab__steps{margin:6px 0}.ldct-lab__footer{margin-top:10px}.ldct-lab__actions button{min-height:35px;padding:7px 9px}
  .ldct-lab__mobile-filter{display:flex;max-width:480px;margin:8px auto}.ldct-lab .ldct-lab__filter-chips{display:none}.ldct-lab__nudge{display:none}.ldct-lab__mobile-filter select{min-height:35px}
 }
+
+/* The same compact workbench serves every short story. Secondary tools stay opt-in. */
+.ldct-lab--short{box-sizing:border-box;max-width:100%;min-width:0}
+.ldct-lab--short .ldct-lab__tile figcaption{align-items:center;min-height:30px}
+.ldct-lab__covered-truth{position:absolute;inset:0;display:grid;place-items:center;background:#000}
+.ldct-lab__covered-truth svg{display:block;width:100%;height:100%}
+.ldct-lab__covered-truth>span{position:absolute;inset:auto 5px 8px;font-size:11px;line-height:1.4;text-align:center;color:#e2e8f0;background:#0f172adb;padding:4px;border-radius:4px}
+.ldct-lab__reference{display:flex;align-items:center;gap:12px;margin:10px auto;max-width:650px;font-size:12px;color:#cbd5e1}
+.ldct-lab__reference>.ldct-lab__image{width:72px;flex:0 0 72px}
+.ldct-lab__reference small{display:block;font-size:11px;line-height:1.5;color:#94a3b8;margin-top:4px}
+.ldct-lab__reference .ldct-lab__covered-truth>span{display:none}
+.ldct-lab__extra{margin:10px auto;border:1px solid #334155;border-radius:7px;padding:8px 10px;color:#b5c8d9;max-width:650px;font-size:12px}
+.ldct-lab__extra>summary{cursor:pointer;line-height:1.6;color:#cbd5e1;min-height:25px;align-content:center}
+.ldct-lab__extra[open]>summary{margin-bottom:10px}
+.ldct-lab__extra>p{font-size:11px;line-height:1.6;margin:8px 0 2px;color:#94a3b8}
+.ldct-lab__extra:focus-within{border-color:#526078}
+.ldct-lab__extra .ldct-lab__chips{flex-wrap:wrap}
+.ldct-lab__extra .ldct-lab__chips button{flex:1 1 55px;min-width:0}
+.ldct-lab__filter-select{display:flex;align-items:center;gap:12px;margin:10px 0;font-size:12px;color:#cbd5e1}
+.ldct-lab__filter-select>span{white-space:nowrap}
+.ldct-lab__filter-select select{min-width:0;flex:1;min-height:40px;padding:7px 8px;background:#1e293b;color:#e2e8f0;border:1px solid #526078;border-radius:7px;font:inherit}
+.ldct-lab__filter-select select:focus-visible,.ldct-lab__extra>summary:focus-visible{outline:2px solid #fbbf24;outline-offset:3px}
+.ldct-lab--short .ldct-lab__actions{display:grid;grid-template-columns:1fr 1fr}
+.ldct-lab--short .ldct-lab__actions button:last-child{grid-column:auto}
+@media(max-width:600px){
+ .ldct-lab--short .ldct-lab__tile figcaption{font-size:11px;min-height:32px;line-height:1.4}
+ .ldct-lab--short .ldct-lab__header h2{font-size:18px}
+ .ldct-lab--short .ldct-lab__eyebrow{font-size:10px;letter-spacing:.03em}
+ .ldct-lab--short .ldct-lab__trace-layout{gap:5px}
+ .ldct-lab--short .ldct-scanner{grid-template-columns:115px minmax(0,1fr);padding:5px;gap:6px}
+ .ldct-lab--short .ldct-scanner p{font-size:10px;line-height:1.5;margin:4px 0}
+ .ldct-lab--short .ldct-scanner__explanation strong{font-size:11px}
+ .ldct-lab__extra{padding:7px 9px;margin:8px 0;font-size:11px}
+ .ldct-lab__reference{gap:8px;margin:8px 0;font-size:11px}
+ .ldct-lab__reference>.ldct-lab__image{width:60px;flex-basis:60px}
+ .ldct-lab__reference small{font-size:10px}
+ .ldct-lab__covered-truth>span{font-size:10px;padding:3px;bottom:5px}
+ .ldct-lab--short .ldct-lab__actions button{min-width:0;line-height:1.5;font-size:12px}
+}
+@media(orientation:landscape) and (max-height:560px){
+ .ldct-lab--short .ldct-lab__pair{max-width:460px}
+ .ldct-lab--short .ldct-lab__trace-layout{grid-template-columns:minmax(0,1fr) 170px}
+ .ldct-lab__reference{max-width:460px}
+ .ldct-lab__extra{max-width:600px}
+}
