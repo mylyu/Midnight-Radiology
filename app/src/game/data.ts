@@ -52,6 +52,7 @@ export const BADGES: Record<string, { name: string; icon: string; desc: string; 
   warm_hands: { name: '温柔的手', icon: '🤲', desc: '安慰了每一位焦虑的病人或家属' },
   detective: { name: '夜班侦探', icon: '🔍', desc: '查清旧片库与「残影」的真相' },
   shopaholic: { name: '小卖部VIP', icon: '🛒', desc: '在小卖部消费3次以上' },
+  good_intentions: { name: '好心办坏事', icon: '🫠', desc: '热心帮忙时，遇到一次意料之外的小插曲' },
   quiz_master: { name: '学霸技师', icon: '🎓', desc: '晨会考核拿到满分' },
 }
 
@@ -105,7 +106,7 @@ export const NIGHTS: Night[] = extendCh1ArchiveWindow([
       ]},
       n1_walk4a: { speaker: 'lei', sprite: 'char_lei', text: '（压低声音）老楼传说呗——值班的说半夜听见片库里有翻片子的声音，沙沙的，像有人在找东西。我猜是老鼠。……应该是老鼠吧。', next: 'n1_walk5' },
       n1_walk4b: { speaker: 'lei', sprite: 'char_lei', text: '谢啦！下回请你喝奶茶。……哦对，三楼旧片库晚上别去，老楼传说不太平。当听个乐。', next: 'n1_walk5' },
-      n1_walk4r: { speaker: 'sys', sprite: 'char_lei', text: '（意外）扶梯子时你踩空了半级，脚踝「咯」地一声。小雷吓坏了，你摆摆手说没事——可走起路来还是有点使不上劲。（行动力-1）', next: 'n1_walk4b' },
+      n1_walk4r: { speaker: 'sys', sprite: 'char_lei', text: '（**意外**）扶梯子时你**踩空了半级**，脚踝「咯」地一声。小雷吓坏了，你摆摆手说没事——可走起路来还是有点使不上劲。（**行动力-1**）', next: 'n1_walk4b' },
       n1_walk5: { speaker: 'sys', text: '小雷抱着笔记本匆匆走了。PACS恢复正常。（回到科室）', next: 'n1_hub' },
       n1_rest0: { bg: 'bg_breakroom', speaker: 'sys', text: '值班室不大：一张旧沙发、一台微波炉、墙上贴着排班表。桌角放着一本翻烂的《医学影像学》，扉页写着「夜班保命，闲时翻翻」。', next: 'n1_rest1' },
       n1_rest1: { speaker: 'sys', text: '【做点什么呢？】', choices: [
@@ -211,7 +212,7 @@ export const NIGHTS: Night[] = extendCh1ArchiveWindow([
       n2_fan4a: { speaker: 'fan', sprite: 'char_fan', text: '好小伙！……对了，旧片库的挂锁钥匙在我抽屉里锁着，那破屋子二十年没人进了，你可别打它主意。（他顿了顿，又补了一句）真有事来找我拿，别自己撬。', effect: { flag: 'fan_key_hint' }, next: 'n2_fan5' },
       n2_fan4b: { speaker: 'fan', sprite: 'char_fan', text: '擦不干净？那上一位病人的影子就会留在板子上，下一位拍出来就是个「叠影」——跟闹鬼似的。这几天灯管老化，尤其容易擦不干净，你们收尾的时候多留个心眼。……问这么细干嘛？', effect: { flag: 'fan_key_hint' }, next: 'n2_fan5' },
       n2_fan5: { speaker: 'sys', text: '老范继续埋头对数。你回了科室。（设备科的路，你摸熟了）', next: 'n2_hub' },
-      n2_fan4r: { speaker: 'sys', sprite: 'char_fan', text: '（意外）最上面那箱耦合剂没码稳，「啪」地摔在地上，碎了两瓶。你坚持照价赔偿，老范拗不过，按进货价收了你30金币，嘴里念叨：「心意领了，下回码箱子先大后小。」（金币-30）', next: 'n2_fan4a' },
+      n2_fan4r: { speaker: 'sys', sprite: 'char_fan', text: '（**意外**）最上面那箱耦合剂没码稳，「啪」地摔在地上，**碎了两瓶**。你坚持照价赔偿，老范拗不过，按进货价收了你30金币，嘴里念叨：「心意领了，下回码箱子先大后小。」（**金币-30**）', next: 'n2_fan4a' },
       n2_walk0: { bg: 'bg_corridor', speaker: 'sys', text: '走廊里突然传来轮子声——一张平车呼啸而过，上面躺着个呻吟的病人，推车的女医生边跑边喊：「让让！骨科急诊！」', next: 'n2_walk1' },
       n2_walk1: { speaker: 'he', sprite: 'char_he', sfx: 'vox_he', text: '啊不好意思！——欸，你是影像科的？太好了，我是急诊小何。今晚工地事故，估计一会儿还得麻烦你们科好几次！', next: 'n2_walk2' },
       n2_walk2: { speaker: 'sys', text: '【帮她推一段？】', sprite: 'char_he', choices: [
@@ -219,7 +220,7 @@ export const NIGHTS: Night[] = extendCh1ArchiveWindow([
         { text: '点点头让开路（你们都会有麻烦对方的时候）', next: 'n2_walk3b', effect: { flag: 'met_he' } },
       ]},
       n2_walk3a: { speaker: 'he', sprite: 'char_he', text: '谢啦！回头急诊有活儿我罩着你——开玩笑的，最好谁也别罩着谁，大家平平安安。', next: 'n2_walk4' },
-      n2_walk3r: { speaker: 'sys', sprite: 'char_he', text: '（意外）拐弯时平车猛地颠了一下，车上的病人「哎哟」一声，家属立刻沉下脸：「会不会推车啊！」小何赶忙替你赔了不是。（人心-1）', next: 'n2_walk3a' },
+      n2_walk3r: { speaker: 'sys', sprite: 'char_he', text: '（**意外**）拐弯时平车**猛地颠了一下**，车上的病人「哎哟」一声，家属立刻沉下脸：「会不会推车啊！」小何赶忙替你赔了不是。（**人心-1**）', next: 'n2_walk3a' },
       n2_walk3b: { speaker: 'sys', text: '平车消失在电梯口。急诊的人，连影子都是跑的。（回到科室）', next: 'n2_hub' },
       n2_walk4: { speaker: 'sys', text: '（回到科室）', next: 'n2_hub' },
       n2_rest0: { bg: 'bg_breakroom', speaker: 'sys', text: '值班室里，小唐正跟一台不出水的咖啡机较劲。', next: 'n2_rest1' },
@@ -230,7 +231,7 @@ export const NIGHTS: Night[] = extendCh1ArchiveWindow([
         { text: '陪她一起骂两句咖啡机', next: 'n2_rest3c' },
       ]},
       n2_rest3a: { speaker: 'sys', text: '你把插头拔下来重插、拍了拍水箱——咖啡机嗡嗡地复活了。小唐给你接了第一杯：「救命恩人！」（回到科室）', next: 'n2_hub' },
-      n2_rest3r: { speaker: 'sys', text: '（意外）你拆开咖啡机后盖，「啪」地冒了朵小火花——机器彻底没声了。小唐哭笑不得：「它本来还能出半杯的……」你默默把后盖装了回去，护士站的公物清单上多了一笔报损。（家业-1）（回到科室）', next: 'n2_hub' },
+      n2_rest3r: { speaker: 'sys', text: '（**意外**）你拆开咖啡机后盖，「啪」地冒了朵小火花——**机器彻底没声了**。小唐哭笑不得：「它本来还能出半杯的……」你默默把后盖装了回去，护士站的公物清单上多了一笔报损。（**家业-1**）（回到科室）', next: 'n2_hub' },
       n2_rest3b: { speaker: 'tang', sprite: 'char_tang', text: '哇——你居然带了这个！夜班零食是硬通货你懂不懂！（她嘴上说着，把最大的一块让给了你。）（回到科室）', next: 'n2_hub' },
       n2_rest3c: { speaker: 'sys', text: '你们对着咖啡机输出了三分钟。它没有悔改的意思。（回到科室）', next: 'n2_hub' },
 
@@ -327,7 +328,7 @@ export const NIGHTS: Night[] = extendCh1ArchiveWindow([
       n3_er3a: { speaker: 'he', sprite: 'char_he', text: '够意思！今晚要是忙不过来我喊你。……对了，进抢救区记得穿铅衣，床旁机曝光的时候整个屋子都在散射线里泡着，跟机房里隔着铅玻璃可不一样。', next: 'n3_er4' },
       n3_er3b: { speaker: 'he', sprite: 'char_he', text: '区别大了。床旁机没有滤线栅，功率也小，人还没法摆标准体位——所以床旁片天生就灰蒙蒙的。你们科的师傅说，那是散射线闹的，X光在病人身体里撞来撞去，横着出来的光子把图像「蒙」上了一层雾。', next: 'n3_er4' },
       n3_er4: { speaker: 'sys', text: '你回到科室。二十分钟后，这条信息救了场。（回到科室）', next: 'n3_hub' },
-      n3_er3r: { speaker: 'sys', sprite: 'char_he', text: '（意外）你把抢救车推回位，顺手把散落的注射器收进抽屉——可放错了格子。半小时后抢救演练，护士长当着全急诊的面点名：「谁动的抢救车？」小何挤挤眼替你认了，回头小声说：「没事儿。对了，进抢救区记得穿铅衣——床旁机曝光时整个屋子都在散射线里泡着。」（人心-1）', next: 'n3_er4' },
+      n3_er3r: { speaker: 'sys', sprite: 'char_he', text: '（**意外**）你把抢救车推回位，顺手把散落的注射器收进抽屉——可**放错了格子**。半小时后抢救演练，护士长当着全急诊的面点名：「谁动的抢救车？」小何挤挤眼替你认了，回头小声说：「没事儿。对了，进抢救区记得穿铅衣——床旁机曝光时整个屋子都在散射线里泡着。」（**人心-1**）', next: 'n3_er4' },
       n3_arc0: { bg: 'bg_archive', speaker: 'sys', text: '片库的铁门虚掩着——那把挂锁不见了。你推开门，月光从高窗照进来，照亮一排排码到天花板的片袋。', next: 'n3_arc1' },
       n3_arc1: { speaker: 'sys', text: '【四处看看？】', choices: [
         { text: '翻看架子上的旧片袋', next: 'n3_arc2', effect: { flag: 'archive_film' }, cond: { notFlag: 'archive_film' }, tag: 'good' },
@@ -346,7 +347,7 @@ export const NIGHTS: Night[] = extendCh1ArchiveWindow([
         { text: '「收到。铅门老化会有影响吗？」', next: 'n3_rest2b', effect: { skill: 1 }, tag: 'good' },
       ]},
       n3_rest2a: { speaker: 'sys', sprite: 'char_jiang', text: '你在走廊帮老蒋扶梯子，他絮絮叨叨讲了半小时楼里哪根管子几岁了。临走他塞给你一瓶冰红茶：「夜班娃娃都不容易。」（回到科室）', next: 'n3_hub' },
-      n3_rest2r: { speaker: 'sys', sprite: 'char_jiang', text: '（意外）拆旧灯管时玻璃碴划破了手指。老蒋翻出一条创可贴，又硬拉你去护士站消了毒：「夜班娃娃，手就是饭碗，下回戴手套！」（金币-25）', next: 'n3_rest2a' },
+      n3_rest2r: { speaker: 'sys', sprite: 'char_jiang', text: '（**意外**）拆旧灯管时玻璃碴**划破了手指**。老蒋翻出一条创可贴，又硬拉你去护士站消了毒：「夜班娃娃，手就是饭碗，下回戴手套！」（**金币-25**）', next: 'n3_rest2a' },
       n3_rest2b: { card: 'lead_eq', speaker: 'jiang', radio: 'char_jiang', sfx: 'vox_jiang', text: '「会漏射线呀。**防护材料都讲铅当量——多厚的材料顶多厚的铅**。门缝的橡胶条里掺了铅粉，老化了就等于墙上开了条缝。你们操作间虽然隔着，防的就是万一嘛。行了，挂了。」（回到科室）', next: 'n3_hub' },
 
       n3_case0: { bg: 'bg_control', speaker: 'sys', text: '晚上十点。分诊台电话响了：「急诊，胸痛的小伙子，马上送上来！」', sfx: 'ring', next: 'n3_s4' },
@@ -595,7 +596,7 @@ export const NIGHTS: Night[] = extendCh1ArchiveWindow([
         { text: '「周老师，这不合规矩……被查出来怎么办？」', next: 'n5_night6c', effect: { skill: 1 }, tag: 'neutral' },
       ]},
       n5_night6a: { speaker: 'sys', sprite2: 'pat_oldman', text: '你们一人摆位一人操作，一张胸片，两分钟。左侧第七、八肋骨骨折，还好没有气胸。老周从柜子里拿出自备的胸带，教老人缠好，又写了张纸条：药名、剂量、吃法，字迹一笔一画。', next: 'n5_night7' },
-      n5_night6r: { speaker: 'sys', sprite: 'char_zhou', sprite2: 'pat_oldman', text: '（意外）巡夜的护士长路过，看见检查室灯亮着，探头进来：「这么晚还拍片？登记了吗？谁批的？」老周拿出病历夹，平静地答：「急诊加急，我签的字。」护士长走后，他拍拍你肩膀：「好心是好心，下回先跟我报备流程。」（人心-1）', next: 'n5_night6a' },
+      n5_night6r: { speaker: 'sys', sprite: 'char_zhou', sprite2: 'pat_oldman', text: '（**意外**）巡夜的护士长路过，看见检查室灯亮着，探头进来：「这么晚还拍片？**登记了吗？谁批的？**」老周拿出病历夹，平静地答：「急诊加急，我签的字。」护士长走后，他拍拍你肩膀：「好心是好心，下回先跟我报备流程。」（**人心-1**）', next: 'n5_night6a' },
       n5_night6b: { speaker: 'sys', text: '你轻轻带上了门。第二天交班本上，昨夜的一切干干净净，仿佛什么都没发生。只是垃圾桶里多了一副用过的手套，和一张手写用药说明的草稿。', next: 'n5_night7' },
       n5_night6c: { speaker: 'zhou', sprite: 'char_zhou', text: '（盯着机器看了很久）规矩我懂，我在这台机器前面站了三十年。……可这行最先教我的那句话是：**先救人。机器是死的，人是活的。**今晚这台机器的钱，从我工资里扣。', next: 'n5_night7' },
       n5_night7: { speaker: 'me', text: '（残影、凌晨三点检查室的灯光、没有登记的片子——全对上了。原来「闹鬼」的片库和机器，藏着的是这样的事。）', effect: { flag: 'zhou_truth' }, next: 'n5_night8' },

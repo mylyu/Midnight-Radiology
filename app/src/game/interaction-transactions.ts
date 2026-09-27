@@ -134,7 +134,9 @@ export function commitCh1Choice(s: GameState, input: Ch1InteractionSource & Choi
   const riskTriggered = !!choice.risk && (input.randomValue as number) < choice.risk.chance
   const nextStep = riskTriggered ? choice.risk!.next : choice.next
   if (!NIGHTS.find(n => n.id === s.night)?.steps[nextStep]) return reject(s, '目标剧情节点不存在。')
-  const changed = applyEffect(applyEffect(s, choice.effect), riskTriggered ? choice.risk?.effect : undefined)
+  let changed = applyEffect(applyEffect(s, choice.effect), riskTriggered ? choice.risk?.effect : undefined)
+  // The badge belongs to the committed random outcome, not mounting its scene.
+  if (riskTriggered) changed = applyEffect(changed, { badge: 'good_intentions' })
   // Leave resumeKey at the previously applied node. Target entry owns its effect.
   return { state: { ...changed, stepId: nextStep }, accepted: true, message: '', nextStep, riskTriggered }
 }
@@ -150,8 +152,9 @@ export function commitCh2Choice(s: GameState, input: Ch2InteractionSource & Choi
   const nextStep = riskTriggered ? choice.risk!.next : choice.next
   if (!CH2_SHIFTS.find(shift => shift.id === input.expectedShift)?.steps[nextStep]) return reject(s, '目标剧情节点不存在。')
   let next = s
-  if (choice.effect || riskTriggered && choice.risk?.effect) {
-    next = recordCh2Change(s, applyEffect(applyEffect(s, choice.effect), riskTriggered ? choice.risk?.effect : undefined),
+  if (choice.effect || riskTriggered) {
+    const changed = applyEffect(applyEffect(s, choice.effect), riskTriggered ? choice.risk?.effect : undefined)
+    next = recordCh2Change(s, riskTriggered ? applyEffect(changed, { badge: 'good_intentions' }) : changed,
       `choice:${input.expectedStep}`, choice.text.replaceAll('**', ''), 'choice')
   }
   // Old partial receipts keep their old no-second-reward behavior. New choices

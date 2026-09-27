@@ -8,6 +8,7 @@ function Notice({ notice, onExpire }: { notice: StatNotice; onExpire: (id: numbe
     return () => window.clearTimeout(timer)
   }, [notice.id, notice.expiresAt, onExpire])
   return <div className="stat-feedback-notice" data-stat-notice={notice.id}>
+    {notice.message && <span className="stat-feedback-message">{notice.message}</span>}
     <span className="stat-feedback-values">{notice.changes.map(row => <span key={row.key}
       className={row.amount > 0 ? 'stat-feedback-gain' : 'stat-feedback-loss'}>
       {FEEDBACK_NAMES[row.key]}{row.amount > 0 ? '＋' : '－'}{Math.abs(row.amount)}{row.key === 'durability' ? '%' : ''}

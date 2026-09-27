@@ -11,6 +11,7 @@ export interface StatNotice {
   context: string
   expiresAt: number
   reason: string
+  message?: string
   changes: { key: FeedbackStat; amount: number }[]
 }
 
@@ -25,9 +26,17 @@ export function appendStatNotice(rows: StatNotice[], notice: StatNotice): StatNo
       (last.changes.find(row => row.key === key)?.amount ?? 0) +
       (notice.changes.find(row => row.key === key)?.amount ?? 0),
     })).filter(row => row.amount !== 0)
-    return changes.length ? [...rows.slice(0, -1), { ...last, changes }].slice(-3) : rows.slice(0, -1)
+    const message = notice.message ?? last.message
+    return changes.length || message ? [...rows.slice(0, -1), { ...last, changes, message,
+      reason: last.changes.length ? last.reason : notice.reason }].slice(-3) : rows.slice(0, -1)
   }
   return [...rows, notice].slice(-3)
+}
+
+/** Inventory feedback is not a stat award. Milk tea already earns +2 at purchase. */
+export function giftFeedback(before: GameState, after: GameState): string | undefined {
+  const consumed = ['milktea', 'snack'].filter(item => before.items.includes(item) && !after.items.includes(item))
+  return consumed.length ? consumed.map(item => item === 'milktea' ? '奶茶已送出' : '零食已分享').join(' · ') : undefined
 }
 
 /** Compare committed values, not promised effects (gold/AP/durability can clamp). */
@@ -38,6 +47,10 @@ export function statChanges(before: GameState, after: GameState, chapter2 = fals
 
 /** Entry dialogue can contain an unrevealed answer: never echo it in a toast. */
 export function statChangeReason(before: GameState, after: GameState): string {
+  if (giftFeedback(before, after)) {
+    return before.items.includes('milktea') && !after.items.includes('milktea') && before.heart === after.heart
+      ? '奶茶的人心收益已在购买时计入' : '同事间的心意'
+  }
   const oldEntries = new Set(before.dlc?.ch2?.loop?.entries.map(row => row.id))
   const entries = after.dlc?.ch2?.loop?.entries.filter(row => !oldEntries.has(row.id) &&
     Object.values(row.delta).some(value => value !== 0)) ?? []

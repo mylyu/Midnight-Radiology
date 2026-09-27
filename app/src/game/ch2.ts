@@ -500,7 +500,7 @@ const C2N1: Record<string, Step> = {
   ]},
   c2n1_b5a: { speaker: 'kai', sprite: 'char_kai', text: "设备通道，安装单上这么写的。你问到具体字段，我还真不能拍胸脯。（他在名片背面记了一笔）我找片区同事要清单，给你们信息科核，别光听我一句「放心」。", next: 'c2n1_b6' },
   c2n1_b5b: { speaker: 'kai', sprite: 'char_kai', text: "名片拿着，撤场后归片区同事管。有事先打电话。这台机柜先别碰，拆出一箱多余螺丝，我也没法交差。", next: 'c2n1_b6' },
-  c2n1_b5c: { speaker: 'sys', text: '箱子一歪，里面的线材散了一地。你陪他重新理了二十分钟线，他直乐：「夜班大将，手上活儿不错，就是运气差点。」', next: 'c2n1_b5b' },
+  c2n1_b5c: { speaker: 'sys', text: '箱子一歪，里面的**线材散了一地**。你陪他重新理了**二十分钟**线，他直乐：「夜班大将，手上活儿不错，就是运气差点。」', next: 'c2n1_b5b' },
   c2n1_b6: { speaker: 'sys', text: '小凯推着最后一个纸箱走了。控制室彻底安静下来，只剩机架待机的低鸣。', effect: { flag: 'c2n1_b' }, next: 'c2n1_hub' },
   // —— E. 走廊转转 · 小雷 ——
   c2n1_e1: { speaker: 'lei', sprite: 'char_lei', sfx: 'vox_ch2_natural_lei_v2', text: "新机器接入PACS了。今晚直接在工作站看。（小雷松开鼠标，甩了甩手）我去把线号贴完。", effect: { ap: -1 }, next: 'c2n1_e2' },
@@ -517,7 +517,7 @@ const C2N1: Record<string, Step> = {
   c2n1_c4a: { speaker: 'tang', sprite: 'char_tang', text: "可不！它吃电，咱吃剩饭。主任倒是提了，照这个量，明年可能申请第二台。我先问能不能多配两个人，护士长让我别做梦。", next: 'c2n1_chat0' },
   c2n1_c4b: { speaker: 'tang', sprite: 'char_tang', text: '（接过奶茶，眼睛一亮）上道！……那我跟你说个真格的：**设备科老范跟老周是三十年的老搭档**，当年那台老X光机就是他俩一起装的。老白那批便宜球管的事，设备科盯了不是一天两天了——你就等着看吧。', effect: { heart: 1 }, next: 'c2n1_chat0' },
   c2n1_c4c: { speaker: 'tang', sprite: 'char_tang', text: "（接过咖啡罐）欸，下午老周在机房里站了半天。我问他是不是舍不得老机器，他问我：夜里停机，病人往哪儿送？……你说这人，聊天都能聊出张排班表。", next: 'c2n1_chat0' },
-  c2n1_c4d: { speaker: 'sys', text: '罐子一歪，半罐咖啡粉撒进了水槽。你俩蹲着擦了十五分钟地，小唐笑得直不起腰：「这就算夜班开光的仪式感吧。」', next: 'c2n1_chat0' },
+  c2n1_c4d: { speaker: 'sys', text: '罐子一歪，**半罐咖啡粉撒进了水槽**。你俩蹲着擦了**十五分钟**地，小唐笑得直不起腰：「这就算夜班开光的仪式感吧。」', next: 'c2n1_chat0' },
   c2n1_c5: { speaker: 'sys', text: '纸杯见底，八卦听完。回CT室的路上，你的脚步轻快了些。', effect: { flag: 'c2n1_c' }, next: 'c2n1_hub' },
   // —— 开诊主线：坠床的老人 ——
   c2n1_m0: { speaker: 'sys', text: '晚上十点，分诊铃响。急诊小何推着平车一路小跑。', sfx: 'ring', next: 'c2n1_m1' },
@@ -690,7 +690,7 @@ const C2N3: Record<string, Step> = {
   ]},
   c2n3_a4a: { speaker: 'wen', sprite: 'char_wen', text: '（笑）设备数据呗，球管、机架、报错码。……不过说实话，**合同里那条「数据服务」的条款，我们法务改了三版**，你们信息科要是较真，让他们把附件三逐条过一遍。我能说的就这么多。', next: 'c2n3_chat_wen_q' },
   c2n3_a4b: { speaker: 'wen', sprite: 'char_wen', text: '设备进院只是开始，往后十年的维保、升级、扯皮，都是生意。……对了，你们科主任下午问「远程质控服务」的事，那可是我们今年主推的新业务。', next: 'c2n3_chat_wen_q' },
-  c2n3_a4c: { speaker: 'sys', text: '最上面一份文件滑进电梯缝，你俩趴地上捞了半天。她笑你：「影像科的腰也不行啊。」', next: 'c2n3_a4b' },
+  c2n3_a4c: { speaker: 'sys', text: '最上面一份文件**滑进电梯缝**，你俩趴地上捞了半天。她笑你：「影像科的腰也不行啊。」', next: 'c2n3_a4b' },
   c2n3_a5: { speaker: 'sys', text: '电梯门合上。你抱着手臂看了一会儿大厅的灯，回到CT室。', effect: { flag: 'c2n3_a' }, next: 'c2n3_hub' },
   // —— D. 小唐八卦 ——
   c2n3_d1: { speaker: 'tang', sprite: 'char_tang', text: "今天神经内科那张头颅CT单，你看见没？去年问旧片的那个人，全自费。这回是头痛，神经内科医师开的平扫。单子都拿好了，他还在问片库有没有搬。", effect: { ap: -1 }, next: 'c2n3_d2' },

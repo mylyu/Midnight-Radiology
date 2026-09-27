@@ -34,7 +34,7 @@ import { freshState, loadState, saveState, wipeSave, applyEffect, condOk, dailyC
 import { imageAsset } from './lib/image-assets'
 import { SceneBackground } from './components/SceneBackground'
 import { StatFeedback } from './components/StatFeedback'
-import { statChanges, statChangeReason, appendStatNotice, type StatNotice } from './game/stat-feedback'
+import { statChanges, statChangeReason, appendStatNotice, giftFeedback, type StatNotice } from './game/stat-feedback'
 import { acceptInput } from './game/input-gate'
 import { useDialogueChoiceGuard } from './hooks/use-dialogue-choice-guard'
 import { readCh1Book, buyCh1Item, maintainCh1, commitCh1Choice, commitCh1Advance,
@@ -155,13 +155,14 @@ export default function App() {
     renderState(next)
     if (['night', 'day', 'quiz', 'epilogue', 'chapterEnd', 'ch2'].includes(screen)) {
       const changes = statChanges(prev, next, screen === 'ch2')
-      if (changes.length) {
+      const message = giftFeedback(prev, next)
+      if (changes.length || message) {
         const now = Date.now()
         const progress = next.dlc?.ch2
         const context = screen === 'ch2' ? `ch2:${progress?.shift}:${progress?.phase}:${progress?.stepId}`
           : `ch1:${screen}:${next.night}:${next.stepId}`
-        const notice = { id: ++nextNotice.current, createdAt: now, context, expiresAt: now + 2000,
-          changes, reason: statChangeReason(prev, next) }
+        const notice = { id: ++nextNotice.current, createdAt: now, context, expiresAt: now + 2800,
+          changes, message, reason: statChangeReason(prev, next) }
         setStatNotices(rows => appendStatNotice(rows, notice))
       }
     }
@@ -169,6 +170,7 @@ export default function App() {
 
   // 勋章弹窗：全局监听 badges 差分——剧情中、结算时、考核后获得的勋章都会即时弹出
   const [badgePop, setBadgePop] = useState<string[]>([])
+  const statsVisible = statNotices.length > 0
   const knownBadges = useRef<Set<string> | null>(null)
   useEffect(() => {
     if (!state) return
@@ -177,14 +179,15 @@ export default function App() {
     if (fresh.length === 0) return
     fresh.forEach(b => knownBadges.current!.add(b))
     setBadgePop(fresh)
-    playSfx('badge')
+    // A risk outcome plays its one failure cue at commit, without a celebration sound.
+    if (!fresh.includes('good_intentions')) playSfx('badge')
   }, [state])
   // 弹窗自动消失：独立 effect 挂在弹窗内容本身上——state 每步都变，若计时器放在上面的 effect 里会被反复清理，导致弹窗永久挂住
   useEffect(() => {
-    if (badgePop.length === 0) return
+    if (badgePop.length === 0 || statsVisible) return
     const t = setTimeout(() => setBadgePop([]), 2800)
     return () => clearTimeout(t)
-  }, [badgePop])
+  }, [badgePop, statsVisible])
 
   // 知识卡片 toast：全局监听 cards 差分（NightScreen 每步重挂载，局部 state 存不住 toast，必须放在 App 层）
   const [cardToast, setCardToast] = useState<string | null>(null)
@@ -352,7 +355,7 @@ export default function App() {
       )}
 
       {/* 全局勋章弹窗（第一章与 DLC 共用） */}
-      {badgePop.length > 0 && (
+      {badgePop.length > 0 && !statsVisible && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none">
           <div className="bg-slate-900/95 border-2 border-amber-400 rounded-2xl px-8 py-6 shadow-[0_0_40px_rgba(251,191,36,0.4)] flex flex-col items-center gap-2 rotate-[-1deg]">
             <p className="text-amber-300 tracking-[0.3em] text-xs">获得勋章</p>
@@ -810,7 +813,7 @@ function NightScreen({ state, update, inputGate, onFinish, onExit }: { state: Ga
     let result: ChoiceCommitResult | undefined
     update(s => { result = commitCh1Choice(s, { expectedNight: state.night, expectedStep: stepId, choice: c, randomValue }); return result.state })
     if (!result?.accepted) return
-    playSfx('click')
+    playSfx(result.riskTriggered ? 'buzz' : 'click')
     if (result.action === 'shop') { setShopOpen(true); return }
     if (result.action === 'book') { setBookOpen(true); return }
     if (result.nextStep) setStepId(result.nextStep)
@@ -2164,11 +2167,11 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
     if (c.next.startsWith('@ch2stat:')) { update(s => takeCh2StatInteraction(s, stepId, c.next)); setShown(0); return }
     if (c.next.startsWith('@ch2observe:')) { update(s => answerCh2Observation(s, stepId, c.next.slice('@ch2observe:'.length))); setShown(0); return }
     if (c.next.startsWith('@ch2gift:')) { update(s => giveCh2Gift(s, stepId, c.next).state); setShown(0); return }
-    playSfx('click')
     const randomValue = c.risk ? Math.random() : undefined
     let result: ChoiceCommitResult | undefined
     update(s => { result = commitCh2Choice(s, { expectedShift: shift.id, expectedStep: stepId, choice: c, randomValue }); return result.state })
     if (!result?.accepted) return
+    playSfx(result.riskTriggered ? 'buzz' : 'click')
     if (result.action === 'shop') { setShopOpen(true); return }
     if (result.action === 'book2') { setBookOpen(true); return }
     if (result.nextStep) setStepId(result.nextStep)
