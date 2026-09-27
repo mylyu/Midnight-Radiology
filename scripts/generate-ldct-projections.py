@@ -145,6 +145,27 @@ def generate(output: Path) -> None:
             numeric[key] = result
             metrics[key] = {"noise_sd": float(result[noise_mask].std()), "projection_hash": fingerprint(noisy)}
 
+    # The large uniform body dominates an unfiltered BP's low frequencies.
+    # Do not "fix" this by sharpening or erasing its DC term after the fact.
+    # Stage 3 instead compares ALL six methods on the same sparse test object,
+    # retaining known insert positions and adding the two small rods.
+    sparse = trace.copy()
+    for cx, radius in [(60.0, 2.8), (70.4, 1.76)]:
+        sparse[(xx - cx)**2 + (yy - 100.8)**2 <= radius**2] += .009
+    sparse_clean = radon(sparse * SPACING, theta=ANGLES, circle=True)
+    sparse_counts = np.random.default_rng(SEED).poisson(SIGNALS["high"] * np.exp(-sparse_clean))
+    sparse_projection = -np.log(np.maximum(sparse_counts, 1) / SIGNALS["high"])
+    numeric["filter:sparse:truth"] = sparse
+    numeric["filter:sparse:projection"] = sparse_projection
+    sparse_bp = iradon(sparse_projection, theta=ANGLES, filter_name=None, circle=True) / SPACING
+    sparse_none_window = [0, float(sparse_bp.max() * 1.05)]
+    for filter_name in ["none", "ramp", "shepp-logan", "cosine", "hamming", "hann"]:
+        result = iradon(sparse_projection, theta=ANGLES, filter_name=None if filter_name == "none" else filter_name, circle=True) / SPACING
+        key = f"filter:sparse:{filter_name}"
+        numeric[key] = result
+        frames[key] = to_gray(result, sparse_none_window if filter_name == "none" else [0, .014])
+        metrics[key] = {"projection_hash": fingerprint(sparse_projection)}
+
     columns = 8
     rows = int(np.ceil(len(frames) / columns))
     pixels = np.zeros((rows * SIZE, columns * SIZE), dtype=np.uint8)
@@ -159,6 +180,7 @@ def generate(output: Path) -> None:
         assert np.array_equal(np.asarray(check.convert("L")), pixels)
     np.savez_compressed(output / "ldct-projection-v2-numerics.npz", **numeric)
     metadata = {"version": VERSION, "seed": SEED, "size": SIZE, "spacing_mm": SPACING, "signal_incident_counts": SIGNALS, "angles": len(ANGLES), "display_window": WINDOW, "projection_window": projection_window, "bp_window": bp_window, "none_full_phantom_window": none_window, "residual_abs_window": [0, residual_scale], "bp_prefix_counts": BP_COUNTS, "bp_angles_degrees": {str(count): ANGLES[order[:count]].tolist() for count in BP_COUNTS}, "iterations": iteration_metrics, "sart_relaxation": .035, "structures": STRUCTURES, "structure_checks": structure_checks, "coordinate_formula": "detector = 80 + (x-80)*cos(theta) - (y-80)*sin(theta), x right and y down", "columns": columns, "rows": rows, "frames": frame_records, "metrics": metrics, "atlas_bytes": atlas_path.stat().st_size, "atlas_sha256": hashlib.sha256(atlas_path.read_bytes()).hexdigest()}
+    metadata["stage3_sparse"] = {"projection_hash": fingerprint(sparse_projection), "incident_counts": SIGNALS["high"], "fbp_display_window": [0, .014], "unfiltered_display_window": sparse_none_window, "methods": ["none", "ramp", "shepp-logan", "cosine", "hamming", "hann"], "reason": "Uniform full-body background masks sparse feature shape in unfiltered BP; compare all six methods on identical sparse projections, without post-hoc sharpening."}
     (output / "ldct-projection-v2-metadata.json").write_text(json.dumps(metadata, ensure_ascii=False, indent=2), encoding="utf-8")
     sheet = Image.new("RGB", (SIZE * columns, (SIZE + 23) * rows), "#08111e")
     draw = ImageDraw.Draw(sheet)

@@ -4,20 +4,28 @@
 
 ## 正式交付与再生成
 
-- 图集：`ldct_projection_v2_atlas.webp`，当前引导修订版1280×960、46个160×160帧、无损WebP，**450,518字节**。初版37帧367,058字节；本次只追加9帧，原37帧逐像素相同。
-- 逻辑ID：`ldct_projection_v2_atlas`；当前哈希：`57b338fca7e09dbd1402de0b8459ac1bc35aacd086f37d715213d6a105fa75b1`。
+- 图集：`ldct_projection_v2_atlas.webp`，当前完整版1280×1120、52个160×160帧、无损WebP，**492,556字节**。本轮追加6帧，之前46帧逐像素相同。
+- 逻辑ID：`ldct_projection_v2_atlas`；当前哈希：`be8770bb157de64a2a225af2df54fa5a0689fa1114fd98878d1ede16917a9e00`。
 - 生成器：`scripts/generate-ldct-projections.py`；浏览器帧映射与几何函数：`app/src/game/ldct-projections.ts`。
 - 所有图像为原创数字模体数值计算结果；不是患者影像、图像滤镜冒充重建或神经网络结果。不下载模型，不包含第三方临床数据。
-- 本次源数组、参数JSON和审图表保存在仓库外 `C:/Users/lvmen/Documents/New project/ldct-projection-assets/`，不放正式public。生成器可重建这些文件。
+- 本次源数组、参数JSON和审图表保存在仓库外 `C:/Users/lvmen/Documents/New project/ldct-complete-assets/projections/`，不放正式public。生成器可重建这些文件。
 
 ```powershell
-python scripts/generate-ldct-projections.py "C:/Users/lvmen/Documents/New project/ldct-projection-assets"
+python scripts/generate-ldct-projections.py "C:/Users/lvmen/Documents/New project/ldct-complete-assets/projections"
 # 验图后用 app/scripts/import-image.mjs --keep-webp 导入；不再次有损压缩。
 ```
 
 本次环境：Python3.14，NumPy2.5.0、SciPy1.18.0、scikit-image0.26.0、Pillow12.2.0。不同库版本或平台可能产生不同字节，需重新核对后更新内容哈希。
 
-## 2026-09-27 引导修订：None与总响应
+## 2026-09-27 完整版：第三段改用稀疏物体
+
+此前未滤波结果中的大圆盘不是计算错误，而是完整模体大面积均匀背景的低频贡献占主导；作为第一眼认识反投影模糊的例子不合适。本轮第三段移除大背景，保留前三个结构并加入两根细棒。六种方法全部读取这个稀疏模体的同一份带噪投影（I0=16000、种子2258），并非仅修改未滤波一张图。
+
+新增帧`filter:sparse:{none,ramp,shepp-logan,cosine,hamming,hann}`。未滤波依然调用真实`iradon(filter_name=None)`，不减掉图像的低频、锐化或手工描边。五种FBP统一显示窗[0,0.014]/mm；未滤波的固定显示窗为[0,0.4243647739]，幅度另行归一化，只比较结构的铺开与定位，不作跨算法灰度量化比较。已看审图表，未滤波时模糊的几个结构可辨，与FBP形成直观区别。
+
+第四、五段继续使用原完整模体，原46帧不变；切入第四段由剧情交代重新加入大背景。旧三种滤波器及实验进度仍兼容，内部`none`键不变，玩家界面显示“不滤波／直接反投影”。新的metadata中`stage3_sparse`登记六帧的共同投影哈希、显示窗和种子。旧记录若回看第三段，展示的是本轮新的稀疏比较对象，不应据此篡改其既有奖励收据。
+
+## 前轮引导修订：None与总响应
 
 作者指出的矩形平坦响应指**整个重建滤波器的总频率响应**。此时带内权重为1，是None、不做滤波、直接反投影；不是“Ramp不额外加窗”。[MATLAB iradon官方说明](https://www.mathworks.com/help/images/ref/iradon.html)明确区分None与Ram-Lak，并列出其余窗乘Ramp的选择。本游戏参考该语义，实际数值仍由scikit-image生成，不声称使用MATLAB运行。
 
@@ -33,7 +41,7 @@ python scripts/generate-ldct-projections.py "C:/Users/lvmen/Documents/New projec
 
 1. **追结构**：先只展示三个独立小结构以及它们的真实Radon投影，免得整体外壳淹没曲线。点击结构后才标出对应轨迹。正弦图横向为角度，纵向为探测器位置；不是身体内物体在移动。
 2. **直接反投影**：沿用这三个结构及同源投影。按黄金角排序逐步加入1、2、4、8、24、160个不同角度，把投影沿原方向铺回去；均为 `iradon(filter_name=None)` 的实际输出。加角度演示不代表改变临床剂量。
-3. **滤波与未滤波对照**：保持三个结构的位置，再加入圆形外壳、低密度圆块及额外细棒。使用完整模体的同一份投影，显示None直接反投影及Ramp、Shepp–Logan、Cosine、Hamming、Hann的FBP结果，而不是给最终图套锐化或模糊滤镜。阶段切换必须交代“加外壳和其他结构”，不假称前后完整图像完全相同。
+3. **滤波与未滤波对照**：保留三个结构并加两根细棒，使用无大面积背景的稀疏模体。六种方法读取同一份投影，显示直接反投影及Ramp、Shepp–Logan、Cosine、Hamming、Hann的FBP结果，而不是给最终图套锐化或模糊滤镜。
 4. **信号与噪声**：完整模体、投影角度及几何不变，只改变入射计数；先看到测量投影变化，再看相同算法的结果。固定噪声种子，不通过反复切换重抽一张好看的图。
 5. **多次迭代**：针对低信号同一份投影，从真正的零图出发。保存SART完整迭代0、1、2、4、8轮的估计图、该估计的正投影、测量与预测的差异。可停在哪一轮，没有“最大次数必然最优”的判分。
 

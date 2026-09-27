@@ -4,7 +4,7 @@ export const LDCT_PROJECTION_SEED = 2258 as const
 export const LDCT_PROJECTION_MEDIA_ID = 'ldct_projection_v2_atlas' as const
 export const LDCT_PROJECTION_MEDIA_IDS = [LDCT_PROJECTION_MEDIA_ID] as const
 export const LDCT_PROJECTION_SIZE = 160
-export const LDCT_PROJECTION_ATLAS = { columns: 8, rows: 6 } as const
+export const LDCT_PROJECTION_ATLAS = { columns: 8, rows: 7 } as const
 export const LDCT_BP_COUNTS = [1, 2, 4, 8, 24, 160] as const
 export const LDCT_ITERATIONS = [0, 1, 2, 4, 8] as const
 export type { LdctFilter as LdctProjectionFilter } from './ldct-filter-response'
@@ -71,6 +71,8 @@ export const LDCT_PROJECTION_FRAME_KEYS = [
   'fbp:low:none', 'fbp:low:cosine', 'fbp:low:hamming',
   'fbp:medium:none', 'fbp:medium:cosine', 'fbp:medium:hamming',
   'fbp:high:none', 'fbp:high:cosine', 'fbp:high:hamming',
+  'filter:sparse:none', 'filter:sparse:ramp', 'filter:sparse:shepp-logan',
+  'filter:sparse:cosine', 'filter:sparse:hamming', 'filter:sparse:hann',
 ] as const
 export type LdctProjectionFrameKey = typeof LDCT_PROJECTION_FRAME_KEYS[number]
 
@@ -104,7 +106,7 @@ export const LDCT_PROJECTION_NOTES = [
   '开头只放三个小结构，便于追踪投影轨迹；后面给同样的位置加外壳和其他结构。这里是数字模体，没有患者数据。',
   '正弦图横向是投影角度，纵向是探测器位置。图中一个点在不同角度会投到不同位置；看到的轨迹不是这个点在人体里移动。',
   '直接反投影把每个角度的投影沿原方向铺回去。本台的1、2、4、8、24、160表示参与叠加的角度数，不把少角度等同低剂量。',
-  'None不滤波，直接反投影。FBP在反投影之前对投影做滤波；Ramp、Shepp–Logan、Cosine、Hamming、Hann均由同源投影真实计算，并非在成片上套锐化、美颜滤镜。',
+  '不滤波就是直接反投影。第三段用稀疏模体比较六种处理，避免大外壳淹没小结构；六种都读同一份投影。FBP先滤波再反投影，并非在成片上套锐化、美颜滤镜。',
   '低、中、高信号改变模拟入射计数，角度和几何不变。通过泊松计数及取对数得到带噪投影；本台不把计数换算成临床剂量。',
   '迭代示例是SART：从零开始，反复正投影、核对测量、更新图像。第1、2、4、8轮显示实际中间结果；差异变小也可能是在追逐噪声，多迭代不保证更好。',
   '二维平行束、单能、固定显示窗的简化演示，不包含真实CT所有散射、能谱、运动、探测器响应等效应，不可用于选择患者检查参数。',
