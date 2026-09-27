@@ -1,17 +1,9 @@
 .ldct-root{position:relative;height:100%;width:100%;overflow:hidden;background:#080f21;color:#e2e8f0}
-.ldct-root button{min-height:42px;border:1px solid #526078;background:#1e293be8;border-radius:8px;padding:8px 14px;text-align:left;transition:border-color .15s}
-.ldct-root button:hover,.ldct-root button:focus-visible{border-color:#5eead4;outline-offset:3px}
-.ldct-root button:disabled{opacity:.45;cursor:not-allowed}
-.ldct-shade{position:absolute;inset:0;background:linear-gradient(#02061770,#02061710 45%,#02061780);pointer-events:none}
-.ldct-toolbar{position:relative;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 18px;background:#020617cf;border-bottom:1px solid #334155}
-.ldct-toolbar>div{white-space:nowrap}.ldct-toolbar small{display:block;font-size:10px;color:#94a3b8;margin-top:3px}
-.ldct-toolbar nav{display:flex;flex-wrap:wrap;gap:5px;justify-content:flex-end}.ldct-toolbar button{font-size:12px;min-height:34px;padding:5px 9px}
-.ldct-portrait{position:absolute;left:calc(50% - 390px);bottom:15%;height:75%;width:350px;object-fit:contain;object-position:bottom;pointer-events:none}
-.ldct-dialogue{position:absolute;z-index:10;bottom:18px;left:50%;transform:translateX(-50%);width:calc(100% - 40px);max-width:896px;height:33%;min-height:160px;background:#0f172aed;border:2px solid #526078;border-radius:14px;padding:18px 22px;box-shadow:0 10px 40px #0004}
-.ldct-dialogue-scroll{height:100%;overflow:auto;overscroll-behavior:contain;padding-right:5px}
-.ldct-speaker{font-size:14px;color:#67e8f9;margin:0 0 8px}.ldct-text{font-size:18px;line-height:1.8;min-height:76px;cursor:pointer;white-space:pre-line}
-.ldct-arrow{float:right;color:#5eead4;font-size:15px;margin:12px}
-.ldct-choices{display:flex;flex-direction:column;gap:7px;margin-top:12px}.ldct-choices button{width:100%;font-size:16px;line-height:1.6}
+/* The dialogue, portraits and header deliberately have no LDCT overrides.
+   DialogueScene and the existing shared mobile rules are the only source. */
+.ldct-modal button,.ldct-settlement button{min-height:42px;border:1px solid #526078;background:#1e293be8;border-radius:8px;padding:8px 14px;text-align:left;transition:border-color .15s}
+.ldct-modal button:hover,.ldct-settlement button:hover,.ldct-modal button:focus-visible,.ldct-settlement button:focus-visible{border-color:#5eead4;outline-offset:3px}
+.ldct-modal button:disabled,.ldct-settlement button:disabled{opacity:.45;cursor:not-allowed}
 .ldct-lab-wrap{position:absolute;inset:68px 0 0;overflow:auto;z-index:15;background:#020617e8;padding:12px}
 .ldct-settlement{position:absolute;inset:75px 0 0;overflow:auto;padding:18px max(18px,calc((100% - 860px)/2)) 28px;z-index:12}
 .ldct-settlement h1{font-size:26px;color:#fef3c7;margin:8px 0}.ldct-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:20px 0}
@@ -23,5 +15,5 @@
 .ldct-modal>header{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid #334155;flex-shrink:0}.ldct-modal h2{font-size:18px;color:#fde68a}
 .ldct-modal-content{padding:18px;overflow:auto;min-height:0}.ldct-reading p{font-size:14px;line-height:1.8;margin:10px 0}.ldct-reading h3{color:#fde68a;margin-top:14px}.ldct-reading a{color:#5eead4;text-decoration:underline}.ldct-json{white-space:pre-wrap;word-break:break-all;font-size:11px;padding:10px;background:#020617;max-height:200px;overflow:auto}
 .ldct-shop-row{display:flex;align-items:center;gap:12px;border-bottom:1px solid #334155;padding:12px 0}.ldct-shop-row img{width:48px;height:48px;object-fit:contain}.ldct-shop-row>div{flex:1;min-width:0}.ldct-shop-row h3{margin:0;font-size:15px}.ldct-shop-row p{font-size:12px}
-@media(orientation:portrait){.ldct-toolbar{padding:8px 10px;display:block}.ldct-toolbar>div{display:flex;gap:12px;align-items:center}.ldct-toolbar nav{justify-content:flex-start;margin-top:6px}.ldct-portrait{left:4%;width:73%;height:57%;bottom:24%}.ldct-dialogue{height:40%;bottom:12px;width:calc(100% - 20px);padding:14px}.ldct-text{font-size:16px;min-height:62px}.ldct-choices button{font-size:14px}.ldct-lab-wrap,.ldct-settlement{top:108px}.ldct-settlement h1{font-size:22px}.ldct-shop-row{gap:8px}.ldct-shop-row img{width:36px;height:36px}}
-@media(orientation:landscape) and (max-height:520px){.ldct-toolbar{padding:5px 12px}.ldct-toolbar small{display:none}.ldct-toolbar nav button{min-height:30px}.ldct-dialogue{bottom:8px;height:44%;min-height:0;padding:10px 16px}.ldct-portrait{height:80%;bottom:12%;left:10%;width:210px}.ldct-text{font-size:15px;min-height:38px;line-height:1.6}.ldct-choices{margin-top:7px}.ldct-choices button{font-size:13px;min-height:36px;padding:5px 10px}.ldct-speaker{font-size:12px;margin-bottom:4px}.ldct-lab-wrap,.ldct-settlement{top:45px}.ldct-overlay{padding:8px}.ldct-modal{max-height:96%}}
+@media(orientation:portrait){.ldct-lab-wrap,.ldct-settlement{top:108px}.ldct-settlement h1{font-size:22px}.ldct-shop-row{gap:8px}.ldct-shop-row img{width:36px;height:36px}}
+@media(orientation:landscape) and (max-height:520px){.ldct-lab-wrap,.ldct-settlement{top:65px}.ldct-overlay{padding:8px}.ldct-modal{max-height:96%}}

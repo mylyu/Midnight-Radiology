@@ -48,6 +48,10 @@ import { LdctHallCard } from './components/LdctHallCard'
 import { ldctUnlocked } from './game/ldct-access'
 import { initializeLdct } from './game/ldct-session'
 import { LDCT_BADGES } from './game/ldct'
+import { DialogueStage, DialogueShade, DialogueHeader, DialoguePortrait, DialoguePanel, DialogueChoices, DialogueChoice } from './components/DialogueScene'
+import { FullscreenBtn } from './components/FullscreenButton'
+import { enterFullscreenLandscape } from './lib/fullscreen'
+import { DIALOGUE_CHARACTER_MS, DIALOGUE_CHOICE_BUFFER_MS, waitForDialogueChoices } from './game/dialogue-timing'
 
 type Screen = 'title' | 'select' | 'checkin' | 'night' | 'day' | 'badges' | 'quiz' | 'epilogue' | 'chapterEnd' | 'verify' | 'dlcHall' | 'dlc' | 'ch2' | 'ldct'
 
@@ -408,21 +412,6 @@ function BgImg({ name, fixed = false }: { name: string; fixed?: boolean }) {
 }
 
 /* 全屏切换：仅在支持 Fullscreen API 的浏览器渲染（安卓 Chrome 等）；微信/iOS 自动隐藏 */
-async function enterFullscreenLandscape() {
-  try { await document.documentElement.requestFullscreen() } catch { return }
-  // 全屏后尝试锁定横屏(视频 App 同款效果);iOS Safari / 微信等不支持时静默忽略
-  try {
-    const o = screen.orientation as unknown as { lock?: (o: string) => Promise<void> }
-    if (typeof o.lock === 'function') await o.lock('landscape')
-  } catch { /* 不支持的浏览器直接忽略,保持普通全屏 */ }
-}
-function exitFullscreenUnlock() {
-  try {
-    const o = screen.orientation as unknown as { unlock?: () => void }
-    if (typeof o.unlock === 'function') o.unlock()
-  } catch { /* ignore */ }
-  void document.exitFullscreen().catch(() => {})
-}
 /** 当前环境是否支持"全屏+锁横屏"(安卓 Chrome 等;iOS/部分微信内核不支持) */
 function supportsLandscapeLock() {
   return typeof document !== 'undefined' && !!document.fullscreenEnabled &&
@@ -465,21 +454,6 @@ function RotateHint() {
   )
 }
 
-function FullscreenBtn({ className = '' }: { className?: string }) {
-  if (typeof document === 'undefined' || !document.fullscreenEnabled) return null
-  return (
-    <button
-      onClick={e => {
-        e.stopPropagation(); playSfx('click')
-        if (document.fullscreenElement) exitFullscreenUnlock()
-        else void enterFullscreenLandscape()
-      }}
-      className={`text-xs text-slate-400 hover:text-amber-300 border border-slate-700 rounded px-2 py-0.5 ${className}`}
-      title="全屏显示(支持的设备上将自动横屏)">
-      ⛶ 全屏
-    </button>
-  )
-}
 
 /* ================= 标题画面 ================= */
 function TitleScreen({ hasSave, onNew, onContinue, onBadges, onVerify, onDlc }: { hasSave: boolean; onNew: () => void; onContinue: () => void; onBadges: () => void; onVerify: () => void; onDlc: () => void }) {
@@ -754,24 +728,16 @@ function NightScreen({ state, update, inputGate, onFinish, onExit }: { state: Ga
 
   useEffect(() => {
     if (done) return
-    const t = setInterval(() => setShown(s => Math.min(s + 1, plainLen)), 28)
+    const t = setInterval(() => setShown(s => Math.min(s + 1, plainLen)), DIALOGUE_CHARACTER_MS)
     return () => clearInterval(t)
   }, [stepId, done, plainLen])
 
   // 选项出现后设一段不可点击的缓冲，防止误触
   useEffect(() => {
     if (!step.choices || !done) { setChoiceReadyStep(null); return }
-    const readyAt = performance.now() + 900
+    const readyAt = performance.now() + DIALOGUE_CHOICE_BUFFER_MS
     choiceReadyAt.current = { id: stepId, time: readyAt }
-    const unlock = () => { if (performance.now() >= readyAt) setChoiceReadyStep(stepId) }
-    const t = setTimeout(unlock, 900)
-    window.addEventListener('focus', unlock)
-    document.addEventListener('visibilitychange', unlock)
-    return () => {
-      clearTimeout(t)
-      window.removeEventListener('focus', unlock)
-      document.removeEventListener('visibilitychange', unlock)
-    }
+    return waitForDialogueChoices(() => setChoiceReadyStep(stepId), readyAt)
   }, [stepId, done, step.choices])
 
   // CR 读取流程：等本步文本播完，稍停一拍再启动扫描动画（先看到"送去扫描仪"，再看到扫描）
@@ -856,16 +822,14 @@ function NightScreen({ state, update, inputGate, onFinish, onExit }: { state: Ga
   const visibleChoices = (step.choices ?? []).filter(c => c.disabledReason || condOk(state, c.cond))
 
   return (
-    <div className="relative w-full h-full cursor-pointer" data-ch1-step={stepId}
+    <DialogueStage data-ch1-step={stepId}
       onPointerDownCapture={choiceGuard.pointerDown} onPointerCancelCapture={choiceGuard.cancel}
       onKeyDownCapture={choiceGuard.keyDown} onClickCapture={choiceGuard.click} onClick={advance}>
       <BgImg name={view.bg} />
-      <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-slate-950/80 to-transparent pointer-events-none" />
+      <DialogueShade />
 
       {/* 顶部信息条 */}
-      <div className="absolute top-0 inset-x-0 z-20 flex items-center justify-between flex-wrap gap-y-1 px-4 py-2 bg-slate-950/70 text-xs md:text-sm">
-        <span className="text-amber-200 tracking-widest whitespace-nowrap">{stepId.startsWith('n5_epi') ? '尾声 · 第一章' : `${night.title} · ${night.subtitle}`}</span>
-        <span className="text-slate-300 flex items-center gap-2 md:gap-3 flex-wrap justify-end">
+      <DialogueHeader accent="amber" title={stepId.startsWith('n5_epi') ? '尾声 · 第一章' : `${night.title} · ${night.subtitle}`}>
           <span>💰 {state.gold}</span>
           <span>🔧 {state.durability}%</span>
           <span className={state.ap > 0 ? 'text-sky-300' : 'text-slate-600'}>⚡×{state.ap}</span>
@@ -895,8 +859,7 @@ function NightScreen({ state, update, inputGate, onFinish, onExit }: { state: Ga
               跳过本夜
             </button>
           )}
-        </span>
-      </div>
+      </DialogueHeader>
 
       {/* 电话/对讲机来电头像 */}
       {(step.phone || step.radio) && (
@@ -919,31 +882,24 @@ function NightScreen({ state, update, inputGate, onFinish, onExit }: { state: Ga
       )}
 
       {/* 立绘 */}
-      {leftSprite && <img src={leftSprite} className="sprite-l absolute bottom-48 portrait:bottom-44 left-4 md:left-24 portrait:h-44 h-64 md:h-96 object-contain pixel drop-shadow-2xl z-10" alt="" />}
-      {rightSprite && <img src={rightSprite} className="sprite-r absolute bottom-48 portrait:bottom-44 right-4 md:right-24 portrait:h-40 h-56 md:h-80 object-contain pixel opacity-80 drop-shadow-2xl z-10" alt="" />}
+      {leftSprite && <DialoguePortrait src={leftSprite} alt="" />}
+      {rightSprite && <DialoguePortrait side="right" src={rightSprite} alt="" />}
 
       {/* 对话框 */}
-      <div className="dialog-wrap absolute bottom-0 inset-x-0 z-20 p-4 md:p-6">
-        <div className="dialog-box max-w-4xl mx-auto bg-slate-900/95 border-2 border-slate-600 rounded-xl p-4 md:p-5 min-h-32 relative">
-          {speakerMeta && speakerMeta.name && (
-            <span className="absolute -top-4 left-4 px-3 py-1 rounded-md text-sm font-bold bg-slate-800 border border-slate-600" style={{ color: speakerMeta.color }}>
-              {speakerMeta.name === '我' ? (state.gender === 'f' ? '林小满' : '陈一帆') : speakerMeta.name}
-            </span>
-          )}
-          <p key={stepId} className="text-slate-100 leading-relaxed text-base md:text-lg whitespace-pre-wrap min-h-[4.9rem] md:min-h-[5.4rem] text-in"><RichText text={fullText} shown={shown} /></p>
-          {!step.choices && !step.end && done && <span className="absolute bottom-3 right-4 text-amber-300 animate-bounce">▼</span>}
+      <DialoguePanel accent="amber" textKey={stepId} text={<RichText text={fullText} shown={shown} />}
+        speaker={speakerMeta && { ...speakerMeta, name: speakerMeta.name === '我' ? (state.gender === 'f' ? '林小满' : '陈一帆') : speakerMeta.name }}
+        arrow={!step.choices && !step.end && done}>
           {step.choices && done && !choicesLocked && (
-            <div className="mt-4 flex flex-col gap-2 choice-in max-h-[38dvh] overflow-y-auto md:max-h-none" onClick={e => e.stopPropagation()}>
+            <DialogueChoices className="max-h-[38dvh] overflow-y-auto md:max-h-none">
               {visibleChoices.map((c, i) => (
-                <button key={i} data-dialogue-choice={i} onClick={() => pick(c, i)} disabled={!!c.disabledReason} title={c.disabledReason}
-                  className="shrink-0 text-left px-4 py-2.5 rounded-lg bg-slate-800 border border-slate-600 hover:border-amber-400 hover:bg-slate-700 transition-all text-slate-100 disabled:opacity-60 disabled:cursor-not-allowed">
+                <DialogueChoice key={i} accent="amber" data-dialogue-choice={i} onClick={() => pick(c, i)} disabled={!!c.disabledReason} title={c.disabledReason}
+                  className="shrink-0 disabled:opacity-60 disabled:cursor-not-allowed">
                   <RichText text={c.text} />
-                </button>
+                </DialogueChoice>
               ))}
-            </div>
+            </DialogueChoices>
           )}
-        </div>
-      </div>
+      </DialoguePanel>
 
       {/* CR 读取遮罩：IP板送扫描仪，激光逐行读出 */}
       {readout && (
@@ -975,7 +931,7 @@ function NightScreen({ state, update, inputGate, onFinish, onExit }: { state: Ga
       {shopOpen && <ShopOverlay state={state} update={update} onClose={() => setShopOpen(false)} />}
       {bookOpen && <BookOverlay state={state} update={update} onClose={() => setBookOpen(false)} />}
       {manualOpen && <ManualOverlay state={state} onClose={() => setManualOpen(false)} />}
-    </div>
+    </DialogueStage>
   )
 }
 
@@ -2136,7 +2092,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
     if (done) return
     const t = setInterval(() => setTextProgress(p => ({
       id: stepId, shown: Math.min((p.id === stepId ? p.shown : 0) + 1, plainLen),
-    })), 28)
+    })), DIALOGUE_CHARACTER_MS)
     return () => clearInterval(t)
   }, [stepId, done, plainLen])
 
@@ -2144,19 +2100,9 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
   useEffect(() => {
     pickedGate.current = { id: stepId, until: 0 }
     if (!hasChoices || !done) { setChoiceReadyStep(null); return }
-    const readyAt = performance.now() + 900
+    const readyAt = performance.now() + DIALOGUE_CHOICE_BUFFER_MS
     choiceReadyAt.current = { id: choiceScope, time: readyAt }
-    const unlock = () => {
-      if (performance.now() >= readyAt) setChoiceReadyStep(choiceScope)
-    }
-    const t = setTimeout(unlock, 900)
-    window.addEventListener('focus', unlock)
-    document.addEventListener('visibilitychange', unlock)
-    return () => {
-      clearTimeout(t)
-      window.removeEventListener('focus', unlock)
-      document.removeEventListener('visibilitychange', unlock)
-    }
+    return waitForDialogueChoices(() => setChoiceReadyStep(choiceScope), readyAt)
   }, [stepId, choiceScope, done, hasChoices])
 
   const blocked = checkinPending || scanPending || !!(step.choices || step.end || step.windowTask || step.checklist) || shopOpen || bookOpen || manualOpen || badgeOpen || backpackOpen || phase !== 'story'
@@ -2252,16 +2198,14 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
   const dawnShot = phase === 'story' ? CH2_DAWN_SHOTS[stepId] : undefined
 
   return (
-    <div ref={stageRef} className="relative w-full h-full cursor-pointer" data-ch2-step={stepId} data-ch2-phase={phase} data-ch2-observation={observationPending ? observation?.id : undefined}
+    <DialogueStage ref={stageRef} data-ch2-step={stepId} data-ch2-phase={phase} data-ch2-observation={observationPending ? observation?.id : undefined}
       onPointerDownCapture={choiceGuard.pointerDown} onPointerCancelCapture={choiceGuard.cancel}
       onKeyDownCapture={choiceGuard.keyDown} onClickCapture={event => { choiceGuard.click(event); retryVoices() }} onClick={advance}>
       {dawnShot ? <Ch2DawnScene shot={dawnShot} /> : <BgImg name={ch2BackgroundAsset(currentView.bg)} />}
-      <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-slate-950/80 to-transparent pointer-events-none" />
+      <DialogueShade />
 
       {/* 顶部信息条 */}
-      <div className="absolute top-0 inset-x-0 z-20 flex items-center justify-between flex-wrap gap-y-1 px-4 py-2 bg-slate-950/70 text-xs md:text-sm">
-        <span className="text-teal-200 tracking-widest whitespace-nowrap">🌀 第二章 · {shift.icon} {shift.title}「{shift.subtitle}」</span>
-        <span className="text-slate-300 flex items-center gap-2 md:gap-3 flex-wrap justify-end">
+      <DialogueHeader title={<>🌀 第二章 · {shift.icon} {shift.title}「{shift.subtitle}」</>}>
           <span>💰 {state.gold}</span>
           {shift.kind === 'night' && <span className={state.ap > 0 ? 'text-sky-300' : 'text-slate-600'}>⚡×{state.ap}</span>}
           <button onClick={e => { e.stopPropagation(); playSfx('click'); setManualOpen(true) }}
@@ -2273,8 +2217,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
           <FullscreenBtn />
           <button onClick={e => { e.stopPropagation(); playSfx('click'); onExit() }}
             className="text-xs text-slate-400 hover:text-teal-300 border border-slate-700 rounded px-2 py-0.5" title="进度已自动保存，可随时离开">💾 回大厅</button>
-        </span>
-      </div>
+      </DialogueHeader>
 
       {/* DNT 计时角标（演出用） */}
       {step.dnt !== undefined && (
@@ -2327,30 +2270,21 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
           regions={observationPending && observedChoice ? observation?.regions : undefined} />)}
 
       {/* 立绘 */}
-      {leftSprite && <img src={leftSprite} className={`sprite-l absolute bottom-48 portrait:bottom-44 left-4 md:left-24 portrait:h-44 h-64 md:h-96 object-contain pixel drop-shadow-2xl z-10 pointer-events-none ${isPatientBed(leftSpriteKey) ? 'ch2-patient-bed' : isPatientWheelchair(leftSpriteKey) ? 'ch2-patient-wheelchair' : ''}`} alt={isPatientBed(leftSpriteKey) ? '患者躺在转运平车上' : isPatientWheelchair(leftSpriteKey) ? '患者坐在轮椅上' : ''} />}
-      {rightSprite && <img src={rightSprite} className={`sprite-r absolute bottom-48 portrait:bottom-44 right-4 md:right-24 portrait:h-40 h-56 md:h-80 object-contain pixel opacity-80 drop-shadow-2xl z-10 pointer-events-none ${isPatientBed(currentView.sprite2) ? 'ch2-patient-bed ch2-patient-companion' : isPatientWheelchair(currentView.sprite2) ? 'ch2-patient-wheelchair' : ''}`} alt={isPatientBed(currentView.sprite2) ? '患者躺在转运平车上' : isPatientWheelchair(currentView.sprite2) ? '患者坐在轮椅上' : ''} />}
+      {leftSprite && <DialoguePortrait src={leftSprite} className={`pointer-events-none ${isPatientBed(leftSpriteKey) ? 'ch2-patient-bed' : isPatientWheelchair(leftSpriteKey) ? 'ch2-patient-wheelchair' : ''}`} alt={isPatientBed(leftSpriteKey) ? '患者躺在转运平车上' : isPatientWheelchair(leftSpriteKey) ? '患者坐在轮椅上' : ''} />}
+      {rightSprite && <DialoguePortrait side="right" src={rightSprite} className={`pointer-events-none ${isPatientBed(currentView.sprite2) ? 'ch2-patient-bed ch2-patient-companion' : isPatientWheelchair(currentView.sprite2) ? 'ch2-patient-wheelchair' : ''}`} alt={isPatientBed(currentView.sprite2) ? '患者躺在转运平车上' : isPatientWheelchair(currentView.sprite2) ? '患者坐在轮椅上' : ''} />}
 
       {/* 对话框 */}
-      <div ref={dialogRef} className="dialog-wrap absolute bottom-0 inset-x-0 z-20 p-4 md:p-6">
-        <div className="dialog-box max-w-4xl mx-auto bg-slate-900/95 border-2 border-slate-600 rounded-xl p-4 md:p-5 min-h-32 relative">
-          {speakerMeta && speakerMeta.name && (
-            <span className="absolute -top-4 left-4 px-3 py-1 rounded-md text-sm font-bold bg-slate-800 border border-slate-600" style={{ color: speakerMeta.color }}>
-              {speakerMeta.name === '我' ? (state.gender === 'f' ? '林小满' : '陈一帆') : speakerMeta.name}
-            </span>
-          )}
-          <p key={stepId} className="text-slate-100 leading-relaxed text-base md:text-lg whitespace-pre-wrap min-h-[4.9rem] md:min-h-[5.4rem] text-in">
-            <RichText text={fullText} shown={shown} />
-          </p>
-          {!checkinPending && !step.choices && !step.end && !step.windowTask && !step.checklist && done && <span className="absolute bottom-3 right-4 text-teal-300 animate-bounce">▼</span>}
+      <DialoguePanel dialogRef={dialogRef} textKey={stepId} text={<RichText text={fullText} shown={shown} />}
+        speaker={speakerMeta && { ...speakerMeta, name: speakerMeta.name === '我' ? (state.gender === 'f' ? '林小满' : '陈一帆') : speakerMeta.name }}
+        arrow={!checkinPending && !step.choices && !step.end && !step.windowTask && !step.checklist && done}>
           {step.choices && done && !choicesLocked && (
-            <div className="mt-4 flex flex-col gap-2 choice-in max-h-[38vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+            <DialogueChoices>
               {visibleChoices.map((c, i) => (
-                <button key={i} data-dialogue-choice={i} onClick={() => pick(c, i)}
-                  className="text-left px-4 py-2.5 rounded-lg bg-slate-800 border border-slate-600 hover:border-teal-400 hover:bg-slate-700 transition-all text-slate-100">
+                <DialogueChoice key={i} data-dialogue-choice={i} onClick={() => pick(c, i)}>
                   <RichText text={c.text} />
-                </button>
+                </DialogueChoice>
               ))}
-            </div>
+            </DialogueChoices>
           )}
           {step.end && done && phase === 'story' && (
             <div className="mt-4" onClick={e => e.stopPropagation()}>
@@ -2360,8 +2294,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
               </button>
             </div>
           )}
-        </div>
-      </div>
+      </DialoguePanel>
 
       {/* 窗宽窗位玩法 */}
       {phase === 'story' && step.windowTask && done && (
@@ -2393,7 +2326,7 @@ function Ch2Screen({ state, update, onExit }: { state: GameState; update: (f: (s
           <BadgeScreen state={state} onBack={() => setBadgeOpen(false)} />
         </div>
       )}
-    </div>
+    </DialogueStage>
   )
 }
 
