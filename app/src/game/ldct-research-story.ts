@@ -137,7 +137,7 @@ sequence('r3_arrival', [
   ['me', '那你也别先挑最好看的给我。小何说，把方法名字挡上。'],
 ], day, lu, 'r3_hub', { giftPerson: 'luzhou' })
 node('r3_hub', { bg: day, sprite: null, kind: 'hub', text: '饭还热着。你们等约好的同事过来，把演示先停在封面。', choices: [
-  choice('lei', '小雷带着复跑记录来了', 'r3_lei_0', { unless: 'r3_lei_chat' }),
+  choice('lei', '小雷拖着椅子过来，问起这周进展', 'r3_lei_0', { unless: 'r3_lei_chat' }),
   choice('frontier', '看看陆舟手机上那台新设备', 'r3_frontier_0', { unless: 'r3_frontier_chat' }),
   choice('compare', '收好饭盒，把几组结果遮名摆开', 'r3_blind_intro_0'),
 ] })
@@ -207,7 +207,7 @@ sequence('r4_arrival', [
   [undefined, '交流还有一会儿。小雷、小何各自留了一点核对时间，主任也叫你等会儿把排班表带过去。'],
 ], day, lu, 'r4_hub')
 node('r4_hub', { bg: day, sprite: null, kind: 'hub', text: '这回先核对要说的话，再打开演示。', choices: [
-  choice('he', '跟小何核对那几处拿不准的记录', 'r4_he_0', { unless: 'r4_he_chat' }),
+  choice('he', '跟小何核对上回留下的观察记录', 'r4_he_0', { unless: 'r4_he_chat' }),
   choice('director', '带排班表去主任办公室', 'r4_chief_0', { unless: 'r4_chief_chat' }),
   choice('report', '把证据、范围和结论摆到一起', 'r4_report_intro_0'),
 ] })
@@ -233,8 +233,8 @@ sequence('r4_after_report', [
 node('r4_ending_question', { bg: office, sprite: lu, speaker: 'me', text: '对方问：“这些结果，能支持你们现在写的范围吗？”', choices: [
   choice('limited', '说明已观察到的取舍和适用范围，不把模拟结论扩成临床承诺', 'r4_limited_0', { requires: 'decision:report:limited', decision: { key: 'ending', value: 'limited' } }),
   choice('delay', '撤下本轮正式结论，把缺失验证列为下一步工作', 'r4_delay_0', { requires: 'decision:report:delay', decision: { key: 'ending', value: 'delay' } }),
-  choice('rework', '承认挑掉过不理想样例，撤回这版汇报，完整补上后重做', 'r4_rework_0', { requires: 'decision:report:cherry', decision: { key: 'ending', value: 'rework' } }),
-  choice('paused', '仍坚持漂亮样例足够代表总体，不补充未展示结果', 'r4_paused_0', { requires: 'decision:report:cherry', decision: { key: 'ending', value: 'paused' } }),
+  choice('rework', '承认证据撑不起结论，撤回这版汇报，核对完整记录后重做', 'r4_rework_0', { requires: 'decision:report:cherry', decision: { key: 'ending', value: 'rework' } }),
+  choice('paused', '仍坚持这些漂亮样例足够代表总体，不收窄结论', 'r4_paused_0', { requires: 'decision:report:cherry', decision: { key: 'ending', value: 'paused' } }),
 ] })
 sequence('r4_limited', [
   [undefined, '你把顺利和不顺利的例子放在一起，说明模拟与临床验证的边界。交流记录接收了这份阶段报告，没有把它当作算法获准临床使用。'],
@@ -275,13 +275,35 @@ export const LDCT_RESEARCH_MEDIA_IDS = [
 
 /** Only experiences actually present in the save can become a callback. */
 export function getLdctResearchText(nodeId: string, p: LdctProgress): string | undefined {
+  const assignments = p.researchRecords?.roster?.assignments
+  const observations = p.researchRecords?.blind?.observations
+  const report = p.researchRecords?.report
+  const allIncluded = report?.included.length === 3
   if (nodeId === 'r2_chief_1') {
     return p.decisions.chief === 'told'
       ? '上回说的模体，我记着呢。这回需要占哪段时间、用什么资料，摊开说。'
       : '怎么现在才说？——先别解释空话，把已经做过的、接下来想做的分开列。之前只是模体，我知道；以后涉及院里的时间和资料，得提前谈。'
   }
-  if (nodeId === 'r3_lei_2' && p.decisions.credit === 'promise') {
-    return '对上了。上回你说先挂我名字，我还是有点别扭。这次复跑和整理我确实做了，按做过的来写，行吧？'
+  if (nodeId === 'r3_arrival_3' && !p.completed.includes('r2_he_chat')) {
+    return '那你也别先挑最好看的给我。先把方法名字挡上，咱们看完再揭。'
+  }
+  if (nodeId === 'r3_lei_0') {
+    if (assignments?.code === 'lei') return '分给我的复算跑了一回。有一版文件名只差一个空格，我差点以为电脑又耍我。'
+    if (assignments?.versions === 'lei') return '分给我的记录核了一遍。有一版文件名只差一个空格，我先标出来了，别拿串了。'
+    if (assignments?.reading === 'lei') return '我那份看片记录写好了。先不说偏哪一张，等你们自己看，省得我带偏。'
+    return '这周没给我排具体任务，我就没乱动文件。你们现在卡在哪儿？'
+  }
+  if (nodeId === 'r3_lei_1') {
+    return assignments && Object.values(assignments).includes('lei') ? '记录还留着吧？一会儿放一起核。' : '先一起看看。要加新活，咱们再约时间。'
+  }
+  if (nodeId === 'r3_lei_2') {
+    const worked = assignments && Object.values(assignments).includes('lei')
+    if (!worked) return p.decisions.credit === 'promise'
+      ? '行。上回说先写我名字，这轮我还没做具体工作，先别往上填。能接什么，咱们重新商量。'
+      : '行。没做的我不认领，也别因为我坐这儿聊了两句，就替我算一项贡献。'
+    return p.decisions.credit === 'promise'
+      ? '留着。上回先答应挂名字，我还是有点别扭。这回按我实际做的那项写，行吧？'
+      : '留着呢。哪项是我做的就记哪项，没做的别替我揽。我可经不起突然被问代码。'
   }
   if (nodeId === 'r2_after_roster_0' && p.decisions.workload === 'overloaded') {
     return '表格装得下，事情却没变少。你看看自己名下那一长列，又看看下周的临床班。陆舟把打印纸拉近了一点。'
@@ -301,19 +323,41 @@ export function getLdctResearchText(nodeId: string, p: LdctProgress): string | u
   if (nodeId === 'r3_after_blind_2' && p.decisions.blind_note === 'uncertain') {
     return '我刚才确实拿不准，得对着设计图才敢说。可你要是只给我第一页，我连该回头找哪里都不知道。'
   }
+  if (nodeId === 'r4_he_0') {
+    return observations && Object.values(observations).includes('uncertain')
+      ? '上回记的“不确定”还留着吧？别一整理，就全变成有把握了。'
+      : '上回怎么看的，原话还留着吧？别看了设计图，又把当时的记录改了。'
+  }
+  if (nodeId === 'r4_he_1') {
+    return '原话留着。揭开设计图后再看出来的，另记在后面，没覆盖。'
+  }
   if (nodeId === 'r4_chief_1' && p.decisions.research_pace === 'push') {
     return '有一晚还是熬过头，参数没记完整，那版没用。现在临时加的活先撤掉了。'
   }
   if (nodeId === 'r4_chief_2' && p.decisions.sharing === 'attempt') {
     return '附件那次退回，已经跟管理员说明了吧？使用范围先核对完。你们真想继续，就把时间、权限和责任说清楚，别一着急又跳步。'
   }
-  if (nodeId === 'r4_after_report_0' && p.decisions.research_example === 'pretty') {
-    return p.decisions.report === 'cherry'
-      ? '你们把这版留档。未展示列表里仍有那组不理想的样例。交流刚开始，对方就问起两个编号之间为什么空了一项。'
-      : '你把此前挪走的那组也放回记录，说明展示曾有遗漏。这一版不再只留顺眼的图。交流开始后，对方先核对了研究范围。'
+  if (nodeId === 'r4_after_report_0' && report) {
+    if (!allIncluded) return '你们把选入的样例和这版结论固定留档，没选入的仍在原始记录里，并没有自动补进汇报。交流开始，对方先问：还有哪些结果没在这一页上？'
+    return p.decisions.research_example === 'pretty'
+      ? '此前挪走的那组，这回被你重新选进了汇报。三组都有编号，旧的未展示记录也保留着。交流开始，对方先问这些例子能支持多大的结论。'
+      : '三组结果和各自编号都放进了汇报，参数另页留档。交流开始，对方先核对研究范围，再问结论有没有超出这些例子。'
   }
-  if (nodeId === 'r4_limited_0' && p.decisions.research_scope === 'defer') {
-    return '你把顺利和不顺利的数字模体结果放在一起，明确临床验证尚未开展。交流记录收下这份限定在模拟范围的阶段报告，没有把它当作临床性能证明。'
+  if (nodeId === 'r4_limited_0') {
+    const boundary = p.decisions.research_scope === 'defer'
+      ? '临床验证尚未开展'
+      : '这一轮展示仍是数字模体，院内项目授权不等于临床性能已经验证'
+    return allIncluded
+      ? `你对照三组结果说明取舍，也明确${boundary}。交流记录收下这份限定范围的阶段报告，没有把它当作获准临床使用。`
+      : `你说明这一页只选了部分样例，结论也只限于展示范围，未展示记录留待后续一起核对；${boundary}。这份进展被记下，但不能代表完整比较已经交代清楚。`
+  }
+  if (nodeId === 'r4_limited_2' && !allIncluded) {
+    return '下回先核没放上去的几组。别把“这页没讲”拖成以后都不讲。'
+  }
+  if (nodeId === 'r4_rework_0') {
+    return allIncluded
+      ? '编号齐了，概括却超过了这些结果。你当场承认不能把有限模体的表现写成普遍保证，撤回当前结论。对方要求缩小表述、补上必要验证后再谈；这轮提交停了。'
+      : '你当场承认这次只挑了部分样例，结论却往总体上写，撤回当前汇报。对方要求连同未展示记录一起核对，再谈能说到哪一步；这轮提交停了。'
   }
   if (nodeId === 'r4_paused_0' && p.decisions.research_scope === 'defer') {
     return '提问没有停在这一张图。完整编号和记录无法支持你们的概括，当前报告未通过，原定投稿暂停，先做内部复核。你们本来就没有临床资料授权，这次也不能拿“再找几例”去补。'

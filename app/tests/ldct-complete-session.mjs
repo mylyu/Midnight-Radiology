@@ -229,7 +229,37 @@ assert.match(getLdctNode(goto(oldOpening('told'), 'r2_chief_1')).text, /我记�
 assert.match(getLdctNode(goto(oldOpening('later'), 'r2_chief_1')).text, /怎么现在才说/)
 assert.match(getLdctNode(goto(finals[2], 'r4_chief_2')).text, /附件那次退回/)
 assert.doesNotMatch(getLdctNode(goto(finals[0], 'r4_chief_2')).text, /附件那次退回/)
-assert.match(getLdctNode(goto(finals[1], 'r3_lei_2')).text, /先挂我名字/)
+assert.match(getLdctNode(goto(finals[1], 'r3_lei_2')).text, /先写我名字/)
+assert.match(getLdctNode(goto(finals[1], 'r3_lei_2')).text, /还没做具体工作/)
+
+// Callbacks describe the recorded choices, not the writer's preferred route.
+for (const code of ['me', 'he', 'lei', 'luzhou']) for (const versions of ['me', 'he', 'lei', 'luzhou']) for (const reading of ['me', 'he', 'lei', 'luzhou']) {
+  const records = clone(progress(finals[0]).researchRecords)
+  records.roster.assignments = { code, versions, reading }
+  const sample = goto(finals[0], 'r3_lei_0', 'story', { researchRecords: records })
+  const expected = code === 'lei' ? /复算/ : versions === 'lei' ? /记录核/ : reading === 'lei' ? /看片记录/ : /没给我排/
+  assert.match(getLdctNode(sample).text, expected)
+  if (![code, versions, reading].includes('lei')) {
+    assert.doesNotMatch(getLdctNode(sample).text, /我照记录重跑|复算跑了|记录核了/)
+    assert.match(getLdctNode(goto(sample, 'r3_lei_2')).text, /没做的/)
+  }
+}
+for (const note of ['detail', 'similar', 'uncertain']) {
+  const records = clone(progress(finals[0]).researchRecords)
+  records.blind.observations = { control: note, faint: note, shifted: note }
+  const sample = goto(finals[0], 'r4_he_0', 'story', { researchRecords: records })
+  assert.equal(getLdctNode(sample).text.includes('“不确定”'), note === 'uncertain')
+}
+for (const included of [['control'], ['faint'], ['control', 'faint', 'shifted']]) for (const scope of ['defer', 'authorized']) {
+  const records = clone(progress(finals[0]).researchRecords)
+  records.report.included = included
+  const sample = goto(finals[0], 'r4_after_report_0', 'story', { researchRecords: records,
+    decisions: { ...progress(finals[0]).decisions, research_example: 'pretty', research_scope: scope } })
+  assert.equal(getLdctNode(sample).text.includes('自动补进'), included.length < 3)
+  assert.equal(getLdctNode(goto(sample, 'r4_limited_0')).text.includes('部分样例'), included.length < 3)
+  assert.equal(getLdctNode(goto(sample, 'r4_rework_0')).text.includes('编号齐了'), included.length === 3)
+}
+assert.doesNotMatch(getLdctNode(goto(oldOpening(), 'r3_arrival_3')).text, /小何说/)
 
 // Targeted household tests: legacy part-1 gifts/coffee/rest do not block later
 // parts, but a new gift or break can occur only once in its own part.
