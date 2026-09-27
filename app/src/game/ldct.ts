@@ -125,20 +125,18 @@ sequence('chief_later', [
   ['luzhou', '那先把问题写清楚。到要排时间、用院里东西的时候，再一起把事情讲明白。'],
 ], room, lu, 'hub')
 sequence('lab_intro', [
-  ['luzhou', '先找一颗小亮点。左边是它原来的位置，右边是机器从不同方向收到的影子。'],
-  ['me', '右边这个弯弯曲曲的，是心电图？'],
-  ['luzhou', '**正弦图**。每一列是一个角度的投影，换角度就往旁边记一列。你转转看，那颗点会跑到哪儿。'],
-  [undefined, '陆舟把电脑转向你。先不管算法，就盯住一颗点，跟着它转半圈。'],
+  ['luzhou', '先别急着选算法。认得**正弦图**吗？本科你还给我讲过。'],
+  ['me', '认得名字。你让我指是哪张，我得缓缓。'],
+  ['luzhou', '行，今天我给你补回来。先在**左图点一颗亮点**，再拖角度。右图每一列，就是那个方向收到的投影。'],
+  [undefined, '陆舟把电脑转向你。旁边的小示意图标着球管和探测器，转到哪儿都能对得上。\n“先只盯一个点，别一口气全看。”'],
 ], room, lu, 'lab_first')
 node('lab_first', { bg: room, sprite: null, text: '', enterLab: 1 })
 sequence('after_first', [
   ['me', '点没动，影子倒是绕出一条弯。离中心远的，还跑得挺远。'],
   ['luzhou', '对。原图的位置，变成了这条轨迹。现在我把原图收起来，只剩影子呢？'],
-  ['lei', '找失主？那我把充电器拿走，你们慢慢找。'],
-  ['luzhou', '先别走。你看，把每个方向收到的东西沿原路摊回去，多摊几个方向，交会的地方就慢慢亮起来了。'],
+  ['me', '只给我影子，让我倒着猜它原来在哪儿？'],
+  ['luzhou', '先把每个方向收到的东西沿原路摊回去。多摊几个方向，看哪些地方会交在一起。'],
 ], room, lu, 'lab_second', { giftPerson: 'luzhou' })
-steps.after_first_2.sprite = lei
-steps.after_first_2.giftPerson = undefined
 node('lab_second', { bg: room, sprite: null, text: '', enterLab: 2 })
 // A short interlude separates each operation; no screen exposes all five tools.
 sequence('after_backproject', [
@@ -147,16 +145,16 @@ sequence('after_backproject', [
   ['me', '你真的主动说收工了？我得记一下日期。'],
 ], room, lu, 'go_home_0', { giftPerson: 'luzhou' })
 sequence('filter_intro', [
-  [undefined, '午休还剩一会儿。陆舟昨晚把后半段发了过来，你打开电脑，小雷端着杯子坐到旁边。'],
-  ['lei', '他说这次给点加了个外壳，还放了几根细条。投回去之前，先处理一下每个方向的投影。'],
-  ['me', '**滤波反投影，FBP**。不是最后给图片美颜。来，看看哪种滤波还认得出那几根细条。'],
-], day, lei, 'lab_filter', { giftPerson: 'lei' })
+  [undefined, '午休还剩半小时。你收好饭盒，陆舟把昨天那份实验翻到下一页。几个点外面多了个外壳，还添了几根细条。'],
+  ['luzhou', '先点**None**，就是昨晚不滤波、直接投回去。再换**Ram-Lak**。下面那条曲线也会变，看看图里有什么不同。'],
+  ['me', '想起来了，**FBP**是先滤投影，再往回投。这回你慢点，我自己切着看。'],
+], day, lu, 'lab_filter', { giftPerson: 'luzhou' })
 node('lab_filter', { bg: day, sprite: null, text: '', enterLab: 3 })
 sequence('after_filter', [
   ['me', '换成柔一点的，颗粒没那么扎眼了，最细那根也淡了，边缘钝了。'],
-  ['lei', '别急着选冠军。你把两种都留着，等信号少了再看。'],
-  [undefined, '食堂群跳出一条“今日特价”。小雷看了眼时间，把空杯子拿走了。\n你合上电脑。这次真的只占了午休的后半截。'],
-], day, lei, 'noise_intro_0')
+  ['luzhou', '别急着选冠军。你把两种都留着，等信号少了再看。'],
+  [undefined, '陆舟的返程闹钟响了。你提醒他别漏拿充电器，他拍了拍电脑包。\n合上电脑，午休刚好到点。'],
+], day, lu, 'noise_intro_0')
 sequence('noise_intro', [
   [undefined, '两天后，下班。陆舟来取落在你这里的转接头，顺手把上次那份实验打开了。'],
   ['luzhou', '今天不换模体，也不减少角度。只把每个角度收到的光子数调低。先看正弦图，不急着看成片。'],
@@ -236,18 +234,21 @@ sequence('nextday_wait', [
   ['me', '放心，我连群名都还没想好。'],
 ], day, he, 'nextday_lei_0', { giftPerson: 'he' })
 sequence('nextday_lei', [
-  ['lei', '群名简单：“不改最终版”。'],
-  ['me', '刚说到你。吃完来看看他发的下一组？'],
-  ['lei', '行，我热个饭。昨天那份参数记好了吗？'],
-], day, lei, 'nextday_notes', { giftPerson: 'lei' })
-node('nextday_notes', { bg: day, sprite: lei, speaker: 'me', text: '先吃完饭，再把手头这点事收个尾。', giftPerson: 'lei', choices: [
+  [undefined, '小何端着饭盒回去了。陆舟发来消息：“刚好来附近办事。你午休还有多久？”'],
+  ['me', '你回了条消息：“还有半小时。来吧，昨天那圈雾还没散呢。”'],
+  [undefined, '过了一会儿，陆舟登完记上楼，拉了张椅子坐下。\n“先吃完，不差这两口。”'],
+], day, null, 'nextday_notes')
+// Keep existing node IDs for mid-scene saves; only the in-person arrival has a portrait.
+steps.nextday_lei_2.sprite = lu
+steps.nextday_lei_2.giftPerson = 'luzhou'
+node('nextday_notes', { bg: day, sprite: lu, speaker: 'me', text: '先吃完饭，再把手头这点事收个尾。', giftPerson: 'luzhou', choices: [
   choice('organize', '补齐第一份实验记录', 'notes_done_0', { unless: 'organized', complete: 'organized' }),
-  choice('finish', '“都留着呢。吃完看看他发来的下一组。”', 'filter_intro_0'),
+  choice('finish', '“都留着呢。吃完看下一组。”', 'filter_intro_0'),
 ] })
 sequence('notes_done', [
-  ['lei', '昨晚追的轨迹、反投影的过程，都在。下回打开不用先猜哪个文件是什么了。'],
+  ['luzhou', '昨晚追的轨迹、反投影的过程，都在。下回打开不用先猜哪个文件是什么了。'],
   ['me', '今天的研究进度：终于敢关文件夹了。'],
-], day, lei, 'filter_intro_0', { giftPerson: 'lei' })
+], day, lu, 'filter_intro_0', { giftPerson: 'luzhou' })
 sequence('ending', [
   [undefined, '陆舟收好转接头，这次没再落东西。走到门口，又回头说：“我想换几个模体再试，别急着下结论。”'],
   ['me', '“等排班出来再约。下次先吃饭，真的先吃。”'],
@@ -271,7 +272,7 @@ export function getLdctNode(state: GameState): LdctNode {
     text = '刚才跟着你转了半圈，总算没丢。是点的位置决定了轨迹怎么弯，不是它真的在里面跑。'
   }
   if (original.id === 'nextday_lei_2' && p?.completed.includes('organized')) {
-    text = '行，我热个饭。昨天那份记录看到了，名字虽然长，倒是不用猜了。'
+    text = '过了一会儿，陆舟登完记上楼，拉了张椅子坐下。\n“昨天的记录看到了，名字挺长，倒是不用猜了。你先把饭吃完。”'
   }
   if (original.id === 'ending_1' && p?.decisions.chief === 'told') {
     text = '“先把要做什么列出来，排班出来再跟主任说。下次先吃饭，真的先吃。”'
@@ -286,7 +287,7 @@ export function getLdctChoices(state: GameState): LdctChoice[] {
 
 export const LDCT_MANUAL = [
   { title: '影子怎么变成正弦图', text: '从一个方向测得一列投影。把不同角度的列排在一起，就是正弦图：横轴是投影角度，纵轴是探测器位置。一个偏离中心的小结构，会留下弯曲的轨迹；它并没有在物体里移动。开头暂时隐去外壳，方便看清几个结构各自的贡献。' },
-  { title: '投回去以后为什么还糊', text: '直接反投影把各方向的信息沿原路摊回去、叠加。方向多了，位置逐渐显现，但仍有模糊。FBP先对投影滤波，再反投影；不是给最终断层贴一层美颜滤镜。Ramp、Shepp–Logan、Hann对细节和噪声的取舍不同，没有在所有任务里都最好的选项。' },
+  { title: '投回去以后为什么还糊', text: '直接反投影把各方向的信息沿原路摊回去、叠加。方向多了，位置逐渐显现，但仍有模糊。None不滤波，对应平直的矩形响应、直接反投影；Ram-Lak的响应是斜坡。其他选项用Shepp–Logan、Cosine、Hamming或Hann抑制高频，显示的是与斜坡相乘后的完整滤波响应。FBP先对投影滤波，再反投影，不是给最终断层贴一层美颜滤镜。曲线中间对应缓慢变化，两端对应细小、快速变化，正负频率对称；不是病灶大小刻度，也不代表某个滤波器永远最好。' },
   { title: '低信号先改变了什么', text: '这里固定角度数和物体，用光子计数的泊松波动模拟不同信号水平，再取对数得到投影。信号少，投影更不稳定，重建也会受到影响。它是简化的平行束数字模体实验，不是完整临床低剂量模型，档位不对应临床剂量建议。' },
   { title: '多改几轮，不是反复磨皮', text: '本例迭代重建每轮把当前图像正投影，与已测投影比较，再调整图像。屏幕展示实际计算出的中间结果、预测投影和差异，并不是对成片反复套滤镜。轮数越多不等于临床表现越好：既要看数据相符程度，也要看细节和噪声。本例不是任何厂商算法，深度学习方案尚未开放。' },
   { title: '记录，不是考试', text: '每次留下你实际试过的过程或请陆舟一起看，不以选“最漂亮”的图打分。每个场景只做一件事；参数、结果和求助都会保存。重新尝试不重复发奖励。' },

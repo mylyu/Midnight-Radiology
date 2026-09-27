@@ -29,6 +29,26 @@ export function detectorPosition(id: LdctStructureId, angleDegrees: number): num
   return 50 + (point.x - 50) * Math.cos(theta) - (point.y - 50) * Math.sin(theta)
 }
 
+/** SVG gantry coordinates, sharing the generated Radon columns' angle convention. */
+export function ldctScannerGeometry(angle: number, structure: LdctStructureId | null) {
+  const theta = angle * Math.PI / 180
+  const beam = { x: Math.sin(theta), y: Math.cos(theta) }
+  const detectorAxis = { x: Math.cos(theta), y: -Math.sin(theta) }
+  const detectorOffset = structure ? detectorPosition(structure, angle) - 50 : 0
+  const center = 130, detectorDistance = 78
+  return {
+    beam,
+    detectorAxis,
+    tube: { x: center - 96 * beam.x, y: center - 96 * beam.y },
+    detector: { x: center + detectorDistance * beam.x, y: center + detectorDistance * beam.y },
+    hit: {
+      x: center + detectorDistance * beam.x + detectorOffset * detectorAxis.x,
+      y: center + detectorDistance * beam.y + detectorOffset * detectorAxis.y,
+    },
+    detectorOffset,
+  }
+}
+
 /** SVG path in viewBox="0 0 100 100". Image columns sample 0 <= theta < 180. */
 export function detectorPath(id: LdctStructureId, untilDegrees = 180): string {
   const maximum = Math.min(180, Math.max(0, untilDegrees))
@@ -84,7 +104,7 @@ export const LDCT_PROJECTION_NOTES = [
   '开头只放三个小结构，便于追踪投影轨迹；后面给同样的位置加外壳和其他结构。这里是数字模体，没有患者数据。',
   '正弦图横向是投影角度，纵向是探测器位置。图中一个点在不同角度会投到不同位置；看到的轨迹不是这个点在人体里移动。',
   '直接反投影把每个角度的投影沿原方向铺回去。本台的1、2、4、8、24、160表示参与叠加的角度数，不把少角度等同低剂量。',
-  'FBP在反投影之前对投影做滤波。Ramp、Shepp–Logan、Hann是三种真实滤波器；并非在已经重建好的图像上套锐化、美颜滤镜。',
+  'None不滤波，直接反投影。FBP在反投影之前对投影做滤波；Ramp、Shepp–Logan、Cosine、Hamming、Hann均由同源投影真实计算，并非在成片上套锐化、美颜滤镜。',
   '低、中、高信号改变模拟入射计数，角度和几何不变。通过泊松计数及取对数得到带噪投影；本台不把计数换算成临床剂量。',
   '迭代示例是SART：从零开始，反复正投影、核对测量、更新图像。第1、2、4、8轮显示实际中间结果；差异变小也可能是在追逐噪声，多迭代不保证更好。',
   '二维平行束、单能、固定显示窗的简化演示，不包含真实CT所有散射、能谱、运动、探测器响应等效应，不可用于选择患者检查参数。',

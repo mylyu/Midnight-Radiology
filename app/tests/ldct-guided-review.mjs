@@ -1,6 +1,5 @@
 import assert from 'node:assert/strict'
-import { ldctScannerGeometry } from '../src/components/LdctScannerGeometry.tsx'
-import { LDCT_STRUCTURES, detectorPosition } from '../src/game/ldct-projections.ts'
+import { LDCT_STRUCTURES, detectorPosition, ldctScannerGeometry } from '../src/game/ldct-projections.ts'
 import { LDCT_FILTER_DESCRIPTIONS, LDCT_FILTER_NAMES } from '../src/game/ldct-filter-response.ts'
 import { LDCT_STEPS, getLdctNode } from '../src/game/ldct.ts'
 

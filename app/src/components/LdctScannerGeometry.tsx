@@ -1,26 +1,4 @@
-import { LDCT_STRUCTURES, detectorPosition, type LdctStructureId } from '../game/ldct-projections'
-
-const CENTER = 130
-const DETECTOR_DISTANCE = 78
-
-/** Same screen-coordinate convention as the generated Radon columns, not a second angle convention. */
-export function ldctScannerGeometry(angle: number, structure: LdctStructureId | null) {
-  const theta = angle * Math.PI / 180
-  const beam = { x: Math.sin(theta), y: Math.cos(theta) }
-  const detectorAxis = { x: Math.cos(theta), y: -Math.sin(theta) }
-  const detectorOffset = structure ? detectorPosition(structure, angle) - 50 : 0
-  return {
-    beam,
-    detectorAxis,
-    tube: { x: CENTER - 96 * beam.x, y: CENTER - 96 * beam.y },
-    detector: { x: CENTER + DETECTOR_DISTANCE * beam.x, y: CENTER + DETECTOR_DISTANCE * beam.y },
-    hit: {
-      x: CENTER + DETECTOR_DISTANCE * beam.x + detectorOffset * detectorAxis.x,
-      y: CENTER + DETECTOR_DISTANCE * beam.y + detectorOffset * detectorAxis.y,
-    },
-    detectorOffset,
-  }
-}
+import { LDCT_STRUCTURES, detectorPosition, ldctScannerGeometry, type LdctStructureId } from '../game/ldct-projections'
 
 /** SVG is intentionally light: rotating equipment and the sinogram use the same persisted angle. */
 export function LdctScannerGeometry({ angle, structure }: { angle: number; structure: LdctStructureId | null }) {

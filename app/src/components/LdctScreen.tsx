@@ -5,6 +5,7 @@ import { LDCT_BADGES, LDCT_MANUAL, getLdctNode, getLdctChoices } from '../game/l
 import type { LdctPerson } from '../game/ldct-types'
 import { LDCT_LAB_TITLES, ldctRecordSummary, type LdctLabRound } from '../game/ldct-experiments'
 import { CHARACTERS, SHOP_ITEMS } from '../game/data'
+import { playSfx } from '../game/store'
 import { imageAsset } from '../lib/image-assets'
 import { useDialogueChoiceGuard } from '../hooks/use-dialogue-choice-guard'
 import { acceptInput } from '../game/input-gate'
@@ -28,16 +29,19 @@ export function LdctScreen({ state, update, onExit, renderText }: Props) {
   const [presentation, setPresentation] = useState(0)
   const transactionGate = useRef({ until: 0 })
   const act = (action: Parameters<typeof ldctAction>[1]) => update(s => ldctAction(s, action))
-  const close = () => { setOverlay(null); setPresentation(n => n + 1) }
-  const ui = (name: Overlay) => setOverlay(name)
+  // Play only after the input guard accepts a discrete action. Text reveal,
+  // typewriter ticks and continuous lab drags stay silent, as in Chapters 1–2.
+  const interact = (action: Parameters<typeof ldctAction>[1]) => { act(action); void playSfx('click') }
+  const close = () => { setOverlay(null); setPresentation(n => n + 1); void playSfx('click') }
+  const ui = (name: Overlay) => { setOverlay(name); void playSfx('click') }
   const sprite = node.sprite === 'me' ? `char_${state.gender}` : node.sprite === 'luzhou' || node.sprite === '@luzhou'
     ? `ch2_pixel_char_luzhou_${state.gender}` : node.sprite
   const settled = p.phase === 'settle'
   const dialogue = useLdctDialogue({ state, renderText, blocked: !!overlay || p.phase !== 'story', presentation,
-    onAdvance: () => act(p.reply ? { type: 'reply:close' } : { type: 'advance', nodeId: p.nodeId }),
-    onChoose: id => act({ type: 'choose', nodeId: p.nodeId, choiceId: id }),
-    onRest: () => act({ type: 'rest' }),
-    onGift: (person, item) => act({ type: 'gift', person, item, nodeId: p.nodeId }),
+    onAdvance: () => interact(p.reply ? { type: 'reply:close' } : { type: 'advance', nodeId: p.nodeId }),
+    onChoose: id => interact({ type: 'choose', nodeId: p.nodeId, choiceId: id }),
+    onRest: () => interact({ type: 'rest' }),
+    onGift: (person, item) => interact({ type: 'gift', person, item, nodeId: p.nodeId }),
   })
   const menuClass = 'text-xs text-slate-400 hover:text-teal-300 border border-slate-700 rounded px-2 py-0.5'
   const menu = <>
@@ -47,7 +51,7 @@ export function LdctScreen({ state, update, onExit, renderText }: Props) {
     <button className={menuClass} onClick={e => { e.stopPropagation(); ui('badges') }}>🏅 勋章</button>
     {(settled || node.kind === 'hub') && <button className={menuClass} onClick={e => { e.stopPropagation(); ui('shop') }}>🛒 小卖部</button>}
     <FullscreenBtn />
-    <button className={menuClass} onClick={e => { e.stopPropagation(); onExit() }}>💾 回大厅</button>
+    <button className={menuClass} onClick={e => { e.stopPropagation(); void playSfx('click'); onExit() }}>💾 回大厅</button>
   </>
   return <DialogueStage className="ldct-root" data-ldct-screen data-ldct-node={p.nodeId} data-ldct-phase={p.phase}
     onPointerDownCapture={dialogue.guard.pointerDown} onPointerCancelCapture={dialogue.guard.cancel}
@@ -104,7 +108,7 @@ export function LdctScreen({ state, update, onExit, renderText }: Props) {
           const reason = ldctItemUnavailable(state, item.id as 'coffee' | 'milktea' | 'snack') || (state.gold < item.price ? '金币不够，先不买也能继续' : undefined)
           return <article key={item.id} className="ldct-shop-row">
             {item.image && <img src={imageAsset(item.image)} alt="" className="pixel" />}<div><h3>{item.name} · {item.price} 金币</h3><p>{reason || (item.id === 'coffee' ? '坐下喝一杯，缓一缓；本段一次，不增加主线行动力。' : item.id === 'milktea' ? '购买时人心＋2；当面递给陆舟或小雷。' : '当面分享，人心＋1。')}</p></div>
-            <button disabled={!!reason} onClick={() => { if (acceptInput(transactionGate.current, performance.now(), 500)) act({ type: 'buy', item: item.id as 'coffee' | 'milktea' | 'snack' }) }}>购买</button>
+            <button disabled={!!reason} onClick={() => { if (acceptInput(transactionGate.current, performance.now(), 500)) interact({ type: 'buy', item: item.id as 'coffee' | 'milktea' | 'snack' }) }}>购买</button>
           </article>
         })}
       </div>}
