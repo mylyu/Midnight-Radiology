@@ -1,3 +1,5 @@
+import type { LdctProgress } from './ldct-types'
+
 export interface Effect {
   gold?: number
   skill?: number
@@ -138,6 +140,8 @@ export interface GameState {
 }
 
 export interface DlcProgress {
+  /** 低剂量 CT 开场独立状态；不得借用主章节游标、限购和凭证。 */
+  ldct?: LdctProgress
   /** 第二章独立通关凭证：盖章时的快照，不随之后的消费、收集或第一章姓名变动。 */
   certificate?: Ch2CertificateRecord
   /** 第二章轻量属性互动；提示不等于答题，旧档不补发完成奖励。 */
