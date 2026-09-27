@@ -41,10 +41,10 @@ for (const round of [1, 2, 3, 4, 5]) {
 const frames = new Set()
 for (const key of LDCT_PROJECTION_FRAME_KEYS) {
   const tile = ldctProjectionFrame(key)
-  assert(tile.column >= 0 && tile.column < 8 && tile.row >= 0 && tile.row < 5)
+  assert(tile.column >= 0 && tile.column < 8 && tile.row >= 0 && tile.row < 6)
   frames.add(`${tile.column}:${tile.row}`)
 }
-assert.equal(frames.size, 37)
+assert.equal(frames.size, 46)
 assert.throws(() => ldctProjectionFrame('made-up'))
 for (const item of LDCT_STRUCTURES) {
   assert.equal(detectorPosition(item.id, 0), item.x)
@@ -54,4 +54,4 @@ for (const item of LDCT_STRUCTURES) {
 }
 assert.deepEqual(LDCT_BP_COUNTS, [1, 2, 4, 8, 24, 160])
 assert.deepEqual(LDCT_ITERATIONS, [0, 1, 2, 4, 8])
-console.log('LDCT projection data: five stages, help/interaction gates, immutable/versioned records, 37 unique tiles and detector-coordinate mapping passed.')
+console.log('LDCT projection data: five stages, help/interaction gates, immutable/versioned records, 46 unique tiles and detector-coordinate mapping passed.')

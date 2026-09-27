@@ -1,4 +1,8 @@
 import { LDCT_BP_COUNTS, LDCT_ITERATIONS, LDCT_PROJECTION_MEDIA_ID, LDCT_STRUCTURES } from './ldct-projections'
+import { LDCT_FILTER_OPTIONS } from './ldct-filter-response'
+export { LDCT_FILTER_OPTIONS } from './ldct-filter-response'
+export type { LdctFilter } from './ldct-filter-response'
+import type { LdctFilter } from './ldct-filter-response'
 
 /** Serialized controls, not a score: completing an experiment means looking, not guessing right. */
 export const LDCT_PHANTOM_VERSION = 'ldct-projection-v2' as const
@@ -7,7 +11,6 @@ export const LDCT_LAB_MEDIA_IDS = [LDCT_PROJECTION_MEDIA_ID] as const
 export type LdctLabRound = 1 | 2 | 3 | 4 | 5
 export type LdctLabStage = 'trace' | 'backproject' | 'filter' | 'noise' | 'iterate'
 export type LdctSignal = 'low' | 'medium' | 'high'
-export type LdctFilter = 'ramp' | 'shepp-logan' | 'hann'
 export type LdctMark = { x: number; y: number }
 export const LDCT_LAB_STAGES: Record<LdctLabRound, LdctLabStage> = {
   1: 'trace', 2: 'backproject', 3: 'filter', 4: 'noise', 5: 'iterate',
@@ -16,7 +19,8 @@ export const LDCT_LAB_TITLES: Record<LdctLabRound, string> = {
   1: '给小点找轨迹', 2: '把影子铺回去', 3: '给反投影换副眼镜', 4: '光子少了以后', 5: '猜一版，再对一次',
 }
 export const LDCT_FILTER_LABELS: Record<LdctFilter, string> = {
-  ramp: '锐一些 · Ramp', 'shepp-logan': '折中 · Shepp–Logan', hann: '柔一些 · Hann',
+  none: '不滤波 · None', ramp: '锐一些 · Ramp', 'shepp-logan': '折中 · Shepp–Logan',
+  cosine: '余弦 · Cosine', hamming: 'Hamming窗', hann: '柔一些 · Hann',
 }
 export type LdctLabRecord = {
   round: LdctLabRound
@@ -58,7 +62,7 @@ export const createLdctLabState = (round: LdctLabRound = 1): LdctLabState => ({
 })
 
 const signals = ['low', 'medium', 'high']
-const filters = ['ramp', 'shepp-logan', 'hann']
+const filters: readonly string[] = LDCT_FILTER_OPTIONS
 const finiteBetween = (n: unknown, min: number, max: number) => typeof n === 'number' && Number.isFinite(n) && n >= min && n <= max
 const integerBetween = (n: unknown, min: number, max: number) => finiteBetween(n, min, max) && Number.isInteger(n)
 const validStructure = (id: unknown) => id === null || LDCT_STRUCTURES.some(s => s.id === id)
@@ -120,7 +124,7 @@ export function ldctRecordSummary(record: LdctLabRecord): string {
 export const LDCT_METHOD_NOTES = [
   '正弦图：这里每一列是一个角度的投影，横向是角度，纵向是探测器位置。图里的一个小点，转着看时会在不同位置留下影子，连起来就是弯曲的轨迹。',
   '先用去掉底色的几个小结构认轨迹，再看完整数字模体。正弦图本身不是另一张人体断层；多个结构的投影会叠在一起。',
-  '直接反投影把各方向投影沿原路铺回图像。方向变多，结构会显形，但仍带模糊；FBP先对投影滤波，再反投影。本台比较Ramp、Shepp–Logan、Hann，不把柔和或锐利自动判成最好。',
+  '直接反投影把各方向投影沿原路铺回图像。None不做滤波，总响应为平坦通过；Ramp的总响应随频率绝对值上升。其他四种FBP滤波器是在Ramp上乘相应窗，不把一个窗函数本身当成总响应。',
   '模拟信号水平改变入射光子计数，角度、物体与显示窗不变。计数少时，测量起伏更明显；锐一些的滤波也更容易带出高频噪声。不是把图上撒雪花当低剂量，也不把计数换算为患者剂量。',
   '本台迭代示例：从初始估计出发，算一份预测投影，与同一份带噪实测投影比较，再修改估计。展示真实计算的中间轮次，不用渐变动画假装收敛。轮次更多不保证临床结果更好。',
   '二维平行束原创数字模体，固定几何、噪声种子与显示窗；不含人体运动、真实能谱、散射或完整厂商重建流程。深度学习方案仍在训练，后续故事另做。',

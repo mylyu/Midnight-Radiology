@@ -131,6 +131,20 @@ def generate(output: Path) -> None:
         numeric[f"residual:{iteration}"] = residual
         iteration_metrics.append({"iteration": iteration, "relative_residual": float(np.linalg.norm(residual) / np.linalg.norm(measured)), "image_rmse": float(np.sqrt(np.mean((estimate - truth)**2))), "noise_sd": float(estimate[noise_mask].std())})
 
+    # Append new options only: the first 37 tiles remain pixel-identical. None
+    # means unity TOTAL response and is actual unfiltered BP of the FULL phantom,
+    # not the earlier three-insert teaching BP or Ramp without an extra window.
+    full_none = iradon(clean, theta=ANGLES, filter_name=None, circle=True) / SPACING
+    none_window = [0, float(full_none.max() * 1.05)]
+    for signal in SIGNALS:
+        noisy = projections[signal]
+        for filter_name in ["none", "cosine", "hamming"]:
+            result = iradon(noisy, theta=ANGLES, filter_name=None if filter_name == "none" else filter_name, circle=True) / SPACING
+            key = f"fbp:{signal}:{filter_name}"
+            frames[key] = to_gray(result, none_window if filter_name == "none" else WINDOW)
+            numeric[key] = result
+            metrics[key] = {"noise_sd": float(result[noise_mask].std()), "projection_hash": fingerprint(noisy)}
+
     columns = 8
     rows = int(np.ceil(len(frames) / columns))
     pixels = np.zeros((rows * SIZE, columns * SIZE), dtype=np.uint8)
@@ -144,7 +158,7 @@ def generate(output: Path) -> None:
     with Image.open(atlas_path) as check:
         assert np.array_equal(np.asarray(check.convert("L")), pixels)
     np.savez_compressed(output / "ldct-projection-v2-numerics.npz", **numeric)
-    metadata = {"version": VERSION, "seed": SEED, "size": SIZE, "spacing_mm": SPACING, "signal_incident_counts": SIGNALS, "angles": len(ANGLES), "display_window": WINDOW, "projection_window": projection_window, "bp_window": bp_window, "residual_abs_window": [0, residual_scale], "bp_prefix_counts": BP_COUNTS, "bp_angles_degrees": {str(count): ANGLES[order[:count]].tolist() for count in BP_COUNTS}, "iterations": iteration_metrics, "sart_relaxation": .035, "structures": STRUCTURES, "structure_checks": structure_checks, "coordinate_formula": "detector = 80 + (x-80)*cos(theta) - (y-80)*sin(theta), x right and y down", "columns": columns, "rows": rows, "frames": frame_records, "metrics": metrics, "atlas_bytes": atlas_path.stat().st_size, "atlas_sha256": hashlib.sha256(atlas_path.read_bytes()).hexdigest()}
+    metadata = {"version": VERSION, "seed": SEED, "size": SIZE, "spacing_mm": SPACING, "signal_incident_counts": SIGNALS, "angles": len(ANGLES), "display_window": WINDOW, "projection_window": projection_window, "bp_window": bp_window, "none_full_phantom_window": none_window, "residual_abs_window": [0, residual_scale], "bp_prefix_counts": BP_COUNTS, "bp_angles_degrees": {str(count): ANGLES[order[:count]].tolist() for count in BP_COUNTS}, "iterations": iteration_metrics, "sart_relaxation": .035, "structures": STRUCTURES, "structure_checks": structure_checks, "coordinate_formula": "detector = 80 + (x-80)*cos(theta) - (y-80)*sin(theta), x right and y down", "columns": columns, "rows": rows, "frames": frame_records, "metrics": metrics, "atlas_bytes": atlas_path.stat().st_size, "atlas_sha256": hashlib.sha256(atlas_path.read_bytes()).hexdigest()}
     (output / "ldct-projection-v2-metadata.json").write_text(json.dumps(metadata, ensure_ascii=False, indent=2), encoding="utf-8")
     sheet = Image.new("RGB", (SIZE * columns, (SIZE + 23) * rows), "#08111e")
     draw = ImageDraw.Draw(sheet)

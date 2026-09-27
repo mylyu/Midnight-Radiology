@@ -7,14 +7,14 @@ import {
   ldctProjectionFrame, ldctProjectionFrameStyle,
 } from '../src/game/ldct-projections.ts'
 
-assert.equal(LDCT_PROJECTION_FRAME_KEYS.length, 37)
-assert.equal(new Set(LDCT_PROJECTION_FRAME_KEYS).size, 37)
+assert.equal(LDCT_PROJECTION_FRAME_KEYS.length, 46)
+assert.equal(new Set(LDCT_PROJECTION_FRAME_KEYS).size, 46)
 assert(LDCT_PROJECTION_FRAME_KEYS.length <= LDCT_PROJECTION_ATLAS.columns * LDCT_PROJECTION_ATLAS.rows)
 for (const key of LDCT_PROJECTION_FRAME_KEYS) {
   const frame = ldctProjectionFrame(key)
   assert(frame.column >= 0 && frame.column < frame.columns)
   assert(frame.row >= 0 && frame.row < frame.rows)
-  assert.equal(ldctProjectionFrameStyle(key).backgroundSize, '800% 500%')
+  assert.equal(ldctProjectionFrameStyle(key).backgroundSize, '800% 600%')
 }
 assert.throws(() => ldctProjectionFrame('not-a-frame'))
 assert.equal(ldctProjectionFrameStyle('trace:truth').backgroundPosition, '0% 0%')

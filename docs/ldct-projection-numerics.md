@@ -4,8 +4,8 @@
 
 ## 正式交付与再生成
 
-- 图集：`ldct_projection_v2_atlas.webp`，1280×800、37个160×160帧、无损WebP，**367,058字节**。
-- 逻辑ID：`ldct_projection_v2_atlas`；哈希：`ddba040635243231f91a51148ab0c0917d53338cc355a755a433d00ab2acbc10`。
+- 图集：`ldct_projection_v2_atlas.webp`，当前引导修订版1280×960、46个160×160帧、无损WebP，**450,518字节**。初版37帧367,058字节；本次只追加9帧，原37帧逐像素相同。
+- 逻辑ID：`ldct_projection_v2_atlas`；当前哈希：`57b338fca7e09dbd1402de0b8459ac1bc35aacd086f37d715213d6a105fa75b1`。
 - 生成器：`scripts/generate-ldct-projections.py`；浏览器帧映射与几何函数：`app/src/game/ldct-projections.ts`。
 - 所有图像为原创数字模体数值计算结果；不是患者影像、图像滤镜冒充重建或神经网络结果。不下载模型，不包含第三方临床数据。
 - 本次源数组、参数JSON和审图表保存在仓库外 `C:/Users/lvmen/Documents/New project/ldct-projection-assets/`，不放正式public。生成器可重建这些文件。
@@ -16,6 +16,18 @@ python scripts/generate-ldct-projections.py "C:/Users/lvmen/Documents/New projec
 ```
 
 本次环境：Python3.14，NumPy2.5.0、SciPy1.18.0、scikit-image0.26.0、Pillow12.2.0。不同库版本或平台可能产生不同字节，需重新核对后更新内容哈希。
+
+## 2026-09-27 引导修订：None与总响应
+
+作者指出的矩形平坦响应指**整个重建滤波器的总频率响应**。此时带内权重为1，是None、不做滤波、直接反投影；不是“Ramp不额外加窗”。[MATLAB iradon官方说明](https://www.mathworks.com/help/images/ref/iradon.html)明确区分None与Ram-Lak，并列出其余窗乘Ramp的选择。本游戏参考该语义，实际数值仍由scikit-image生成，不声称使用MATLAB运行。
+
+新增None、Cosine、Hamming三个选项，每项各低／中／高信号三个帧，与原来的FBP读取**同一个完整模体的同一份投影**。None实际调用`iradon(filter_name=None)`；不挪用前三小结构的`bp:160`。None幅度与FBP不同：为看清轮廓，三档共同用[0,3.7673950456]显示，UI明确另行归一化，不能根据两图灰度大小比较信号强弱。所有其他FBP继续沿用原显示窗，不改变既有结果。
+
+浏览器的响应曲线为归一化**总响应的连续形状示意**，实际图像使用库的离散滤波器，不能把SVG当作逐FFT频点的实测传递函数。横轴u为归一化频率，图上同时显示正负对称部分；带外置零。带内None=1，Ramp=|u|；Shepp–Logan为Ramp×sinc(u/2)，Cosine为Ramp×cos(πu/2)，Hamming为Ramp×(0.54+0.46cosπu)，Hann为Ramp×(0.5+0.5cosπu)。所有曲线共用标度，不将每条各自拉到最大值1，从而保留真实的相对权重差别。
+
+曲线由`ldct-filter-response.ts`统一计算，`LdctFilterResponse`显示六条参考曲线并强调所选项。没有新增测验、算法成绩或公式输入。滤波器类型是原存档字段的可选值扩展；原三种选择、版本和奖励收据仍有效，不重置实验存档。
+
+本次生成目录为仓库外`../ldct-guided-assets/`，含同名数值NPZ、metadata及review。已看追加帧；None可见未滤波的模糊轮廓，Cosine/Hamming有各自计算结果。专项测试覆盖平坦None≠Ramp、端点/对称性、六项同投影哈希、None不误用旧三结构帧、旧滤波器存档兼容；全流程与手机布局另由集成验收记录。
 
 ## 五段分别看什么
 

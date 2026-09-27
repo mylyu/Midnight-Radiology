@@ -4,10 +4,10 @@ export const LDCT_PROJECTION_SEED = 2258 as const
 export const LDCT_PROJECTION_MEDIA_ID = 'ldct_projection_v2_atlas' as const
 export const LDCT_PROJECTION_MEDIA_IDS = [LDCT_PROJECTION_MEDIA_ID] as const
 export const LDCT_PROJECTION_SIZE = 160
-export const LDCT_PROJECTION_ATLAS = { columns: 8, rows: 5 } as const
+export const LDCT_PROJECTION_ATLAS = { columns: 8, rows: 6 } as const
 export const LDCT_BP_COUNTS = [1, 2, 4, 8, 24, 160] as const
 export const LDCT_ITERATIONS = [0, 1, 2, 4, 8] as const
-export type LdctProjectionFilter = 'ramp' | 'shepp-logan' | 'hann'
+export type { LdctFilter as LdctProjectionFilter } from './ldct-filter-response'
 export type LdctProjectionSignal = 'low' | 'medium' | 'high'
 export type LdctStructureId = 'bead' | 'rod' | 'faint'
 
@@ -48,6 +48,9 @@ export const LDCT_PROJECTION_FRAME_KEYS = [
   'iteration:2', 'forward:2', 'residual:2',
   'iteration:4', 'forward:4', 'residual:4',
   'iteration:8', 'forward:8', 'residual:8',
+  'fbp:low:none', 'fbp:low:cosine', 'fbp:low:hamming',
+  'fbp:medium:none', 'fbp:medium:cosine', 'fbp:medium:hamming',
+  'fbp:high:none', 'fbp:high:cosine', 'fbp:high:hamming',
 ] as const
 export type LdctProjectionFrameKey = typeof LDCT_PROJECTION_FRAME_KEYS[number]
 
