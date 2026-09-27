@@ -42,7 +42,9 @@ assert.doesNotMatch(LDCT_FILTER_DESCRIPTIONS.none, /不加窗.*Ramp|Ramp.*不加
 const leiChoice = LDCT_STEPS.hub.choices.find(choice => choice.id === 'lei')
 assert.equal(leiChoice.next, 'chat_lei_0')
 assert.equal(leiChoice.unless, 'chat_lei')
-const leiNodes = Object.values(LDCT_STEPS).filter(node => node.speaker === 'lei' || node.sprite === 'ch2_pixel_char_lei' || node.giftPerson === 'lei')
+// This staging contract applies to the opening; parts 2–4 now explicitly arrange team visits.
+const leiNodes = Object.values(LDCT_STEPS).filter(node => !/^r[234]_/.test(node.id))
+  .filter(node => node.speaker === 'lei' || node.sprite === 'ch2_pixel_char_lei' || node.giftPerson === 'lei')
 assert(leiNodes.length > 0, 'do not remove the approved optional colleague interaction')
 assert(leiNodes.every(node => node.id.startsWith('chat_lei_')), 'Lei should not appear abruptly in the main experiment route')
 for (const id of ['nextday_lei_0', 'nextday_lei_1']) {
@@ -65,4 +67,4 @@ for (const gender of ['m', 'f']) {
 for (const prefix of ['filter_intro_', 'after_filter_']) {
   assert(Object.values(LDCT_STEPS).filter(node => node.id.startsWith(prefix)).every(node => node.sprite === '@luzhou'))
 }
-console.log('LDCT guided review: four-angle scanner/sinogram alignment, None labels, optional colleague and message/arrival staging passed.')
+console.log('LDCT guided review: four-angle scanner/sinogram alignment, Chinese unfiltered labels, optional colleague and message/arrival staging passed.')

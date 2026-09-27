@@ -911,9 +911,14 @@
       "bytes": 103186,
       "type": "image"
     },
-    "assets/media/ldct_projection_v2_atlas.57b338fca7e09dbd.webp": {
-      "sha256": "57b338fca7e09dbd1402de0b8459ac1bc35aacd086f37d715213d6a105fa75b1",
-      "bytes": 450518,
+    "assets/media/ldct_projection_v2_atlas.be8770bb157de64a.webp": {
+      "sha256": "be8770bb157de64a2a225af2df54fa5a0689fa1114fd98878d1ede16917a9e00",
+      "bytes": 492556,
+      "type": "image"
+    },
+    "assets/media/ldct_research_v1_atlas.b9f62edc054298bd.webp": {
+      "sha256": "b9f62edc054298bd1edd825822a2ab0f2c227d3bf82ae4cccb43cd50440983ae",
+      "bytes": 132298,
       "type": "image"
     },
     "assets/media/machine_mammo.266d8db738a5f2b5.webp": {
@@ -1628,7 +1633,8 @@
       "assets/media/item_milktea.52cc8d6958e2f14b.webp",
       "assets/media/item_snack.f16943baf3b6bdb3.webp",
       "assets/media/ldct_bg_restaurant.1e0f0d5b98e52a90.webp",
-      "assets/media/ldct_projection_v2_atlas.57b338fca7e09dbd.webp"
+      "assets/media/ldct_projection_v2_atlas.be8770bb157de64a.webp",
+      "assets/media/ldct_research_v1_atlas.b9f62edc054298bd.webp"
     ]
   }
 }

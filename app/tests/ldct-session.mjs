@@ -117,7 +117,8 @@ assert.equal(s.heart, runStart.heart)
 assert(s.badges.includes('ldct_first_comparison'))
 assert.deepEqual(Object.keys(getLdctProgress(s).records), ['1', '2', '3', '4', '5'])
 assert.deepEqual(protectedState(s), protectedBase)
-assert.match(ldctItemUnavailable(s, 'snack'), /机会已过/)
+// The full DLC now has later in-person opportunities; only its final ending closes the shop.
+assert.equal(ldctItemUnavailable(s, 'snack'), undefined)
 assert.equal(getLdctProgress(initializeLdct(JSON.parse(JSON.stringify(s)))).phase, 'settle')
 
 // Experiment replay is useful but never a way to re-issue skill or badges.

@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode, type MouseEvent } from 'react'
 import type { GameState } from '../game/types'
-import { getLdctProgress, ldctAction, initializeLdct, ldctGiftChoices, ldctItemUnavailable } from '../game/ldct-session'
-import { LDCT_BADGES, LDCT_MANUAL, getLdctNode, getLdctChoices } from '../game/ldct'
+import { getLdctProgress, ldctAction, initializeLdct, ldctGiftChoices, ldctItemUnavailable, ldctCanRest } from '../game/ldct-session'
+import { LDCT_BADGES, LDCT_MANUAL, LDCT_PARTS, getLdctNode, getLdctChoices } from '../game/ldct'
+import { researchPart, RESEARCH_TITLES, researchRecordNote, type LdctResearchStage } from '../game/ldct-research'
 import type { LdctPerson } from '../game/ldct-types'
 import { LDCT_LAB_TITLES, ldctRecordSummary, type LdctLabRound } from '../game/ldct-experiments'
 import { CHARACTERS, SHOP_ITEMS } from '../game/data'
@@ -11,6 +12,7 @@ import { useDialogueChoiceGuard } from '../hooks/use-dialogue-choice-guard'
 import { acceptInput } from '../game/input-gate'
 import { SceneBackground } from './SceneBackground'
 import { LdctLab } from './LdctLab'
+import { LdctResearchBench } from './LdctResearchBench'
 import { DialogueStage, DialogueShade, DialogueHeader, DialoguePortrait, DialoguePanel, DialogueChoices, DialogueChoice } from './DialogueScene'
 import { FullscreenBtn } from './FullscreenButton'
 import { DIALOGUE_CHARACTER_MS, waitForDialogueChoices } from '../game/dialogue-timing'
@@ -20,6 +22,12 @@ type Overlay = 'records' | 'bag' | 'manual' | 'badges' | 'shop' | 'replay'
 type Props = { state: GameState; update: (fn: (state: GameState) => GameState) => void; onExit: () => void; renderText: (text: string, shown?: number) => ReactNode }
 const itemName = (id: string) => SHOP_ITEMS.find(item => item.id === id)?.name ?? id
 const icons = { gold: '💰 科室存款', skill: '🩺 医术', heart: '🧡 人心', wealth: '🏠 家业' }
+const endingNotes: Record<string, string> = {
+  limited: '收窄了结论，保留完整的模体记录。稿子还需要修改，但这次做过什么、没做过什么说得清。',
+  delay: '撤下了这次汇报，留出时间补验证。约好的饭，没有再往后推。',
+  rework: '把那页撑不住的结论撤了回来。解释不太好受，下一版可以从完整记录重新开始。',
+  paused: '这次研究被暂停核对。保留下来的记录让返工还有起点，谁也没有拿它替代临床报告。',
+}
 
 /** Chapter-specific session, shared chapter presentation. */
 export function LdctScreen({ state, update, onExit, renderText }: Props) {
@@ -32,11 +40,16 @@ export function LdctScreen({ state, update, onExit, renderText }: Props) {
   // Play only after the input guard accepts a discrete action. Text reveal,
   // typewriter ticks and continuous lab drags stay silent, as in Chapters 1–2.
   const interact = (action: Parameters<typeof ldctAction>[1]) => { act(action); void playSfx('click') }
+  const nextPart = (event: MouseEvent<HTMLButtonElement>) => {
+    if (acceptInput(transactionGate.current, event.timeStamp, 500)) interact({ type: 'part:next' })
+  }
   const close = () => { setOverlay(null); setPresentation(n => n + 1); void playSfx('click') }
   const ui = (name: Overlay) => { setOverlay(name); void playSfx('click') }
   const sprite = node.sprite === 'me' ? `char_${state.gender}` : node.sprite === 'luzhou' || node.sprite === '@luzhou'
     ? `ch2_pixel_char_luzhou_${state.gender}` : node.sprite
   const settled = p.phase === 'settle'
+  const part = researchPart(p.nodeId)
+  const partStart = p.finished ? p.start : p.partStart ?? p.start
   const dialogue = useLdctDialogue({ state, renderText, blocked: !!overlay || p.phase !== 'story', presentation,
     onAdvance: () => interact(p.reply ? { type: 'reply:close' } : { type: 'advance', nodeId: p.nodeId }),
     onChoose: id => interact({ type: 'choose', nodeId: p.nodeId, choiceId: id }),
@@ -58,29 +71,36 @@ export function LdctScreen({ state, update, onExit, renderText }: Props) {
     onKeyDownCapture={dialogue.guard.keyDown} onClickCapture={dialogue.guard.click} onClick={dialogue.advance}>
     <SceneBackground name={node.bg} />
     <DialogueShade />
-    <DialogueHeader title="◐ 低剂量CT · 噪声之外"><span>💰 {state.gold}</span>{menu}</DialogueHeader>
-    {p.phase === 'lab' ? <div className="ldct-lab-wrap" onClick={e => e.stopPropagation()}><LdctLab round={p.labRound} value={p.labDraft}
+    <DialogueHeader title={`◐ 噪声之外 · ${LDCT_PARTS[part - 1].title}`}><span>💰 {state.gold}</span>{menu}</DialogueHeader>
+    {p.phase === 'research' && p.research ? <div className="ldct-lab-wrap" onClick={e => e.stopPropagation()}>
+      <LdctResearchBench key={`${p.research.stage}:${p.researchReturn ?? 'live'}`} value={p.research} review={!!p.researchReturn}
+        onChange={value => act({ type: 'research:update', value })}
+        onSubmit={stage => act({ type: 'research:submit', stage })}
+        onBack={() => act({ type: 'research:close' })} /></div>
+      : p.phase === 'lab' ? <div className="ldct-lab-wrap" onClick={e => e.stopPropagation()}><LdctLab round={p.labRound} value={p.labDraft}
       onChange={value => act({ type: 'lab:update', value })}
       onSubmit={record => act({ type: 'lab:submit', record })}
       onBack={() => act({ type: 'lab:close' })} /></div>
       : settled ? <main className="ldct-settlement" data-ldct-settlement onClick={e => e.stopPropagation()}>
-        <p className="text-cyan-200 text-sm tracking-widest">低剂量 CT · 开场记录</p>
-        <h1>先吃饭，然后留一份对照。</h1>
-        <p className="text-slate-300 text-sm">开场体验暂告一段落，进度已保存。可以留下整理记录，不会自动进入下一段。</p>
+        <p className="text-cyan-200 text-sm tracking-widest">低剂量 CT · {p.finished ? '研究回顾' : '暂且收工'}</p>
+        <h1>{p.finished ? '噪声之外 · 故事完' : LDCT_PARTS[part - 1].title}</h1>
+        <p className="text-slate-300 text-sm">{p.finished ? '对照、争执和留下的记录，都在这里。下次约饭，终于可以不带电脑。' : '进度已保存。下一段等你亲自开始；买东西、查看记录都不会跳过时间。'}</p>
         <div className="ldct-metrics">{(Object.keys(icons) as (keyof typeof icons)[]).map(key => <section key={key}>
-          <small>{icons[key]}</small><p>{state[key]} <span className="text-xs text-teal-200">本段 {state[key] - p.start[key] >= 0 ? '+' : ''}{state[key] - p.start[key]}</span></p>
+          <small>{icons[key]}</small><p>{state[key]} <span className="text-xs text-teal-200">{p.finished ? '本篇' : '本段'} {state[key] - partStart[key] >= 0 ? '+' : ''}{state[key] - partStart[key]}</span></p>
         </section>)}</div>
-        <section className="ldct-panel"><h2>桌上的电脑 · 已保存 {Object.keys(p.records).length} 份对照</h2>
-          <p>只用了数字模体，临床 CT 没有为这个小实验增加一次曝光。电脑可以合上，那个不太确定的细节还留在记录里。</p>
+        <section className="ldct-panel"><h2>桌上的电脑 · {Object.keys(p.records).length} 份复习记录 / {Object.keys(p.researchRecords ?? {}).length} 份研究记录</h2>
+          <p>{p.finished ? (endingNotes[p.decisions.ending] ?? '这段合作已经收尾，记录留了下来。') : '实验画面使用数字模体，没有为研究给患者多扫一次。已有记录随时可看，不要求今天把所有问题都解决。'}</p>
           <p className="text-amber-200">🎒 {state.items.length ? state.items.map(itemName).join('、') : '背包暂空'}</p>
-          <p>第二段「顺手帮个忙」 · 后续待制作<br />第三段「最干净的那张」 · 后续待制作<br />第四段「这版还投吗」 · 后续待制作</p>
+          <p>眼下状态：{p.fatigue >= 4 ? '已经很困了，先留出休息时间' : p.fatigue >= 2 ? '有点困，下一次别约太晚' : '歇过一会儿，缓过来了'}。</p>
+          <div className="ldct-parts">{LDCT_PARTS.map((entry, i) => <p key={entry.title} className={i + 1 <= part ? 'text-teal-100' : 'text-slate-400'}>{i + 1 < part || p.finished ? '✓ ' : i + 1 === part ? '◐ ' : '· '}{entry.title} · {entry.status}</p>)}</div>
         </section>
-        <nav className="ldct-menu">{menu}<button onClick={() => ui('replay')}>只重玩本开场</button></nav>
+        {!p.finished && part < 4 && <button className="ldct-next-part" data-ldct-next-part onClick={nextPart}>进入{LDCT_PARTS[part].title} →</button>}
+        <nav className="ldct-menu">{menu}<button onClick={() => ui('replay')}>只重玩本DLC</button></nav>
       </main> : <>
         {sprite && <DialoguePortrait data-ldct-portrait src={imageAsset(sprite)} alt="" className="pointer-events-none" />}
         {dialogue.panel}
       </>}
-    {overlay && <LdctModal title={{ records: '实验记录', bag: '背包用途', manual: '随手记 · 不急着读', badges: '开场勋章', shop: '小卖部', replay: '重玩开场' }[overlay]} onClose={close}>
+    {overlay && <LdctModal title={{ records: '实验与研究记录', bag: '背包用途', manual: '随手记 · 不急着读', badges: '噪声之外 · 勋章', shop: '小卖部', replay: '重玩本DLC' }[overlay]} onClose={close}>
       {overlay === 'manual' && <div className="ldct-reading">
         {LDCT_MANUAL.map(page => <section key={page.title}><h3>{page.title}</h3><p>{page.text}</p></section>)}
         <p><a href="https://www.aapm.org/grandchallenge/lowdosect/" target="_blank" rel="noreferrer">可选延伸阅读：AAPM 低剂量 CT 挑战 ↗</a></p>
@@ -98,6 +118,10 @@ export function LdctScreen({ state, update, onExit, renderText }: Props) {
           {settled && <button onClick={() => { act({ type: 'lab:open', round: Number(round) as LdctLabRound }); close() }}>回实验台比较</button>}
         </article>)}
       </div>}
+      {overlay === 'records' && Object.entries(p.researchRecords ?? {}).map(([stage, record]) => <article className="ldct-panel" key={stage}>
+        <h3>{RESEARCH_TITLES[stage as LdctResearchStage]}</h3><p>{researchRecordNote(record!)}</p>
+        {settled && <button onClick={() => { act({ type: 'research:open', stage: stage as LdctResearchStage }); close() }}>回看这份记录</button>}
+      </article>)}
       {overlay === 'bag' && <div className="ldct-reading"><p>奶茶、零食要在同事在场的闲聊里递出；阶段结束页只整理背包。</p>
         {state.items.map(item => <p key={item}>{itemName(item)} · {item === 'milktea' ? '购买时已加人心；当面送出不重复加。' : item === 'snack' ? '当面分享，人心＋1。' : '保留主游戏用途，本实验不消耗。'}</p>)}
         {!state.items.length && <p>背包暂空。</p>}
@@ -112,7 +136,7 @@ export function LdctScreen({ state, update, onExit, renderText }: Props) {
           </article>
         })}
       </div>}
-      {overlay === 'replay' && <><p>只重置低剂量CT开场的游标和实验记录，第一、二章与其他DLC不动。金币、累计属性和已获得勋章保留。</p><button className="mt-4" onClick={() => { update(s => initializeLdct(s, true)); close() }}>确认重玩本开场</button></>}
+      {overlay === 'replay' && <><p>只重置低剂量CT四段故事的游标和实验记录，第一、二章与其他DLC不动。金币、累计属性和已获得勋章保留。</p><button className="mt-4" onClick={() => { update(s => initializeLdct(s, true)); close() }}>确认重玩本DLC</button></>}
     </LdctModal>}
   </DialogueStage>
 }
@@ -127,7 +151,7 @@ function useLdctDialogue({ state, blocked, presentation, renderText, onAdvance, 
   const speaker = p.reply?.speaker ?? node.speaker
   const choices = p.reply ? [] : getLdctChoices(state)
   const gifts = p.reply ? [] : ldctGiftChoices(state)
-  const restAvailable = node.kind === 'hub' && !p.reply && !p.completed.includes('rest')
+  const restAvailable = ldctCanRest(state)
   const hasChoices = !!(choices.length || gifts.length || restAvailable)
   // A gift reply, modal return or changed choices is a new presentation even
   // when the stored node is unchanged. Keep guard history on the whole stage.

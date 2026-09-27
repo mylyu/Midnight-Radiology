@@ -1066,7 +1066,7 @@ function BadgeScreen({ state, onBack }: { state: GameState | null; onBack: () =>
           })}
         </div>
         {state?.dlc?.ldct?.ldct && <section className="max-w-3xl text-center">
-          <h3 className="text-cyan-200 mb-3">◐ 低剂量CT · 开场体验</h3>
+          <h3 className="text-cyan-200 mb-3">◐ 低剂量CT · 噪声之外</h3>
           {Object.entries(LDCT_BADGES).map(([id, b]) => <div key={id} className="rounded-xl border border-cyan-700 bg-slate-900/80 p-4">
             <p className="text-amber-100">{b.icon} {owned.includes(id) ? b.name : '尚未解锁'}</p>
             <p className="text-xs text-slate-400 mt-2">{b.desc}</p>

@@ -1,15 +1,19 @@
 import type { GameState } from './types'
 import type { LdctChoice, LdctNode, LdctPerson } from './ldct-types'
+import { LDCT_RESEARCH_STEPS, LDCT_RESEARCH_MEDIA_IDS, LDCT_RESEARCH_MANUAL, getLdctResearchText } from './ldct-research-story'
 
 export const LDCT_TITLE = '低剂量CT：噪声之外'
 export const LDCT_START = 'dinner_0'
 export const LDCT_BADGES = {
   ldct_first_comparison: { name: '第一份对照', icon: '🔍', desc: '留下结构与投影的对应记录，而不只存最后那张图。' },
+  ldct_keep_counterexample: { name: '那张也留着', icon: '📎', desc: '保留三组盲看记录，并揭示方法核对；不只留下漂亮的结果。' },
+  ldct_noise_beyond: { name: '噪声之外', icon: '◐', desc: '和老同学把这段研究走到结尾，包括那些没想好的事。' },
 }
 export const LDCT_MEDIA_IDS = [
   'ldct_bg_restaurant', 'bg_breakroom', 'ch2_bg_breakroom_day', 'bg_office',
   'ch2_pixel_char_luzhou_m', 'ch2_pixel_char_luzhou_f', 'ch2_pixel_char_lei',
   'ch2_pixel_char_he', 'ch2_pixel_char_director', 'item_coffee', 'item_milktea', 'item_snack',
+  ...LDCT_RESEARCH_MEDIA_IDS,
 ] as const
 
 const restaurant = 'ldct_bg_restaurant', room = 'bg_breakroom', day = 'ch2_bg_breakroom_day'
@@ -145,8 +149,8 @@ sequence('after_backproject', [
   ['me', '你真的主动说收工了？我得记一下日期。'],
 ], room, lu, 'go_home_0', { giftPerson: 'luzhou' })
 sequence('filter_intro', [
-  [undefined, '午休还剩半小时。你收好饭盒，陆舟把昨天那份实验翻到下一页。几个点外面多了个外壳，还添了几根细条。'],
-  ['luzhou', '先点**None**，就是昨晚不滤波、直接投回去。再换**Ram-Lak**。下面那条曲线也会变，看看图里有什么不同。'],
+  [undefined, '午休还剩半小时。你收好饭盒，陆舟把昨天那几个小结构调了出来。\n“先不加整圈底色，省得它盖住我们要看的东西。”'],
+  ['luzhou', '先点**不滤波**，就是昨晚直接投回去。再换**Ramp**。想看它怎么处理投影，就展开下面的响应曲线。'],
   ['me', '想起来了，**FBP**是先滤投影，再往回投。这回你慢点，我自己切着看。'],
 ], day, lu, 'lab_filter', { giftPerson: 'luzhou' })
 node('lab_filter', { bg: day, sprite: null, text: '', enterLab: 3 })
@@ -157,7 +161,7 @@ sequence('after_filter', [
 ], day, lu, 'noise_intro_0')
 sequence('noise_intro', [
   [undefined, '两天后，下班。陆舟来取落在你这里的转接头，顺手把上次那份实验打开了。'],
-  ['luzhou', '今天不换模体，也不减少角度。只把每个角度收到的光子数调低。先看正弦图，不急着看成片。'],
+  ['luzhou', '这次给几个点加个底色和外壳。模体和角度先固定，只把每个角度收到的光子数调低。先看正弦图，不急着看成片。'],
   ['me', '昨天还能追的弯线，今天像隔着雪花。再用刚才那个锐一点的滤波，会怎么样？'],
 ], room, lu, 'lab_noise', { giftPerson: 'luzhou' })
 node('lab_noise', { bg: room, sprite: null, text: '', enterLab: 4 })
@@ -256,7 +260,7 @@ sequence('ending', [
 ], room, null, 'stage_end')
 node('stage_end', { bg: room, sprite: null, text: '第一段 · 先吃饭', settle: true })
 
-export const LDCT_STEPS: Readonly<Record<string, LdctNode>> = steps
+export const LDCT_STEPS: Readonly<Record<string, LdctNode>> = { ...steps, ...LDCT_RESEARCH_STEPS }
 
 export function getLdctNode(state: GameState): LdctNode {
   const p = state.dlc?.ldct?.ldct
@@ -277,25 +281,32 @@ export function getLdctNode(state: GameState): LdctNode {
   if (original.id === 'ending_1' && p?.decisions.chief === 'told') {
     text = '“先把要做什么列出来，排班出来再跟主任说。下次先吃饭，真的先吃。”'
   }
+  if (p && original.id.startsWith('r')) text = getLdctResearchText(original.id, p) ?? text
   return { ...original, text, sprite: original.sprite === '@luzhou' ? `ch2_pixel_char_luzhou_${state.gender}` : original.sprite }
 }
 
 export function getLdctChoices(state: GameState): LdctChoice[] {
   const p = state.dlc?.ldct?.ldct
-  return (getLdctNode(state).choices ?? []).filter(c => !c.unless || !p?.completed.includes(c.unless))
+  const matches = (condition: string) => {
+    if (!condition.startsWith('decision:')) return p?.completed.includes(condition) ?? false
+    const [, key, value] = condition.split(':')
+    return p?.decisions[key] === value
+  }
+  return (getLdctNode(state).choices ?? []).filter(c => (!c.unless || !matches(c.unless)) && (!c.requires || matches(c.requires)))
 }
 
 export const LDCT_MANUAL = [
   { title: '影子怎么变成正弦图', text: '从一个方向测得一列投影。把不同角度的列排在一起，就是正弦图：横轴是投影角度，纵轴是探测器位置。一个偏离中心的小结构，会留下弯曲的轨迹；它并没有在物体里移动。开头暂时隐去外壳，方便看清几个结构各自的贡献。' },
-  { title: '投回去以后为什么还糊', text: '直接反投影把各方向的信息沿原路摊回去、叠加。方向多了，位置逐渐显现，但仍有模糊。None不滤波，对应平直的矩形响应、直接反投影；Ram-Lak的响应是斜坡。其他选项用Shepp–Logan、Cosine、Hamming或Hann抑制高频，显示的是与斜坡相乘后的完整滤波响应。FBP先对投影滤波，再反投影，不是给最终断层贴一层美颜滤镜。曲线中间对应缓慢变化，两端对应细小、快速变化，正负频率对称；不是病灶大小刻度，也不代表某个滤波器永远最好。' },
+  { title: '投回去以后为什么还糊', text: '直接反投影把各方向的信息沿原路摊回去、叠加。方向多了，位置逐渐显现，但仍有模糊。不滤波时是平直的矩形响应；Ram-Lak（Ramp）的响应是斜坡。其他选项用不同的窗抑制高频，显示的是与斜坡相乘后的完整响应。FBP先对投影滤波，再反投影，不是给最终断层贴一层美颜滤镜。曲线中间对应缓慢变化，两端对应细小、快速变化，正负频率对称。比较段去掉大面积底色、保留同一组小结构，使模糊位置更好辨认；后面噪声实验再加入外壳。' },
   { title: '低信号先改变了什么', text: '这里固定角度数和物体，用光子计数的泊松波动模拟不同信号水平，再取对数得到投影。信号少，投影更不稳定，重建也会受到影响。它是简化的平行束数字模体实验，不是完整临床低剂量模型，档位不对应临床剂量建议。' },
-  { title: '多改几轮，不是反复磨皮', text: '本例迭代重建每轮把当前图像正投影，与已测投影比较，再调整图像。屏幕展示实际计算出的中间结果、预测投影和差异，并不是对成片反复套滤镜。轮数越多不等于临床表现越好：既要看数据相符程度，也要看细节和噪声。本例不是任何厂商算法，深度学习方案尚未开放。' },
+  { title: '多改几轮，不是反复磨皮', text: '本例迭代重建每轮把当前图像正投影，与已测投影比较，再调整图像。屏幕展示实际计算出的中间结果、预测投影和差异，并不是对成片反复套滤镜。轮数越多不等于临床表现越好：既要看数据相符程度，也要看细节和噪声。后续盲看桌的学习型示例是对FBP成片进行后处理，不冒充厂商的投影域深度学习重建。' },
   { title: '记录，不是考试', text: '每次留下你实际试过的过程或请陆舟一起看，不以选“最漂亮”的图打分。每个场景只做一件事；参数、结果和求助都会保存。重新尝试不重复发奖励。' },
   { title: '如果以后要用真实资料', text: '向主任说明合作、取得机构数据授权、伦理审查与知情同意或相应豁免要求，是不同的问题。具体按项目与机构要求处理。此开场没有患者资料，不把“暂时没告诉主任”当成违规结论。' },
+  ...LDCT_RESEARCH_MANUAL,
 ]
 export const LDCT_PARTS = [
-  { title: '一 · 先吃饭', status: '本轮开场体验' },
-  { title: '二 · 顺手帮个忙', status: '后续待制作' },
-  { title: '三 · 最干净的那张', status: '后续待制作' },
-  { title: '四 · 这版还投吗', status: '后续待制作' },
+  { title: '一 · 先吃饭', status: '正弦图与重建复习' },
+  { title: '二 · 顺手帮个忙', status: '分工、授权与没吃完的午饭' },
+  { title: '三 · 最干净的那张', status: '盲看比较与没那么漂亮的结果' },
+  { title: '四 · 这版还投吗', status: '汇报、争执与各自的选择' },
 ]

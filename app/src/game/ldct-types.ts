@@ -1,4 +1,5 @@
 import type { LdctLabRecord, LdctLabState, LdctLabRound } from './ldct-experiments'
+import type { LdctResearchDraft, LdctResearchStage } from './ldct-research'
 
 export type LdctPerson = 'luzhou' | 'lei' | 'he'
 export type LdctProduct = 'coffee' | 'milktea' | 'snack'
@@ -9,7 +10,7 @@ export interface LdctProgress {
   openingRevision?: 2
   run: number
   seed: 2258
-  phase: 'story' | 'lab' | 'settle'
+  phase: 'story' | 'lab' | 'research' | 'settle'
   nodeId: string
   /** Changes even when a gift/help reply returns to the same story node. */
   revision: number
@@ -17,12 +18,18 @@ export interface LdctProgress {
   completed: string[]
   decisions: Record<string, string>
   receipts: string[]
-  gifts: { person: LdctPerson; item: 'milktea' | 'snack'; nodeId: string }[]
+  gifts: { person: LdctPerson; item: 'milktea' | 'snack'; nodeId: string; part?: number }[]
   reply?: { nodeId: string; speaker: string; text: string }
   labRound: LdctLabRound
   labDraft: LdctLabState
   records: Partial<Record<LdctLabRound, LdctLabRecord>>
   labReturn?: string
+  research?: LdctResearchDraft
+  researchRecords?: Partial<Record<LdctResearchStage, LdctResearchDraft>>
+  researchReturn?: string
+  /** No automatic progress beyond old sample endings. Explicit next-part only. */
+  partStart?: { gold: number; skill: number; heart: number; wealth: number }
+  finished?: boolean
   start: { gold: number; skill: number; heart: number; wealth: number }
 }
 
@@ -32,6 +39,7 @@ export interface LdctChoice {
   next: string
   /** Hide a completed optional conversation; unrelated unfinished entries stay. */
   unless?: string
+  requires?: string
   complete?: string
   decision?: { key: string; value: string }
 }
@@ -50,6 +58,9 @@ export interface LdctNode {
   complete?: string
   enterLab?: LdctLabRound
   settle?: boolean
+  part?: 1 | 2 | 3 | 4
+  enterResearch?: LdctResearchStage
+  finale?: boolean
 }
 
 export type LdctAction =
@@ -63,3 +74,8 @@ export type LdctAction =
   | { type: 'gift'; person: LdctPerson; item: 'milktea' | 'snack'; nodeId: string }
   | { type: 'reply:close' }
   | { type: 'rest' }
+  | { type: 'part:next' }
+  | { type: 'research:update'; value: LdctResearchDraft }
+  | { type: 'research:submit'; stage: LdctResearchStage }
+  | { type: 'research:close' }
+  | { type: 'research:open'; stage: LdctResearchStage }

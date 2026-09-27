@@ -10,6 +10,7 @@
 .ldct-metrics section,.ldct-panel{background:#0f172ae8;border:1px solid #526078;border-radius:12px;padding:16px}.ldct-metrics small{color:#94a3b8}.ldct-metrics p{font-size:24px;margin:4px 0}
 .ldct-panel{margin:12px 0}.ldct-panel h2,.ldct-panel h3{color:#fde68a;margin-bottom:10px}.ldct-panel p{line-height:1.8;margin:8px 0;font-size:14px}
 .ldct-menu{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}.ldct-menu button{font-size:14px}
+.ldct-settlement button.ldct-next-part{background:#155e57;color:#d1fae5;border-color:#5eead4;font-size:16px;padding:12px 18px;width:100%;text-align:center}.ldct-parts{border-top:1px solid #334155;margin-top:12px;padding-top:7px}.ldct-parts p{font-size:13px}
 .ldct-overlay{position:fixed;inset:0;background:#020617dc;z-index:80;display:flex;align-items:center;justify-content:center;padding:16px}
 .ldct-modal{max-height:90%;width:680px;max-width:100%;display:flex;flex-direction:column;background:#0f172a;border:2px solid #64748b;border-radius:14px}
 .ldct-modal>header{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid #334155;flex-shrink:0}.ldct-modal h2{font-size:18px;color:#fde68a}
