@@ -9,7 +9,6 @@ import { freshState } from '../src/game/store.ts'
 import { getLdctNode } from '../src/game/ldct.ts'
 import { selectLdctStory } from '../src/game/ldct-session.ts'
 import { createLdctLabState } from '../src/game/ldct-experiments.ts'
-import { LDCT_EXPOSURE_VERSION } from '../src/game/ldct-exposure.ts'
 import { LDCT_BP_COUNTS } from '../src/game/ldct-projections.ts'
 import { LDCT_MANUAL_BP_COUNTS } from '../src/game/ldct-manual-bp.ts'
 
@@ -144,33 +143,38 @@ try {
       assert.equal((await progress()).nodeId, next)
     }
     const exposure = page.getByTestId('ldct-chest-exposure')
-    const check = async step => {
-      await page.locator(`[data-exposure-step="${step}"] [data-frame="exposure:fbp:${step + 1}"]`).waitFor()
-      assert.equal((await progress()).labDraft.exposureStep, step)
-      assert.match(await exposure.locator('.ldct-exposure__count').innerText(), new RegExp(`${step + 1} / 4`))
+    const check = async count => {
+      await page.locator(`[data-exposure-count="${count}"] [data-frame="exposure:fbp:${count}"]`).waitFor()
+      assert.equal((await progress()).labDraft.exposureCount, count)
+      assert.match(await exposure.locator('.ldct-exposure__count').innerText(), new RegExp(`${count} / 13`))
+      assert.equal(await page.getByRole('button', { name: '继续', exact: true }).isEnabled(), count >= 11)
     }
-    await check(0)
+    await check(1)
     assert.equal(await tileHash(exposure.locator('[data-frame="exposure:fbp:1"]')), baseline,
       'first chest FBP and first exposure use identical displayed pixels')
     await page.screenshot({ path: resolve(output, 'exposure-1-1366.png') })
     assert.equal(await page.getByRole('button', { name: '继续', exact: true }).isEnabled(), false)
-    for (let step = 1; step < 4; step++) {
-      await page.getByRole('button', { name: '再积累一份曝光', exact: true }).click(); await check(step)
-      await reload(); await check(step)
-      await page.screenshot({ path: resolve(output, `exposure-${step + 1}-1366.png`) })
+    await page.waitForTimeout(1400); await check(1)
+    for (let count = 2; count <= 13; count++) {
+      await page.getByRole('button', { name: '再积累一份曝光', exact: true }).click(); await check(count)
+      if ([2, 7, 13].includes(count)) {
+        await page.waitForTimeout(1400); await check(count)
+        await reload(); await check(count)
+        await page.screenshot({ path: resolve(output, `exposure-${count}-1366.png`) })
+      }
     }
-    assert.equal(await page.getByRole('button', { name: '已积累 4/4 份曝光', exact: true }).isEnabled(), false)
+    assert.equal(await page.getByRole('button', { name: '已积累 13/13 份曝光', exact: true }).isEnabled(), false)
     await layouts(page, 'exposure', page.getByRole('button', { name: '继续', exact: true }))
     await page.getByRole('button', { name: '先放一放', exact: true }).click()
     assert.equal((await progress()).phase, 'story')
     assert.deepEqual(stats(await saved()), before, 'back adds no reward')
     await advanceScene(page, saved)
-    await check(3)
+    await check(13)
     await page.waitForTimeout(950)
     await page.getByRole('button', { name: '继续', exact: true }).click()
     await page.locator('[data-ldct-node="lf_photons_done_0"]').waitFor()
-    assert.equal((await progress()).records[4].exposureStep, 3)
-    assert.equal((await progress()).records[4].sourceVersion, LDCT_EXPOSURE_VERSION)
+    assert.equal((await progress()).records[4].exposureCount, 13)
+    assert.equal((await progress()).records[4].sourceVersion, 'ldct-chest-exposure-v2')
     assert.deepEqual(stats(await saved()), before, 'round4 reuses the prior comparison receipt')
     await reload()
     assert.equal((await progress()).nodeId, 'lf_photons_done_0')
@@ -201,8 +205,8 @@ try {
     await page.locator('[data-ldct-node="lf_photons_done_0"]').waitFor()
     const record = (await progress()).records[4]
     assert.equal(record.helped, true)
-    assert.equal(record.exposureStep, 0)
-    assert.equal(record.sourceVersion, LDCT_EXPOSURE_VERSION)
+    assert.equal(record.exposureCount, 1)
+    assert.equal(record.sourceVersion, 'ldct-chest-exposure-v2')
     await reload()
     assert.deepEqual((await progress()).records[4], record)
     assert.deepEqual(stats(await saved()), before)

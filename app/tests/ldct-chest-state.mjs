@@ -5,16 +5,17 @@ import {
   ldctExperimentReady, ldctRecordSummary, LDCT_LAB_MEDIA_IDS,
 } from '../src/game/ldct-experiments.ts'
 import { LDCT_DATASET_MEDIA_IDS } from '../src/game/ldct-projections.ts'
-import { LDCT_CHEST_MEDIA_IDS, LDCT_CHEST_VERSION, LDCT_CHEST_SEED } from '../src/game/ldct-chest.ts'
+import { LDCT_CHEST_MEDIA_IDS, LDCT_CHEST_SEED } from '../src/game/ldct-chest.ts'
 import { LDCT_EXPOSURE_MEDIA_ID } from '../src/game/ldct-exposure.ts'
 import { LDCT_MANUAL_BP_MEDIA_ID } from '../src/game/ldct-manual-bp.ts'
+import { LDCT_DEEP_MEDIA_IDS, LDCT_DEEP_CHEST_VERSION } from '../src/game/ldct-deep-experiments.ts'
 import {
   initializeLdct, selectLdctStory, getLdctProgress, getLdctShelf, ldctAction,
 } from '../src/game/ldct-session.ts'
 
 // A bounded draft/transaction test; no browser, generation, build or story replay.
 const copy = value => JSON.parse(JSON.stringify(value))
-assert.deepEqual(LDCT_LAB_MEDIA_IDS, [LDCT_DATASET_MEDIA_IDS.phantom, ...LDCT_CHEST_MEDIA_IDS, LDCT_EXPOSURE_MEDIA_ID, LDCT_MANUAL_BP_MEDIA_ID])
+assert.deepEqual(LDCT_LAB_MEDIA_IDS, [LDCT_DATASET_MEDIA_IDS.phantom, ...LDCT_CHEST_MEDIA_IDS, LDCT_EXPOSURE_MEDIA_ID, LDCT_MANUAL_BP_MEDIA_ID, ...LDCT_DEEP_MEDIA_IDS])
 assert(!LDCT_LAB_MEDIA_IDS.includes(LDCT_DATASET_MEDIA_IDS.face))
 assert(!LDCT_LAB_MEDIA_IDS.includes(LDCT_DATASET_MEDIA_IDS.nut))
 
@@ -29,11 +30,11 @@ const help = createLdctRecord({ ...initial, helped: true }, 5, 'uncertain', 'che
 assert(isValidLdctRecord(help, 5))
 assert.equal(help.helped, true)
 assert.equal(help.chest.mark, null)
-assert.equal(help.sourceVersion, LDCT_CHEST_VERSION)
+assert.equal(help.sourceVersion, LDCT_DEEP_CHEST_VERSION)
 assert.equal(help.seed, LDCT_CHEST_SEED)
 
 // Keep one iteration/layer fixed, then move elsewhere and mark the original FBP.
-const compared = { ...initial, iterationStep: 3, seenIterations: [0, 1, 2, 3], chest: {
+const compared = { ...initial, iterationRound: 10, iterationStep: 3, seenIterations: [0, 1, 2, 3], chest: {
   slice: 2, pinned: { slice: 1, iterationStep: 1 },
   mark: { x: 28, y: 42, slice: 2, iterationStep: 3, method: 'fbp' }, compareFbp: true,
 } }
@@ -45,6 +46,7 @@ assert.notEqual(record.chest, compared.chest)
 assert.notEqual(record.chest.mark, compared.chest.mark)
 assert.notEqual(record.chest.pinned, compared.chest.pinned)
 const legacyChest = { ...copy(record), sourceVersion: 'ldct-chest-v1' }
+delete legacyChest.iterationRound
 assert(isValidLdctRecord(legacyChest, 5), 'old-source records remain readable, not silently renamed')
 assert.match(ldctRecordSummary(legacyChest), /旧示意图/)
 assert.match(ldctRecordSummary(record), /FBP/)
@@ -89,13 +91,14 @@ function atChest(state, draft = initial) {
 }
 const stats = s => ({ gold: s.gold, skill: s.skill, heart: s.heart, wealth: s.wealth, badges: s.badges })
 // A new anatomy must never inherit the old image's marker or pinned frame.
-const legacyState = atChest(copy(active), compared)
+const legacyCompared = { ...compared }; delete legacyCompared.iterationRound
+const legacyState = atChest(copy(active), legacyCompared)
 const legacyProgress = getLdctProgress(legacyState)
 delete legacyProgress.chestSourceVersion
 legacyProgress.records[5] = copy(legacyChest)
 const migrated = initializeLdct(copy(legacyState))
 assert.deepEqual(getLdctProgress(migrated).labDraft, initial)
-assert.deepEqual(getLdctProgress(migrated).previousChest, { draft: compared, record: legacyChest })
+assert.deepEqual(getLdctProgress(migrated).previousChest, { draft: legacyCompared, record: legacyChest })
 assert.deepEqual(getLdctProgress(migrated).records[5], legacyChest)
 assert.deepEqual(stats(migrated), stats(legacyState))
 assert.deepEqual(initializeLdct(copy(migrated)), migrated, 'migration is idempotent')
@@ -109,16 +112,20 @@ assert.deepEqual(getLdctProgress(reopened).labDraft, initial, 'historical record
 
 // Sound receipts never advance dialogue, reward, or block subsequent actions.
 const entrance = atChest(active)
-Object.assign(getLdctProgress(entrance), { nodeId: 'lf_welcome', phase: 'story' })
-const heardAction = { type: 'media:heard', nodeId: 'lf_welcome', cueId: 'voice:lf_welcome:v1' }
+Object.assign(getLdctProgress(entrance), { nodeId: 'lf_evening2', phase: 'story' })
+const heardAction = { type: 'media:heard', nodeId: 'lf_evening2', cueId: 'call:father-evening2:v1' }
 const heard = ldctAction(entrance, heardAction)
 assert.deepEqual(stats(heard), stats(entrance))
-assert.equal(getLdctProgress(heard).nodeId, 'lf_welcome')
+assert.equal(getLdctProgress(heard).nodeId, 'lf_evening2')
 assert.equal(getLdctProgress(heard).revision, getLdctProgress(entrance).revision)
-assert(getLdctProgress(heard).receipts.includes('media:voice:lf_welcome:v1'))
+assert(getLdctProgress(heard).receipts.includes('media:call:father-evening2:v1'))
 assert.equal(ldctAction(heard, heardAction), heard)
 assert.equal(ldctAction(heard, { ...heardAction, nodeId: 'lf_scan_2' }), heard)
-assert.equal(getLdctProgress(ldctAction(heard, { type: 'advance', nodeId: 'lf_welcome' })).nodeId, 'lf_arrive_0')
+assert.equal(getLdctProgress(ldctAction(heard, { type: 'advance', nodeId: 'lf_evening2' })).nodeId, 'lf_dinner_0')
+const removedVoice = atChest(active)
+Object.assign(getLdctProgress(removedVoice), { nodeId: 'lf_welcome', phase: 'story' })
+assert.equal(ldctAction(removedVoice, { type: 'media:heard', nodeId: 'lf_welcome', cueId: 'voice:lf_welcome:v1' }), removedVoice,
+  'removed entrance voices cannot create new consumed-audio receipts')
 let state = atChest(active)
 state = ldctAction(state, { type: 'lab:update', value: compared })
 const updated = state

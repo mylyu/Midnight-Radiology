@@ -38,7 +38,7 @@ function operated(round, dataset) {
   if (round === 3) Object.assign(draft, { filter: 'hann', seenFilters: ['ramp', 'hann'] })
   if (round === 4) Object.assign(draft, { signal: 'low', seenSignals: ['high', 'low'] })
   if (round === 5) {
-    Object.assign(draft, { iterationStep: 1, seenIterations: [0, 1] })
+    Object.assign(draft, { iterationStep: 1, seenIterations: [0, 1], iterationRound: 10 })
     draft.chest = { ...draft.chest, slice: 1, pinned: { slice: 1, iterationStep: 1 },
       mark: { x: 57, y: 41, slice: 1, iterationStep: 1, method: 'iteration' }, compareFbp: false }
   }

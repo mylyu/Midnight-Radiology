@@ -80,14 +80,22 @@ async function lab(p) {
     await screens('unfiltered')
     await root.getByRole('button', { name: '柔一些', exact: true }).click()
   }
-  if (p.labRound === 4) await root.getByRole('button', { name: '再积累一份曝光', exact: true }).click()
+  if (p.labRound === 4) {
+    for (let count = 2; count <= 11; count++) {
+      await root.getByRole('button', { name: '再积累一份曝光', exact: true }).click()
+      assert.equal((await progress()).labDraft.exposureCount, count)
+    }
+  }
   if (p.labRound === 5) {
     assert.equal(await root.locator('[data-frame="truth"]').count(), 0, 'no chest answer reference')
-    await root.getByRole('button', { name: '用原数据改第一轮 →', exact: true }).click()
+    for (let iteration = 1; iteration <= 10; iteration++) {
+      await root.locator('.ldct-chest__next').click()
+      assert.equal((await progress()).labDraft.iterationRound, iteration)
+    }
     await root.locator('summary').filter({ hasText: '固定、标记与更多轮次' }).click()
     await root.getByRole('button', { name: '4轮', exact: true }).click()
     await root.getByRole('button', { name: '固定这一版', exact: true }).click()
-    await root.getByRole('button', { name: '8轮', exact: true }).click()
+    await root.getByRole('button', { name: '10轮', exact: true }).click()
     await root.getByRole('button', { name: '下一层', exact: true }).click()
     await root.getByRole('button', { name: '点出想请医生核查的位置', exact: true }).click()
     const image = root.locator('.ldct-chest__canvas')
@@ -179,7 +187,8 @@ try {
   }
   assert.equal(final.dlc.ldct.ldct.openingRevision, 5)
   assert.equal(final.dlc.ldct.ldct.records[4].dataset, 'chest')
-  assert.equal(final.dlc.ldct.ldct.records[4].exposureStep, 1)
+  assert.equal(final.dlc.ldct.ldct.records[4].exposureCount, 11)
+  assert.equal(final.dlc.ldct.ldct.records[5].iterationRound, 10)
   assert.equal(Object.keys(final.dlc.ldct.ldct.records).length, 5)
   assert.equal(final.skill, initial.skill + 1); assert.equal(final.wealth, initial.wealth + 1)
   for (const id of ['ch2', 'dr', 'dsa']) assert.deepEqual(final.dlc[id], initial.dlc[id])

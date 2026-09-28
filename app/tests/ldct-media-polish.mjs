@@ -150,7 +150,7 @@ try {
     const lab = page.getByTestId('ldct-chest-iterate'), tools = lab.locator('details').filter({ hasText: '固定、标记与更多轮次' })
     assert.equal(await tools.getAttribute('open'), null, 'secondary controls begin folded')
     assert.equal(await lab.getByRole('button', { name: '4轮', exact: true }).isVisible(), false)
-    await lab.getByRole('button', { name: '用原数据改第一轮 →', exact: true }).click()
+    for (let round = 1; round <= 10; round++) await lab.locator('.ldct-chest__next').click()
     await layouts(page, 'chest-continue', page.getByRole('button', { name: '继续', exact: true }), true)
     await tools.locator('summary').click()
     await lab.getByRole('button', { name: '4轮', exact: true }).click()
@@ -180,32 +180,30 @@ try {
     assert.equal(await page.locator('[data-ldct-prop]').count(), 0, 'unrelated dialogue does not retain a previous prop')
     assert.equal(await page.locator('[data-ldct-call]').count(), 0, 'finished phone conversation leaves no incoming notice')
   })
-  await withFixture('audio-resolved', fixture('lf_scan_2'), async test => {
+  await withFixture('audio-resolved', fixture('lf_evening2'), async test => {
     const { page, load, reload, events } = test
-    const zhou = await cueAttempt(test, 'lf_scan_2')
+    const call = await cueAttempt(test, 'lf_evening2')
+    assert.match(await page.locator('[data-ldct-call]').innerText(), /爸.*陆舟的手机[\s\S]*来电中/)
+    assert.equal(await page.locator('[data-ldct-portrait]').count(), 0, 'incoming phone is not a person in the room')
+    await layouts(page, 'incoming-phone', page.locator('[data-ldct-call]'))
     assert(await page.getByRole('button', { name: '剧情音开', exact: true }).isVisible())
     await page.getByRole('button', { name: '📖 手册', exact: true }).click()
-    assert((await events()).some(event => event.type === 'pause' && event.id === zhou.id), 'opening an overlay stops scene audio')
+    assert((await events()).some(event => event.type === 'pause' && event.id === call.id), 'opening an overlay stops scene audio')
     await page.getByRole('button', { name: '关闭 ×', exact: true }).click()
     await reload()
-    await cueAttempt(test, 'lf_scan_2')
+    await cueAttempt(test, 'lf_evening2')
     assert.equal(await page.locator('.ldct-audio-retry').count(), 0)
-    await advanceScene(page, fixture('lf_scan_2'))
+    await advanceScene(page, fixture('lf_evening2'))
+    assert.match(await page.locator('[data-ldct-call]').innerText(), /通话中/)
     await load(fixture('lf_arrive_0'))
     assert.equal(ldctSceneCue('lf_arrive_0', 'm'), undefined, 'unapproved father voice stays silent')
     await advanceScene(page, fixture('lf_arrive_0'))
     assert.equal((await events()).filter(event => event.type === 'play' && event.node === 'lf_arrive_0' && event.volume === .45).length, 0)
-    for (const [nodeId, gender] of [['lf_welcome', 'f'], ['lf_welcome', 'm'], ['lf_chat_he_0', 'm'], ['lf_evening2', 'm']]) {
+    for (const [nodeId, gender] of [['lf_welcome', 'f'], ['lf_welcome', 'm'], ['lf_chat_he_0', 'm'], ['lf_scan_2', 'm']]) {
       await load(fixture(nodeId, undefined, gender))
-      const played = await cueAttempt(test, nodeId, gender)
-      if (nodeId === 'lf_evening2') {
-        assert.match(await page.locator('[data-ldct-call]').innerText(), /爸.*陆舟的手机[\s\S]*来电中/)
-        assert.equal(await page.locator('[data-ldct-portrait]').count(), 0, 'incoming phone is not a person in the room')
-        await layouts(page, 'incoming-phone', page.locator('[data-ldct-call]'))
-        await advanceScene(page, fixture(nodeId))
-        assert((await events()).some(event => event.type === 'pause' && event.id === played.id), 'leaving a scene pauses the active cue')
-        assert.match(await page.locator('[data-ldct-call]').innerText(), /通话中/)
-      }
+      assert.equal(ldctSceneCue(nodeId, gender), undefined, 'author removed all LDCT entrance voices')
+      await advanceScene(page, fixture(nodeId, undefined, gender))
+      assert.equal((await events()).filter(event => event.type === 'play' && event.node === nodeId && event.gender === gender && event.volume === .45).length, 0)
     }
   })
   await withFixture('audio-rejected', fixture('lf_evening2'), async test => {
@@ -219,10 +217,10 @@ try {
     await advanceScene(page, fixture('lf_evening2'))
     assert.equal((await progress()).nodeId, 'lf_dinner_0', 'audio refusal cannot lock dialogue')
     await load(fixture('lf_scan_2'))
-    const denied = await cueAttempt(test, 'lf_scan_2')
-    await page.getByRole('button', { name: /播放声音/ }).waitFor()
+    assert.equal(ldctSceneCue('lf_scan_2', 'm'), undefined)
     await advanceScene(page, fixture('lf_scan_2'))
-    assert((await events()).some(event => event.type === 'pause' && event.id === denied.id), 'leaving a rejected cue cleans it up without waiting for retry')
+    assert.equal((await events()).filter(event => event.type === 'play' && event.node === 'lf_scan_2' && event.volume === .45).length, 0,
+      'removed vocal cues cannot create playback/retry attempts')
   }, true)
   console.log('Scoped media/UI checks complete; screenshots are outside the repository. Playback is mocked, not listened to.')
 } finally { await browser.close() }
