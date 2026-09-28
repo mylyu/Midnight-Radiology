@@ -6,13 +6,15 @@ import {
 } from '../src/game/ldct-experiments.ts'
 import { LDCT_DATASET_MEDIA_IDS } from '../src/game/ldct-projections.ts'
 import { LDCT_CHEST_MEDIA_IDS, LDCT_CHEST_VERSION, LDCT_CHEST_SEED } from '../src/game/ldct-chest.ts'
+import { LDCT_EXPOSURE_MEDIA_ID } from '../src/game/ldct-exposure.ts'
+import { LDCT_MANUAL_BP_MEDIA_ID } from '../src/game/ldct-manual-bp.ts'
 import {
   initializeLdct, selectLdctStory, getLdctProgress, getLdctShelf, ldctAction,
 } from '../src/game/ldct-session.ts'
 
 // A bounded draft/transaction test; no browser, generation, build or story replay.
 const copy = value => JSON.parse(JSON.stringify(value))
-assert.deepEqual(LDCT_LAB_MEDIA_IDS, [LDCT_DATASET_MEDIA_IDS.phantom, ...LDCT_CHEST_MEDIA_IDS])
+assert.deepEqual(LDCT_LAB_MEDIA_IDS, [LDCT_DATASET_MEDIA_IDS.phantom, ...LDCT_CHEST_MEDIA_IDS, LDCT_EXPOSURE_MEDIA_ID, LDCT_MANUAL_BP_MEDIA_ID])
 assert(!LDCT_LAB_MEDIA_IDS.includes(LDCT_DATASET_MEDIA_IDS.face))
 assert(!LDCT_LAB_MEDIA_IDS.includes(LDCT_DATASET_MEDIA_IDS.nut))
 

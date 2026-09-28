@@ -9,6 +9,8 @@ import { freshState } from '../src/game/store.ts'
 import { getLdctNode } from '../src/game/ldct.ts'
 import { selectLdctStory } from '../src/game/ldct-session.ts'
 import { createLdctLabState } from '../src/game/ldct-experiments.ts'
+import { LDCT_BP_COUNTS } from '../src/game/ldct-projections.ts'
+import { LDCT_MANUAL_BP_COUNTS } from '../src/game/ldct-manual-bp.ts'
 import { ldctSceneCue } from '../src/game/ldct-presentation.ts'
 
 const { chromium } = createRequire(import.meta.url)(process.env.PLAYWRIGHT_MODULE || 'C:/Users/lvmen/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright')
@@ -115,46 +117,34 @@ async function cueAttempt(test, nodeId, gender = 'm') {
 }
 try {
   await withFixture('bp', fixture('lf_lab_2', 2), async ({ page, progress, reload }) => {
-    const bp = page.locator('[data-bp-step]'), counts = [1, 2, 4, 8, 24, 160]
+    const bp = page.locator('[data-bp-count]'), counts = LDCT_MANUAL_BP_COUNTS
     const step = async index => {
-      await page.locator(`[data-bp-step="${index}"] [data-frame="bp:${counts[index]}"]`).waitFor()
-      assert.equal((await progress()).labDraft.bpStep, index, 'each real checkpoint is saved')
+      await page.locator(`[data-bp-count="${counts[index]}"] [data-frame="bp:${counts[index]}"]`).waitFor()
+      const draft = (await progress()).labDraft
+      assert.equal(draft.bpCount ?? LDCT_BP_COUNTS[draft.bpStep], counts[index], 'each real checkpoint is saved')
       assert.equal(await bp.locator('[data-frame="truth"]').count(), 1, 'complete reference stays visible')
       assert.match(await bp.locator(`[data-frame="bp:${counts[index]}"]`).evaluate(el => getComputedStyle(el).backgroundImage), /blob:/)
     }
     await step(0)
     assert.equal(await page.getByRole('button', { name: '继续', exact: true }).isEnabled(), false)
-    await page.getByRole('button', { name: '把投影铺回来 →', exact: true }).click()
-    const started = Date.now()
-    await page.waitForTimeout(850)
+    // Approved hands-on revision: each gesture reveals one real frame, with no timer.
+    await page.waitForTimeout(1400)
     await step(0)
+    await page.getByRole('button', { name: /再铺一组投影/ }).click()
     await step(1)
-    assert(Date.now() - started >= 1050, 'first checkpoint observes the 1150ms cadence')
-    await page.getByRole('button', { name: '暂停，看看这一步', exact: true }).click()
-    await page.waitForTimeout(1300)
+    await page.waitForTimeout(1400)
     await step(1)
-    assert.equal(await bp.getAttribute('data-playing'), 'false')
     await reload(); await step(1)
-    assert.equal(await bp.getAttribute('data-playing'), 'false', 'reload restores checkpoint without resuming itself')
-    await bp.evaluate(element => {
-      // Timestamp DOM changes in the browser: locator polling can observe two
-      // correctly spaced frames at uneven delays across the process boundary.
-      window.__ldctBpFrames = [{ step: Number(element.dataset.bpStep), at: performance.now() }]
-      new MutationObserver(() => window.__ldctBpFrames.push({ step: Number(element.dataset.bpStep), at: performance.now() }))
-        .observe(element, { attributes: true, attributeFilter: ['data-bp-step'] })
-    })
-    await page.getByRole('button', { name: '从这里接着铺 →', exact: true }).click()
-    for (let index = 2; index < counts.length; index++) await step(index)
-    const frames = await page.evaluate(() => window.__ldctBpFrames)
-    assert.deepEqual(frames.map(frame => frame.step), [1, 2, 3, 4, 5], 'every calculated checkpoint appears in order')
-    for (let index = 1; index < frames.length; index++)
-      assert(frames[index].at - frames[index - 1].at >= 1100, `checkpoint ${counts[frames[index].step]} observes the 1150ms cadence`)
-    assert.equal(await bp.getAttribute('data-playing'), 'false')
+    for (let index = 2; index < counts.length; index++) {
+      assert(counts[index] - counts[index - 1] <= 8, 'every manual step is a small group of directions')
+      await page.getByRole('button', { name: /再铺一组投影/ }).click()
+      await step(index)
+    }
+    assert.equal(await page.getByRole('button', { name: '已铺回 160 个方向', exact: true }).isEnabled(), false)
     await layouts(page, 'backprojection-continue', page.getByRole('button', { name: '继续', exact: true }), true)
-    await page.getByRole('button', { name: '从头慢慢看一遍 ↺', exact: true }).click()
+    await page.getByRole('button', { name: '回到第一个方向 ↺', exact: true }).click()
     await step(0)
-    await page.getByRole('button', { name: '暂停，看看这一步', exact: true }).click()
-    assert.equal((await progress()).labDraft.bpStep, 0, 'replay starts from the actual one-direction frame')
+    assert.equal((await progress()).labDraft.bpCount, 1, 'replay starts from the actual one-direction frame')
   })
   await withFixture('chest', fixture('lf_lab_5', 5), async ({ page, progress, reload }) => {
     const lab = page.getByTestId('ldct-chest-iterate'), tools = lab.locator('details').filter({ hasText: '固定、标记与更多轮次' })

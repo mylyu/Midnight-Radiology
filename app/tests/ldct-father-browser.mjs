@@ -12,7 +12,7 @@ const browser = await chromium.launch({ channel: 'msedge', headless: true })
 const context = await browser.newContext({ viewport: { width: 1366, height: 900 } })
 const page = await context.newPage()
 page.setDefaultTimeout(12000)
-const key = 'midnight-radiology-save-v1', output = resolve('../../ldct-father-review')
+const key = 'midnight-radiology-save-v1', output = resolve(process.env.LDCT_REVIEW_OUTPUT || '../../ldct-father-review')
 mkdirSync(output, { recursive: true })
 const initial = { ...freshState('m'), gold: 1200, skill: 12, heart: 9, wealth: 4,
   items: ['snack', 'milktea'], night: 4, ap: 2, buyCount: 9, flags: { quiz_grade: 'A', quiz2_grade: 'S' },
@@ -71,16 +71,16 @@ async function screens(name) {
 async function lab(p) {
   const root = page.locator(`.ldct-lab[data-round="${p.labRound}"]`)
   await root.waitFor()
-  assert.equal(await root.getAttribute('data-dataset'), p.labRound === 5 ? 'chest' : 'phantom')
+  assert.equal(await root.getAttribute('data-dataset'), p.labRound >= 4 ? 'chest' : 'phantom')
   assert.match(await root.locator('[data-frame]').first().evaluate(e => getComputedStyle(e).backgroundImage), /blob:/)
   if (p.labRound === 1) await root.getByRole('button', { name: '90°', exact: true }).click()
-  if (p.labRound === 2) await root.getByRole('button', { name: '把投影铺回来 →', exact: true }).click()
+  if (p.labRound === 2) await root.getByRole('button', { name: /再铺一组投影/ }).click()
   if (p.labRound === 3) {
     await root.getByRole('button', { name: '不滤波', exact: true }).click()
     await screens('unfiltered')
     await root.getByRole('button', { name: '柔一些', exact: true }).click()
   }
-  if (p.labRound === 4) await root.getByRole('button', { name: '把光子调少 →', exact: true }).click()
+  if (p.labRound === 4) await root.getByRole('button', { name: '再积累一份曝光', exact: true }).click()
   if (p.labRound === 5) {
     assert.equal(await root.locator('[data-frame="truth"]').count(), 0, 'no chest answer reference')
     await root.getByRole('button', { name: '用原数据改第一轮 →', exact: true }).click()
@@ -115,9 +115,11 @@ try {
   })
   if (!resume) await page.locator('[data-ldct-story="father"]').click()
   let transitions = 0
+  const route = []
   while (!(await progress()).finished) {
     assert(++transitions < 210, 'no unexpected story loop')
     const state = await saved(), p = state.dlc.ldct.ldct
+    route.push(p.nodeId)
     if (transitions % 15 === 0) console.log(`father ${transitions}: ${p.nodeId} / ${p.phase}`)
     if (p.phase === 'lab') { await lab(p); continue }
     if (p.phase === 'settle') {
@@ -169,6 +171,15 @@ try {
   await page.locator('[data-ldct-settlement]').waitFor()
   await screens('ending')
   const final = await saved()
+  if (!resume) {
+    const order = ['lf_consult_0', 'lf_lab_1', 'lf_lab_2', 'lf_lab_3', 'lf_night1_end',
+      'lf_scan_0', 'lf_first_fbp', 'lf_lab_4', 'lf_license_0', 'lf_export_0', 'lf_evening2', 'lf_lab_5', 'lf_weeks_0']
+    for (let index = 1; index < order.length; index++)
+      assert(route.indexOf(order[index]) > route.indexOf(order[index - 1]), `${order[index - 1]} precedes ${order[index]}`)
+  }
+  assert.equal(final.dlc.ldct.ldct.openingRevision, 5)
+  assert.equal(final.dlc.ldct.ldct.records[4].dataset, 'chest')
+  assert.equal(final.dlc.ldct.ldct.records[4].exposureStep, 1)
   assert.equal(Object.keys(final.dlc.ldct.ldct.records).length, 5)
   assert.equal(final.skill, initial.skill + 1); assert.equal(final.wealth, initial.wealth + 1)
   for (const id of ['ch2', 'dr', 'dsa']) assert.deepEqual(final.dlc[id], initial.dlc[id])

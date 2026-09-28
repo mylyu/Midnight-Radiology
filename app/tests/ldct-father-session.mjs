@@ -1,14 +1,17 @@
-// Pure bounded checks: current father story, archive migration and shared receipts.
+// Pure bounded checks: archived v4 father story, migration and shared receipts.
+// Current v5 chronology/exposure is covered by ldct-hands-on.mjs.
 // No browser storage, build, media download or replay of Chapters 1–2.
 import assert from 'node:assert/strict'
 import { freshState } from '../src/game/store.ts'
-import { LDCT_STEPS, getLdctChoices, getLdctNode } from '../src/game/ldct.ts'
-import { LDCT_FATHER_STORY, LDCT_FATHER_LAB_DATASETS } from '../src/game/ldct-father-story.ts'
+import { getLdctSteps, getLdctChoices, getLdctNode } from '../src/game/ldct.ts'
+import { LDCT_FATHER_STORY } from '../src/game/ldct-father-story.ts'
 import { createLdctLabState, createLdctRecord } from '../src/game/ldct-experiments.ts'
 import { initializeLdct, selectLdctStory, getLdctProgress, getLdctShelf, getLdctLabDataset,
   openLdctShelf, ldctAction, ldctGiftChoices, ldctItemUnavailable } from '../src/game/ldct-session.ts'
 
 const clone = value => JSON.parse(JSON.stringify(value))
+const LDCT_STEPS = getLdctSteps({ storyId: 'father', openingRevision: 4 })
+const LDCT_FATHER_LAB_DATASETS = { 1: 'phantom', 2: 'phantom', 3: 'phantom', 4: 'phantom', 5: 'chest' }
 const base = { ...freshState('m'), gold: 1400, skill: 13, heart: 9, wealth: 3,
   playerName: '父亲篇隔离测试', playerId: 'LDCT-FATHER', night: 4, ap: 1, buyCount: 12,
   flags: { quiz_grade: 'A', quiz2_grade: 'S', archive_film: true },
@@ -65,7 +68,8 @@ assert.deepEqual(protection(initial), protectedBase)
 
 const reachedChoices = []
 function walk(input, help = false) {
-  let state = selectLdctStory(input, 'father')
+  const started = selectLdctStory(input, 'father')
+  let state = at(started, p(started).nodeId, { openingRevision: 4 })
   const rounds = new Set()
   let endedEvening = false, steps = 0
   for (; steps < 140; steps++) {
