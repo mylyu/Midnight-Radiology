@@ -1,5 +1,6 @@
-/** Same-source chest-shaped numerical demonstration; no real patient data. */
-export const LDCT_CHEST_VERSION = 'ldct-chest-v1' as const
+/** Licensed real chest images -> synthetic projections -> teaching reconstruction. */
+export const LDCT_CHEST_VERSION = 'ldct-chest-open-v2' as const
+export const LDCT_CHEST_LEGACY_VERSIONS = ['ldct-chest-v1'] as const
 export const LDCT_CHEST_SEED = 28225 as const
 export const LDCT_CHEST_SIZE = 192
 export const LDCT_CHEST_WINDOW = [0.001, 0.022] as const
@@ -17,7 +18,7 @@ export const LDCT_CHEST_PROJECTION_KEYS = [
 ] as const
 export type LdctChestFrameKey = typeof LDCT_CHEST_IMAGE_KEYS[number] | typeof LDCT_CHEST_PROJECTION_KEYS[number]
 
-/** Layer 1/2/3 are neighboring synthetic sections, not a patient's slice numbers. */
+/** Three neighboring source CT layers, not fictional father's original raw data. */
 export const LDCT_CHEST_SLICE_LABELS = ['前一层', '当前层', '后一层'] as const
 
 export function ldctChestFrame(key: string, slice: LdctChestSlice = 1) {
@@ -44,9 +45,10 @@ export function ldctChestFrameStyle(key: string, slice: LdctChestSlice = 1) {
 }
 
 export const LDCT_CHEST_METHOD_NOTES = [
-  '胸部形状的数字模体，三个相邻截面。各层的结构在投影前已存在，不随玩家选算法或迭代轮次添加、删除。',
+  '胸部图来自开放授权的真实CT三个相邻层面，再转换为数字模型生成模拟投影；不是源扫描器的原始投影，也不是陆叔的真实病历。未另行画入病灶。',
   'FBP与迭代读取本层同一份带噪投影；浏览器切换层面或重建结果不会新增扫描。各结果的显示窗始终相同。',
   '每轮先根据测量投影作一次完整SART更新，再施加固定强度的平滑约束；不是对一张FBP图反复模糊，也不是厂商临床算法。',
   '不圈出标准答案，不凭单张模拟图给患者诊断。可标记自己拿不准的地方，核对邻层与不同结果，再由医师处理临床问题。',
   '投影差异图使用各层各轮同一尺度的平方根亮度增强，小差别更容易看到；数字残差不被更改。',
+  '图像署名：El Rahal、Rotzinger、Fahrni，AortaSeg-60（2026），CC BY 4.0，doi:10.5281/zenodo.18147026。源数据未标注肺癌，不把剧情中的诊断当作公开数据的诊断。',
 ] as const

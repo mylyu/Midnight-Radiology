@@ -1,8 +1,12 @@
-"""Original chest-like numerical phantom, not a patient image or learned model.
+"""Numerical chest reconstruction teaching data, not a learned model.
 
 Three neighboring transverse sections -> seeded count projections -> identical
 input for Ramp FBP and true repeated SART updates with TV regularization.
 Only lossless atlases go to the game; sources/metadata/review stay external.
+
+Without --source this reproduces the archived v1 simplified chest. With --source
+it uses licensed CT image slices as an image-derived digital object: subsequent
+projections/count noise are simulated, NOT the source scanner's raw detector data.
 """
 from __future__ import annotations
 
@@ -14,7 +18,7 @@ from pathlib import Path
 import numpy as np
 from PIL import Image, ImageDraw
 from skimage.restoration import denoise_tv_chambolle
-from skimage.transform import radon, iradon, iradon_sart
+from skimage.transform import radon, iradon, iradon_sart, resize
 
 VERSION = 'ldct-chest-v1'
 SEED = 28225
@@ -30,6 +34,8 @@ IMAGE_KEYS = ['truth', 'fbp', *[f'iteration:{n}' for n in ITERATIONS]]
 PROJECTION_KEYS = ['sinogram', *[f'forward:{n}' for n in ITERATIONS], *[f'residual:{n}' for n in ITERATIONS]]
 Y, X = np.mgrid[:SIZE, :SIZE]
 FOV = (X-SIZE//2)**2 + (Y-SIZE//2)**2 < (SIZE//2-1)**2
+SOURCE = None
+PROJECTION_GRAY_LEVELS = 256
 
 
 def ellipse(cx, cy, rx, ry, angle=0):
@@ -92,12 +98,88 @@ def chest(layer):
     return image, lungs, core, annulus, {'x':cx,'y':cy,'radius':radius}
 
 
+def use_open_chest(path):
+    """Select only three native adjacent sections; never add a synthetic lesion.
+
+    Metadata and source checksum pin the audited, redistributable Nat_07 source.
+    nibabel is required only for this openly licensed NIfTI source mode.
+    """
+    global VERSION, SPACING, SOURCE, chest, WINDOW, TV_WEIGHT, INCIDENT, PROJECTION_GRAY_LEVELS
+    import nibabel as nib
+    from scipy import ndimage
+
+    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    assert digest == 'a0b9ae7c5d021bf6f072fae7e7b0a7a224e238033eb243fcb0e1268bf6eb413a', 'Unreviewed source volume'
+    source = nib.load(path)
+    assert source.shape == (512, 512, 1019)
+    assert nib.aff2axcodes(source.affine) == ('L', 'A', 'S')
+    start = 788
+    # Native LAS: transpose x/y then reverse anterior axis for radiological LPS.
+    sections = np.asarray(source.dataobj[:, :, start:start+3], dtype=np.float64)
+    native_spacing = float(abs(source.affine[0, 0]))
+    # A small border keeps the entire body support within the parallel-beam FOV.
+    interior = 168
+    offset = (SIZE-interior)//2
+    SPACING = native_spacing*512/interior
+    WINDOW = [0.001, 0.022]
+    TV_WEIGHT = .00018
+    INCIDENT = 50000
+    VERSION = 'ldct-chest-open-v2'
+    PROJECTION_GRAY_LEVELS = 64
+    prepared = []
+    for layer in range(3):
+        hu = sections[:, :, layer].T[::-1].copy()
+        # Remove table/external lines, not pulmonary anatomy: take the largest
+        # connected body support, fill enclosed lung cavities, retain HU inside.
+        labels, count = ndimage.label(hu > -500)
+        areas = np.bincount(labels.ravel()); areas[0] = 0
+        assert count and areas.max() > 20000
+        body = ndimage.binary_fill_holes(labels == areas.argmax())
+        body = ndimage.binary_dilation(body, iterations=2)
+        hu = np.where(body, np.clip(hu, -1000, 2000), -1000)
+        attenuation = np.clip((hu+1000)*.00002, 0, .06)
+        # Anti-aliased reduction is performed ONCE before forward projection.
+        truth = np.zeros((SIZE, SIZE))
+        truth[offset:offset+interior, offset:offset+interior] = resize(attenuation, (interior,interior), anti_aliasing=True, preserve_range=True)
+        truth[~FOV] = 0
+        lung_mask = (truth > .001) & (truth < .008) & ellipse(96,94,65,52)
+        # Only for non-diagnostic reconstruction metrics. This ROI samples an
+        # existing vascular detail; it is NOT a labelled cancer or standard answer.
+        cx,cy = 58,80
+        core = ellipse(cx,cy,1.0,1.0)
+        annulus = ellipse(cx,cy,4,4) & ~ellipse(cx,cy,2,2)
+        prepared.append((truth,lung_mask,core,annulus,{'x':cx,'y':cy,'radius':1.0,'meaning':'unlabelled natural pulmonary detail; no diagnosis'}))
+    chest = lambda layer: prepared[layer]
+    SOURCE = {
+        'title':'AortaSeg-60, Nat_07, source image-derived reconstruction demonstration',
+        'authors':'Dania El Rahal; David C. Rotzinger; Guillaume Fahrni',
+        'url':'https://zenodo.org/records/18147026',
+        'readme_url':'https://zenodo.org/records/18147026/files/README.md?download=1',
+        'license':'CC BY 4.0 (author README); Zenodo metadata also lists CC0. Attribution conditions retained conservatively.',
+        'license_url':'https://creativecommons.org/licenses/by/4.0/',
+        'case':'Nat_07', 'source_sha256':digest,
+        'slice_indices_lps_zero_based':[start,start+1,start+2],
+        'native_slice_spacing_mm':float(source.header.get_zooms()[2]),
+        'native_in_plane_spacing_mm':native_spacing,
+        'preparation':'LAS to LPS; largest connected body support filled and dilated 2px removes external table/lines; HU converted to simplified monoenergetic attenuation; anti-aliased 512 to 168, centered in 192 canvas; no inserted lesion.',
+        'limitations':'Native CT images, not scanner projection data. Count noise and all reconstruction projections are simulated. No source lung-cancer annotation, no proof the source patient has the fictional disease. Not calibrated clinical LDCT, dose or vendor algorithm.'}
+
+
 def sha(array):
     return hashlib.sha256(np.asarray(array,dtype='<f4').tobytes()).hexdigest()
 
 
 def gray(array, window, exponent=1):
     return np.rint(np.clip((array-window[0])/(window[1]-window[0]),0,1)**exponent*255).astype(np.uint8)
+
+
+def projection_gray(array, window, exponent=1):
+    display = gray(array,window,exponent)
+    # One shared display quantizer reduces compressed transfer size. Numeric
+    # projections/residuals and the 8-bit image atlas are untouched.
+    if PROJECTION_GRAY_LEVELS < 256:
+        display = np.rint(np.rint(display/255*(PROJECTION_GRAY_LEVELS-1))*255/(PROJECTION_GRAY_LEVELS-1)).astype(np.uint8)
+    return display
 
 
 def generate(output):
@@ -141,7 +223,7 @@ def generate(output):
     frames = {}
     for layer, numeric in enumerate(volumes):
         for key in IMAGE_KEYS: frames[f'{layer}:{key}'] = gray(numeric[key],WINDOW)
-        for key in PROJECTION_KEYS: frames[f'{layer}:{key}'] = gray(numeric[key],projection_window,.5 if key.startswith('residual:') else 1)
+        for key in PROJECTION_KEYS: frames[f'{layer}:{key}'] = projection_gray(numeric[key],projection_window,.5 if key.startswith('residual:') else 1)
     deliveries=[]
     for media_id,keys in [('ldct_chest_v1_images',IMAGE_KEYS),('ldct_chest_v1_projections',PROJECTION_KEYS)]:
         pixels = np.concatenate([np.concatenate([frames[f'{layer}:{key}'] for key in keys],axis=1) for layer in range(3)],axis=0)
@@ -154,9 +236,13 @@ def generate(output):
     np.savez_compressed(output/'chest-frames.npz',**frames)
     meta={'version':VERSION,'seed':SEED,'size':SIZE,'spacing_mm':SPACING,'angles':len(ANGLES),'incident':INCIDENT,
         'image_window':WINDOW,'projection_window':projection_window,'residual_window':projection_window,'residual_exponent':.5,
+        'projection_gray_levels':PROJECTION_GRAY_LEVELS,
         'relaxation':RELAXATION,'tv_weight':TV_WEIGHT,'tv_max_iterations':40,'tv_eps':2e-4,'iterations':ITERATIONS,'layers':records,'atlases':deliveries,
         'method':'Full SART projection update every outer iteration, then fixed Chambolle TV proximal-style regularization; not a clinically validated optimizer or image-only postblur.',
         'limits':'Original simplified chest-shaped digital object, not patient images, no calibrated HU/dose, no cone beam/helical/3D/beam-hardening/scatter/motion. Neighboring sections share geometry but are reconstructed independently.'}
+    if SOURCE:
+        meta['source'] = SOURCE
+        meta['limits'] = SOURCE['limitations'] + ' Three real adjacent axial sections are separately reconstructed with the same fixed image window.'
     (output/'chest-metadata.json').write_text(json.dumps(meta,ensure_ascii=False,indent=2),encoding='utf-8')
     review_keys=['truth','fbp','iteration:0','iteration:1','iteration:2','iteration:4','iteration:8']
     sheet=Image.new('RGB',(len(review_keys)*SIZE,(SIZE+24)*3),'#0b1725');draw=ImageDraw.Draw(sheet)
@@ -190,7 +276,7 @@ def verify(output):
         for key in IMAGE_KEYS:
             assert np.array_equal(frames[f'{layer}:{key}'],gray(arrays[f'{layer}:{key}'],WINDOW))
         for key in PROJECTION_KEYS:
-            assert np.array_equal(frames[f'{layer}:{key}'],gray(arrays[f'{layer}:{key}'],meta['projection_window'],.5 if key.startswith('residual:') else 1))
+            assert np.array_equal(frames[f'{layer}:{key}'],projection_gray(arrays[f'{layer}:{key}'],meta['projection_window'],.5 if key.startswith('residual:') else 1))
         for n in ITERATIONS:
             predicted = radon(arrays[f'{layer}:iteration:{n}']*SPACING,theta=ANGLES,circle=True)
             assert np.array_equal(predicted,arrays[f'{layer}:forward:{n}'])
@@ -221,5 +307,7 @@ if __name__=='__main__':
     parser=argparse.ArgumentParser()
     parser.add_argument('output',type=Path)
     parser.add_argument('--verify-only',action='store_true')
+    parser.add_argument('--source',type=Path,help='Audited openly licensed AortaSeg Nat_07 NIfTI, outside the repository')
     args=parser.parse_args()
+    if args.source: use_open_chest(args.source.resolve())
     (verify if args.verify_only else generate)(args.output.resolve())

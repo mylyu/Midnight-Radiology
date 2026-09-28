@@ -1,5 +1,5 @@
 import { LDCT_BP_COUNTS, LDCT_ITERATIONS, LDCT_DATASET_MEDIA_IDS, LDCT_DATASET_VERSION, LDCT_DATASET_SEEDS, LDCT_STRUCTURES, type LdctDataset as ProjectionDataset } from './ldct-projections'
-import { LDCT_CHEST_MEDIA_IDS, LDCT_CHEST_SEED, LDCT_CHEST_VERSION } from './ldct-chest'
+import { LDCT_CHEST_MEDIA_IDS, LDCT_CHEST_SEED, LDCT_CHEST_VERSION, LDCT_CHEST_LEGACY_VERSIONS } from './ldct-chest'
 import { LDCT_FILTER_OPTIONS } from './ldct-filter-response'
 export { LDCT_FILTER_OPTIONS } from './ldct-filter-response'
 export type { LdctFilter } from './ldct-filter-response'
@@ -44,7 +44,7 @@ export type LdctLabRecord = {
   iterationStep: number
   helped: boolean
   verdict: 'different' | 'uncertain'
-  sourceVersion: typeof LDCT_PHANTOM_VERSION | typeof LDCT_CHEST_VERSION | 'ldct-short-v1' | 'ldct-projection-v2'
+  sourceVersion: typeof LDCT_PHANTOM_VERSION | typeof LDCT_CHEST_VERSION | typeof LDCT_CHEST_LEGACY_VERSIONS[number] | 'ldct-short-v1' | 'ldct-projection-v2'
   seed: typeof LDCT_DATASET_SEEDS[ProjectionDataset] | typeof LDCT_CHEST_SEED
   dataset?: LdctDataset | 'sparse-filter-v1' | 'full-projection-v2'
   chest?: LdctChestDraft
@@ -81,6 +81,7 @@ const filters: readonly string[] = LDCT_FILTER_OPTIONS
 const finiteBetween = (n: unknown, min: number, max: number) => typeof n === 'number' && Number.isFinite(n) && n >= min && n <= max
 const integerBetween = (n: unknown, min: number, max: number) => finiteBetween(n, min, max) && Number.isInteger(n)
 const validStructure = (id: unknown) => id === null || LDCT_STRUCTURES.some(s => s.id === id)
+const validChestVersion = (version: string) => version === LDCT_CHEST_VERSION || (LDCT_CHEST_LEGACY_VERSIONS as readonly string[]).includes(version)
 const validChest = (chest: LdctChestDraft | undefined): boolean => chest === undefined || Boolean(chest &&
   integerBetween(chest.slice, 0, 2) && typeof chest.compareFbp === 'boolean' &&
   (chest.pinned === null || (chest.pinned && integerBetween(chest.pinned.slice, 0, 2) && integerBetween(chest.pinned.iterationStep, 0, LDCT_ITERATIONS.length - 1))) &&
@@ -92,14 +93,14 @@ export function isValidLdctRecord(record: LdctLabRecord, round: LdctLabRound): b
   return Boolean([1, 2, 3, 4, 5].includes(round) && record && record.round === round && record.stage === LDCT_LAB_STAGES[round] &&
     (((record.sourceVersion === LDCT_PHANTOM_VERSION || record.sourceVersion === 'ldct-short-v1') && record.dataset !== undefined && record.dataset in LDCT_DATASET_SEEDS &&
       record.seed === LDCT_DATASET_SEEDS[record.dataset as ProjectionDataset]) ||
-      (record.dataset === 'chest' && round === 5 && record.sourceVersion === LDCT_CHEST_VERSION && record.seed === LDCT_CHEST_SEED && record.chest !== undefined) ||
+      (record.dataset === 'chest' && round === 5 && validChestVersion(record.sourceVersion) && record.seed === LDCT_CHEST_SEED && record.chest !== undefined) ||
       (record.sourceVersion === 'ldct-projection-v2' && record.seed === LDCT_PHANTOM_SEED)) &&
     validStructure(record.structure) && finiteBetween(record.angle, 0, 179) &&
     integerBetween(record.bpStep, 0, LDCT_BP_COUNTS.length - 1) && filters.includes(record.filter) &&
     signals.includes(record.signal) && integerBetween(record.iterationStep, 0, LDCT_ITERATIONS.length - 1) &&
     typeof record.helped === 'boolean' && ['different', 'uncertain'].includes(record.verdict) &&
     (record.dataset === undefined || ['phantom', 'face', 'nut', 'chest', 'sparse-filter-v1', 'full-projection-v2'].includes(record.dataset)) &&
-    (record.dataset !== 'chest' || (round === 5 && record.sourceVersion === LDCT_CHEST_VERSION && record.seed === LDCT_CHEST_SEED && record.chest !== undefined)) &&
+    (record.dataset !== 'chest' || (round === 5 && validChestVersion(record.sourceVersion) && record.seed === LDCT_CHEST_SEED && record.chest !== undefined)) &&
     validChest(record.chest) && (record.chest === undefined || (record.dataset === 'chest' && round === 5)))
 }
 
@@ -146,7 +147,7 @@ export function createLdctRecord(state: LdctLabState, round: LdctLabRound, verdi
 export function ldctRecordSummary(record: LdctLabRecord): string {
   if (record.dataset === 'chest' && record.chest) {
     const c = record.chest
-    return `胸部第${c.slice + 1}层 · ${c.compareFbp ? '回看FBP' : `迭代${LDCT_ITERATIONS[record.iterationStep]}轮`}${c.pinned ? ` · 固定${LDCT_ITERATIONS[c.pinned.iterationStep]}轮第${c.pinned.slice + 1}层` : ''}${c.mark ? ` · 第${c.mark.slice + 1}层有待核查标记` : ' · 尚未标记位置'}`
+    return `${record.sourceVersion !== LDCT_CHEST_VERSION ? '旧示意图 · ' : ''}胸部第${c.slice + 1}层 · ${c.compareFbp ? '回看FBP' : `迭代${LDCT_ITERATIONS[record.iterationStep]}轮`}${c.pinned ? ` · 固定${LDCT_ITERATIONS[c.pinned.iterationStep]}轮第${c.pinned.slice + 1}层` : ''}${c.mark ? ` · 第${c.mark.slice + 1}层有待核查标记` : ' · 尚未标记位置'}`
   }
   switch (record.round) {
     case 1: return `结构与投影轨迹 · 留在 ${Math.round(record.angle)}°`

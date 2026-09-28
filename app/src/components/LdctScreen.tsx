@@ -14,6 +14,9 @@ import { useDialogueChoiceGuard } from '../hooks/use-dialogue-choice-guard'
 import { acceptInput } from '../game/input-gate'
 import { SceneBackground } from './SceneBackground'
 import { LdctLab } from './LdctLab'
+import { LdctSceneMedia } from './LdctSceneMedia'
+import { useLdctSceneSound } from '../hooks/use-ldct-scene-sound'
+import { ldctSceneCue } from '../game/ldct-presentation'
 import { DialogueStage, DialogueShade, DialogueHeader, DialoguePortrait, DialoguePanel, DialogueChoices, DialogueChoice } from './DialogueScene'
 import { FullscreenBtn } from './FullscreenButton'
 import { DIALOGUE_CHARACTER_MS, waitForDialogueChoices } from '../game/dialogue-timing'
@@ -64,6 +67,7 @@ function LdctStoryScreen({ state, update, onExit, renderText }: Props) {
   const story = LDCT_FATHER_STORY
   const [overlay, setOverlay] = useState<Overlay | null>(null)
   const [presentation, setPresentation] = useState(0)
+  const sound = useLdctSceneSound()
   const transactionGate = useRef({ until: 0 })
   const act = (action: Parameters<typeof ldctAction>[1]) => update(s => ldctAction(s, action))
   const interact = (action: Parameters<typeof ldctAction>[1]) => { act(action); void playSfx('click') }
@@ -80,6 +84,7 @@ function LdctStoryScreen({ state, update, onExit, renderText }: Props) {
   })
   const menuClass = 'text-xs text-slate-400 hover:text-teal-300 border border-slate-700 rounded px-2 py-0.5'
   const menu = <>
+    <button className={menuClass} aria-pressed={sound.muted} onClick={e => { e.stopPropagation(); sound.toggle() }}>剧情音{sound.muted ? '关' : '开'}</button>
     <button className={menuClass} onClick={e => { e.stopPropagation(); ui('records') }}>▤ 记录</button>
     <button className={menuClass} onClick={e => { e.stopPropagation(); ui('bag') }}>🎒 背包</button>
     <button className={menuClass} onClick={e => { e.stopPropagation(); ui('manual') }}>📖 手册</button>
@@ -114,6 +119,9 @@ function LdctStoryScreen({ state, update, onExit, renderText }: Props) {
         {!p.finished && <button className="ldct-next-part" data-ldct-next-evening onClick={() => act({ type: 'part:next' })}>第二晚 · 带着昨晚的片子回来 →</button>}
         <nav className="ldct-menu">{menu}<button data-ldct-replay onClick={() => ui('replay')}>重玩本篇</button></nav>
       </main> : <>
+        {!overlay && !p.reply && <LdctSceneMedia key={`${p.run}:${p.nodeId}`} nodeId={p.nodeId} gender={state.gender} muted={sound.muted}
+          consumed={p.receipts.includes(`media:${ldctSceneCue(p.nodeId, state.gender)?.id}`)}
+          onConsumed={cueId => act({ type: 'media:heard', nodeId: p.nodeId, cueId })} />}
         {sprite && <DialoguePortrait data-ldct-portrait src={imageAsset(sprite)} alt="" className="pointer-events-none" />}
         {node.chestPreview && <figure className="ldct-case-preview" data-ldct-case-preview={node.chestPreview}>
           <div role="img" aria-label={node.chestPreview === 'fbp' ? '同次胸部检查的FBP图像，未标注观察答案' : '同份投影的研究重建图像，未标注观察答案'}
@@ -123,8 +131,13 @@ function LdctStoryScreen({ state, update, onExit, renderText }: Props) {
         {dialogue.panel}
       </>}
     {overlay && <LdctModal title={{ records: '这篇的实验记录', bag: '背包用途', manual: '随手记 · 不急着读', badges: '噪声之外 · 勋章', shop: '小卖部', replay: '重玩本篇' }[overlay]} onClose={close}>
-      {overlay === 'manual' && <div className="ldct-reading">{LDCT_MANUAL.map(page => <section key={page.title}><h3>{page.title}</h3><p>{page.text}</p></section>)}</div>}
+      {overlay === 'manual' && <div className="ldct-reading">{LDCT_MANUAL.map(page => <section key={page.title}><h3>{page.title}</h3><p>{page.text}</p>
+        {page.href && <p><a className="text-teal-200 underline" href={page.href} target="_blank" rel="noreferrer">{page.linkLabel}</a> · <a className="text-teal-200 underline" href={page.license} target="_blank" rel="noreferrer">CC BY 4.0</a></p>}
+      </section>)}</div>}
       {overlay === 'records' && <div className="ldct-reading">
+        {p.previousChest && (p.previousChest.record || p.previousChest.draft) && <details className="ldct-panel"><summary>旧胸部示意图的记录</summary>
+          <p>这轮已更换图像来源。旧标记与固定版保留在这里，不套到新图的解剖位置。</p>
+          <pre className="ldct-json">{JSON.stringify(p.previousChest.record?.chest ?? p.previousChest.draft?.chest, null, 2)}</pre></details>}
         {!Object.keys(p.records).length && <p>还没试过工具。想带过时，请陆舟演示就能继续。</p>}
         {Object.entries(p.records).map(([round, record]) => <article className="ldct-panel" key={round}><h3>{LDCT_LAB_TITLES[record!.round]}</h3>
           <p>{ldctRecordSummary(record!)}{record!.helped ? ' · 和陆舟一起看过' : ''}</p>

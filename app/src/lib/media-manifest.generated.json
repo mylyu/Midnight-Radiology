@@ -916,14 +916,19 @@
       "bytes": 26520,
       "type": "image"
     },
-    "assets/media/ldct_chest_v1_images.c254e24eedba683d.webp": {
-      "sha256": "c254e24eedba683d08906bd047af7e3332c1a568259eed6f864749e01d41ea73",
-      "bytes": 152370,
+    "assets/media/ldct_chest_v1_images.282a66566ec0c657.webp": {
+      "sha256": "282a66566ec0c657c53432bbbadc5d5334efadfbc1165a7fa14b9d4de815e8f6",
+      "bytes": 148136,
       "type": "image"
     },
-    "assets/media/ldct_chest_v1_projections.072a9d6cf5943736.webp": {
-      "sha256": "072a9d6cf59437362be836b0d958c5eae0e2b89819e5dcfb359163510efb6940",
-      "bytes": 499664,
+    "assets/media/ldct_chest_v1_projections.ba5e9e7aace07e82.webp": {
+      "sha256": "ba5e9e7aace07e82950cd59750f1427515019462706b6d844070390da502dc9e",
+      "bytes": 294426,
+      "type": "image"
+    },
+    "assets/media/ldct_item_meal_v1.cefcc9163c26942d.webp": {
+      "sha256": "cefcc9163c26942dce56028938ae0dc709b9ae4f3475814475c4f4c4719f3ea0",
+      "bytes": 14346,
       "type": "image"
     },
     "assets/media/ldct_short_phantom_v1.95385178b7487fa5.webp": {
@@ -1269,6 +1274,26 @@
     "audio/vox_kid.mp3": {
       "sha256": "74ab4db5b68f639b42ac3f26faede2e91858434e1f55c040753928963a5c9608",
       "bytes": 22125,
+      "type": "audio"
+    },
+    "audio/vox_ldct_he_v1.mp3": {
+      "sha256": "72b9ddcbc73875c78d113bd3212dace9be7c6ecb29c422443df69eb5845dd4c2",
+      "bytes": 11355,
+      "type": "audio"
+    },
+    "audio/vox_ldct_luzhou_f_v1.mp3": {
+      "sha256": "3bbd5211d8eae73404109a050cef5b90847263ddf3c274f6abbe776be595bdde",
+      "bytes": 10258,
+      "type": "audio"
+    },
+    "audio/vox_ldct_luzhou_m_v1.mp3": {
+      "sha256": "ce1fafaef696814cc10a9e6db32d3769e07c1b6fb8722b2dbf482bc80009db33",
+      "bytes": 10258,
+      "type": "audio"
+    },
+    "audio/vox_ldct_zhou_v1.mp3": {
+      "sha256": "2fdeff53b53268205e2c7930b75f51d2b72e08246e6d68c2f4d4b17eb6ed76fd",
+      "bytes": 12609,
       "type": "audio"
     },
     "audio/vox_lei.mp3": {
@@ -1641,13 +1666,21 @@
       "assets/media/ch2_pixel_char_luzhou_m.818dc622d0fb6918.webp",
       "assets/media/ch2_pixel_char_zhou.d03c9a724f736984.webp",
       "assets/media/item_coffee.4368d5294285e799.webp",
+      "assets/media/item_film.8c42415994cd000d.webp",
       "assets/media/item_milktea.52cc8d6958e2f14b.webp",
+      "assets/media/item_notebook.d2d4179f08903ea1.webp",
       "assets/media/item_snack.f16943baf3b6bdb3.webp",
       "assets/media/ldct_bg_restaurant.1e0f0d5b98e52a90.webp",
       "assets/media/ldct_char_father_v1.0c1d54f2fc7b231d.webp",
-      "assets/media/ldct_chest_v1_images.c254e24eedba683d.webp",
-      "assets/media/ldct_chest_v1_projections.072a9d6cf5943736.webp",
-      "assets/media/ldct_short_phantom_v1.95385178b7487fa5.webp"
+      "assets/media/ldct_chest_v1_images.282a66566ec0c657.webp",
+      "assets/media/ldct_chest_v1_projections.ba5e9e7aace07e82.webp",
+      "assets/media/ldct_item_meal_v1.cefcc9163c26942d.webp",
+      "assets/media/ldct_short_phantom_v1.95385178b7487fa5.webp",
+      "audio/ch2_mobile_call_v1.mp3",
+      "audio/vox_ldct_he_v1.mp3",
+      "audio/vox_ldct_luzhou_f_v1.mp3",
+      "audio/vox_ldct_luzhou_m_v1.mp3",
+      "audio/vox_ldct_zhou_v1.mp3"
     ]
   }
 }

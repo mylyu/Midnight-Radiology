@@ -3,6 +3,8 @@ import { getLdctChoices, getLdctNode, LDCT_STEPS } from './ldct'
 import { LDCT_FATHER_STORY, LDCT_FATHER_LAB_RETURNS, LDCT_FATHER_LAB_DATASETS, LDCT_NEXT_EVENING } from './ldct-father-story'
 import type { LdctAction, LdctPerson, LdctProduct, LdctProgress, LdctStoryShelf } from './ldct-types'
 import type { GameState } from './types'
+import { LDCT_CHEST_VERSION } from './ldct-chest'
+import { ldctSceneCue } from './ldct-presentation'
 
 /** Pure transitions: the facade, selected slot, consumption and receipts save once. */
 export function getLdctShelf(state: GameState): LdctStoryShelf | undefined {
@@ -26,7 +28,20 @@ function patch(state: GameState, p: LdctProgress): GameState {
 }
 export function initializeLdct(state: GameState, replay = false): GameState {
   const shelf = getLdctShelf(state)
-  if (shelf?.version === 2) return replay && shelf.active === 'father' ? selectLdctStory(state, 'father', true) : state
+  if (shelf?.version === 2) {
+    const current = shelf.slots.father
+    if (current && current.chestSourceVersion !== LDCT_CHEST_VERSION) {
+      const previousChest = current.previousChest ?? {
+        ...(current.labRound === 5 ? { draft: current.labDraft } : {}),
+        ...(current.records[5]?.dataset === 'chest' ? { record: current.records[5] } : {}),
+      }
+      const upgraded = { ...current, chestSourceVersion: LDCT_CHEST_VERSION, previousChest,
+        labDraft: current.labRound === 5 ? createLdctLabState(5, 'chest') : current.labDraft }
+      state = shelf.active === 'father' ? patch(state, upgraded)
+        : withShelf(state, { ...shelf, slots: { ...shelf.slots, father: upgraded } })
+    }
+    return replay && shelf.active === 'father' ? selectLdctStory(state, 'father', true) : state
+  }
   const legacy = state.dlc?.ldct?.ldct
   return withShelf(state, { ...shelf, version: 2, active: undefined, slots: shelf?.slots ?? {}, legacy: shelf?.legacy ?? (shelf ? undefined : legacy),
     receipts: shelf?.receipts ?? (legacy?.receipts ?? []).filter(id => id === 'reward:comparison' || id === 'reward:records'),
@@ -39,7 +54,7 @@ export function selectLdctStory(state: GameState, id: LdctStoryShelf['active'], 
   const previous = getLdctShelf(state)!.slots[id]
   if (previous && !replay) return patch(state, previous)
   return patch(state, { version: 1, openingRevision: 4, storyId: id, run: (previous?.run ?? 0) + 1,
-    seed: 2258, phase: 'story', nodeId: story.start, revision: 0, fatigue: 2, completed: [],
+    seed: 2258, chestSourceVersion: LDCT_CHEST_VERSION, phase: 'story', nodeId: story.start, revision: 0, fatigue: 2, completed: [],
     decisions: {}, receipts: [], gifts: [], labRound: 1, labDraft: createLdctLabState(1), records: {},
     start: { gold: state.gold, skill: state.skill, heart: state.heart, wealth: state.wealth } })
 }
@@ -100,6 +115,11 @@ export function ldctCanRest(state: GameState) {
 export function ldctAction(state: GameState, action: LdctAction): GameState {
   const p = getLdctProgress(state)
   if (p?.storyId !== 'father') return state
+  if (action.type === 'media:heard') {
+    if (p.phase !== 'story' || p.reply || p.nodeId !== action.nodeId || ldctSceneCue(p.nodeId, state.gender)?.id !== action.cueId) return state
+    const receipt = `media:${action.cueId}`
+    return p.receipts.includes(receipt) ? state : patch(state, { ...p, receipts: [...p.receipts, receipt] })
+  }
   if (action.type === 'reply:close') return p.reply ? patch(state, changed(p, { reply: undefined })) : state
   if (action.type === 'advance' || action.type === 'choose') {
     if (p.phase !== 'story' || p.reply || action.nodeId !== p.nodeId) return state
@@ -139,7 +159,8 @@ export function ldctAction(state: GameState, action: LdctAction): GameState {
   if (action.type === 'lab:open') {
     if (p.phase !== 'settle' || !p.records[action.round]) return state
     const record = p.records[action.round]!
-    const draft = { ...createLdctLabState(action.round, LDCT_FATHER_LAB_DATASETS[action.round]), ...record, saved: null }
+    const oldChest = record.dataset === 'chest' && record.sourceVersion !== LDCT_CHEST_VERSION
+    const draft = oldChest ? createLdctLabState(5, 'chest') : { ...createLdctLabState(action.round, LDCT_FATHER_LAB_DATASETS[action.round]), ...record, saved: null }
     return patch(state, changed(p, { phase: 'lab', labRound: action.round, labDraft: draft, labReturn: p.nodeId }))
   }
   if (action.type === 'lab:close') {

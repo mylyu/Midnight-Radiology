@@ -19,6 +19,9 @@ export interface LdctProgress {
   completed: string[]
   decisions: Record<string, string>
   receipts: string[]
+  /** Dataset replacement does not map an old marker onto different anatomy. */
+  chestSourceVersion?: string
+  previousChest?: { draft?: LdctLabState; record?: LdctLabRecord }
   gifts: { person: LdctPerson; item: 'milktea' | 'snack'; nodeId: string; part?: number }[]
   reply?: { nodeId: string; speaker: string; text: string }
   labRound: LdctLabRound
@@ -89,6 +92,7 @@ export type LdctAction =
   | { type: 'buy'; item: LdctProduct }
   | { type: 'gift'; person: LdctPerson; item: 'milktea' | 'snack'; nodeId: string }
   | { type: 'reply:close' }
+  | { type: 'media:heard'; nodeId: string; cueId: string }
   | { type: 'rest' }
   | { type: 'part:next' }
   | { type: 'research:update'; value: LdctResearchDraft }

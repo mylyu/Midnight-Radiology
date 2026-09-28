@@ -1,4 +1,63 @@
-# LDCT 胸部数字模体：同源投影与迭代结果
+# LDCT 胸部影像：同源投影与迭代结果
+
+## 2026-09-28 当前版：真实开放CT衍生的教学重建
+
+对应 `codex/ldct-media-polish`，版本 **`ldct-chest-open-v2`**。作者要求肺图更像实际CT，现用真实胸部体数据的三个原生相邻层面替换旧几何示意图。其余圆形模体、BP/不滤波等价显示不在本修订范围内。下方v1记录仅为可复现历史，不再描述当前交付素材。
+
+### 来源、许可与事实边界
+
+- 数据：**AortaSeg-60 / Nat_07**；Dania El Rahal、David C. Rotzinger、Guillaume Fahrni，2026；[原作者公开记录](https://zenodo.org/records/18147026)，DOI `10.5281/zenodo.18147026`。
+- 2026-09-28直接核对[原作者README](https://zenodo.org/records/18147026/files/README.md?download=1)，许可明确为[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)。Zenodo元数据另列CC0，保守保留BY署名、许可链接和改编声明；可再分发及商用，不沿用其他冠脉素材的NC限制。
+- 本次使用本地已取得的同一体数据，不重新下载全数据集；源文件SHA256为 `a0b9ae7c5d021bf6f072fae7e7b0a7a224e238033eb243fcb0e1268bf6eb413a`。
+- 这是成人平扫、正常主动脉类别，**不等于全身健康或已有肺癌诊断**。源数据没有提供这三层的肺结节病理标注，不声称公开人物就是陆叔，也不把本篇虚构的早期病变结局当成数据集诊断。玩家只标记自己不确定的地方，不设病灶定位标准答案。
+- 用原图中的真实肺、血管和纵隔细节；未画入额外病灶，未在任何某一版输出上手工添删结构。
+- 源是已重建CT图像，不是扫描器原始投影。将源CT降采样为数字对象后再做Radon投影、计数噪声、FBP/SART+TV，属于**真实解剖来源的模拟重建**。故事中的授权原始数据工作流是虚构，游戏素材不能冒充实际扫描器原始数据。
+
+游戏手册的 `LDCT_CHEST_METHOD_NOTES` 同时保留作者、数据集、DOI、许可和模拟说明，不能只在仓库里留下署名。
+
+### 制作参数与压缩
+
+| 参数 | 当前值 |
+| --- | --- |
+| 源层面 | LPS轴向零基788、789、790，真正连续三层，原层间距约0.6mm |
+| 源平面 | 512×512，原间距约0.742188mm |
+| 方向/外部物去除 | LAS转LPS；HU>-500的最大身体连通域填孔，外扩2px；保留体内HU，去掉床板、体外线材 |
+| 图像派生 | HU范围[-1000,2000]转换为简化衰减 `0.02×(HU+1000)/1000`；抗混叠缩至168×168，置于192×192黑底 |
+| 计算间距 | 512×0.742188÷168 ≈2.261906mm；不是临床剂量标定 |
+| 投影 | 192角度、0°至不足180°，平行束；无衰减计数50,000，固定层种子28225/28226/28227 |
+| FBP | Ramp，与各轮迭代使用完全相同的带噪投影 |
+| SART+TV | 松弛0.055，每轮完整SART后TV weight=0.00018、eps=0.0002、最多40内部步 |
+| 输出 | 真值数字对象、FBP、迭代0/1/2/4/8，各层同一固定图像窗[0.001,0.022] |
+| 主图压缩 | 8位灰阶无损WebP，不逐图拉伸、不额外磨皮 |
+| 投影压缩 | 使用全组固定范围；残差统一平方根映射；显示灰度共同量化到64级再无损WebP，数值源完全未量化 |
+
+`truth`代表用于模拟的降采样对象，不是临床病理金标准。少量固定ROI的标准差包含原来的解剖结构，不能直接当作纯噪声标准差；本轮不根据这些数值宣称临床图像质量或检出率提高。
+
+交付结构保持7×3主图、11×3副图，稳定逻辑ID保留原名字以减少运行时改动；内容版本与内容哈希均更新。文件：
+
+| 稳定ID | 字节 | SHA256 |
+| --- | ---: | --- |
+| `ldct_chest_v1_images` | 148,136 | `282a66566ec0c657c53432bbbadc5d5334efadfbc1165a7fa14b9d4de815e8f6` |
+| `ldct_chest_v1_projections` | 294,426 | `ba5e9e7aace07e82950cd59750f1427515019462706b6d844070390da502dc9e` |
+
+合计 **442,562字节（约432.2KiB）**，比旧版652,034字节减少约32%。保持192px而不放大原始大图；解剖细节、噪声和迭代过程可观察，不能用于精确临床读片训练。
+
+生成结果在仓库外 `../ldct-media-polish-assets/chest/`：两张WebP，以及 `chest-metadata.json`、`chest-numerics.npz`、`chest-frames.npz`、`chest-review.png`；后三类不部署、不进入Kimi正式包。源体数据仍在 `../ct-sequence-source-review/aortaseg-nat-07/Nat_07_image.nii.gz`。
+
+### 有限验收与复现
+
+看验三层对照表：可识别肺部、血管、心脏和胸壁，FBP有模拟计数颗粒，1轮模糊、4/8轮细节逐渐回来；零轮黑图属零初值。没有人为写成“第8轮必然抹掉病灶”。三层真实邻层细节略有变化，不能随机更换部位假装翻层。
+
+```powershell
+& 'C:/Python314/python.exe' scripts/generate-ldct-chest.py '../ldct-media-polish-assets/chest' --source '../ct-sequence-source-review/aortaseg-nat-07/Nat_07_image.nii.gz'
+& 'C:/Python314/python.exe' scripts/generate-ldct-chest.py '../ldct-media-polish-assets/chest' --source '../ct-sequence-source-review/aortaseg-nat-07/Nat_07_image.nii.gz' --verify-only
+```
+
+源模式额外使用nibabel读取NIfTI，依赖版本5.4.2；不带`--source`仍可复现下面历史v1。验证检查源哈希、方向、连续层、同源投影/计数、固定窗、64灰阶副图以及54个输出；独立重算一次FBP和非初始SART+TV，不完整重建两遍。前端 `ldct-chest.mjs` 检查帧地址、版本和旧版本登记。旧草稿/历史收据按主运行时迁移保留，旧标记不能冒充已核对新解剖。
+
+---
+
+## 历史v1：原创胸部几何模体（已替换）
 
 本记录对应 `codex/ldct-raw-data-story`，数值版本 `ldct-chest-v1`。仅新增胸部实验素材；原有圆形模体、直接反投影显示修正、滤波响应均不改。
 

@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { CSSProperties, PointerEvent, ReactNode } from 'react'
 import { imageAsset } from '../lib/image-assets'
 import { playSfx } from '../game/store'
@@ -36,7 +36,7 @@ const addSeen = <T,>(list: T[], value: T) => list.includes(value) ? list : [...l
 const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v))
 const hints: Record<LdctLabRound, [string, string]> = {
   1: ['点一个编号，看看它的影子', '也可以拖动角度。物体、机架落点、正弦图白线上的同色点，对应的是同一个位置；正弦图仍包含整个物体。'],
-  2: ['点「把投影铺回来」', '左边始终是完整参照。把同一物体的各方向投影直接叠回来，先看看不滤波是什么样。'],
+  2: ['点开始，看影子一层层叠回来', '每一步都是实际计算的中间结果。可以暂停细看，或从头再放；旁边始终保留完整物体参照。'],
   3: ['换一种处理，看轮廓怎么变', '完整物体和投影都没换，只改滤波方式。不滤波使用固定显示窗，先看轮廓和糊边。'],
   4: ['点「把光子调少」', '一起看正弦图和重建结果。改变的是模拟入射计数，角度、物体都没动；不是把检查少转几个角度。'],
   5: ['点「改第一轮」，看图怎么回来', '把猜的图算成投影，和实测投影比较，再改图。每次展示真正算出的中间结果，不重新扫描。'],
@@ -122,19 +122,46 @@ function Trace({ value, change, choose, dataset, concealTruth }: Controls) {
   <div className="ldct-lab__angle-presets" aria-label="快速转到一个角度">{[0, 45, 90, 135].map(angle => <button key={angle} aria-pressed={value.angle === angle} onClick={() => setAngle(angle, true)}>{angle}°</button>)}</div>
   </div><LdctScannerGeometry angle={value.angle} structure={selected?.id ?? null} dataset={dataset} concealTruth={concealTruth} /></div>
 }
-function Backproject({ value, choose, dataset, concealTruth }: Controls) {
+function Backproject({ value, change, choose, dataset, concealTruth }: Controls) {
+  const [playing, setPlaying] = useState(false)
+  const changeRef = useRef(change)
+  useEffect(() => { changeRef.current = change }, [change])
   const count = LDCT_BP_COUNTS[value.bpStep]
-  return <>
-    <div className="ldct-lab__pair">
-      <Tile label={concealTruth ? '暂不揭开参照' : '完整物体 · 参照'}><Truth dataset={dataset} concealTruth={concealTruth} /></Tile>
-      <Tile label={`直接反投影 · ${count}个方向`} note="固定显示窗 · 先看轮廓与糊边"><Frame frame={`bp:${count}`} dataset={dataset} /></Tile>
+  const complete = value.bpStep === LDCT_BP_COUNTS.length - 1
+  // Advance only through calculated partial reconstructions: never crossfade
+  // between made-up frames or write the final result on the initial click.
+  // Each shown checkpoint is saved by the existing controlled draft handler.
+  useEffect(() => {
+    if (!playing || complete) return
+    const timer = window.setTimeout(() => {
+      changeRef.current({ bpStep: value.bpStep + 1 })
+      if (value.bpStep + 1 === LDCT_BP_COUNTS.length - 1) setPlaying(false)
+    }, 1150)
+    return () => window.clearTimeout(timer)
+  }, [playing, complete, value.bpStep])
+  useEffect(() => {
+    const pauseHidden = () => { if (document.hidden) setPlaying(false) }
+    document.addEventListener('visibilitychange', pauseHidden)
+    return () => document.removeEventListener('visibilitychange', pauseHidden)
+  }, [])
+  const toggle = () => {
+    if (playing) { setPlaying(false); return }
+    if (complete) choose({ bpStep: 0 })
+    setPlaying(true)
+  }
+  return <div className="ldct-backproject" data-bp-step={value.bpStep} data-playing={playing}>
+    <div className="ldct-lab__focus-layout">
+      <Tile label={`直接反投影 · 已叠 ${count} 个方向`}><Frame frame={`bp:${count}`} dataset={dataset} /></Tile>
+      <Reference dataset={dataset} concealTruth={concealTruth} />
     </div>
-    <div className="ldct-lab__transport"><button className="ldct-lab__primary" disabled={value.bpStep === LDCT_BP_COUNTS.length - 1}
-      onClick={() => choose({ bpStep: LDCT_BP_COUNTS.length - 1 })}>{value.bpStep === LDCT_BP_COUNTS.length - 1 ? '已经铺回这组完整投影' : '把投影铺回来 →'}</button></div>
-    <details className="ldct-lab__extra"><summary>想看中间怎么叠起来？</summary><div className="ldct-lab__chips">{LDCT_BP_COUNTS.map((n, i) => <button key={n} aria-pressed={value.bpStep === i} onClick={() => choose({ bpStep: i })}>{n}个</button>)}</div>
-      <p>这里只改变参加反投影的方向数量，不代表临床低剂量扫描。</p></details>
-    <LdctFilterResponse filter="none" compact />
-  </>
+    <div className="ldct-backproject__progress" aria-label="逐步反投影进度"><progress max={LDCT_BP_COUNTS.length - 1} value={value.bpStep} /><span>{playing ? '正在逐步叠加…' : complete ? '同一份完整投影，仍有糊边' : value.bpStep > 0 ? '已暂停，可继续或手动细看' : '先从一个方向开始'}</span></div>
+    <div className="ldct-lab__transport"><button className="ldct-lab__primary" onClick={toggle}>{playing ? '暂停，看看这一步' : complete ? '从头慢慢看一遍 ↺' : value.bpStep > 0 ? '从这里接着铺 →' : '把投影铺回来 →'}</button></div>
+    <details className="ldct-lab__extra"><summary>手动细看与响应曲线</summary>
+      <label className="ldct-lab__range"><span>直接反投影</span><output>{count} 个方向</output><input aria-label="手动查看反投影步骤" type="range" min={0} max={LDCT_BP_COUNTS.length - 1} step={1} value={value.bpStep}
+        onChange={event => { setPlaying(false); choose({ bpStep: Number(event.target.value) }) }} /></label>
+      <p>所有中间帧使用同一显示窗；只增加参与反投影的方向，不代表患者少照几次。</p><LdctFilterResponse filter="none" compact />
+    </details>
+  </div>
 }
 function FilterButtons({ value, choose }: Pick<Controls, 'value' | 'choose'>) {
   const select = (filter: LdctLabState['filter']) => choose({ filter, seenFilters: addSeen(value.seenFilters, filter) })
@@ -144,16 +171,14 @@ function FilterButtons({ value, choose }: Pick<Controls, 'value' | 'choose'>) {
 }
 function Filter({ value, change, choose, dataset, concealTruth }: Controls) {
   return <>
-    <div className="ldct-lab__pair"><Tile label={concealTruth ? '暂不揭开参照' : '完整物体 · 参照'}><Truth dataset={dataset} concealTruth={concealTruth} /></Tile>
-      <Tile label={LDCT_FILTER_LABELS[value.filter]}><Frame frame={`fbp:high:${value.filter}`} dataset={dataset} /></Tile></div>
+    <div className="ldct-lab__focus-layout"><Tile label={LDCT_FILTER_LABELS[value.filter]}><Frame frame={`fbp:high:${value.filter}`} dataset={dataset} /></Tile>
+      <Reference dataset={dataset} concealTruth={concealTruth} /></div>
     <div className="ldct-lab__chips" aria-label="常用滤波比较">{(['none', 'ramp', 'hann'] as const).map(filter => <button key={filter} aria-pressed={value.filter === filter}
       onClick={() => choose({ filter, seenFilters: addSeen(value.seenFilters, filter) })}>{filter === 'none' ? '不滤波' : filter === 'ramp' ? '锐一些' : '柔一些'}</button>)}</div>
     <details className="ldct-lab__extra"><summary>更多滤波器与拖动对照</summary><FilterButtons value={value} choose={choose} />
       <div className="ldct-lab__single"><div className="ldct-lab__split-labels"><span>固定 · Ramp</span><span>{LDCT_FILTER_LABELS[value.filter]}</span></div>
         <div className="ldct-lab__image"><Split left="fbp:high:ramp" right={`fbp:high:${value.filter}`} divider={value.divider} onChange={divider => change({ divider })} dataset={dataset} /></div></div>
-      <Range label="拖开比较" max={100} value={value.divider} onChange={divider => change({ divider })} suffix="%" /></details>
-    <LdctFilterResponse filter={value.filter} compact />
-    {value.filter === 'none' && <p className="ldct-lab__status">不滤波使用固定显示窗。先比轮廓与糊边，不直接比亮暗。</p>}
+      <Range label="拖开比较" max={100} value={value.divider} onChange={divider => change({ divider })} suffix="%" /><LdctFilterResponse filter={value.filter} compact /></details>
   </>
 }
 function Noise({ value, choose, dataset, concealTruth }: Controls) {
@@ -254,21 +279,23 @@ function ChestIterate({ value, choose }: Pick<Controls, 'value' | 'choose'>) {
       <div className="ldct-chest__controls">
         <button className="ldct-lab__primary ldct-chest__next" disabled={value.iterationStep === LDCT_CHEST_ITERATIONS.length - 1}
           onClick={() => jump(value.iterationStep + 1)}>{value.iterationStep === 0 ? '用原数据改第一轮 →' : value.iterationStep === LDCT_CHEST_ITERATIONS.length - 1 ? '已到第8轮，可以往回比较' : `再改到第${LDCT_CHEST_ITERATIONS[value.iterationStep + 1]}轮 →`}</button>
-        <div className="ldct-lab__chips ldct-chest__versions" aria-label="切换迭代版本">{LDCT_CHEST_ITERATIONS.map((n, i) => <button key={n} aria-pressed={!pinned && !chest.compareFbp && value.iterationStep === i}
-          onClick={() => jump(i)}>{n === 0 ? '初始' : `${n}轮`}</button>)}</div>
-        <div className="ldct-chest__compare-controls">
+        <button className="ldct-chest__fbp-toggle" aria-pressed={chest.compareFbp} onClick={() => { setShowPinned(false); setMarking(false); setChest({ compareFbp: !chest.compareFbp }) }}>{chest.compareFbp ? '回到迭代图' : '回看原FBP'}</button>
+        <details className="ldct-lab__extra ldct-chest__record-tools"><summary>固定、标记与更多轮次{chest.pinned || chest.mark ? ' · 有记录' : ''}</summary>
+          <div className="ldct-lab__chips ldct-chest__versions" aria-label="切换迭代版本">{LDCT_CHEST_ITERATIONS.map((n, i) => <button key={n} aria-pressed={!pinned && !chest.compareFbp && value.iterationStep === i}
+            onClick={() => jump(i)}>{n === 0 ? '初始' : `${n}轮`}</button>)}</div>
+          <div className="ldct-chest__compare-controls">
           <button disabled={chest.compareFbp || value.iterationStep === 0} onClick={() => {
             setShowPinned(false); setChest({ pinned: { slice, iterationStep: step }, compareFbp: false })
           }}>固定这一版</button>
-          <button aria-pressed={chest.compareFbp} onClick={() => { setShowPinned(false); setMarking(false); setChest({ compareFbp: !chest.compareFbp }) }}>{chest.compareFbp ? '回到迭代图' : '回看原FBP'}</button>
           {chest.pinned && <button aria-pressed={Boolean(pinned)} onClick={() => {
             setShowPinned(!pinned); setMarking(false)
             if (chest.compareFbp) setChest({ compareFbp: false })
           }}>{pinned ? '回到当前版' : `看看固定的${LDCT_CHEST_ITERATIONS[chest.pinned.iterationStep]}轮 · 第${chest.pinned.slice + 1}层`}</button>}
-        </div>
-        <button className="ldct-chest__mark-button" aria-pressed={marking} onClick={() => setMarking(!marking)}>{marking ? '暂时不标，继续看看' : '点出想请医生核查的位置'}</button>
-        {chest.mark && <p className="ldct-chest__note" aria-live="polite">待核查标记：第{chest.mark.slice + 1}层 · {chest.mark.method === 'fbp' ? 'FBP' : `${LDCT_CHEST_ITERATIONS[chest.mark.iterationStep]}轮`}。<button onClick={() => setChest({ mark: null })}>去掉标记</button></p>}
-        <p className="ldct-chest__note">这三张是同次数据的相邻层，没有再扫描。可以只看，也可以直接请人一起看。</p>
+          </div>
+          <button className="ldct-chest__mark-button" aria-pressed={marking} onClick={() => setMarking(!marking)}>{marking ? '暂时不标，继续看看' : '点出想请医生核查的位置'}</button>
+          {chest.mark && <p className="ldct-chest__note" aria-live="polite">待核查标记：第{chest.mark.slice + 1}层 · {chest.mark.method === 'fbp' ? 'FBP' : `${LDCT_CHEST_ITERATIONS[chest.mark.iterationStep]}轮`}。<button onClick={() => setChest({ mark: null })}>去掉标记</button></p>}
+        </details>
+        <p className="ldct-chest__note">同次数据，翻层不重扫。</p>
       </div>
     </div>
     <details className="ldct-lab__extra ldct-chest__process"><summary>这一轮在比较什么？</summary>

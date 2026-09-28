@@ -34,7 +34,8 @@ function lab(round: LdctLabRound, part: 1 | 2, goal: string) {
 }
 
 add('lf_start', { part: 1, bg: restaurant, sprite: null,
-  text: '2025年冬，医院旁的小饭馆。陆舟赴约时，身后还跟着他父亲。\n你刚站起来叫了声“陆叔”，陆舟已经替父亲拉开椅子，把烟灰缸挪远了。', next: 'lf_arrive_0' })
+  text: '2025年冬，医院旁的小饭馆。陆舟赴约时，身后还跟着他父亲。\n你刚站起来叫了声“陆叔”，陆舟已经替父亲拉开椅子，把烟灰缸挪远了。', next: 'lf_welcome' })
+add('lf_welcome', { part: 1, bg: restaurant, sprite: lu, speaker: 'luzhou', text: '你先坐。我爸非说今天只是来吃饭的。', next: 'lf_arrive_0' })
 lines('lf_arrive', [
   ['陆叔', '说好吃饭的。你别一坐下，又说那个CT。'],
   ['luzhou', '爸，医生建议的检查，你拖两个星期了。烟抽了三十多年，就这时候特别怕辐射。'],
@@ -61,7 +62,7 @@ lines('lf_consult', [
 lines('lf_scan', [
   ['陆叔', '行。做吧。陆舟，你别一副比我还紧张的样子。'],
   [undefined, '陆叔完成了医师安排的检查。陆舟一直陪着，傍晚才来找你和老周。他把缴费单折了又展，边角已经起毛。'],
-  ['zhou', '都坐。先别盯着我表情猜报告。'],
+  ['zhou', '都坐，别着急。先别盯着我表情猜报告。'],
 ], control, zhou, 'lf_first_fbp', 1)
 nodes.lf_scan_1.sprite = null
 add('lf_first_fbp', { part: 1, bg: control, sprite: null, chestPreview: 'fbp', speaker: 'zhou',
@@ -123,7 +124,7 @@ lines('lf_chat_lu', [
   ['me', '那我在旁边帮你踩刹车。你也把饭吃完。'],
 ], room, lu, 'lf_rest_hub', 2, { giftPerson: 'luzhou', complete: 'father_lu_chat' })
 lines('lf_chat_he', [
-  ['he', '这盒饭是谁的？刚才差点跟我的一起热了。'],
+  ['he', '这谁的饭呀？刚才差点跟我的一起热了。'],
   ['me', '我的。拜托别再给它第三次生命。'],
   ['he', '那就趁热吃。陆舟他爸刚还问，陪他儿子加班的是不是你。'],
 ], room, he, 'lf_rest_hub', 2, { giftPerson: 'he', complete: 'father_he_chat' })
@@ -131,7 +132,7 @@ lines('lf_noise_intro', [['luzhou', '昨天模体信号多，很多差别不扎�
 lab(4, 2, '把模拟光子调少，同时看正弦图与重建结果。')
 lines('lf_after_noise', [['me', '前面的测量就起伏了，后面再锐一点，噪点也跟着起劲。'], ['luzhou', '换个办法。先猜一张图，算它该留下什么投影，再和测到的对。']], room, lu, 'lf_iteration_intro_0', 2)
 lines('lf_iteration_intro', [
-  [undefined, '你们回到研究副本。下面用**胸部数字模体**演示这次对照：保留原FBP，逐轮看SART-TV结果和相邻层，不显示陆叔的真实资料。'],
+  [undefined, '你们回到研究副本。这里用**开放胸部CT衍生的模拟数据**演示对照：原FBP留在旁边，再看逐轮结果和相邻层。'],
   ['luzhou', '先别急着说好看。你想请老周核对哪一处，就留个标记；拿不准也留着。'],
 ], room, lu, 'lf_lab_5', 2)
 lab(5, 2, '和原FBP对照，看一轮变化；想核查的位置可以标记，不必猜诊断。')
