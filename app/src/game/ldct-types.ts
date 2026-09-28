@@ -19,9 +19,17 @@ export interface LdctProgress {
   completed: string[]
   decisions: Record<string, string>
   receipts: string[]
+  /** Timestamp committed before the shared 3s acquisition starts; no audio gate. */
+  scanSessions?: Record<string, { startedAt: number; completed: boolean }>
   /** Dataset replacement does not map an old marker onto different anatomy. */
   chestSourceVersion?: string
-  previousChest?: { draft?: LdctLabState; record?: LdctLabRecord }
+  previousChest?: {
+    draft?: LdctLabState
+    exposureDraft?: LdctLabState
+    record?: LdctLabRecord
+    /** Preserve earlier archives when a later dataset migration saves a draft. */
+    history?: { sourceVersion?: string; draft?: LdctLabState; exposureDraft?: LdctLabState; record?: LdctLabRecord }[]
+  }
   gifts: { person: LdctPerson; item: 'milktea' | 'snack'; nodeId: string; part?: number }[]
   reply?: { nodeId: string; speaker: string; text: string }
   labRound: LdctLabRound
@@ -85,6 +93,7 @@ export interface LdctStoryShelf {
 }
 
 export type LdctAction =
+  | { type: 'scan:start' | 'scan:complete'; nodeId: string; now: number }
   | { type: 'advance'; nodeId: string }
   | { type: 'choose'; nodeId: string; choiceId: string }
   | { type: 'lab:update'; value: LdctLabState }

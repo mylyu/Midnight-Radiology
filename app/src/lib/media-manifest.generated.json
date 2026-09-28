@@ -951,6 +951,16 @@
       "bytes": 178466,
       "type": "image"
     },
+    "assets/media/ldct_chest_noisy_v4_exposure.acd820fcb3555dbf.webp": {
+      "sha256": "acd820fcb3555dbf8f49db95ab7763dc06b97268cdea91682cb6037b90822ccc",
+      "bytes": 242022,
+      "type": "image"
+    },
+    "assets/media/ldct_chest_noisy_v4_iterations.0657f85aec89470d.webp": {
+      "sha256": "0657f85aec89470d82a2d0bbff5ebf6006c7fdb9cf29de52c6f93b984fe212e8",
+      "bytes": 241640,
+      "type": "image"
+    },
     "assets/media/ldct_chest_v1_images.282a66566ec0c657.webp": {
       "sha256": "282a66566ec0c657c53432bbbadc5d5334efadfbc1165a7fa14b9d4de815e8f6",
       "bytes": 148136,
@@ -959,6 +969,11 @@
     "assets/media/ldct_chest_v1_projections.ba5e9e7aace07e82.webp": {
       "sha256": "ba5e9e7aace07e82950cd59750f1427515019462706b6d844070390da502dc9e",
       "bytes": 294426,
+      "type": "image"
+    },
+    "assets/media/ldct_ct_phantom_bed_v1.d9dd8740463fe5b4.webp": {
+      "sha256": "d9dd8740463fe5b4f7c062bbe99564f4e1f75a2323b3661c1a928ab989e58e05",
+      "bytes": 46666,
       "type": "image"
     },
     "assets/media/ldct_item_meal_v1.cefcc9163c26942d.webp": {
@@ -1681,6 +1696,9 @@
       "assets/media/bg_ctcontrol_day_ready.b611bff5d0912f7b.webp",
       "assets/media/bg_waiting.e9b68c8f6d71b8e7.webp",
       "assets/media/ch2_bg_breakroom_day.194c9d3ccafbe9ff.webp",
+      "assets/media/ch2_ct_motion_bed_v1.f1eaee8617eb5678.webp",
+      "assets/media/ch2_ct_motion_room_v1.3e7727b60fc9d2ab.webp",
+      "assets/media/ch2_ct_scan_room_pixel_v2.c0cd3195ba72e15e.webp",
       "assets/media/ch2_pixel_char_he.8f56bc6a4628a25e.webp",
       "assets/media/ch2_pixel_char_luzhou_f.5e1498bbdd027005.webp",
       "assets/media/ch2_pixel_char_luzhou_m.818dc622d0fb6918.webp",
@@ -1699,11 +1717,15 @@
       "assets/media/ldct_chest_exposure_v1.38d811e2235de87e.webp",
       "assets/media/ldct_chest_exposure_v2_extra.947217d13ae905d7.webp",
       "assets/media/ldct_chest_iterations_v3_extra.fdc5509eb225847f.webp",
+      "assets/media/ldct_chest_noisy_v4_exposure.acd820fcb3555dbf.webp",
+      "assets/media/ldct_chest_noisy_v4_iterations.0657f85aec89470d.webp",
       "assets/media/ldct_chest_v1_images.282a66566ec0c657.webp",
       "assets/media/ldct_chest_v1_projections.ba5e9e7aace07e82.webp",
+      "assets/media/ldct_ct_phantom_bed_v1.d9dd8740463fe5b4.webp",
       "assets/media/ldct_item_meal_v1.cefcc9163c26942d.webp",
       "assets/media/ldct_manual_bp_v1.e1ec228ca8ec04e2.webp",
       "assets/media/ldct_short_phantom_v1.95385178b7487fa5.webp",
+      "audio/ch2_ct_real_scan_20260924.mp3",
       "audio/ch2_mobile_call_v1.mp3"
     ]
   }

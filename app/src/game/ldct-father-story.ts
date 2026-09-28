@@ -67,8 +67,11 @@ lines('lf_plan', [
 lines('lf_phantom', [
   ['me', '这玩意怎么这么沉？我以为就是个塑料桶。'],
   ['luzhou', '托住底下。里头那些小零件，比我宿舍的家当还齐。'],
-  [undefined, '你们把圆柱模体安放到检查床上，退出机房。门合上，床缓缓送进机架。按老周留的安排扫完几组后，你们把模体归位，带着数据回到工作站。'],
-], control, null, 'lf_review_intro_0', 1)
+  [undefined, '你们把圆柱模体安放到检查床上，垫好托架，退出机房。陆舟带上门，你在控制台调出老周留的安排。'],
+], control, null, 'lf_phantom_scan', 1)
+add('lf_phantom_scan', { part: 1, bg: control, sprite: null, text: '模体已就位，开始采集。', next: 'lf_phantom_done' })
+add('lf_phantom_done', { part: 1, bg: control, sprite: null,
+  text: '试扫结束。你们把模体归位，带着数据回到工作站。陆舟拉过一把椅子：“来，看看刚才那桶东西。”', next: 'lf_review_intro_0' })
 lines('lf_scan', [
   ['陆叔', '我都躺好了。陆舟，你别一副比我还紧张的样子。'],
   [undefined, '陆叔完成了医师安排的检查。陆舟一直陪着，傍晚才来找你和老周。他把缴费单折了又展，边角已经起毛。'],
@@ -127,6 +130,8 @@ add('lf_night1_end', { part: 1, bg: room, sprite: null, settle: true,
 nodes.lf_scan_0.text = '第二天，老周看过模体对照，再结合陆叔的情况确认了检查方案。你接过外套，陆舟陪父亲坐到检查床边。陆叔笑他：“我都坐好了，你俩别比我还紧张。”'
 nodes.lf_scan_0.speaker = undefined
 nodes.lf_scan_0.sprite = father
+nodes.lf_scan_0.next = 'lf_father_scan'
+add('lf_father_scan', { part: 2, bg: control, sprite: null, text: '陆叔躺好，开始采集。', next: 'lf_scan_1' })
 
 add('lf_evening2', { part: 2, bg: room, sprite: null,
   text: '研究副本拷好，窗外已经黑了。你拎着饭回来，陆舟的手机正响。他看见“爸”，先把电脑盖上，才接起电话。', next: 'lf_dinner_0' })

@@ -17,6 +17,10 @@ import {
   LDCT_DEEP_EXPOSURE_LEVELS, LDCT_DEEP_ITERATIONS, ldctDeepChestFrame, ldctDeepChestFrameStyle,
   ldctDeepExposureFrame, ldctDeepExposureFrameStyle,
 } from '../game/ldct-deep-experiments'
+import {
+  LDCT_NOISY_DATA_VERSION, ldctNoisyChestFrame, ldctNoisyChestFrameStyle,
+  ldctNoisyExposureFrame, ldctNoisyExposureFrameStyle,
+} from '../game/ldct-noisy-chest'
 import { LdctScannerGeometry } from './LdctScannerGeometry'
 import { LdctFilterResponse } from './LdctFilterResponse'
 import './LdctLab.css'
@@ -209,30 +213,31 @@ function Iterate({ value, change, choose, dataset, concealTruth }: Controls) {
 }
 
 /** No truth frame or answer region is rendered here. A mark belongs to the player, not a grader. */
-function ChestFrame({ frame, slice, deep = false }: { frame: string; slice: 0 | 1 | 2; deep?: boolean }) {
+function ChestFrame({ frame, slice, deep = false, noisy = false }: { frame: string; slice: 0 | 1 | 2; deep?: boolean; noisy?: boolean }) {
   const extended = deep && frame.startsWith('iteration:')
-  const item = extended ? ldctDeepChestFrame(frame, slice) : ldctChestFrame(frame, slice)
+  const item = noisy ? ldctNoisyChestFrame(frame, slice) : extended ? ldctDeepChestFrame(frame, slice) : ldctChestFrame(frame, slice)
   return <div className="ldct-lab__frame" data-frame={frame} data-slice={slice} data-dataset="chest" style={{
-    ...(extended ? ldctDeepChestFrameStyle(frame, slice) : ldctChestFrameStyle(frame, slice)), backgroundImage: `url("${imageAsset(item.mediaId)}")`,
+    ...(noisy ? ldctNoisyChestFrameStyle(frame, slice) : extended ? ldctDeepChestFrameStyle(frame, slice) : ldctChestFrameStyle(frame, slice)), backgroundImage: `url("${imageAsset(item.mediaId)}")`,
   }} />
 }
 
-function ExposureFrame({ kind, step, deep = false }: { kind: 'fbp' | 'sinogram'; step: number; deep?: boolean }) {
-  const mediaId = deep ? ldctDeepExposureFrame(kind, step).mediaId : LDCT_EXPOSURE_MEDIA_ID
+function ExposureFrame({ kind, step, deep = false, noisy = false }: { kind: 'fbp' | 'sinogram'; step: number; deep?: boolean; noisy?: boolean }) {
+  const mediaId = noisy ? ldctNoisyExposureFrame(kind, step).mediaId : deep ? ldctDeepExposureFrame(kind, step).mediaId : LDCT_EXPOSURE_MEDIA_ID
   return <div className="ldct-lab__frame" data-frame={`exposure:${kind}:${step + 1}`} data-dataset="chest" style={{
-    ...(deep ? ldctDeepExposureFrameStyle(kind, step) : ldctExposureFrameStyle(kind, step)), backgroundImage: `url("${imageAsset(mediaId)}")`,
+    ...(noisy ? ldctNoisyExposureFrameStyle(kind, step) : deep ? ldctDeepExposureFrameStyle(kind, step) : ldctExposureFrameStyle(kind, step)), backgroundImage: `url("${imageAsset(mediaId)}")`,
   }} />
 }
 
 function ChestExposure({ value, choose }: Pick<Controls, 'value' | 'choose'>) {
+  const noisy = value.chestDataVersion === LDCT_NOISY_DATA_VERSION
   const deep = value.exposureCount !== undefined
   const levels = deep ? LDCT_DEEP_EXPOSURE_LEVELS : LDCT_EXPOSURE_LEVELS
   const step = deep ? value.exposureCount! - 1 : value.exposureStep ?? 0
   const complete = step === levels.length - 1
   const setStep = (next: number) => choose(deep ? { exposureCount: next + 1 } : { exposureStep: next })
-  return <div className="ldct-exposure" data-testid="ldct-chest-exposure" data-exposure-step={step} data-exposure-count={step + 1}>
+  return <div className="ldct-exposure" data-testid="ldct-chest-exposure" data-exposure-step={step} data-exposure-count={step + 1} data-chest-version={value.chestDataVersion}>
     <div className="ldct-exposure__work">
-      <Tile label="胸部重建 · FBP"><ExposureFrame kind="fbp" step={step} deep={deep} /></Tile>
+      <Tile label="胸部重建 · FBP"><ExposureFrame kind="fbp" step={step} deep={deep} noisy={noisy} /></Tile>
       <div className="ldct-exposure__controls">
         <div className="ldct-exposure__count" aria-live="polite"><span>已积累曝光</span><output>{step + 1} / {levels.length}</output></div>
         <div className="ldct-exposure__units" style={{ gridTemplateColumns: `repeat(${levels.length}, minmax(0, 1fr))` }} aria-hidden="true">{levels.map((level, index) => <span key={level} className={index <= step ? 'is-filled' : undefined} />)}</div>
@@ -242,7 +247,7 @@ function ChestExposure({ value, choose }: Pick<Controls, 'value' | 'choose'>) {
       </div>
     </div>
     <details className="ldct-lab__extra ldct-exposure__projection"><summary>看看累计投影</summary>
-      <Tile label={`累计 ${step + 1} 份曝光 · 正弦图`}><ExposureFrame kind="sinogram" step={step} deep={deep} /></Tile>
+      <Tile label={`累计 ${step + 1} 份曝光 · 正弦图`}><ExposureFrame kind="sinogram" step={step} deep={deep} noisy={noisy} /></Tile>
       <p>每次沿用此前计数，再加一份；角度、重建方式和显示窗固定。</p>
       <p>胸部来自开放授权实扫CT，再生成模拟计数和投影；不是给陆叔追加检查。</p>
     </details>
@@ -251,6 +256,7 @@ function ChestExposure({ value, choose }: Pick<Controls, 'value' | 'choose'>) {
 
 function ChestIterate({ value, choose }: Pick<Controls, 'value' | 'choose'>) {
   const chest = value.chest ?? createLdctChestDraft()
+  const noisy = value.chestDataVersion === LDCT_NOISY_DATA_VERSION
   const deep = value.iterationRound !== undefined
   const currentRound = value.iterationRound ?? LDCT_CHEST_ITERATIONS[value.iterationStep]
   const [showPinned, setShowPinned] = useState(false)
@@ -289,10 +295,10 @@ function ChestIterate({ value, choose }: Pick<Controls, 'value' | 'choose'>) {
     setChest({ mark: { x: Math.round(clamp(x, 0, 100)), y: Math.round(clamp(y, 0, 100)), slice, iterationStep: step, ...roundRecord, method } })
     setMarking(false)
   }
-  return <div className="ldct-chest" data-testid="ldct-chest-iterate" data-iteration-round={deep ? currentRound : undefined} data-displayed-round={count}>
+  return <div className="ldct-chest" data-testid="ldct-chest-iterate" data-iteration-round={deep ? currentRound : undefined} data-displayed-round={count} data-chest-version={value.chestDataVersion}>
     <div className="ldct-chest__work">
       <figure className="ldct-lab__tile ldct-chest__main">
-        <figcaption>{chest.compareFbp ? '同份数据 · 原FBP' : `${pinned ? '已固定' : '当前'} · ${count === 0 ? '迭代初始估计' : `第${count}轮`}`}<span>相邻层 {slice + 1}/3</span></figcaption>
+        <figcaption>{chest.compareFbp ? '同份数据 · 原FBP' : count === 0 && noisy ? '原始FBP · 迭代起点' : `${pinned ? '已固定' : '当前'} · ${count === 0 ? '迭代初始估计' : `第${count}轮`}`}<span>相邻层 {slice + 1}/3</span></figcaption>
         <div className={`ldct-lab__image ldct-chest__canvas${marking ? ' is-marking' : ''}`}
           role={marking ? 'button' : undefined} tabIndex={marking ? 0 : undefined}
           aria-label={marking ? '点击想请医师核查的位置；键盘回车留在图心，方向键可移动已有标记' : undefined}
@@ -314,7 +320,7 @@ function ChestIterate({ value, choose }: Pick<Controls, 'value' | 'choose'>) {
               setChest({ mark: { x: clamp(x, 0, 100), y: clamp(y, 0, 100), slice, iterationStep: step, ...roundRecord, method } })
             }
           }}>
-          <ChestFrame frame={frame} slice={slice} deep={deep} />
+          <ChestFrame frame={frame} slice={slice} deep={deep} noisy={noisy} />
           {displayedMark && <span className="ldct-chest__mark" style={{ left: `${displayedMark.x}%`, top: `${displayedMark.y}%` }} aria-label="你标记的待核查位置" />}
           {marking && <span className="ldct-chest__mark-prompt">点一个想一起看的地方</span>}
         </div>
@@ -324,11 +330,11 @@ function ChestIterate({ value, choose }: Pick<Controls, 'value' | 'choose'>) {
       <div className="ldct-chest__controls">
         {deep && <div className="ldct-chest__round-progress" aria-live="polite"><span>已计算 {currentRound} / 12 轮</span><progress max={12} value={currentRound} /></div>}
         <button className="ldct-lab__primary ldct-chest__next" disabled={complete}
-          onClick={advance}>{currentRound === 0 ? '用原数据改第一轮 →' : complete ? `已到第${deep ? 12 : 8}轮，可以往回比较` : `再改到第${deep ? currentRound + 1 : LDCT_CHEST_ITERATIONS[value.iterationStep + 1]}轮 →`}</button>
+          onClick={advance}>{currentRound === 0 ? noisy ? '从原FBP改第一轮 →' : '用原数据改第一轮 →' : complete ? `已到第${deep ? 12 : 8}轮，可以往回比较` : `再改到第${deep ? currentRound + 1 : LDCT_CHEST_ITERATIONS[value.iterationStep + 1]}轮 →`}</button>
         <button className="ldct-chest__fbp-toggle" aria-pressed={chest.compareFbp} onClick={() => { setShowPinned(false); setMarking(false); setChest({ compareFbp: !chest.compareFbp }) }}>{chest.compareFbp ? '回到迭代图' : '回看原FBP'}</button>
         <details className="ldct-lab__extra ldct-chest__record-tools"><summary>固定、标记与更多轮次{chest.pinned || chest.mark ? ' · 有记录' : ''}</summary>
           <div className="ldct-lab__chips ldct-chest__versions" aria-label="切换迭代版本">{(deep ? LDCT_DEEP_ITERATIONS : LDCT_CHEST_ITERATIONS).map((n, i) => <button key={n} aria-pressed={!pinned && !chest.compareFbp && count === n}
-            disabled={deep && n > currentRound} onClick={() => deep ? review(n) : jump(i)}>{n === 0 ? '初始' : `${n}轮`}</button>)}</div>
+            disabled={deep && n > currentRound} onClick={() => deep ? review(n) : jump(i)}>{n === 0 ? noisy ? '原FBP' : '初始' : `${n}轮`}</button>)}</div>
           <div className="ldct-chest__compare-controls">
           <button disabled={chest.compareFbp || count === 0} onClick={() => {
             setShowPinned(false); setChest({ pinned: { slice, iterationStep: step, ...roundRecord }, compareFbp: false })
@@ -346,7 +352,7 @@ function ChestIterate({ value, choose }: Pick<Controls, 'value' | 'choose'>) {
     </div>
     <details className="ldct-lab__extra ldct-chest__process"><summary>这一轮在比较什么？</summary>
       <div className="ldct-lab__process"><span>当前估计</span><b>→</b><span>算投影</span><b>→</b><span>和原投影比较</span><b>→</b><span>改图 ↩</span></div>
-      {deep ? <p>每点一次，重新算一轮：先比较投影，再修正图像。十二轮使用同一份输入和显示窗，没有追加扫描。胸部解剖来自开放实扫CT，投影与迭代是由它生成的研究演示，并非厂商临床算法。</p> : <><div className="ldct-lab__pair">
+      {deep ? <p>{noisy ? '从原始有噪声的FBP图起步。' : ''}每点一次，重新算一轮：先比较投影，再修正图像。十二轮使用同一份输入和显示窗，没有追加扫描。胸部解剖来自开放实扫CT，投影与迭代是由它生成的研究演示，并非厂商临床算法。</p> : <><div className="ldct-lab__pair">
         <Tile label={`原数据投影 · 第${slice + 1}层`}><ChestFrame frame="sinogram" slice={slice} /></Tile>
         <Tile label={showResidual ? `迭代${count}轮 · 投影差异` : `迭代${count}轮的预测投影`}><ChestFrame frame={`${showResidual ? 'residual' : 'forward'}:${count}`} slice={slice} /></Tile>
       </div>

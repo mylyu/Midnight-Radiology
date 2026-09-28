@@ -24,6 +24,7 @@ import { CH2_COMMUNICATION_AUDIO } from '../src/game/ch2-communications.ts'
 import { LDCT_STEPS, LDCT_MEDIA_IDS } from '../src/game/ldct.ts'
 import { LDCT_LAB_MEDIA_IDS } from '../src/game/ldct-experiments.ts'
 import { LDCT_PRESENTATION_AUDIO, LDCT_PRESENTATION_IMAGES } from '../src/game/ldct-presentation.ts'
+import { LDCT_SCAN_IMAGE_IDS, LDCT_SCAN_AUDIO } from '../src/game/ldct-scans.ts'
 
 export const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 export const manifestPath = path.join(appRoot, 'src/lib/media-manifest.generated.json')
@@ -178,6 +179,8 @@ export async function buildChapterManifest() {
   collect('ldct', LDCT_STEPS)
   for (const image of [...LDCT_MEDIA_IDS, ...LDCT_LAB_MEDIA_IDS]) addImage('ldct', image, false)
   for (const image of LDCT_PRESENTATION_IMAGES) addImage('ldct', image, false)
+  for (const image of LDCT_SCAN_IMAGE_IDS) addImage('ldct', image, false)
+  addSound('ldct', LDCT_SCAN_AUDIO)
   for (const audio of Object.values(LDCT_PRESENTATION_AUDIO)) addPath('ldct', audio, 'audio')
 
   // All legacy canonical artwork can be requested through save-derived extras.

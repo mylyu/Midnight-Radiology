@@ -71,4 +71,4 @@
   .ch2-scan-controls button { padding: 5px 12px; }
   .ch2-scan-panel small { margin-top: 7px; font-size: 10px; }
 }
-@media (prefers-reduced-motion: reduce) { .ch2-scan-slices span { animation: none !important; } .ch2-ct-sliding-bed { transform: translate(11.961722%, -4.250797%) !important; transition: none; } }
+@media (prefers-reduced-motion: reduce) { .ch2-scan-slices span { animation: none !important; } .ch2-ct-sliding-bed { transform: translate(11.961722%, -4.250797%) var(--ct-subject-fit, ) !important; transition: none; } }

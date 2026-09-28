@@ -5,7 +5,9 @@ import type { LdctAction, LdctPerson, LdctProduct, LdctProgress, LdctStoryShelf 
 import type { GameState } from './types'
 import { LDCT_CHEST_VERSION, LDCT_CHEST_ITERATIONS } from './ldct-chest'
 import { LDCT_DEEP_CHEST_VERSION } from './ldct-deep-experiments'
+import { LDCT_NOISY_DATA_VERSION, LDCT_NOISY_CHEST_VERSION } from './ldct-noisy-chest'
 import { ldctSceneCue } from './ldct-presentation'
+import { getLdctScanConfig } from './ldct-scans'
 
 /** Pure transitions: the facade, selected slot, consumption and receipts save once. */
 export function getLdctShelf(state: GameState): LdctStoryShelf | undefined {
@@ -40,17 +42,32 @@ function extendLiveDraft(p: LdctProgress): LdctProgress {
     return { ...p, labDraft: { ...p.labDraft, iterationRound: LDCT_CHEST_ITERATIONS[p.labDraft.iterationStep] } }
   return p
 }
+/** Keep a prior unsubmitted image choice separate before changing its input data. */
+function archiveChestDraft(p: LdctProgress): LdctProgress {
+  const previous = p.previousChest
+  const prior = previous && (previous.draft || previous.exposureDraft || previous.record) ? {
+    draft: previous.draft, exposureDraft: previous.exposureDraft, record: previous.record,
+  } : undefined
+  return { ...p, previousChest: { ...previous,
+    ...(p.labRound === 4 ? { exposureDraft: p.labDraft } : { draft: p.labDraft }),
+    ...(p.records[5]?.dataset === 'chest' ? { record: p.records[5] } : {}),
+    ...(prior ? { history: [...(previous?.history ?? []), prior] } : {}),
+  } }
+}
 export function initializeLdct(state: GameState, replay = false): GameState {
   const shelf = getLdctShelf(state)
   if (shelf?.version === 2) {
     const current = shelf.slots.father
-    if (current && current.chestSourceVersion !== LDCT_CHEST_VERSION) {
-      const previousChest = current.previousChest ?? {
-        ...(current.labRound === 5 ? { draft: current.labDraft } : {}),
-        ...(current.records[5]?.dataset === 'chest' ? { record: current.records[5] } : {}),
-      }
-      const upgraded = { ...current, chestSourceVersion: LDCT_CHEST_VERSION, previousChest,
-        labDraft: current.labRound === 5 ? createLdctLabState(5, 'chest') : current.labDraft }
+    if (current && current.chestSourceVersion !== LDCT_NOISY_DATA_VERSION) {
+      // Migrate only an unfinished live exercise, including one temporarily
+      // closed onto its own introduction. Archived record playback keeps its source.
+      const liveLab = !current.finished && !current.labReturn && (current.phase === 'lab' ||
+        (current.phase === 'story' && current.nodeId === `lf_lab_${current.labRound}`))
+      const replaceDraft = liveLab && current.labDraft.chestDataVersion !== LDCT_NOISY_DATA_VERSION &&
+        ((current.labRound === 4 && current.labDraft.exposureStep !== undefined) ||
+         (current.labRound === 5 && current.labDraft.chest !== undefined))
+      const upgraded = { ...(replaceDraft ? archiveChestDraft(current) : current), chestSourceVersion: LDCT_NOISY_DATA_VERSION,
+        labDraft: replaceDraft ? createLdctLabState(current.labRound, 'chest') : current.labDraft }
       state = shelf.active === 'father' ? patch(state, upgraded)
         : withShelf(state, { ...shelf, slots: { ...shelf.slots, father: upgraded } })
     }
@@ -76,7 +93,7 @@ export function selectLdctStory(state: GameState, id: LdctStoryShelf['active'], 
   if (previous && !replay) return patch(state, previous)
   if (previous && previous.openingRevision !== 5) state = withShelf(state, { ...getLdctShelf(state)!, previousFather: previous })
   return patch(state, { version: 1, openingRevision: 5, storyId: id, run: (previous?.run ?? 0) + 1,
-    seed: 2258, chestSourceVersion: LDCT_CHEST_VERSION, phase: 'story', nodeId: story.start, revision: 0, fatigue: 2, completed: [],
+    seed: 2258, chestSourceVersion: LDCT_NOISY_DATA_VERSION, phase: 'story', nodeId: story.start, revision: 0, fatigue: 2, completed: [],
     decisions: {}, receipts: [], gifts: [], labRound: 1, labDraft: createLdctLabState(1), records: {},
     start: { gold: state.gold, skill: state.skill, heart: state.heart, wealth: state.wealth } })
 }
@@ -90,8 +107,17 @@ function changed(p: LdctProgress, fields: Partial<LdctProgress>): LdctProgress {
 function move(state: GameState, p: LdctProgress, id: string): GameState {
   const node = getLdctSteps(p)[id]
   if (!node || p.storyId !== 'father' || !id.startsWith('lf_')) return state
-  if (node.enterLab) return patch(state, extendLiveDraft(changed(p, { nodeId: id, phase: 'lab', reply: undefined,
-    labRound: node.enterLab, labDraft: p.labRound === node.enterLab ? p.labDraft : createLdctLabState(node.enterLab, node.labDataset ?? 'phantom'), labReturn: undefined })))
+  if (node.enterLab) {
+    const dataset = node.labDataset ?? 'phantom'
+    const sameRound = p.labRound === node.enterLab
+    // An older save may retain a draft while its cursor sits before the lab.
+    // Matching the round alone would pair a new first FBP with old lab images.
+    const staleChest = sameRound && dataset === 'chest' && p.labDraft.chestDataVersion !== LDCT_NOISY_DATA_VERSION
+    const prepared = staleChest ? archiveChestDraft(p) : p
+    return patch(state, extendLiveDraft(changed(prepared, { nodeId: id, phase: 'lab', reply: undefined,
+      ...(dataset === 'chest' ? { chestSourceVersion: LDCT_NOISY_DATA_VERSION } : {}),
+      labRound: node.enterLab, labDraft: sameRound && !staleChest ? p.labDraft : createLdctLabState(node.enterLab, dataset), labReturn: undefined })))
+  }
   const finished = node.storyEnd || p.finished
   const next = node.storyEnd && !state.badges.includes('ldct_noise_beyond')
     ? { ...state, badges: [...state.badges, 'ldct_noise_beyond'] } : state
@@ -137,6 +163,19 @@ export function ldctCanRest(state: GameState) {
 export function ldctAction(state: GameState, action: LdctAction): GameState {
   const p = getLdctProgress(state)
   if (p?.storyId !== 'father') return state
+  const scan = getLdctScanConfig(p.nodeId, p.openingRevision ?? 4)
+  if (action.type === 'scan:start' || action.type === 'scan:complete') {
+    if (!scan || p.phase !== 'story' || p.reply || action.nodeId !== p.nodeId || !Number.isFinite(action.now) || action.now <= 0) return state
+    const session = p.scanSessions?.[p.nodeId]
+    if (action.type === 'scan:start') return session ? state : patch(state, { ...p,
+      scanSessions: { ...p.scanSessions, [p.nodeId]: { startedAt: action.now, completed: false } } })
+    if (!session || action.now - session.startedAt < scan.durationMs) return state
+    const next = getLdctNode(state).next
+    return next ? move(state, { ...p, scanSessions: { ...p.scanSessions,
+      [p.nodeId]: { ...session, completed: true } } }, next) : state
+  }
+  // A saved acquisition is advanced only by its clock, never scene/keyboard clicks.
+  if (scan && p.phase === 'story') return state
   if (action.type === 'media:heard') {
     if (p.phase !== 'story' || p.reply || p.nodeId !== action.nodeId || ldctSceneCue(p.nodeId, state.gender)?.id !== action.cueId) return state
     const receipt = `media:${action.cueId}`
@@ -161,6 +200,7 @@ export function ldctAction(state: GameState, action: LdctAction): GameState {
   }
   if (action.type === 'lab:update') {
     if (p.phase !== 'lab' || !labStateValid(action.value, p.labRound)) return state
+    if (action.value.chestDataVersion !== p.labDraft.chestDataVersion) return state
     if (p.labRound === 4 && (action.value.exposureStep !== undefined) !== (getLdctLabDataset(state) === 'chest')) return state
     if ((p.labDraft.exposureCount !== undefined) !== (action.value.exposureCount !== undefined)
       || (p.labDraft.iterationRound !== undefined) !== (action.value.iterationRound !== undefined)) return state
@@ -185,9 +225,9 @@ export function ldctAction(state: GameState, action: LdctAction): GameState {
   if (action.type === 'lab:open') {
     if (p.phase !== 'settle' || !p.records[action.round]) return state
     const record = p.records[action.round]!
-    const oldChest = record.dataset === 'chest' && action.round === 5 && record.sourceVersion !== LDCT_CHEST_VERSION && record.sourceVersion !== LDCT_DEEP_CHEST_VERSION
+    const oldChest = record.dataset === 'chest' && action.round === 5 && record.sourceVersion !== LDCT_CHEST_VERSION && record.sourceVersion !== LDCT_DEEP_CHEST_VERSION && record.sourceVersion !== LDCT_NOISY_CHEST_VERSION
     const draft = oldChest ? createLdctLabState(5, 'chest') : { ...createLdctLabState(action.round, record.dataset === 'chest' ? 'chest' : 'phantom'), ...record,
-      exposureCount: record.exposureCount, iterationRound: record.iterationRound, saved: null }
+      chestDataVersion: record.chestDataVersion, exposureCount: record.exposureCount, iterationRound: record.iterationRound, saved: null }
     return patch(state, changed(p, { phase: 'lab', labRound: action.round, labDraft: draft, labReturn: p.nodeId }))
   }
   if (action.type === 'lab:close') {

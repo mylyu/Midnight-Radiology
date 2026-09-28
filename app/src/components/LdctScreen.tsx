@@ -5,6 +5,10 @@ import { LDCT_BADGES, LDCT_MANUAL, getLdctNode, getLdctChoices } from '../game/l
 import { LDCT_STORIES } from '../game/ldct-short-stories'
 import { LDCT_FATHER_STORY } from '../game/ldct-father-story'
 import { ldctChestFrame, ldctChestFrameStyle } from '../game/ldct-chest'
+import { ldctNoisyChestFrame, ldctNoisyChestFrameStyle } from '../game/ldct-noisy-chest'
+import { getLdctScanConfig, LDCT_PHANTOM_MOTION } from '../game/ldct-scans'
+import { Ch2ScanOverlay } from './Ch2ScanOverlay'
+import { LdctScanSlices } from './LdctScanSlices'
 import type { LdctPerson } from '../game/ldct-types'
 import { LDCT_LAB_TITLES, ldctRecordSummary, type LdctLabRound } from '../game/ldct-experiments'
 import { CHARACTERS, SHOP_ITEMS } from '../game/data'
@@ -72,6 +76,14 @@ function LdctStoryScreen({ state, update, onExit, renderText }: Props) {
   const p = getLdctProgress(state)!
   const legacyOrder = p.openingRevision !== 5
   const node = getLdctNode(state)
+  const scan = p.phase === 'story' ? getLdctScanConfig(p.nodeId, p.openingRevision ?? 4) : undefined
+  const scanSession = p.scanSessions?.[p.nodeId]
+  const noisyChest = p.chestSourceVersion === 'ldct-chest-noisy-v4'
+  useEffect(() => {
+    if (!scan || scanSession) return
+    const action = { type: 'scan:start' as const, nodeId: p.nodeId, now: Date.now() }
+    update(s => ldctAction(s, action))
+  }, [scan, scanSession, p.nodeId, update])
   const story = LDCT_FATHER_STORY
   const [overlay, setOverlay] = useState<Overlay | null>(null)
   const [presentation, setPresentation] = useState(0)
@@ -101,7 +113,7 @@ function LdctStoryScreen({ state, update, onExit, renderText }: Props) {
   const sprite = node.sprite === 'me' ? `char_${state.gender}` : node.sprite === 'luzhou' || node.sprite === '@luzhou'
     ? `ch2_pixel_char_luzhou_${state.gender}` : node.sprite
   const settled = p.phase === 'settle'
-  const dialogue = useLdctDialogue({ state, renderText, blocked: !!overlay || p.phase !== 'story', presentation,
+  const dialogue = useLdctDialogue({ state, renderText, blocked: !!overlay || !!scan || p.phase !== 'story', presentation,
     onAdvance: () => interact(p.reply ? { type: 'reply:close' } : { type: 'advance', nodeId: p.nodeId }),
     onChoose: id => interact({ type: 'choose', nodeId: p.nodeId, choiceId: id }),
     onRest: () => interact({ type: 'rest' }),
@@ -144,7 +156,11 @@ function LdctStoryScreen({ state, update, onExit, renderText }: Props) {
         </section>
         {!p.finished && <button className="ldct-next-part" data-ldct-next-evening onClick={() => act({ type: 'part:next' })}>{legacyOrder ? '第二晚 · 带着昨晚的片子回来' : '第二天 · 看看陆叔的检查'} →</button>}
         <nav className="ldct-menu">{menu}<button data-ldct-replay onClick={() => ui('replay')}>重玩本篇</button></nav>
-      </main> : <>
+      </main> : scan ? scanSession && <Ch2ScanOverlay key={`${p.run}:${p.nodeId}`} config={scan}
+        startedAt={scanSession.startedAt} muted={sound.muted}
+        motionSubject={p.nodeId === 'lf_phantom_scan' ? LDCT_PHANTOM_MOTION : undefined}
+        renderSequence={progress => <LdctScanSlices progress={progress} noisy={noisyChest} />}
+        onDone={() => act({ type: 'scan:complete', nodeId: p.nodeId, now: Date.now() })} /> : <>
         {cinematic && <LdctCinematic key={cinematic.id} scene={cinematic} />}
         {!overlay && !p.reply && <LdctSceneMedia key={`${p.run}:${p.nodeId}`} nodeId={p.nodeId} gender={state.gender} muted={sound.muted}
           hideProp={!!cinematic}
@@ -153,7 +169,9 @@ function LdctStoryScreen({ state, update, onExit, renderText }: Props) {
         {sprite && !cinematic && <DialoguePortrait data-ldct-portrait src={imageAsset(sprite)} alt="" className="pointer-events-none" />}
         {node.chestPreview && <figure className="ldct-case-preview" data-ldct-case-preview={node.chestPreview}>
           <div role="img" aria-label={node.chestPreview === 'fbp' ? '同次胸部检查的FBP图像，未标注观察答案' : '同份投影的研究重建图像，未标注观察答案'}
-            style={{ ...ldctChestFrameStyle(node.chestPreview, 1), backgroundImage: `url("${imageAsset(ldctChestFrame(node.chestPreview, 1).mediaId)}")` }} />
+            style={noisyChest
+              ? { ...ldctNoisyChestFrameStyle(node.chestPreview, 1), backgroundImage: `url("${imageAsset(ldctNoisyChestFrame(node.chestPreview, 1).mediaId)}")` }
+              : { ...ldctChestFrameStyle(node.chestPreview, 1), backgroundImage: `url("${imageAsset(ldctChestFrame(node.chestPreview, 1).mediaId)}")` }} />
           <figcaption>{node.chestPreview === 'fbp' ? '同次数据 · FBP' : '同次数据 · 研究重建'}</figcaption>
         </figure>}
         {dialogue.panel}
@@ -163,9 +181,9 @@ function LdctStoryScreen({ state, update, onExit, renderText }: Props) {
         {page.href && <p><a className="text-teal-200 underline" href={page.href} target="_blank" rel="noreferrer">{page.linkLabel}</a> · <a className="text-teal-200 underline" href={page.license} target="_blank" rel="noreferrer">CC BY 4.0</a></p>}
       </section>)}</div>}
       {overlay === 'records' && <div className="ldct-reading">
-        {p.previousChest && (p.previousChest.record || p.previousChest.draft) && <details className="ldct-panel"><summary>旧胸部示意图的记录</summary>
-          <p>这轮已更换图像来源。旧标记与固定版保留在这里，不套到新图的解剖位置。</p>
-          <pre className="ldct-json">{JSON.stringify(p.previousChest.record?.chest ?? p.previousChest.draft?.chest, null, 2)}</pre></details>}
+        {p.previousChest && (p.previousChest.record || p.previousChest.draft || p.previousChest.exposureDraft) && <details className="ldct-panel"><summary>旧胸部实验记录</summary>
+          <p>这轮调整了输入或重建版本。旧草稿、标记和固定版保留，不移到新结果上。</p>
+          <pre className="ldct-json">{JSON.stringify(p.previousChest, null, 2)}</pre></details>}
         {!Object.keys(p.records).length && <p>还没试过工具。想带过时，请陆舟演示就能继续。</p>}
         {Object.entries(p.records).map(([round, record]) => <article className="ldct-panel" key={round}><h3>{LDCT_LAB_TITLES[record!.round]}</h3>
           <p>{ldctRecordSummary(record!)}{record!.helped ? ' · 和陆舟一起看过' : ''}</p>

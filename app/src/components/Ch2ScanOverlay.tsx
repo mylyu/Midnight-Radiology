@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import type { CSSProperties } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 import { CH2_SCAN_AUDIO, ch2ScanFrame } from '../game/ch2-scans'
 import type { Ch2ScanConfig } from '../game/ch2-scans'
 import { getCh2SliceSequence } from '../game/ch2-scan-sequences'
 import { Ch2CtMotion } from './Ch2CtMotion'
+import type { CtMotionSubject } from './Ch2CtMotion'
 import { Ch2SliceSequence } from './Ch2SliceSequence'
 import './Ch2ScanOverlay.css'
 import { assetUrl } from '../lib/chapter-assets'
@@ -14,11 +15,14 @@ export interface Ch2ScanOverlayProps {
   startedAt: number
   onDone: () => void
   muted?: boolean
+  /** Alternate subject/data only; shared timing, sound and default Ch2 views stay unchanged. */
+  motionSubject?: CtMotionSubject
+  renderSequence?: (progress: number) => ReactNode
 }
 
 const soundUrl = (name: string) => assetUrl(`audio/${name}.mp3`)
 
-export function Ch2ScanOverlay({ config, startedAt, onDone, muted = false }: Ch2ScanOverlayProps) {
+export function Ch2ScanOverlay({ config, startedAt, onDone, muted = false, motionSubject, renderSequence }: Ch2ScanOverlayProps) {
   const [frame, setFrame] = useState(() => ch2ScanFrame(config, startedAt))
   const [quiet, setQuiet] = useState(muted)
   const completed = useRef(false)
@@ -130,10 +134,10 @@ export function Ch2ScanOverlay({ config, startedAt, onDone, muted = false }: Ch2
       <h2>{config.title}</h2>
       {config.mode === 'acquire' ? <div className={`ch2-scan-visuals is-${presentation}`}>
         {presentation !== 'console' && <div className={`ch2-scan-device is-${frame.phase}`}>
-          <Ch2CtMotion progress={frame.progress} />
+          <Ch2CtMotion progress={frame.progress} subject={motionSubject} />
           <div className="ch2-scan-room-status" aria-hidden="true"><i />{frame.phase === 'reconstruct' ? '工作站接收数据' : frame.phase === 'position' ? '检查床就位' : '采集中'}</div>
         </div>}
-        {presentation !== 'machine' && (sequence ? <Ch2SliceSequence key={sequence.id} sequence={sequence} progress={frame.progress} />
+        {presentation !== 'machine' && (renderSequence ? renderSequence(frame.progress) : sequence ? <Ch2SliceSequence key={sequence.id} sequence={sequence} progress={frame.progress} />
           : <figure className="ch2-slice-sequence is-unavailable" data-slice-ready="false" data-slice-unavailable>
             <figcaption className="ch2-slice-label">断层图像</figcaption>
             <div className="ch2-slice-screen"><p className="ch2-slice-placeholder">教学序列尚未就绪<span>采集继续进行</span></p></div>
