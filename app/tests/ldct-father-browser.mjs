@@ -84,6 +84,7 @@ async function lab(p) {
   if (p.labRound === 5) {
     assert.equal(await root.locator('[data-frame="truth"]').count(), 0, 'no chest answer reference')
     await root.getByRole('button', { name: '用原数据改第一轮 →', exact: true }).click()
+    await root.locator('summary').filter({ hasText: '固定、标记与更多轮次' }).click()
     await root.getByRole('button', { name: '4轮', exact: true }).click()
     await root.getByRole('button', { name: '固定这一版', exact: true }).click()
     await root.getByRole('button', { name: '8轮', exact: true }).click()

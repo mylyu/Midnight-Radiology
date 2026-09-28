@@ -1,13 +1,14 @@
 import assert from 'node:assert/strict'
 import {
-  LDCT_CHEST_VERSION, LDCT_CHEST_SEED, LDCT_CHEST_SIZE, LDCT_CHEST_WINDOW,
+  LDCT_CHEST_VERSION, LDCT_CHEST_LEGACY_VERSIONS, LDCT_CHEST_SEED, LDCT_CHEST_SIZE, LDCT_CHEST_WINDOW,
   LDCT_CHEST_SLICES, LDCT_CHEST_ITERATIONS, LDCT_CHEST_MEDIA_IDS,
   LDCT_CHEST_IMAGE_MEDIA_ID, LDCT_CHEST_PROJECTION_MEDIA_ID,
   LDCT_CHEST_IMAGE_KEYS, LDCT_CHEST_PROJECTION_KEYS,
   ldctChestFrame, ldctChestFrameStyle,
 } from '../src/game/ldct-chest.ts'
 
-assert.equal(LDCT_CHEST_VERSION, 'ldct-chest-v1')
+assert.equal(LDCT_CHEST_VERSION, 'ldct-chest-open-v2')
+assert.deepEqual(LDCT_CHEST_LEGACY_VERSIONS, ['ldct-chest-v1'])
 assert.equal(LDCT_CHEST_SEED, 28225)
 assert.equal(LDCT_CHEST_SIZE, 192)
 assert.deepEqual(LDCT_CHEST_WINDOW, [0.001, 0.022])

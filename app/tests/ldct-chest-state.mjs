@@ -42,6 +42,9 @@ assert.deepEqual(record.chest, compared.chest)
 assert.notEqual(record.chest, compared.chest)
 assert.notEqual(record.chest.mark, compared.chest.mark)
 assert.notEqual(record.chest.pinned, compared.chest.pinned)
+const legacyChest = { ...copy(record), sourceVersion: 'ldct-chest-v1' }
+assert(isValidLdctRecord(legacyChest, 5), 'old-source records remain readable, not silently renamed')
+assert.match(ldctRecordSummary(legacyChest), /旧示意图/)
 assert.match(ldctRecordSummary(record), /FBP/)
 assert.match(ldctRecordSummary(record), /第3层/)
 assert.match(ldctRecordSummary(record), /固定1轮第2层/)
@@ -83,6 +86,37 @@ function atChest(state, draft = initial) {
     ldctStories: { ...shelf, active: 'father', slots: { ...shelf.slots, father: p } } } } }
 }
 const stats = s => ({ gold: s.gold, skill: s.skill, heart: s.heart, wealth: s.wealth, badges: s.badges })
+// A new anatomy must never inherit the old image's marker or pinned frame.
+const legacyState = atChest(copy(active), compared)
+const legacyProgress = getLdctProgress(legacyState)
+delete legacyProgress.chestSourceVersion
+legacyProgress.records[5] = copy(legacyChest)
+const migrated = initializeLdct(copy(legacyState))
+assert.deepEqual(getLdctProgress(migrated).labDraft, initial)
+assert.deepEqual(getLdctProgress(migrated).previousChest, { draft: compared, record: legacyChest })
+assert.deepEqual(getLdctProgress(migrated).records[5], legacyChest)
+assert.deepEqual(stats(migrated), stats(legacyState))
+assert.deepEqual(initializeLdct(copy(migrated)), migrated, 'migration is idempotent')
+assert.deepEqual(migrated.dlc.ch2, base.dlc.ch2)
+assert.deepEqual(migrated.dlc.dr, base.dlc.dr)
+assert.deepEqual(migrated.dlc.dsa, base.dlc.dsa)
+const settledLegacy = atChest(migrated)
+getLdctProgress(settledLegacy).phase = 'settle'
+const reopened = ldctAction(settledLegacy, { type: 'lab:open', round: 5 })
+assert.deepEqual(getLdctProgress(reopened).labDraft, initial, 'historical record opens a fresh new-source draft')
+
+// Sound receipts never advance dialogue, reward, or block subsequent actions.
+const entrance = atChest(active)
+Object.assign(getLdctProgress(entrance), { nodeId: 'lf_welcome', phase: 'story' })
+const heardAction = { type: 'media:heard', nodeId: 'lf_welcome', cueId: 'voice:lf_welcome:v1' }
+const heard = ldctAction(entrance, heardAction)
+assert.deepEqual(stats(heard), stats(entrance))
+assert.equal(getLdctProgress(heard).nodeId, 'lf_welcome')
+assert.equal(getLdctProgress(heard).revision, getLdctProgress(entrance).revision)
+assert(getLdctProgress(heard).receipts.includes('media:voice:lf_welcome:v1'))
+assert.equal(ldctAction(heard, heardAction), heard)
+assert.equal(ldctAction(heard, { ...heardAction, nodeId: 'lf_scan_2' }), heard)
+assert.equal(getLdctProgress(ldctAction(heard, { type: 'advance', nodeId: 'lf_welcome' })).nodeId, 'lf_arrive_0')
 let state = atChest(active)
 state = ldctAction(state, { type: 'lab:update', value: compared })
 const updated = state

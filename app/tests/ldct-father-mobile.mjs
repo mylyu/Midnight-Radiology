@@ -28,6 +28,7 @@ try {
   await page.locator('[data-chapter-enter]').click({ timeout: 60000 })
   const lab = page.locator('[data-testid="ldct-chest-iterate"]')
   await lab.getByRole('button', { name: '用原数据改第一轮 →' }).tap()
+  await lab.locator('summary').filter({ hasText: '固定、标记与更多轮次' }).tap()
   await lab.getByRole('button', { name: '4轮', exact: true }).tap()
   await lab.getByRole('button', { name: '固定这一版' }).tap()
   await lab.getByRole('button', { name: '回看原FBP' }).tap()
