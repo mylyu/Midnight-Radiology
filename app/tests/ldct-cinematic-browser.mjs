@@ -8,7 +8,7 @@ import { freshState } from '../src/game/store.ts'
 import { getLdctNode } from '../src/game/ldct.ts'
 import { selectLdctStory } from '../src/game/ldct-session.ts'
 import { createLdctLabState, createLdctRecord } from '../src/game/ldct-experiments.ts'
-import { LDCT_DEEP_CHEST_VERSION } from '../src/game/ldct-deep-experiments.ts'
+import { LDCT_NOISY_CHEST_VERSION } from '../src/game/ldct-noisy-chest.ts'
 
 const { chromium } = createRequire(import.meta.url)(process.env.PLAYWRIGHT_MODULE || 'C:/Users/lvmen/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright')
 const key = 'midnight-radiology-save-v1', mediaKey = 'ldct-cinematic-media-events'
@@ -115,7 +115,7 @@ async function layouts(page, name, locator) {
 
 try {
   await withFixture('closeups', fixture('lf_arrive_3'), async ({ page, load, saved, progress }) => {
-    for (const [nodeId, id] of [['lf_arrive_3', 'meal'], ['lf_plan_2', 'phantom'], ['lf_scan_0', 'father-scan'], ['lf_license_0', 'locked']]) {
+    for (const [nodeId, id] of [['lf_arrive_3', 'meal'], ['lf_plan_3', 'phantom'], ['lf_scan_0', 'father-scan'], ['lf_license_0', 'locked']]) {
       if (nodeId !== 'lf_arrive_3') await load(fixture(nodeId))
       const scene = page.locator(`[data-ldct-cinematic="${id}"]`)
       await scene.waitFor()
@@ -191,7 +191,7 @@ try {
     await page.locator('[data-ldct-node="lf_after_iteration_0"]').waitFor()
     const record = (await progress()).records[5]
     assert.equal(record.iterationRound, 12)
-    assert.equal(record.sourceVersion, LDCT_DEEP_CHEST_VERSION)
+    assert.equal(record.sourceVersion, LDCT_NOISY_CHEST_VERSION)
     assert.deepEqual(record.chest, draft.chest)
     assert.deepEqual(stats(await saved()), before)
   })

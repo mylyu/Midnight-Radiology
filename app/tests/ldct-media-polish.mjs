@@ -166,7 +166,7 @@ try {
     await page.locator('[data-ldct-node="lf_after_iteration_0"]').waitFor()
   })
   await withFixture('props', fixture('lf_scan_1'), async ({ page, load }) => {
-    for (const [nodeId, kind] of [['lf_scan_1', 'receipt'], ['lf_rest_hub', 'meal'], ['lf_record_echo', 'notes'], ['lf_depart_0', 'films']]) {
+    for (const [nodeId, kind] of [['lf_scan_1', 'receipt'], ['lf_rest_hub', 'meal'], ['lf_record_echo', 'notes'], ['lf_director_review_5', 'films']]) {
       if (nodeId !== 'lf_scan_1') await load(fixture(nodeId))
       const prop = page.locator(`[data-ldct-prop="${kind}"]`)
       await prop.waitFor()

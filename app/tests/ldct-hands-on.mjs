@@ -123,7 +123,7 @@ assert.equal(p(openLdctShelf(selected)), undefined)
 const done = walk(selected)
 const ordered = ['lf_consult_0', 'lf_plan_0', 'lf_lab_1', 'lf_lab_2', 'lf_lab_3', 'lf_night1_end',
   'lf_scan_0', 'lf_first_fbp', 'lf_lab_4', 'lf_license_0', 'lf_export_0', 'lf_evening2',
-  'lf_rest_hub', 'lf_lab_5', 'lf_weeks_0', 'lf_end']
+  'lf_rest_hub', 'lf_lab_5', 'lf_caught_choice', 'lf_fine_0', 'lf_director_review_0', 'lf_wrap_0', 'lf_end']
 for (let index = 1; index < ordered.length; index++)
   assert(done.route.indexOf(ordered[index]) > done.route.indexOf(ordered[index - 1]), `${ordered[index - 1]} precedes ${ordered[index]}`)
 for (const nodeId of ['lf_scan_0', 'lf_first_fbp', 'lf_lab_4', 'lf_lab_5'])
@@ -131,7 +131,8 @@ for (const nodeId of ['lf_scan_0', 'lf_first_fbp', 'lf_lab_4', 'lf_lab_5'])
 assert.deepEqual(Object.keys(p(done.state).records), ['1', '2', '3', '4', '5'])
 assert.equal(done.state.skill, base.skill + 1)
 assert.equal(done.state.wealth, base.wealth + 1)
-assert.equal(done.state.gold, base.gold)
+assert.equal(done.state.gold, base.gold - 100, 'first-choice ending pays the one-time fine')
+assert.equal(p(done.state).receipts.filter(id => id === 'ending:fine').length, 1)
 assert.equal(done.state.heart, base.heart)
 assert(done.state.badges.includes('ldct_noise_beyond'))
 assert.equal(getLdctLabDataset(done.snapshots.get('lf_lab_4')), 'chest')

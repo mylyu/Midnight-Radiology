@@ -7,8 +7,9 @@ import { createLdctLabState, createLdctRecord, isValidLdctRecord, labStateValid,
 import { initializeLdct, selectLdctStory, getLdctProgress, getLdctShelf, ldctAction } from '../src/game/ldct-session.ts'
 import { LDCT_EXPOSURE_VERSION, ldctExposureFrame } from '../src/game/ldct-exposure.ts'
 import { LDCT_CHEST_VERSION, ldctChestFrame } from '../src/game/ldct-chest.ts'
-import { LDCT_DEEP_EXPOSURE_VERSION, LDCT_DEEP_CHEST_VERSION, LDCT_DEEP_EXPOSURE_LEVELS,
+import { LDCT_DEEP_EXPOSURE_LEVELS,
   LDCT_DEEP_ITERATIONS, ldctDeepExposureFrame, ldctDeepChestFrame } from '../src/game/ldct-deep-experiments.ts'
+import { LDCT_NOISY_EXPOSURE_VERSION, LDCT_NOISY_CHEST_VERSION } from '../src/game/ldct-noisy-chest.ts'
 import { ldctSceneCue, LDCT_PRESENTATION_AUDIO } from '../src/game/ldct-presentation.ts'
 import { getLdctCinematic, LDCT_CINEMATIC_MEDIA_IDS } from '../src/game/ldct-cinematics.ts'
 
@@ -79,8 +80,8 @@ for (const [round, field, start, end, threshold, nextNode] of [
     assert.equal(record[field], value)
     assert.equal(record.helped, helped)
     assert.equal(record.dataset, 'chest')
-    assert.equal(record.sourceVersion, round === 4 ? LDCT_DEEP_EXPOSURE_VERSION : LDCT_DEEP_CHEST_VERSION,
-      'new actual counts/rounds have their own source version')
+    assert.equal(record.sourceVersion, round === 4 ? LDCT_NOISY_EXPOSURE_VERSION : LDCT_NOISY_CHEST_VERSION,
+      'current factory uses the approved noisy input version; historical source checks remain below')
     const before = stats(state)
     state = act(state, 'lab:submit', { record })
     assert.equal(p(state).nodeId, nextNode)
@@ -131,6 +132,7 @@ for (const badRound of [-1, 13, .5]) {
 // not inject a new count from createLdctLabState and silently replace its image.
 for (const round of [4, 5]) {
   const old = createLdctLabState(round, 'chest')
+  delete old.chestDataVersion
   delete old.exposureCount
   delete old.iterationRound
   if (round === 4) old.exposureStep = 3
@@ -177,13 +179,14 @@ for (const gender of ['m', 'f']) {
   assert.equal(call.id, 'call:father-evening2:v1', 'existing ringtone receipt remains stable')
 }
 assert.deepEqual(getLdctShelf(fixture(4)).receipts, ['reward:comparison'])
-assert.equal(LDCT_CINEMATIC_MEDIA_IDS.length, 4)
-for (const [node, id] of [['lf_arrive_3', 'meal'], ['lf_plan_2', 'phantom'], ['lf_scan_0', 'father-scan'], ['lf_license_0', 'locked']]) {
+assert.equal(LDCT_CINEMATIC_MEDIA_IDS.length, 6)
+for (const [node, id] of [['lf_arrive_3', 'meal'], ['lf_plan_3', 'phantom'], ['lf_scan_0', 'father-scan'], ['lf_license_0', 'locked'],
+  ['lf_caught_choice', 'director-caught'], ['lf_director_review_0', 'director-review']]) {
   const scene = getLdctCinematic(node)
   assert.equal(scene.id, id)
   assert(LDCT_CINEMATIC_MEDIA_IDS.includes(scene.image))
   assert.equal(Boolean(scene.locked), id === 'locked')
 }
-assert.equal(getLdctCinematic('lf_plan_2'), getLdctCinematic('lf_phantom_0'), 'adjacent physical-phantom lines share the same scene object')
+assert.equal(getLdctCinematic('lf_plan_3'), getLdctCinematic('lf_phantom_0'), 'adjacent physical-phantom lines share the same scene object')
 assert.equal(getLdctCinematic('lf_dinner_2'), undefined, 'unrelated dialogue clears the closeup')
 console.log('PASS cinematic state: 13 exposure and 13 iteration checkpoints, ten-click thresholds, help, reset/refresh/review, legacy indices, pins/marks, reward isolation, and phone-only scene audio.')

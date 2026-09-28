@@ -189,7 +189,8 @@ try {
   const final = await saved()
   if (!resume) {
     const order = ['lf_consult_0', 'lf_lab_1', 'lf_lab_2', 'lf_lab_3', 'lf_night1_end',
-      'lf_scan_0', 'lf_first_fbp', 'lf_lab_4', 'lf_license_0', 'lf_export_0', 'lf_evening2', 'lf_lab_5', 'lf_weeks_0']
+      'lf_scan_0', 'lf_first_fbp', 'lf_lab_4', 'lf_license_0', 'lf_export_0', 'lf_evening2', 'lf_lab_5',
+      'lf_caught_choice', 'lf_fine_0', 'lf_director_review_0', 'lf_wrap_0']
     for (let index = 1; index < order.length; index++)
       assert(route.indexOf(order[index]) > route.indexOf(order[index - 1]), `${order[index - 1]} precedes ${order[index]}`)
   }
