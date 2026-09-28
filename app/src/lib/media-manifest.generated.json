@@ -911,6 +911,26 @@
       "bytes": 103186,
       "type": "image"
     },
+    "assets/media/ldct_cg_father_scan_v1.5616cf9abf74840e.webp": {
+      "sha256": "5616cf9abf74840e4fc21e4f38c2c479af5db1f175dc8e267bbeed24aeca12fd",
+      "bytes": 105386,
+      "type": "image"
+    },
+    "assets/media/ldct_cg_locked_v1.865e915000e14317.webp": {
+      "sha256": "865e915000e14317fbda782131396e9ada193b209dbb3a13d4b3f49216879795",
+      "bytes": 114532,
+      "type": "image"
+    },
+    "assets/media/ldct_cg_meal_v1.9681460e975a2b10.webp": {
+      "sha256": "9681460e975a2b10f94cc6bb2264ec7016cb53382bee84dadec181f4ee75cd91",
+      "bytes": 141494,
+      "type": "image"
+    },
+    "assets/media/ldct_cg_phantom_v1.9766d3c61e126709.webp": {
+      "sha256": "9766d3c61e1267096fef2ec0de1d8f50213f45344ff7a70641af4fed3972265e",
+      "bytes": 96890,
+      "type": "image"
+    },
     "assets/media/ldct_char_father_v1.0c1d54f2fc7b231d.webp": {
       "sha256": "0c1d54f2fc7b231d4ea62e565024110db5aba38e4b44ada8feb97b4642c82192",
       "bytes": 26520,
@@ -919,6 +939,16 @@
     "assets/media/ldct_chest_exposure_v1.38d811e2235de87e.webp": {
       "sha256": "38d811e2235de87e2cb3f223e65cb3f841a68c1158b095bb58304689c28bc26f",
       "bytes": 63096,
+      "type": "image"
+    },
+    "assets/media/ldct_chest_exposure_v2_extra.947217d13ae905d7.webp": {
+      "sha256": "947217d13ae905d7eebb255f6edcc4238cd6a2584b8e52692a25ec707078de03",
+      "bytes": 107206,
+      "type": "image"
+    },
+    "assets/media/ldct_chest_iterations_v3_extra.fdc5509eb225847f.webp": {
+      "sha256": "fdc5509eb225847fe9f0b72bcee2f8cf14b877be2d7be871601800213f0a5f65",
+      "bytes": 178466,
       "type": "image"
     },
     "assets/media/ldct_chest_v1_images.282a66566ec0c657.webp": {
@@ -1284,26 +1314,6 @@
     "audio/vox_kid.mp3": {
       "sha256": "74ab4db5b68f639b42ac3f26faede2e91858434e1f55c040753928963a5c9608",
       "bytes": 22125,
-      "type": "audio"
-    },
-    "audio/vox_ldct_he_v1.mp3": {
-      "sha256": "72b9ddcbc73875c78d113bd3212dace9be7c6ecb29c422443df69eb5845dd4c2",
-      "bytes": 11355,
-      "type": "audio"
-    },
-    "audio/vox_ldct_luzhou_f_v1.mp3": {
-      "sha256": "3bbd5211d8eae73404109a050cef5b90847263ddf3c274f6abbe776be595bdde",
-      "bytes": 10258,
-      "type": "audio"
-    },
-    "audio/vox_ldct_luzhou_m_v1.mp3": {
-      "sha256": "ce1fafaef696814cc10a9e6db32d3769e07c1b6fb8722b2dbf482bc80009db33",
-      "bytes": 10258,
-      "type": "audio"
-    },
-    "audio/vox_ldct_zhou_v1.mp3": {
-      "sha256": "2fdeff53b53268205e2c7930b75f51d2b72e08246e6d68c2f4d4b17eb6ed76fd",
-      "bytes": 12609,
       "type": "audio"
     },
     "audio/vox_lei.mp3": {
@@ -1681,18 +1691,20 @@
       "assets/media/item_notebook.d2d4179f08903ea1.webp",
       "assets/media/item_snack.f16943baf3b6bdb3.webp",
       "assets/media/ldct_bg_restaurant.1e0f0d5b98e52a90.webp",
+      "assets/media/ldct_cg_father_scan_v1.5616cf9abf74840e.webp",
+      "assets/media/ldct_cg_locked_v1.865e915000e14317.webp",
+      "assets/media/ldct_cg_meal_v1.9681460e975a2b10.webp",
+      "assets/media/ldct_cg_phantom_v1.9766d3c61e126709.webp",
       "assets/media/ldct_char_father_v1.0c1d54f2fc7b231d.webp",
       "assets/media/ldct_chest_exposure_v1.38d811e2235de87e.webp",
+      "assets/media/ldct_chest_exposure_v2_extra.947217d13ae905d7.webp",
+      "assets/media/ldct_chest_iterations_v3_extra.fdc5509eb225847f.webp",
       "assets/media/ldct_chest_v1_images.282a66566ec0c657.webp",
       "assets/media/ldct_chest_v1_projections.ba5e9e7aace07e82.webp",
       "assets/media/ldct_item_meal_v1.cefcc9163c26942d.webp",
       "assets/media/ldct_manual_bp_v1.e1ec228ca8ec04e2.webp",
       "assets/media/ldct_short_phantom_v1.95385178b7487fa5.webp",
-      "audio/ch2_mobile_call_v1.mp3",
-      "audio/vox_ldct_he_v1.mp3",
-      "audio/vox_ldct_luzhou_f_v1.mp3",
-      "audio/vox_ldct_luzhou_m_v1.mp3",
-      "audio/vox_ldct_zhou_v1.mp3"
+      "audio/ch2_mobile_call_v1.mp3"
     ]
   }
 }

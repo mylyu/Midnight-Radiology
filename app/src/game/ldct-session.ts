@@ -3,7 +3,8 @@ import { getLdctChoices, getLdctNode, getLdctSteps } from './ldct'
 import { LDCT_FATHER_STORY, LDCT_FATHER_LAB_RETURNS, LDCT_FATHER_LAB_DATASETS, LDCT_NEXT_EVENING } from './ldct-father-story'
 import type { LdctAction, LdctPerson, LdctProduct, LdctProgress, LdctStoryShelf } from './ldct-types'
 import type { GameState } from './types'
-import { LDCT_CHEST_VERSION } from './ldct-chest'
+import { LDCT_CHEST_VERSION, LDCT_CHEST_ITERATIONS } from './ldct-chest'
+import { LDCT_DEEP_CHEST_VERSION } from './ldct-deep-experiments'
 import { ldctSceneCue } from './ldct-presentation'
 
 /** Pure transitions: the facade, selected slot, consumption and receipts save once. */
@@ -30,6 +31,15 @@ function patch(state: GameState, p: LdctProgress): GameState {
   return { ...state, dlc: { ...state.dlc, ldct: { ...state.dlc?.ldct, ldct: p,
     ldctStories: { ...shelf, active: p.storyId, slots: { ...shelf.slots, [p.storyId]: p } } } } }
 }
+/** Extend unfinished tools, never reinterpret archived checkpoint indices. */
+function extendLiveDraft(p: LdctProgress): LdctProgress {
+  if (p.phase !== 'lab' || p.labReturn) return p
+  if (p.labRound === 4 && p.labDraft.exposureStep !== undefined && p.labDraft.exposureCount === undefined)
+    return { ...p, labDraft: { ...p.labDraft, exposureCount: p.labDraft.exposureStep + 1 } }
+  if (p.labRound === 5 && p.labDraft.chest && p.labDraft.iterationRound === undefined)
+    return { ...p, labDraft: { ...p.labDraft, iterationRound: LDCT_CHEST_ITERATIONS[p.labDraft.iterationStep] } }
+  return p
+}
 export function initializeLdct(state: GameState, replay = false): GameState {
   const shelf = getLdctShelf(state)
   if (shelf?.version === 2) {
@@ -43,6 +53,13 @@ export function initializeLdct(state: GameState, replay = false): GameState {
         labDraft: current.labRound === 5 ? createLdctLabState(5, 'chest') : current.labDraft }
       state = shelf.active === 'father' ? patch(state, upgraded)
         : withShelf(state, { ...shelf, slots: { ...shelf.slots, father: upgraded } })
+    }
+    const updatedShelf = getLdctShelf(state)!
+    const father = updatedShelf.slots.father
+    if (father) {
+      const extended = extendLiveDraft(father)
+      if (extended !== father) state = updatedShelf.active === 'father' ? patch(state, extended)
+        : withShelf(state, { ...updatedShelf, slots: { ...updatedShelf.slots, father: extended } })
     }
     return replay && shelf.active === 'father' ? selectLdctStory(state, 'father', true) : state
   }
@@ -73,8 +90,8 @@ function changed(p: LdctProgress, fields: Partial<LdctProgress>): LdctProgress {
 function move(state: GameState, p: LdctProgress, id: string): GameState {
   const node = getLdctSteps(p)[id]
   if (!node || p.storyId !== 'father' || !id.startsWith('lf_')) return state
-  if (node.enterLab) return patch(state, changed(p, { nodeId: id, phase: 'lab', reply: undefined,
-    labRound: node.enterLab, labDraft: p.labRound === node.enterLab ? p.labDraft : createLdctLabState(node.enterLab, node.labDataset ?? 'phantom'), labReturn: undefined }))
+  if (node.enterLab) return patch(state, extendLiveDraft(changed(p, { nodeId: id, phase: 'lab', reply: undefined,
+    labRound: node.enterLab, labDraft: p.labRound === node.enterLab ? p.labDraft : createLdctLabState(node.enterLab, node.labDataset ?? 'phantom'), labReturn: undefined })))
   const finished = node.storyEnd || p.finished
   const next = node.storyEnd && !state.badges.includes('ldct_noise_beyond')
     ? { ...state, badges: [...state.badges, 'ldct_noise_beyond'] } : state
@@ -145,6 +162,8 @@ export function ldctAction(state: GameState, action: LdctAction): GameState {
   if (action.type === 'lab:update') {
     if (p.phase !== 'lab' || !labStateValid(action.value, p.labRound)) return state
     if (p.labRound === 4 && (action.value.exposureStep !== undefined) !== (getLdctLabDataset(state) === 'chest')) return state
+    if ((p.labDraft.exposureCount !== undefined) !== (action.value.exposureCount !== undefined)
+      || (p.labDraft.iterationRound !== undefined) !== (action.value.iterationRound !== undefined)) return state
     return patch(state, { ...p, labDraft: action.value })
   }
   if (action.type === 'lab:submit') {
@@ -166,8 +185,9 @@ export function ldctAction(state: GameState, action: LdctAction): GameState {
   if (action.type === 'lab:open') {
     if (p.phase !== 'settle' || !p.records[action.round]) return state
     const record = p.records[action.round]!
-    const oldChest = record.dataset === 'chest' && action.round === 5 && record.sourceVersion !== LDCT_CHEST_VERSION
-    const draft = oldChest ? createLdctLabState(5, 'chest') : { ...createLdctLabState(action.round, record.dataset === 'chest' ? 'chest' : 'phantom'), ...record, saved: null }
+    const oldChest = record.dataset === 'chest' && action.round === 5 && record.sourceVersion !== LDCT_CHEST_VERSION && record.sourceVersion !== LDCT_DEEP_CHEST_VERSION
+    const draft = oldChest ? createLdctLabState(5, 'chest') : { ...createLdctLabState(action.round, record.dataset === 'chest' ? 'chest' : 'phantom'), ...record,
+      exposureCount: record.exposureCount, iterationRound: record.iterationRound, saved: null }
     return patch(state, changed(p, { phase: 'lab', labRound: action.round, labDraft: draft, labReturn: p.nodeId }))
   }
   if (action.type === 'lab:close') {

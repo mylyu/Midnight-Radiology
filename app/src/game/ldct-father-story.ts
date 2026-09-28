@@ -40,7 +40,7 @@ lines('lf_arrive', [
   ['陆叔', '说好吃饭的。你别一坐下，又说那个CT。'],
   ['luzhou', '爸，医生建议的检查，你拖两个星期了。烟抽了三十多年，就这时候特别怕辐射。'],
   ['陆叔', '我好好的，进去照一遍，万一照出毛病呢？'],
-  ['me', '叔叔，汤先盛上。你们这架，菜还没上就吵完了。'],
+  ['me', '叔叔，汤先盛上。菜才上，你们倒先吵饱了。'],
 ], restaurant, father, 'lf_persuade', 1)
 add('lf_persuade', { part: 1, bg: restaurant, sprite: father, speaker: '陆叔', text: '烟我能少抽。这个CT，能不做就不做吧。', choices: [
   choice('listen', '先听听他到底怕什么', 'lf_listen_0', 'father_tone'),
@@ -61,9 +61,14 @@ lines('lf_consult', [
 ], waiting, father, 'lf_plan_0', 1)
 lines('lf_plan', [
   ['luzhou', '他一直问到底能少用多少。我也想知道：管电流再低一档，还看得清吗？'],
-  ['me', '先别拿叔叔试，拿电脑里的模体试。'],
-  ['luzhou', '对。扫描、重建走一遍，明天带着结果找老周商量。'],
-], room, lu, 'lf_review_intro_0', 1)
+  ['me', '器材柜里有个模体。先拿它试，别拿叔叔试。'],
+  ['luzhou', '老周答应借我们质控后的空档。走，趁下一拨人来之前搬过去。'],
+], room, lu, 'lf_phantom_0', 1)
+lines('lf_phantom', [
+  ['me', '这玩意怎么这么沉？我以为就是个塑料桶。'],
+  ['luzhou', '托住底下。里头那些小零件，比我宿舍的家当还齐。'],
+  [undefined, '你们把圆柱模体安放到检查床上，退出机房。门合上，床缓缓送进机架。按老周留的安排扫完几组后，你们把模体归位，带着数据回到工作站。'],
+], control, null, 'lf_review_intro_0', 1)
 lines('lf_scan', [
   ['陆叔', '我都躺好了。陆舟，你别一副比我还紧张的样子。'],
   [undefined, '陆叔完成了医师安排的检查。陆舟一直陪着，傍晚才来找你和老周。他把缴费单折了又展，边角已经起毛。'],
@@ -100,8 +105,8 @@ lines('lf_export', [
   ['luzhou', '好。我先给我爸回个电话，让他别在外头等咱们熬。'],
 ], room, lu, 'lf_evening2', 2, { complete: 'father_projection_authorized' })
 lines('lf_review_intro', [
-  ['me', '模拟扫描出来的投影怎么长这样。刚才饭馆的桌布，都比它容易看懂。'],
-  ['luzhou', '本科讲这节，你就睡我旁边。先拿模体找手感。'],
+  ['me', '刚抱进去的是个桶，导出来怎么成桌布了？'],
+  ['luzhou', '这是它的投影。本科讲这节，你就睡我旁边。'],
   ['me', '你怎么知道我睡着了？'],
   ['luzhou', '因为你打呼噜，把我也吵醒了。点一下那个小结构，别又睡。'],
 ], room, lu, 'lf_lab_1', 1)
@@ -113,13 +118,13 @@ lab(3, 1, '换一次滤波方式，比较轮廓与细节；其他参数想看再
 lines('lf_after_filter', [
   ['me', '低管电流那档加上锐滤波，噪点就扎眼了。换柔的，又怕小东西跟着糊。'],
   ['luzhou', '先把对照存下来。明天给老周看，别咱俩在这儿拍脑袋定我爸的参数。'],
-  ['me', '行。电脑里的圆今晚照够了，咱的饭还没吃明白。'],
+  ['me', '行，模体已经送回去了。咱的饭倒还没吃明白。'],
 ], room, lu, 'lf_night1_end', 1)
 add('lf_night1_end', { part: 1, bg: room, sprite: null, settle: true,
-  text: '第一晚 · 先收工。模拟试扫和重建对照已存好。明天医师结合陆叔的情况确认检查方案；今晚不替患者试扫。' })
+  text: '第一晚 · 先收工。模体归位，试扫和重建对照存好。明天医师结合陆叔的情况确认检查方案，今晚的结果先留着。' })
 
 // Short handoff before the booked examination, without a clinical dose quiz.
-nodes.lf_scan_0.text = '第二天，老周看过你们留的模拟对照，再结合陆叔的情况确认了检查方案。陆叔在候诊椅上招手：“我都来了，你俩别比我还紧张。”'
+nodes.lf_scan_0.text = '第二天，老周看过模体对照，再结合陆叔的情况确认了检查方案。你接过外套，陆舟陪父亲坐到检查床边。陆叔笑他：“我都坐好了，你俩别比我还紧张。”'
 nodes.lf_scan_0.speaker = undefined
 nodes.lf_scan_0.sprite = father
 

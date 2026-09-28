@@ -3,23 +3,11 @@ export type LdctSceneCue = { id: string; asset: string; volume: number; caption:
 export type LdctSceneProp = { kind: 'receipt' | 'meal' | 'notes' | 'films'; caption: string; image?: string }
 export const LDCT_PRESENTATION_IMAGES = ['ldct_item_meal_v1', 'item_notebook', 'item_film'] as const
 export const LDCT_PRESENTATION_AUDIO = {
-  luzhou_m: 'audio/vox_ldct_luzhou_m_v1.mp3',
-  luzhou_f: 'audio/vox_ldct_luzhou_f_v1.mp3',
-  zhou: 'audio/vox_ldct_zhou_v1.mp3',
-  he: 'audio/vox_ldct_he_v1.mp3',
   call: 'audio/ch2_mobile_call_v1.mp3',
 } as const
-const entrance: Record<string, { person: 'luzhou' | 'zhou' | 'he'; caption: string }> = {
-  lf_welcome: { person: 'luzhou', caption: '你先坐。' },
-  lf_scan_2: { person: 'zhou', caption: '都坐，别着急。' },
-  lf_chat_he_0: { person: 'he', caption: '这谁的饭呀？' },
-}
-export function ldctSceneCue(nodeId: string, gender: 'm' | 'f'): LdctSceneCue | undefined {
-  const voice = entrance[nodeId]
-  if (voice) {
-    const person: keyof typeof LDCT_PRESENTATION_AUDIO = voice.person === 'luzhou' ? `luzhou_${gender}` : voice.person
-    return { id: `voice:${nodeId}:v1`, asset: LDCT_PRESENTATION_AUDIO[person], volume: .45, caption: voice.caption }
-  }
+export function ldctSceneCue(nodeId: string, _gender: 'm' | 'f'): LdctSceneCue | undefined {
+  // Character entrance tracks are withdrawn by the author; phone effects stay.
+  void _gender // Keep the existing callers/save validation API, with no voiced gender branch.
   if (nodeId === 'lf_evening2') return { id: 'call:father-evening2:v1', asset: LDCT_PRESENTATION_AUDIO.call, volume: .38, caption: '手机来电 · 爸' }
 }
 export const LDCT_SCENE_CALLS: Record<string, { contact: string; status: string }> = {

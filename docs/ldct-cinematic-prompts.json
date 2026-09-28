@@ -1,0 +1,46 @@
+{
+  "tool": "image_gen.imagegen",
+  "mode": "edit with local reference images",
+  "transparent_background": false,
+  "outputs": {
+    "meal": "ldct_cg_meal_v1.9681460e975a2b10.webp",
+    "locked": "ldct_cg_locked_v1.865e915000e14317.webp",
+    "phantom": "ldct_cg_phantom_v1.9766d3c61e126709.webp",
+    "father_scan": "ldct_cg_father_scan_v1.5616cf9abf74840e.webp"
+  },
+  "tasks": [
+    {
+      "id": "meal",
+      "refs": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/ldct_bg_restaurant.1e0f0d5b98e52a90.webp",
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/ldct_char_father_v1.0c1d54f2fc7b231d.webp"
+      ],
+      "prompt": "Use case: illustration-story. Input1 restaurant setting/style reference; Input2 father character identity reference. Original Chinese hospital pixel-art narrative game, coarse clearly visible square pixel clusters, hard stepped edges and dark outlines, restrained cool blue shadows/warm local light. Match reference visual identity and grain, NOT smooth anime, NOT photorealism. Landscape 16:9 close-up illustration, no captions, no logos, no watermark. This is a new cutscene asset, not a redesign of reference assets. Main subject must stay in central 70% so complete composition works on mobile. Cropped hands should be anatomically plausible. Use tight practical framing and calm everyday emotion. Close tabletop perspective during dinner with three people in this exact modest Chinese restaurant. Elderly father from image2 sits opposite camera in his olive brown quilted jacket and grey sweater, salt-and-pepper short swept hair, kind tired face, one hand offering the rice bowl. Foreground two young friends' hands with chopsticks and bowls enter from camera sides (their faces/bodies deliberately outside frame, suitable for either male or female protagonist). Tofu dish, greens, steaming soup, three sets of used tableware, scratched wooden table. Warm lamp, winter blue window behind. Focus on father and sharing food, candid talking, no romantic cues, no cigarettes, no background strangers. Visible coarse pixel art, no tiny legible text."
+    },
+    {
+      "id": "locked",
+      "refs": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/bg_ctcontrol_day_ready.b611bff5d0912f7b.webp",
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/char_m.7fd8c4d18c105c36.webp"
+      ],
+      "prompt": "Use case: illustration-story. Input1 control room setting/palette reference; input2 character pixel grain reference only, no face required. Original Chinese hospital pixel-art narrative game, coarse clearly visible square pixel clusters, hard stepped edges and dark outlines, restrained cool blue shadows/warm local light. Match reference visual identity and grain, NOT smooth anime, NOT photorealism. Landscape 16:9 close-up illustration, no captions, no logos, no watermark. This is a new cutscene asset, not a redesign of reference assets. Main subject must stay in central 70% so complete composition works on mobile. Cropped hands should be anatomically plausible. Use tight practical framing and calm everyday emotion. Close-up at CT workstation after hours. Two colleagues seen ONLY as blue scrub sleeve with hand on mouse and a second neutral navy sleeve hand pointing to the same screen; both heads completely out of frame. A substantial hospital monitor faces nearly directly toward camera. Screen displays a simple pixel chest CT thumbnail on left, and a dim grey rectangular software module tile on right containing ONLY a large clear padlock symbol. No text anywhere on screen, labels will be coded in game. Keyboard, worn mouse, small tea cup, scanner gantry seen softly but still pixelated through lead glass in background, equipment cabling. Main visual focus is pointing hand and disabled locked tile, tangible equipment, not a floating UI. Cool screen glow and warm desk lamp. No person duplicated, no extra fingers."
+    },
+    {
+      "id": "phantom",
+      "refs": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/bg_ctcontrol_day_ready.b611bff5d0912f7b.webp",
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/char_m.7fd8c4d18c105c36.webp"
+      ],
+      "prompt": "Use case: illustration-story. Input1 CT equipment reference; input2 blue scrubs and pixel grain reference. Original Chinese hospital pixel-art narrative game, coarse clearly visible square pixel clusters, hard stepped edges and dark outlines, restrained cool blue shadows/warm local light. Match reference visual identity and grain, NOT smooth anime, NOT photorealism. Landscape 16:9 close-up illustration, no captions, no logos, no watermark. This is a new cutscene asset, not a redesign of reference assets. Main subject must stay in central 70% so complete composition works on mobile. Cropped hands should be anatomically plausible. Use tight practical framing and calm everyday emotion. Physical CT quality phantom being lifted and placed on the scanner couch BEFORE a test scan. Tight waist-and-hands close-up, NO faces visible. One colleague in blue scrubs securely cradles a compact round solid translucent grey acrylic cylinder about 20cm diameter and 15cm long, other colleague's navy-sleeve hand guides its small foam cradle. Cylinder end face points partly toward camera: pale grey solid circular body, a large light insert upper-left, dark insert upper-right, three small rods lower half, matching a teaching resolution phantom, not empty glass, not biological specimen, no wire into it. CT couch and circular gantry recognisable immediately behind, no patient present, nobody inside gantry. Physical weight, two normal hands visibly supporting its underside, placement moment, non-cartoon gravity, no beam firing, no labels. Cool hospital tones, dense crisp pixel blocks."
+    },
+    {
+      "id": "father_scan",
+      "refs": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/ldct_char_father_v1.0c1d54f2fc7b231d.webp",
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/bg_ctcontrol_day_ready.b611bff5d0912f7b.webp",
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/char_m.7fd8c4d18c105c36.webp"
+      ],
+      "prompt": "Use case: illustration-story. Input1 EXACT father identity/clothes reference, input2 equipment setting, input3 pixel style/scrub sleeve. Original Chinese hospital pixel-art narrative game, coarse clearly visible square pixel clusters, hard stepped edges and dark outlines, restrained cool blue shadows/warm local light. Match reference visual identity and grain, NOT smooth anime, NOT photorealism. Landscape 16:9 close-up illustration, no captions, no logos, no watermark. This is a new cutscene asset, not a redesign of reference assets. Main subject must stay in central 70% so complete composition works on mobile. Cropped hands should be anatomically plausible. Use tight practical framing and calm everyday emotion. A reassuring pre-scan moment at the CT scanner. Father with the exact salt-and-pepper short swept hair, recognizable thick eyebrows, grey sweater and dark trousers has just walked to the CT couch and is sitting on its edge, feet towardfloor. He is not critically ill, no wheelchair, no oxygen, no injury. His olive quilted jacket is folded beside him. From foreground a young person's blue scrub-sleeved hand gently guides his upper arm, that young person's face and body entirely outside frame for gender-neutral first-person camera. Father slightly apprehensive but making a small wry smile toward camera, holding folded examination slip with no readable text. Mid-close waist-up/edge-of-bed composition, large white circular CT gantry beside and behind, actual hospital space, no other people, no irradiation while people nearby. Pixel-art hard edges and visible mosaic shading."
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+.ldct-cinematic{position:absolute;top:76px;right:18px;bottom:calc(var(--ldct-dialog-height,14rem) + 8px);left:18px;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0;pointer-events:none;min-height:0}
+.ldct-cinematic__frame{position:relative;display:flex;align-items:center;justify-content:center;min-height:0;width:100%;max-width:1040px;max-height:100%;aspect-ratio:1672/941;flex:0 1 auto;overflow:hidden;background:#06101c;border:1px solid #4a6075;border-radius:9px;box-shadow:0 8px 28px #02061780}
+.ldct-cinematic__image{display:block;width:100%;height:100%;min-height:0;object-fit:contain;object-position:50% 46%;transform-origin:center;will-change:transform}
+.ldct-cinematic--push .ldct-cinematic__image{animation:ldct-cinematic-push 3.6s ease-out 1 both}
+.ldct-cinematic--settle .ldct-cinematic__image{animation:ldct-cinematic-settle 3.8s ease-out 1 both}
+.ldct-cinematic__locked{flex-shrink:0;display:flex;align-items:center;justify-content:center;gap:9px;width:min(100%,1040px);padding:9px 12px;background:#162533f2;border:1px solid #7f7957;border-top:0;border-radius:0 0 8px 8px;color:#f6d88b;line-height:1.4;font-size:15px}
+.ldct-cinematic__locked svg{width:22px;height:22px;flex-shrink:0}
+@keyframes ldct-cinematic-push{from{transform:scale(.965) translateX(-.6%)}to{transform:scale(1) translateX(0)}}
+@keyframes ldct-cinematic-settle{from{transform:scale(1) translateX(0)}to{transform:scale(.975) translateX(.5%)}}
+@media(orientation:portrait){.ldct-cinematic{top:124px;right:10px;left:10px;bottom:calc(var(--ldct-dialog-height,19rem) + 6px)}.ldct-cinematic__frame{max-height:44vh;border-radius:7px}.ldct-cinematic__locked{font-size:12px;padding:7px 8px;gap:6px}.ldct-cinematic__locked svg{width:18px;height:18px}}
+@media(orientation:landscape) and (max-height:520px){.ldct-cinematic{top:66px;right:12px;left:12px;bottom:calc(var(--ldct-dialog-height,8rem) + 5px)}.ldct-cinematic__locked{font-size:11px;padding:3px 8px}.ldct-cinematic__locked svg{width:16px;height:16px}}
+@media(prefers-reduced-motion:reduce){.ldct-cinematic .ldct-cinematic__image{animation:none;transform:none;will-change:auto}}
+.ldct-cinematic{top:var(--ldct-header-height,76px)}

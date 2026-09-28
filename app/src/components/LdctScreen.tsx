@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import type { GameState } from '../game/types'
 import { getLdctProgress, getLdctShelf, getLdctLabDataset, ldctAction, selectLdctStory, openLdctShelf, ldctGiftChoices, ldctItemUnavailable, ldctCanRest } from '../game/ldct-session'
 import { LDCT_BADGES, LDCT_MANUAL, getLdctNode, getLdctChoices } from '../game/ldct'
@@ -15,6 +15,8 @@ import { acceptInput } from '../game/input-gate'
 import { SceneBackground } from './SceneBackground'
 import { LdctLab } from './LdctLab'
 import { LdctSceneMedia } from './LdctSceneMedia'
+import { LdctCinematic } from './LdctCinematic'
+import { getLdctCinematic } from '../game/ldct-cinematics'
 import { useLdctSceneSound } from '../hooks/use-ldct-scene-sound'
 import { ldctSceneCue } from '../game/ldct-presentation'
 import { DialogueStage, DialogueShade, DialogueHeader, DialoguePortrait, DialoguePanel, DialogueChoices, DialogueChoice } from './DialogueScene'
@@ -75,6 +77,23 @@ function LdctStoryScreen({ state, update, onExit, renderText }: Props) {
   const [presentation, setPresentation] = useState(0)
   const sound = useLdctSceneSound()
   const transactionGate = useRef({ until: 0 })
+  const stage = useRef<HTMLDivElement>(null)
+  const cinematic = !legacyOrder && p.phase === 'story' && !p.reply ? getLdctCinematic(p.nodeId) : undefined
+  useLayoutEffect(() => {
+    const root = stage.current
+    const panel = root?.querySelector<HTMLElement>('[data-ldct-dialogue]')
+    const header = root?.querySelector<HTMLElement>(':scope > .absolute.top-0')
+    if (!root || !panel || !cinematic) return
+    const measure = () => {
+      root.style.setProperty('--ldct-dialog-height', `${panel.getBoundingClientRect().height}px`)
+      root.style.setProperty('--ldct-header-height', `${(header?.getBoundingClientRect().height ?? 66) + 8}px`)
+    }
+    measure()
+    const observer = new ResizeObserver(measure)
+    observer.observe(panel)
+    if (header) observer.observe(header)
+    return () => observer.disconnect()
+  }, [cinematic, p.phase])
   const act = (action: Parameters<typeof ldctAction>[1]) => update(s => ldctAction(s, action))
   const interact = (action: Parameters<typeof ldctAction>[1]) => { act(action); void playSfx('click') }
   const close = () => { setOverlay(null); setPresentation(n => n + 1); void playSfx('click') }
@@ -101,7 +120,7 @@ function LdctStoryScreen({ state, update, onExit, renderText }: Props) {
     {legacyOrder && <button className={menuClass} data-ldct-new-order onClick={e => { e.stopPropagation(); ui('replay') }}>新版开场</button>}
     <button className={menuClass} onClick={e => { e.stopPropagation(); onExit() }}>💾 回大厅</button>
   </>
-  return <DialogueStage className="ldct-root" data-ldct-screen data-ldct-node={p.nodeId} data-ldct-phase={p.phase}
+  return <DialogueStage ref={stage} className="ldct-root" data-ldct-screen data-ldct-node={p.nodeId} data-ldct-phase={p.phase}
     onPointerDownCapture={dialogue.guard.pointerDown} onPointerCancelCapture={dialogue.guard.cancel}
     onKeyDownCapture={dialogue.guard.keyDown} onClickCapture={dialogue.guard.click} onClick={dialogue.advance}>
     <SceneBackground name={node.bg} /><DialogueShade />
@@ -126,10 +145,12 @@ function LdctStoryScreen({ state, update, onExit, renderText }: Props) {
         {!p.finished && <button className="ldct-next-part" data-ldct-next-evening onClick={() => act({ type: 'part:next' })}>{legacyOrder ? '第二晚 · 带着昨晚的片子回来' : '第二天 · 看看陆叔的检查'} →</button>}
         <nav className="ldct-menu">{menu}<button data-ldct-replay onClick={() => ui('replay')}>重玩本篇</button></nav>
       </main> : <>
+        {cinematic && <LdctCinematic key={cinematic.id} scene={cinematic} />}
         {!overlay && !p.reply && <LdctSceneMedia key={`${p.run}:${p.nodeId}`} nodeId={p.nodeId} gender={state.gender} muted={sound.muted}
+          hideProp={!!cinematic}
           consumed={p.receipts.includes(`media:${ldctSceneCue(p.nodeId, state.gender)?.id}`)}
           onConsumed={cueId => act({ type: 'media:heard', nodeId: p.nodeId, cueId })} />}
-        {sprite && <DialoguePortrait data-ldct-portrait src={imageAsset(sprite)} alt="" className="pointer-events-none" />}
+        {sprite && !cinematic && <DialoguePortrait data-ldct-portrait src={imageAsset(sprite)} alt="" className="pointer-events-none" />}
         {node.chestPreview && <figure className="ldct-case-preview" data-ldct-case-preview={node.chestPreview}>
           <div role="img" aria-label={node.chestPreview === 'fbp' ? '同次胸部检查的FBP图像，未标注观察答案' : '同份投影的研究重建图像，未标注观察答案'}
             style={{ ...ldctChestFrameStyle(node.chestPreview, 1), backgroundImage: `url("${imageAsset(ldctChestFrame(node.chestPreview, 1).mediaId)}")` }} />

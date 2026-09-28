@@ -7,8 +7,8 @@ import './LdctSceneMedia.css'
 
 /** Key by run/node/reply. Consumption is independent of dialogue advancement;
  * reject, mute, background, unmount and refresh never form an input lock. */
-export function LdctSceneMedia({ nodeId, gender, consumed, onConsumed, muted }: {
-  nodeId: string; gender: 'm' | 'f'; consumed: boolean; onConsumed: (cueId: string) => void; muted: boolean
+export function LdctSceneMedia({ nodeId, gender, consumed, onConsumed, muted, hideProp = false }: {
+  nodeId: string; gender: 'm' | 'f'; consumed: boolean; onConsumed: (cueId: string) => void; muted: boolean; hideProp?: boolean
 }) {
   const cue = ldctSceneCue(nodeId, gender)
   const call = LDCT_SCENE_CALLS[nodeId], prop = LDCT_SCENE_PROPS[nodeId]
@@ -50,7 +50,7 @@ export function LdctSceneMedia({ nodeId, gender, consumed, onConsumed, muted }: 
       </svg>
       <div className="ch2-communication-copy"><strong>{call.contact}</strong><span>{call.status}</span></div>
     </aside>}
-    {prop && <figure className="ldct-story-prop" data-ldct-prop={prop.kind}>
+    {prop && !hideProp && <figure className="ldct-story-prop" data-ldct-prop={prop.kind}>
       {prop.image ? <img src={imageAsset(prop.image)} alt="" className="pixel" /> : <svg viewBox="0 0 96 120" aria-hidden="true" shapeRendering="crispEdges">
         <path d="M18 4h60v110l-6-4-6 4-6-4-6 4-6-4-6 4-6-4-6 4-6-4-6 4z" fill="#dad5bc" stroke="#546373" strokeWidth="3" />
         <path d="M29 23h38M29 34h29M29 50h37M29 58h24M29 71h37M29 80h33M29 93h17" stroke="#526271" strokeWidth="3" />
