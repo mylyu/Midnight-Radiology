@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import type { GameState } from '../game/types'
-import { getLdctProgress, getLdctShelf, ldctAction, selectLdctStory, openLdctShelf, ldctGiftChoices, ldctItemUnavailable, ldctCanRest } from '../game/ldct-session'
+import { getLdctProgress, getLdctShelf, getLdctLabDataset, ldctAction, selectLdctStory, openLdctShelf, ldctGiftChoices, ldctItemUnavailable, ldctCanRest } from '../game/ldct-session'
 import { LDCT_BADGES, LDCT_MANUAL, getLdctNode, getLdctChoices } from '../game/ldct'
 import { LDCT_STORIES } from '../game/ldct-short-stories'
+import { LDCT_FATHER_STORY } from '../game/ldct-father-story'
+import { ldctChestFrame, ldctChestFrameStyle } from '../game/ldct-chest'
 import type { LdctPerson } from '../game/ldct-types'
 import { LDCT_LAB_TITLES, ldctRecordSummary, type LdctLabRound } from '../game/ldct-experiments'
 import { CHARACTERS, SHOP_ITEMS } from '../game/data'
@@ -16,6 +18,7 @@ import { DialogueStage, DialogueShade, DialogueHeader, DialoguePortrait, Dialogu
 import { FullscreenBtn } from './FullscreenButton'
 import { DIALOGUE_CHARACTER_MS, waitForDialogueChoices } from '../game/dialogue-timing'
 import './LdctScreen.css'
+import './LdctFatherStory.css'
 
 type Overlay = 'records' | 'bag' | 'manual' | 'badges' | 'shop' | 'replay'
 type Props = { state: GameState; update: (fn: (state: GameState) => GameState) => void; onExit: () => void; renderText: (text: string, shown?: number) => ReactNode }
@@ -28,24 +31,27 @@ export function LdctScreen(props: Props) {
   const shelf = getLdctShelf(props.state)
   return <DialogueStage className="ldct-root" data-ldct-selector>
     <SceneBackground name="bg_breakroom" /><DialogueShade />
-    <DialogueHeader title="◐ 噪声之外 · 三个短篇"><FullscreenBtn /><button onClick={props.onExit}>💾 回大厅</button></DialogueHeader>
+    <DialogueHeader title="◐ 低剂量CT · 噪声之外"><FullscreenBtn /><button onClick={props.onExit}>💾 回大厅</button></DialogueHeader>
     <main className="ldct-settlement">
-      <p className="text-teal-200">候选试玩 · 分别保存，不串成正史</p>
-      <h1>今晚，先听哪一件事？</h1>
-      <p className="text-slate-300 text-sm">操作沿用主游戏：点场景补全文、继续，停一下再选。实验不必把所有参数试完，也可以请陆舟演示。</p>
-      {LDCT_STORIES.map((story, index) => {
-        const slot = shelf?.slots[story.id]
-        return <section className="ldct-panel" key={story.id}>
-          <h2>{['A', 'B', 'C'][index]} · {story.title}</h2><p>{story.subtitle}</p>
-          <div className="ldct-menu"><button data-ldct-story={story.id} onClick={() => props.update(s => selectLdctStory(s, story.id))}>
-            {slot?.finished ? '查看本篇结尾' : slot ? '继续本篇' : '开始本篇'} →</button>
-            {slot && <small className="text-slate-400 self-center">{slot.finished ? '已完成' : '进度已保存'} · {Object.keys(slot.records).length}/5 次工具体验</small>}
-          </div>
-        </section>
-      })}
-      {shelf?.legacy && <details className="ldct-panel"><summary>旧四段版记录已保留</summary>
-        <p>旧游标、选择和实验记录留存在本机，没有把旧经历强行改写成新故事；已获得的属性、物品、勋章不变。</p>
-        <p>旧进度：{shelf.legacy.finished ? '已结束' : '未结束'} · {Object.keys(shelf.legacy.records ?? {}).length} 份复习记录 · {Object.keys(shelf.legacy.researchRecords ?? {}).length} 份旧研究记录。</p>
+      <p className="text-teal-200">第二章之后 · 两个晚上，一顿没吃成的饭</p>
+      <h1>{LDCT_FATHER_STORY.title}</h1>
+      <section className="ldct-panel">
+        <p>陆舟说约饭，带来的却还有他爸。叔叔觉得自己没病，也不想挨辐射。等终于拿到片子，陆舟脸上的笑又没了。</p>
+        <p className="text-slate-300 text-sm">点场景补全文、继续，停一下再选。遇到电脑时跟着当前提示试一下，也可以叫陆舟一起看。</p>
+        <div className="ldct-menu"><button data-ldct-story="father" onClick={() => props.update(s => selectLdctStory(s, 'father'))}>
+          {shelf?.slots.father?.finished ? '回看故事结尾' : shelf?.slots.father ? '继续这顿没吃完的饭' : '去赴约'} →</button>
+          {shelf?.slots.father && <small className="text-slate-400 self-center">进度已保存 · 随时可以回来</small>}
+        </div>
+      </section>
+      {(shelf?.legacy || LDCT_STORIES.some(story => shelf?.slots[story.id])) && <details className="ldct-panel" data-ldct-archives>
+        <summary>历史试玩记录（只读）</summary>
+        <p>旧稿的选择与结果仍留在本机，不会变成这次父亲的经历。已获得的属性、物品和勋章保留。</p>
+        {LDCT_STORIES.map(story => { const old = shelf?.slots[story.id]; return old && <section key={story.id}>
+          <h3>{story.title} · {old.finished ? '已结束' : '未结束'}</h3>
+          <p>{Object.values(old.records ?? {}).map(record => record && ldctRecordSummary(record)).filter(Boolean).join('；') || '尚无实验记录'}</p>
+          <details><summary>查看当时选择与游标</summary><pre className="ldct-json">{JSON.stringify({ node: old.nodeId, decisions: old.decisions }, null, 2)}</pre></details>
+        </section> })}
+        {shelf?.legacy && <p>旧四段版：{shelf.legacy.finished ? '已结束' : '未结束'}，{Object.keys(shelf.legacy.records ?? {}).length} 份复习记录、{Object.keys(shelf.legacy.researchRecords ?? {}).length} 份研究记录。</p>}
       </details>}
     </main>
   </DialogueStage>
@@ -55,7 +61,7 @@ export function LdctScreen(props: Props) {
 function LdctStoryScreen({ state, update, onExit, renderText }: Props) {
   const p = getLdctProgress(state)!
   const node = getLdctNode(state)
-  const story = LDCT_STORIES.find(entry => entry.id === p.storyId)!
+  const story = LDCT_FATHER_STORY
   const [overlay, setOverlay] = useState<Overlay | null>(null)
   const [presentation, setPresentation] = useState(0)
   const transactionGate = useRef({ until: 0 })
@@ -78,36 +84,42 @@ function LdctStoryScreen({ state, update, onExit, renderText }: Props) {
     <button className={menuClass} onClick={e => { e.stopPropagation(); ui('bag') }}>🎒 背包</button>
     <button className={menuClass} onClick={e => { e.stopPropagation(); ui('manual') }}>📖 手册</button>
     <button className={menuClass} onClick={e => { e.stopPropagation(); ui('badges') }}>🏅 勋章</button>
-    {(settled || node.kind === 'hub') && <button className={menuClass} onClick={e => { e.stopPropagation(); ui('shop') }}>🛒 小卖部</button>}
+    {((settled && !p.finished) || node.kind === 'hub') && <button className={menuClass} onClick={e => { e.stopPropagation(); ui('shop') }}>🛒 小卖部</button>}
     <FullscreenBtn />
-    <button className={menuClass} data-ldct-switch onClick={e => { e.stopPropagation(); update(openLdctShelf) }}>换个故事</button>
+    <button className={menuClass} data-ldct-switch onClick={e => { e.stopPropagation(); update(openLdctShelf) }}>本篇入口</button>
     <button className={menuClass} onClick={e => { e.stopPropagation(); onExit() }}>💾 回大厅</button>
   </>
   return <DialogueStage className="ldct-root" data-ldct-screen data-ldct-node={p.nodeId} data-ldct-phase={p.phase}
     onPointerDownCapture={dialogue.guard.pointerDown} onPointerCancelCapture={dialogue.guard.cancel}
     onKeyDownCapture={dialogue.guard.keyDown} onClickCapture={dialogue.guard.click} onClick={dialogue.advance}>
     <SceneBackground name={node.bg} /><DialogueShade />
-    <DialogueHeader title={`◐ ${story.title}`}><span>💰 {state.gold}</span>{menu}</DialogueHeader>
+    <DialogueHeader title={`◐ 噪声之外 · ${p.finished ? '饭还热着' : node.part === 2 ? '第二晚' : node.part === 3 ? '几周后' : '第一晚'}`}><span>💰 {state.gold}</span>{menu}</DialogueHeader>
     {p.phase === 'lab' ? <div className="ldct-lab-wrap" onClick={e => e.stopPropagation()}>
       <LdctLab key={`${p.storyId}:${p.labRound}:${p.labReturn ?? 'live'}`} round={p.labRound} value={p.labDraft}
-        dataset={story.dataset} goal={node.goal} concealTruth={p.storyId === 'dinner' && !p.finished}
+        dataset={getLdctLabDataset(state)} goal={node.goal}
         onChange={value => act({ type: 'lab:update', value })}
         onSubmit={record => act({ type: 'lab:submit', record })}
         onBack={() => act({ type: 'lab:close' })} /></div>
       : settled ? <main className="ldct-settlement" data-ldct-settlement onClick={e => e.stopPropagation()}>
-        <p className="text-teal-200 text-sm">候选短篇 · 本篇完</p><h1>{story.title}</h1>
+        <p className="text-teal-200 text-sm">{p.finished ? '本篇完 · 后面的复查，叔叔自己记着了' : '第一晚 · 先歇一歇'}</p><h1>{p.finished ? '这顿饭，终于吃上了' : '电脑留在这里，明晚接着看'}</h1>
         <p className="text-slate-300 text-sm">{node.text}</p>
         <div className="ldct-metrics">{(Object.keys(icons) as (keyof typeof icons)[]).map(key => <section key={key}>
           <small>{icons[key]}</small><p>{state[key]} <span className="text-xs text-teal-200">本次开始以来 {state[key] - p.start[key] >= 0 ? '+' : ''}{state[key] - p.start[key]}</span></p>
         </section>)}</div>
-        <section className="ldct-panel"><h2>桌上的电脑 · {Object.keys(p.records).length} 次工具体验</h2>
-          <p>记录和选择已保存。可以回看图像，也可以换一篇；学习奖励在三个候选间只发一次。</p>
+        <section className="ldct-panel"><h2>桌上的电脑 · 记录已保存</h2>
+          <p>{p.finished ? '图像和当时的选择都留着。可以回看，不再重复发放学习奖励。' : '不会自动跳到明晚。可以买点吃的带着，再回来继续；送东西要等陆舟在场。'}</p>
           <p className="text-amber-200">🎒 {state.items.length ? state.items.map(itemName).join('、') : '背包暂空'}</p>
           <p>已经买的东西保留。送礼要等到同事在场的闲聊里，不在这里统一结算。</p>
         </section>
+        {!p.finished && <button className="ldct-next-part" data-ldct-next-evening onClick={() => act({ type: 'part:next' })}>第二晚 · 带着昨晚的片子回来 →</button>}
         <nav className="ldct-menu">{menu}<button data-ldct-replay onClick={() => ui('replay')}>重玩本篇</button></nav>
       </main> : <>
         {sprite && <DialoguePortrait data-ldct-portrait src={imageAsset(sprite)} alt="" className="pointer-events-none" />}
+        {node.chestPreview && <figure className="ldct-case-preview" data-ldct-case-preview={node.chestPreview}>
+          <div role="img" aria-label={node.chestPreview === 'fbp' ? '同次胸部检查的FBP图像，未标注观察答案' : '同份投影的研究重建图像，未标注观察答案'}
+            style={{ ...ldctChestFrameStyle(node.chestPreview, 1), backgroundImage: `url("${imageAsset(ldctChestFrame(node.chestPreview, 1).mediaId)}")` }} />
+          <figcaption>{node.chestPreview === 'fbp' ? '同次数据 · FBP' : '同次数据 · 研究重建'}</figcaption>
+        </figure>}
         {dialogue.panel}
       </>}
     {overlay && <LdctModal title={{ records: '这篇的实验记录', bag: '背包用途', manual: '随手记 · 不急着读', badges: '噪声之外 · 勋章', shop: '小卖部', replay: '重玩本篇' }[overlay]} onClose={close}>
@@ -135,7 +147,7 @@ function LdctStoryScreen({ state, update, onExit, renderText }: Props) {
           </article>
         })}
       </div>}
-      {overlay === 'replay' && <><p>只清除《{story.title}》的游标、选择和实验记录。其他两篇、旧版记录及主游戏不动；金币、累计属性和物品保留，已发学习奖励不再发。</p>
+      {overlay === 'replay' && <><p>只清除《{story.title}》这一次的游标、选择和实验记录。历史试玩、主游戏及其他DLC不动；金币、累计属性和物品保留，已发学习奖励不再发。</p>
         <button className="mt-4" onClick={() => { update(s => selectLdctStory(s, story.id, true)); close() }}>确认重玩本篇</button></>}
     </LdctModal>}
   </DialogueStage>

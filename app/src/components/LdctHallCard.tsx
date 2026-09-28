@@ -15,12 +15,12 @@ export function LdctHallCard({ state, onEnter }: { state: GameState; onEnter: ()
   return <section data-ldct-entry className="bg-slate-900/90 border-2 border-cyan-700 rounded-2xl p-5 flex flex-col gap-3">
     <div className="flex items-center gap-3"><span className="text-3xl">{open ? '◐' : '🔒'}</span><div>
       <h3 className="text-lg text-cyan-100 font-bold">低剂量CT：噪声之外</h3>
-      <p className="text-xs text-slate-400">三个候选短篇 · 分别试玩 · 独立加载</p>
+      <p className="text-xs text-slate-400">这顿饭，等片子看清了再吃 · 两晚短篇</p>
     </div></div>
-    <p className="text-sm text-slate-300 leading-relaxed">夜里的模体像张脸，一顿饭成了赌注，或者一句话惹恼了家属。选一篇，看看陆舟这次怎么收场。</p>
-    <p className="text-xs text-amber-200/80">时间在第二章之后、第三章之前；无需通关解锁。三个候选不串成正史，进度分别保存。</p>
+    <p className="text-sm text-slate-300 leading-relaxed">陆舟终于劝动怕辐射的父亲来检查，片子却让两人犯了难。没有开通的重建按钮，一份原始投影，还有总说自己没事的老爸。</p>
+    <p className="text-xs text-amber-200/80">时间在第二章之后、第三章之前；无需通关解锁。独立加载与存档，历史试玩记录保留。</p>
     {open ? <button className="min-h-11 rounded-lg bg-cyan-700 px-4 py-2 text-white" onClick={onEnter}>
-      {p?.active ? '继续本篇 / 换个故事' : '选择一个短篇'}
+      {p?.slots.father ? '继续这顿没吃完的饭' : '去赴约'}
     </button> : <form className="flex gap-2" onSubmit={event => { event.preventDefault(); unlock() }}>
       <input aria-label="低剂量CT访问码" autoComplete="off" value={code} onChange={e => { setCode(e.target.value); setError(false) }} placeholder="输入访问码"
         className="min-w-0 flex-1 rounded-lg bg-slate-800 border border-slate-600 px-3 py-2" />

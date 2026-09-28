@@ -1,6 +1,6 @@
 import { createLdctLabState, createLdctRecord, isValidLdctRecord, labStateValid } from './ldct-experiments'
 import { getLdctChoices, getLdctNode, LDCT_STEPS } from './ldct'
-import { LDCT_STORIES, LDCT_STORY_LAB_RETURNS, type LdctStoryId } from './ldct-short-stories'
+import { LDCT_FATHER_STORY, LDCT_FATHER_LAB_RETURNS, LDCT_FATHER_LAB_DATASETS, LDCT_NEXT_EVENING } from './ldct-father-story'
 import type { LdctAction, LdctPerson, LdctProduct, LdctProgress, LdctStoryShelf } from './ldct-types'
 import type { GameState } from './types'
 
@@ -10,7 +10,10 @@ export function getLdctShelf(state: GameState): LdctStoryShelf | undefined {
 }
 export function getLdctProgress(state: GameState): LdctProgress | undefined {
   const shelf = getLdctShelf(state)
-  return shelf?.active ? shelf.slots[shelf.active] : undefined
+  return shelf?.version === 2 && shelf.active === 'father' ? shelf.slots.father : undefined
+}
+export function getLdctLabDataset(state: GameState): 'phantom' | 'chest' {
+  return LDCT_FATHER_LAB_DATASETS[getLdctProgress(state)?.labRound ?? 1]
 }
 function withShelf(state: GameState, shelf: LdctStoryShelf): GameState {
   return { ...state, dlc: { ...state.dlc, ldct: { ...state.dlc?.ldct, ldctStories: shelf } } }
@@ -23,18 +26,19 @@ function patch(state: GameState, p: LdctProgress): GameState {
 }
 export function initializeLdct(state: GameState, replay = false): GameState {
   const shelf = getLdctShelf(state)
-  if (shelf) return replay && shelf.active ? selectLdctStory(state, shelf.active, true) : state
+  if (shelf?.version === 2) return replay && shelf.active === 'father' ? selectLdctStory(state, 'father', true) : state
   const legacy = state.dlc?.ldct?.ldct
-  return withShelf(state, { version: 1, slots: {}, legacy,
-    receipts: (legacy?.receipts ?? []).filter(id => id === 'reward:comparison' || id === 'reward:records'), experienced: [] })
+  return withShelf(state, { ...shelf, version: 2, active: undefined, slots: shelf?.slots ?? {}, legacy: shelf?.legacy ?? (shelf ? undefined : legacy),
+    receipts: shelf?.receipts ?? (legacy?.receipts ?? []).filter(id => id === 'reward:comparison' || id === 'reward:records'),
+    experienced: shelf?.experienced ?? [] })
 }
-export function selectLdctStory(state: GameState, id: LdctStoryId, replay = false): GameState {
-  const story = LDCT_STORIES.find(entry => entry.id === id)
-  if (!story) return state
+export function selectLdctStory(state: GameState, id: LdctStoryShelf['active'], replay = false): GameState {
+  if (id !== 'father') return state
+  const story = LDCT_FATHER_STORY
   state = initializeLdct(state)
   const previous = getLdctShelf(state)!.slots[id]
   if (previous && !replay) return patch(state, previous)
-  return patch(state, { version: 1, openingRevision: 3, storyId: id, run: (previous?.run ?? 0) + 1,
+  return patch(state, { version: 1, openingRevision: 4, storyId: id, run: (previous?.run ?? 0) + 1,
     seed: 2258, phase: 'story', nodeId: story.start, revision: 0, fatigue: 2, completed: [],
     decisions: {}, receipts: [], gifts: [], labRound: 1, labDraft: createLdctLabState(1), records: {},
     start: { gold: state.gold, skill: state.skill, heart: state.heart, wealth: state.wealth } })
@@ -48,9 +52,9 @@ function changed(p: LdctProgress, fields: Partial<LdctProgress>): LdctProgress {
 }
 function move(state: GameState, p: LdctProgress, id: string): GameState {
   const node = LDCT_STEPS[id]
-  if (!node || !p.storyId || !id.startsWith(LDCT_STORIES.find(s => s.id === p.storyId)!.start.slice(0, 3))) return state
+  if (!node || p.storyId !== 'father' || !id.startsWith('lf_')) return state
   if (node.enterLab) return patch(state, changed(p, { nodeId: id, phase: 'lab', reply: undefined,
-    labRound: node.enterLab, labDraft: p.labRound === node.enterLab ? p.labDraft : createLdctLabState(node.enterLab), labReturn: undefined }))
+    labRound: node.enterLab, labDraft: p.labRound === node.enterLab ? p.labDraft : createLdctLabState(node.enterLab, node.labDataset ?? 'phantom'), labReturn: undefined }))
   const finished = node.storyEnd || p.finished
   const next = node.storyEnd && !state.badges.includes('ldct_noise_beyond')
     ? { ...state, badges: [...state.badges, 'ldct_noise_beyond'] } : state
@@ -66,9 +70,11 @@ export const LDCT_PRODUCTS = [
 ]
 export function ldctItemUnavailable(state: GameState, item: LdctProduct): string | undefined {
   const p = getLdctProgress(state)
-  if (!p) return '选择故事后再来看看'
-  if (p.finished) return '本篇送礼和休息已结束；已有库存保留，换一篇遇到同事时再用'
-  if (p.phase !== 'story' || getLdctNode(state).kind !== 'hub' || p.reply) return '先聊完，休息时再买'
+  if (!p) return '开始故事后再来看看'
+  if (p.finished) return '本篇送礼和休息已结束；已有库存保留'
+  const betweenNights = p.phase === 'settle' && p.nodeId === 'lf_night1_end'
+  if (betweenNights && item === 'coffee') return '明晚休息时再喝'
+  if (!betweenNights && (p.phase !== 'story' || getLdctNode(state).kind !== 'hub' || p.reply)) return '先聊完，休息时再买'
   if (item === 'coffee') return p.receipts.includes('coffee') ? '已经喝过一杯了，留点时间睡觉' : undefined
   if (state.items.includes(item)) return '背包里还有，先送出去再买'
   return undefined
@@ -93,8 +99,7 @@ export function ldctCanRest(state: GameState) {
 }
 export function ldctAction(state: GameState, action: LdctAction): GameState {
   const p = getLdctProgress(state)
-  if (!p?.storyId) return state
-  const story = LDCT_STORIES.find(entry => entry.id === p.storyId)!
+  if (p?.storyId !== 'father') return state
   if (action.type === 'reply:close') return p.reply ? patch(state, changed(p, { reply: undefined })) : state
   if (action.type === 'advance' || action.type === 'choose') {
     if (p.phase !== 'story' || p.reply || action.nodeId !== p.nodeId) return state
@@ -118,7 +123,7 @@ export function ldctAction(state: GameState, action: LdctAction): GameState {
   }
   if (action.type === 'lab:submit') {
     if (p.phase !== 'lab' || !isValidLdctRecord(action.record, p.labRound)) return state
-    const expected = createLdctRecord({ ...p.labDraft, helped: action.record.helped }, p.labRound, action.record.verdict, story.dataset)
+    const expected = createLdctRecord({ ...p.labDraft, helped: action.record.helped }, p.labRound, action.record.verdict, getLdctLabDataset(state))
     if (!expected || JSON.stringify(expected) !== JSON.stringify(action.record)) return state
     const shelf = getLdctShelf(state)!
     const first = !shelf.receipts.includes('reward:comparison')
@@ -129,12 +134,12 @@ export function ldctAction(state: GameState, action: LdctAction): GameState {
     if (first) next = { ...next, skill: next.skill + 1, badges: next.badges.includes('ldct_first_comparison') ? next.badges : [...next.badges, 'ldct_first_comparison'] }
     if (organized) next = { ...next, wealth: next.wealth + 1 }
     const progress = { ...p, records: { ...p.records, [p.labRound]: action.record } }
-    return move(next, { ...progress, labReturn: undefined }, p.labReturn ?? LDCT_STORY_LAB_RETURNS[p.storyId][p.labRound])
+    return move(next, { ...progress, labReturn: undefined }, p.labReturn ?? LDCT_FATHER_LAB_RETURNS[p.labRound])
   }
   if (action.type === 'lab:open') {
     if (p.phase !== 'settle' || !p.records[action.round]) return state
     const record = p.records[action.round]!
-    const draft = { ...createLdctLabState(action.round), ...record, saved: null }
+    const draft = { ...createLdctLabState(action.round, LDCT_FATHER_LAB_DATASETS[action.round]), ...record, saved: null }
     return patch(state, changed(p, { phase: 'lab', labRound: action.round, labDraft: draft, labReturn: p.nodeId }))
   }
   if (action.type === 'lab:close') {
@@ -161,6 +166,10 @@ export function ldctAction(state: GameState, action: LdctAction): GameState {
     if (!ldctCanRest(state)) return state
     return patch(state, changed(p, { fatigue: Math.max(0, p.fatigue - 1), completed: [...p.completed, 'rest'],
       reply: { nodeId: p.nodeId, speaker: 'me', text: '我往椅背上一靠。陆舟也没说话，给水壶按了个重烧。' } }))
+  }
+  if (action.type === 'part:next') {
+    if (p.phase !== 'settle' || p.nodeId !== 'lf_night1_end' || p.finished) return state
+    return move(state, { ...p, fatigue: 2, partStart: { gold: state.gold, skill: state.skill, heart: state.heart, wealth: state.wealth } }, LDCT_NEXT_EVENING)
   }
   // Old research actions cannot reach a deleted workbench or mutate archived saves.
   return state

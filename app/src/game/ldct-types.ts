@@ -7,8 +7,8 @@ export type LdctProduct = 'coffee' | 'milktea' | 'snack'
 export interface LdctProgress {
   version: 1
   /** Content migration is separate from cross-chapter save version. */
-  openingRevision?: 2 | 3
-  storyId?: 'face' | 'dinner' | 'patient'
+  openingRevision?: 2 | 3 | 4
+  storyId?: 'face' | 'dinner' | 'patient' | 'father'
   run: number
   seed: 2258
   phase: 'story' | 'lab' | 'research' | 'settle'
@@ -58,6 +58,8 @@ export interface LdctNode {
   giftPerson?: LdctPerson
   complete?: string
   enterLab?: LdctLabRound
+  labDataset?: 'phantom' | 'chest'
+  chestPreview?: 'fbp' | 'iteration:4'
   settle?: boolean
   part?: 1 | 2 | 3 | 4
   enterResearch?: LdctResearchStage
@@ -66,11 +68,11 @@ export interface LdctNode {
   goal?: string
 }
 
-/** Three alternative drafts, never three successive canonical events. */
+/** Version 2 selects only father; previous candidates remain read-only archives. */
 export interface LdctStoryShelf {
-  version: 1
-  active?: 'face' | 'dinner' | 'patient'
-  slots: Partial<Record<'face' | 'dinner' | 'patient', LdctProgress>>
+  version: 1 | 2
+  active?: 'face' | 'dinner' | 'patient' | 'father'
+  slots: Partial<Record<'face' | 'dinner' | 'patient' | 'father', LdctProgress>>
   legacy?: LdctProgress
   /** Learning awards are shared across drafts and replays; purchases are not. */
   receipts: string[]

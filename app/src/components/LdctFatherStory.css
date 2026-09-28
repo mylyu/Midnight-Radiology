@@ -1,0 +1,6 @@
+/* Story-specific framing, never overrides shared dialogue or portrait sizing. */
+.ldct-case-preview{position:absolute;top:82px;left:50%;transform:translateX(-50%);width:min(35vh,300px);z-index:10;margin:0;border:1px solid #64748b;background:#020617e8;border-radius:10px;padding:8px;pointer-events:none}
+.ldct-case-preview>div{width:100%;aspect-ratio:1;background-repeat:no-repeat}
+.ldct-case-preview figcaption{font-size:12px;text-align:center;line-height:1.5;color:#cbd5e1;padding-top:6px}
+@media(orientation:portrait){.ldct-case-preview{top:115px;width:min(61vw,29vh)}}
+@media(orientation:landscape) and (max-height:520px){.ldct-case-preview{top:70px;left:20%;width:min(45vh,180px)}}

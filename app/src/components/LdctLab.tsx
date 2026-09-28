@@ -3,13 +3,14 @@ import type { CSSProperties, PointerEvent, ReactNode } from 'react'
 import { imageAsset } from '../lib/image-assets'
 import { playSfx } from '../game/store'
 import {
-  createLdctRecord, ldctExperimentReady, LDCT_FILTER_LABELS, LDCT_FILTER_OPTIONS, LDCT_LAB_STAGES, LDCT_LAB_TITLES,
+  createLdctRecord, createLdctChestDraft, ldctExperimentReady, LDCT_FILTER_LABELS, LDCT_FILTER_OPTIONS, LDCT_LAB_STAGES, LDCT_LAB_TITLES,
   type LdctDataset, type LdctLabRecord, type LdctLabRound, type LdctLabState,
 } from '../game/ldct-experiments'
 import {
   detectorPath, detectorPosition, getLdctDatasetStructures, LDCT_BP_COUNTS, LDCT_ITERATIONS,
-  LDCT_DATASET_MEDIA_IDS, ldctProjectionFrameStyle,
+  LDCT_DATASET_MEDIA_IDS, ldctProjectionFrameStyle, type LdctDataset as ProjectionDataset,
 } from '../game/ldct-projections'
+import { ldctChestFrame, ldctChestFrameStyle, LDCT_CHEST_ITERATIONS } from '../game/ldct-chest'
 import { LdctScannerGeometry } from './LdctScannerGeometry'
 import { LdctFilterResponse } from './LdctFilterResponse'
 import './LdctLab.css'
@@ -28,7 +29,7 @@ type Controls = {
   value: LdctLabState
   change: (patch: Partial<LdctLabState>) => void
   choose: (patch: Partial<LdctLabState>) => void
-  dataset: LdctDataset
+  dataset: ProjectionDataset
   concealTruth: boolean
 }
 const addSeen = <T,>(list: T[], value: T) => list.includes(value) ? list : [...list, value]
@@ -46,7 +47,7 @@ function Guidance({ round, goal, concealTruth }: { round: LdctLabRound; goal?: s
     <p>{hints[round][1]}</p>
   </details>
 }
-function Frame({ frame, dataset, style }: { frame: string; dataset: LdctDataset; style?: CSSProperties }) {
+function Frame({ frame, dataset, style }: { frame: string; dataset: ProjectionDataset; style?: CSSProperties }) {
   return <div className="ldct-lab__frame" data-frame={frame} data-dataset={dataset} style={{
     ...ldctProjectionFrameStyle(frame, dataset), backgroundImage: `url("${imageAsset(LDCT_DATASET_MEDIA_IDS[dataset])}")`, ...style,
   }} />
@@ -67,7 +68,7 @@ function Reference({ dataset, concealTruth }: Pick<Controls, 'dataset' | 'concea
   </div>
 }
 /** Same split control for complete images and measured/predicted projections. */
-function Split({ left, right, divider, onChange, dataset }: { left: string; right: string; divider: number; onChange: (divider: number) => void; dataset: LdctDataset }) {
+function Split({ left, right, divider, onChange, dataset }: { left: string; right: string; divider: number; onChange: (divider: number) => void; dataset: ProjectionDataset }) {
   const box = useRef<HTMLDivElement>(null)
   const dragging = useRef(false)
   const move = (event: PointerEvent<HTMLElement>) => {
@@ -187,6 +188,100 @@ function Iterate({ value, change, choose, dataset, concealTruth }: Controls) {
       <p>同一份测量继续算，不是重扫。轮数更多，也不保证临床结果更好。</p></details>
   </>
 }
+
+/** No truth frame or answer region is rendered here. A mark belongs to the player, not a grader. */
+function ChestFrame({ frame, slice }: { frame: string; slice: 0 | 1 | 2 }) {
+  const item = ldctChestFrame(frame, slice)
+  return <div className="ldct-lab__frame" data-frame={frame} data-slice={slice} data-dataset="chest" style={{
+    ...ldctChestFrameStyle(frame, slice), backgroundImage: `url("${imageAsset(item.mediaId)}")`,
+  }} />
+}
+
+function ChestIterate({ value, choose }: Pick<Controls, 'value' | 'choose'>) {
+  const chest = value.chest ?? createLdctChestDraft()
+  const [showPinned, setShowPinned] = useState(false)
+  const [marking, setMarking] = useState(false)
+  const [showResidual, setShowResidual] = useState(false)
+  const pressOrigin = useRef<{ x: number; y: number } | null>(null)
+  const pinned = showPinned && !chest.compareFbp ? chest.pinned : null
+  const slice = pinned?.slice ?? chest.slice
+  const step = pinned?.iterationStep ?? value.iterationStep
+  const count = LDCT_CHEST_ITERATIONS[step]
+  const method = chest.compareFbp ? 'fbp' : 'iteration'
+  const frame = chest.compareFbp ? 'fbp' : `iteration:${count}`
+  const displayedMark = chest.mark?.slice === slice ? chest.mark : null
+  const setChest = (patch: Partial<typeof chest>) => choose({ chest: { ...chest, ...patch } })
+  const jump = (next: number) => {
+    setShowPinned(false); setMarking(false)
+    choose({ iterationStep: next, seenIterations: addSeen(value.seenIterations, next), chest: { ...chest, compareFbp: false } })
+  }
+  const markAt = (x: number, y: number) => {
+    setChest({ mark: { x: Math.round(clamp(x, 0, 100)), y: Math.round(clamp(y, 0, 100)), slice, iterationStep: step, method } })
+    setMarking(false)
+  }
+  return <div className="ldct-chest" data-testid="ldct-chest-iterate">
+    <div className="ldct-chest__work">
+      <figure className="ldct-lab__tile ldct-chest__main">
+        <figcaption>{chest.compareFbp ? '同份数据 · 原FBP' : `${pinned ? '已固定' : '当前'} · ${count === 0 ? '迭代初始估计' : `第${count}轮`}`}<span>相邻层 {slice + 1}/3</span></figcaption>
+        <div className={`ldct-lab__image ldct-chest__canvas${marking ? ' is-marking' : ''}`}
+          role={marking ? 'button' : undefined} tabIndex={marking ? 0 : undefined}
+          aria-label={marking ? '点击想请医师核查的位置；键盘回车留在图心，方向键可移动已有标记' : undefined}
+          onPointerDown={event => { if (marking) pressOrigin.current = { x: event.clientX, y: event.clientY } }}
+          onPointerCancel={() => { pressOrigin.current = null }}
+          onPointerUp={event => {
+            const origin = pressOrigin.current; pressOrigin.current = null
+            if (!marking || !origin || Math.hypot(event.clientX - origin.x, event.clientY - origin.y) > 10) return
+            const rect = event.currentTarget.getBoundingClientRect()
+            markAt((event.clientX - rect.left) / rect.width * 100, (event.clientY - rect.top) / rect.height * 100)
+          }}
+          onKeyDown={event => {
+            if (!marking || event.repeat) return
+            if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); markAt(displayedMark?.x ?? 50, displayedMark?.y ?? 50) }
+            if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) {
+              event.preventDefault()
+              const x = (displayedMark?.x ?? 50) + (event.key === 'ArrowLeft' ? -5 : event.key === 'ArrowRight' ? 5 : 0)
+              const y = (displayedMark?.y ?? 50) + (event.key === 'ArrowUp' ? -5 : event.key === 'ArrowDown' ? 5 : 0)
+              setChest({ mark: { x: clamp(x, 0, 100), y: clamp(y, 0, 100), slice, iterationStep: step, method } })
+            }
+          }}>
+          <ChestFrame frame={frame} slice={slice} />
+          {displayedMark && <span className="ldct-chest__mark" style={{ left: `${displayedMark.x}%`, top: `${displayedMark.y}%` }} aria-label="你标记的待核查位置" />}
+          {marking && <span className="ldct-chest__mark-prompt">点一个想一起看的地方</span>}
+        </div>
+        <div className="ldct-chest__slices" aria-label="翻看相邻断层">{([0, 1, 2] as const).map(next => <button key={next} aria-pressed={slice === next}
+          onClick={() => { setShowPinned(false); setMarking(false); setChest({ slice: next }) }}>{next === 0 ? '上一层' : next === 1 ? '中间层' : '下一层'}</button>)}</div>
+      </figure>
+      <div className="ldct-chest__controls">
+        <button className="ldct-lab__primary ldct-chest__next" disabled={value.iterationStep === LDCT_CHEST_ITERATIONS.length - 1}
+          onClick={() => jump(value.iterationStep + 1)}>{value.iterationStep === 0 ? '用原数据改第一轮 →' : value.iterationStep === LDCT_CHEST_ITERATIONS.length - 1 ? '已到第8轮，可以往回比较' : `再改到第${LDCT_CHEST_ITERATIONS[value.iterationStep + 1]}轮 →`}</button>
+        <div className="ldct-lab__chips ldct-chest__versions" aria-label="切换迭代版本">{LDCT_CHEST_ITERATIONS.map((n, i) => <button key={n} aria-pressed={!pinned && !chest.compareFbp && value.iterationStep === i}
+          onClick={() => jump(i)}>{n === 0 ? '初始' : `${n}轮`}</button>)}</div>
+        <div className="ldct-chest__compare-controls">
+          <button disabled={chest.compareFbp || value.iterationStep === 0} onClick={() => {
+            setShowPinned(false); setChest({ pinned: { slice, iterationStep: step }, compareFbp: false })
+          }}>固定这一版</button>
+          <button aria-pressed={chest.compareFbp} onClick={() => { setShowPinned(false); setMarking(false); setChest({ compareFbp: !chest.compareFbp }) }}>{chest.compareFbp ? '回到迭代图' : '回看原FBP'}</button>
+          {chest.pinned && <button aria-pressed={Boolean(pinned)} onClick={() => {
+            setShowPinned(!pinned); setMarking(false)
+            if (chest.compareFbp) setChest({ compareFbp: false })
+          }}>{pinned ? '回到当前版' : `看看固定的${LDCT_CHEST_ITERATIONS[chest.pinned.iterationStep]}轮 · 第${chest.pinned.slice + 1}层`}</button>}
+        </div>
+        <button className="ldct-chest__mark-button" aria-pressed={marking} onClick={() => setMarking(!marking)}>{marking ? '暂时不标，继续看看' : '点出想请医生核查的位置'}</button>
+        {chest.mark && <p className="ldct-chest__note" aria-live="polite">待核查标记：第{chest.mark.slice + 1}层 · {chest.mark.method === 'fbp' ? 'FBP' : `${LDCT_CHEST_ITERATIONS[chest.mark.iterationStep]}轮`}。<button onClick={() => setChest({ mark: null })}>去掉标记</button></p>}
+        <p className="ldct-chest__note">这三张是同次数据的相邻层，没有再扫描。可以只看，也可以直接请人一起看。</p>
+      </div>
+    </div>
+    <details className="ldct-lab__extra ldct-chest__process"><summary>这一轮在比较什么？</summary>
+      <div className="ldct-lab__process"><span>当前估计</span><b>→</b><span>算投影</span><b>→</b><span>和原投影比较</span><b>→</b><span>改图 ↩</span></div>
+      <div className="ldct-lab__pair">
+        <Tile label={`原数据投影 · 第${slice + 1}层`}><ChestFrame frame="sinogram" slice={slice} /></Tile>
+        <Tile label={showResidual ? `迭代${count}轮 · 投影差异` : `迭代${count}轮的预测投影`}><ChestFrame frame={`${showResidual ? 'residual' : 'forward'}:${count}`} slice={slice} /></Tile>
+      </div>
+      <button aria-pressed={showResidual} onClick={() => { setShowResidual(!showResidual); void playSfx('click') }}>{showResidual ? '看预测投影' : '看两份投影的差别'}</button>
+      {showResidual && <p>差异增强显示，各层各轮使用同一尺度；差异更小不等于所有细节更好。</p>}
+    </details>
+  </div>
+}
 /** One action and one continuation; story/session owns the atomic record receipt. */
 export function LdctLab({ round, value, onChange, onSubmit, onBack, dataset = 'phantom', goal, concealTruth = false }: LdctLabProps) {
   const [openedAt] = useState(() => performance.now())
@@ -213,10 +308,11 @@ export function LdctLab({ round, value, onChange, onSubmit, onBack, dataset = 'p
     onPointerDownCapture={() => { const now = performance.now(); pointerReady.current = now - openedAt >= 900 && now - lastClick.current >= 300 }}
     onClickCapture={() => { const now = performance.now(); canSubmit.current = now - openedAt >= 900 && now - lastClick.current >= 300; lastClick.current = now }}
     onClick={event => event.stopPropagation()} onKeyDownCapture={event => { if (event.repeat && (event.key === 'Enter' || event.key === ' ')) event.preventDefault() }}>
-    <header className="ldct-lab__header"><div><span className="ldct-lab__eyebrow">数字模体 · 同一份投影</span><h2>{LDCT_LAB_TITLES[round]}</h2></div>
+    <header className="ldct-lab__header"><div><span className="ldct-lab__eyebrow">{dataset === 'chest' ? '同次数据 · 不重新扫描' : '数字模体 · 同一份投影'}</span><h2>{dataset === 'chest' ? '把这一版留住，再看一眼' : LDCT_LAB_TITLES[round]}</h2></div>
       {onBack && <button className="ldct-lab__quiet" onClick={() => { onBack(); void playSfx('click') }}>先放一放</button>}</header>
-    <Guidance round={round} goal={goal} concealTruth={concealTruth} />
-    <Tool value={value} change={change} choose={choose} dataset={dataset} concealTruth={concealTruth} />
+    {dataset === 'chest'
+      ? <><p className="ldct-chest__goal">{goal || '改一轮看看；拿不准的地方，可以留给医师一起核查。'}</p><ChestIterate value={value} choose={choose} /></>
+      : <><Guidance round={round} goal={goal} concealTruth={concealTruth} /><Tool value={value} change={change} choose={choose} dataset={dataset} concealTruth={concealTruth} /></>}
     <footer className="ldct-lab__footer"><div className="ldct-lab__actions">
       <button className="ldct-lab__primary" disabled={!ready} onClick={event => submit(false, event.detail > 0)}>继续</button>
       <button onClick={event => submit(true, event.detail > 0)}>还没看明白，一起聊聊</button>

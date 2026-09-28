@@ -911,14 +911,19 @@
       "bytes": 103186,
       "type": "image"
     },
-    "assets/media/ldct_short_face_v1.b6f985d3dcd877ee.webp": {
-      "sha256": "b6f985d3dcd877eeec0a35819db3c707ca7d4c1a49ea5a50e056d27d20ba2c73",
-      "bytes": 386634,
+    "assets/media/ldct_char_father_v1.0c1d54f2fc7b231d.webp": {
+      "sha256": "0c1d54f2fc7b231d4ea62e565024110db5aba38e4b44ada8feb97b4642c82192",
+      "bytes": 26520,
       "type": "image"
     },
-    "assets/media/ldct_short_nut_v1.b56a958c11d2ed89.webp": {
-      "sha256": "b56a958c11d2ed89a469b7f1a4ef0491edd5f08fb6fc9dba55ff231a013d6c49",
-      "bytes": 390254,
+    "assets/media/ldct_chest_v1_images.c254e24eedba683d.webp": {
+      "sha256": "c254e24eedba683d08906bd047af7e3332c1a568259eed6f864749e01d41ea73",
+      "bytes": 152370,
+      "type": "image"
+    },
+    "assets/media/ldct_chest_v1_projections.072a9d6cf5943736.webp": {
+      "sha256": "072a9d6cf59437362be836b0d958c5eae0e2b89819e5dcfb359163510efb6940",
+      "bytes": 499664,
       "type": "image"
     },
     "assets/media/ldct_short_phantom_v1.95385178b7487fa5.webp": {
@@ -1631,19 +1636,17 @@
       "assets/media/bg_ctcontrol_day_ready.b611bff5d0912f7b.webp",
       "assets/media/bg_waiting.e9b68c8f6d71b8e7.webp",
       "assets/media/ch2_bg_breakroom_day.194c9d3ccafbe9ff.webp",
-      "assets/media/ch2_patient_waiting_elder.993ab73b11b7f0af.webp",
       "assets/media/ch2_pixel_char_he.8f56bc6a4628a25e.webp",
-      "assets/media/ch2_pixel_char_lei.f3965b6cdad7e5d6.webp",
       "assets/media/ch2_pixel_char_luzhou_f.5e1498bbdd027005.webp",
       "assets/media/ch2_pixel_char_luzhou_m.818dc622d0fb6918.webp",
       "assets/media/ch2_pixel_char_zhou.d03c9a724f736984.webp",
-      "assets/media/ch2_pixel_pat_kiddad.14c055d88996cb5e.webp",
       "assets/media/item_coffee.4368d5294285e799.webp",
       "assets/media/item_milktea.52cc8d6958e2f14b.webp",
       "assets/media/item_snack.f16943baf3b6bdb3.webp",
       "assets/media/ldct_bg_restaurant.1e0f0d5b98e52a90.webp",
-      "assets/media/ldct_short_face_v1.b6f985d3dcd877ee.webp",
-      "assets/media/ldct_short_nut_v1.b56a958c11d2ed89.webp",
+      "assets/media/ldct_char_father_v1.0c1d54f2fc7b231d.webp",
+      "assets/media/ldct_chest_v1_images.c254e24eedba683d.webp",
+      "assets/media/ldct_chest_v1_projections.072a9d6cf5943736.webp",
       "assets/media/ldct_short_phantom_v1.95385178b7487fa5.webp"
     ]
   }
