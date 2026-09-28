@@ -13,6 +13,7 @@ import { LDCT_BP_COUNTS } from '../src/game/ldct-projections.ts'
 import { LDCT_MANUAL_BP_COUNTS, ldctManualBpFrame } from '../src/game/ldct-manual-bp.ts'
 import { checkLdctPassword } from '../src/game/ldct-access.ts'
 import { ldctSceneCue, LDCT_PRESENTATION_AUDIO } from '../src/game/ldct-presentation.ts'
+import { getLdctScanConfig } from '../src/game/ldct-scans.ts'
 
 const clone = value => JSON.parse(JSON.stringify(value))
 const p = getLdctProgress
@@ -53,7 +54,13 @@ function walk(initial) {
     snapshots.set(progress.nodeId, clone(state))
     assert.deepEqual(protectedState(state), protectedBase, `${progress.nodeId}: main chapters and certificates stay isolated`)
     if (progress.finished) return { state, route, snapshots }
-    if (progress.phase === 'settle') {
+    const scan = getLdctScanConfig(progress.nodeId, progress.openingRevision)
+    if (scan && !progress.scanSessions?.[scan.id]?.completed) {
+      const now = 100000 + count * 5000
+      state = act(state, 'scan:start', { nodeId: scan.id, now })
+      assert.equal(act(state, 'advance', { nodeId: scan.id }), state, 'the route cannot advance through an incomplete acquisition')
+      state = act(state, 'scan:complete', { nodeId: scan.id, now: now + scan.durationMs })
+    } else if (progress.phase === 'settle') {
       assert.equal(progress.nodeId, 'lf_night1_end')
       assert.equal(act(state, 'advance', { nodeId: progress.nodeId }), state, 'settlement waits for an explicit next-night action')
       state = act(state, 'part:next')
@@ -139,6 +146,7 @@ const emptyExposure = createLdctLabState(4, 'chest')
 // These assertions retain coverage of the delivered 1–4 legacy format. The
 // current 1–13 format and ten-click readiness have their own cinematic tests.
 delete emptyExposure.exposureCount
+delete emptyExposure.chestDataVersion // The original four-step save predates this input identity.
 assert.equal(emptyExposure.exposureStep, 0)
 assert(labStateValid(emptyExposure, 4))
 assert.equal(ldctExperimentReady(emptyExposure, 4), false)

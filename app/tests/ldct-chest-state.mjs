@@ -8,14 +8,15 @@ import { LDCT_DATASET_MEDIA_IDS } from '../src/game/ldct-projections.ts'
 import { LDCT_CHEST_MEDIA_IDS, LDCT_CHEST_SEED } from '../src/game/ldct-chest.ts'
 import { LDCT_EXPOSURE_MEDIA_ID } from '../src/game/ldct-exposure.ts'
 import { LDCT_MANUAL_BP_MEDIA_ID } from '../src/game/ldct-manual-bp.ts'
-import { LDCT_DEEP_MEDIA_IDS, LDCT_DEEP_CHEST_VERSION } from '../src/game/ldct-deep-experiments.ts'
+import { LDCT_DEEP_MEDIA_IDS } from '../src/game/ldct-deep-experiments.ts'
+import { LDCT_NOISY_MEDIA_IDS, LDCT_NOISY_CHEST_VERSION } from '../src/game/ldct-noisy-chest.ts'
 import {
   initializeLdct, selectLdctStory, getLdctProgress, getLdctShelf, ldctAction,
 } from '../src/game/ldct-session.ts'
 
 // A bounded draft/transaction test; no browser, generation, build or story replay.
 const copy = value => JSON.parse(JSON.stringify(value))
-assert.deepEqual(LDCT_LAB_MEDIA_IDS, [LDCT_DATASET_MEDIA_IDS.phantom, ...LDCT_CHEST_MEDIA_IDS, LDCT_EXPOSURE_MEDIA_ID, LDCT_MANUAL_BP_MEDIA_ID, ...LDCT_DEEP_MEDIA_IDS])
+assert.deepEqual(LDCT_LAB_MEDIA_IDS, [LDCT_DATASET_MEDIA_IDS.phantom, ...LDCT_CHEST_MEDIA_IDS, LDCT_EXPOSURE_MEDIA_ID, LDCT_MANUAL_BP_MEDIA_ID, ...LDCT_DEEP_MEDIA_IDS, ...LDCT_NOISY_MEDIA_IDS])
 assert(!LDCT_LAB_MEDIA_IDS.includes(LDCT_DATASET_MEDIA_IDS.face))
 assert(!LDCT_LAB_MEDIA_IDS.includes(LDCT_DATASET_MEDIA_IDS.nut))
 
@@ -30,7 +31,7 @@ const help = createLdctRecord({ ...initial, helped: true }, 5, 'uncertain', 'che
 assert(isValidLdctRecord(help, 5))
 assert.equal(help.helped, true)
 assert.equal(help.chest.mark, null)
-assert.equal(help.sourceVersion, LDCT_DEEP_CHEST_VERSION)
+assert.equal(help.sourceVersion, LDCT_NOISY_CHEST_VERSION)
 assert.equal(help.seed, LDCT_CHEST_SEED)
 
 // Keep one iteration/layer fixed, then move elsewhere and mark the original FBP.
@@ -47,6 +48,7 @@ assert.notEqual(record.chest.mark, compared.chest.mark)
 assert.notEqual(record.chest.pinned, compared.chest.pinned)
 const legacyChest = { ...copy(record), sourceVersion: 'ldct-chest-v1' }
 delete legacyChest.iterationRound
+delete legacyChest.chestDataVersion
 assert(isValidLdctRecord(legacyChest, 5), 'old-source records remain readable, not silently renamed')
 assert.match(ldctRecordSummary(legacyChest), /旧示意图/)
 assert.match(ldctRecordSummary(record), /FBP/)
@@ -92,6 +94,7 @@ function atChest(state, draft = initial) {
 const stats = s => ({ gold: s.gold, skill: s.skill, heart: s.heart, wealth: s.wealth, badges: s.badges })
 // A new anatomy must never inherit the old image's marker or pinned frame.
 const legacyCompared = { ...compared }; delete legacyCompared.iterationRound
+delete legacyCompared.chestDataVersion
 const legacyState = atChest(copy(active), legacyCompared)
 const legacyProgress = getLdctProgress(legacyState)
 delete legacyProgress.chestSourceVersion

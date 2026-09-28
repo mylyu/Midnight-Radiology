@@ -6,6 +6,7 @@ import { resolve } from 'node:path'
 import { freshState } from '../src/game/store.ts'
 import { getLdctNode, getLdctChoices } from '../src/game/ldct.ts'
 import { ldctGiftChoices } from '../src/game/ldct-session.ts'
+import { getLdctScanConfig } from '../src/game/ldct-scans.ts'
 
 const { chromium } = createRequire(import.meta.url)(process.env.PLAYWRIGHT_MODULE || 'C:/Users/lvmen/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright')
 const browser = await chromium.launch({ channel: 'msedge', headless: true })
@@ -129,6 +130,13 @@ try {
     const state = await saved(), p = state.dlc.ldct.ldct
     route.push(p.nodeId)
     if (transitions % 15 === 0) console.log(`father ${transitions}: ${p.nodeId} / ${p.phase}`)
+    const scan = getLdctScanConfig(p.nodeId, p.openingRevision)
+    if (scan && !p.scanSessions?.[scan.id]?.completed) {
+      await page.waitForFunction(nodeId => document.querySelector('[data-ldct-node]')?.getAttribute('data-ldct-node') !== nodeId,
+        p.nodeId, { timeout: 6000 })
+      assert.equal((await progress()).scanSessions[scan.id].completed, true)
+      continue
+    }
     if (p.phase === 'lab') { await lab(p); continue }
     if (p.phase === 'settle') {
       assert.equal(p.nodeId, 'lf_night1_end')
