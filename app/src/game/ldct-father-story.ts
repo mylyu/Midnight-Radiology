@@ -5,10 +5,10 @@ export const LDCT_FATHER_STORY = {
   id: 'father', title: '这顿饭，等片子看清了再吃', subtitle: '两次下班后的约定，一张不敢随便说“没事”的片子。',
   start: 'lf_start', dataset: 'phantom',
 } as const
-export const LDCT_NEXT_EVENING = 'lf_evening2'
-export const LDCT_FATHER_LAB_DATASETS = { 1: 'phantom', 2: 'phantom', 3: 'phantom', 4: 'phantom', 5: 'chest' } as const
+export const LDCT_NEXT_EVENING = 'lf_scan_0'
+export const LDCT_FATHER_LAB_DATASETS = { 1: 'phantom', 2: 'phantom', 3: 'phantom', 4: 'chest', 5: 'chest' } as const
 export const LDCT_FATHER_LAB_RETURNS: Record<LdctLabRound, string> = {
-  1: 'lf_after_trace_0', 2: 'lf_after_bp_0', 3: 'lf_after_filter_0', 4: 'lf_after_noise_0', 5: 'lf_after_iteration_0',
+  1: 'lf_after_trace_0', 2: 'lf_after_bp_0', 3: 'lf_after_filter_0', 4: 'lf_photons_done_0', 5: 'lf_after_iteration_0',
 }
 const waiting = 'bg_waiting', room = 'bg_breakroom', day = 'ch2_bg_breakroom_day', control = 'bg_ctcontrol_day_ready', corridor = 'bg_corridor', restaurant = 'ldct_bg_restaurant'
 const father = 'ldct_char_father_v1', lu = '@luzhou', zhou = 'ch2_pixel_char_zhou', he = 'ch2_pixel_char_he'
@@ -55,38 +55,52 @@ lines('lf_joke', [
   ['me', '您担心的先记下，回头让医生解释。陆舟，筷子拿起来，别拿挂号单当菜单。'],
 ], restaurant, father, 'lf_consult_0', 1)
 lines('lf_consult', [
-  [undefined, '后来，陆舟陪父亲按预约回到门诊。医师重新核对年龄、吸烟和既往检查情况，解释为什么建议低剂量胸部CT，也回答了陆叔对辐射的担忧。'],
+  [undefined, '门诊里，医师问过陆叔的吸烟和既往检查情况，把辐射顾虑也聊清楚了。低剂量胸部CT约在明天，陆舟总算把挂号单收回了口袋。'],
   ['陆叔', '你们不是为了照得亮，就一个劲往上加？'],
   ['luzhou', '爸，方案由医生评估。我不替你调，咱把不明白的问完。'],
-], waiting, father, 'lf_scan_0', 1)
+], waiting, father, 'lf_plan_0', 1)
+lines('lf_plan', [
+  ['luzhou', '他一直问到底能少用多少。我也想知道：管电流再低一档，还看得清吗？'],
+  ['me', '先别拿叔叔试，拿电脑里的模体试。'],
+  ['luzhou', '对。扫描、重建走一遍，明天带着结果找老周商量。'],
+], room, lu, 'lf_review_intro_0', 1)
 lines('lf_scan', [
-  ['陆叔', '行。做吧。陆舟，你别一副比我还紧张的样子。'],
+  ['陆叔', '我都躺好了。陆舟，你别一副比我还紧张的样子。'],
   [undefined, '陆叔完成了医师安排的检查。陆舟一直陪着，傍晚才来找你和老周。他把缴费单折了又展，边角已经起毛。'],
   ['zhou', '都坐，别着急。先别盯着我表情猜报告。'],
-], control, zhou, 'lf_first_fbp', 1)
+], control, zhou, 'lf_first_fbp', 2)
 nodes.lf_scan_1.sprite = null
-add('lf_first_fbp', { part: 1, bg: control, sprite: null, chestPreview: 'fbp', speaker: 'zhou',
-  text: '这处很淡，旁边又挨着血管。原来的FBP图不是整张都不能看，但这里，**不能随口说没事**。我要再核一下完整序列。', next: 'lf_license_0' })
+add('lf_first_fbp', { part: 2, bg: control, sprite: null, chestPreview: 'fbp', speaker: 'luzhou',
+  text: '出来了。……这些颗粒，是不是昨天说的光子不够？', next: 'lf_photons_intro_0' })
+lines('lf_photons_intro', [
+  ['me', '先拿这张胸部图做个模拟，每次加一份曝光，看看颗粒怎么变。叔叔已经拍完了，不重扫。'],
+  ['zhou', '你们看着。我把完整序列再过一遍。'],
+], control, zhou, 'lf_lab_4', 2)
+lines('lf_photons_done', [
+  ['luzhou', '多攒一点光子，颗粒确实少些。可我爸一听“再照”，肯定先跳起来。'],
+  ['zhou', '不叫他回来加量。这处很淡，旁边又挨着血管，先核完整序列。'],
+  ['me', '那已经拿到的数据，能不能再想想办法？'],
+], control, zhou, 'lf_license_0', 2)
 lines('lf_license', [
   ['me', '不是还有迭代重建吗？我在设备菜单里见过。'],
   [undefined, '你按设备联系簿拨给工程师。陆舟靠过来听，手指仍压着那张缴费单。'],
   ['工程师（电话）', '这台配的是基础重建。那个迭代包是收费选配，院里这套没开通，所以按钮是灰的。'],
   ['luzhou', '我爸都拍完了，才发现还差这么一包。'],
-], control, null, 'lf_license_choice', 1)
+], control, null, 'lf_license_choice', 2)
 nodes.lf_license_3.sprite = lu
-add('lf_license_choice', { part: 1, bg: control, sprite: zhou, text: '你盯着那个灰掉的选项。老周已经拿起电话，安排后续复核。', choices: [
+add('lf_license_choice', { part: 2, bg: control, sprite: zhou, text: '你盯着那个灰掉的选项。老周已经拿起电话，安排后续复核。', choices: [
   choice('existing', '“同一次的数据，能不能再算一版？”', 'lf_existing_0', 'license_reaction'),
   choice('complain', '“这种时候才告诉我还有付费包……”', 'lf_complain_0', 'license_reaction'),
 ] })
-lines('lf_existing', [['zhou', '能不能导出，要先查设备接口。临床这边该复核、该转诊，不等你们算完。']], control, zhou, 'lf_export_0', 1)
-lines('lf_complain', [['zhou', '气我懂。不过先把病人的事接住。设备采购这笔账，另找时间算。']], control, zhou, 'lf_export_0', 1)
+lines('lf_existing', [['zhou', '能不能导出，要先查设备接口。临床这边该复核、该转诊，不等你们算完。']], control, zhou, 'lf_export_0', 2)
+lines('lf_complain', [['zhou', '气我懂。不过先把病人的事接住。设备采购这笔账，另找时间算。']], control, zhou, 'lf_export_0', 2)
 lines('lf_export', [
   [undefined, '科室已有重建评估项目，陆舟也在获准参与范围内。陆叔另行同意去标识研究使用后，工程师把限定范围的副本导到院内工作站，临床流程继续走。'],
   ['me', '拿到了。是**原始投影和校准信息**，不是几张PACS截图。今晚就在这台工作站试。'],
   ['luzhou', '好。我先给我爸回个电话，让他别在外头等咱们熬。'],
-], room, lu, 'lf_review_intro_0', 1, { complete: 'father_projection_authorized' })
+], room, lu, 'lf_evening2', 2, { complete: 'father_projection_authorized' })
 lines('lf_review_intro', [
-  ['me', '正弦图怎么又长这样了。刚才饭馆的桌布，都比它容易看懂。'],
+  ['me', '模拟扫描出来的投影怎么长这样。刚才饭馆的桌布，都比它容易看懂。'],
   ['luzhou', '本科讲这节，你就睡我旁边。先拿模体找手感。'],
   ['me', '你怎么知道我睡着了？'],
   ['luzhou', '因为你打呼噜，把我也吵醒了。点一下那个小结构，别又睡。'],
@@ -97,15 +111,20 @@ lab(2, 1, '把同一个物体的投影铺回来，看看为什么还会有一圈
 lines('lf_after_bp', [['me', '轮廓有了，像隔着油烟机玻璃。'], ['luzhou', '所以还要先滤波。不是在最后的图片上擦一遍。']], room, lu, 'lf_lab_3', 1)
 lab(3, 1, '换一次滤波方式，比较轮廓与细节；其他参数想看再展开。')
 lines('lf_after_filter', [
-  ['me', '锐的边上利索，柔的看着舒服。光问哪张“清楚”，还真说不准。'],
-  ['luzhou', '今晚先到这。我刚给我爸回“正在滤波”，他以为咱还没吃饭。'],
-  ['me', '也不算猜错。饭凉了两次，明晚先吃再算。'],
+  ['me', '低管电流那档加上锐滤波，噪点就扎眼了。换柔的，又怕小东西跟着糊。'],
+  ['luzhou', '先把对照存下来。明天给老周看，别咱俩在这儿拍脑袋定我爸的参数。'],
+  ['me', '行。电脑里的圆今晚照够了，咱的饭还没吃明白。'],
 ], room, lu, 'lf_night1_end', 1)
 add('lf_night1_end', { part: 1, bg: room, sprite: null, settle: true,
-  text: '第一晚 · 先收工。陆叔的临床复核已经安排，研究副本留在工作站。今晚的记录已保存；下一晚由你主动开始。' })
+  text: '第一晚 · 先收工。模拟试扫和重建对照已存好。明天医师结合陆叔的情况确认检查方案；今晚不替患者试扫。' })
+
+// Short handoff before the booked examination, without a clinical dose quiz.
+nodes.lf_scan_0.text = '第二天，老周看过你们留的模拟对照，再结合陆叔的情况确认了检查方案。陆叔在候诊椅上招手：“我都来了，你俩别比我还紧张。”'
+nodes.lf_scan_0.speaker = undefined
+nodes.lf_scan_0.sprite = father
 
 add('lf_evening2', { part: 2, bg: room, sprite: null,
-  text: '第二天交班后。你拎着饭回来，陆舟的手机正响。他看见“爸”，先把电脑盖上，才接起电话。', next: 'lf_dinner_0' })
+  text: '研究副本拷好，窗外已经黑了。你拎着饭回来，陆舟的手机正响。他看见“爸”，先把电脑盖上，才接起电话。', next: 'lf_dinner_0' })
 lines('lf_dinner', [
   ['陆叔（电话）', '今晚饭多少钱？我转给你。……那个结果，有说法没？'],
   ['luzhou', '爸，饭钱别管。医生在复核，我们这边也还在对照，有消息我给你打。'],
@@ -116,7 +135,7 @@ nodes.lf_dinner_2.sprite = lu
 add('lf_rest_hub', { part: 2, bg: room, sprite: null, kind: 'hub', text: '饭还热着。小何来借微波炉，陆舟把电脑挪到桌子另一头。', choices: [
   { ...choice('lu', '问问陆舟，这回有没有把握', 'lf_chat_lu_0'), unless: 'father_lu_chat' },
   { ...choice('he', '和小何聊两句', 'lf_chat_he_0'), unless: 'father_he_chat' },
-  choice('work', '收好饭盒，继续看数据', 'lf_noise_intro_0'),
+  choice('work', '收好饭盒，继续看数据', 'lf_iteration_intro_0'),
 ] })
 lines('lf_chat_lu', [
   ['me', '你以前最爱说“问题不大”。今天怎么一句都不说？'],
@@ -128,9 +147,8 @@ lines('lf_chat_he', [
   ['me', '我的。拜托别再给它第三次生命。'],
   ['he', '那就趁热吃。陆舟他爸刚还问，陪他儿子加班的是不是你。'],
 ], room, he, 'lf_rest_hub', 2, { giftPerson: 'he', complete: 'father_he_chat' })
-lines('lf_noise_intro', [['luzhou', '昨天模体信号多，很多差别不扎眼。现在光子少一点。'], ['me', '看噪声从哪儿来的，不先给结果图磨皮。']], room, lu, 'lf_lab_4', 2)
-lab(4, 2, '把模拟光子调少，同时看正弦图与重建结果。')
-lines('lf_after_noise', [['me', '前面的测量就起伏了，后面再锐一点，噪点也跟着起劲。'], ['luzhou', '换个办法。先猜一张图，算它该留下什么投影，再和测到的对。']], room, lu, 'lf_iteration_intro_0', 2)
+lab(4, 2, '点一次，积累一份模拟曝光；看同一张胸部图的颗粒变化。')
+nodes.lf_lab_4.bg = control
 lines('lf_iteration_intro', [
   [undefined, '你们回到研究副本。这里用**开放胸部CT衍生的模拟数据**演示对照：原FBP留在旁边，再看逐轮结果和相邻层。'],
   ['luzhou', '先别急着说好看。你想请老周核对哪一处，就留个标记；拿不准也留着。'],
@@ -188,5 +206,7 @@ export function resolveLdctFatherNode(node: LdctNode, progress: LdctProgress): L
     const mark = chest?.mark ? '你留的存疑标记，和原FBP一起请老周核对。' : '没有圈定位置也没关系，完整序列一起带过去。'
     return { ...node, text: `${pinned}${mark}` }
   }
+  if (node.id === 'lf_after_filter_0' && progress.openingRevision === 5 && progress.records[3]?.signal !== 'low')
+    return { ...node, text: '锐的边上利索，柔的看着舒服。想把管电流再压低一点，怕是还得看看噪点会不会太闹。' }
   return node
 }

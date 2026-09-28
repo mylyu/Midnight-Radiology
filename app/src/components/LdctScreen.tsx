@@ -42,11 +42,12 @@ export function LdctScreen(props: Props) {
         <p>陆舟说约饭，带来的却还有他爸。叔叔觉得自己没病，也不想挨辐射。等终于拿到片子，陆舟脸上的笑又没了。</p>
         <p className="text-slate-300 text-sm">点场景补全文、继续，停一下再选。遇到电脑时跟着当前提示试一下，也可以叫陆舟一起看。</p>
         <div className="ldct-menu"><button data-ldct-story="father" onClick={() => props.update(s => selectLdctStory(s, 'father'))}>
-          {shelf?.slots.father?.finished ? '回看故事结尾' : shelf?.slots.father ? '继续这顿没吃完的饭' : '去赴约'} →</button>
+          {shelf?.slots.father && shelf.slots.father.openingRevision !== 5 ? '继续旧顺序存档' : shelf?.slots.father?.finished ? '回看故事结尾' : shelf?.slots.father ? '继续这顿没吃完的饭' : '去赴约'} →</button>
+          {shelf?.slots.father && shelf.slots.father.openingRevision !== 5 && <button data-ldct-new-order onClick={() => props.update(s => selectLdctStory(s, 'father', true))}>从新版开场（保留旧进度） →</button>}
           {shelf?.slots.father && <small className="text-slate-400 self-center">进度已保存 · 随时可以回来</small>}
         </div>
       </section>
-      {(shelf?.legacy || LDCT_STORIES.some(story => shelf?.slots[story.id])) && <details className="ldct-panel" data-ldct-archives>
+      {(shelf?.legacy || shelf?.previousFather || LDCT_STORIES.some(story => shelf?.slots[story.id])) && <details className="ldct-panel" data-ldct-archives>
         <summary>历史试玩记录（只读）</summary>
         <p>旧稿的选择与结果仍留在本机，不会变成这次父亲的经历。已获得的属性、物品和勋章保留。</p>
         {LDCT_STORIES.map(story => { const old = shelf?.slots[story.id]; return old && <section key={story.id}>
@@ -55,6 +56,10 @@ export function LdctScreen(props: Props) {
           <details><summary>查看当时选择与游标</summary><pre className="ldct-json">{JSON.stringify({ node: old.nodeId, decisions: old.decisions }, null, 2)}</pre></details>
         </section> })}
         {shelf?.legacy && <p>旧四段版：{shelf.legacy.finished ? '已结束' : '未结束'}，{Object.keys(shelf.legacy.records ?? {}).length} 份复习记录、{Object.keys(shelf.legacy.researchRecords ?? {}).length} 份研究记录。</p>}
+        {shelf?.previousFather && <section><h3>父亲篇 · 旧顺序存档</h3>
+          <p>{shelf.previousFather.finished ? '已结束' : '未结束'} · {Object.keys(shelf.previousFather.records).length} 份实验记录</p>
+          <details><summary>当时的游标、选择与实验</summary><pre className="ldct-json">{JSON.stringify({ node: shelf.previousFather.nodeId, decisions: shelf.previousFather.decisions, records: shelf.previousFather.records }, null, 2)}</pre></details>
+        </section>}
       </details>}
     </main>
   </DialogueStage>
@@ -63,6 +68,7 @@ export function LdctScreen(props: Props) {
 /** Story business is isolated; presentation and input are the same shared chapter components. */
 function LdctStoryScreen({ state, update, onExit, renderText }: Props) {
   const p = getLdctProgress(state)!
+  const legacyOrder = p.openingRevision !== 5
   const node = getLdctNode(state)
   const story = LDCT_FATHER_STORY
   const [overlay, setOverlay] = useState<Overlay | null>(null)
@@ -92,13 +98,14 @@ function LdctStoryScreen({ state, update, onExit, renderText }: Props) {
     {((settled && !p.finished) || node.kind === 'hub') && <button className={menuClass} onClick={e => { e.stopPropagation(); ui('shop') }}>🛒 小卖部</button>}
     <FullscreenBtn />
     <button className={menuClass} data-ldct-switch onClick={e => { e.stopPropagation(); update(openLdctShelf) }}>本篇入口</button>
+    {legacyOrder && <button className={menuClass} data-ldct-new-order onClick={e => { e.stopPropagation(); ui('replay') }}>新版开场</button>}
     <button className={menuClass} onClick={e => { e.stopPropagation(); onExit() }}>💾 回大厅</button>
   </>
   return <DialogueStage className="ldct-root" data-ldct-screen data-ldct-node={p.nodeId} data-ldct-phase={p.phase}
     onPointerDownCapture={dialogue.guard.pointerDown} onPointerCancelCapture={dialogue.guard.cancel}
     onKeyDownCapture={dialogue.guard.keyDown} onClickCapture={dialogue.guard.click} onClick={dialogue.advance}>
     <SceneBackground name={node.bg} /><DialogueShade />
-    <DialogueHeader title={`◐ 噪声之外 · ${p.finished ? '饭还热着' : node.part === 2 ? '第二晚' : node.part === 3 ? '几周后' : '第一晚'}`}><span>💰 {state.gold}</span>{menu}</DialogueHeader>
+    <DialogueHeader title={`◐ 噪声之外 · ${p.finished ? '饭还热着' : node.part === 2 ? legacyOrder ? '第二晚' : '第二天' : node.part === 3 ? '几周后' : '第一晚'}${legacyOrder ? ' · 旧顺序存档' : ''}`}><span>💰 {state.gold}</span>{menu}</DialogueHeader>
     {p.phase === 'lab' ? <div className="ldct-lab-wrap" onClick={e => e.stopPropagation()}>
       <LdctLab key={`${p.storyId}:${p.labRound}:${p.labReturn ?? 'live'}`} round={p.labRound} value={p.labDraft}
         dataset={getLdctLabDataset(state)} goal={node.goal}
@@ -106,17 +113,17 @@ function LdctStoryScreen({ state, update, onExit, renderText }: Props) {
         onSubmit={record => act({ type: 'lab:submit', record })}
         onBack={() => act({ type: 'lab:close' })} /></div>
       : settled ? <main className="ldct-settlement" data-ldct-settlement onClick={e => e.stopPropagation()}>
-        <p className="text-teal-200 text-sm">{p.finished ? '本篇完 · 后面的复查，叔叔自己记着了' : '第一晚 · 先歇一歇'}</p><h1>{p.finished ? '这顿饭，终于吃上了' : '电脑留在这里，明晚接着看'}</h1>
+        <p className="text-teal-200 text-sm">{p.finished ? '本篇完 · 后面的复查，叔叔自己记着了' : '第一晚 · 先歇一歇'}</p><h1>{p.finished ? '这顿饭，终于吃上了' : legacyOrder ? '电脑留在这里，明晚接着看' : '试扫记录留好，明天看结果'}</h1>
         <p className="text-slate-300 text-sm">{node.text}</p>
         <div className="ldct-metrics">{(Object.keys(icons) as (keyof typeof icons)[]).map(key => <section key={key}>
           <small>{icons[key]}</small><p>{state[key]} <span className="text-xs text-teal-200">本次开始以来 {state[key] - p.start[key] >= 0 ? '+' : ''}{state[key] - p.start[key]}</span></p>
         </section>)}</div>
         <section className="ldct-panel"><h2>桌上的电脑 · 记录已保存</h2>
-          <p>{p.finished ? '图像和当时的选择都留着。可以回看，不再重复发放学习奖励。' : '不会自动跳到明晚。可以买点吃的带着，再回来继续；送东西要等陆舟在场。'}</p>
+          <p>{p.finished ? '图像和当时的选择都留着。可以回看，不再重复发放学习奖励。' : '不会自动推进到下一天。可以买点吃的带着，再回来继续；送东西要等陆舟在场。'}</p>
           <p className="text-amber-200">🎒 {state.items.length ? state.items.map(itemName).join('、') : '背包暂空'}</p>
           <p>已经买的东西保留。送礼要等到同事在场的闲聊里，不在这里统一结算。</p>
         </section>
-        {!p.finished && <button className="ldct-next-part" data-ldct-next-evening onClick={() => act({ type: 'part:next' })}>第二晚 · 带着昨晚的片子回来 →</button>}
+        {!p.finished && <button className="ldct-next-part" data-ldct-next-evening onClick={() => act({ type: 'part:next' })}>{legacyOrder ? '第二晚 · 带着昨晚的片子回来' : '第二天 · 看看陆叔的检查'} →</button>}
         <nav className="ldct-menu">{menu}<button data-ldct-replay onClick={() => ui('replay')}>重玩本篇</button></nav>
       </main> : <>
         {!overlay && !p.reply && <LdctSceneMedia key={`${p.run}:${p.nodeId}`} nodeId={p.nodeId} gender={state.gender} muted={sound.muted}
@@ -160,8 +167,8 @@ function LdctStoryScreen({ state, update, onExit, renderText }: Props) {
           </article>
         })}
       </div>}
-      {overlay === 'replay' && <><p>只清除《{story.title}》这一次的游标、选择和实验记录。历史试玩、主游戏及其他DLC不动；金币、累计属性和物品保留，已发学习奖励不再发。</p>
-        <button className="mt-4" onClick={() => { update(s => selectLdctStory(s, story.id, true)); close() }}>确认重玩本篇</button></>}
+      {overlay === 'replay' && <><p>{legacyOrder ? '这份旧顺序进度会保留在历史记录。从新版开场体验“检查前模体试扫 → 首次胸部图 → 累积光子”，不会把旧经历强行挪过去。' : `只清除《${story.title}》这一次的游标、选择和实验记录。`}历史试玩、主游戏及其他DLC不动；金币、累计属性和物品保留，已发学习奖励不再发。</p>
+        <button className="mt-4" onClick={() => { update(s => selectLdctStory(s, story.id, true)); close() }}>{legacyOrder ? '保留旧进度，开始新版' : '确认重玩本篇'}</button></>}
     </LdctModal>}
   </DialogueStage>
 }

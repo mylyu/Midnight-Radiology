@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import type { CSSProperties, PointerEvent, ReactNode } from 'react'
 import { imageAsset } from '../lib/image-assets'
 import { playSfx } from '../game/store'
@@ -11,6 +11,8 @@ import {
   LDCT_DATASET_MEDIA_IDS, ldctProjectionFrameStyle, type LdctDataset as ProjectionDataset,
 } from '../game/ldct-projections'
 import { ldctChestFrame, ldctChestFrameStyle, LDCT_CHEST_ITERATIONS } from '../game/ldct-chest'
+import { LDCT_EXPOSURE_LEVELS, LDCT_EXPOSURE_MEDIA_ID, ldctExposureFrameStyle } from '../game/ldct-exposure'
+import { LDCT_MANUAL_BP_COUNTS, LDCT_MANUAL_BP_MEDIA_ID, ldctManualBpFrameStyle } from '../game/ldct-manual-bp'
 import { LdctScannerGeometry } from './LdctScannerGeometry'
 import { LdctFilterResponse } from './LdctFilterResponse'
 import './LdctLab.css'
@@ -36,7 +38,7 @@ const addSeen = <T,>(list: T[], value: T) => list.includes(value) ? list : [...l
 const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v))
 const hints: Record<LdctLabRound, [string, string]> = {
   1: ['点一个编号，看看它的影子', '也可以拖动角度。物体、机架落点、正弦图白线上的同色点，对应的是同一个位置；正弦图仍包含整个物体。'],
-  2: ['点开始，看影子一层层叠回来', '每一步都是实际计算的中间结果。可以暂停细看，或从头再放；旁边始终保留完整物体参照。'],
+  2: ['每点一次，再铺回一组投影', '点一下才增加一组方向，停手就留在这一步。每一步都是实际计算的中间结果；旁边保留完整物体参照。'],
   3: ['换一种处理，看轮廓怎么变', '完整物体和投影都没换，只改滤波方式。不滤波使用固定显示窗，先看轮廓和糊边。'],
   4: ['点「把光子调少」', '一起看正弦图和重建结果。改变的是模拟入射计数，角度、物体都没动；不是把检查少转几个角度。'],
   5: ['点「改第一轮」，看图怎么回来', '把猜的图算成投影，和实测投影比较，再改图。每次展示真正算出的中间结果，不重新扫描。'],
@@ -122,43 +124,29 @@ function Trace({ value, change, choose, dataset, concealTruth }: Controls) {
   <div className="ldct-lab__angle-presets" aria-label="快速转到一个角度">{[0, 45, 90, 135].map(angle => <button key={angle} aria-pressed={value.angle === angle} onClick={() => setAngle(angle, true)}>{angle}°</button>)}</div>
   </div><LdctScannerGeometry angle={value.angle} structure={selected?.id ?? null} dataset={dataset} concealTruth={concealTruth} /></div>
 }
-function Backproject({ value, change, choose, dataset, concealTruth }: Controls) {
-  const [playing, setPlaying] = useState(false)
-  const changeRef = useRef(change)
-  useEffect(() => { changeRef.current = change }, [change])
-  const count = LDCT_BP_COUNTS[value.bpStep]
-  const complete = value.bpStep === LDCT_BP_COUNTS.length - 1
-  // Advance only through calculated partial reconstructions: never crossfade
-  // between made-up frames or write the final result on the initial click.
-  // Each shown checkpoint is saved by the existing controlled draft handler.
-  useEffect(() => {
-    if (!playing || complete) return
-    const timer = window.setTimeout(() => {
-      changeRef.current({ bpStep: value.bpStep + 1 })
-      if (value.bpStep + 1 === LDCT_BP_COUNTS.length - 1) setPlaying(false)
-    }, 1150)
-    return () => window.clearTimeout(timer)
-  }, [playing, complete, value.bpStep])
-  useEffect(() => {
-    const pauseHidden = () => { if (document.hidden) setPlaying(false) }
-    document.addEventListener('visibilitychange', pauseHidden)
-    return () => document.removeEventListener('visibilitychange', pauseHidden)
-  }, [])
-  const toggle = () => {
-    if (playing) { setPlaying(false); return }
-    if (complete) choose({ bpStep: 0 })
-    setPlaying(true)
-  }
-  return <div className="ldct-backproject" data-bp-step={value.bpStep} data-playing={playing}>
+function Backproject({ value, choose, dataset, concealTruth }: Controls) {
+  const manual = dataset === 'phantom'
+  const counts: readonly number[] = manual ? LDCT_MANUAL_BP_COUNTS : LDCT_BP_COUNTS
+  const count = manual ? value.bpCount ?? LDCT_BP_COUNTS[value.bpStep] : LDCT_BP_COUNTS[value.bpStep]
+  const step = counts.indexOf(count)
+  const complete = step === counts.length - 1
+  const added = complete ? 0 : counts[step + 1] - count
+  const jump = (next: number) => choose(manual ? { bpCount: counts[next] } : { bpStep: next })
+  // A click selects exactly one calculated checkpoint. The controlled draft
+  // owns the step, so leaving or refreshing cannot schedule another advance.
+  return <div className="ldct-backproject" data-bp-step={value.bpStep} data-bp-count={count}>
     <div className="ldct-lab__focus-layout">
-      <Tile label={`直接反投影 · 已叠 ${count} 个方向`}><Frame frame={`bp:${count}`} dataset={dataset} /></Tile>
+      <Tile label={`直接反投影 · 已叠 ${count} 个方向`}>{manual
+        ? <div className="ldct-lab__frame" data-frame={`bp:${count}`} data-dataset="phantom" style={{ ...ldctManualBpFrameStyle(count), backgroundImage: `url("${imageAsset(LDCT_MANUAL_BP_MEDIA_ID)}")` }} />
+        : <Frame frame={`bp:${count}`} dataset={dataset} />}</Tile>
       <Reference dataset={dataset} concealTruth={concealTruth} />
     </div>
-    <div className="ldct-backproject__progress" aria-label="逐步反投影进度"><progress max={LDCT_BP_COUNTS.length - 1} value={value.bpStep} /><span>{playing ? '正在逐步叠加…' : complete ? '同一份完整投影，仍有糊边' : value.bpStep > 0 ? '已暂停，可继续或手动细看' : '先从一个方向开始'}</span></div>
-    <div className="ldct-lab__transport"><button className="ldct-lab__primary" onClick={toggle}>{playing ? '暂停，看看这一步' : complete ? '从头慢慢看一遍 ↺' : value.bpStep > 0 ? '从这里接着铺 →' : '把投影铺回来 →'}</button></div>
+    <div className="ldct-backproject__progress" aria-label="逐步反投影进度"><progress max={160} value={count} /><span aria-live="polite">{complete ? '已用完整的 160 个方向' : `当前 ${count} 个方向 · 下次再加 ${added} 个`}</span></div>
+    <div className="ldct-lab__transport"><button className="ldct-lab__primary" disabled={complete} onClick={() => jump(step + 1)}>{complete ? '已铺回 160 个方向' : `再铺一组投影 · +${added} 个方向 →`}</button></div>
+    <div className="ldct-backproject__reset"><button className="ldct-lab__compare" disabled={step === 0} onClick={() => jump(0)}>回到第一个方向 ↺</button></div>
     <details className="ldct-lab__extra"><summary>手动细看与响应曲线</summary>
-      <label className="ldct-lab__range"><span>直接反投影</span><output>{count} 个方向</output><input aria-label="手动查看反投影步骤" type="range" min={0} max={LDCT_BP_COUNTS.length - 1} step={1} value={value.bpStep}
-        onChange={event => { setPlaying(false); choose({ bpStep: Number(event.target.value) }) }} /></label>
+      <label className="ldct-lab__range"><span>直接反投影</span><output>{count} 个方向</output><input aria-label="手动查看反投影步骤" type="range" min={0} max={counts.length - 1} step={1} value={step}
+        onChange={event => jump(Number(event.target.value))} /></label>
       <p>所有中间帧使用同一显示窗；只增加参与反投影的方向，不代表患者少照几次。</p><LdctFilterResponse filter="none" compact />
     </details>
   </div>
@@ -170,14 +158,16 @@ function FilterButtons({ value, choose }: Pick<Controls, 'value' | 'choose'>) {
   </select></label>
 }
 function Filter({ value, change, choose, dataset, concealTruth }: Controls) {
+  const setSignal = (signal: LdctLabState['signal']) => choose({ signal, seenSignals: addSeen(value.seenSignals, signal) })
   return <>
-    <div className="ldct-lab__focus-layout"><Tile label={LDCT_FILTER_LABELS[value.filter]}><Frame frame={`fbp:high:${value.filter}`} dataset={dataset} /></Tile>
+    <div className="ldct-lab__focus-layout"><Tile label={LDCT_FILTER_LABELS[value.filter]} note={value.signal === 'low' ? '较低管电流模拟 · 其他条件固定' : undefined}><Frame frame={`fbp:${value.signal}:${value.filter}`} dataset={dataset} /></Tile>
       <Reference dataset={dataset} concealTruth={concealTruth} /></div>
     <div className="ldct-lab__chips" aria-label="常用滤波比较">{(['none', 'ramp', 'hann'] as const).map(filter => <button key={filter} aria-pressed={value.filter === filter}
       onClick={() => choose({ filter, seenFilters: addSeen(value.seenFilters, filter) })}>{filter === 'none' ? '不滤波' : filter === 'ramp' ? '锐一些' : '柔一些'}</button>)}</div>
-    <details className="ldct-lab__extra"><summary>更多滤波器与拖动对照</summary><FilterButtons value={value} choose={choose} />
+    <details className="ldct-lab__extra"><summary>更多滤波器、管电流模拟与对照</summary><FilterButtons value={value} choose={choose} />
+      <div className="ldct-lab__transport"><button onClick={() => setSignal(value.signal === 'low' ? 'high' : 'low')}>{value.signal === 'low' ? '恢复原信号' : '试试较低管电流（模拟）'}</button></div>
       <div className="ldct-lab__single"><div className="ldct-lab__split-labels"><span>固定 · Ramp</span><span>{LDCT_FILTER_LABELS[value.filter]}</span></div>
-        <div className="ldct-lab__image"><Split left="fbp:high:ramp" right={`fbp:high:${value.filter}`} divider={value.divider} onChange={divider => change({ divider })} dataset={dataset} /></div></div>
+        <div className="ldct-lab__image"><Split left={`fbp:${value.signal}:ramp`} right={`fbp:${value.signal}:${value.filter}`} divider={value.divider} onChange={divider => change({ divider })} dataset={dataset} /></div></div>
       <Range label="拖开比较" max={100} value={value.divider} onChange={divider => change({ divider })} suffix="%" /><LdctFilterResponse filter={value.filter} compact /></details>
   </>
 }
@@ -220,6 +210,33 @@ function ChestFrame({ frame, slice }: { frame: string; slice: 0 | 1 | 2 }) {
   return <div className="ldct-lab__frame" data-frame={frame} data-slice={slice} data-dataset="chest" style={{
     ...ldctChestFrameStyle(frame, slice), backgroundImage: `url("${imageAsset(item.mediaId)}")`,
   }} />
+}
+
+function ExposureFrame({ kind, step }: { kind: 'fbp' | 'sinogram'; step: number }) {
+  return <div className="ldct-lab__frame" data-frame={`exposure:${kind}:${LDCT_EXPOSURE_LEVELS[step]}`} data-dataset="chest" style={{
+    ...ldctExposureFrameStyle(kind, step), backgroundImage: `url("${imageAsset(LDCT_EXPOSURE_MEDIA_ID)}")`,
+  }} />
+}
+
+function ChestExposure({ value, choose }: Pick<Controls, 'value' | 'choose'>) {
+  const step = value.exposureStep ?? 0
+  const complete = step === LDCT_EXPOSURE_LEVELS.length - 1
+  return <div className="ldct-exposure" data-testid="ldct-chest-exposure" data-exposure-step={step}>
+    <div className="ldct-exposure__work">
+      <Tile label="胸部重建 · FBP"><ExposureFrame kind="fbp" step={step} /></Tile>
+      <div className="ldct-exposure__controls">
+        <div className="ldct-exposure__count" aria-live="polite"><span>已积累曝光</span><output>{LDCT_EXPOSURE_LEVELS[step]} / {LDCT_EXPOSURE_LEVELS.length}</output></div>
+        <div className="ldct-exposure__units" aria-hidden="true">{LDCT_EXPOSURE_LEVELS.map((level, index) => <span key={level} className={index <= step ? 'is-filled' : undefined} />)}</div>
+        <button className="ldct-lab__primary" disabled={complete} onClick={() => choose({ exposureStep: step + 1 })}>{complete ? '已积累 4/4 份曝光' : '再积累一份曝光'}</button>
+        <button className="ldct-lab__compare" disabled={step === 0} onClick={() => choose({ exposureStep: 0 })}>回到第一份曝光 ↺</button>
+        <small className="ldct-exposure__note">模拟累计曝光，不是给患者补扫。</small>
+      </div>
+    </div>
+    <details className="ldct-lab__extra ldct-exposure__projection"><summary>看看累计投影</summary>
+      <Tile label={`累计 ${LDCT_EXPOSURE_LEVELS[step]} 份曝光 · 正弦图`}><ExposureFrame kind="sinogram" step={step} /></Tile>
+      <p>每次沿用此前计数，再加一份；角度、重建方式和显示窗固定。</p>
+    </details>
+  </div>
 }
 
 function ChestIterate({ value, choose }: Pick<Controls, 'value' | 'choose'>) {
@@ -331,13 +348,16 @@ export function LdctLab({ round, value, onChange, onSubmit, onBack, dataset = 'p
   }
   const tools: Record<LdctLabRound, typeof Trace> = { 1: Trace, 2: Backproject, 3: Filter, 4: Noise, 5: Iterate }
   const Tool = tools[round]
+  const chestExposure = dataset === 'chest' && round === 4
   return <section className="ldct-lab ldct-lab--short" aria-label="重建实验台" data-round={round} data-stage={LDCT_LAB_STAGES[round]} data-dataset={dataset}
     onPointerDownCapture={() => { const now = performance.now(); pointerReady.current = now - openedAt >= 900 && now - lastClick.current >= 300 }}
     onClickCapture={() => { const now = performance.now(); canSubmit.current = now - openedAt >= 900 && now - lastClick.current >= 300; lastClick.current = now }}
     onClick={event => event.stopPropagation()} onKeyDownCapture={event => { if (event.repeat && (event.key === 'Enter' || event.key === ' ')) event.preventDefault() }}>
-    <header className="ldct-lab__header"><div><span className="ldct-lab__eyebrow">{dataset === 'chest' ? '同次数据 · 不重新扫描' : '数字模体 · 同一份投影'}</span><h2>{dataset === 'chest' ? '把这一版留住，再看一眼' : LDCT_LAB_TITLES[round]}</h2></div>
+    <header className="ldct-lab__header"><div><span className="ldct-lab__eyebrow">{chestExposure ? '胸部数据 · 累计计数' : dataset === 'chest' ? '同次数据 · 不重新扫描' : '数字模体 · 同一份投影'}</span><h2>{chestExposure ? '一份一份积累曝光' : dataset === 'chest' ? '把这一版留住，再看一眼' : LDCT_LAB_TITLES[round]}</h2></div>
       {onBack && <button className="ldct-lab__quiet" onClick={() => { onBack(); void playSfx('click') }}>先放一放</button>}</header>
-    {dataset === 'chest'
+    {chestExposure
+      ? <><p className="ldct-chest__goal">{goal || '点一下，加一份曝光；看看胸部图像哪里发生了变化。'}</p><ChestExposure value={value} choose={choose} /></>
+      : dataset === 'chest'
       ? <><p className="ldct-chest__goal">{goal || '改一轮看看；拿不准的地方，可以留给医师一起核查。'}</p><ChestIterate value={value} choose={choose} /></>
       : <><Guidance round={round} goal={goal} concealTruth={concealTruth} /><Tool value={value} change={change} choose={choose} dataset={dataset} concealTruth={concealTruth} /></>}
     <footer className="ldct-lab__footer"><div className="ldct-lab__actions">

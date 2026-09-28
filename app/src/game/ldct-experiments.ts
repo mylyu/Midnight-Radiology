@@ -1,5 +1,7 @@
 import { LDCT_BP_COUNTS, LDCT_ITERATIONS, LDCT_DATASET_MEDIA_IDS, LDCT_DATASET_VERSION, LDCT_DATASET_SEEDS, LDCT_STRUCTURES, type LdctDataset as ProjectionDataset } from './ldct-projections'
 import { LDCT_CHEST_MEDIA_IDS, LDCT_CHEST_SEED, LDCT_CHEST_VERSION, LDCT_CHEST_LEGACY_VERSIONS } from './ldct-chest'
+import { LDCT_EXPOSURE_VERSION, LDCT_EXPOSURE_MEDIA_ID } from './ldct-exposure'
+import { LDCT_MANUAL_BP_COUNTS, LDCT_MANUAL_BP_MEDIA_ID } from './ldct-manual-bp'
 import { LDCT_FILTER_OPTIONS } from './ldct-filter-response'
 export { LDCT_FILTER_OPTIONS } from './ldct-filter-response'
 export type { LdctFilter } from './ldct-filter-response'
@@ -9,7 +11,7 @@ import type { LdctFilter } from './ldct-filter-response'
 export const LDCT_PHANTOM_VERSION = LDCT_DATASET_VERSION
 export const LDCT_PHANTOM_SEED = 2258 as const
 /** Legacy face/nut records stay readable; their retired image atlases are not preloaded. */
-export const LDCT_LAB_MEDIA_IDS = [LDCT_DATASET_MEDIA_IDS.phantom, ...LDCT_CHEST_MEDIA_IDS]
+export const LDCT_LAB_MEDIA_IDS = [LDCT_DATASET_MEDIA_IDS.phantom, ...LDCT_CHEST_MEDIA_IDS, LDCT_EXPOSURE_MEDIA_ID, LDCT_MANUAL_BP_MEDIA_ID]
 export type LdctDataset = ProjectionDataset | 'chest'
 export type LdctLabRound = 1 | 2 | 3 | 4 | 5
 export type LdctLabStage = 'trace' | 'backproject' | 'filter' | 'noise' | 'iterate'
@@ -44,10 +46,13 @@ export type LdctLabRecord = {
   iterationStep: number
   helped: boolean
   verdict: 'different' | 'uncertain'
-  sourceVersion: typeof LDCT_PHANTOM_VERSION | typeof LDCT_CHEST_VERSION | typeof LDCT_CHEST_LEGACY_VERSIONS[number] | 'ldct-short-v1' | 'ldct-projection-v2'
+  sourceVersion: typeof LDCT_PHANTOM_VERSION | typeof LDCT_CHEST_VERSION | typeof LDCT_EXPOSURE_VERSION | typeof LDCT_CHEST_LEGACY_VERSIONS[number] | 'ldct-short-v1' | 'ldct-projection-v2'
   seed: typeof LDCT_DATASET_SEEDS[ProjectionDataset] | typeof LDCT_CHEST_SEED
   dataset?: LdctDataset | 'sparse-filter-v1' | 'full-projection-v2'
   chest?: LdctChestDraft
+  exposureStep?: number
+  /** Actual direction count; old bpStep remains indexed into the historical checkpoints. */
+  bpCount?: number
 }
 export type LdctLabState = {
   round: LdctLabRound
@@ -67,6 +72,8 @@ export type LdctLabState = {
   helped: boolean
   saved: LdctLabRecord | null
   chest?: LdctChestDraft
+  exposureStep?: number
+  bpCount?: number
 }
 
 export const createLdctLabState = (round: LdctLabRound = 1, dataset: LdctDataset = 'phantom'): LdctLabState => ({
@@ -74,6 +81,7 @@ export const createLdctLabState = (round: LdctLabRound = 1, dataset: LdctDataset
   filter: 'ramp', seenFilters: ['ramp'], signal: round === 5 ? 'low' : 'high', seenSignals: [round === 5 ? 'low' : 'high'],
   iterationStep: 0, seenIterations: [0], divider: 50, mark: null, helped: false, saved: null,
   ...(dataset === 'chest' && round === 5 ? { chest: createLdctChestDraft() } : {}),
+  ...(dataset === 'chest' && round === 4 ? { exposureStep: 0 } : {}),
 })
 
 const signals = ['low', 'medium', 'high']
@@ -90,17 +98,22 @@ const validChest = (chest: LdctChestDraft | undefined): boolean => chest === und
     ['fbp', 'iteration'].includes(chest.mark.method))))
 
 export function isValidLdctRecord(record: LdctLabRecord, round: LdctLabRound): boolean {
+  const chestRecord = Boolean(record && record.dataset === 'chest' && record.seed === LDCT_CHEST_SEED && (
+    (round === 5 && validChestVersion(record.sourceVersion) && record.chest !== undefined && record.exposureStep === undefined) ||
+    (round === 4 && record.sourceVersion === LDCT_EXPOSURE_VERSION && integerBetween(record.exposureStep, 0, 3) && record.chest === undefined)))
   return Boolean([1, 2, 3, 4, 5].includes(round) && record && record.round === round && record.stage === LDCT_LAB_STAGES[round] &&
     (((record.sourceVersion === LDCT_PHANTOM_VERSION || record.sourceVersion === 'ldct-short-v1') && record.dataset !== undefined && record.dataset in LDCT_DATASET_SEEDS &&
       record.seed === LDCT_DATASET_SEEDS[record.dataset as ProjectionDataset]) ||
-      (record.dataset === 'chest' && round === 5 && validChestVersion(record.sourceVersion) && record.seed === LDCT_CHEST_SEED && record.chest !== undefined) ||
+      chestRecord ||
       (record.sourceVersion === 'ldct-projection-v2' && record.seed === LDCT_PHANTOM_SEED)) &&
     validStructure(record.structure) && finiteBetween(record.angle, 0, 179) &&
     integerBetween(record.bpStep, 0, LDCT_BP_COUNTS.length - 1) && filters.includes(record.filter) &&
     signals.includes(record.signal) && integerBetween(record.iterationStep, 0, LDCT_ITERATIONS.length - 1) &&
     typeof record.helped === 'boolean' && ['different', 'uncertain'].includes(record.verdict) &&
     (record.dataset === undefined || ['phantom', 'face', 'nut', 'chest', 'sparse-filter-v1', 'full-projection-v2'].includes(record.dataset)) &&
-    (record.dataset !== 'chest' || (round === 5 && validChestVersion(record.sourceVersion) && record.seed === LDCT_CHEST_SEED && record.chest !== undefined)) &&
+    (record.dataset !== 'chest' || chestRecord) &&
+    (record.exposureStep === undefined || (round === 4 && chestRecord)) &&
+    (record.bpCount === undefined || (round === 2 && record.dataset === 'phantom' && (LDCT_MANUAL_BP_COUNTS as readonly number[]).includes(record.bpCount))) &&
     validChest(record.chest) && (record.chest === undefined || (record.dataset === 'chest' && round === 5)))
 }
 
@@ -116,7 +129,9 @@ export function labStateValid(value: LdctLabState, round: LdctLabRound): boolean
     finiteBetween(value.divider, 0, 100) &&
     (value.mark === null || (finiteBetween(value.mark?.x, 0, 100) && finiteBetween(value.mark?.y, 0, 100))) &&
     typeof value.helped === 'boolean' && (value.saved === null || isValidLdctRecord(value.saved, round)) &&
-    validChest(value.chest) && (value.chest === undefined || round === 5))
+    validChest(value.chest) && (value.chest === undefined || round === 5) &&
+    (value.exposureStep === undefined || (round === 4 && integerBetween(value.exposureStep, 0, 3))) &&
+    (value.bpCount === undefined || (round === 2 && (LDCT_MANUAL_BP_COUNTS as readonly number[]).includes(value.bpCount))))
 }
 
 export function ldctExperimentReady(state: LdctLabState, round: LdctLabRound): boolean {
@@ -124,34 +139,39 @@ export function ldctExperimentReady(state: LdctLabState, round: LdctLabRound): b
   if (state.helped) return true
   switch (round) {
     case 1: return state.seenStructures.length > 0 || state.seenAngles.length > 0
-    case 2: return state.bpStep > 0
+    case 2: return state.bpCount !== undefined ? state.bpCount > 1 : state.bpStep > 0
     case 3: return state.seenFilters.length > 1 || state.filter !== 'ramp'
-    case 4: return state.seenSignals.length > 1 || state.signal !== 'high'
+    case 4: return state.exposureStep !== undefined ? state.exposureStep > 0 : state.seenSignals.length > 1 || state.signal !== 'high'
     case 5: return state.seenIterations.some(n => n > 0) || state.iterationStep > 0
   }
 }
 
 export function createLdctRecord(state: LdctLabState, round: LdctLabRound, verdict: LdctLabRecord['verdict'], dataset: LdctDataset = 'phantom'): LdctLabRecord | null {
-  if (!ldctExperimentReady(state, round) || (dataset === 'chest' && round !== 5)) return null
+  if (!ldctExperimentReady(state, round) || (dataset === 'chest' && round !== 4 && round !== 5) ||
+    (dataset === 'chest' && round === 4 && state.exposureStep === undefined) ||
+    (state.exposureStep !== undefined && dataset !== 'chest') || (state.bpCount !== undefined && dataset !== 'phantom')) return null
   const chest = state.chest ?? createLdctChestDraft()
   return {
     round, stage: LDCT_LAB_STAGES[round], structure: state.structure, angle: state.angle,
     bpStep: state.bpStep, filter: state.filter, signal: state.signal, iterationStep: state.iterationStep,
-    helped: state.helped, verdict, sourceVersion: dataset === 'chest' ? LDCT_CHEST_VERSION : LDCT_PHANTOM_VERSION,
+    helped: state.helped, verdict, sourceVersion: dataset === 'chest' ? (round === 4 ? LDCT_EXPOSURE_VERSION : LDCT_CHEST_VERSION) : LDCT_PHANTOM_VERSION,
     seed: dataset === 'chest' ? LDCT_CHEST_SEED : LDCT_DATASET_SEEDS[dataset],
     dataset,
-    ...(dataset === 'chest' ? { chest: { ...chest, pinned: chest.pinned && { ...chest.pinned }, mark: chest.mark && { ...chest.mark } } } : {}),
+    ...(dataset === 'chest' && round === 5 ? { chest: { ...chest, pinned: chest.pinned && { ...chest.pinned }, mark: chest.mark && { ...chest.mark } } } : {}),
+    ...(dataset === 'chest' && round === 4 ? { exposureStep: state.exposureStep } : {}),
+    ...(dataset === 'phantom' && round === 2 && state.bpCount !== undefined ? { bpCount: state.bpCount } : {}),
   }
 }
 
 export function ldctRecordSummary(record: LdctLabRecord): string {
+  if (record.dataset === 'chest' && record.round === 4) return `胸部模拟累计曝光 · ${(record.exposureStep ?? 0) + 1}/4份 · 固定显示窗`
   if (record.dataset === 'chest' && record.chest) {
     const c = record.chest
     return `${record.sourceVersion !== LDCT_CHEST_VERSION ? '旧示意图 · ' : ''}胸部第${c.slice + 1}层 · ${c.compareFbp ? '回看FBP' : `迭代${LDCT_ITERATIONS[record.iterationStep]}轮`}${c.pinned ? ` · 固定${LDCT_ITERATIONS[c.pinned.iterationStep]}轮第${c.pinned.slice + 1}层` : ''}${c.mark ? ` · 第${c.mark.slice + 1}层有待核查标记` : ' · 尚未标记位置'}`
   }
   switch (record.round) {
     case 1: return `结构与投影轨迹 · 留在 ${Math.round(record.angle)}°`
-    case 2: return `${LDCT_BP_COUNTS[record.bpStep]} 个方向 · 直接反投影`
+    case 2: return `${record.bpCount ?? LDCT_BP_COUNTS[record.bpStep]} 个方向 · 直接反投影`
     case 3: return `${record.dataset === 'sparse-filter-v1' ? '旧版稀疏小结构' : record.dataset === 'full-projection-v2' || !record.dataset ? '旧版模体' : ({ phantom: '完整灰色模体', face: '脸形嵌件模体', nut: '盒内小零件', chest: '胸部数据' })[record.dataset]} · ${LDCT_FILTER_LABELS[record.filter]}`
     case 4: return `${{ high: '多', medium: '中', low: '少' }[record.signal]}光子 · ${LDCT_FILTER_LABELS[record.filter]}`
     case 5: return `迭代 ${LDCT_ITERATIONS[record.iterationStep]} 轮 · 保留中间过程`

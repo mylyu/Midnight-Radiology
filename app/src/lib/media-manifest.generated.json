@@ -916,6 +916,11 @@
       "bytes": 26520,
       "type": "image"
     },
+    "assets/media/ldct_chest_exposure_v1.38d811e2235de87e.webp": {
+      "sha256": "38d811e2235de87e2cb3f223e65cb3f841a68c1158b095bb58304689c28bc26f",
+      "bytes": 63096,
+      "type": "image"
+    },
     "assets/media/ldct_chest_v1_images.282a66566ec0c657.webp": {
       "sha256": "282a66566ec0c657c53432bbbadc5d5334efadfbc1165a7fa14b9d4de815e8f6",
       "bytes": 148136,
@@ -929,6 +934,11 @@
     "assets/media/ldct_item_meal_v1.cefcc9163c26942d.webp": {
       "sha256": "cefcc9163c26942dce56028938ae0dc709b9ae4f3475814475c4f4c4719f3ea0",
       "bytes": 14346,
+      "type": "image"
+    },
+    "assets/media/ldct_manual_bp_v1.e1ec228ca8ec04e2.webp": {
+      "sha256": "e1ec228ca8ec04e2fc83af7dbaa55e3e8385400025e430fe877f73b33c92fba7",
+      "bytes": 100546,
       "type": "image"
     },
     "assets/media/ldct_short_phantom_v1.95385178b7487fa5.webp": {
@@ -1672,9 +1682,11 @@
       "assets/media/item_snack.f16943baf3b6bdb3.webp",
       "assets/media/ldct_bg_restaurant.1e0f0d5b98e52a90.webp",
       "assets/media/ldct_char_father_v1.0c1d54f2fc7b231d.webp",
+      "assets/media/ldct_chest_exposure_v1.38d811e2235de87e.webp",
       "assets/media/ldct_chest_v1_images.282a66566ec0c657.webp",
       "assets/media/ldct_chest_v1_projections.ba5e9e7aace07e82.webp",
       "assets/media/ldct_item_meal_v1.cefcc9163c26942d.webp",
+      "assets/media/ldct_manual_bp_v1.e1ec228ca8ec04e2.webp",
       "assets/media/ldct_short_phantom_v1.95385178b7487fa5.webp",
       "audio/ch2_mobile_call_v1.mp3",
       "audio/vox_ldct_he_v1.mp3",

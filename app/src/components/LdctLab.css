@@ -92,6 +92,17 @@
 .ldct-backproject__progress progress::-webkit-progress-bar{background:#334155}
 .ldct-backproject__progress progress::-webkit-progress-value{background:#5eead4}
 .ldct-backproject__progress progress::-moz-progress-bar{background:#5eead4}
+.ldct-backproject__reset{display:flex;justify-content:center;margin:0 auto 8px}
+.ldct-exposure__work{display:grid;grid-template-columns:minmax(0,350px) minmax(170px,210px);gap:22px;align-items:center;justify-content:center;max-width:650px;margin:auto}
+.ldct-exposure__controls{display:flex;flex-direction:column;gap:9px;min-width:0}
+.ldct-exposure__controls>button{width:100%;font-size:13px;line-height:1.5}
+.ldct-exposure__count{display:flex;align-items:center;justify-content:space-between;gap:12px;color:#cbd5e1;font-size:13px}
+.ldct-exposure__count output{font-size:24px;line-height:1.3;color:#99f6e4;font-variant-numeric:tabular-nums}
+.ldct-exposure__units{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;margin:0 0 7px}
+.ldct-exposure__units span{height:7px;border:1px solid #526078;border-radius:3px;background:#1e293b}
+.ldct-exposure__units span.is-filled{border-color:#5eead4;background:#338d80}
+.ldct-exposure__note{display:block;color:#94a3b8;font-size:11px;line-height:1.6}
+.ldct-exposure__projection>.ldct-lab__tile{width:min(100%,210px);margin:auto}
 .ldct-chest .ldct-chest__record-tools{width:100%;box-sizing:border-box;margin:0;padding:8px 10px}
 .ldct-chest__record-tools>.ldct-chest__versions{margin-bottom:10px}
 .ldct-chest__record-tools>.ldct-chest__mark-button{width:100%;margin:8px 0;line-height:1.5;font-size:12px}
@@ -102,6 +113,13 @@
  .ldct-lab__focus-layout .ldct-lab__reference small{display:none}
  .ldct-backproject__progress{flex-wrap:wrap;gap:6px;font-size:11px;margin-top:10px}
  .ldct-backproject__progress progress{width:70px}
+ .ldct-exposure__work{grid-template-columns:minmax(0,1fr);gap:12px;max-width:330px}
+ .ldct-exposure__controls{gap:7px}
+ .ldct-exposure__count{font-size:12px}
+ .ldct-exposure__count output{font-size:21px}
+ .ldct-exposure__units{margin-bottom:3px}
+ .ldct-exposure__note{text-align:center;font-size:10px}
+ .ldct-exposure__projection>.ldct-lab__tile{max-width:180px}
  .ldct-chest .ldct-chest__record-tools{padding:7px 9px}
  .ldct-chest .ldct-chest__record-tools button{font-size:12px}
 }
@@ -109,4 +127,5 @@
  .ldct-lab__focus-layout{grid-template-columns:minmax(0,260px) 105px;gap:16px}
  .ldct-lab__focus-layout .ldct-lab__reference small{display:none}
  .ldct-backproject__progress{margin-top:8px;font-size:11px}
+ .ldct-exposure__work{grid-template-columns:minmax(0,260px) minmax(170px,210px);gap:18px;max-width:530px}
 }

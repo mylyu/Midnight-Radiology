@@ -7,7 +7,7 @@ export type LdctProduct = 'coffee' | 'milktea' | 'snack'
 export interface LdctProgress {
   version: 1
   /** Content migration is separate from cross-chapter save version. */
-  openingRevision?: 2 | 3 | 4
+  openingRevision?: 2 | 3 | 4 | 5
   storyId?: 'face' | 'dinner' | 'patient' | 'father'
   run: number
   seed: 2258
@@ -77,6 +77,8 @@ export interface LdctStoryShelf {
   active?: 'face' | 'dinner' | 'patient' | 'father'
   slots: Partial<Record<'face' | 'dinner' | 'patient' | 'father', LdctProgress>>
   legacy?: LdctProgress
+  /** Prior father narrative order stays read-only when the player starts v5. */
+  previousFather?: LdctProgress
   /** Learning awards are shared across drafts and replays; purchases are not. */
   receipts: string[]
   experienced: LdctLabRound[]

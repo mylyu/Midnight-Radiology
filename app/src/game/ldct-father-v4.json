@@ -1,0 +1,872 @@
+{
+  "lf_start": {
+    "id": "lf_start",
+    "part": 1,
+    "bg": "ldct_bg_restaurant",
+    "sprite": null,
+    "text": "2025年冬，医院旁的小饭馆。陆舟赴约时，身后还跟着他父亲。\n你刚站起来叫了声“陆叔”，陆舟已经替父亲拉开椅子，把烟灰缸挪远了。",
+    "next": "lf_welcome"
+  },
+  "lf_welcome": {
+    "id": "lf_welcome",
+    "part": 1,
+    "bg": "ldct_bg_restaurant",
+    "sprite": "@luzhou",
+    "speaker": "luzhou",
+    "text": "你先坐。我爸非说今天只是来吃饭的。",
+    "next": "lf_arrive_0"
+  },
+  "lf_arrive_0": {
+    "id": "lf_arrive_0",
+    "bg": "ldct_bg_restaurant",
+    "sprite": "ldct_char_father_v1",
+    "speaker": "陆叔",
+    "text": "说好吃饭的。你别一坐下，又说那个CT。",
+    "part": 1,
+    "next": "lf_arrive_1"
+  },
+  "lf_arrive_1": {
+    "id": "lf_arrive_1",
+    "bg": "ldct_bg_restaurant",
+    "sprite": "@luzhou",
+    "speaker": "luzhou",
+    "text": "爸，医生建议的检查，你拖两个星期了。烟抽了三十多年，就这时候特别怕辐射。",
+    "part": 1,
+    "next": "lf_arrive_2"
+  },
+  "lf_arrive_2": {
+    "id": "lf_arrive_2",
+    "bg": "ldct_bg_restaurant",
+    "sprite": "ldct_char_father_v1",
+    "speaker": "陆叔",
+    "text": "我好好的，进去照一遍，万一照出毛病呢？",
+    "part": 1,
+    "next": "lf_arrive_3"
+  },
+  "lf_arrive_3": {
+    "id": "lf_arrive_3",
+    "bg": "ldct_bg_restaurant",
+    "sprite": "ldct_char_father_v1",
+    "speaker": "me",
+    "text": "叔叔，汤先盛上。你们这架，菜还没上就吵完了。",
+    "part": 1,
+    "next": "lf_persuade"
+  },
+  "lf_persuade": {
+    "id": "lf_persuade",
+    "part": 1,
+    "bg": "ldct_bg_restaurant",
+    "sprite": "ldct_char_father_v1",
+    "speaker": "陆叔",
+    "text": "烟我能少抽。这个CT，能不做就不做吧。",
+    "choices": [
+      {
+        "id": "listen",
+        "text": "先听听他到底怕什么",
+        "next": "lf_listen_0",
+        "decision": {
+          "key": "father_tone",
+          "value": "listen"
+        }
+      },
+      {
+        "id": "joke",
+        "text": "“咱先吃饭，别让这顿饭也背上辐射的锅。”",
+        "next": "lf_joke_0",
+        "decision": {
+          "key": "father_tone",
+          "value": "joke"
+        }
+      }
+    ]
+  },
+  "lf_listen_0": {
+    "id": "lf_listen_0",
+    "bg": "ldct_bg_restaurant",
+    "sprite": "ldct_char_father_v1",
+    "speaker": "陆叔",
+    "text": "隔壁老李说，片子照多了也能得病。我这不是两头堵吗。",
+    "part": 1,
+    "next": "lf_listen_1"
+  },
+  "lf_listen_1": {
+    "id": "lf_listen_1",
+    "bg": "ldct_bg_restaurant",
+    "sprite": "ldct_char_father_v1",
+    "speaker": "me",
+    "text": "这顾虑可以问。让医生把两头都讲清楚，别让陆舟光跟您比谁嗓门大。",
+    "part": 1,
+    "next": "lf_consult_0"
+  },
+  "lf_joke_0": {
+    "id": "lf_joke_0",
+    "bg": "ldct_bg_restaurant",
+    "sprite": "ldct_char_father_v1",
+    "speaker": "陆叔",
+    "text": "对，菜快凉了。他回来两天，就会盯着我。",
+    "part": 1,
+    "next": "lf_joke_1"
+  },
+  "lf_joke_1": {
+    "id": "lf_joke_1",
+    "bg": "ldct_bg_restaurant",
+    "sprite": "ldct_char_father_v1",
+    "speaker": "me",
+    "text": "您担心的先记下，回头让医生解释。陆舟，筷子拿起来，别拿挂号单当菜单。",
+    "part": 1,
+    "next": "lf_consult_0"
+  },
+  "lf_consult_0": {
+    "id": "lf_consult_0",
+    "bg": "bg_waiting",
+    "sprite": "ldct_char_father_v1",
+    "text": "后来，陆舟陪父亲按预约回到门诊。医师重新核对年龄、吸烟和既往检查情况，解释为什么建议低剂量胸部CT，也回答了陆叔对辐射的担忧。",
+    "part": 1,
+    "next": "lf_consult_1"
+  },
+  "lf_consult_1": {
+    "id": "lf_consult_1",
+    "bg": "bg_waiting",
+    "sprite": "ldct_char_father_v1",
+    "speaker": "陆叔",
+    "text": "你们不是为了照得亮，就一个劲往上加？",
+    "part": 1,
+    "next": "lf_consult_2"
+  },
+  "lf_consult_2": {
+    "id": "lf_consult_2",
+    "bg": "bg_waiting",
+    "sprite": "@luzhou",
+    "speaker": "luzhou",
+    "text": "爸，方案由医生评估。我不替你调，咱把不明白的问完。",
+    "part": 1,
+    "next": "lf_scan_0"
+  },
+  "lf_scan_0": {
+    "id": "lf_scan_0",
+    "bg": "bg_ctcontrol_day_ready",
+    "sprite": "ldct_char_father_v1",
+    "speaker": "陆叔",
+    "text": "行。做吧。陆舟，你别一副比我还紧张的样子。",
+    "part": 1,
+    "next": "lf_scan_1"
+  },
+  "lf_scan_1": {
+    "id": "lf_scan_1",
+    "bg": "bg_ctcontrol_day_ready",
+    "sprite": null,
+    "text": "陆叔完成了医师安排的检查。陆舟一直陪着，傍晚才来找你和老周。他把缴费单折了又展，边角已经起毛。",
+    "part": 1,
+    "next": "lf_scan_2"
+  },
+  "lf_scan_2": {
+    "id": "lf_scan_2",
+    "bg": "bg_ctcontrol_day_ready",
+    "sprite": "ch2_pixel_char_zhou",
+    "speaker": "zhou",
+    "text": "都坐，别着急。先别盯着我表情猜报告。",
+    "part": 1,
+    "next": "lf_first_fbp"
+  },
+  "lf_first_fbp": {
+    "id": "lf_first_fbp",
+    "part": 1,
+    "bg": "bg_ctcontrol_day_ready",
+    "sprite": null,
+    "chestPreview": "fbp",
+    "speaker": "zhou",
+    "text": "这处很淡，旁边又挨着血管。原来的FBP图不是整张都不能看，但这里，**不能随口说没事**。我要再核一下完整序列。",
+    "next": "lf_license_0"
+  },
+  "lf_license_0": {
+    "id": "lf_license_0",
+    "bg": "bg_ctcontrol_day_ready",
+    "sprite": null,
+    "speaker": "me",
+    "text": "不是还有迭代重建吗？我在设备菜单里见过。",
+    "part": 1,
+    "next": "lf_license_1"
+  },
+  "lf_license_1": {
+    "id": "lf_license_1",
+    "bg": "bg_ctcontrol_day_ready",
+    "sprite": null,
+    "text": "你按设备联系簿拨给工程师。陆舟靠过来听，手指仍压着那张缴费单。",
+    "part": 1,
+    "next": "lf_license_2"
+  },
+  "lf_license_2": {
+    "id": "lf_license_2",
+    "bg": "bg_ctcontrol_day_ready",
+    "sprite": null,
+    "speaker": "工程师（电话）",
+    "text": "这台配的是基础重建。那个迭代包是收费选配，院里这套没开通，所以按钮是灰的。",
+    "part": 1,
+    "next": "lf_license_3"
+  },
+  "lf_license_3": {
+    "id": "lf_license_3",
+    "bg": "bg_ctcontrol_day_ready",
+    "sprite": "@luzhou",
+    "speaker": "luzhou",
+    "text": "我爸都拍完了，才发现还差这么一包。",
+    "part": 1,
+    "next": "lf_license_choice"
+  },
+  "lf_license_choice": {
+    "id": "lf_license_choice",
+    "part": 1,
+    "bg": "bg_ctcontrol_day_ready",
+    "sprite": "ch2_pixel_char_zhou",
+    "text": "你盯着那个灰掉的选项。老周已经拿起电话，安排后续复核。",
+    "choices": [
+      {
+        "id": "existing",
+        "text": "“同一次的数据，能不能再算一版？”",
+        "next": "lf_existing_0",
+        "decision": {
+          "key": "license_reaction",
+          "value": "existing"
+        }
+      },
+      {
+        "id": "complain",
+        "text": "“这种时候才告诉我还有付费包……”",
+        "next": "lf_complain_0",
+        "decision": {
+          "key": "license_reaction",
+          "value": "complain"
+        }
+      }
+    ]
+  },
+  "lf_existing_0": {
+    "id": "lf_existing_0",
+    "bg": "bg_ctcontrol_day_ready",
+    "sprite": "ch2_pixel_char_zhou",
+    "speaker": "zhou",
+    "text": "能不能导出，要先查设备接口。临床这边该复核、该转诊，不等你们算完。",
+    "part": 1,
+    "next": "lf_export_0"
+  },
+  "lf_complain_0": {
+    "id": "lf_complain_0",
+    "bg": "bg_ctcontrol_day_ready",
+    "sprite": "ch2_pixel_char_zhou",
+    "speaker": "zhou",
+    "text": "气我懂。不过先把病人的事接住。设备采购这笔账，另找时间算。",
+    "part": 1,
+    "next": "lf_export_0"
+  },
+  "lf_export_0": {
+    "id": "lf_export_0",
+    "bg": "bg_breakroom",
+    "sprite": "@luzhou",
+    "text": "科室已有重建评估项目，陆舟也在获准参与范围内。陆叔另行同意去标识研究使用后，工程师把限定范围的副本导到院内工作站，临床流程继续走。",
+    "part": 1,
+    "next": "lf_export_1"
+  },
+  "lf_export_1": {
+    "id": "lf_export_1",
+    "bg": "bg_breakroom",
+    "sprite": "@luzhou",
+    "speaker": "me",
+    "text": "拿到了。是**原始投影和校准信息**，不是几张PACS截图。今晚就在这台工作站试。",
+    "part": 1,
+    "next": "lf_export_2"
+  },
+  "lf_export_2": {
+    "id": "lf_export_2",
+    "bg": "bg_breakroom",
+    "sprite": "@luzhou",
+    "speaker": "luzhou",
+    "text": "好。我先给我爸回个电话，让他别在外头等咱们熬。",
+    "part": 1,
+    "next": "lf_review_intro_0",
+    "complete": "father_projection_authorized"
+  },
+  "lf_review_intro_0": {
+    "id": "lf_review_intro_0",
+    "bg": "bg_breakroom",
+    "sprite": "@luzhou",
+    "speaker": "me",
+    "text": "正弦图怎么又长这样了。刚才饭馆的桌布，都比它容易看懂。",
+    "part": 1,
+    "next": "lf_review_intro_1"
+  },
+  "lf_review_intro_1": {
+    "id": "lf_review_intro_1",
+    "bg": "bg_breakroom",
+    "sprite": "@luzhou",
+    "speaker": "luzhou",
+    "text": "本科讲这节，你就睡我旁边。先拿模体找手感。",
+    "part": 1,
+    "next": "lf_review_intro_2"
+  },
+  "lf_review_intro_2": {
+    "id": "lf_review_intro_2",
+    "bg": "bg_breakroom",
+    "sprite": "@luzhou",
+    "speaker": "me",
+    "text": "你怎么知道我睡着了？",
+    "part": 1,
+    "next": "lf_review_intro_3"
+  },
+  "lf_review_intro_3": {
+    "id": "lf_review_intro_3",
+    "bg": "bg_breakroom",
+    "sprite": "@luzhou",
+    "speaker": "luzhou",
+    "text": "因为你打呼噜，把我也吵醒了。点一下那个小结构，别又睡。",
+    "part": 1,
+    "next": "lf_lab_1"
+  },
+  "lf_lab_1": {
+    "id": "lf_lab_1",
+    "bg": "bg_breakroom",
+    "sprite": null,
+    "text": "",
+    "part": 1,
+    "enterLab": 1,
+    "labDataset": "phantom",
+    "goal": "先点一个编号，再转角度，跟住它在正弦图里的影子。"
+  },
+  "lf_after_trace_0": {
+    "id": "lf_after_trace_0",
+    "bg": "bg_breakroom",
+    "sprite": "@luzhou",
+    "speaker": "me",
+    "text": "点没跑，是每个方向看到的位置在变。",
+    "part": 1,
+    "next": "lf_after_trace_1"
+  },
+  "lf_after_trace_1": {
+    "id": "lf_after_trace_1",
+    "bg": "bg_breakroom",
+    "sprite": "@luzhou",
+    "speaker": "luzhou",
+    "text": "对。现在假装原图丢了，把这些影子往回铺。",
+    "part": 1,
+    "next": "lf_lab_2"
+  },
+  "lf_lab_2": {
+    "id": "lf_lab_2",
+    "bg": "bg_breakroom",
+    "sprite": null,
+    "text": "",
+    "part": 1,
+    "enterLab": 2,
+    "labDataset": "phantom",
+    "goal": "把同一个物体的投影铺回来，看看为什么还会有一圈糊边。"
+  },
+  "lf_after_bp_0": {
+    "id": "lf_after_bp_0",
+    "bg": "bg_breakroom",
+    "sprite": "@luzhou",
+    "speaker": "me",
+    "text": "轮廓有了，像隔着油烟机玻璃。",
+    "part": 1,
+    "next": "lf_after_bp_1"
+  },
+  "lf_after_bp_1": {
+    "id": "lf_after_bp_1",
+    "bg": "bg_breakroom",
+    "sprite": "@luzhou",
+    "speaker": "luzhou",
+    "text": "所以还要先滤波。不是在最后的图片上擦一遍。",
+    "part": 1,
+    "next": "lf_lab_3"
+  },
+  "lf_lab_3": {
+    "id": "lf_lab_3",
+    "bg": "bg_breakroom",
+    "sprite": null,
+    "text": "",
+    "part": 1,
+    "enterLab": 3,
+    "labDataset": "phantom",
+    "goal": "换一次滤波方式，比较轮廓与细节；其他参数想看再展开。"
+  },
+  "lf_after_filter_0": {
+    "id": "lf_after_filter_0",
+    "bg": "bg_breakroom",
+    "sprite": "@luzhou",
+    "speaker": "me",
+    "text": "锐的边上利索，柔的看着舒服。光问哪张“清楚”，还真说不准。",
+    "part": 1,
+    "next": "lf_after_filter_1"
+  },
+  "lf_after_filter_1": {
+    "id": "lf_after_filter_1",
+    "bg": "bg_breakroom",
+    "sprite": "@luzhou",
+    "speaker": "luzhou",
+    "text": "今晚先到这。我刚给我爸回“正在滤波”，他以为咱还没吃饭。",
+    "part": 1,
+    "next": "lf_after_filter_2"
+  },
+  "lf_after_filter_2": {
+    "id": "lf_after_filter_2",
+    "bg": "bg_breakroom",
+    "sprite": "@luzhou",
+    "speaker": "me",
+    "text": "也不算猜错。饭凉了两次，明晚先吃再算。",
+    "part": 1,
+    "next": "lf_night1_end"
+  },
+  "lf_night1_end": {
+    "id": "lf_night1_end",
+    "part": 1,
+    "bg": "bg_breakroom",
+    "sprite": null,
+    "settle": true,
+    "text": "第一晚 · 先收工。陆叔的临床复核已经安排，研究副本留在工作站。今晚的记录已保存；下一晚由你主动开始。"
+  },
+  "lf_evening2": {
+    "id": "lf_evening2",
+    "part": 2,
+    "bg": "bg_breakroom",
+    "sprite": null,
+    "text": "第二天交班后。你拎着饭回来，陆舟的手机正响。他看见“爸”，先把电脑盖上，才接起电话。",
+    "next": "lf_dinner_0"
+  },
+  "lf_dinner_0": {
+    "id": "lf_dinner_0",
+    "bg": "bg_breakroom",
+    "sprite": null,
+    "speaker": "陆叔（电话）",
+    "text": "今晚饭多少钱？我转给你。……那个结果，有说法没？",
+    "part": 2,
+    "next": "lf_dinner_1"
+  },
+  "lf_dinner_1": {
+    "id": "lf_dinner_1",
+    "bg": "bg_breakroom",
+    "sprite": "@luzhou",
+    "speaker": "luzhou",
+    "text": "爸，饭钱别管。医生在复核，我们这边也还在对照，有消息我给你打。",
+    "part": 2,
+    "next": "lf_dinner_2"
+  },
+  "lf_dinner_2": {
+    "id": "lf_dinner_2",
+    "bg": "bg_breakroom",
+    "sprite": "@luzhou",
+    "speaker": "me",
+    "text": "叔叔惦记的哪是饭钱。先吃两口，咱再看。",
+    "part": 2,
+    "next": "lf_rest_hub"
+  },
+  "lf_rest_hub": {
+    "id": "lf_rest_hub",
+    "part": 2,
+    "bg": "bg_breakroom",
+    "sprite": null,
+    "kind": "hub",
+    "text": "饭还热着。小何来借微波炉，陆舟把电脑挪到桌子另一头。",
+    "choices": [
+      {
+        "id": "lu",
+        "text": "问问陆舟，这回有没有把握",
+        "next": "lf_chat_lu_0",
+        "unless": "father_lu_chat"
+      },
+      {
+        "id": "he",
+        "text": "和小何聊两句",
+        "next": "lf_chat_he_0",
+        "unless": "father_he_chat"
+      },
+      {
+        "id": "work",
+        "text": "收好饭盒，继续看数据",
+        "next": "lf_noise_intro_0"
+      }
+    ]
+  },
+  "lf_chat_lu_0": {
+    "id": "lf_chat_lu_0",
+    "bg": "bg_breakroom",
+    "sprite": "@luzhou",
+    "speaker": "me",
+    "text": "你以前最爱说“问题不大”。今天怎么一句都不说？",
+    "part": 2,
+    "next": "lf_chat_lu_1",
+    "giftPerson": "luzhou"
+  },
+  "lf_chat_lu_1": {
+    "id": "lf_chat_lu_1",
+    "bg": "bg_breakroom",
+    "sprite": "@luzhou",
+    "speaker": "luzhou",
+    "text": "换成我爸，我也会慌。脑子里知道别乱保证，手还是一直想刷新。",
+    "part": 2,
+    "next": "lf_chat_lu_2",
+    "giftPerson": "luzhou"
+  },
+  "lf_chat_lu_2": {
+    "id": "lf_chat_lu_2",
+    "bg": "bg_breakroom",
+    "sprite": "@luzhou",
+    "speaker": "me",
+    "text": "那我在旁边帮你踩刹车。你也把饭吃完。",
+    "part": 2,
+    "next": "lf_rest_hub",
+    "giftPerson": "luzhou",
+    "complete": "father_lu_chat"
+  },
+  "lf_chat_he_0": {
+    "id": "lf_chat_he_0",
+    "bg": "bg_breakroom",
+    "sprite": "ch2_pixel_char_he",
+    "speaker": "he",
+    "text": "这谁的饭呀？刚才差点跟我的一起热了。",
+    "part": 2,
+    "next": "lf_chat_he_1",
+    "giftPerson": "he"
+  },
+  "lf_chat_he_1": {
+    "id": "lf_chat_he_1",
+    "bg": "bg_breakroom",
+    "sprite": "ch2_pixel_char_he",
+    "speaker": "me",
+    "text": "我的。拜托别再给它第三次生命。",
+    "part": 2,
+    "next": "lf_chat_he_2",
+    "giftPerson": "he"
+  },
+  "lf_chat_he_2": {
+    "id": "lf_chat_he_2",
+    "bg": "bg_breakroom",
+    "sprite": "ch2_pixel_char_he",
+    "speaker": "he",
+    "text": "那就趁热吃。陆舟他爸刚还问，陪他儿子加班的是不是你。",
+    "part": 2,
+    "next": "lf_rest_hub",
+    "giftPerson": "he",
+    "complete": "father_he_chat"
+  },
+  "lf_noise_intro_0": {
+    "id": "lf_noise_intro_0",
+    "bg": "bg_breakroom",
+    "sprite": "@luzhou",
+    "speaker": "luzhou",
+    "text": "昨天模体信号多，很多差别不扎眼。现在光子少一点。",
+    "part": 2,
+    "next": "lf_noise_intro_1"
+  },
+  "lf_noise_intro_1": {
+    "id": "lf_noise_intro_1",
+    "bg": "bg_breakroom",
+    "sprite": "@luzhou",
+    "speaker": "me",
+    "text": "看噪声从哪儿来的，不先给结果图磨皮。",
+    "part": 2,
+    "next": "lf_lab_4"
+  },
+  "lf_lab_4": {
+    "id": "lf_lab_4",
+    "bg": "bg_breakroom",
+    "sprite": null,
+    "text": "",
+    "part": 2,
+    "enterLab": 4,
+    "labDataset": "phantom",
+    "goal": "把模拟光子调少，同时看正弦图与重建结果。"
+  },
+  "lf_after_noise_0": {
+    "id": "lf_after_noise_0",
+    "bg": "bg_breakroom",
+    "sprite": "@luzhou",
+    "speaker": "me",
+    "text": "前面的测量就起伏了，后面再锐一点，噪点也跟着起劲。",
+    "part": 2,
+    "next": "lf_after_noise_1"
+  },
+  "lf_after_noise_1": {
+    "id": "lf_after_noise_1",
+    "bg": "bg_breakroom",
+    "sprite": "@luzhou",
+    "speaker": "luzhou",
+    "text": "换个办法。先猜一张图，算它该留下什么投影，再和测到的对。",
+    "part": 2,
+    "next": "lf_iteration_intro_0"
+  },
+  "lf_iteration_intro_0": {
+    "id": "lf_iteration_intro_0",
+    "bg": "bg_breakroom",
+    "sprite": "@luzhou",
+    "text": "你们回到研究副本。这里用**开放胸部CT衍生的模拟数据**演示对照：原FBP留在旁边，再看逐轮结果和相邻层。",
+    "part": 2,
+    "next": "lf_iteration_intro_1"
+  },
+  "lf_iteration_intro_1": {
+    "id": "lf_iteration_intro_1",
+    "bg": "bg_breakroom",
+    "sprite": "@luzhou",
+    "speaker": "luzhou",
+    "text": "先别急着说好看。你想请老周核对哪一处，就留个标记；拿不准也留着。",
+    "part": 2,
+    "next": "lf_lab_5"
+  },
+  "lf_lab_5": {
+    "id": "lf_lab_5",
+    "bg": "bg_breakroom",
+    "sprite": null,
+    "text": "",
+    "part": 2,
+    "enterLab": 5,
+    "labDataset": "chest",
+    "goal": "和原FBP对照，看一轮变化；想核查的位置可以标记，不必猜诊断。"
+  },
+  "lf_after_iteration_0": {
+    "id": "lf_after_iteration_0",
+    "bg": "bg_breakroom",
+    "sprite": "@luzhou",
+    "speaker": "luzhou",
+    "text": "这张平滑多了。要不就留这版？我真不想再看那些噪点。",
+    "part": 2,
+    "next": "lf_after_iteration_1"
+  },
+  "lf_after_iteration_1": {
+    "id": "lf_after_iteration_1",
+    "bg": "bg_breakroom",
+    "sprite": "@luzhou",
+    "speaker": "me",
+    "text": "等一下。咱们现在是希望它看着舒服，还是想把那一处看清？",
+    "part": 2,
+    "next": "lf_result_choice"
+  },
+  "lf_result_choice": {
+    "id": "lf_result_choice",
+    "part": 2,
+    "bg": "bg_breakroom",
+    "sprite": "@luzhou",
+    "text": "陆舟松开鼠标，让开了一点位置。",
+    "choices": [
+      {
+        "id": "fbp",
+        "text": "先回看同层原FBP",
+        "next": "lf_recheck_fbp_0",
+        "decision": {
+          "key": "result_review",
+          "value": "fbp"
+        }
+      },
+      {
+        "id": "keep",
+        "text": "另一版也留着，不急着删",
+        "next": "lf_recheck_keep_0",
+        "decision": {
+          "key": "result_review",
+          "value": "keep"
+        }
+      },
+      {
+        "id": "together",
+        "text": "“坐过来，咱们把相邻层一起看。”",
+        "next": "lf_recheck_together_0",
+        "decision": {
+          "key": "result_review",
+          "value": "together"
+        }
+      }
+    ]
+  },
+  "lf_recheck_fbp_0": {
+    "id": "lf_recheck_fbp_0",
+    "bg": "bg_breakroom",
+    "sprite": null,
+    "speaker": "me",
+    "text": "原片噪点多，但不能跳过。先对同一层。",
+    "part": 2,
+    "next": "lf_recheck_fbp_1",
+    "chestPreview": "fbp"
+  },
+  "lf_recheck_fbp_1": {
+    "id": "lf_recheck_fbp_1",
+    "bg": "bg_breakroom",
+    "sprite": "@luzhou",
+    "speaker": "luzhou",
+    "text": "嗯。刚才我只想挑张能让我松口气的。",
+    "part": 2,
+    "next": "lf_record_echo"
+  },
+  "lf_recheck_keep_0": {
+    "id": "lf_recheck_keep_0",
+    "bg": "bg_breakroom",
+    "sprite": "@luzhou",
+    "speaker": "me",
+    "text": "别拿平滑程度当淘汰线。两版带着参数一起留。",
+    "part": 2,
+    "next": "lf_recheck_keep_1"
+  },
+  "lf_recheck_keep_1": {
+    "id": "lf_recheck_keep_1",
+    "bg": "bg_breakroom",
+    "sprite": "@luzhou",
+    "speaker": "luzhou",
+    "text": "好。我不删。难看的也留下。",
+    "part": 2,
+    "next": "lf_record_echo"
+  },
+  "lf_recheck_together_0": {
+    "id": "lf_recheck_together_0",
+    "bg": "bg_breakroom",
+    "sprite": "@luzhou",
+    "speaker": "me",
+    "text": "你盯得太久了。换我翻层，你帮我核对是不是同一处。",
+    "part": 2,
+    "next": "lf_recheck_together_1"
+  },
+  "lf_recheck_together_1": {
+    "id": "lf_recheck_together_1",
+    "bg": "bg_breakroom",
+    "sprite": "@luzhou",
+    "speaker": "luzhou",
+    "text": "行。我们一起看，别谁一个人先下结论。",
+    "part": 2,
+    "next": "lf_record_echo"
+  },
+  "lf_record_echo": {
+    "id": "lf_record_echo",
+    "part": 2,
+    "bg": "bg_breakroom",
+    "sprite": "@luzhou",
+    "speaker": "luzhou",
+    "text": "同层原FBP、这版参数和相邻层都留好。没把握的地方，明天直接问老周。",
+    "next": "lf_clinical_preview"
+  },
+  "lf_clinical_preview": {
+    "id": "lf_clinical_preview",
+    "part": 2,
+    "bg": "bg_ctcontrol_day_ready",
+    "sprite": null,
+    "chestPreview": "iteration:4",
+    "text": "次日，老周把研究对照与原有临床序列放在一起核查。你们提交的是**复核线索**，不是自动生成的诊断。",
+    "next": "lf_clinical_0"
+  },
+  "lf_clinical_0": {
+    "id": "lf_clinical_0",
+    "bg": "bg_ctcontrol_day_ready",
+    "sprite": "ch2_pixel_char_zhou",
+    "speaker": "zhou",
+    "text": "这处确实值得继续查。我已经联系上级医院，把完整资料交过去。",
+    "part": 2,
+    "next": "lf_clinical_1"
+  },
+  "lf_clinical_1": {
+    "id": "lf_clinical_1",
+    "bg": "bg_ctcontrol_day_ready",
+    "sprite": "ch2_pixel_char_zhou",
+    "speaker": "me",
+    "text": "我们后来那版，有帮上忙吗？",
+    "part": 2,
+    "next": "lf_clinical_2"
+  },
+  "lf_clinical_2": {
+    "id": "lf_clinical_2",
+    "bg": "bg_ctcontrol_day_ready",
+    "sprite": "ch2_pixel_char_zhou",
+    "speaker": "zhou",
+    "text": "帮我更有针对性地复看了。但最后还得核完整影像，结合后续检查，不能靠你们这一张下结论。",
+    "part": 2,
+    "next": "lf_depart_0"
+  },
+  "lf_depart_0": {
+    "id": "lf_depart_0",
+    "bg": "bg_corridor",
+    "sprite": "ldct_char_father_v1",
+    "text": "转诊安排妥当。陆叔站在走廊尽头，陆舟走过去替他提起袋子。你把核对好的资料交给陪同人员。",
+    "part": 2,
+    "next": "lf_depart_1"
+  },
+  "lf_depart_1": {
+    "id": "lf_depart_1",
+    "bg": "bg_corridor",
+    "sprite": "ldct_char_father_v1",
+    "speaker": "陆叔",
+    "text": "你们俩眼圈黑的。别管我了，今天早点回去睡。",
+    "part": 2,
+    "next": "lf_depart_2"
+  },
+  "lf_depart_2": {
+    "id": "lf_depart_2",
+    "bg": "bg_corridor",
+    "sprite": "ldct_char_father_v1",
+    "speaker": "me",
+    "text": "行，叔叔。您按时去，我们按时睡。",
+    "part": 2,
+    "next": "lf_weeks_0"
+  },
+  "lf_weeks_0": {
+    "id": "lf_weeks_0",
+    "bg": "bg_waiting",
+    "sprite": "ldct_char_father_v1",
+    "text": "几周后。上级医院完成进一步检查和治疗，术后病理确认是早期肺癌。陆舟陪父亲回来复诊，陆叔先把复诊单从袋子里拿了出来。",
+    "part": 3,
+    "next": "lf_weeks_1"
+  },
+  "lf_weeks_1": {
+    "id": "lf_weeks_1",
+    "bg": "bg_waiting",
+    "sprite": "ldct_char_father_v1",
+    "speaker": "陆叔",
+    "text": "医生说的下回复查，是这个日期吧？陆舟，你再给我存一遍。",
+    "part": 3,
+    "next": "lf_weeks_2"
+  },
+  "lf_weeks_2": {
+    "id": "lf_weeks_2",
+    "bg": "bg_waiting",
+    "sprite": "@luzhou",
+    "speaker": "luzhou",
+    "text": "存好了，爸。你这回比我记得牢。",
+    "part": 3,
+    "next": "lf_weeks_3"
+  },
+  "lf_weeks_3": {
+    "id": "lf_weeks_3",
+    "bg": "bg_waiting",
+    "sprite": "ldct_char_father_v1",
+    "speaker": "陆叔",
+    "text": "今天我请饭。叫上你同学，别让人家每回陪你饿肚子。",
+    "part": 3,
+    "next": "lf_final_lu_0"
+  },
+  "lf_final_lu_0": {
+    "id": "lf_final_lu_0",
+    "bg": "ldct_bg_restaurant",
+    "sprite": "ldct_char_father_v1",
+    "text": "还是那家饭馆。陆叔把菜单递给你，陆舟终于没再掏出电脑。那份带着噪声的原FBP，也好好地留在记录里。",
+    "part": 3,
+    "next": "lf_final_lu_1"
+  },
+  "lf_final_lu_1": {
+    "id": "lf_final_lu_1",
+    "bg": "ldct_bg_restaurant",
+    "sprite": "ldct_char_father_v1",
+    "speaker": "陆叔",
+    "text": "菜单拿着，别光看我。你们忙活了这么久，好歹让我点两个硬菜。",
+    "part": 3,
+    "next": "lf_final_lu_2"
+  },
+  "lf_final_lu_2": {
+    "id": "lf_final_lu_2",
+    "bg": "ldct_bg_restaurant",
+    "sprite": "ldct_char_father_v1",
+    "speaker": "me",
+    "text": "好。今天我们都不加班。",
+    "part": 3,
+    "next": "lf_end"
+  },
+  "lf_end": {
+    "id": "lf_end",
+    "part": 3,
+    "bg": "ldct_bg_restaurant",
+    "sprite": null,
+    "settle": true,
+    "storyEnd": true,
+    "text": "噪声之外 · 本篇完。原FBP、迭代对照和不确定的地方都留了下来。陆叔按医嘱继续复查；今晚，终于轮到好好吃一顿饭。"
+  }
+}

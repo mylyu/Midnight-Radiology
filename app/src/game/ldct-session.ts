@@ -1,5 +1,5 @@
 import { createLdctLabState, createLdctRecord, isValidLdctRecord, labStateValid } from './ldct-experiments'
-import { getLdctChoices, getLdctNode, LDCT_STEPS } from './ldct'
+import { getLdctChoices, getLdctNode, getLdctSteps } from './ldct'
 import { LDCT_FATHER_STORY, LDCT_FATHER_LAB_RETURNS, LDCT_FATHER_LAB_DATASETS, LDCT_NEXT_EVENING } from './ldct-father-story'
 import type { LdctAction, LdctPerson, LdctProduct, LdctProgress, LdctStoryShelf } from './ldct-types'
 import type { GameState } from './types'
@@ -15,7 +15,11 @@ export function getLdctProgress(state: GameState): LdctProgress | undefined {
   return shelf?.version === 2 && shelf.active === 'father' ? shelf.slots.father : undefined
 }
 export function getLdctLabDataset(state: GameState): 'phantom' | 'chest' {
-  return LDCT_FATHER_LAB_DATASETS[getLdctProgress(state)?.labRound ?? 1]
+  const p = getLdctProgress(state)
+  if (p?.openingRevision !== 5 && p?.labRound === 4) return 'phantom'
+  // Archived round4 records reopen their original object, never relabelled as chest.
+  if (p?.labRound === 4 && p.labDraft.exposureStep === undefined) return 'phantom'
+  return LDCT_FATHER_LAB_DATASETS[p?.labRound ?? 1]
 }
 function withShelf(state: GameState, shelf: LdctStoryShelf): GameState {
   return { ...state, dlc: { ...state.dlc, ldct: { ...state.dlc?.ldct, ldctStories: shelf } } }
@@ -53,7 +57,8 @@ export function selectLdctStory(state: GameState, id: LdctStoryShelf['active'], 
   state = initializeLdct(state)
   const previous = getLdctShelf(state)!.slots[id]
   if (previous && !replay) return patch(state, previous)
-  return patch(state, { version: 1, openingRevision: 4, storyId: id, run: (previous?.run ?? 0) + 1,
+  if (previous && previous.openingRevision !== 5) state = withShelf(state, { ...getLdctShelf(state)!, previousFather: previous })
+  return patch(state, { version: 1, openingRevision: 5, storyId: id, run: (previous?.run ?? 0) + 1,
     seed: 2258, chestSourceVersion: LDCT_CHEST_VERSION, phase: 'story', nodeId: story.start, revision: 0, fatigue: 2, completed: [],
     decisions: {}, receipts: [], gifts: [], labRound: 1, labDraft: createLdctLabState(1), records: {},
     start: { gold: state.gold, skill: state.skill, heart: state.heart, wealth: state.wealth } })
@@ -66,7 +71,7 @@ function changed(p: LdctProgress, fields: Partial<LdctProgress>): LdctProgress {
   return { ...p, ...fields, revision: p.revision + 1 }
 }
 function move(state: GameState, p: LdctProgress, id: string): GameState {
-  const node = LDCT_STEPS[id]
+  const node = getLdctSteps(p)[id]
   if (!node || p.storyId !== 'father' || !id.startsWith('lf_')) return state
   if (node.enterLab) return patch(state, changed(p, { nodeId: id, phase: 'lab', reply: undefined,
     labRound: node.enterLab, labDraft: p.labRound === node.enterLab ? p.labDraft : createLdctLabState(node.enterLab, node.labDataset ?? 'phantom'), labReturn: undefined }))
@@ -139,6 +144,7 @@ export function ldctAction(state: GameState, action: LdctAction): GameState {
   }
   if (action.type === 'lab:update') {
     if (p.phase !== 'lab' || !labStateValid(action.value, p.labRound)) return state
+    if (p.labRound === 4 && (action.value.exposureStep !== undefined) !== (getLdctLabDataset(state) === 'chest')) return state
     return patch(state, { ...p, labDraft: action.value })
   }
   if (action.type === 'lab:submit') {
@@ -154,13 +160,14 @@ export function ldctAction(state: GameState, action: LdctAction): GameState {
     if (first) next = { ...next, skill: next.skill + 1, badges: next.badges.includes('ldct_first_comparison') ? next.badges : [...next.badges, 'ldct_first_comparison'] }
     if (organized) next = { ...next, wealth: next.wealth + 1 }
     const progress = { ...p, records: { ...p.records, [p.labRound]: action.record } }
-    return move(next, { ...progress, labReturn: undefined }, p.labReturn ?? LDCT_FATHER_LAB_RETURNS[p.labRound])
+    const returnNode = p.openingRevision !== 5 && p.labRound === 4 ? 'lf_after_noise_0' : LDCT_FATHER_LAB_RETURNS[p.labRound]
+    return move(next, { ...progress, labReturn: undefined }, p.labReturn ?? returnNode)
   }
   if (action.type === 'lab:open') {
     if (p.phase !== 'settle' || !p.records[action.round]) return state
     const record = p.records[action.round]!
-    const oldChest = record.dataset === 'chest' && record.sourceVersion !== LDCT_CHEST_VERSION
-    const draft = oldChest ? createLdctLabState(5, 'chest') : { ...createLdctLabState(action.round, LDCT_FATHER_LAB_DATASETS[action.round]), ...record, saved: null }
+    const oldChest = record.dataset === 'chest' && action.round === 5 && record.sourceVersion !== LDCT_CHEST_VERSION
+    const draft = oldChest ? createLdctLabState(5, 'chest') : { ...createLdctLabState(action.round, record.dataset === 'chest' ? 'chest' : 'phantom'), ...record, saved: null }
     return patch(state, changed(p, { phase: 'lab', labRound: action.round, labDraft: draft, labReturn: p.nodeId }))
   }
   if (action.type === 'lab:close') {
@@ -190,7 +197,7 @@ export function ldctAction(state: GameState, action: LdctAction): GameState {
   }
   if (action.type === 'part:next') {
     if (p.phase !== 'settle' || p.nodeId !== 'lf_night1_end' || p.finished) return state
-    return move(state, { ...p, fatigue: 2, partStart: { gold: state.gold, skill: state.skill, heart: state.heart, wealth: state.wealth } }, LDCT_NEXT_EVENING)
+    return move(state, { ...p, fatigue: 2, partStart: { gold: state.gold, skill: state.skill, heart: state.heart, wealth: state.wealth } }, p.openingRevision === 5 ? LDCT_NEXT_EVENING : 'lf_evening2')
   }
   // Old research actions cannot reach a deleted workbench or mutate archived saves.
   return state
