@@ -23,9 +23,10 @@ import {
 } from '../game/ldct-noisy-chest'
 import { LdctScannerGeometry } from './LdctScannerGeometry'
 import { LdctFilterResponse } from './LdctFilterResponse'
+import { LdctSpeedChallenge, type LdctSpeedProps } from './LdctSpeedChallenge'
 import './LdctLab.css'
 
-export type LdctLabProps = {
+export type LdctLabProps = LdctSpeedProps & {
   round: LdctLabRound
   value: LdctLabState
   onChange: (value: LdctLabState) => void
@@ -41,6 +42,8 @@ type Controls = {
   choose: (patch: Partial<LdctLabState>) => void
   dataset: ProjectionDataset
   concealTruth: boolean
+  speedTap?: () => void
+  speedRunning?: boolean
 }
 const addSeen = <T,>(list: T[], value: T) => list.includes(value) ? list : [...list, value]
 const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v))
@@ -132,7 +135,7 @@ function Trace({ value, change, choose, dataset, concealTruth }: Controls) {
   <div className="ldct-lab__angle-presets" aria-label="快速转到一个角度">{[0, 45, 90, 135].map(angle => <button key={angle} aria-pressed={value.angle === angle} onClick={() => setAngle(angle, true)}>{angle}°</button>)}</div>
   </div><LdctScannerGeometry angle={value.angle} structure={selected?.id ?? null} dataset={dataset} concealTruth={concealTruth} /></div>
 }
-function Backproject({ value, choose, dataset, concealTruth }: Controls) {
+function Backproject({ value, choose, dataset, concealTruth, speedTap, speedRunning }: Controls) {
   const manual = dataset === 'phantom'
   const counts: readonly number[] = manual ? LDCT_MANUAL_BP_COUNTS : LDCT_BP_COUNTS
   const count = manual ? value.bpCount ?? LDCT_BP_COUNTS[value.bpStep] : LDCT_BP_COUNTS[value.bpStep]
@@ -150,10 +153,12 @@ function Backproject({ value, choose, dataset, concealTruth }: Controls) {
       <Reference dataset={dataset} concealTruth={concealTruth} />
     </div>
     <div className="ldct-backproject__progress" aria-label="逐步反投影进度"><progress max={160} value={count} /><span aria-live="polite">{complete ? '已用完整的 160 个方向' : `当前 ${count} 个方向 · 下次再加 ${added} 个`}</span></div>
-    <div className="ldct-lab__transport"><button className="ldct-lab__primary" disabled={complete} onClick={() => jump(step + 1)}>{complete ? '已铺回 160 个方向' : `再铺一组投影 · +${added} 个方向 →`}</button></div>
-    <div className="ldct-backproject__reset"><button className="ldct-lab__compare" disabled={step === 0} onClick={() => jump(0)}>回到第一个方向 ↺</button></div>
+    <div className="ldct-lab__transport"><button className="ldct-lab__primary" data-testid="ldct-bp-next" data-ldct-fast-action disabled={complete}
+      onKeyDown={event => { if (speedRunning && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); if (!event.repeat) speedTap?.() } }}
+      onClick={() => speedRunning ? speedTap?.() : jump(step + 1)}>{complete ? '已铺回 160 个方向' : `再铺一组投影 · +${added} 个方向 →`}</button></div>
+    <div className="ldct-backproject__reset"><button className="ldct-lab__compare" disabled={step === 0 || speedRunning} onClick={() => jump(0)}>回到第一个方向 ↺</button></div>
     <details className="ldct-lab__extra"><summary>手动细看与响应曲线</summary>
-      <label className="ldct-lab__range"><span>直接反投影</span><output>{count} 个方向</output><input aria-label="手动查看反投影步骤" type="range" min={0} max={counts.length - 1} step={1} value={step}
+      <label className="ldct-lab__range"><span>直接反投影</span><output>{count} 个方向</output><input aria-label="手动查看反投影步骤" type="range" min={0} max={counts.length - 1} step={1} value={step} disabled={speedRunning}
         onChange={event => jump(Number(event.target.value))} /></label>
       <p>所有中间帧使用同一显示窗；只增加参与反投影的方向，不代表患者少照几次。</p><LdctFilterResponse filter="none" compact />
     </details>
@@ -254,7 +259,7 @@ function ChestExposure({ value, choose }: Pick<Controls, 'value' | 'choose'>) {
   </div>
 }
 
-function ChestIterate({ value, choose }: Pick<Controls, 'value' | 'choose'>) {
+function ChestIterate({ value, choose, speedTap, speedRunning }: Pick<Controls, 'value' | 'choose' | 'speedTap' | 'speedRunning'>) {
   const chest = value.chest ?? createLdctChestDraft()
   const noisy = value.chestDataVersion === LDCT_NOISY_DATA_VERSION
   const deep = value.iterationRound !== undefined
@@ -279,6 +284,7 @@ function ChestIterate({ value, choose }: Pick<Controls, 'value' | 'choose'>) {
   }
   const advance = () => {
     if (complete) return
+    if (speedRunning) { setShowPinned(false); setMarking(false); setReviewRound(null); speedTap?.(); return }
     if (!deep) { jump(value.iterationStep + 1); return }
     setShowPinned(false); setMarking(false); setReviewRound(null)
     choose({ iterationRound: currentRound + 1, chest: { ...chest, compareFbp: false } })
@@ -329,7 +335,8 @@ function ChestIterate({ value, choose }: Pick<Controls, 'value' | 'choose'>) {
       </figure>
       <div className="ldct-chest__controls">
         {deep && <div className="ldct-chest__round-progress" aria-live="polite"><span>已计算 {currentRound} / 12 轮</span><progress max={12} value={currentRound} /></div>}
-        <button className="ldct-lab__primary ldct-chest__next" disabled={complete}
+        <button className="ldct-lab__primary ldct-chest__next" data-testid="ldct-iteration-next" data-ldct-fast-action disabled={complete}
+          onKeyDown={event => { if (speedRunning && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); if (!event.repeat) advance() } }}
           onClick={advance}>{currentRound === 0 ? noisy ? '从原FBP改第一轮 →' : '用原数据改第一轮 →' : complete ? `已到第${deep ? 12 : 8}轮，可以往回比较` : `再改到第${deep ? currentRound + 1 : LDCT_CHEST_ITERATIONS[value.iterationStep + 1]}轮 →`}</button>
         <button className="ldct-chest__fbp-toggle" aria-pressed={chest.compareFbp} onClick={() => { setShowPinned(false); setMarking(false); setChest({ compareFbp: !chest.compareFbp }) }}>{chest.compareFbp ? '回到迭代图' : '回看原FBP'}</button>
         <details className="ldct-lab__extra ldct-chest__record-tools"><summary>固定、标记与更多轮次{chest.pinned || chest.mark ? ' · 有记录' : ''}</summary>
@@ -362,7 +369,8 @@ function ChestIterate({ value, choose }: Pick<Controls, 'value' | 'choose'>) {
   </div>
 }
 /** One action and one continuation; story/session owns the atomic record receipt. */
-export function LdctLab({ round, value, onChange, onSubmit, onBack, dataset = 'phantom', goal, concealTruth = false }: LdctLabProps) {
+export function LdctLab({ round, value, onChange, onSubmit, onBack, dataset = 'phantom', goal, concealTruth = false,
+  challengeKind, challenge, onChallengeAction }: LdctLabProps) {
   const [openedAt] = useState(() => performance.now())
   const lastClick = useRef(0)
   const canSubmit = useRef(false)
@@ -373,7 +381,14 @@ export function LdctLab({ round, value, onChange, onSubmit, onBack, dataset = 'p
     if (submitted.current || !Object.entries(patch).some(([key, next]) => value[key as keyof LdctLabState] !== next)) return
     change(patch); void playSfx('click')
   }
-  const ready = ldctExperimentReady(value, round)
+  const ordinaryReady = ldctExperimentReady(value, round)
+  const speedAvailable = Boolean(challengeKind && onChallengeAction)
+  const speedRunning = speedAvailable && challenge?.status === 'running'
+  const bypass = speedAvailable && challenge && challenge.status !== 'running'
+  const ready = !speedRunning && (ordinaryReady || Boolean(bypass))
+  const speedTap = () => {
+    if (!submitted.current && speedRunning && challenge) onChallengeAction?.({ type: 'challenge:tap', attempt: challenge.attempt, tap: challenge.acceptedTaps + 1 })
+  }
   const submit = (helped: boolean, pointer: boolean) => {
     if (submitted.current || !canSubmit.current || (pointer && !pointerReady.current)) return
     const record = createLdctRecord(helped ? { ...value, helped: true } : value, round, helped ? 'uncertain' : 'different', dataset)
@@ -387,14 +402,21 @@ export function LdctLab({ round, value, onChange, onSubmit, onBack, dataset = 'p
   return <section className="ldct-lab ldct-lab--short" aria-label="重建实验台" data-round={round} data-stage={LDCT_LAB_STAGES[round]} data-dataset={dataset}
     onPointerDownCapture={() => { const now = performance.now(); pointerReady.current = now - openedAt >= 900 && now - lastClick.current >= 300 }}
     onClickCapture={() => { const now = performance.now(); canSubmit.current = now - openedAt >= 900 && now - lastClick.current >= 300; lastClick.current = now }}
-    onClick={event => event.stopPropagation()} onKeyDownCapture={event => { if (event.repeat && (event.key === 'Enter' || event.key === ' ')) event.preventDefault() }}>
+    onClick={event => event.stopPropagation()} onKeyDownCapture={event => {
+      if (event.key !== 'Enter' && event.key !== ' ') return
+      if (speedRunning && (event.target as HTMLElement).closest('[data-ldct-fast-action]')) {
+        lastClick.current = performance.now(); canSubmit.current = false; pointerReady.current = false
+      }
+      if (event.repeat) event.preventDefault()
+    }}>
     <header className="ldct-lab__header"><div><span className="ldct-lab__eyebrow">{chestExposure ? '胸部数据 · 累计计数' : dataset === 'chest' ? '同次数据 · 不重新扫描' : '模体扫描 · 同一份投影'}</span><h2>{chestExposure ? '一份一份积累曝光' : dataset === 'chest' ? '把这一版留住，再看一眼' : LDCT_LAB_TITLES[round]}</h2></div>
       {onBack && <button className="ldct-lab__quiet" onClick={() => { onBack(); void playSfx('click') }}>先放一放</button>}</header>
+    {challengeKind && onChallengeAction && <LdctSpeedChallenge key={`${challengeKind}:${challenge?.attempt ?? 0}`} kind={challengeKind} challenge={challenge} onAction={onChallengeAction} />}
     {chestExposure
       ? <><p className="ldct-chest__goal">{goal || '点一下，加一份曝光；看看胸部图像哪里发生了变化。'}</p><ChestExposure value={value} choose={choose} /></>
       : dataset === 'chest'
-      ? <><p className="ldct-chest__goal">{goal || '改一轮看看；拿不准的地方，可以留给医师一起核查。'}</p><ChestIterate value={value} choose={choose} /></>
-      : <><Guidance round={round} goal={goal} concealTruth={concealTruth} /><Tool value={value} change={change} choose={choose} dataset={dataset} concealTruth={concealTruth} /></>}
+      ? <><p className="ldct-chest__goal">{goal || '改一轮看看；拿不准的地方，可以留给医师一起核查。'}</p><ChestIterate key={challenge?.attempt ?? 0} value={value} choose={choose} speedTap={speedTap} speedRunning={speedRunning} /></>
+      : <><Guidance round={round} goal={goal} concealTruth={concealTruth} /><Tool value={value} change={change} choose={choose} dataset={dataset} concealTruth={concealTruth} speedTap={speedTap} speedRunning={speedRunning} /></>}
     <footer className="ldct-lab__footer"><div className="ldct-lab__actions">
       <button className="ldct-lab__primary" disabled={!ready} onClick={event => submit(false, event.detail > 0)}>继续</button>
       <button onClick={event => submit(true, event.detail > 0)}>还没看明白，一起聊聊</button>

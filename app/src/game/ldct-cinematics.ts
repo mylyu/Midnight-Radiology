@@ -1,5 +1,5 @@
 export type LdctCinematic = {
-  id: 'meal' | 'phantom' | 'father-scan' | 'locked'
+  id: 'meal' | 'phantom' | 'father-scan' | 'locked' | 'director-caught' | 'director-review'
   image: string
   alt: string
   motion: 'push' | 'settle'
@@ -8,6 +8,7 @@ export type LdctCinematic = {
 
 export const LDCT_CINEMATIC_MEDIA_IDS = [
   'ldct_cg_meal_v1', 'ldct_cg_locked_v1', 'ldct_cg_phantom_v1', 'ldct_cg_father_scan_v1',
+  'ldct_cg_director_caught_v1', 'ldct_cg_director_review_v1',
 ] as const
 
 const meal: LdctCinematic = { id: 'meal', image: 'ldct_cg_meal_v1', motion: 'settle',
@@ -18,13 +19,14 @@ const fatherScan: LdctCinematic = { id: 'father-scan', image: 'ldct_cg_father_sc
   alt: '陆舟陪父亲进入CT室，在开始扫描前帮他安顿好。' }
 const locked: LdctCinematic = { id: 'locked', image: 'ldct_cg_locked_v1', motion: 'push', locked: true,
   alt: '两人靠近工作站查看扫描结果，迭代重建选配包没有开通。' }
+const caught: LdctCinematic = { id: 'director-caught', image: 'ldct_cg_director_caught_v1', motion: 'push',
+  alt: '主任站在控制室门口，指着还没登记的设备使用本。' }
+const review: LdctCinematic = { id: 'director-review', image: 'ldct_cg_director_review_v1', motion: 'settle',
+  alt: '主任在工作站坐下，用鼠标翻看胸部薄层序列。' }
 
 const scenes: Readonly<Record<string, LdctCinematic>> = {
   lf_arrive_3: meal,
-  lf_final_lu_0: meal,
-  lf_final_lu_1: meal,
-  lf_final_lu_2: meal,
-  lf_plan_2: phantom,
+  lf_plan_3: phantom,
   lf_phantom_0: phantom,
   lf_phantom_1: phantom,
   lf_phantom_2: phantom,
@@ -35,6 +37,20 @@ const scenes: Readonly<Record<string, LdctCinematic>> = {
   lf_license_2: locked,
   lf_license_3: locked,
   lf_license_choice: locked,
+  lf_caught_0: caught,
+  lf_caught_1: caught,
+  lf_caught_2: caught,
+  lf_caught_3: caught,
+  lf_caught_4: caught,
+  lf_caught_choice: caught,
+  lf_pitch_1: review,
+  lf_pitch_2: review,
+  lf_pitch_3: review,
+  lf_pitch_4: review,
+  lf_director_review_0: review,
+  lf_director_review_1: review,
+  lf_director_review_2: review,
+  lf_director_review_3: review,
 }
 
 /** Key the mounted component by scene.id, not the dialogue node: adjacent lines

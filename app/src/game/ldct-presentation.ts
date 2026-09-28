@@ -27,6 +27,10 @@ export const LDCT_SCENE_PROPS: Record<string, LdctSceneProp> = {
   lf_chat_he_0: meal,
   lf_chat_he_1: meal,
   lf_record_echo: { kind: 'notes', image: 'item_notebook', caption: '版本和存疑处，都留下' },
+  lf_fine_0: { kind: 'receipt', caption: '罚款回执 · 100金币' },
+  lf_director_review_5: { kind: 'films', image: 'item_film', caption: '原片和研究对照，都留下' },
+  lf_wrap_0: { kind: 'receipt', caption: '陆叔的复查安排 · 已发到手机' },
+  // Frozen v4 ending still refers to these props when resuming an archived run.
   lf_depart_0: { kind: 'films', image: 'item_film', caption: '带去复核的完整资料' },
   lf_weeks_1: { kind: 'receipt', caption: '下次复查的日期' },
 }

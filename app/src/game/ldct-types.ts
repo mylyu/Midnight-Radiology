@@ -1,5 +1,6 @@
 import type { LdctLabRecord, LdctLabState, LdctLabRound } from './ldct-experiments'
 import type { LdctResearchDraft, LdctResearchStage } from './ldct-research'
+import type { LdctSpeedChallenge, LdctSpeedCommand, LdctSpeedKind } from './ldct-speed-challenge'
 
 export type LdctPerson = 'luzhou' | 'lei' | 'he'
 export type LdctProduct = 'coffee' | 'milktea' | 'snack'
@@ -21,6 +22,8 @@ export interface LdctProgress {
   receipts: string[]
   /** Timestamp committed before the shared 3s acquisition starts; no audio gate. */
   scanSessions?: Record<string, { startedAt: number; completed: boolean }>
+  /** Optional manual contests; timers never create reconstruction progress. */
+  speedChallenges?: Partial<Record<LdctSpeedKind, LdctSpeedChallenge>>
   /** Dataset replacement does not map an old marker onto different anatomy. */
   chestSourceVersion?: string
   previousChest?: {
@@ -54,6 +57,9 @@ export interface LdctChoice {
   requires?: string
   complete?: string
   decision?: { key: string; value: string }
+  /** Charged atomically with the selected branch; never during rendering. */
+  goldCost?: number
+  costReceipt?: string
 }
 
 export interface LdctNode {
@@ -93,6 +99,7 @@ export interface LdctStoryShelf {
 }
 
 export type LdctAction =
+  | (LdctSpeedCommand & { nodeId: string; now: number })
   | { type: 'scan:start' | 'scan:complete'; nodeId: string; now: number }
   | { type: 'advance'; nodeId: string }
   | { type: 'choose'; nodeId: string; choiceId: string }

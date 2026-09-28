@@ -110,6 +110,16 @@
 .ldct-chest__round-progress{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:12px;color:#b5c8d9}
 .ldct-chest__round-progress progress{height:6px;width:90px;max-width:40%;accent-color:#5eead4}
 .ldct-exposure__units{gap:3px}
+.ldct-speed{border:1px solid #49677e;border-radius:9px;background:#14263c;padding:10px 12px;margin:10px 0 14px;font-size:12px;line-height:1.5}
+.ldct-speed__heading{display:flex;align-items:center;justify-content:space-between;gap:12px;color:#99f6e4}
+.ldct-speed__heading output{font-variant-numeric:tabular-nums;font-size:20px}
+.ldct-speed p{margin:6px 0}
+.ldct-speed>progress{display:block;width:100%;height:6px;margin-top:7px;accent-color:#5eead4}
+.ldct-speed__choices{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.ldct-speed button{min-height:36px;padding:7px 10px;font-size:12px;line-height:1.5}
+.ldct-speed small,.ldct-speed__note{color:#a6b8ce;font-size:11px}
+.ldct-speed[data-challenge-status="won"]{border-color:#4dbe9f}
+.ldct-speed[data-challenge-status="expired"],.ldct-speed[data-challenge-status="stopped"]{border-color:#92734c}
 @media(max-width:600px){
  .ldct-lab__focus-layout{grid-template-columns:minmax(0,1fr) 76px;gap:10px;max-width:380px}
  .ldct-lab__focus-layout>.ldct-lab__reference{font-size:10px;gap:5px}
@@ -127,6 +137,12 @@
  .ldct-chest .ldct-chest__record-tools button{font-size:12px}
 }
 @media(orientation:landscape) and (max-height:560px){
+ .ldct-speed{display:flex;align-items:center;flex-wrap:wrap;gap:6px 12px;padding:8px 10px;margin:8px 0}
+ .ldct-speed__heading{flex:0 0 auto;gap:8px}
+ .ldct-speed>p{flex:1 1 auto;margin:0;font-size:11px}
+ .ldct-speed__choices{margin:0;gap:6px}
+ .ldct-speed__choices button,.ldct-speed>.ldct-lab__quiet{padding:7px 10px;min-height:34px}
+ .ldct-speed>progress{flex:1 1 100%;height:5px}
  .ldct-lab__focus-layout{grid-template-columns:minmax(0,260px) 105px;gap:16px}
  .ldct-lab__focus-layout .ldct-lab__reference small{display:none}
  .ldct-backproject__progress{margin-top:8px;font-size:11px}

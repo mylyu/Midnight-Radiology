@@ -11,6 +11,8 @@ export const LDCT_BADGES = {
   ldct_first_comparison: { name: '第一份对照', icon: '🔍', desc: '亲手试过或请陆舟演示一次重建对照；旧版已得奖励保留，不重复发放。' },
   ldct_keep_counterexample: { name: '那张也留着', icon: '📎', desc: '旧四段版收藏，保留已获得记录；本版不再要求盲评。' },
   ldct_noise_beyond: { name: '噪声之外', icon: '◐', desc: '把故事走到结尾。不是选出最光滑的图片才算完成；旧版收藏保留。' },
+  ldct_fast_backproject: { name: '手比嘴快', icon: '⚡', desc: '在15秒内手动铺回全部投影方向。只记这次手速，不评价算法或病情。' },
+  ldct_fast_iteration: { name: '再来一轮', icon: '🔄', desc: '在10秒内手动推进12轮迭代。快不等于更准，原片照样留着。' },
 }
 export const LDCT_MEDIA_IDS = [
   ...LDCT_CINEMATIC_MEDIA_IDS,
@@ -44,7 +46,8 @@ export function getLdctChoices(state: GameState): LdctChoice[] {
   return (getLdctNode(state).choices ?? []).filter(c => (!c.unless || !matches(c.unless)) && (!c.requires || matches(c.requires)))
 }
 export const LDCT_MANUAL = [
-  { title: '先试模体，再看片子', text: '第一晚，两人搬出实体模体，借科室安排的空档试扫，再比较不同信号和重建方法。次日医师结合陆叔的情况确认方案；模体结果不是给患者套用的剂量处方。首次看片后的加曝光只在电脑演示里发生，不让父亲反复补扫。第一晚结束后可停留，主动进入第二天。' },
+  { title: '先试模体，再看片子', text: '第一晚，两人搬出实体模体，私下占了质控后的空档试扫，机时没有报备；这件事会被主任发现。次日患者的检查仍由医师安排，研究数据也另有授权。模体结果不是给患者套用的剂量处方；后续加曝光只在电脑演示里发生，不让父亲反复补扫。' },
+  { title: '和陆舟比手速', text: '反投影和迭代各有一场可选短挑战，点“开始计时”才开表。每按一次才推进，不自动播放。超时停在当前图，可以慢慢继续或重试；不会扣属性、阻断剧情。成功各记一枚勋章，同一枚不重复发。这里加快的是教学演示，不是实际计算性能，也不是扫描曝光。' },
   { title: '正弦图：换个方向看同一个东西', text: '横向是角度，纵向是探测器位置。点一个结构，只标它在完整投影中的轨迹；圆底和其他结构都还在。球管转，物体没有跟着跑。' },
   { title: '不滤波，也真的铺回去了', text: '每点一次，再铺回一组方向；不操作就停在当前结果。直接反投影把各方向的投影沿原路摊回去。大圆底的贡献叠在一起，结果会很糊；旁边保留原物体。直接反投影使用单独固定显示范围，避免整体过亮；它并未额外锐化。' },
   { title: '滤波器的脾气', text: '不滤波的响应是平直的；Ram-Lak（Ramp）是斜坡，其余选项用不同窗压低高频。滤的是同一份投影，再反投影，不是给成片套美颜。响应曲线和全部选项可展开看，不要求逐项试完。' },
@@ -57,5 +60,5 @@ export const LDCT_MANUAL = [
 ]
 export const LDCT_PARTS = [
   { title: '第一晚 · 先拿模体试试', status: '搬模体、试扫，再比较投影与重建' },
-  { title: '第二天 · 把原片留下', status: '从首张胸部片比较光子，再尝试同份数据的迭代，接几周后的回响' },
+  { title: '第二天 · 把原片留下', status: '比较光子、迭代与相邻层，直到控制室的门被推开' },
 ]

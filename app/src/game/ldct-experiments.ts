@@ -47,6 +47,8 @@ export type LdctLabRecord = {
   signal: LdctSignal
   iterationStep: number
   helped: boolean
+  /** Explicit untimed/finished contest continuation, not a request for help. */
+  practice?: true
   verdict: 'different' | 'uncertain'
   sourceVersion: typeof LDCT_PHANTOM_VERSION | typeof LDCT_CHEST_VERSION | typeof LDCT_EXPOSURE_VERSION | typeof LDCT_DEEP_EXPOSURE_VERSION | typeof LDCT_DEEP_CHEST_VERSION | typeof LDCT_NOISY_EXPOSURE_VERSION | typeof LDCT_NOISY_CHEST_VERSION | typeof LDCT_CHEST_LEGACY_VERSIONS[number] | 'ldct-short-v1' | 'ldct-projection-v2'
   seed: typeof LDCT_DATASET_SEEDS[ProjectionDataset] | typeof LDCT_CHEST_SEED
@@ -76,6 +78,7 @@ export type LdctLabState = {
   divider: number
   mark: LdctMark | null
   helped: boolean
+  practice?: true
   saved: LdctLabRecord | null
   chestDataVersion?: typeof LDCT_NOISY_DATA_VERSION
   chest?: LdctChestDraft
@@ -124,7 +127,7 @@ export function isValidLdctRecord(record: LdctLabRecord, round: LdctLabRound): b
     validStructure(record.structure) && finiteBetween(record.angle, 0, 179) &&
     integerBetween(record.bpStep, 0, LDCT_BP_COUNTS.length - 1) && filters.includes(record.filter) &&
     signals.includes(record.signal) && integerBetween(record.iterationStep, 0, LDCT_ITERATIONS.length - 1) &&
-    typeof record.helped === 'boolean' && ['different', 'uncertain'].includes(record.verdict) &&
+    typeof record.helped === 'boolean' && (record.practice === undefined || (record.practice === true && (round === 2 || round === 5))) && ['different', 'uncertain'].includes(record.verdict) &&
     (record.dataset === undefined || ['phantom', 'face', 'nut', 'chest', 'sparse-filter-v1', 'full-projection-v2'].includes(record.dataset)) &&
     (record.dataset !== 'chest' || chestRecord) &&
     (record.chestDataVersion === undefined || (record.chestDataVersion === LDCT_NOISY_DATA_VERSION && chestRecord)) &&
@@ -147,7 +150,7 @@ export function labStateValid(value: LdctLabState, round: LdctLabRound): boolean
     Array.isArray(value.seenIterations) && value.seenIterations.every(n => integerBetween(n, 0, LDCT_ITERATIONS.length - 1)) &&
     finiteBetween(value.divider, 0, 100) &&
     (value.mark === null || (finiteBetween(value.mark?.x, 0, 100) && finiteBetween(value.mark?.y, 0, 100))) &&
-    typeof value.helped === 'boolean' && (value.saved === null || (isValidLdctRecord(value.saved, round) && value.saved.chestDataVersion === value.chestDataVersion)) &&
+    typeof value.helped === 'boolean' && (value.practice === undefined || (value.practice === true && (round === 2 || round === 5))) && (value.saved === null || (isValidLdctRecord(value.saved, round) && value.saved.chestDataVersion === value.chestDataVersion)) &&
     (value.chestDataVersion === undefined || (value.chestDataVersion === LDCT_NOISY_DATA_VERSION &&
       ((round === 4 && integerBetween(value.exposureCount, 1, 13) && integerBetween(value.exposureStep, 0, 3)) ||
        (round === 5 && value.chest !== undefined && integerBetween(value.iterationRound, 0, 12))))) &&
@@ -160,7 +163,7 @@ export function labStateValid(value: LdctLabState, round: LdctLabRound): boolean
 
 export function ldctExperimentReady(state: LdctLabState, round: LdctLabRound): boolean {
   if (!labStateValid(state, round)) return false
-  if (state.helped) return true
+  if (state.helped || state.practice) return true
   switch (round) {
     case 1: return state.seenStructures.length > 0 || state.seenAngles.length > 0
     case 2: return state.bpCount !== undefined ? state.bpCount > 1 : state.bpStep > 0
@@ -184,6 +187,7 @@ export function createLdctRecord(state: LdctLabState, round: LdctLabRound, verdi
       : LDCT_PHANTOM_VERSION,
     seed: dataset === 'chest' ? LDCT_CHEST_SEED : LDCT_DATASET_SEEDS[dataset],
     dataset,
+    ...(state.practice ? { practice: true as const } : {}),
     ...(state.chestDataVersion !== undefined ? { chestDataVersion: state.chestDataVersion } : {}),
     ...(dataset === 'chest' && round === 5 ? { chest: { ...chest, pinned: chest.pinned && { ...chest.pinned }, mark: chest.mark && { ...chest.mark } } } : {}),
     ...(dataset === 'chest' && round === 4 ? { exposureStep: state.exposureStep } : {}),

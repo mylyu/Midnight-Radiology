@@ -8,6 +8,7 @@ import { LDCT_DEEP_CHEST_VERSION } from './ldct-deep-experiments'
 import { LDCT_NOISY_DATA_VERSION, LDCT_NOISY_CHEST_VERSION } from './ldct-noisy-chest'
 import { ldctSceneCue } from './ldct-presentation'
 import { getLdctScanConfig } from './ldct-scans'
+import { getLdctSpeedKind, LDCT_SPEED_CHALLENGES, startLdctSpeed, stopLdctSpeedChallenges, tapLdctSpeed, validLdctSpeedTime } from './ldct-speed-challenge'
 
 /** Pure transitions: the facade, selected slot, consumption and receipts save once. */
 export function getLdctShelf(state: GameState): LdctStoryShelf | undefined {
@@ -74,7 +75,13 @@ export function initializeLdct(state: GameState, replay = false): GameState {
     const updatedShelf = getLdctShelf(state)!
     const father = updatedShelf.slots.father
     if (father) {
-      const extended = extendLiveDraft(father)
+      let extended = extendLiveDraft(father)
+      // Unfinished preview saves in the removed epilogue join the new ending.
+      // Completed runs and frozen v4 saves keep their own ending/history.
+      if (father.openingRevision === 5 && !father.finished && !father.labReturn &&
+        /^lf_(clinical(?:_preview|_\d+)|depart_\d+|weeks_\d+|final_lu_\d+)$/.test(father.nodeId))
+        extended = { ...extended, phase: 'story', nodeId: 'lf_caught_0', revision: father.revision + 1,
+          reply: undefined, decisions: { ...father.decisions, previous_ending_node: father.nodeId } }
       if (extended !== father) state = updatedShelf.active === 'father' ? patch(state, extended)
         : withShelf(state, { ...updatedShelf, slots: { ...updatedShelf.slots, father: extended } })
     }
@@ -98,6 +105,8 @@ export function selectLdctStory(state: GameState, id: LdctStoryShelf['active'], 
     start: { gold: state.gold, skill: state.skill, heart: state.heart, wealth: state.wealth } })
 }
 export function openLdctShelf(state: GameState): GameState {
+  const progress = getLdctProgress(state)
+  if (progress) state = patch(state, stopLdctSpeedChallenges(progress))
   const shelf = getLdctShelf(state)
   return shelf ? withShelf(state, { ...shelf, active: undefined }) : initializeLdct(state)
 }
@@ -105,6 +114,7 @@ function changed(p: LdctProgress, fields: Partial<LdctProgress>): LdctProgress {
   return { ...p, ...fields, revision: p.revision + 1 }
 }
 function move(state: GameState, p: LdctProgress, id: string): GameState {
+  p = stopLdctSpeedChallenges(p)
   const node = getLdctSteps(p)[id]
   if (!node || p.storyId !== 'father' || !id.startsWith('lf_')) return state
   if (node.enterLab) {
@@ -163,6 +173,36 @@ export function ldctCanRest(state: GameState) {
 export function ldctAction(state: GameState, action: LdctAction): GameState {
   const p = getLdctProgress(state)
   if (p?.storyId !== 'father') return state
+  if (action.type === 'challenge:start' || action.type === 'challenge:tap' || action.type === 'challenge:expire' || action.type === 'challenge:stop' || action.type === 'challenge:practice') {
+    const kind = getLdctSpeedKind(p)
+    if (!kind || action.nodeId !== p.nodeId || !validLdctSpeedTime(action.now)) return state
+    const current = p.speedChallenges?.[kind]
+    if (action.type === 'challenge:start') {
+      if (current?.status === 'running') return state
+      const challenge = startLdctSpeed(kind, p.nodeId, action.now, current)
+      const draft = { ...p.labDraft, saved: null, helped: false, practice: undefined,
+        ...(kind === 'backproject' ? { bpCount: 1 } : { iterationRound: 0, chest: { ...p.labDraft.chest!, compareFbp: false, pinned: null, mark: null } }) }
+      return patch(state, { ...p, labDraft: draft, speedChallenges: { ...p.speedChallenges, [kind]: challenge } })
+    }
+    if (action.type === 'challenge:practice') {
+      const challenge = { ...(current ?? startLdctSpeed(kind, p.nodeId, action.now)), status: 'practice' as const }
+      return patch(state, { ...p, labDraft: { ...p.labDraft, practice: true }, speedChallenges: { ...p.speedChallenges, [kind]: challenge } })
+    }
+    if (!current || current.status !== 'running') return state
+    if (action.type === 'challenge:tap') {
+      const challenge = tapLdctSpeed(kind, current, action.now, action.attempt, action.tap)
+      if (challenge === current) return state
+      const badge = LDCT_SPEED_CHALLENGES[kind].badge
+      const next = challenge.status === 'won' && !state.badges.includes(badge) ? { ...state, badges: [...state.badges, badge] } : state
+      return patch(next, { ...p, speedChallenges: { ...p.speedChallenges, [kind]: challenge },
+        labDraft: challenge.acceptedTaps === current.acceptedTaps ? { ...p.labDraft, ...(challenge.status === 'expired' ? { practice: true as const } : {}) } : { ...p.labDraft, saved: null,
+          ...(kind === 'backproject' ? { bpCount: challenge.progress } : { iterationRound: challenge.progress, chest: { ...p.labDraft.chest!, compareFbp: false } }) } })
+    }
+    if (action.type === 'challenge:expire' && action.now < current.deadline) return state
+    if (action.now < current.startedAt) return state
+    return patch(state, { ...p, labDraft: { ...p.labDraft, practice: true }, speedChallenges: { ...p.speedChallenges, [kind]: { ...current,
+      status: action.type === 'challenge:expire' ? 'expired' : 'stopped' } } })
+  }
   const scan = getLdctScanConfig(p.nodeId, p.openingRevision ?? 4)
   if (action.type === 'scan:start' || action.type === 'scan:complete') {
     if (!scan || p.phase !== 'story' || p.reply || action.nodeId !== p.nodeId || !Number.isFinite(action.now) || action.now <= 0) return state
@@ -195,15 +235,24 @@ export function ldctAction(state: GameState, action: LdctAction): GameState {
     const choice = getLdctChoices(state).find(c => c.id === action.choiceId)
     if (!choice) return state
     let next = completed(p, choice.complete)
+    const charge = choice.goldCost && !p.receipts.includes(choice.costReceipt ?? `choice:${node.id}:${choice.id}`)
+      ? choice.goldCost : 0
+    if (charge > state.gold) return state
+    if (charge) next = { ...next, receipts: [...next.receipts, choice.costReceipt ?? `choice:${node.id}:${choice.id}`] }
     if (choice.decision) next = { ...next, decisions: { ...next.decisions, [choice.decision.key]: choice.decision.value } }
-    return move(state, next, choice.next)
+    return move(charge ? { ...state, gold: state.gold - charge } : state, next, choice.next)
   }
   if (action.type === 'lab:update') {
     if (p.phase !== 'lab' || !labStateValid(action.value, p.labRound)) return state
     if (action.value.chestDataVersion !== p.labDraft.chestDataVersion) return state
+    if (action.value.practice !== p.labDraft.practice) return state
     if (p.labRound === 4 && (action.value.exposureStep !== undefined) !== (getLdctLabDataset(state) === 'chest')) return state
     if ((p.labDraft.exposureCount !== undefined) !== (action.value.exposureCount !== undefined)
       || (p.labDraft.iterationRound !== undefined) !== (action.value.iterationRound !== undefined)) return state
+    const kind = getLdctSpeedKind(p)
+    if (kind && p.speedChallenges?.[kind]?.status === 'running' &&
+      (action.value.bpCount !== p.labDraft.bpCount || action.value.bpStep !== p.labDraft.bpStep ||
+       action.value.iterationRound !== p.labDraft.iterationRound || action.value.iterationStep !== p.labDraft.iterationStep)) return state
     return patch(state, { ...p, labDraft: action.value })
   }
   if (action.type === 'lab:submit') {
@@ -233,7 +282,7 @@ export function ldctAction(state: GameState, action: LdctAction): GameState {
   if (action.type === 'lab:close') {
     if (p.phase !== 'lab') return state
     if (p.labReturn) return move(state, { ...p, labReturn: undefined }, p.labReturn)
-    return patch(state, changed(p, { phase: 'story' }))
+    return patch(state, changed(stopLdctSpeedChallenges(p), { phase: 'story' }))
   }
   if (action.type === 'gift') {
     if (p.nodeId !== action.nodeId || !ldctGiftChoices(state).some(g => g.person === action.person && g.item === action.item)) return state

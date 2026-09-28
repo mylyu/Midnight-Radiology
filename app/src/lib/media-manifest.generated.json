@@ -911,6 +911,16 @@
       "bytes": 103186,
       "type": "image"
     },
+    "assets/media/ldct_cg_director_caught_v1.40c2f7348f97d2b0.webp": {
+      "sha256": "40c2f7348f97d2b0e2015b0e6f822fe5b03b0b3d3f346544e7be339921ce83e1",
+      "bytes": 98254,
+      "type": "image"
+    },
+    "assets/media/ldct_cg_director_review_v1.bf5f33cf3b9d20b8.webp": {
+      "sha256": "bf5f33cf3b9d20b8b2e5d07772aea36bbc543dff52b3acb9fc8cb01f875baaf4",
+      "bytes": 136826,
+      "type": "image"
+    },
     "assets/media/ldct_cg_father_scan_v1.5616cf9abf74840e.webp": {
       "sha256": "5616cf9abf74840e4fc21e4f38c2c479af5db1f175dc8e267bbeed24aeca12fd",
       "bytes": 105386,
@@ -1694,11 +1704,13 @@
       "assets/media/bg_breakroom.6e71e372d1ef1b9d.webp",
       "assets/media/bg_corridor.970560e65398bdf4.webp",
       "assets/media/bg_ctcontrol_day_ready.b611bff5d0912f7b.webp",
+      "assets/media/bg_ctcontrol_ready.10ebe6364699f572.webp",
       "assets/media/bg_waiting.e9b68c8f6d71b8e7.webp",
       "assets/media/ch2_bg_breakroom_day.194c9d3ccafbe9ff.webp",
       "assets/media/ch2_ct_motion_bed_v1.f1eaee8617eb5678.webp",
       "assets/media/ch2_ct_motion_room_v1.3e7727b60fc9d2ab.webp",
       "assets/media/ch2_ct_scan_room_pixel_v2.c0cd3195ba72e15e.webp",
+      "assets/media/ch2_pixel_char_director.5c2ab917a089a1f0.webp",
       "assets/media/ch2_pixel_char_he.8f56bc6a4628a25e.webp",
       "assets/media/ch2_pixel_char_luzhou_f.5e1498bbdd027005.webp",
       "assets/media/ch2_pixel_char_luzhou_m.818dc622d0fb6918.webp",
@@ -1709,6 +1721,8 @@
       "assets/media/item_notebook.d2d4179f08903ea1.webp",
       "assets/media/item_snack.f16943baf3b6bdb3.webp",
       "assets/media/ldct_bg_restaurant.1e0f0d5b98e52a90.webp",
+      "assets/media/ldct_cg_director_caught_v1.40c2f7348f97d2b0.webp",
+      "assets/media/ldct_cg_director_review_v1.bf5f33cf3b9d20b8.webp",
       "assets/media/ldct_cg_father_scan_v1.5616cf9abf74840e.webp",
       "assets/media/ldct_cg_locked_v1.865e915000e14317.webp",
       "assets/media/ldct_cg_meal_v1.9681460e975a2b10.webp",

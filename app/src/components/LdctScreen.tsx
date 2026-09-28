@@ -21,6 +21,7 @@ import { LdctLab } from './LdctLab'
 import { LdctSceneMedia } from './LdctSceneMedia'
 import { LdctCinematic } from './LdctCinematic'
 import { getLdctCinematic } from '../game/ldct-cinematics'
+import { getLdctSpeedKind } from '../game/ldct-speed-challenge'
 import { useLdctSceneSound } from '../hooks/use-ldct-scene-sound'
 import { ldctSceneCue } from '../game/ldct-presentation'
 import { DialogueStage, DialogueShade, DialogueHeader, DialoguePortrait, DialoguePanel, DialogueChoices, DialogueChoice } from './DialogueScene'
@@ -113,6 +114,8 @@ function LdctStoryScreen({ state, update, onExit, renderText }: Props) {
   const sprite = node.sprite === 'me' ? `char_${state.gender}` : node.sprite === 'luzhou' || node.sprite === '@luzhou'
     ? `ch2_pixel_char_luzhou_${state.gender}` : node.sprite
   const settled = p.phase === 'settle'
+  const speedKind = getLdctSpeedKind(p)
+  const newEnding = !!p.decisions.director_route
   const dialogue = useLdctDialogue({ state, renderText, blocked: !!overlay || !!scan || p.phase !== 'story', presentation,
     onAdvance: () => interact(p.reply ? { type: 'reply:close' } : { type: 'advance', nodeId: p.nodeId }),
     onChoose: id => interact({ type: 'choose', nodeId: p.nodeId, choiceId: id }),
@@ -130,21 +133,26 @@ function LdctStoryScreen({ state, update, onExit, renderText }: Props) {
     <FullscreenBtn />
     <button className={menuClass} data-ldct-switch onClick={e => { e.stopPropagation(); update(openLdctShelf) }}>本篇入口</button>
     {legacyOrder && <button className={menuClass} data-ldct-new-order onClick={e => { e.stopPropagation(); ui('replay') }}>新版开场</button>}
-    <button className={menuClass} onClick={e => { e.stopPropagation(); onExit() }}>💾 回大厅</button>
+    <button className={menuClass} onClick={e => { e.stopPropagation();
+      if (speedKind && p.speedChallenges?.[speedKind]?.status === 'running') act({ type: 'challenge:stop', nodeId: p.nodeId, now: Date.now() })
+      onExit()
+    }}>💾 回大厅</button>
   </>
   return <DialogueStage ref={stage} className="ldct-root" data-ldct-screen data-ldct-node={p.nodeId} data-ldct-phase={p.phase}
     onPointerDownCapture={dialogue.guard.pointerDown} onPointerCancelCapture={dialogue.guard.cancel}
     onKeyDownCapture={dialogue.guard.keyDown} onClickCapture={dialogue.guard.click} onClick={dialogue.advance}>
     <SceneBackground name={node.bg} /><DialogueShade />
-    <DialogueHeader title={`◐ 噪声之外 · ${p.finished ? '饭还热着' : node.part === 2 ? legacyOrder ? '第二晚' : '第二天' : node.part === 3 ? '几周后' : '第一晚'}${legacyOrder ? ' · 旧顺序存档' : ''}`}><span>💰 {state.gold}</span>{menu}</DialogueHeader>
+    <DialogueHeader title={`◐ 噪声之外 · ${p.finished ? '本篇完' : node.part === 2 ? legacyOrder ? '第二晚' : '第二天' : node.part === 3 ? legacyOrder ? '几周后' : '下班之前' : '第一晚'}${legacyOrder ? ' · 旧顺序存档' : ''}`}><span>💰 {state.gold}</span>{menu}</DialogueHeader>
     {p.phase === 'lab' ? <div className="ldct-lab-wrap" onClick={e => e.stopPropagation()}>
       <LdctLab key={`${p.storyId}:${p.labRound}:${p.labReturn ?? 'live'}`} round={p.labRound} value={p.labDraft}
         dataset={getLdctLabDataset(state)} goal={node.goal}
+        challengeKind={speedKind} challenge={speedKind ? p.speedChallenges?.[speedKind] : undefined}
+        onChallengeAction={command => act({ ...command, nodeId: p.nodeId, now: Date.now() })}
         onChange={value => act({ type: 'lab:update', value })}
         onSubmit={record => act({ type: 'lab:submit', record })}
         onBack={() => act({ type: 'lab:close' })} /></div>
       : settled ? <main className="ldct-settlement" data-ldct-settlement onClick={e => e.stopPropagation()}>
-        <p className="text-teal-200 text-sm">{p.finished ? '本篇完 · 后面的复查，叔叔自己记着了' : '第一晚 · 先歇一歇'}</p><h1>{p.finished ? '这顿饭，终于吃上了' : legacyOrder ? '电脑留在这里，明晚接着看' : '试扫记录留好，明天看结果'}</h1>
+        <p className="text-teal-200 text-sm">{p.finished ? newEnding ? '本篇完 · 原片留下，复查也记下' : '本篇完 · 旧版记录保留' : '第一晚 · 先歇一歇'}</p><h1>{p.finished ? newEnding ? p.decisions.director_route === 'clever' ? '罚款没开，坑先挖了' : '这一百，记住了' : '这篇故事已经走完' : legacyOrder ? '电脑留在这里，明晚接着看' : '试扫记录留好，明天看结果'}</h1>
         <p className="text-slate-300 text-sm">{node.text}</p>
         <div className="ldct-metrics">{(Object.keys(icons) as (keyof typeof icons)[]).map(key => <section key={key}>
           <small>{icons[key]}</small><p>{state[key]} <span className="text-xs text-teal-200">本次开始以来 {state[key] - p.start[key] >= 0 ? '+' : ''}{state[key] - p.start[key]}</span></p>
@@ -255,7 +263,9 @@ function useLdctDialogue({ state, blocked, presentation, renderText, onAdvance, 
     speaker={speakerMeta && { ...speakerMeta, name: speaker === 'me' ? state.gender === 'f' ? '林小满' : '陈一帆' : speakerMeta.name }}>
     {done && ready && hasChoices && <DialogueChoices>
       {choices.map((choice, i) => <DialogueChoice key={choice.id} data-dialogue-choice={i} data-ldct-choice={choice.id}
-        onClick={() => { if (!blocked && choiceGuard.accept(i)) onChoose(choice.id) }}>{renderText(choice.text)}</DialogueChoice>)}
+        disabled={!!choice.goldCost && state.gold < choice.goldCost} className="disabled:opacity-50 disabled:cursor-not-allowed"
+        onClick={() => { if (!blocked && choiceGuard.accept(i)) onChoose(choice.id) }}>{renderText(choice.text)}
+        {!!choice.goldCost && state.gold < choice.goldCost && <small>（金币不足，可以先和主任谈谈）</small>}</DialogueChoice>)}
       {gifts.map((gift, i) => <DialogueChoice key={gift.item} data-dialogue-choice={choices.length+i}
         onClick={() => { if (!blocked && choiceGuard.accept(choices.length+i)) onGift(gift.person, gift.item) }}>{renderText(gift.text)}</DialogueChoice>)}
       {restAvailable && <DialogueChoice data-dialogue-choice={choices.length+gifts.length}
