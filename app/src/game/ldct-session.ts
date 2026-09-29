@@ -1,4 +1,4 @@
-import { createLdctLabState, createLdctRecord, isValidLdctRecord, labStateValid } from './ldct-experiments'
+import { createLdctLabState, createLdctPhantomPreparationState, createLdctRecord, isValidLdctRecord, labStateValid } from './ldct-experiments'
 import { getLdctChoices, getLdctNode, getLdctSteps } from './ldct'
 import { LDCT_FATHER_STORY, LDCT_FATHER_LAB_RETURNS, LDCT_FATHER_LAB_DATASETS, LDCT_NEXT_EVENING } from './ldct-father-story'
 import type { LdctAction, LdctPerson, LdctProduct, LdctProgress, LdctStoryShelf } from './ldct-types'
@@ -9,6 +9,8 @@ import { LDCT_NOISY_DATA_VERSION, LDCT_NOISY_CHEST_VERSION } from './ldct-noisy-
 import { ldctSceneCue } from './ldct-presentation'
 import { getLdctScanConfig } from './ldct-scans'
 import { getLdctSpeedKind, LDCT_SPEED_CHALLENGES, startLdctSpeed, stopLdctSpeedChallenges, tapLdctSpeed, validLdctSpeedTime } from './ldct-speed-challenge'
+import { canAdoptPhantomPreparation, LDCT_PHANTOM_PREPARATION_RETURNS } from './ldct-phantom-story'
+import { LDCT_PHANTOM_EXPOSURE_VERSION } from './ldct-phantom-exposure'
 
 /** Pure transitions: the facade, selected slot, consumption and receipts save once. */
 export function getLdctShelf(state: GameState): LdctStoryShelf | undefined {
@@ -20,6 +22,8 @@ export function getLdctProgress(state: GameState): LdctProgress | undefined {
 }
 export function getLdctLabDataset(state: GameState): 'phantom' | 'chest' {
   const p = getLdctProgress(state)
+  if (p?.labDraft.phantomDataVersion === LDCT_PHANTOM_EXPOSURE_VERSION) return 'phantom'
+  if (p?.phantomPreparation && !p.labReturn) return 'phantom'
   if (p?.openingRevision !== 5 && p?.labRound === 4) return 'phantom'
   // Archived round4 records reopen their original object, never relabelled as chest.
   if (p?.labRound === 4 && p.labDraft.exposureStep === undefined) return 'phantom'
@@ -76,6 +80,10 @@ export function initializeLdct(state: GameState, replay = false): GameState {
     const father = updatedShelf.slots.father
     if (father) {
       let extended = extendLiveDraft(father)
+      // Only an unstarted trial adopts the new order without resetting any work.
+      if (father.openingRevision === 5 && !father.phantomPreparation && !father.finished &&
+        !father.labReturn && !Object.keys(father.records).length && canAdoptPhantomPreparation(father.nodeId))
+        extended = { ...extended, phantomPreparation: 1 }
       // Unfinished preview saves in the removed epilogue join the new ending.
       // Completed runs and frozen v4 saves keep their own ending/history.
       if (father.openingRevision === 5 && !father.finished && !father.labReturn &&
@@ -98,8 +106,8 @@ export function selectLdctStory(state: GameState, id: LdctStoryShelf['active'], 
   state = initializeLdct(state)
   const previous = getLdctShelf(state)!.slots[id]
   if (previous && !replay) return patch(state, previous)
-  if (previous && previous.openingRevision !== 5) state = withShelf(state, { ...getLdctShelf(state)!, previousFather: previous })
-  return patch(state, { version: 1, openingRevision: 5, storyId: id, run: (previous?.run ?? 0) + 1,
+  if (previous && !previous.phantomPreparation) state = withShelf(state, { ...getLdctShelf(state)!, previousFather: previous })
+  return patch(state, { version: 1, openingRevision: 5, phantomPreparation: 1, storyId: id, run: (previous?.run ?? 0) + 1,
     seed: 2258, chestSourceVersion: LDCT_NOISY_DATA_VERSION, phase: 'story', nodeId: story.start, revision: 0, fatigue: 2, completed: [],
     decisions: {}, receipts: [], gifts: [], labRound: 1, labDraft: createLdctLabState(1), records: {},
     start: { gold: state.gold, skill: state.skill, heart: state.heart, wealth: state.wealth } })
@@ -123,10 +131,13 @@ function move(state: GameState, p: LdctProgress, id: string): GameState {
     // An older save may retain a draft while its cursor sits before the lab.
     // Matching the round alone would pair a new first FBP with old lab images.
     const staleChest = sameRound && dataset === 'chest' && p.labDraft.chestDataVersion !== LDCT_NOISY_DATA_VERSION
+    const phantomTrial = p.phantomPreparation === 1 && (node.enterLab === 4 || node.enterLab === 5)
+    const stalePhantom = phantomTrial && p.labDraft.phantomDataVersion !== LDCT_PHANTOM_EXPOSURE_VERSION
     const prepared = staleChest ? archiveChestDraft(p) : p
     return patch(state, extendLiveDraft(changed(prepared, { nodeId: id, phase: 'lab', reply: undefined,
       ...(dataset === 'chest' ? { chestSourceVersion: LDCT_NOISY_DATA_VERSION } : {}),
-      labRound: node.enterLab, labDraft: sameRound && !staleChest ? p.labDraft : createLdctLabState(node.enterLab, dataset), labReturn: undefined })))
+      labRound: node.enterLab, labDraft: sameRound && !staleChest && !stalePhantom ? p.labDraft
+        : phantomTrial ? createLdctPhantomPreparationState(node.enterLab as 4 | 5) : createLdctLabState(node.enterLab, dataset), labReturn: undefined })))
   }
   const finished = node.storyEnd || p.finished
   const next = node.storyEnd && !state.badges.includes('ldct_noise_beyond')
@@ -181,7 +192,8 @@ export function ldctAction(state: GameState, action: LdctAction): GameState {
       if (current?.status === 'running') return state
       const challenge = startLdctSpeed(kind, p.nodeId, action.now, current)
       const draft = { ...p.labDraft, saved: null, helped: false, practice: undefined,
-        ...(kind === 'backproject' ? { bpCount: 1 } : { iterationRound: 0, chest: { ...p.labDraft.chest!, compareFbp: false, pinned: null, mark: null } }) }
+        ...(kind === 'backproject' ? { bpCount: 1 } : { iterationRound: 0,
+          ...(p.labDraft.chest ? { chest: { ...p.labDraft.chest, compareFbp: false, pinned: null, mark: null } } : {}) }) }
       return patch(state, { ...p, labDraft: draft, speedChallenges: { ...p.speedChallenges, [kind]: challenge } })
     }
     if (action.type === 'challenge:practice') {
@@ -196,7 +208,8 @@ export function ldctAction(state: GameState, action: LdctAction): GameState {
       const next = challenge.status === 'won' && !state.badges.includes(badge) ? { ...state, badges: [...state.badges, badge] } : state
       return patch(next, { ...p, speedChallenges: { ...p.speedChallenges, [kind]: challenge },
         labDraft: challenge.acceptedTaps === current.acceptedTaps ? { ...p.labDraft, ...(challenge.status === 'expired' ? { practice: true as const } : {}) } : { ...p.labDraft, saved: null,
-          ...(kind === 'backproject' ? { bpCount: challenge.progress } : { iterationRound: challenge.progress, chest: { ...p.labDraft.chest!, compareFbp: false } }) } })
+          ...(kind === 'backproject' ? { bpCount: challenge.progress } : { iterationRound: challenge.progress,
+            ...(p.labDraft.chest ? { chest: { ...p.labDraft.chest, compareFbp: false } } : {}) }) } })
     }
     if (action.type === 'challenge:expire' && action.now < current.deadline) return state
     if (action.now < current.startedAt) return state
@@ -245,8 +258,9 @@ export function ldctAction(state: GameState, action: LdctAction): GameState {
   if (action.type === 'lab:update') {
     if (p.phase !== 'lab' || !labStateValid(action.value, p.labRound)) return state
     if (action.value.chestDataVersion !== p.labDraft.chestDataVersion) return state
+    if (action.value.phantomDataVersion !== p.labDraft.phantomDataVersion) return state
     if (action.value.practice !== p.labDraft.practice) return state
-    if (p.labRound === 4 && (action.value.exposureStep !== undefined) !== (getLdctLabDataset(state) === 'chest')) return state
+    if (p.labRound === 4 && (action.value.exposureStep !== undefined) !== (getLdctLabDataset(state) === 'chest' || !!p.labDraft.phantomDataVersion)) return state
     if ((p.labDraft.exposureCount !== undefined) !== (action.value.exposureCount !== undefined)
       || (p.labDraft.iterationRound !== undefined) !== (action.value.iterationRound !== undefined)) return state
     const kind = getLdctSpeedKind(p)
@@ -267,8 +281,11 @@ export function ldctAction(state: GameState, action: LdctAction): GameState {
     let next = withShelf(state, { ...shelf, receipts, experienced })
     if (first) next = { ...next, skill: next.skill + 1, badges: next.badges.includes('ldct_first_comparison') ? next.badges : [...next.badges, 'ldct_first_comparison'] }
     if (organized) next = { ...next, wealth: next.wealth + 1 }
-    const progress = { ...p, records: { ...p.records, [p.labRound]: action.record } }
-    const returnNode = p.openingRevision !== 5 && p.labRound === 4 ? 'lf_after_noise_0' : LDCT_FATHER_LAB_RETURNS[p.labRound]
+    const demonstratedExposure = p.phantomPreparation && p.labRound === 4 && action.record.helped && (action.record.exposureCount ?? 13) < 13
+    const progress = { ...p, records: { ...p.records, [p.labRound]: action.record },
+      ...(demonstratedExposure ? { decisions: { ...p.decisions, phantom_exposure_demo: 'completed13' } } : {}) }
+    const returnNode = p.phantomPreparation ? LDCT_PHANTOM_PREPARATION_RETURNS[p.labRound]
+      : p.openingRevision !== 5 && p.labRound === 4 ? 'lf_after_noise_0' : LDCT_FATHER_LAB_RETURNS[p.labRound]
     return move(next, { ...progress, labReturn: undefined }, p.labReturn ?? returnNode)
   }
   if (action.type === 'lab:open') {

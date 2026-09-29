@@ -24,6 +24,8 @@ import {
 import { LdctScannerGeometry } from './LdctScannerGeometry'
 import { LdctFilterResponse } from './LdctFilterResponse'
 import { LdctSpeedChallenge, type LdctSpeedProps } from './LdctSpeedChallenge'
+import { LDCT_PHANTOM_EXPOSURE_VERSION, ldctPhantomExposureFrame, ldctPhantomExposureFrameStyle,
+  ldctPhantomIterationFrame, ldctPhantomIterationFrameStyle } from '../game/ldct-phantom-exposure'
 import './LdctLab.css'
 
 export type LdctLabProps = LdctSpeedProps & {
@@ -226,36 +228,73 @@ function ChestFrame({ frame, slice, deep = false, noisy = false }: { frame: stri
   }} />
 }
 
-function ExposureFrame({ kind, step, deep = false, noisy = false }: { kind: 'fbp' | 'sinogram'; step: number; deep?: boolean; noisy?: boolean }) {
-  const mediaId = noisy ? ldctNoisyExposureFrame(kind, step).mediaId : deep ? ldctDeepExposureFrame(kind, step).mediaId : LDCT_EXPOSURE_MEDIA_ID
-  return <div className="ldct-lab__frame" data-frame={`exposure:${kind}:${step + 1}`} data-dataset="chest" style={{
-    ...(noisy ? ldctNoisyExposureFrameStyle(kind, step) : deep ? ldctDeepExposureFrameStyle(kind, step) : ldctExposureFrameStyle(kind, step)), backgroundImage: `url("${imageAsset(mediaId)}")`,
+function ExposureFrame({ kind, step, deep = false, noisy = false, physical = false }: { kind: 'fbp' | 'sinogram'; step: number; deep?: boolean; noisy?: boolean; physical?: boolean }) {
+  const mediaId = physical ? ldctPhantomExposureFrame(kind, step).mediaId : noisy ? ldctNoisyExposureFrame(kind, step).mediaId : deep ? ldctDeepExposureFrame(kind, step).mediaId : LDCT_EXPOSURE_MEDIA_ID
+  return <div className="ldct-lab__frame" data-frame={`exposure:${kind}:${step + 1}`} data-dataset={physical ? 'phantom' : 'chest'} style={{
+    ...(physical ? ldctPhantomExposureFrameStyle(kind, step) : noisy ? ldctNoisyExposureFrameStyle(kind, step) : deep ? ldctDeepExposureFrameStyle(kind, step) : ldctExposureFrameStyle(kind, step)), backgroundImage: `url("${imageAsset(mediaId)}")`,
   }} />
 }
 
-function ChestExposure({ value, choose }: Pick<Controls, 'value' | 'choose'>) {
+function ChestExposure({ value, choose, physical = false }: Pick<Controls, 'value' | 'choose'> & { physical?: boolean }) {
   const noisy = value.chestDataVersion === LDCT_NOISY_DATA_VERSION
   const deep = value.exposureCount !== undefined
   const levels = deep ? LDCT_DEEP_EXPOSURE_LEVELS : LDCT_EXPOSURE_LEVELS
   const step = deep ? value.exposureCount! - 1 : value.exposureStep ?? 0
   const complete = step === levels.length - 1
   const setStep = (next: number) => choose(deep ? { exposureCount: next + 1 } : { exposureStep: next })
-  return <div className="ldct-exposure" data-testid="ldct-chest-exposure" data-exposure-step={step} data-exposure-count={step + 1} data-chest-version={value.chestDataVersion}>
+  return <div className="ldct-exposure" data-testid={physical ? 'ldct-phantom-exposure' : 'ldct-chest-exposure'} data-exposure-step={step} data-exposure-count={step + 1} data-chest-version={value.chestDataVersion} data-phantom-version={value.phantomDataVersion}>
     <div className="ldct-exposure__work">
-      <Tile label="胸部重建 · FBP"><ExposureFrame kind="fbp" step={step} deep={deep} noisy={noisy} /></Tile>
+      <Tile label={physical ? `低管电流模拟 · 已积累 ${step + 1} / 13 份` : '胸部重建 · FBP'}><ExposureFrame kind="fbp" step={step} deep={deep} noisy={noisy} physical={physical} /></Tile>
       <div className="ldct-exposure__controls">
         <div className="ldct-exposure__count" aria-live="polite"><span>已积累曝光</span><output>{step + 1} / {levels.length}</output></div>
         <div className="ldct-exposure__units" style={{ gridTemplateColumns: `repeat(${levels.length}, minmax(0, 1fr))` }} aria-hidden="true">{levels.map((level, index) => <span key={level} className={index <= step ? 'is-filled' : undefined} />)}</div>
-        <button className="ldct-lab__primary" disabled={complete} onClick={() => setStep(step + 1)}>{complete ? `已积累 ${levels.length}/${levels.length} 份曝光` : '再积累一份曝光'}</button>
+        <button className="ldct-lab__primary" data-testid="ldct-exposure-next" data-ldct-fast-action disabled={complete} onClick={() => setStep(step + 1)}>{complete ? `已积累 ${levels.length}/${levels.length} 份曝光` : '再积累一份曝光'}</button>
         <button className="ldct-lab__compare" disabled={step === 0} onClick={() => setStep(0)}>回到第一份曝光 ↺</button>
-        <small className="ldct-exposure__note">模拟累计曝光，不是给患者补扫。</small>
+        <small className="ldct-exposure__note">{physical ? '模体低管电流模拟，不是给患者补扫。' : '模拟累计曝光，不是给患者补扫。'}</small>
       </div>
     </div>
     <details className="ldct-lab__extra ldct-exposure__projection"><summary>看看累计投影</summary>
-      <Tile label={`累计 ${step + 1} 份曝光 · 正弦图`}><ExposureFrame kind="sinogram" step={step} deep={deep} noisy={noisy} /></Tile>
+      <Tile label={`累计 ${step + 1} 份曝光 · 正弦图`}><ExposureFrame kind="sinogram" step={step} deep={deep} noisy={noisy} physical={physical} /></Tile>
       <p>每次沿用此前计数，再加一份；角度、重建方式和显示窗固定。</p>
-      <p>胸部来自开放授权实扫CT，再生成模拟计数和投影；不是给陆叔追加检查。</p>
+      <p>{physical ? '从低管电流模拟开始，逐份积累同一模体的计数。最后这份仍只是勉强辨认；接下来固定它做迭代，不再加曝光。' : '胸部来自开放授权实扫CT，再生成模拟计数和投影；不是给陆叔追加检查。'}</p>
     </details>
+  </div>
+}
+
+function PhantomIterate({ value, choose, speedTap, speedRunning }: Pick<Controls, 'value' | 'choose' | 'speedTap' | 'speedRunning'>) {
+  const current = value.iterationRound ?? 0
+  const [review, setReview] = useState<number | null>(null)
+  const [compare, setCompare] = useState(false)
+  const displayed = review ?? current
+  const frame = compare ? 'fbp' : `iteration:${displayed}`
+  const item = ldctPhantomIterationFrame(frame)
+  const advance = () => {
+    if (current >= 12) return
+    setReview(null); setCompare(false)
+    if (speedRunning) speedTap?.()
+    else choose({ iterationRound: current + 1 })
+  }
+  return <div className="ldct-chest ldct-phantom-iterate" data-testid="ldct-phantom-iterate" data-iteration-round={current} data-displayed-round={displayed} data-phantom-version={value.phantomDataVersion}>
+    <div className="ldct-chest__work">
+      <figure className="ldct-lab__tile ldct-chest__main">
+        <figcaption>{compare ? '固定输入 · 第13份曝光FBP' : displayed === 0 ? '第13份曝光FBP · 迭代起点' : `同份数据 · 第${displayed}轮`}</figcaption>
+        <div className="ldct-lab__image ldct-chest__canvas"><div className="ldct-lab__frame" data-frame={frame} data-dataset="phantom"
+          style={{ ...ldctPhantomIterationFrameStyle(frame), backgroundImage: `url("${imageAsset(item.mediaId)}")` }} /></div>
+      </figure>
+      <div className="ldct-chest__controls">
+        <div className="ldct-chest__round-progress" aria-live="polite"><span>已计算 {current} / 12 轮</span><progress max={12} value={current} /></div>
+        <button className="ldct-lab__primary ldct-chest__next" data-testid="ldct-iteration-next" data-ldct-fast-action disabled={current >= 12}
+          onKeyDown={event => { if (speedRunning && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); if (!event.repeat) advance() } }}
+          onClick={advance}>{current === 0 ? '从末份FBP改第一轮 →' : current === 12 ? '已到第12轮，可以往回比较' : `再改到第${current + 1}轮 →`}</button>
+        <button className="ldct-chest__fbp-toggle" aria-pressed={compare} onClick={() => setCompare(!compare)}>{compare ? '回到迭代图' : '回看末份曝光FBP'}</button>
+        <details className="ldct-lab__extra ldct-chest__record-tools"><summary>逐轮回看与说明</summary>
+          <div className="ldct-lab__chips ldct-chest__versions">{LDCT_DEEP_ITERATIONS.map(round => <button key={round} disabled={round > current}
+            aria-pressed={!compare && displayed === round} onClick={() => { setReview(round); setCompare(false) }}>{round === 0 ? '末份FBP' : `${round}轮`}</button>)}</div>
+          <p>固定最后积累的那份投影，每点一次只多算一轮。没有追加曝光，也不是从黑图重新猜。</p>
+        </details>
+        <p className="ldct-chest__note">同一模体、同份投影、同一显示窗。</p>
+      </div>
+    </div>
   </div>
 }
 
@@ -372,6 +411,7 @@ function ChestIterate({ value, choose, speedTap, speedRunning }: Pick<Controls, 
 export function LdctLab({ round, value, onChange, onSubmit, onBack, dataset = 'phantom', goal, concealTruth = false,
   challengeKind, challenge, onChallengeAction }: LdctLabProps) {
   const [openedAt] = useState(() => performance.now())
+  const [detailsOpen, setDetailsOpen] = useState(false)
   const lastClick = useRef(0)
   const canSubmit = useRef(false)
   const pointerReady = useRef(false)
@@ -399,7 +439,11 @@ export function LdctLab({ round, value, onChange, onSubmit, onBack, dataset = 'p
   const tools: Record<LdctLabRound, typeof Trace> = { 1: Trace, 2: Backproject, 3: Filter, 4: Noise, 5: Iterate }
   const Tool = tools[round]
   const chestExposure = dataset === 'chest' && round === 4
+  const physical = value.phantomDataVersion === LDCT_PHANTOM_EXPOSURE_VERSION
+  const exposure = chestExposure || (physical && round === 4)
+  const docked = round === 2 || exposure || (round === 5 && (physical || dataset === 'chest'))
   return <section className="ldct-lab ldct-lab--short" aria-label="重建实验台" data-round={round} data-stage={LDCT_LAB_STAGES[round]} data-dataset={dataset}
+    data-mobile-workbench={docked} data-details-open={detailsOpen} data-has-challenge={Boolean(challengeKind && onChallengeAction)}
     onPointerDownCapture={() => { const now = performance.now(); pointerReady.current = now - openedAt >= 900 && now - lastClick.current >= 300 }}
     onClickCapture={() => { const now = performance.now(); canSubmit.current = now - openedAt >= 900 && now - lastClick.current >= 300; lastClick.current = now }}
     onClick={event => event.stopPropagation()} onKeyDownCapture={event => {
@@ -409,14 +453,19 @@ export function LdctLab({ round, value, onChange, onSubmit, onBack, dataset = 'p
       }
       if (event.repeat) event.preventDefault()
     }}>
-    <header className="ldct-lab__header"><div><span className="ldct-lab__eyebrow">{chestExposure ? '胸部数据 · 累计计数' : dataset === 'chest' ? '同次数据 · 不重新扫描' : '模体扫描 · 同一份投影'}</span><h2>{chestExposure ? '一份一份积累曝光' : dataset === 'chest' ? '把这一版留住，再看一眼' : LDCT_LAB_TITLES[round]}</h2></div>
-      {onBack && <button className="ldct-lab__quiet" onClick={() => { onBack(); void playSfx('click') }}>先放一放</button>}</header>
+    <header className="ldct-lab__header"><div><span className="ldct-lab__eyebrow">{physical ? '实体模体 · 同份投影' : chestExposure ? '胸部数据 · 累计计数' : dataset === 'chest' ? '同次数据 · 不重新扫描' : '模体扫描 · 同一份投影'}</span><h2>{exposure ? '一份一份积累曝光' : physical ? '用末份数据，一轮轮改图' : dataset === 'chest' ? '把这一版留住，再看一眼' : LDCT_LAB_TITLES[round]}</h2></div>
+      <div className="ldct-lab__header-tools">{docked && <button className="ldct-lab__compact-details" data-ldct-compact-details aria-expanded={detailsOpen} onClick={() => setDetailsOpen(!detailsOpen)}>{detailsOpen ? '回主操作' : '细看 / 参数'}</button>}
+        {onBack && <button className="ldct-lab__quiet" onClick={() => { onBack(); void playSfx('click') }}>先放一放</button>}</div></header>
     {challengeKind && onChallengeAction && <LdctSpeedChallenge key={`${challengeKind}:${challenge?.attempt ?? 0}`} kind={challengeKind} challenge={challenge} onAction={onChallengeAction} />}
-    {chestExposure
-      ? <><p className="ldct-chest__goal">{goal || '点一下，加一份曝光；看看胸部图像哪里发生了变化。'}</p><ChestExposure value={value} choose={choose} /></>
+    <div className="ldct-lab__tool-body">
+    {exposure
+      ? <><p className="ldct-chest__goal">{goal || (physical ? '先把模体管电流调低。点一下，多积累一份曝光；最后这份留给迭代。' : '点一下，加一份曝光；看看胸部图像哪里发生了变化。')}</p><ChestExposure value={value} choose={choose} physical={physical} /></>
+      : physical && round === 5
+      ? <><p className="ldct-chest__goal">固定末份曝光，只用计算改善图像；不再加曝光。</p><PhantomIterate key={challenge?.attempt ?? 0} value={value} choose={choose} speedTap={speedTap} speedRunning={speedRunning} /></>
       : dataset === 'chest'
       ? <><p className="ldct-chest__goal">{goal || '改一轮看看；拿不准的地方，可以留给医师一起核查。'}</p><ChestIterate key={challenge?.attempt ?? 0} value={value} choose={choose} speedTap={speedTap} speedRunning={speedRunning} /></>
       : <><Guidance round={round} goal={goal} concealTruth={concealTruth} /><Tool value={value} change={change} choose={choose} dataset={dataset} concealTruth={concealTruth} speedTap={speedTap} speedRunning={speedRunning} /></>}
+    </div>
     <footer className="ldct-lab__footer"><div className="ldct-lab__actions">
       <button className="ldct-lab__primary" disabled={!ready} onClick={event => submit(false, event.detail > 0)}>继续</button>
       <button onClick={event => submit(true, event.detail > 0)}>还没看明白，一起聊聊</button>

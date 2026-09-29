@@ -25,7 +25,7 @@ export const LDCT_SPEED_CHALLENGES = {
 export function getLdctSpeedKind(p: LdctProgress): LdctSpeedKind | undefined {
   if (p.storyId !== 'father' || p.openingRevision !== 5 || p.phase !== 'lab' || p.labReturn || p.finished) return undefined
   if (p.labRound === 2 && p.nodeId === 'lf_lab_2') return 'backproject'
-  if (p.labRound === 5 && p.nodeId === 'lf_lab_5' && p.labDraft.chest && p.labDraft.iterationRound !== undefined) return 'iteration'
+  if (p.labRound === 5 && p.nodeId === 'lf_lab_5' && (p.labDraft.chest || p.labDraft.phantomDataVersion) && p.labDraft.iterationRound !== undefined) return 'iteration'
   return undefined
 }
 

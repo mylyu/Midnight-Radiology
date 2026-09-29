@@ -50,7 +50,7 @@ export function LdctScreen(props: Props) {
         <p className="text-slate-300 text-sm">点场景补全文、继续，停一下再选。遇到电脑时跟着当前提示试一下，也可以叫陆舟一起看。</p>
         <div className="ldct-menu"><button data-ldct-story="father" onClick={() => props.update(s => selectLdctStory(s, 'father'))}>
           {shelf?.slots.father && shelf.slots.father.openingRevision !== 5 ? '继续旧顺序存档' : shelf?.slots.father?.finished ? '回看故事结尾' : shelf?.slots.father ? '继续这顿没吃完的饭' : '去赴约'} →</button>
-          {shelf?.slots.father && shelf.slots.father.openingRevision !== 5 && <button data-ldct-new-order onClick={() => props.update(s => selectLdctStory(s, 'father', true))}>从新版开场（保留旧进度） →</button>}
+          {shelf?.slots.father && !shelf.slots.father.phantomPreparation && <button data-ldct-new-order onClick={() => props.update(s => selectLdctStory(s, 'father', true))}>从新版模体试扫开始（保留旧记录） →</button>}
           {shelf?.slots.father && <small className="text-slate-400 self-center">进度已保存 · 随时可以回来</small>}
         </div>
       </section>

@@ -9,6 +9,8 @@ export interface LdctProgress {
   version: 1
   /** Content migration is separate from cross-chapter save version. */
   openingRevision?: 2 | 3 | 4 | 5
+  /** Exposure and iterative practice happen on the physical phantom before the patient scan. */
+  phantomPreparation?: 1
   storyId?: 'face' | 'dinner' | 'patient' | 'father'
   run: number
   seed: 2258

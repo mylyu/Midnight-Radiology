@@ -37,3 +37,11 @@
 .ldct-chest__process{margin-top:14px}.ldct-chest__process .ldct-lab__pair{max-width:620px;margin:10px auto}.ldct-chest__process>p{font-size:12px;color:#94a3b8;line-height:1.65}
 @media(max-width:620px) and (orientation:portrait){.ldct-chest__work{grid-template-columns:minmax(0,1fr);gap:12px}.ldct-chest__canvas{max-width:330px}.ldct-chest__goal{font-size:13px;margin-bottom:10px}.ldct-chest__controls{gap:8px}.ldct-chest__versions button{min-height:38px}.ldct-chest__note{font-size:11px}}
 @media(orientation:landscape) and (max-height:520px){.ldct-chest__work{grid-template-columns:minmax(180px,260px) minmax(230px,1fr);gap:14px;justify-content:center}.ldct-chest__canvas{max-width:240px}.ldct-chest__controls{gap:7px}.ldct-chest__controls button{min-height:36px}.ldct-chest__goal{margin:3px 0 8px;font-size:12px}.ldct-chest__slices button{min-height:32px}.ldct-chest__note{font-size:11px}}
+/* Only laboratory screens compact the shared toolbar; story dialogue is untouched. */
+@media(max-width:620px),(orientation:landscape) and (max-height:520px){
+ .ldct-root[data-ldct-phase="lab"]>.absolute.top-0{height:40px;box-sizing:border-box;padding:4px 8px;display:flex;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;gap:0;scrollbar-width:none}
+ .ldct-root[data-ldct-phase="lab"]>.absolute.top-0>span:first-child{display:none}
+ .ldct-root[data-ldct-phase="lab"]>.absolute.top-0>span:last-child{flex-wrap:nowrap;justify-content:flex-start;gap:8px;white-space:nowrap;min-width:max-content}
+ .ldct-root[data-ldct-phase="lab"]>.ldct-lab-wrap{inset:40px 0 0;padding:5px max(5px,env(safe-area-inset-right)) max(5px,env(safe-area-inset-bottom)) max(5px,env(safe-area-inset-left));overflow:hidden}
+ .ldct-root[data-ldct-phase="lab"]>.ldct-lab-wrap:not(:has([data-mobile-workbench="true"])){overflow:auto}
+}

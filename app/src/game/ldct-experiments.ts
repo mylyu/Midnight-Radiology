@@ -4,6 +4,7 @@ import { LDCT_EXPOSURE_VERSION, LDCT_EXPOSURE_MEDIA_ID } from './ldct-exposure'
 import { LDCT_MANUAL_BP_COUNTS, LDCT_MANUAL_BP_MEDIA_ID } from './ldct-manual-bp'
 import { LDCT_DEEP_MEDIA_IDS, LDCT_DEEP_EXPOSURE_VERSION, LDCT_DEEP_CHEST_VERSION } from './ldct-deep-experiments'
 import { LDCT_NOISY_DATA_VERSION, LDCT_NOISY_EXPOSURE_VERSION, LDCT_NOISY_CHEST_VERSION, LDCT_NOISY_MEDIA_IDS } from './ldct-noisy-chest'
+import { LDCT_PHANTOM_EXPOSURE_VERSION, LDCT_PHANTOM_IR_VERSION, LDCT_PHANTOM_EXPERIMENT_MEDIA_IDS } from './ldct-phantom-exposure'
 import { LDCT_FILTER_OPTIONS } from './ldct-filter-response'
 export { LDCT_FILTER_OPTIONS } from './ldct-filter-response'
 export type { LdctFilter } from './ldct-filter-response'
@@ -13,7 +14,7 @@ import type { LdctFilter } from './ldct-filter-response'
 export const LDCT_PHANTOM_VERSION = LDCT_DATASET_VERSION
 export const LDCT_PHANTOM_SEED = 2258 as const
 /** Legacy face/nut records stay readable; their retired image atlases are not preloaded. */
-export const LDCT_LAB_MEDIA_IDS = [LDCT_DATASET_MEDIA_IDS.phantom, ...LDCT_CHEST_MEDIA_IDS, LDCT_EXPOSURE_MEDIA_ID, LDCT_MANUAL_BP_MEDIA_ID, ...LDCT_DEEP_MEDIA_IDS, ...LDCT_NOISY_MEDIA_IDS]
+export const LDCT_LAB_MEDIA_IDS = [LDCT_DATASET_MEDIA_IDS.phantom, ...LDCT_CHEST_MEDIA_IDS, LDCT_EXPOSURE_MEDIA_ID, LDCT_MANUAL_BP_MEDIA_ID, ...LDCT_DEEP_MEDIA_IDS, ...LDCT_NOISY_MEDIA_IDS, ...LDCT_PHANTOM_EXPERIMENT_MEDIA_IDS]
 export type LdctDataset = ProjectionDataset | 'chest'
 export type LdctLabRound = 1 | 2 | 3 | 4 | 5
 export type LdctLabStage = 'trace' | 'backproject' | 'filter' | 'noise' | 'iterate'
@@ -50,11 +51,13 @@ export type LdctLabRecord = {
   /** Explicit untimed/finished contest continuation, not a request for help. */
   practice?: true
   verdict: 'different' | 'uncertain'
-  sourceVersion: typeof LDCT_PHANTOM_VERSION | typeof LDCT_CHEST_VERSION | typeof LDCT_EXPOSURE_VERSION | typeof LDCT_DEEP_EXPOSURE_VERSION | typeof LDCT_DEEP_CHEST_VERSION | typeof LDCT_NOISY_EXPOSURE_VERSION | typeof LDCT_NOISY_CHEST_VERSION | typeof LDCT_CHEST_LEGACY_VERSIONS[number] | 'ldct-short-v1' | 'ldct-projection-v2'
+  sourceVersion: typeof LDCT_PHANTOM_VERSION | typeof LDCT_CHEST_VERSION | typeof LDCT_EXPOSURE_VERSION | typeof LDCT_DEEP_EXPOSURE_VERSION | typeof LDCT_DEEP_CHEST_VERSION | typeof LDCT_NOISY_EXPOSURE_VERSION | typeof LDCT_NOISY_CHEST_VERSION | typeof LDCT_PHANTOM_EXPOSURE_VERSION | typeof LDCT_PHANTOM_IR_VERSION | typeof LDCT_CHEST_LEGACY_VERSIONS[number] | 'ldct-short-v1' | 'ldct-projection-v2'
   seed: typeof LDCT_DATASET_SEEDS[ProjectionDataset] | typeof LDCT_CHEST_SEED
   dataset?: LdctDataset | 'sparse-filter-v1' | 'full-projection-v2'
   /** Undefined means the original chest inputs, never the new noisy dataset. */
   chestDataVersion?: typeof LDCT_NOISY_DATA_VERSION
+  /** The physical-phantom preparation has its own input and cannot label chest images. */
+  phantomDataVersion?: typeof LDCT_PHANTOM_EXPOSURE_VERSION
   chest?: LdctChestDraft
   exposureStep?: number
   exposureCount?: number
@@ -81,6 +84,7 @@ export type LdctLabState = {
   practice?: true
   saved: LdctLabRecord | null
   chestDataVersion?: typeof LDCT_NOISY_DATA_VERSION
+  phantomDataVersion?: typeof LDCT_PHANTOM_EXPOSURE_VERSION
   chest?: LdctChestDraft
   exposureStep?: number
   exposureCount?: number
@@ -97,6 +101,13 @@ export const createLdctLabState = (round: LdctLabRound = 1, dataset: LdctDataset
   ...(dataset === 'chest' && round === 4 ? { exposureStep: 0, exposureCount: 1 } : {}),
 })
 
+/** New preparation only. The old general factory/records keep their meaning. */
+export const createLdctPhantomPreparationState = (round: 4 | 5): LdctLabState => ({
+  ...createLdctLabState(round, 'phantom'),
+  phantomDataVersion: LDCT_PHANTOM_EXPOSURE_VERSION,
+  ...(round === 4 ? { exposureStep: 0, exposureCount: 1 } : { iterationRound: 0 }),
+})
+
 const signals = ['low', 'medium', 'high']
 const filters: readonly string[] = LDCT_FILTER_OPTIONS
 const finiteBetween = (n: unknown, min: number, max: number) => typeof n === 'number' && Number.isFinite(n) && n >= min && n <= max
@@ -111,8 +122,18 @@ const validChest = (chest: LdctChestDraft | undefined): boolean => chest === und
     integerBetween(chest.mark.slice, 0, 2) && integerBetween(chest.mark.iterationStep, 0, LDCT_ITERATIONS.length - 1) && validIterationRound(chest.mark.iterationRound) &&
     ['fbp', 'iteration'].includes(chest.mark.method))))
 
+const validPhantomPreparation = (value: Pick<LdctLabState, 'phantomDataVersion' | 'chestDataVersion' | 'chest' | 'exposureStep' | 'exposureCount' | 'iterationRound'>, round: LdctLabRound) =>
+  value.phantomDataVersion === undefined || (value.phantomDataVersion === LDCT_PHANTOM_EXPOSURE_VERSION &&
+    value.chestDataVersion === undefined && value.chest === undefined &&
+    ((round === 4 && integerBetween(value.exposureStep, 0, 3) && integerBetween(value.exposureCount, 1, 13) && value.iterationRound === undefined) ||
+     (round === 5 && integerBetween(value.iterationRound, 0, 12) && value.exposureStep === undefined && value.exposureCount === undefined)))
+
 export function isValidLdctRecord(record: LdctLabRecord, round: LdctLabRound): boolean {
   const noisySource = record && (record.sourceVersion === LDCT_NOISY_EXPOSURE_VERSION || record.sourceVersion === LDCT_NOISY_CHEST_VERSION)
+  const preparationSource = record && (record.sourceVersion === LDCT_PHANTOM_EXPOSURE_VERSION || record.sourceVersion === LDCT_PHANTOM_IR_VERSION)
+  const preparationRecord = Boolean(record && record.dataset === 'phantom' && record.seed === LDCT_PHANTOM_SEED &&
+    record.phantomDataVersion === LDCT_PHANTOM_EXPOSURE_VERSION && validPhantomPreparation(record, round) &&
+    ((round === 4 && record.sourceVersion === LDCT_PHANTOM_EXPOSURE_VERSION) || (round === 5 && record.sourceVersion === LDCT_PHANTOM_IR_VERSION)))
   const chestRecord = Boolean(record && record.dataset === 'chest' && record.seed === LDCT_CHEST_SEED && (
     (round === 5 && validChestVersion(record.sourceVersion) && record.chest !== undefined && record.exposureStep === undefined && record.exposureCount === undefined &&
       (record.sourceVersion === LDCT_DEEP_CHEST_VERSION || record.sourceVersion === LDCT_NOISY_CHEST_VERSION ? integerBetween(record.iterationRound, 0, 12) : record.iterationRound === undefined)) ||
@@ -122,7 +143,7 @@ export function isValidLdctRecord(record: LdctLabRecord, round: LdctLabRound): b
   return Boolean([1, 2, 3, 4, 5].includes(round) && record && record.round === round && record.stage === LDCT_LAB_STAGES[round] &&
     (((record.sourceVersion === LDCT_PHANTOM_VERSION || record.sourceVersion === 'ldct-short-v1') && record.dataset !== undefined && record.dataset in LDCT_DATASET_SEEDS &&
       record.seed === LDCT_DATASET_SEEDS[record.dataset as ProjectionDataset]) ||
-      chestRecord ||
+      chestRecord || preparationRecord ||
       (record.sourceVersion === 'ldct-projection-v2' && record.seed === LDCT_PHANTOM_SEED)) &&
     validStructure(record.structure) && finiteBetween(record.angle, 0, 179) &&
     integerBetween(record.bpStep, 0, LDCT_BP_COUNTS.length - 1) && filters.includes(record.filter) &&
@@ -132,9 +153,10 @@ export function isValidLdctRecord(record: LdctLabRecord, round: LdctLabRound): b
     (record.dataset !== 'chest' || chestRecord) &&
     (record.chestDataVersion === undefined || (record.chestDataVersion === LDCT_NOISY_DATA_VERSION && chestRecord)) &&
     (Boolean(noisySource) === (record.chestDataVersion === LDCT_NOISY_DATA_VERSION)) &&
-    (record.exposureStep === undefined || (round === 4 && chestRecord)) &&
-    (record.exposureCount === undefined || (round === 4 && chestRecord)) &&
-    (record.iterationRound === undefined || (round === 5 && chestRecord)) &&
+    (record.phantomDataVersion === undefined || preparationRecord) && (Boolean(preparationSource) === preparationRecord) &&
+    (record.exposureStep === undefined || (round === 4 && (chestRecord || preparationRecord))) &&
+    (record.exposureCount === undefined || (round === 4 && (chestRecord || preparationRecord))) &&
+    (record.iterationRound === undefined || (round === 5 && (chestRecord || preparationRecord))) &&
     (record.bpCount === undefined || (round === 2 && record.dataset === 'phantom' && (LDCT_MANUAL_BP_COUNTS as readonly number[]).includes(record.bpCount))) &&
     validChest(record.chest) && (record.chest === undefined || (record.dataset === 'chest' && round === 5)))
 }
@@ -150,7 +172,8 @@ export function labStateValid(value: LdctLabState, round: LdctLabRound): boolean
     Array.isArray(value.seenIterations) && value.seenIterations.every(n => integerBetween(n, 0, LDCT_ITERATIONS.length - 1)) &&
     finiteBetween(value.divider, 0, 100) &&
     (value.mark === null || (finiteBetween(value.mark?.x, 0, 100) && finiteBetween(value.mark?.y, 0, 100))) &&
-    typeof value.helped === 'boolean' && (value.practice === undefined || (value.practice === true && (round === 2 || round === 5))) && (value.saved === null || (isValidLdctRecord(value.saved, round) && value.saved.chestDataVersion === value.chestDataVersion)) &&
+    typeof value.helped === 'boolean' && (value.practice === undefined || (value.practice === true && (round === 2 || round === 5))) && (value.saved === null || (isValidLdctRecord(value.saved, round) && value.saved.chestDataVersion === value.chestDataVersion && value.saved.phantomDataVersion === value.phantomDataVersion)) &&
+    validPhantomPreparation(value, round) &&
     (value.chestDataVersion === undefined || (value.chestDataVersion === LDCT_NOISY_DATA_VERSION &&
       ((round === 4 && integerBetween(value.exposureCount, 1, 13) && integerBetween(value.exposureStep, 0, 3)) ||
        (round === 5 && value.chest !== undefined && integerBetween(value.iterationRound, 0, 12))))) &&
@@ -168,20 +191,23 @@ export function ldctExperimentReady(state: LdctLabState, round: LdctLabRound): b
     case 1: return state.seenStructures.length > 0 || state.seenAngles.length > 0
     case 2: return state.bpCount !== undefined ? state.bpCount > 1 : state.bpStep > 0
     case 3: return state.seenFilters.length > 1 || state.filter !== 'ramp'
-    case 4: return state.exposureCount !== undefined ? state.exposureCount >= 11 : state.exposureStep !== undefined ? state.exposureStep > 0 : state.seenSignals.length > 1 || state.signal !== 'high'
+    case 4: return state.phantomDataVersion === LDCT_PHANTOM_EXPOSURE_VERSION ? state.exposureCount === 13
+      : state.exposureCount !== undefined ? state.exposureCount >= 11 : state.exposureStep !== undefined ? state.exposureStep > 0 : state.seenSignals.length > 1 || state.signal !== 'high'
     case 5: return state.iterationRound !== undefined ? state.iterationRound >= 10 : state.seenIterations.some(n => n > 0) || state.iterationStep > 0
   }
 }
 
 export function createLdctRecord(state: LdctLabState, round: LdctLabRound, verdict: LdctLabRecord['verdict'], dataset: LdctDataset = 'phantom'): LdctLabRecord | null {
+  const preparation = state.phantomDataVersion === LDCT_PHANTOM_EXPOSURE_VERSION
   if (!ldctExperimentReady(state, round) || (dataset === 'chest' && round !== 4 && round !== 5) ||
     (dataset === 'chest' && round === 4 && state.exposureStep === undefined) ||
-    ((state.exposureStep !== undefined || state.exposureCount !== undefined || state.iterationRound !== undefined || state.chestDataVersion !== undefined) && dataset !== 'chest') || (state.bpCount !== undefined && dataset !== 'phantom')) return null
+    (preparation && dataset !== 'phantom') ||
+    ((state.exposureStep !== undefined || state.exposureCount !== undefined || state.iterationRound !== undefined || state.chestDataVersion !== undefined) && dataset !== 'chest' && !preparation) || (state.bpCount !== undefined && dataset !== 'phantom')) return null
   const chest = state.chest ?? createLdctChestDraft()
   return {
     round, stage: LDCT_LAB_STAGES[round], structure: state.structure, angle: state.angle,
     bpStep: state.bpStep, filter: state.filter, signal: state.signal, iterationStep: state.iterationStep,
-    helped: state.helped, verdict, sourceVersion: dataset === 'chest'
+    helped: state.helped, verdict, sourceVersion: preparation ? round === 4 ? LDCT_PHANTOM_EXPOSURE_VERSION : LDCT_PHANTOM_IR_VERSION : dataset === 'chest'
       ? (state.chestDataVersion === LDCT_NOISY_DATA_VERSION ? round === 4 ? LDCT_NOISY_EXPOSURE_VERSION : LDCT_NOISY_CHEST_VERSION
         : round === 4 ? state.exposureCount !== undefined ? LDCT_DEEP_EXPOSURE_VERSION : LDCT_EXPOSURE_VERSION : state.iterationRound !== undefined ? LDCT_DEEP_CHEST_VERSION : LDCT_CHEST_VERSION)
       : LDCT_PHANTOM_VERSION,
@@ -189,15 +215,19 @@ export function createLdctRecord(state: LdctLabState, round: LdctLabRound, verdi
     dataset,
     ...(state.practice ? { practice: true as const } : {}),
     ...(state.chestDataVersion !== undefined ? { chestDataVersion: state.chestDataVersion } : {}),
+    ...(state.phantomDataVersion !== undefined ? { phantomDataVersion: state.phantomDataVersion } : {}),
     ...(dataset === 'chest' && round === 5 ? { chest: { ...chest, pinned: chest.pinned && { ...chest.pinned }, mark: chest.mark && { ...chest.mark } } } : {}),
-    ...(dataset === 'chest' && round === 4 ? { exposureStep: state.exposureStep } : {}),
-    ...(dataset === 'chest' && round === 4 && state.exposureCount !== undefined ? { exposureCount: state.exposureCount } : {}),
-    ...(dataset === 'chest' && round === 5 && state.iterationRound !== undefined ? { iterationRound: state.iterationRound } : {}),
+    ...((dataset === 'chest' || preparation) && round === 4 ? { exposureStep: state.exposureStep } : {}),
+    ...((dataset === 'chest' || preparation) && round === 4 && state.exposureCount !== undefined ? { exposureCount: state.exposureCount } : {}),
+    ...((dataset === 'chest' || preparation) && round === 5 && state.iterationRound !== undefined ? { iterationRound: state.iterationRound } : {}),
     ...(dataset === 'phantom' && round === 2 && state.bpCount !== undefined ? { bpCount: state.bpCount } : {}),
   }
 }
 
 export function ldctRecordSummary(record: LdctLabRecord): string {
+  if (record.phantomDataVersion === LDCT_PHANTOM_EXPOSURE_VERSION) return record.round === 4
+    ? `实体模体 · 累计曝光 ${record.exposureCount}/13份${record.helped && (record.exposureCount ?? 13) < 13 ? ' · 请陆舟接着演示' : ''}`
+    : `实体模体第13份曝光 · 迭代 ${record.iterationRound}/12轮 · 固定显示窗`
   if (record.dataset === 'chest' && record.round === 4) return `胸部模拟累计曝光 · ${record.exposureCount ?? (record.exposureStep ?? 0) + 1}/${record.exposureCount !== undefined ? 13 : 4}份 · 固定显示窗`
   if (record.dataset === 'chest' && record.chest) {
     const c = record.chest

@@ -227,6 +227,8 @@ add('lf_end', { part: 3, bg: nightControl, sprite: null, settle: true, storyEnd:
 
 export const LDCT_FATHER_STEPS: Readonly<Record<string, LdctNode>> = nodes
 export function resolveLdctFatherNode(node: LdctNode, progress: LdctProgress): LdctNode {
+  if (progress.phantomPreparation === 1 && node.id === 'lf_photons_done_0' && progress.records[4]?.helped && (progress.records[4].exposureCount ?? 1) < 13)
+    return { ...node, speaker: 'luzhou', text: '我把这一组补到最后一档了。看，桶的轮廓勉强出来了。就留这份，咱们不再加曝光。' }
   if (progress.openingRevision !== 5) {
     if (node.id === 'lf_depart_1' && progress.decisions.father_tone === 'joke')
       return { ...node, text: '这回不怨菜凉了。回头检查完，我再请你们吃一顿，谁也不许拿挂号单当菜单。' }
@@ -250,7 +252,7 @@ export function resolveLdctFatherNode(node: LdctNode, progress: LdctProgress): L
     const mark = chest?.mark ? '存疑标记也一起带上。' : '完整序列也别落下。'
     return { ...node, text: `${pinned}${mark}走，去工作站把最后一份对照存上。` }
   }
-  if (node.id === 'lf_after_filter_0' && progress.openingRevision === 5 && progress.records[3]?.signal !== 'low')
+  if (node.id === 'lf_after_filter_0' && !progress.phantomPreparation && progress.openingRevision === 5 && progress.records[3]?.signal !== 'low')
     return { ...node, text: '锐的边上利索，柔的看着舒服。想把管电流再压低一点，怕是还得看看噪点会不会太闹。' }
   return node
 }

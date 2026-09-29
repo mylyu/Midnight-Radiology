@@ -996,6 +996,16 @@
       "bytes": 100546,
       "type": "image"
     },
+    "assets/media/ldct_phantom_exposure_v1.2b7a7027b42e8f5e.webp": {
+      "sha256": "2b7a7027b42e8f5e1a05bf9ef10e22ce3a573034f5a4ac189e5854ddb25a4b86",
+      "bytes": 345262,
+      "type": "image"
+    },
+    "assets/media/ldct_phantom_iteration_v1.fa28db7f5720fa20.webp": {
+      "sha256": "fa28db7f5720fa200f228528628f70ff5aec99049a749016c57395d4bf6e12f6",
+      "bytes": 117826,
+      "type": "image"
+    },
     "assets/media/ldct_short_phantom_v1.95385178b7487fa5.webp": {
       "sha256": "95385178b7487fa5a2e99e20e1d45da9870fedf31848cef4d697e6769d6c8593",
       "bytes": 384398,
@@ -1738,6 +1748,8 @@
       "assets/media/ldct_ct_phantom_bed_v1.d9dd8740463fe5b4.webp",
       "assets/media/ldct_item_meal_v1.cefcc9163c26942d.webp",
       "assets/media/ldct_manual_bp_v1.e1ec228ca8ec04e2.webp",
+      "assets/media/ldct_phantom_exposure_v1.2b7a7027b42e8f5e.webp",
+      "assets/media/ldct_phantom_iteration_v1.fa28db7f5720fa20.webp",
       "assets/media/ldct_short_phantom_v1.95385178b7487fa5.webp",
       "audio/ch2_ct_real_scan_20260924.mp3",
       "audio/ch2_mobile_call_v1.mp3"
