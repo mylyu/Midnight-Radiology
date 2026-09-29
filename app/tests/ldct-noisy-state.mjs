@@ -11,6 +11,8 @@ const clone = value => JSON.parse(JSON.stringify(value))
 const progress = getLdctProgress
 const base = selectLdctStory({ ...freshState('m'), gold: 800, skill: 7, heart: 9, wealth: 2,
   flags: { keep_main_story: true }, dlc: { ch2: { done: true }, dr: { done: true }, dsa: { dose: 57 } } }, 'father')
+// These migration fixtures model the published chest-experiment order.
+delete progress(base).phantomPreparation
 const replace = (state, p) => ({ ...state, dlc: { ...state.dlc, ldct: { ...state.dlc.ldct, ldct: p,
   ldctStories: { ...state.dlc.ldct.ldctStories, slots: { ...state.dlc.ldct.ldctStories.slots, father: p } } } } })
 const protectedValues = state => ({ gold: state.gold, skill: state.skill, heart: state.heart,

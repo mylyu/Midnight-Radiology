@@ -16,7 +16,8 @@ mkdirSync(output, { recursive: true })
 function fixture(nodeId, round, gold = 800) {
   const state = selectLdctStory({ ...freshState('m'), gold, skill: 7, heart: 9, wealth: 2,
     flags: { keep_main: true }, dlc: { ch2: { done: true }, dr: { done: true }, dsa: { dose: 57 } } }, 'father')
-  const p = { ...getLdctProgress(state), nodeId, phase: round ? 'lab' : 'story',
+  // Historical patient-IR fixture, not the new first-evening phantom route.
+  const p = { ...getLdctProgress(state), phantomPreparation: undefined, nodeId, phase: round ? 'lab' : 'story',
     ...(round ? { labRound: round, labDraft: createLdctLabState(round, round === 5 ? 'chest' : 'phantom') } : {}) }
   state.dlc.ldct.ldct = p
   state.dlc.ldct.ldctStories.slots.father = p

@@ -10,13 +10,14 @@ import { LDCT_EXPOSURE_MEDIA_ID } from '../src/game/ldct-exposure.ts'
 import { LDCT_MANUAL_BP_MEDIA_ID } from '../src/game/ldct-manual-bp.ts'
 import { LDCT_DEEP_MEDIA_IDS } from '../src/game/ldct-deep-experiments.ts'
 import { LDCT_NOISY_MEDIA_IDS, LDCT_NOISY_CHEST_VERSION } from '../src/game/ldct-noisy-chest.ts'
+import { LDCT_PHANTOM_EXPERIMENT_MEDIA_IDS } from '../src/game/ldct-phantom-exposure.ts'
 import {
   initializeLdct, selectLdctStory, getLdctProgress, getLdctShelf, ldctAction,
 } from '../src/game/ldct-session.ts'
 
 // A bounded draft/transaction test; no browser, generation, build or story replay.
 const copy = value => JSON.parse(JSON.stringify(value))
-assert.deepEqual(LDCT_LAB_MEDIA_IDS, [LDCT_DATASET_MEDIA_IDS.phantom, ...LDCT_CHEST_MEDIA_IDS, LDCT_EXPOSURE_MEDIA_ID, LDCT_MANUAL_BP_MEDIA_ID, ...LDCT_DEEP_MEDIA_IDS, ...LDCT_NOISY_MEDIA_IDS])
+assert.deepEqual(LDCT_LAB_MEDIA_IDS, [LDCT_DATASET_MEDIA_IDS.phantom, ...LDCT_CHEST_MEDIA_IDS, LDCT_EXPOSURE_MEDIA_ID, LDCT_MANUAL_BP_MEDIA_ID, ...LDCT_DEEP_MEDIA_IDS, ...LDCT_NOISY_MEDIA_IDS, ...LDCT_PHANTOM_EXPERIMENT_MEDIA_IDS])
 assert(!LDCT_LAB_MEDIA_IDS.includes(LDCT_DATASET_MEDIA_IDS.face))
 assert(!LDCT_LAB_MEDIA_IDS.includes(LDCT_DATASET_MEDIA_IDS.nut))
 
@@ -86,7 +87,8 @@ const base = { ...freshState('m'), gold: 820, skill: 11, heart: 7, wealth: 3,
   dlc: { ch2: { done: true, certificate: { code: 'YSK2-KEEP' } }, dr: { done: true }, dsa: { dose: 280 } } }
 const active = selectLdctStory(initializeLdct(copy(base)), 'father')
 function atChest(state, draft = initial) {
-  const p = { ...getLdctProgress(state), phase: 'lab', nodeId: 'lf_lab_5', labRound: 5, labDraft: copy(draft), labReturn: undefined }
+  // This is the published patient-experiment graph, not a new phantom-preparation run.
+  const p = { ...getLdctProgress(state), phantomPreparation: undefined, phase: 'lab', nodeId: 'lf_lab_5', labRound: 5, labDraft: copy(draft), labReturn: undefined }
   const shelf = getLdctShelf(state)
   return { ...state, dlc: { ...state.dlc, ldct: { ...state.dlc.ldct, ldct: p,
     ldctStories: { ...shelf, active: 'father', slots: { ...shelf.slots, father: p } } } } }

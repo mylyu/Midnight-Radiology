@@ -17,7 +17,8 @@ const act = (state, type, fields = {}) => ldctAction(state, { type, ...fields })
 const reload = state => initializeLdct(clone(state))
 const protectedState = state => ({ flags: state.flags, ch2: state.dlc.ch2, dr: state.dlc.dr, dsa: state.dlc.dsa,
   skill: state.skill, heart: state.heart, wealth: state.wealth })
-const atNode = (nodeId, fields = {}, state = clone(base)) => replace(state, { ...p(state), nodeId, phase: 'story', ...fields })
+// Preserve the delivered patient-IR route used by this historical ending suite.
+const atNode = (nodeId, fields = {}, state = clone(base)) => replace(state, { ...p(state), phantomPreparation: undefined, nodeId, phase: 'story', ...fields })
 
 for (const [kind, round] of [['backproject', 2], ['iteration', 5]]) {
   const nodeId = `lf_lab_${round}`, config = LDCT_SPEED_CHALLENGES[kind]

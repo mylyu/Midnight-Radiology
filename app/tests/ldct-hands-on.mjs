@@ -5,7 +5,7 @@ import { freshState } from '../src/game/store.ts'
 import { getLdctChoices, getLdctNode, getLdctSteps } from '../src/game/ldct.ts'
 import { getLdctProgress, getLdctShelf, getLdctLabDataset, initializeLdct,
   selectLdctStory, openLdctShelf, ldctAction } from '../src/game/ldct-session.ts'
-import { createLdctLabState, createLdctRecord, isValidLdctRecord,
+import { createLdctLabState, createLdctPhantomPreparationState, createLdctRecord, isValidLdctRecord,
   labStateValid, ldctExperimentReady } from '../src/game/ldct-experiments.ts'
 import { LDCT_EXPOSURE_VERSION, LDCT_EXPOSURE_LEVELS, ldctExposureFrame } from '../src/game/ldct-exposure.ts'
 import { LDCT_CHEST_VERSION, LDCT_CHEST_SEED } from '../src/game/ldct-chest.ts'
@@ -35,14 +35,14 @@ function at(state, nodeId, fields = {}) {
   return { ...state, dlc: { ...state.dlc, ldct: { ...state.dlc.ldct, ldct: progress,
     ldctStories: { ...getLdctShelf(state), active: 'father', slots: { ...getLdctShelf(state).slots, father: progress } } } } }
 }
-function operated(round, dataset) {
-  const draft = createLdctLabState(round, dataset)
+function operated(round, dataset, existing) {
+  const draft = { ...(existing ?? createLdctLabState(round, dataset)) }
   if (round === 1) Object.assign(draft, { structure: 'bead', seenStructures: ['bead'] })
   if (round === 2) draft.bpCount = 160
   if (round === 3) Object.assign(draft, { filter: 'hann', seenFilters: ['ramp', 'hann'], signal: 'low', seenSignals: ['high', 'low'] })
-  if (round === 4 && dataset === 'chest') draft.exposureCount = 13
+  if (round === 4 && (dataset === 'chest' || draft.phantomDataVersion)) Object.assign(draft, { exposureCount: 13, exposureStep: 3 })
   else if (round === 4) Object.assign(draft, { signal: 'low', seenSignals: ['high', 'low'] })
-  if (round === 5) Object.assign(draft, dataset === 'chest' ? { iterationRound: 10 } : { iterationStep: 1, seenIterations: [0, 1] })
+  if (round === 5) Object.assign(draft, draft.iterationRound !== undefined ? { iterationRound: 10 } : { iterationStep: 1, seenIterations: [0, 1] })
   return draft
 }
 function walk(initial) {
@@ -66,7 +66,7 @@ function walk(initial) {
       state = act(state, 'part:next')
       assert.equal(act(state, 'part:next'), state, 'next-night action is idempotent')
     } else if (progress.phase === 'lab') {
-      const dataset = getLdctLabDataset(state), draft = operated(progress.labRound, dataset)
+      const dataset = getLdctLabDataset(state), draft = operated(progress.labRound, dataset, progress.labDraft)
       state = act(state, 'lab:update', { value: draft })
       assert.deepEqual(p(initializeLdct(clone(state))).labDraft, draft)
       const record = createLdctRecord(draft, progress.labRound, 'different', dataset)
@@ -121,9 +121,9 @@ assert.equal(p(selected).openingRevision, 5)
 assert.equal(initializeLdct(selected), selected, 'refresh does not silently restart the story')
 assert.equal(p(openLdctShelf(selected)), undefined)
 const done = walk(selected)
-const ordered = ['lf_consult_0', 'lf_plan_0', 'lf_lab_1', 'lf_lab_2', 'lf_lab_3', 'lf_night1_end',
-  'lf_scan_0', 'lf_first_fbp', 'lf_lab_4', 'lf_license_0', 'lf_export_0', 'lf_evening2',
-  'lf_rest_hub', 'lf_lab_5', 'lf_caught_choice', 'lf_fine_0', 'lf_director_review_0', 'lf_wrap_0', 'lf_end']
+const ordered = ['lf_consult_0', 'lf_plan_0', 'lf_phantom_scan', 'lf_lab_4', 'lf_lab_1', 'lf_lab_2', 'lf_lab_3',
+  'lf_lab_5', 'lf_night1_end', 'lf_scan_0', 'lf_first_fbp', 'lf_patient_review', 'lf_license_0', 'lf_export_0',
+  'lf_evening2', 'lf_rest_hub', 'lf_patient_result', 'lf_caught_choice', 'lf_fine_0', 'lf_director_review_0', 'lf_wrap_0', 'lf_end']
 for (let index = 1; index < ordered.length; index++)
   assert(done.route.indexOf(ordered[index]) > done.route.indexOf(ordered[index - 1]), `${ordered[index - 1]} precedes ${ordered[index]}`)
 for (const nodeId of ['lf_scan_0', 'lf_first_fbp', 'lf_lab_4', 'lf_lab_5'])
@@ -135,10 +135,13 @@ assert.equal(done.state.gold, base.gold - 100, 'first-choice ending pays the one
 assert.equal(p(done.state).receipts.filter(id => id === 'ending:fine').length, 1)
 assert.equal(done.state.heart, base.heart)
 assert(done.state.badges.includes('ldct_noise_beyond'))
-assert.equal(getLdctLabDataset(done.snapshots.get('lf_lab_4')), 'chest')
-assert(p(done.snapshots.get('lf_lab_5')).completed.includes('father_projection_authorized'))
+assert.equal(getLdctLabDataset(done.snapshots.get('lf_lab_4')), 'phantom')
+assert.equal(getLdctLabDataset(done.snapshots.get('lf_lab_5')), 'phantom')
+assert.equal(p(done.snapshots.get('lf_lab_5')).completed.includes('father_projection_authorized'), false,
+  'the first-night phantom experiment does not claim the later patient export')
+assert(p(done.snapshots.get('lf_patient_result')).completed.includes('father_projection_authorized'))
 assert.equal(getLdctNode(done.snapshots.get('lf_first_fbp')).chestPreview, 'fbp')
-assert.match(getLdctNode(done.snapshots.get('lf_after_filter_0')).text, /低管电流/)
+assert.match(getLdctNode(done.snapshots.get('lf_after_filter_0')).text, /噪点/)
 const highFilter = clone(done.snapshots.get('lf_after_filter_0'))
 p(highFilter).records[3].signal = 'high'
 assert.doesNotMatch(getLdctNode(highFilter).text, /低管电流那档加上锐滤波/)
@@ -153,13 +156,14 @@ assert(labStateValid(emptyExposure, 4))
 assert.equal(ldctExperimentReady(emptyExposure, 4), false)
 assert.equal(createLdctRecord(emptyExposure, 4, 'different', 'chest'), null)
 assert.equal(act(done.snapshots.get('lf_lab_4'), 'lab:update', { value: createLdctLabState(4, 'phantom') }),
-  done.snapshots.get('lf_lab_4'), 'current chest tool rejects a draft from the old phantom experiment')
+  done.snapshots.get('lf_lab_4'), 'versioned physical-phantom tool rejects an unversioned old experiment draft')
 for (let step = 0; step < 4; step++) {
   const draft = { ...emptyExposure, exposureStep: step }
   assert(labStateValid(draft, 4))
   assert.equal(ldctExposureFrame('fbp', step).column, step)
   assert.equal(ldctExposureFrame('sinogram', step).row, 1)
-  const legacyReview = at(done.snapshots.get('lf_lab_4'), 'lf_lab_4', { phase: 'lab', labDraft: emptyExposure, labReturn: 'lf_photons_done_0' })
+  const legacyReview = at(done.state, 'lf_lab_4', { phantomPreparation: undefined, finished: false,
+    phase: 'lab', labRound: 4, labDraft: emptyExposure, labReturn: 'lf_photons_done_0' })
   let state = act(legacyReview, 'lab:update', { value: draft })
   assert.equal(p(initializeLdct(clone(state))).labDraft.exposureStep, step, 'every exposure checkpoint survives refresh')
   const record = createLdctRecord({ ...draft, helped: step === 0 }, 4, step === 0 ? 'uncertain' : 'different', 'chest')
@@ -188,17 +192,19 @@ assert.equal(act(done.snapshots.get('lf_lab_4'), 'lab:submit', { record: exposur
 
 // Leaving a tool, reviewing a record and restarting keep reward receipts stable.
 let review = act(done.state, 'lab:open', { round: 4 })
-assert.equal(getLdctLabDataset(review), 'chest')
+assert.equal(getLdctLabDataset(review), 'phantom')
 assert.equal(p(review).labDraft.exposureCount, 13)
 const beforeReview = stats(review)
 review = act(review, 'lab:close')
 assert.equal(p(review).nodeId, 'lf_end')
 assert.deepEqual(stats(review), beforeReview)
 review = act(review, 'lab:open', { round: 4 })
-review = act(review, 'lab:submit', { record: createLdctRecord(p(review).labDraft, 4, 'different', 'chest') })
+review = act(review, 'lab:submit', { record: createLdctRecord(p(review).labDraft, 4, 'different', 'phantom') })
 assert.equal(p(review).nodeId, 'lf_end')
 assert.deepEqual(stats(review), beforeReview)
-let paused = act(done.snapshots.get('lf_lab_4'), 'lab:update', { value: { ...createLdctLabState(4, 'chest'), exposureCount: 3 } })
+let paused = act(done.snapshots.get('lf_lab_4'), 'lab:update', {
+  value: { ...p(done.snapshots.get('lf_lab_4')).labDraft, exposureCount: 3 },
+})
 paused = act(paused, 'lab:close')
 assert.equal(p(paused).phase, 'story')
 paused = act(paused, 'advance', { nodeId: 'lf_lab_4' })
@@ -206,7 +212,10 @@ assert.equal(p(paused).phase, 'lab')
 assert.equal(p(paused).labDraft.exposureCount, 3)
 
 // V4 saves resume their original graph. New start is explicit and preserves the old run.
-const legacy = at(done.snapshots.get('lf_night1_end'), 'lf_night1_end', { openingRevision: 4, phase: 'settle' })
+const legacy = at(done.snapshots.get('lf_night1_end'), 'lf_night1_end', {
+  openingRevision: 4, phantomPreparation: undefined, phase: 'settle',
+  records: Object.fromEntries(Object.entries(p(done.state).records).filter(([round]) => Number(round) < 4)),
+})
 // A real historical save used bpStep; the new manual field did not exist.
 p(legacy).records[2] = createLdctRecord({ ...createLdctLabState(2), bpStep: 5 }, 2, 'different')
 const legacySnapshot = clone(p(legacy))
@@ -231,9 +240,9 @@ assert.deepEqual(getLdctShelf(restarted).receipts, getLdctShelf(legacy).receipts
 restarted = act(restarted, 'advance', { nodeId: 'lf_start' })
 assert.deepEqual(clone(getLdctShelf(restarted).previousFather), legacySnapshot, 'new actions never edit the archived run')
 assert.deepEqual(stats(restarted), stats(legacy))
-const replayInitial = createLdctLabState(4, 'chest')
+const replayInitial = createLdctPhantomPreparationState(4)
 const inherited = at(selectLdctStory(done.state, 'father', true), 'lf_lab_4', { phase: 'lab', labRound: 4, labDraft: replayInitial })
-const helpedAgain = act(inherited, 'lab:submit', { record: createLdctRecord({ ...replayInitial, helped: true }, 4, 'uncertain', 'chest') })
+const helpedAgain = act(inherited, 'lab:submit', { record: createLdctRecord({ ...replayInitial, helped: true }, 4, 'uncertain', 'phantom') })
 assert.deepEqual(stats(helpedAgain), stats(done.state), 'help in a replay cannot farm any shared reward')
 assert.deepEqual(protectedState(helpedAgain), protectedBase)
 
