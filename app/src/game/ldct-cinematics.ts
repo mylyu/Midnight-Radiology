@@ -1,5 +1,5 @@
 export type LdctCinematic = {
-  id: 'meal' | 'table-explain' | 'phantom' | 'father-scan' | 'locked' | 'director-caught' | 'director-review'
+  id: 'meal' | 'table-explain' | 'phantom' | 'father-scan' | 'locked' | 'locked-phantom' | 'director-caught' | 'director-review'
   image: string
   alt: string
   motion: 'push' | 'settle'
@@ -9,7 +9,7 @@ export type LdctCinematic = {
 export const LDCT_CINEMATIC_MEDIA_IDS = [
   'ldct_cg_meal_v1', 'ldct_cg_locked_v1', 'ldct_cg_phantom_v1', 'ldct_cg_father_scan_v1',
   'ldct_cg_director_caught_v1', 'ldct_cg_director_review_v1',
-  'ldct_cg_table_explain_v1',
+  'ldct_cg_table_explain_v1', 'ldct_cg_locked_phantom_v1',
 ] as const
 
 const meal: LdctCinematic = { id: 'meal', image: 'ldct_cg_meal_v1', motion: 'settle',
@@ -22,6 +22,8 @@ const fatherScan: LdctCinematic = { id: 'father-scan', image: 'ldct_cg_father_sc
   alt: '陆舟陪父亲进入CT室，在开始扫描前帮他安顿好。' }
 const locked: LdctCinematic = { id: 'locked', image: 'ldct_cg_locked_v1', motion: 'push', locked: true,
   alt: '两人靠近工作站查看扫描结果，迭代重建选配包没有开通。' }
+const lockedPhantom: LdctCinematic = { id: 'locked-phantom', image: 'ldct_cg_locked_phantom_v1', motion: 'push', locked: true,
+  alt: '试扫体模的圆形切面停在工作站上，旁边的迭代重建选配包仍然锁着。' }
 const caught: LdctCinematic = { id: 'director-caught', image: 'ldct_cg_director_caught_v1', motion: 'push',
   alt: '主任站在控制室门口，指着还没登记的设备使用本。' }
 const review: LdctCinematic = { id: 'director-review', image: 'ldct_cg_director_review_v1', motion: 'settle',
@@ -44,10 +46,10 @@ const scenes: Readonly<Record<string, LdctCinematic>> = {
   lf_license_2: locked,
   lf_license_3: locked,
   lf_license_choice: locked,
-  lf_trial_license_0: locked,
-  lf_trial_license_1: locked,
-  lf_trial_license_2: locked,
-  lf_trial_license_3: locked,
+  lf_trial_license_0: lockedPhantom,
+  lf_trial_license_1: lockedPhantom,
+  lf_trial_license_2: lockedPhantom,
+  lf_trial_license_3: lockedPhantom,
   lf_caught_0: caught,
   lf_caught_1: caught,
   lf_caught_2: caught,

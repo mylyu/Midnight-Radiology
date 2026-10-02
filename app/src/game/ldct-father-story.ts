@@ -185,7 +185,22 @@ nodes.lf_recheck_fbp_0.sprite = null
 lines('lf_recheck_keep', [['me', '这张也别删，和原图一起留着。'], ['luzhou', '好。参数也记上，省得回头分不清。']], room, lu, 'lf_record_echo', 2)
 lines('lf_recheck_together', [['me', '你盯得太久了。换我翻层，你帮我核对是不是同一处。'], ['luzhou', '行。我们一起看，别谁一个人先下结论。']], room, lu, 'lf_record_echo', 2)
 add('lf_record_echo', { part: 2, bg: room, sprite: lu, speaker: 'luzhou',
-  text: '同层原FBP、这版参数和相邻层都留好。走，去工作站把最后一份对照存上。', next: 'lf_caught_0' })
+  text: '同层原FBP、这版参数和相邻层都留好。走，去工作站把最后一份对照存上。', next: 'lf_dl_0' })
+lines('lf_dl', [
+  ['luzhou', '等一下。我最近在试一套新的**深度学习CT重建**，程序带来了。拿这份数据也跑一遍？'],
+  ['me', '刚才迭代的噪点是少了，细节还是别扭。你还有后手，现在才掏？'],
+  ['luzhou', '之前跑仿真，结果只能说一般。我哪敢一上来就吹。'],
+  [undefined, '陆舟在工作站上选中同一次检查的研究副本，点下运行。你们一人拉过一把椅子，盯着进度条走到头。'],
+  ['me', '……等等。刚才那团糊的地方，居然分得开了。你没偷偷换数据吧？'],
+  ['luzhou', '没换！还是这一份。这回真人数据出来竟然这么好，比我之前的仿真还好看。'],
+  ['me', '你这算法还挺会挑时候。先存下来，咱们把原片也……'],
+], nightControl, lu, 'lf_caught_0', 2)
+nodes.lf_dl_3.sprite = null
+for (const id of ['lf_dl_4', 'lf_dl_5', 'lf_dl_6']) {
+  nodes[id].sprite = null
+  nodes[id].chestPreview = 'deep-learning'
+}
+nodes.lf_dl_4.complete = 'father_dl_preview'
 lines('lf_caught', [
   [undefined, '控制室的门开了。你还没来得及摘下耳机，主任把设备使用本搁在键盘边。\n“昨晚九点，谁在这儿扫桶？”'],
   ['me', '……模体。'],
@@ -252,6 +267,14 @@ export function resolveLdctFatherNode(node: LdctNode, progress: LdctProgress): L
   }
   if (node.id === 'lf_end' && progress.finished && !progress.decisions.director_route)
     return { ...node, text: '旧版结尾已完成，记录与奖励保留。可重玩本篇体验新的主任来访结尾，不会自动倒退旧进度。' }
+  if (progress.completed.includes('father_dl_preview')) {
+    if (node.id === 'lf_pitch_0')
+      return { ...node, text: '我们刚试了陆舟新研究的深度学习重建，这份数据效果挺惊喜。想继续做下去，文章请您做**通讯作者**。' }
+    if (node.id === 'lf_director_method_1')
+      return { ...node, text: '是我最近研究的深度学习重建。刚才拿同次数据试了一版，连我都没想到会这么好。' }
+    if (node.id === 'lf_director_method_2')
+      return { ...node, text: '前面的迭代结果也存着。我们正想把这几版放一块，请您帮着看。' }
+  }
   if (node.id === 'lf_wrap_1' && progress.decisions.director_route === 'clever')
     return { ...node, text: '你这算法还没起名，通讯作者倒先有了。' }
   if (node.id === 'lf_wrap_2' && progress.decisions.director_route === 'clever')

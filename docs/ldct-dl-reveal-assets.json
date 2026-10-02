@@ -1,0 +1,86 @@
+{
+  "date": "2026-10-02",
+  "base": "a3d20ea",
+  "branch": "codex/ldct-dl-reveal",
+  "tool": "built-in image_gen",
+  "scope": "Game artwork and a fictional narrative reveal only. Existing computed FBP/SART-TV frames are unchanged.",
+  "playerPresentation": "No added generated-material/AI/educational disclaimer or handbook note. Ordinary story dialogue and image captions only.",
+  "assets": [
+    {
+      "id": "ldct_cg_locked_phantom_v1",
+      "intent": "Edit monitor images from human chest to physical phantom for the first-night trial.",
+      "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-990efcd9-568f-43e8-8c6f-9155db102a16.png",
+      "sourceSha256": "b99b5d69749740491a812310958e9c1d1702160d9f2a2de379e15e57ba6a541f",
+      "references": [
+        "app/public/assets/media/ldct_cg_locked_v1.865e915000e14317.webp",
+        "app/public/assets/media/ldct_short_phantom_v1.95385178b7487fa5.webp"
+      ],
+      "prompt": "Use case: precise-object-edit.\nAsset type: existing pixel-art hospital game cinematic, 16:9 landscape.\nImage 1 is the EDIT TARGET. Image 2 is only a reference of the circular physical CT phantom cross-section (the first clean round panel).\nChange the CT images ON THE MONITOR ONLY: the large left pane and every little slice thumbnail must show a circular grey homogeneous physical phantom with a white circular insert at upper left, a black circular insert at upper right, three tiny bright inserts lower left and a faint low-contrast grey insert lower right. Slight noisy texture is appropriate. REMOVE ALL LUNGS / human chest anatomy from the monitor. Preserve the existing large padlock icon on the right, grey locked panel, blue pixel UI borders, keyboard, hands, coffee, camera composition and original coarse pixel drawing style exactly. These are a phantom trial before any human scan. The window outside should now be dark blue night, because it is after dinner; keep warm desktop lamp illumination, CT gantry and empty bed unchanged.\nNo labels, disclaimers, explanatory captions, text banners, watermark, extra objects or new characters. Final is the full edited scene, not a comparison sheet.",
+      "delivery": "app/public/assets/media/ldct_cg_locked_phantom_v1.94a2636026dc5783.webp",
+      "deliverySha256": "94a2636026dc5783557299ea32ec614160a0ea3ea3b195ab7233ceb83a5ec0c5",
+      "bytes": 109094,
+      "dimensions": [
+        1671,
+        941
+      ],
+      "compression": {
+        "format": "WebP",
+        "quality": 78,
+        "effort": 6
+      },
+      "nodes": [
+        "lf_trial_license_0",
+        "lf_trial_license_1",
+        "lf_trial_license_2",
+        "lf_trial_license_3"
+      ],
+      "review": "Visible grey round phantom in large pane and all thumbnails, padlock retained; no lung, text overlays or new characters. Existing legacy lung monitor remains available only to the old patient-discovery nodes."
+    },
+    {
+      "id": "ldct_lung_dl_result_v1",
+      "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-aad3fe90-87d7-4a90-adee-31d518288148.png",
+      "sourceSha256": "df2086a91d83368f4ee4232e57cf5435ff2896de963c277727c71ae50c8fa0c2",
+      "reference": "Existing ldct_chest_v1_images atlas, truth column0 middle slice1: exact 192x192 crop x0 y192. Supporting input only; old atlas unmodified.",
+      "anatomySource": {
+        "title": "AortaSeg-60 / Nat_07, El Rahal, Rotzinger, Fahrni (2026)",
+        "url": "https://zenodo.org/records/18147026",
+        "license": "CC BY 4.0",
+        "details": "docs/ldct-chest-numerics.md"
+      },
+      "prompt": "Use case: precise-object-edit.\nAsset type: one grayscale axial chest CT image for a fictional game.\nImage 1 is the EXACT anatomy and composition reference / edit target, a clean reference slice from the same existing game case. Create a higher-resolution, cleaner, naturally sharp CT depiction of this exact slice, visually close to this reference. Keep the same proportions, body envelope, lung shapes, vessels, airway branches, mediastinum, posterior vertebra and bone locations, the exact left-right orientation and same amount of black margin. Keep all existing fine lung structures and subtle markings in their original positions; do NOT invent, remove or relocate any lesion. Do NOT enlarge tiny spots into masses. This represents a surprisingly clear new reconstruction in a fictional narrative, not a real clinical study.\nThe lungs stay black with thin pale branching vessels; mediastinum and chest wall are pale, standard grayscale CT lung-window appearance. Preserve natural fine texture, avoid plastic smoothing, artificial edge outlines, fake sharpening halos or oversharpened grain. Improve clarity and readability relative to a noisy iteration, stay very close to the supplied cleaner reference. Full field of view, one square image, roughly 1024px, pure black surrounding canvas.\nAbsolutely NO text, no labels, no arrows, no circles, no split view, no decorative UI, no disclaimer, no logo or watermark.",
+      "delivery": "app/public/assets/media/ldct_lung_dl_result_v1.697b6824053e86fd.webp",
+      "deliverySha256": "697b6824053e86fd5a69fbf256cc26ea9c3b7bc31be23eeee23d2239da829a39",
+      "bytes": 25226,
+      "dimensions": [
+        640,
+        640
+      ],
+      "compression": {
+        "format": "WebP",
+        "resize": "640px maximum edge, Lanczos3",
+        "quality": 84,
+        "effort": 6,
+        "import": "--keep-webp"
+      },
+      "nodes": [
+        "lf_dl_4",
+        "lf_dl_5",
+        "lf_dl_6"
+      ],
+      "review": "Compared with the source middle layer and generated original: similar field of view, lung/body silhouettes and major mediastinal structures, clearer vessels and low noise. This is an illustrated narrative result, not pixel-exact reconstruction, a clinical ground truth or measured network inference. No quantitative superiority or lesion-location task is attached. User requested no on-image or in-game material note; provenance stays here.",
+      "preserved": "No changes to original measured/synthetic arrays, iteration slots, user marks, source attribution, or clinical diagnosis conditions."
+    }
+  ],
+  "totals": {
+    "addedMediaBytes": 134320,
+    "distBytes": 20168941,
+    "ldctIncludingShellBytes": 5141800,
+    "protectedBaseBytes": 16777867
+  },
+  "validation": {
+    "state": "ldct-dl-reveal: all three reactions, reveal timing, old saves, records/rewards isolation, phantom vs legacy monitor mapping",
+    "ui": "isolated Edge headless desktop1280x850, portrait390x780, landscape844x390; preloaded offline reveal; screenshots visually reviewed",
+    "screenshots": "../ldct-dl-reveal-assets/browser/",
+    "unchanged": "First/second chapters, DR/DSA resources, existing audio and numerical arrays"
+  }
+}

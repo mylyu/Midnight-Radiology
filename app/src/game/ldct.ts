@@ -19,7 +19,7 @@ export const LDCT_MEDIA_IDS = [
   ...LDCT_CINEMATIC_MEDIA_IDS,
   ...LDCT_FATHER_MEDIA_IDS,
   'ch2_pixel_char_luzhou_m', 'ch2_pixel_char_luzhou_f',
-  'item_coffee', 'item_milktea', 'item_snack',
+  'item_coffee', 'item_milktea', 'item_snack', 'ldct_lung_dl_result_v1',
 ] as const
 export const LDCT_STEPS: Readonly<Record<string, LdctNode>> = LDCT_FATHER_STEPS
 export function getLdctSteps(progress?: LdctProgress): Readonly<Record<string, LdctNode>> {

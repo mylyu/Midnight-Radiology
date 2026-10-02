@@ -181,11 +181,13 @@ function LdctStoryScreen({ state, update, onExit, renderText }: Props) {
           onConsumed={cueId => act({ type: 'media:heard', nodeId: p.nodeId, cueId })} />}
         {sprite && !cinematic && <DialoguePortrait data-ldct-portrait src={imageAsset(sprite)} alt="" className="pointer-events-none" />}
         {node.chestPreview && <figure className="ldct-case-preview" data-ldct-case-preview={node.chestPreview}>
-          <div role="img" aria-label={node.chestPreview === 'fbp' ? '同次胸部检查的FBP图像，未标注观察答案' : '同份投影的研究重建图像，未标注观察答案'}
-            style={noisyChest
+          <div role="img" aria-label={node.chestPreview === 'deep-learning' ? '同次数据的深度学习重建图像' : node.chestPreview === 'fbp' ? '同次胸部检查的FBP图像，未标注观察答案' : '同份投影的研究重建图像，未标注观察答案'}
+            style={node.chestPreview === 'deep-learning'
+              ? { backgroundImage: `url("${imageAsset('ldct_lung_dl_result_v1')}")`, backgroundSize: 'contain', backgroundPosition: 'center' }
+              : noisyChest
               ? { ...ldctNoisyChestFrameStyle(node.chestPreview, 1), backgroundImage: `url("${imageAsset(ldctNoisyChestFrame(node.chestPreview, 1).mediaId)}")` }
               : { ...ldctChestFrameStyle(node.chestPreview, 1), backgroundImage: `url("${imageAsset(ldctChestFrame(node.chestPreview, 1).mediaId)}")` }} />
-          <figcaption>{node.chestPreview === 'fbp' ? '同次数据 · FBP' : '同次数据 · 研究重建'}</figcaption>
+          <figcaption>{node.chestPreview === 'deep-learning' ? '同次数据 · 深度学习重建' : node.chestPreview === 'fbp' ? '同次数据 · FBP' : '同次数据 · 研究重建'}</figcaption>
         </figure>}
         {dialogue.panel}
       </>}

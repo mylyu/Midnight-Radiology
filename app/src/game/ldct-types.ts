@@ -92,7 +92,7 @@ export interface LdctNode {
   enterLab?: LdctLabRound
   labDataset?: 'phantom' | 'chest'
   labContext?: 'patient'
-  chestPreview?: 'fbp' | 'iteration:4'
+  chestPreview?: 'fbp' | 'iteration:4' | 'deep-learning'
   settle?: boolean
   settlement?: LdctSettlement
   /** Story chronology may differ from legacy part IDs used by saved records. */
