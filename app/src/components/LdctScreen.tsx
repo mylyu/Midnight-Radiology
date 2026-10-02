@@ -144,7 +144,7 @@ function LdctStoryScreen({ state, update, onExit, renderText }: Props) {
     <SceneBackground name={node.bg} /><DialogueShade />
     <DialogueHeader title={`◐ 噪声之外 · ${p.finished ? '本篇完' : node.part === 2 ? legacyOrder ? '第二晚' : '第二天' : node.part === 3 ? legacyOrder ? '几周后' : '下班之前' : '第一晚'}${legacyOrder ? ' · 旧顺序存档' : ''}`}><span>💰 {state.gold}</span>{menu}</DialogueHeader>
     {p.phase === 'lab' ? <div className="ldct-lab-wrap" onClick={e => e.stopPropagation()}>
-      <LdctLab key={`${p.storyId}:${p.labRound}:${p.labReturn ?? 'live'}`} round={p.labRound} value={p.labDraft}
+      <LdctLab key={`${p.storyId}:${p.labContext ?? 'lesson'}:${p.labRound}:${p.labReturn ?? 'live'}`} round={p.labRound} value={p.labDraft}
         dataset={getLdctLabDataset(state)} goal={node.goal}
         challengeKind={speedKind} challenge={speedKind ? p.speedChallenges?.[speedKind] : undefined}
         onChallengeAction={command => act({ ...command, nodeId: p.nodeId, now: Date.now() })}
@@ -152,7 +152,7 @@ function LdctStoryScreen({ state, update, onExit, renderText }: Props) {
         onSubmit={record => act({ type: 'lab:submit', record })}
         onBack={() => act({ type: 'lab:close' })} /></div>
       : settled ? <main className="ldct-settlement" data-ldct-settlement onClick={e => e.stopPropagation()}>
-        <p className="text-teal-200 text-sm">{p.finished ? newEnding ? '本篇完 · 原片留下，复查也记下' : '本篇完 · 旧版记录保留' : '第一晚 · 先歇一歇'}</p><h1>{p.finished ? newEnding ? p.decisions.director_route === 'clever' ? '罚款没开，坑先挖了' : '这一百，记住了' : '这篇故事已经走完' : legacyOrder ? '电脑留在这里，明晚接着看' : '试扫记录留好，明天看结果'}</h1>
+        <p className="text-teal-200 text-sm">{p.finished ? newEnding ? '本篇完 · 原片留下，复查也记下' : '本篇完 · 旧版记录保留' : '第一晚 · 先歇一歇'}</p><h1>{p.finished ? newEnding ? p.decisions.director_route === 'clever' ? '罚款没开，坑先挖了' : '这笔罚款，记住了' : '这篇故事已经走完' : legacyOrder ? '电脑留在这里，明晚接着看' : '试扫记录留好，明天看结果'}</h1>
         <p className="text-slate-300 text-sm">{node.text}</p>
         <div className="ldct-metrics">{(Object.keys(icons) as (keyof typeof icons)[]).map(key => <section key={key}>
           <small>{icons[key]}</small><p>{state[key]} <span className="text-xs text-teal-200">本次开始以来 {state[key] - p.start[key] >= 0 ? '+' : ''}{state[key] - p.start[key]}</span></p>
@@ -192,11 +192,15 @@ function LdctStoryScreen({ state, update, onExit, renderText }: Props) {
         {p.previousChest && (p.previousChest.record || p.previousChest.draft || p.previousChest.exposureDraft) && <details className="ldct-panel"><summary>旧胸部实验记录</summary>
           <p>这轮调整了输入或重建版本。旧草稿、标记和固定版保留，不移到新结果上。</p>
           <pre className="ldct-json">{JSON.stringify(p.previousChest, null, 2)}</pre></details>}
-        {!Object.keys(p.records).length && <p>还没试过工具。想带过时，请陆舟演示就能继续。</p>}
+        {!Object.keys(p.records).length && !p.patientIteration?.record && <p>还没试过工具。想带过时，请陆舟演示就能继续。</p>}
         {Object.entries(p.records).map(([round, record]) => <article className="ldct-panel" key={round}><h3>{LDCT_LAB_TITLES[record!.round]}</h3>
           <p>{ldctRecordSummary(record!)}{record!.helped ? ' · 和陆舟一起看过' : ''}</p>
           {settled && <button onClick={() => { act({ type: 'lab:open', round: Number(round) as LdctLabRound }); close() }}>回实验台看看</button>}
         </article>)}
+        {p.patientIteration?.record && <article className="ldct-panel" data-ldct-patient-record><h3>陆叔的胸部图像 · 迭代比较</h3>
+          <p>{ldctRecordSummary(p.patientIteration.record)}{p.patientIteration.record.helped ? ' · 和陆舟一起看过' : ''}</p>
+          {settled && <button onClick={() => { act({ type: 'lab:open', round: 5, context: 'patient' }); close() }}>回看胸部迭代</button>}
+        </article>}
       </div>}
       {overlay === 'bag' && <div className="ldct-reading"><p>奶茶、零食要在同事在场的闲聊里递出。</p>
         {state.items.map(item => <p key={item}>{itemName(item)} · {item === 'milktea' ? '购买时已加人心；当面送出不重复加。' : item === 'snack' ? '当面分享，人心＋1。' : '保留主游戏用途，本篇不消耗。'}</p>)}

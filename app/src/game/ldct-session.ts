@@ -22,6 +22,7 @@ export function getLdctProgress(state: GameState): LdctProgress | undefined {
 }
 export function getLdctLabDataset(state: GameState): 'phantom' | 'chest' {
   const p = getLdctProgress(state)
+  if (p?.labContext === 'patient' && p.labRound === 5) return 'chest'
   if (p?.labDraft.phantomDataVersion === LDCT_PHANTOM_EXPOSURE_VERSION) return 'phantom'
   if (p?.phantomPreparation && !p.labReturn) return 'phantom'
   if (p?.openingRevision !== 5 && p?.labRound === 4) return 'phantom'
@@ -34,9 +35,12 @@ function withShelf(state: GameState, shelf: LdctStoryShelf): GameState {
 }
 function patch(state: GameState, p: LdctProgress): GameState {
   const shelf = getLdctShelf(state)!
-  if (!p.storyId) return state
+  const storyId = p.storyId
+  if (!storyId) return state
+  if (p.labContext === 'patient' && p.labRound === 5)
+    p = { ...p, patientIteration: { ...p.patientIteration, draft: p.labDraft } }
   return { ...state, dlc: { ...state.dlc, ldct: { ...state.dlc?.ldct, ldct: p,
-    ldctStories: { ...shelf, active: p.storyId, slots: { ...shelf.slots, [p.storyId]: p } } } } }
+    ldctStories: { ...shelf, active: storyId, slots: { ...shelf.slots, [storyId]: p } } } } }
 }
 /** Extend unfinished tools, never reinterpret archived checkpoint indices. */
 function extendLiveDraft(p: LdctProgress): LdctProgress {
@@ -126,8 +130,14 @@ function move(state: GameState, p: LdctProgress, id: string): GameState {
   const node = getLdctSteps(p)[id]
   if (!node || p.storyId !== 'father' || !id.startsWith('lf_')) return state
   if (node.enterLab) {
+    if (node.labContext === 'patient' && node.enterLab === 5) {
+      const draft = p.patientIteration?.draft ?? createLdctLabState(5, 'chest')
+      return patch(state, changed(p, { nodeId: id, phase: 'lab', reply: undefined,
+        labRound: 5, labContext: 'patient', labDraft: draft, labReturn: undefined,
+        chestSourceVersion: LDCT_NOISY_DATA_VERSION }))
+    }
     const dataset = node.labDataset ?? 'phantom'
-    const sameRound = p.labRound === node.enterLab
+    const sameRound = p.labRound === node.enterLab && !p.labContext
     // An older save may retain a draft while its cursor sits before the lab.
     // Matching the round alone would pair a new first FBP with old lab images.
     const staleChest = sameRound && dataset === 'chest' && p.labDraft.chestDataVersion !== LDCT_NOISY_DATA_VERSION
@@ -136,13 +146,13 @@ function move(state: GameState, p: LdctProgress, id: string): GameState {
     const prepared = staleChest ? archiveChestDraft(p) : p
     return patch(state, extendLiveDraft(changed(prepared, { nodeId: id, phase: 'lab', reply: undefined,
       ...(dataset === 'chest' ? { chestSourceVersion: LDCT_NOISY_DATA_VERSION } : {}),
-      labRound: node.enterLab, labDraft: sameRound && !staleChest && !stalePhantom ? p.labDraft
+      labRound: node.enterLab, labContext: undefined, labDraft: sameRound && !staleChest && !stalePhantom ? p.labDraft
         : phantomTrial ? createLdctPhantomPreparationState(node.enterLab as 4 | 5) : createLdctLabState(node.enterLab, dataset), labReturn: undefined })))
   }
   const finished = node.storyEnd || p.finished
   const next = node.storyEnd && !state.badges.includes('ldct_noise_beyond')
     ? { ...state, badges: [...state.badges, 'ldct_noise_beyond'] } : state
-  return patch(next, changed(p, { nodeId: id, phase: node.settle ? 'settle' : 'story', finished, reply: undefined }))
+  return patch(next, changed(p, { nodeId: id, phase: node.settle ? 'settle' : 'story', finished, reply: undefined, labContext: undefined }))
 }
 const completed = (p: LdctProgress, id?: string) => id && !p.completed.includes(id)
   ? { ...p, completed: [...p.completed, id] } : p
@@ -273,6 +283,11 @@ export function ldctAction(state: GameState, action: LdctAction): GameState {
     if (p.phase !== 'lab' || !isValidLdctRecord(action.record, p.labRound)) return state
     const expected = createLdctRecord({ ...p.labDraft, helped: action.record.helped }, p.labRound, action.record.verdict, getLdctLabDataset(state))
     if (!expected || JSON.stringify(expected) !== JSON.stringify(action.record)) return state
+    if (p.labContext === 'patient') {
+      const progress = { ...p, labReturn: undefined,
+        patientIteration: { draft: p.labDraft, record: action.record } }
+      return move(state, progress, p.labReturn ?? 'lf_after_iteration_0')
+    }
     const shelf = getLdctShelf(state)!
     const first = !shelf.receipts.includes('reward:comparison')
     const experienced = [...new Set([...shelf.experienced, p.labRound])]
@@ -289,12 +304,13 @@ export function ldctAction(state: GameState, action: LdctAction): GameState {
     return move(next, { ...progress, labReturn: undefined }, p.labReturn ?? returnNode)
   }
   if (action.type === 'lab:open') {
-    if (p.phase !== 'settle' || !p.records[action.round]) return state
-    const record = p.records[action.round]!
+    if (p.phase !== 'settle' || (action.context === 'patient' && action.round !== 5)) return state
+    const record = action.context === 'patient' ? p.patientIteration?.record : p.records[action.round]
+    if (!record) return state
     const oldChest = record.dataset === 'chest' && action.round === 5 && record.sourceVersion !== LDCT_CHEST_VERSION && record.sourceVersion !== LDCT_DEEP_CHEST_VERSION && record.sourceVersion !== LDCT_NOISY_CHEST_VERSION
     const draft = oldChest ? createLdctLabState(5, 'chest') : { ...createLdctLabState(action.round, record.dataset === 'chest' ? 'chest' : 'phantom'), ...record,
       chestDataVersion: record.chestDataVersion, exposureCount: record.exposureCount, iterationRound: record.iterationRound, saved: null }
-    return patch(state, changed(p, { phase: 'lab', labRound: action.round, labDraft: draft, labReturn: p.nodeId }))
+    return patch(state, changed(p, { phase: 'lab', labRound: action.round, labContext: action.context, labDraft: draft, labReturn: p.nodeId }))
   }
   if (action.type === 'lab:close') {
     if (p.phase !== 'lab') return state

@@ -39,6 +39,9 @@ export interface LdctProgress {
   reply?: { nodeId: string; speaker: string; text: string }
   labRound: LdctLabRound
   labDraft: LdctLabState
+  /** The later patient comparison is separate from the five phantom lessons. */
+  labContext?: 'patient'
+  patientIteration?: { draft?: LdctLabState; record?: LdctLabRecord }
   records: Partial<Record<LdctLabRound, LdctLabRecord>>
   labReturn?: string
   research?: LdctResearchDraft
@@ -78,6 +81,7 @@ export interface LdctNode {
   complete?: string
   enterLab?: LdctLabRound
   labDataset?: 'phantom' | 'chest'
+  labContext?: 'patient'
   chestPreview?: 'fbp' | 'iteration:4'
   settle?: boolean
   part?: 1 | 2 | 3 | 4
@@ -107,7 +111,7 @@ export type LdctAction =
   | { type: 'choose'; nodeId: string; choiceId: string }
   | { type: 'lab:update'; value: LdctLabState }
   | { type: 'lab:submit'; record: LdctLabRecord }
-  | { type: 'lab:open'; round: LdctLabRound }
+  | { type: 'lab:open'; round: LdctLabRound; context?: 'patient' }
   | { type: 'lab:close' }
   | { type: 'buy'; item: LdctProduct }
   | { type: 'gift'; person: LdctPerson; item: 'milktea' | 'snack'; nodeId: string }

@@ -50,13 +50,17 @@ add('lf_persuade', { part: 1, bg: restaurant, sprite: father, speaker: '陆叔',
 lines('lf_listen', [
   ['陆叔', '隔壁老李说，片子照多了也能得病。我这不是两头堵吗。'],
   ['me', '这顾虑可以问。让医生把两头都讲清楚，别让陆舟光跟您比谁嗓门大。'],
-], restaurant, father, 'lf_consult_0', 1)
+], restaurant, father, 'lf_to_consult', 1)
 lines('lf_joke', [
   ['陆叔', '对，菜快凉了。他回来两天，就会盯着我。'],
   ['me', '您担心的先记下，回头让医生解释。陆舟，筷子拿起来，别拿挂号单当菜单。'],
-], restaurant, father, 'lf_consult_0', 1)
+], restaurant, father, 'lf_to_consult', 1)
+add('lf_to_consult', { part: 1, bg: restaurant, sprite: null,
+  text: '饭吃得差不多，陆叔把挂号单拿了过去：“那就先去问问，问完再说。”\n你们收好剩菜，沿街走回医院。', next: 'lf_wait_consult' })
+add('lf_wait_consult', { part: 1, bg: waiting, sprite: father,
+  text: '候诊区又响了一次叫号声。陆叔捏着挂号单，压低声音：“先说好，今天就是问问。”\n陆舟点点头，在他旁边坐下。', next: 'lf_consult_0' })
 lines('lf_consult', [
-  [undefined, '门诊里，医师问过陆叔的吸烟和既往检查情况，把辐射顾虑也聊清楚了。低剂量胸部CT约在明天，陆舟总算把挂号单收回了口袋。'],
+  [undefined, '医师问过陆叔的吸烟和既往检查情况，也回答了他的辐射顾虑。低剂量胸部CT约在明天。回到候诊区，陆舟总算把挂号单收回了口袋。'],
   ['陆叔', '你们不是为了照得亮，就一个劲往上加？'],
   ['luzhou', '爸，方案由医生评估。我不替你调，咱把不明白的问完。'],
 ], waiting, father, 'lf_plan_0', 1)
@@ -168,17 +172,17 @@ lines('lf_iteration_intro', [
 lab(5, 2, '和原FBP对照，看一轮变化；想核查的位置可以标记，不必猜诊断。')
 lines('lf_after_iteration', [
   ['luzhou', '这张平滑多了。要不就留这版？我真不想再看那些噪点。'],
-  ['me', '等一下。咱们现在是希望它看着舒服，还是想把那一处看清？'],
+  ['me', '先别关原图。刚才那一小块呢？咱们对着看看。'],
 ], room, lu, 'lf_result_choice', 2)
 add('lf_result_choice', { part: 2, bg: room, sprite: lu, text: '陆舟松开鼠标，让开了一点位置。', choices: [
   choice('fbp', '先回看同层原FBP', 'lf_recheck_fbp_0', 'result_review'),
   choice('keep', '另一版也留着，不急着删', 'lf_recheck_keep_0', 'result_review'),
   choice('together', '“坐过来，咱们把相邻层一起看。”', 'lf_recheck_together_0', 'result_review'),
 ] })
-lines('lf_recheck_fbp', [['me', '原片噪点多，但不能跳过。先对同一层。'], ['luzhou', '嗯。刚才我只想挑张能让我松口气的。']], room, lu, 'lf_record_echo', 2)
+lines('lf_recheck_fbp', [['me', '先翻回刚才那一层。你帮我盯着那一处。'], ['luzhou', '嗯。刚才我只想挑张能让我松口气的。']], room, lu, 'lf_record_echo', 2)
 nodes.lf_recheck_fbp_0.chestPreview = 'fbp'
 nodes.lf_recheck_fbp_0.sprite = null
-lines('lf_recheck_keep', [['me', '别拿平滑程度当淘汰线。两版带着参数一起留。'], ['luzhou', '好。我不删。难看的也留下。']], room, lu, 'lf_record_echo', 2)
+lines('lf_recheck_keep', [['me', '这张也别删，和原图一起留着。'], ['luzhou', '好。参数也记上，省得回头分不清。']], room, lu, 'lf_record_echo', 2)
 lines('lf_recheck_together', [['me', '你盯得太久了。换我翻层，你帮我核对是不是同一处。'], ['luzhou', '行。我们一起看，别谁一个人先下结论。']], room, lu, 'lf_record_echo', 2)
 add('lf_record_echo', { part: 2, bg: room, sprite: lu, speaker: 'luzhou',
   text: '同层原FBP、这版参数和相邻层都留好。走，去工作站把最后一份对照存上。', next: 'lf_caught_0' })
@@ -187,11 +191,11 @@ lines('lf_caught', [
   ['me', '……模体。'],
   ['director', '我知道是模体。机器记着呢，本子倒干干净净。谁让你们自己加机时的？'],
   ['luzhou', '主任，我们是想试一下重建——'],
-  ['director', '研究副本给你们用了，没说机器随便占。**罚一百**。'],
+  ['director', '研究副本给你们用了，没说机器随便占。**罚两百**。'],
 ], nightControl, director, 'lf_caught_choice', 2)
 add('lf_caught_choice', { part: 2, bg: nightControl, sprite: director,
   text: '陆舟看你。你看设备使用本。主任已经把笔盖拔了。', choices: [
-    { ...choice('pay', '“是我们没报。认罚。”（金币－100）', 'lf_fine_0', 'director_route'), goldCost: 100, costReceipt: 'ending:fine' },
+    { ...choice('pay', '“是我们没报。认罚。”（金币－200）', 'lf_fine_0', 'director_route'), goldCost: 200, costReceipt: 'ending:fine' },
     choice('clever', '“主任，先别写。您看这个算法——”', 'lf_pitch_0', 'director_route'),
   ] })
 lines('lf_fine', [
@@ -207,7 +211,7 @@ lines('lf_pitch', [
   ['director', '调出来。别光给我看最漂亮的那版。'],
 ], nightControl, director, 'lf_director_review_0', 2)
 lines('lf_director_review', [
-  [undefined, '主任收起笑，把原来的临床薄层序列从头翻了一遍，又对了几层你们保留的重建结果。陆舟不说话了。'],
+  [undefined, '主任往前坐了坐，把原来的临床薄层序列从头翻了一遍，又对了几层你们保留的重建结果。陆舟不说话了。'],
   ['director', '这一处是个**很小的纯磨玻璃结节**。先按计划定期复查，不是看见结节就得开刀。'],
   ['luzhou', '那现在不用马上……？'],
   ['director', '先不用急。复查时间我写上，后面看大小和成分有没有变化。别让你爸又拖着不来。'],
@@ -217,7 +221,7 @@ lines('lf_director_review', [
 lines('lf_wrap', [
   [undefined, '主任走后，陆舟发消息给父亲，把复查安排拍了过去。\n对面很快回了：“知道了。你俩怎么还没下班？”'],
   ['luzhou', '差点被你一句话吓没半条命。'],
-  ['me', '你是说片子，还是那一百？'],
+  ['me', '你是说片子，还是那笔罚款？'],
   [undefined, '电脑右下角，厂家的迭代包还是锁着。\n你把设备使用本拉到面前。这回，先写名字。'],
 ], nightControl, lu, 'lf_end', 3)
 nodes.lf_wrap_0.sprite = null
@@ -247,10 +251,10 @@ export function resolveLdctFatherNode(node: LdctNode, progress: LdctProgress): L
   if (node.id === 'lf_wrap_2' && progress.decisions.director_route === 'clever')
     return { ...node, text: '先别笑。刚才他说稿子先给他看，你听见没？' }
   if (node.id === 'lf_record_echo') {
-    const chest = progress.records[5]?.chest
+    const chest = progress.phantomPreparation ? progress.patientIteration?.record?.chest : progress.records[5]?.chest
     const pinned = chest?.pinned ? '你固定的那版也保留。' : '再把参数记全，不凭印象复现。'
     const mark = chest?.mark ? '存疑标记也一起带上。' : '完整序列也别落下。'
-    return { ...node, text: `${pinned}${mark}走，去工作站把最后一份对照存上。` }
+    return { ...node, text: `${pinned}${mark}走，去控制室把最后一份对照存上。` }
   }
   if (node.id === 'lf_after_filter_0' && !progress.phantomPreparation && progress.openingRevision === 5 && progress.records[3]?.signal !== 'low')
     return { ...node, text: '锐的边上利索，柔的看着舒服。想把管电流再压低一点，怕是还得看看噪点会不会太闹。' }
