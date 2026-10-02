@@ -25,6 +25,11 @@ function at(state, nodeId, fields = {}) {
     ldctStories: { ...getLdctShelf(state), active: 'father', slots: { ...getLdctShelf(state).slots, father: progress } } } } }
 }
 const reload = state => initializeLdct(copy(state))
+function enterLab(state, nodeId) {
+  const node = getLdctSteps(p(state))[nodeId]
+  assert.equal(node.enterLab, Number(nodeId.at(-1)))
+  return act(at(state, nodeId), 'advance', { nodeId })
+}
 
 // Only safe early v5 saves adopt the reordered preparation, without moving their cursor.
 assert.equal(p(base).phantomPreparation, 1)
@@ -57,7 +62,7 @@ assert.deepEqual(stats(restarted), stats(oldDayTwo))
 assert.deepEqual(getLdctShelf(reload(restarted)).previousFather, oldSnapshot)
 
 // Entering the actual node creates the correct input, rather than relabelling chest drafts.
-let exposure = act(at(copy(base), 'lf_photons_intro_1'), 'advance', { nodeId: 'lf_photons_intro_1' })
+let exposure = enterLab(copy(base), 'lf_lab_4')
 assert.equal(p(exposure).nodeId, 'lf_lab_4')
 assert.deepEqual(p(exposure).labDraft, createLdctPhantomPreparationState(4))
 assert.equal(getLdctLabDataset(exposure), 'phantom')
@@ -79,7 +84,7 @@ assert.equal(act(exposure, 'lab:submit', { record: helpedRecord }), exposure)
 assert.deepEqual(reload(exposure), copy(exposure), 'receipt and demonstration survive one atomic save')
 
 // IR always starts from the fixed thirteenth exposure, not the helper record's third frame.
-let iteration = act(at(exposure, 'lf_phantom_iteration_1'), 'advance', { nodeId: 'lf_phantom_iteration_1' })
+let iteration = enterLab(exposure, 'lf_lab_5')
 assert.deepEqual(p(iteration).labDraft, createLdctPhantomPreparationState(5))
 assert.equal(p(iteration).labDraft.chest, undefined)
 assert.equal(p(iteration).labDraft.phantomDataVersion, LDCT_PHANTOM_EXPOSURE_VERSION)

@@ -85,7 +85,7 @@ for (const choiceId of ['pay', 'clever']) {
   assert(getLdctChoices(state).some(choice => choice.id === choiceId))
   state = act(state, 'choose', { nodeId: 'lf_caught_choice', choiceId })
   assert.equal(p(state).decisions.director_route, choiceId)
-  assert.equal(state.gold, before.gold - (choiceId === 'pay' ? 100 : 0))
+  assert.equal(state.gold, before.gold - (choiceId === 'pay' ? 200 : 0))
   assert.equal(p(state).receipts.filter(receipt => receipt === 'ending:fine').length, choiceId === 'pay' ? 1 : 0)
   state = reload(state)
   assert.equal(act(state, 'choose', { nodeId: 'lf_caught_choice', choiceId }), state, 'duplicate choice after refresh is ignored')
@@ -102,19 +102,23 @@ for (const choiceId of ['pay', 'clever']) {
   assert.match(routeText.join('\n'), /磨玻璃/)
   assert.match(routeText.join('\n'), /复查|随访/)
   assert.doesNotMatch(routeText.join('\n'), /术后病理|早期肺癌|还是那家饭馆/)
-  assert.equal(state.gold, before.gold - (choiceId === 'pay' ? 100 : 0))
+  assert.equal(state.gold, before.gold - (choiceId === 'pay' ? 200 : 0))
   assert.deepEqual(protectedState(state), protectedState(before))
 }
-for (const gold of [0, 99]) {
+for (const gold of [0, 199]) {
   const poor = atNode('lf_caught_choice', {}, { ...clone(base), gold })
   assert.equal(act(poor, 'choose', { nodeId: 'lf_caught_choice', choiceId: 'pay' }), poor, 'insufficient balance cannot deduct or navigate')
   const clever = act(poor, 'choose', { nodeId: 'lf_caught_choice', choiceId: 'clever' })
   assert.equal(clever.gold, gold)
   assert.notEqual(p(clever).nodeId, 'lf_caught_choice')
 }
-const exactBalance = act(atNode('lf_caught_choice', {}, { ...clone(base), gold: 100 }), 'choose', { nodeId: 'lf_caught_choice', choiceId: 'pay' })
+const exactBalance = act(atNode('lf_caught_choice', {}, { ...clone(base), gold: 200 }), 'choose', { nodeId: 'lf_caught_choice', choiceId: 'pay' })
 assert.equal(exactBalance.gold, 0)
 assert.equal(p(exactBalance).nodeId, 'lf_fine_0')
+const priorFine = atNode('lf_caught_choice', { receipts: ['ending:fine'] }, { ...clone(base), gold: 700 })
+const alreadyPaid = act(reload(priorFine), 'choose', { nodeId: 'lf_caught_choice', choiceId: 'pay' })
+assert.equal(alreadyPaid.gold, 700, 'an existing published fine receipt cannot charge the new amount again')
+assert.equal(p(alreadyPaid).receipts.filter(receipt => receipt === 'ending:fine').length, 1)
 for (const nodeId of ['lf_clinical_preview', 'lf_clinical_2', 'lf_depart_1', 'lf_weeks_3', 'lf_final_lu_0']) {
   const old = atNode(nodeId), restored = reload(old)
   assert.equal(p(restored).nodeId, 'lf_caught_0')
