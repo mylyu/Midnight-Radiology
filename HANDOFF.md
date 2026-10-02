@@ -1,5 +1,12 @@
 # 开发交接 · 2026-09-21
 
+## 2026-10-03：作者确认的LDCT修订上线（已发布）
+
+- 按作者“挺好，推送github pages”授权，从 `codex/ldct-dl-reveal` 将 `6576fe6..18fdd3f` 的6个已验收提交快进推送到 `main`；本轮没有再改游戏内容。包含200金币罚款、独立肺部迭代、饭桌说明→饭后试模体→单日结算→次日检查、体模锁包近景及DL结果→主任入场。第一二章、DR/DSA及原配音未动。
+- Pages [工作流37035858832](https://github.com/mylyu/Midnight-Radiology/actions/runs/37035858832) 对部署提交 `18fdd3f563625ef530041ab2c5d916916f7c59aa` 构建、部署成功。正式站实读入口 `index-D3SWosqo.js`，核对新剧情标记及3张新增WebP的SHA-256均与仓库一致。
+- 复用发布冒烟 `ldct-release-browser.mjs`，隔离存档约10秒通过大厅/直达访问码、错误码不下载/不改存档、正确码完整预载、当前开场、刷新续玩与无缺失请求；截图在仓库外 `../ldct-release-20261003/`。复用前轮内容验收，不重复本地构建或通关。入口：https://mylyu.github.io/Midnight-Radiology/#/dlc/ldct ，访问码 `ldct2258`。晚期旧档不倒退，体验完整新顺序需主动重玩本篇，无须清主游戏存档。
+- 本段及总线仅记录发布状态，以 `[skip ci]` 文档提交同步；不导出未请求的Kimi包。撤回本批时逆序 `git revert 18fdd3f 31a8f0b a3d20ea 97fa3ca e6215e7 29de3c3` 后重建发布，不hard reset、不强推、不清浏览器存档。下方“仅本地”均为当时历史状态，以本段发布记录为准。
+
 ## 2026-10-02：LDCT体模锁包图与深度学习惊喜收尾（仅本地）
 
 - 基点 `a3d20ea`，分支 `codex/ldct-dl-reveal`，功能提交 `31a8f0b`。第一晚 `lf_trial_license_0..3` 改为新体模屏幕近景，大窗与全部缩略图均为体模，锁图标和像素场景保留。旧患者发现节点 `lf_license_*` 保留原肺部近景，避免兼容旧档时反向错配。
