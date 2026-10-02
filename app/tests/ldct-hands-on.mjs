@@ -122,12 +122,15 @@ assert.equal(initializeLdct(selected), selected, 'refresh does not silently rest
 assert.equal(p(openLdctShelf(selected)), undefined)
 const currentSteps = getLdctSteps(p(selected))
 for (const nodeId of ['lf_listen_1', 'lf_joke_1'])
-  assert.equal(currentSteps[nodeId].next, 'lf_to_consult', 'either dinner reply retains the walk back and waiting-room transition')
+  assert.equal(currentSteps[nodeId].next, 'lf_table_explain_0', 'either dinner reply includes the paper explanation')
 assert.equal(currentSteps.lf_to_consult.bg, 'ldct_bg_restaurant')
 assert.equal(currentSteps.lf_to_consult.sprite, null)
-assert.equal(currentSteps.lf_to_consult.next, 'lf_wait_consult')
+assert.equal(currentSteps.lf_table_explain_3.next, 'lf_to_consult')
+assert.equal(currentSteps.lf_to_consult.next, 'lf_plan_0', 'after dinner the friends trial the phantom, not the patient')
 assert.equal(currentSteps.lf_wait_consult.bg, 'bg_waiting')
 assert.equal(currentSteps.lf_wait_consult.next, 'lf_consult_0')
+assert.equal(currentSteps.lf_consult_2.next, 'lf_scan_0')
+assert.equal(currentSteps.lf_night1_end.settlement.next, 'lf_wait_consult')
 assert.equal(currentSteps.lf_photons_intro_0.speaker, 'me')
 assert.match(currentSteps.lf_photons_intro_0.text, /衰减/)
 assert.match(currentSteps.lf_photons_intro_0.text, /mAs/)
@@ -135,14 +138,18 @@ assert.match(currentSteps.lf_photons_intro_0.text, /噪点/)
 assert.match(currentSteps.lf_photons_intro_1.text, /光子.*随机/)
 assert.match(currentSteps.lf_photons_mas.text, /其他设置不动.*mAs.*光子/)
 const done = walk(selected)
-const ordered = ['lf_to_consult', 'lf_wait_consult', 'lf_consult_0', 'lf_plan_0', 'lf_phantom_scan',
+const ordered = ['lf_table_explain_0', 'lf_table_explain_3', 'lf_to_consult', 'lf_plan_0', 'lf_phantom_scan',
   'lf_photons_intro_0', 'lf_photons_intro_1', 'lf_photons_question', 'lf_photons_mas', 'lf_lab_4', 'lf_lab_1', 'lf_lab_2', 'lf_lab_3',
-  'lf_lab_5', 'lf_night1_end', 'lf_scan_0', 'lf_first_fbp', 'lf_patient_review', 'lf_license_0', 'lf_export_0',
-  'lf_evening2', 'lf_rest_hub', 'lf_patient_lab', 'lf_after_iteration_0', 'lf_caught_choice', 'lf_fine_0', 'lf_director_review_0', 'lf_wrap_0', 'lf_end']
+  'lf_trial_license_0', 'lf_trial_license_2', 'lf_lab_5', 'lf_night1_end', 'lf_wait_consult', 'lf_consult_0', 'lf_scan_0', 'lf_first_fbp', 'lf_patient_review', 'lf_known_license', 'lf_export_0',
+  'lf_evening2', 'lf_rest_hub', 'lf_patient_lab', 'lf_after_iteration_0', 'lf_caught_choice', 'lf_fine_0', 'lf_director_review_0', 'lf_director_method_0', 'lf_director_method_3', 'lf_wrap_0', 'lf_end']
 for (let index = 1; index < ordered.length; index++)
   assert(done.route.indexOf(ordered[index]) > done.route.indexOf(ordered[index - 1]), `${ordered[index - 1]} precedes ${ordered[index]}`)
 for (const nodeId of ['lf_scan_0', 'lf_first_fbp', 'lf_lab_4', 'lf_lab_5', 'lf_patient_lab'])
   assert.equal(done.route.filter(id => id === nodeId).length, 1, `${nodeId}: occurs once`)
+assert(!done.route.some(id => /^lf_license_/.test(id)), 'new route discovers the paid module only during the first-night trial')
+assert.match(currentSteps.lf_trial_license_2.text, /收费选配/)
+assert.match(currentSteps.lf_director_method_0.text, /新算法/)
+assert.match(currentSteps.lf_director_method_3.text, /厂家.*共同研发/)
 assert.deepEqual(Object.keys(p(done.state).records), ['1', '2', '3', '4', '5'])
 assert.equal(done.state.skill, base.skill + 1)
 assert.equal(done.state.wealth, base.wealth + 1)
