@@ -941,6 +941,11 @@
       "bytes": 96890,
       "type": "image"
     },
+    "assets/media/ldct_cg_table_explain_v1.a4e7675630913956.webp": {
+      "sha256": "a4e76756309139567c54c8f926c0a49216e0b58df0691ad758ce94a5da883a95",
+      "bytes": 149630,
+      "type": "image"
+    },
     "assets/media/ldct_char_father_v1.0c1d54f2fc7b231d.webp": {
       "sha256": "0c1d54f2fc7b231d4ea62e565024110db5aba38e4b44ada8feb97b4642c82192",
       "bytes": 26520,
@@ -1737,6 +1742,7 @@
       "assets/media/ldct_cg_locked_v1.865e915000e14317.webp",
       "assets/media/ldct_cg_meal_v1.9681460e975a2b10.webp",
       "assets/media/ldct_cg_phantom_v1.9766d3c61e126709.webp",
+      "assets/media/ldct_cg_table_explain_v1.a4e7675630913956.webp",
       "assets/media/ldct_char_father_v1.0c1d54f2fc7b231d.webp",
       "assets/media/ldct_chest_exposure_v1.38d811e2235de87e.webp",
       "assets/media/ldct_chest_exposure_v2_extra.947217d13ae905d7.webp",

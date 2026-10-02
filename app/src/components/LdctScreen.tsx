@@ -43,13 +43,13 @@ export function LdctScreen(props: Props) {
     <SceneBackground name="bg_breakroom" /><DialogueShade />
     <DialogueHeader title="◐ 低剂量CT · 噪声之外"><FullscreenBtn /><button onClick={props.onExit}>💾 回大厅</button></DialogueHeader>
     <main className="ldct-settlement">
-      <p className="text-teal-200">第二章之后 · 两个晚上，一顿没吃成的饭</p>
+      <p className="text-teal-200">第二章之后 · 一顿晚饭，一次约好的检查</p>
       <h1>{LDCT_FATHER_STORY.title}</h1>
       <section className="ldct-panel">
         <p>陆舟说约饭，带来的却还有他爸。叔叔觉得自己没病，也不想挨辐射。等终于拿到片子，陆舟脸上的笑又没了。</p>
         <p className="text-slate-300 text-sm">点场景补全文、继续，停一下再选。遇到电脑时跟着当前提示试一下，也可以叫陆舟一起看。</p>
         <div className="ldct-menu"><button data-ldct-story="father" onClick={() => props.update(s => selectLdctStory(s, 'father'))}>
-          {shelf?.slots.father && shelf.slots.father.openingRevision !== 5 ? '继续旧顺序存档' : shelf?.slots.father?.finished ? '回看故事结尾' : shelf?.slots.father ? '继续这顿没吃完的饭' : '去赴约'} →</button>
+          {shelf?.slots.father && shelf.slots.father.openingRevision !== 5 ? '继续旧顺序存档' : shelf?.slots.father?.finished ? '回看故事结尾' : shelf?.slots.father ? '继续这次约定' : '去赴约'} →</button>
           {shelf?.slots.father && !shelf.slots.father.phantomPreparation && <button data-ldct-new-order onClick={() => props.update(s => selectLdctStory(s, 'father', true))}>从新版模体试扫开始（保留旧记录） →</button>}
           {shelf?.slots.father && <small className="text-slate-400 self-center">进度已保存 · 随时可以回来</small>}
         </div>
@@ -114,6 +114,11 @@ function LdctStoryScreen({ state, update, onExit, renderText }: Props) {
   const sprite = node.sprite === 'me' ? `char_${state.gender}` : node.sprite === 'luzhou' || node.sprite === '@luzhou'
     ? `ch2_pixel_char_luzhou_${state.gender}` : node.sprite
   const settled = p.phase === 'settle'
+  const settlement = node.settlement
+  const canContinueSettlement = !p.finished && node.settle && !!(settlement || node.id === 'lf_night1_end')
+  const metricStart = p.finished ? p.start : p.partStart ?? p.start
+  const timeLabel = node.timeLabel ?? (node.part === 2 ? legacyOrder ? '第二晚' : '第二天'
+    : node.part === 3 ? legacyOrder ? '几周后' : '下班之前' : '第一晚')
   const speedKind = getLdctSpeedKind(p)
   const newEnding = !!p.decisions.director_route
   const dialogue = useLdctDialogue({ state, renderText, blocked: !!overlay || !!scan || p.phase !== 'story', presentation,
@@ -142,7 +147,7 @@ function LdctStoryScreen({ state, update, onExit, renderText }: Props) {
     onPointerDownCapture={dialogue.guard.pointerDown} onPointerCancelCapture={dialogue.guard.cancel}
     onKeyDownCapture={dialogue.guard.keyDown} onClickCapture={dialogue.guard.click} onClick={dialogue.advance}>
     <SceneBackground name={node.bg} /><DialogueShade />
-    <DialogueHeader title={`◐ 噪声之外 · ${p.finished ? '本篇完' : node.part === 2 ? legacyOrder ? '第二晚' : '第二天' : node.part === 3 ? legacyOrder ? '几周后' : '下班之前' : '第一晚'}${legacyOrder ? ' · 旧顺序存档' : ''}`}><span>💰 {state.gold}</span>{menu}</DialogueHeader>
+    <DialogueHeader title={`◐ 噪声之外 · ${p.finished ? '本篇完' : timeLabel}${legacyOrder ? ' · 旧顺序存档' : ''}`}><span>💰 {state.gold}</span>{menu}</DialogueHeader>
     {p.phase === 'lab' ? <div className="ldct-lab-wrap" onClick={e => e.stopPropagation()}>
       <LdctLab key={`${p.storyId}:${p.labContext ?? 'lesson'}:${p.labRound}:${p.labReturn ?? 'live'}`} round={p.labRound} value={p.labDraft}
         dataset={getLdctLabDataset(state)} goal={node.goal}
@@ -152,17 +157,17 @@ function LdctStoryScreen({ state, update, onExit, renderText }: Props) {
         onSubmit={record => act({ type: 'lab:submit', record })}
         onBack={() => act({ type: 'lab:close' })} /></div>
       : settled ? <main className="ldct-settlement" data-ldct-settlement onClick={e => e.stopPropagation()}>
-        <p className="text-teal-200 text-sm">{p.finished ? newEnding ? '本篇完 · 原片留下，复查也记下' : '本篇完 · 旧版记录保留' : '第一晚 · 先歇一歇'}</p><h1>{p.finished ? newEnding ? p.decisions.director_route === 'clever' ? '罚款没开，坑先挖了' : '这笔罚款，记住了' : '这篇故事已经走完' : legacyOrder ? '电脑留在这里，明晚接着看' : '试扫记录留好，明天看结果'}</h1>
+        <p className="text-teal-200 text-sm">{p.finished ? newEnding ? '本篇完 · 原片留下，复查也记下' : '本篇完 · 旧版记录保留' : settlement?.eyebrow ?? '第一晚 · 先歇一歇'}</p><h1>{p.finished ? newEnding ? p.decisions.director_route === 'clever' ? '罚款没开，坑先挖了' : '这笔罚款，记住了' : '这篇故事已经走完' : settlement?.title ?? (legacyOrder ? '电脑留在这里，明晚接着看' : '试扫记录留好，明天看结果')}</h1>
         <p className="text-slate-300 text-sm">{node.text}</p>
         <div className="ldct-metrics">{(Object.keys(icons) as (keyof typeof icons)[]).map(key => <section key={key}>
-          <small>{icons[key]}</small><p>{state[key]} <span className="text-xs text-teal-200">本次开始以来 {state[key] - p.start[key] >= 0 ? '+' : ''}{state[key] - p.start[key]}</span></p>
+          <small>{icons[key]}</small><p>{state[key]} <span className="text-xs text-teal-200">{p.finished ? '本次开始以来' : '本段变化'} {state[key] - metricStart[key] >= 0 ? '+' : ''}{state[key] - metricStart[key]}</span></p>
         </section>)}</div>
         <section className="ldct-panel"><h2>桌上的电脑 · 记录已保存</h2>
-          <p>{p.finished ? '图像和当时的选择都留着。可以回看，不再重复发放学习奖励。' : '不会自动推进到下一天。可以买点吃的带着，再回来继续；送东西要等陆舟在场。'}</p>
+          <p>{p.finished ? '图像和当时的选择都留着。可以回看，不再重复发放学习奖励。' : '进度停在这里，点下方按钮才会继续。可以买点吃的带着，再回来继续；送东西要等陆舟在场。'}</p>
           <p className="text-amber-200">🎒 {state.items.length ? state.items.map(itemName).join('、') : '背包暂空'}</p>
           <p>已经买的东西保留。送礼要等到同事在场的闲聊里，不在这里统一结算。</p>
         </section>
-        {!p.finished && <button className="ldct-next-part" data-ldct-next-evening onClick={() => act({ type: 'part:next' })}>{legacyOrder ? '第二晚 · 带着昨晚的片子回来' : '第二天 · 看看陆叔的检查'} →</button>}
+        {canContinueSettlement && <button className="ldct-next-part" data-ldct-next-evening data-ldct-next-node={settlement?.next} onClick={() => act({ type: 'part:next' })}>{settlement?.nextLabel ?? (legacyOrder ? '第二晚 · 带着昨晚的片子回来' : '第二天 · 看看陆叔的检查')} →</button>}
         <nav className="ldct-menu">{menu}<button data-ldct-replay onClick={() => ui('replay')}>重玩本篇</button></nav>
       </main> : scan ? scanSession && <Ch2ScanOverlay key={`${p.run}:${p.nodeId}`} config={scan}
         startedAt={scanSession.startedAt} muted={sound.muted}

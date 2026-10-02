@@ -88,6 +88,12 @@ export function initializeLdct(state: GameState, replay = false): GameState {
       if (father.openingRevision === 5 && !father.phantomPreparation && !father.finished &&
         !father.labReturn && !Object.keys(father.records).length && canAdoptPhantomPreparation(father.nodeId))
         extended = { ...extended, phantomPreparation: 1 }
+      // Those published cursors belonged to night one. Preserve that consultation
+      // before the unplayed trial; a new next-day arrival already has partStart.
+      if (father.openingRevision === 5 && father.phantomPreparation === 1 && !father.consultationBeforeTrial &&
+        father.phase === 'story' && !father.finished && !father.labReturn && !father.partStart &&
+        !Object.keys(father.records).length && /^(lf_wait_consult|lf_consult_[012])$/.test(father.nodeId))
+        extended = { ...extended, consultationBeforeTrial: 1 }
       // Unfinished preview saves in the removed epilogue join the new ending.
       // Completed runs and frozen v4 saves keep their own ending/history.
       if (father.openingRevision === 5 && !father.finished && !father.labReturn &&
@@ -166,9 +172,10 @@ export function ldctItemUnavailable(state: GameState, item: LdctProduct): string
   const p = getLdctProgress(state)
   if (!p) return '开始故事后再来看看'
   if (p.finished) return '本篇送礼和休息已结束；已有库存保留'
-  const betweenNights = p.phase === 'settle' && p.nodeId === 'lf_night1_end'
-  if (betweenNights && item === 'coffee') return '明晚休息时再喝'
-  if (!betweenNights && (p.phase !== 'story' || getLdctNode(state).kind !== 'hub' || p.reply)) return '先聊完，休息时再买'
+  const node = getLdctNode(state)
+  const settlement = p.phase === 'settle' && node.settle && (node.settlement || p.nodeId === 'lf_night1_end')
+  if (settlement && item === 'coffee') return node.settlement ? '和同事闲聊休息时再喝' : '明晚休息时再喝'
+  if (!settlement && (p.phase !== 'story' || node.kind !== 'hub' || p.reply)) return '先聊完，休息时再买'
   if (item === 'coffee') return p.receipts.includes('coffee') ? '已经喝过一杯了，留点时间睡觉' : undefined
   if (state.items.includes(item)) return '背包里还有，先送出去再买'
   return undefined
@@ -338,8 +345,13 @@ export function ldctAction(state: GameState, action: LdctAction): GameState {
       reply: { nodeId: p.nodeId, speaker: 'me', text: '我往椅背上一靠。陆舟也没说话，给水壶按了个重烧。' } }))
   }
   if (action.type === 'part:next') {
-    if (p.phase !== 'settle' || p.nodeId !== 'lf_night1_end' || p.finished) return state
-    return move(state, { ...p, fatigue: 2, partStart: { gold: state.gold, skill: state.skill, heart: state.heart, wealth: state.wealth } }, p.openingRevision === 5 ? LDCT_NEXT_EVENING : 'lf_evening2')
+    if (p.phase !== 'settle' || p.finished || p.reply) return state
+    const node = getLdctNode(state)
+    if (!node.settle) return state
+    const next = node.settlement?.next ?? (p.nodeId === 'lf_night1_end'
+      ? p.openingRevision === 5 ? LDCT_NEXT_EVENING : 'lf_evening2' : undefined)
+    if (!next) return state
+    return move(state, { ...p, fatigue: 2, partStart: { gold: state.gold, skill: state.skill, heart: state.heart, wealth: state.wealth } }, next)
   }
   // Old research actions cannot reach a deleted workbench or mutate archived saves.
   return state

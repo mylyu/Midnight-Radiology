@@ -33,7 +33,14 @@ export function getLdctNode(state: GameState): LdctNode {
   const p = shelf?.version === 2 && shelf.active === 'father' ? shelf.slots.father : undefined
   const steps = getLdctSteps(p)
   const node = steps[p?.nodeId ?? LDCT_START] ?? steps[LDCT_START]
-  const resolved = p ? resolveLdctFatherNode(node, p) : node
+  let resolved = p ? resolveLdctFatherNode(node, p) : node
+  if (p?.consultationBeforeTrial === 1 && p.phantomPreparation === 1) {
+    if (/^(lf_wait_consult|lf_consult_[012])$/.test(node.id))
+      resolved = { ...LDCT_FATHER_STEPS[node.id], timeLabel: '第一天 · 晚上' }
+    if (node.id === 'lf_night1_end' && resolved.settlement)
+      resolved = { ...resolved, text: '第一晚 · 先收工。模体归位，试扫和重建对照存好，明早陪陆叔按约检查。',
+        settlement: { ...resolved.settlement, next: 'lf_scan_0', nextLabel: '休息一晚，明早陪陆叔按约检查' } }
+  }
   if (resolved.enterLab && p?.phase === 'story') return { ...resolved, text: '电脑还停在刚才的位置。歇够了，点一下继续；刚才的参数都还在。' }
   return { ...resolved, sprite: resolved.sprite === '@luzhou' ? `ch2_pixel_char_luzhou_${state.gender}` : resolved.sprite }
 }

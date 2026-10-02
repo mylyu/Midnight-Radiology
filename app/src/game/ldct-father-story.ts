@@ -217,6 +217,12 @@ lines('lf_director_review', [
   ['director', '先不用急。复查时间我写上，后面看大小和成分有没有变化。别让你爸又拖着不来。'],
   ['me', '刚才他手心全是汗，鼠标都快拿不住了。'],
   ['luzhou', '你刚才看见主任，不也一样？'],
+], nightControl, director, 'lf_director_method_0', 2)
+lines('lf_director_method', [
+  ['director', '这版图的噪点压得不错，那几处细节也还看得见。你们换了新算法？'],
+  ['luzhou', '我们改的迭代程序。还只试了这些数据，得再多做几组对照。'],
+  ['me', '机器上那个迭代包没开通，我们就在研究副本上试了这套。'],
+  ['director', '可以联系厂家聊聊，看有没有共同研发的机会。先把这些对照整理好，也问问他们需要验证什么。'],
 ], nightControl, director, 'lf_wrap_0', 2)
 lines('lf_wrap', [
   [undefined, '主任走后，陆舟发消息给父亲，把复查安排拍了过去。\n对面很快回了：“知道了。你俩怎么还没下班？”'],

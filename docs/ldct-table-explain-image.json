@@ -1,0 +1,34 @@
+{
+  "date": "2026-10-02",
+  "tool": "built-in image_gen",
+  "intent": "identity-preserving restaurant scene continuation",
+  "logicalId": "ldct_cg_table_explain_v1",
+  "references": [
+    "ldct_cg_meal_v1.9681460e975a2b10.webp",
+    "ldct_char_father_v1.0c1d54f2fc7b231d.webp"
+  ],
+  "prompt": "Use case: illustration-story / identity-preserving scene continuation.\nCreate ONE landscape 16:9 pixel-art cinematic close-up for the Chinese game Midnight Radiology.\nInput image 1 is the exact restaurant scene and art-style reference; image 2 is the exact father character identity reference. Continue this same dinner a few minutes later. Preserve the father's recognizable swept salt-and-pepper hair, eyebrows, age about 60, olive brown winter jacket and grey sweater, the warm wooden table and modest restaurant, cool blue hospital window and amber local lighting. Match the reference's coarse visible pixel clusters, dark pixel contours and limited shaded palette. No smooth anime or realistic digital painting.\nNew action: first-person over-the-table view. The protagonist's gender-neutral hands with plain dark sleeves occupy the bottom edge: one holds a simple black ballpoint pen and draws on a large piece of scrap white paper placed clear of the food; the other gently holds the paper flat. The father sits opposite, leaning forward and looking with curiosity at the paper, not at the viewer. His rice bowl is put down nearby. His son's sleeve/hand may appear only naturally at the edge, no extra full characters. Move the used dishes slightly aside, keep familiar cups/chopsticks and leftover dishes as secondary context.\nThe paper is the main foreground focal point, large enough to read on a phone: very simple informal hand-drawn sketch of a CT donut and table at top and two same-sized rough chest cross-section circles with two lung outlines below, one surrounded by many small pencil dots and the other fewer dots / more uneven stippling, with a small hand-drawn arrow toward a little monitor outline. These are rough pen sketches made while chatting, NOT medical scan photos, no scary lesion or skull. No words, no numbers, no equations, no speech bubbles, no HUD, no logo, no watermark. The diagram is supporting atmosphere, educational meaning comes from game dialogue. Face and pen/paper all visible in the center-safe area for gentle cinematic zoom. Keep the bottom edge relatively uncluttered for an overlay dialogue box. Fully opaque background.",
+  "sourceFile": "exec-1f562c6c-fdf7-4335-8056-19284c3da23c.png",
+  "sourceSha256": "e336594023ff0b26df477967c6e8e04ce62e2e1c8f4eb23475ca7f13af64c792",
+  "sourceBytes": 2061448,
+  "deliveryPath": "app/public/assets/media/ldct_cg_table_explain_v1.a4e7675630913956.webp",
+  "deliverySha256": "a4e76756309139567c54c8f926c0a49216e0b58df0691ad758ce94a5da883a95",
+  "deliveryBytes": 149630,
+  "width": 1672,
+  "height": 941,
+  "compression": {
+    "pipeline": "manual-import-webp-q78-alpha100-v1",
+    "quality": 78,
+    "sharp": "0.35.3",
+    "webp": "1.6.0",
+    "alphaExact": true,
+    "visibleRgbMeanAbsoluteError": 2.5046
+  },
+  "review": "Compared against approved dinner CG and father's portrait. Same recognizable hair, face, coat, sweater and restaurant lighting; paper and pen visible; no text hallucinations, no diagnosis or radiation safety claims encoded in sketch. First-person composition serves both player genders. Only delivered WebP is in public; original remains outside repository.",
+  "inGameNodes": [
+    "lf_table_explain_0",
+    "lf_table_explain_1",
+    "lf_table_explain_2",
+    "lf_table_explain_3"
+  ]
+}

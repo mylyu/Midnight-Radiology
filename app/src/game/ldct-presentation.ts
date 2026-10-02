@@ -13,6 +13,8 @@ export function ldctSceneCue(nodeId: string, _gender: 'm' | 'f'): LdctSceneCue |
 export const LDCT_SCENE_CALLS: Record<string, { contact: string; status: string }> = {
   lf_license_1: { contact: '设备工程师', status: '正在拨出' },
   lf_license_2: { contact: '设备工程师', status: '通话中' },
+  lf_trial_license_1: { contact: '设备工程师', status: '正在拨出' },
+  lf_trial_license_2: { contact: '设备工程师', status: '通话中' },
   lf_evening2: { contact: '爸 · 陆舟的手机', status: '来电中' },
   lf_dinner_0: { contact: '爸 · 陆舟的手机', status: '通话中' },
   lf_dinner_1: { contact: '爸 · 陆舟的手机', status: '通话中' },
@@ -27,7 +29,7 @@ export const LDCT_SCENE_PROPS: Record<string, LdctSceneProp> = {
   lf_chat_he_0: meal,
   lf_chat_he_1: meal,
   lf_record_echo: { kind: 'notes', image: 'item_notebook', caption: '版本和存疑处，都留下' },
-  lf_fine_0: { kind: 'receipt', caption: '罚款回执 · 100金币' },
+  lf_fine_0: { kind: 'receipt', caption: '罚款回执 · 已记账' },
   lf_director_review_5: { kind: 'films', image: 'item_film', caption: '原片和研究对照，都留下' },
   lf_wrap_0: { kind: 'receipt', caption: '陆叔的复查安排 · 已发到手机' },
   // Frozen v4 ending still refers to these props when resuming an archived run.

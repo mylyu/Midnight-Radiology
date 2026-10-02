@@ -11,6 +11,8 @@ export interface LdctProgress {
   openingRevision?: 2 | 3 | 4 | 5
   /** Exposure and iterative practice happen on the physical phantom before the patient scan. */
   phantomPreparation?: 1
+  /** An early published save already entered consultation before its unplayed trial. */
+  consultationBeforeTrial?: 1
   storyId?: 'face' | 'dinner' | 'patient' | 'father'
   run: number
   seed: 2258
@@ -67,6 +69,14 @@ export interface LdctChoice {
   costReceipt?: string
 }
 
+/** A saved pause advances only when its explicit continuation is selected. */
+export interface LdctSettlement {
+  title: string
+  eyebrow: string
+  nextLabel: string
+  next: string
+}
+
 export interface LdctNode {
   id: string
   bg: string
@@ -84,6 +94,9 @@ export interface LdctNode {
   labContext?: 'patient'
   chestPreview?: 'fbp' | 'iteration:4'
   settle?: boolean
+  settlement?: LdctSettlement
+  /** Story chronology may differ from legacy part IDs used by saved records. */
+  timeLabel?: string
   part?: 1 | 2 | 3 | 4
   enterResearch?: LdctResearchStage
   finale?: boolean
