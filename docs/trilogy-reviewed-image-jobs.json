@@ -1,0 +1,17 @@
+[
+ {"id":"char_pet_doctor","role":"portrait","source":"C:/Users/lvmen/Documents/New project/trilogy-assets-20261010/char_pet_doctor-v2.webp","generationRecord":"new-character-results.json"},
+ {"id":"char_pet_nurse","role":"portrait","source":"C:/Users/lvmen/Documents/New project/trilogy-assets-20261010/char_pet_nurse.webp","generationRecord":"new-character-results.json"},
+ {"id":"char_new_trainee","role":"portrait","source":"C:/Users/lvmen/Documents/New project/trilogy-assets-20261010/char_new_trainee.webp","generationRecord":"new-character-results.json"},
+ {"id":"pat_qian","role":"portrait","source":"C:/Users/lvmen/Documents/New project/trilogy-assets-20261010/pat_qian.webp","generationRecord":"new-character-results.json"},
+ {"id":"pat_wang_recovery","role":"portrait","source":"C:/Users/lvmen/Documents/New project/trilogy-assets-20261010/pat_wang_recovery.webp","generationRecord":"new-character-results.json"},
+ {"id":"char_mri_colleague","role":"portrait","source":"C:/Users/lvmen/Documents/New project/trilogy-assets-20261010/mri-webp/char_mri_colleague.webp","generationRecord":"mri-generation.json"},
+ {"id":"pat_mri_anxious","role":"portrait","source":"C:/Users/lvmen/Documents/New project/trilogy-assets-20261010/mri-webp/pat_mri_anxious.webp","generationRecord":"mri-generation.json"},
+ {"id":"bg_mri_control","role":"background","source":"C:/Users/lvmen/Documents/New project/trilogy-assets-20261010/mri-webp/bg_mri_control.webp","generationRecord":"mri-generation.json"},
+ {"id":"bg_mri_corridor","role":"background","source":"C:/Users/lvmen/Documents/New project/trilogy-assets-20261010/mri-webp/bg_mri_corridor.webp","generationRecord":"mri-generation.json"},
+ {"id":"mri_wrist","role":"scan","source":"C:/Users/lvmen/Documents/New project/trilogy-assets-20261010/mri-webp/mri_wrist_t1.webp","generationRecord":"mri-generation.json"},
+ {"id":"mri_wrist_t2","role":"scan","source":"C:/Users/lvmen/Documents/New project/trilogy-assets-20261010/mri-webp/mri_wrist_t2.webp","generationRecord":"mri-generation.json"},
+ {"id":"mri_brain_t1","role":"scan","source":"C:/Users/lvmen/Documents/New project/trilogy-assets-20261010/mri-webp/mri_brain_t1.webp","generationRecord":"mri-generation.json"},
+ {"id":"mri_brain_t2","role":"scan","source":"C:/Users/lvmen/Documents/New project/trilogy-assets-20261010/mri-webp/mri_brain_t2.webp","generationRecord":"mri-generation.json"},
+ {"id":"mri_brain_flair","role":"scan","source":"C:/Users/lvmen/Documents/New project/trilogy-assets-20261010/mri-webp/mri_brain_flair.webp","generationRecord":"mri-generation.json"},
+ {"id":"mri_neck","role":"scan","source":"C:/Users/lvmen/Documents/New project/trilogy-assets-20261010/mri-webp/mri_neck.webp","generationRecord":"mri-generation.json"}
+]

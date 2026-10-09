@@ -1,0 +1,53 @@
+[
+  {
+    "id": "pet_fusion",
+    "role": "scan",
+    "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-d2ad3421-e2be-4d02-9601-0a8e758cb1f3.png",
+    "sourceKind": "built-in imagegen edit, fictional non-quantitative PET-only layer",
+    "reference": "trilogy-assets-20261010/pet_fusion.webp",
+    "prompt": "Extract PET-only radiotracer uptake from the generated fused chest image. Preserve exact canvas/body position and uptake centres: heart central, liver screen left/inferior, small peripheral focus screen left. Remove sharp CT ribs, vertebral trabeculae, lung vessels and grayscale/blue CT structural edges. Keep only spatially smooth lower-resolution activity blobs, faint diffuse uptake and soft outline on black. No new/moved focal uptake, text, arrows, labels, calipers, watermark or AI notes.",
+    "sourceSha256": "8deb4d1561469260f08a45d1fe3db964b385809e5bfcc80a5664a8e9ac12cc0a",
+    "sourceBytes": 1240843,
+    "sourceDimensions": [
+      1254,
+      1254
+    ],
+    "encodedSha256": "99040c94890df4688542ea76ced243c8126b0e9ebd72952f53e41a75d79e2ab7",
+    "encodedBytes": 9046,
+    "dimensions": [
+      512,
+      512
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\pet-layer-fix\\pet_fusion.webp",
+    "import": {
+      "name": "pet_fusion",
+      "replaced": true,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\pet-layer-fix\\pet_fusion.webp",
+      "sourceSha256": "99040c94890df4688542ea76ced243c8126b0e9ebd72952f53e41a75d79e2ab7",
+      "sourceBytes": 9046,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 512,
+      "height": 512,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/pet_fusion.99040c94890df468.webp",
+      "deliverySha256": "99040c94890df4688542ea76ced243c8126b0e9ebd72952f53e41a75d79e2ab7",
+      "deliveryBytes": 9046,
+      "previewUpdated": false,
+      "previousDeliveryPath": "media/pet_fusion.4616d54e8a65eba1.webp",
+      "stalePathCandidates": [
+        "app/public/assets/media/pet_fusion.4616d54e8a65eba1.webp"
+      ],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  }
+]

@@ -1,0 +1,262 @@
+{
+  "generatedOn": "2026-10-10",
+  "sameSourcePair": {
+    "CT": "pet_fusion_ct",
+    "PET": "pet_fusion",
+    "sourceCT": "C:\\Users\\lvmen\\.codex\\generated_images\\01a12193-6345-72d2-8c27-7b74d11798b3\\exec-0e394119-e21d-49a7-ba4e-052badb69123.png",
+    "PETEditReference": "C:\\Users\\lvmen\\.codex\\generated_images\\01a12193-6345-72d2-8c27-7b74d11798b3\\exec-0e394119-e21d-49a7-ba4e-052badb69123.png",
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "outputSize": [
+      512,
+      512
+    ],
+    "notQuantitative": true
+  },
+  "assets": [
+    {
+      "id": "bg_pet_control",
+      "source": "C:\\Users\\lvmen\\.codex\\generated_images\\01a12193-6345-72d2-8c27-7b74d11798b3\\exec-07e19d03-06a9-4379-b5b7-1a9a829e0850.png",
+      "prompt": "Use case: style-transfer.\nInput image: the supplied PET/CT room is the scene and equipment continuity reference.\nPrimary request: recompose this same provincial-hospital PET/CT facility as the control-room view at night, the observer now inside the adjacent control room.\nScene/backdrop: a real enclosed PET control room. Broad radiation-protective observation window in the back wall looking into the same scanner room. Through the glass, the SAME wide deep-bore white PET/CT gantry, dark padded table and long table base are visible, with warm lights and the same cream-and-teal room finishes. This is a deep tunnel PET/CT bore, not a skinny CT ring and not an MRI imitation.\nForeground subject: a usable operations desk along the window, exactly two side-by-side medical flat monitors with restrained blue interfaces and generic CT/PET thumbnail shapes, keyboard, mouse, phone, a small closed notebook, a working chair. No actual legible data. Cables tidy, ordinary cabinets and a coat hook, practical provincial-center details.\nStyle/medium: coarse granular raster pixel-art hospital visual-novel background, brown-black stepped contours, muted teal/cream equipment and warm tungsten lights contrasted with blue monitor glow. Match the supplied room’s quiet worn-in hospital atmosphere and the existing daytime radiology background's grainy textured materials. Large readable pixel clusters, no ultra-smooth3D, fine anime lineart or photo.\nComposition: wide16:9 landscape, roughly1536x864, eye-level from the near doorway; observation glass above and desk below, unobstructed lower-center floor area where character sprites can stand. Keep room geography clear: control desk outside, scanner behind window. Evening/night; no daylight outside.\nConstraints: no people, no patients on table, no blood, ghosts, readable words, letters, logos, watermark, warning text, UI overlay or border. Preserve the reference PET/CT machine design, room palette and believable physical relationships. Opaque background.",
+      "kind": "pixel-background",
+      "reference": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-fe795528-1f86-4e45-8ed7-d9eb1f2407a2.png",
+      "method": "Built-in image_gen generation",
+      "sourceVisualReview": true,
+      "output": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\bg_pet_control.webp",
+      "originalCopy": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\bg_pet_control.source.png",
+      "sourceSize": [
+        1672,
+        941
+      ],
+      "outputSize": [
+        1672,
+        941
+      ],
+      "sourceBytes": 1853736,
+      "outputBytes": 102186,
+      "sourceSha256": "dc099ed4a2fcf505d19073cfb763621077a2c9a4c2adf31daea95a6f512979a6",
+      "outputSha256": "732f8ba8d4ef4a40f483217c18915cbee16b0a5e74312cde79738cc82f14ebad",
+      "encoder": {
+        "quality": 78,
+        "alphaQuality": 100,
+        "effort": 6,
+        "resize": "none"
+      },
+      "opaqueBackground": true
+    },
+    {
+      "id": "bg_pet_center",
+      "source": "C:\\Users\\lvmen\\.codex\\generated_images\\01a12193-6345-72d2-8c27-7b74d11798b3\\exec-61ff1f3b-3fdd-4132-8c2b-9d7003420f8d.png",
+      "prompt": "Use case: stylized-concept.\nAsset type: game background for Midnight Radiology, a Chinese provincial-hospital nuclear-medicine center.\nPrimary request: evening waiting and appointment hall of the PET center, normal practical provincial hospital architecture with clear separate routes.\nScene/backdrop: wide interior hallway, cream walls with muted teal lower wall panels, grey worn tile floor, ceiling tiles and working warm fluorescent lights. On one side a staffed-service window with glass, tray and closed appointment folders but NO visible people. Across from it rows of ordinary blue waiting seats. Further back, two separate corridors with simple colored wayfinding bands/pictograms distinguishing general waiting from patient preparation areas; no written labels. A wall clock, water dispenser, plain notice frames with abstract illegible paper shapes, a quiet small plant, fire-safe unobstructed exit path. Closed clinic doors and one distant night-dark window; no emergency stretchers.\nStyle/medium: coarse-grained raster pixel-art environment for a1990s hospital visual novel, brown-black stepped contour pixels, limited muted palette, block-cluster light and shadows on real everyday materials. Warm lamps with blue evening window tone, same worn-in cream/teal provincial hospital palette as the PET scanner room; match the observed existing bg_day's granular hospital-detail rendering. No smooth3D, photographic sheen, anime lineart or futuristic sci-fi equipment.\nComposition/framing: wide16:9 landscape roughly1536x864, eye-level from hall entrance, clear service window and seats in same coherent space. Leave a clean lower-center foreground standing area for one or two character sprites and dialogue UI. Quiet evening, active center without a crowd.\nConstraints: no people, readable words, numbers, logos, watermarks, text overlay, gore, blood or ghost; distinct from an emergency department. Opaque background.",
+      "kind": "pixel-background",
+      "method": "Built-in image_gen generation",
+      "sourceVisualReview": true,
+      "output": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\bg_pet_center.webp",
+      "originalCopy": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\bg_pet_center.source.png",
+      "sourceSize": [
+        1672,
+        941
+      ],
+      "outputSize": [
+        1672,
+        941
+      ],
+      "sourceBytes": 2095709,
+      "outputBytes": 120190,
+      "sourceSha256": "665c429042083b983aa5ff37b66bf9ad3c5430a1adb82de097b46982e3e37520",
+      "outputSha256": "2ed19ed53beaa014e7aecaff994b8bad6d8b9babe9300d434dd111bbf9266633",
+      "encoder": {
+        "quality": 78,
+        "alphaQuality": 100,
+        "effort": 6,
+        "resize": "none"
+      },
+      "opaqueBackground": true
+    },
+    {
+      "id": "bg_pet_uptake",
+      "source": "C:\\Users\\lvmen\\.codex\\generated_images\\01a12193-6345-72d2-8c27-7b74d11798b3\\exec-246057c0-949e-4ec7-ad6b-a873f662efab.png",
+      "prompt": "Use case: stylized-concept.\nAsset type: wide game environment background, PET patient uptake/rest area.\nPrimary request: a quiet post-injection resting area of a Chinese provincial nuclear-medicine center, sensible separated private bays for patients to rest.\nScene/backdrop: cream walls, muted teal lower panels, grey tile floor, warm gentle low-level ceiling lights, a clean night-dark window with closed blinds. Three separate bays, each with ONE ordinary padded medical recliner adjusted for semi-reclined rest, one small side table and an individual ceiling-track privacy curtain; curtains partly drawn, enough to show separation. Recliners not hospital emergency beds. One nearby unobstructed staff route and a handwash alcove. Simple closed doors, discreet ordinary hospital finishes. No people or medical procedure shown.\nStyle/medium: coarse granular raster pixel-art hospital visual-novel backdrop, brown-black stepped contour pixels, muted cream/teal cloth with small blocky shadow clusters, warm lamps and quiet evening mood. Same 1990s hospital environment scale and granular materials as the observed bg_day and PET/CT room, no glossy3D, smooth painterly gradients or futuristic sci-fi pods.\nComposition/framing: wide16:9 landscape roughly1536x864, eye-level from doorway into resting area, three clearly separate recliner-and-curtain bays recede toward back, clean foreground walkway for dialogue sprites. Cozy lighting while still plainly a clinical resting area.\nConstraints: opaque image, no people, blood, ghosts, bedbound emergencies, operating theater lamps, TVs, written notices, readable numbers, letters, logos, watermark, UI or border. Multiple independent curtains, no shared giant bed.",
+      "kind": "pixel-background",
+      "method": "Built-in image_gen generation",
+      "sourceVisualReview": true,
+      "output": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\bg_pet_uptake.webp",
+      "originalCopy": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\bg_pet_uptake.source.png",
+      "sourceSize": [
+        1672,
+        941
+      ],
+      "outputSize": [
+        1672,
+        941
+      ],
+      "sourceBytes": 1806414,
+      "outputBytes": 72574,
+      "sourceSha256": "2205b9d67d4b64eb54857b15aad437fa21856cd94bc4a8abaa48b3682739ce6f",
+      "outputSha256": "6946ca90801a68d5c9d03b2da4a2c2fa4eb1e338dff0d9b288fa705393d56862",
+      "encoder": {
+        "quality": 78,
+        "alphaQuality": 100,
+        "effort": 6,
+        "resize": "none"
+      },
+      "opaqueBackground": true
+    },
+    {
+      "id": "bg_pet_dorm",
+      "source": "C:\\Users\\lvmen\\.codex\\generated_images\\01a12193-6345-72d2-8c27-7b74d11798b3\\exec-2ce9993a-aa49-4bce-bac6-5399f07e8389.png",
+      "prompt": "Use case: stylized-concept.\nAsset type: game background, ordinary visiting-clinician dorm room at night.\nPrimary request: an unremarkable provincial hospital training dormitory where a young imaging technologist stays for two weeks.\nScene/backdrop: a small normal residential dorm room, one simple single bed with folded blue-grey blanket and pillow, one narrow wooden desk with ordinary lamp, closed notebook and mug, a chair, a modest wardrobe and a packed wheeled suitcase beside the desk. One dark night window with plain curtains, a few distant city lights. Plain pale walls, worn vinyl or wooden floor, practical electric outlet and small coat hook. No medical equipment, treatment trolley, hospital bed, patient monitor or clinic notice board.\nStyle/medium: coarse-grained raster pixel-art narrative background, warm small desk-lamp light against cool night window, brown-black stepped contours, muted blue/ochre palette and chunky rectangular texture/shadow clusters. Same granular1990s visual-novel rendering as observed hospital bg_day, intimate everyday setting rather than hotel luxury or cinematic horror.\nComposition/framing: wide16:9 landscape roughly1536x864, eye-level view from just inside the room's door; bed to one side, desk and suitcase on other, clear floor patch in foreground for dialogue sprites. Actual sleeping dorm, not the hospital staff break room.\nConstraints: no people, readable text, logos, watermarks, UI or frame; no ghosts, ominous silhouettes, blood, emergency gear, computer patient data or luxury suite. Opaque background.",
+      "kind": "pixel-background",
+      "method": "Built-in image_gen generation",
+      "sourceVisualReview": true,
+      "output": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\bg_pet_dorm.webp",
+      "originalCopy": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\bg_pet_dorm.source.png",
+      "sourceSize": [
+        1672,
+        941
+      ],
+      "outputSize": [
+        1672,
+        941
+      ],
+      "sourceBytes": 1706618,
+      "outputBytes": 59394,
+      "sourceSha256": "31bf2828ad7a3119a405ade2273f7f82f7e2afc275dd6c6bdf66c969ffd6a3e9",
+      "outputSha256": "141b67012c64c34f1b91aa74fb3c0ea85470447f7bb34cc2030ea8730183626f",
+      "encoder": {
+        "quality": 78,
+        "alphaQuality": 100,
+        "effort": 6,
+        "resize": "none"
+      },
+      "opaqueBackground": true
+    },
+    {
+      "id": "pet_fusion_ct",
+      "source": "C:\\Users\\lvmen\\.codex\\generated_images\\01a12193-6345-72d2-8c27-7b74d11798b3\\exec-0e394119-e21d-49a7-ba4e-052badb69123.png",
+      "prompt": "Use case: scientific-educational.\nAsset type: one fictional adult CT image used as the exact geometric source for a paired PET/CT fusion exercise; no quantitative diagnostic data.\nPrimary request: a realistic grayscale axial CT cross-section of an adult lower thorax near the lower heart and diaphragmatic domes. ONE square image, not a collage.\nScene/backdrop: pure opaque black around the complete body cross-section. Radiological axial orientation viewed from the feet: anterior at top, posterior at bottom, patient's left on viewer's right.\nSubject/anatomy: broad oval chest wall, believable symmetric rib rings, two air-dark basal lungs with thin normal vessels, lower cardiac/mediastinal tissues near center, vertebral body and spinal canal posterior center, small liver dome portion on viewer's left and normal diaphragm interface. Body contour fits centrally in frame with a black margin. Slightly asymmetric physiological anatomy, not a perfectly artificial circular phantom. No arms cut off at image edge; only the relevant chest section. Keep lungs largely clear with no obvious large tumor, mass, giant hole or cavity.\nStyle/medium: realistic medical CT grayscale, black air, dark lung with fine visible vessels, mid-grey soft tissue, light-grey/white cortical bone; restrained naturally grainy scanner texture and believable soft tissue detail. This is scan imagery, NOT pixel-art illustration, colored cartoon or photograph of a person.\nComposition/framing:1024x1024 square canvas. Body contour approximately80% width and70% height, perfectly stationary centered geometry intended to remain unchanged in a later modality-only edit.\nConstraints: absolutely no labels, text, numbers, R/L marks, arrows, annotations, circles, rulers, HUD, cursor, frame or watermark. No PET colors in this CT-only source. Do not depict a definitive diagnosis.",
+      "kind": "fictional-nonquantitative-scan-display",
+      "method": "Built-in image_gen generation",
+      "sourceVisualReview": true,
+      "output": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\pet_fusion_ct.webp",
+      "originalCopy": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\pet_fusion_ct.source.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "outputSize": [
+        512,
+        512
+      ],
+      "sourceBytes": 1782331,
+      "outputBytes": 23108,
+      "sourceSha256": "a2adf6e5517edae88b3cdf95996b5c9c278588cf0d20e1487532593316cffb6b",
+      "outputSha256": "8005c151327778f31c028870d6745567037c293b63c753dbe10446f233a7bacb",
+      "encoder": {
+        "quality": 78,
+        "alphaQuality": 100,
+        "effort": 6,
+        "resize": "512x512 lanczos3"
+      },
+      "opaqueBackground": true
+    },
+    {
+      "id": "pet_fusion",
+      "source": "C:\\Users\\lvmen\\.codex\\generated_images\\01a12193-6345-72d2-8c27-7b74d11798b3\\exec-4e848799-e1b6-42e4-adb9-561d9ab56fb7.png",
+      "prompt": "Use case: style-transfer.\nInput image: the supplied axial lower-thorax CT is the exact geometric edit target.\nPrimary request: create the matching PET-only hot-color layer of this VERY SAME body and VERY SAME axial slice for a two-layer fusion display. This is a fictional educational PET image, not measured activity and not a diagnostic quantitative image.\nChange only modality/intensity rendering: replace grayscale CT intensities with a restrained PET heat distribution, retaining a very faint cool-blue/black anatomical silhouette so location can be compared. Low background dark navy, mild uptake orange/red, physiological heart and liver moderate warm yellow-orange, no huge all-white uptake. A tiny ambiguous mild focal warm patch near the viewer-left lower-lung/diaphragm interface can be present, but no definite malignant mass.\nGeometry invariants: preserve the EXACT original1280x1280 square canvas; do NOT move, crop, zoom, mirror, rotate, deform or redraw the body contour, lung outlines, mediastinum/heart boundary, round liver-dome portion, ribs or posterior-center vertebral position. Every major boundary stays in the same pixel position. The body is the same adult subject, not another scan. Patient left remains viewer right, anterior top/posterior bottom. Keep the surrounding background pure black at the same positions.\nStyle/medium: realistic PET color-map scan layer on black, reduced spatial-detail heat distribution, no pixel-art decoration and no photorealistic person.\nConstraints: PET layer only, not a side-by-side collage. No labels, R/L marks, numbers, text, rulers, scale bar, arrows, circles, annotations, cursor, frames or watermark. Do not imply a confirmed diagnosis.",
+      "kind": "fictional-nonquantitative-scan-display",
+      "reference": "C:\\Users\\lvmen\\.codex\\generated_images\\01a12193-6345-72d2-8c27-7b74d11798b3\\exec-0e394119-e21d-49a7-ba4e-052badb69123.png",
+      "method": "Built-in modality-only edit of pet_fusion_ct; same source slice and anatomical geometry",
+      "sourceVisualReview": true,
+      "output": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\pet_fusion.webp",
+      "originalCopy": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\pet_fusion.source.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "outputSize": [
+        512,
+        512
+      ],
+      "sourceBytes": 1493169,
+      "outputBytes": 17506,
+      "sourceSha256": "2e6e8bcd3cdc651850d633ff92253b02889a639e4b3b58baf10ca6d500357217",
+      "outputSha256": "4616d54e8a65eba151a1e92b2b07ae785686de2570dfeeb0de413797da0d857b",
+      "encoder": {
+        "quality": 78,
+        "alphaQuality": 100,
+        "effort": 6,
+        "resize": "512x512 lanczos3"
+      },
+      "opaqueBackground": true
+    },
+    {
+      "id": "pet_lung",
+      "source": "C:\\Users\\lvmen\\.codex\\generated_images\\01a12193-6345-72d2-8c27-7b74d11798b3\\exec-62fa639e-5376-4620-9790-9cbc2a303b88.png",
+      "prompt": "Use case: style-transfer.\nInput image: supplied adult axial lower-thorax CT is the exact structural image to preserve.\nPrimary request: make a restrained PET/CT FUSION image of this same chest slice for fictional Old Qian, age61, postoperative follow-up with an uncertain new change. Preserve the original CT grayscale structure and overlay low-resolution PET colors at about35% intensity.\nGeometry invariants: preserve original1280x1280 square canvas, same body contour, anterior/posterior orientation, patient's left on viewer's right, both lungs, heart, liver-dome position, ribs and posterior vertebra. No mirroring, cropping, changing viewpoint or zooming.\nVisual findings: mostly clear aerated lungs with thin vessels, a tiny faint linear postoperative scar toward viewer-left basal peripheral lung; one small mildly orange, ambiguous focal uptake patch at that basal interface, NOT a large bright tumor and NOT a definitive recurrence. Keep clinical uncertainty. Physiological heart and liver have subdued broad orange/red uptake, not all-white saturated blobs. Grayscale bone and soft-tissue detail remain clearly visible through overlay. No giant surgical cavity, absent entire lung or multiple metastatic dots.\nStyle/medium: realistic diagnostic CT/PET fusion display, naturally grainy grayscale CT under muted semi-transparent hot-color PET, pure black outside body. No pixel-art treatment of scan itself and no photoreal person.\nConstraints: single image only, no labels, numbers, R/L, arrows, circles, annotations, rulers, scale bars, UI, borders, cursor or watermark. Fictional non-quantitative visual, do not imply biopsy-confirmed recurrence.",
+      "kind": "fictional-nonquantitative-scan-display",
+      "reference": "C:\\Users\\lvmen\\.codex\\generated_images\\01a12193-6345-72d2-8c27-7b74d11798b3\\exec-0e394119-e21d-49a7-ba4e-052badb69123.png",
+      "method": "Built-in PET/CT fusion edit of source CT; targeted v2 aligns ambiguous peripheral uptake with same-source PET layer; fictional nonquantitative display",
+      "sourceVisualReview": true,
+      "previousSource": "C:\\Users\\lvmen\\.codex\\generated_images\\01a12193-6345-72d2-8c27-7b74d11798b3\\exec-2761c96e-cf32-4253-9b54-2d5c0fab7e25.png",
+      "outputName": "pet_lung-v2",
+      "editPrompt": "Use case: precise-object-edit.\nInput image1: current subdued grayscale PET/CT fusion is the edit target.\nInput image2: the PET-only layer of the same CT slice is the uptake-location reference.\nPrimary request: make only ONE targeted correction to image1: align its small ambiguous peripheral uptake patch with the corresponding location in image2. Remove the small bright patch on VIEWER'S RIGHT lung from image1. Instead put a small mildly orange (not white) uptake patch at the same VIEWER'S LEFT basal lung/liver-dome interface position as image2, near the inner edge of the lateral chest wall. This is an uncertain mild finding, not a confirmed recurrence.\nPreserve every other aspect of image1: exact1254x1254 canvas and body pixels, grayscale anatomy, both lungs, heart, liver dome, all rib and vertebral positions, image orientation, subdued physiological overlay intensity, black surrounding margins and single-image composition. Do not crop, mirror, zoom or change geometry. Keep this a restrained clinical fusion display, not the fully colored PET-only style of image2.\nConstraints: no text, numbers, arrows, circles, scales, labels, outlines, UI, cursor, border, watermark or new lesions. No large or white-hot mass. Do not alter overall image anatomy.",
+      "editReferences": [
+        "C:\\Users\\lvmen\\.codex\\generated_images\\01a12193-6345-72d2-8c27-7b74d11798b3\\exec-2761c96e-cf32-4253-9b54-2d5c0fab7e25.png",
+        "C:\\Users\\lvmen\\.codex\\generated_images\\01a12193-6345-72d2-8c27-7b74d11798b3\\exec-4e848799-e1b6-42e4-adb9-561d9ab56fb7.png"
+      ],
+      "output": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\pet_lung-v2.webp",
+      "originalCopy": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\pet_lung-v2.source.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "outputSize": [
+        512,
+        512
+      ],
+      "sourceBytes": 1823700,
+      "outputBytes": 22216,
+      "sourceSha256": "d642d6f53f2fcbf848acf41c6737e763cae6dafed8a7516a709b03a615ff27fa",
+      "outputSha256": "b423cec1be5231eb38d77aa11fc146184d2792db5e63877ca052e00953eb8e07",
+      "encoder": {
+        "quality": 78,
+        "alphaQuality": 100,
+        "effort": 6,
+        "resize": "512x512 lanczos3"
+      },
+      "opaqueBackground": true
+    },
+    {
+      "id": "pet_neck",
+      "source": "C:\\Users\\lvmen\\.codex\\generated_images\\01a12193-6345-72d2-8c27-7b74d11798b3\\exec-cc05d647-3d04-4e39-9ca6-f97f6995388e.png",
+      "prompt": "Use case: scientific-educational.\nAsset type: fictional non-quantitative adult neck PET/CT FUSION image for a visual novel; one same-slice combined display, not a collage.\nPrimary request: realistic axial lower/mid-neck PET/CT fusion for fictional older man Xu Jianping, showing only a small uncertain left deep-cervical group of lymph-node-like soft-tissue changes with mild uptake.\nScene/backdrop: opaque pure black outside the complete neck cross-section. Radiological view from feet: anterior at top, posterior at bottom, patient's LEFT MUST be on viewer's RIGHT.\nAnatomy: true NECK section around C5-C6, NOT brain or entire head. Believable small oval neck outline, cervical vertebral body and spinal canal posterior-center, airway/tracheal air anterior-center, small thyroid/soft-tissue structures anterior-lateral, paired sternocleidomastoid muscles and vessel regions laterally. No cerebral cortex, brain hemispheres or skull dome. Normal neck geometry with minor asymmetry.\nFinding: on VIEWER'S RIGHT only, deep to the sternocleidomastoid near the left cervical vessel chain, two or three small oval subtle soft-tissue nodal shapes, mildly orange/red uptake, not intensely white, not a giant glowing mass. Physiological background uptake is low and balanced. No added brain lesion or distant metastatic dots.\nStyle/medium: realistic naturally grainy grayscale CT with restrained low-resolution hot-color PET overlay, grey bone and tissue remain readable through color. Scan imagery, not a pixel-art anatomical drawing, poster or photographic person.\nComposition/framing:1280x1280 square, same-layer fusion, whole neck slice centrally placed with generous black margins, no partial body cropped off at frame. Tiny ambiguous nodes rather than conclusive diagnosis.\nConstraints: no labels, R/L marks, words, numbers, arrows, circles, rulers, color bar, UI, border, cursor, watermark or biopsy claim. Never mirror laterality; patient left on viewer right.",
+      "kind": "fictional-nonquantitative-scan-display",
+      "method": "Built-in image_gen generation",
+      "sourceVisualReview": true,
+      "output": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\pet_neck.webp",
+      "originalCopy": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\pet_neck.source.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "outputSize": [
+        512,
+        512
+      ],
+      "sourceBytes": 1250263,
+      "outputBytes": 12772,
+      "sourceSha256": "22c82914673dc6ac22053d7b4012ded3c0d4f8f2deade63ef3a8c24776db30f5",
+      "outputSha256": "67f47c932e8cab1f41c51172ed8bd1bc7e6e6d1823d9729b6ced9543c5bc9d34",
+      "encoder": {
+        "quality": 78,
+        "alphaQuality": 100,
+        "effort": 6,
+        "resize": "512x512 lanczos3"
+      },
+      "opaqueBackground": true
+    }
+  ]
+}

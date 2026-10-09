@@ -1,0 +1,24 @@
+[
+  {
+    "id": "bg_us_room",
+    "sourceKind": "built-in imagegen",
+    "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-cdd6dc46-5ea6-461e-9422-326b149df5a7.png",
+    "sourceSha256": "4c4ae0c503cc5a52d322854478d3934fc29616bef8b29604f0fa4c62ef578666",
+    "promptSummary": "County hospital ultrasound room at night, cart and clinical couch, cabinets, warm task light and cool window; coarse pixel hospital painting matched to chapter-one backgrounds, no people or readable lettering.",
+    "recordNote": "Initial room generated before the later batch job lists; this is a production summary, not a reconstructed verbatim prompt.",
+    "delivery": "app/public/assets/media/bg_us_room.59a9ab618e29e031.webp",
+    "bytes": 91744,
+    "encoding": "1672x941 lossy WebP, quality 78"
+  },
+  {
+    "id": "bg_mri_room",
+    "sourceKind": "built-in imagegen",
+    "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-401b90c8-9547-44c3-8206-73ae57b158e9.png",
+    "sourceSha256": "add237206df5b2812e6d028f18de33684a1f322edf70eb5c475ab5e0c749d78e",
+    "promptSummary": "New county-hospital MRI examination room with magnet bore and long couch, viewing window, realistic room layout; coarse pixel style and warm/cool hospital lighting matched to chapter one, no people or readable lettering.",
+    "recordNote": "Initial room generated before the later batch job lists; this is a production summary, not a reconstructed verbatim prompt.",
+    "delivery": "app/public/assets/media/bg_mri_room.6d8ea59ca90dc81c.webp",
+    "bytes": 87884,
+    "encoding": "1672x941 lossy WebP, quality 78"
+  }
+]

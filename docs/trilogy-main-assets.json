@@ -1,0 +1,484 @@
+[
+  {
+    "id": "char_mei",
+    "role": "portrait",
+    "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-36f9bd3a-0644-4286-9170-25ed256e9680.png",
+    "sourceKind": "built-in imagegen",
+    "prompt": "New 43-year-old Chinese ultrasound physician Mei; short slightly wavy dark hair, practical warm skeptical face, white coat over plum knit top and dark trousers, flat shoes, wired probe and folded appointment sheet. Full body on genuine transparent background. Coarse square pixels, dark outlines, warm highlights/cool shadows matched to original char_zhou reference. No text or watermark.",
+    "sourceSha256": "a91b625ac597a1b8737d4834b563f632d2684e7cc83fd6fda4928e8bc097d9b5",
+    "sourceBytes": 1292908,
+    "sourceDimensions": [
+      1024,
+      1536
+    ],
+    "encodedSha256": "c765a0bad23431c72bfdf3bced3223d5b771f8c723c01a0b234957f38dc4710d",
+    "encodedBytes": 37504,
+    "dimensions": [
+      512,
+      768
+    ],
+    "hasAlpha": true,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\main-prepared\\char_mei.webp",
+    "import": {
+      "name": "char_mei",
+      "replaced": true,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\main-prepared\\char_mei.webp",
+      "sourceSha256": "c765a0bad23431c72bfdf3bced3223d5b771f8c723c01a0b234957f38dc4710d",
+      "sourceBytes": 37504,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 512,
+      "height": 768,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/char_mei.c765a0bad23431c7.webp",
+      "deliverySha256": "c765a0bad23431c72bfdf3bced3223d5b771f8c723c01a0b234957f38dc4710d",
+      "deliveryBytes": 37504,
+      "previewUpdated": false,
+      "previousDeliveryPath": "media/char_mei.1e75d1c232d30e0e.webp",
+      "stalePathCandidates": [
+        "app/public/assets/media/char_mei.1e75d1c232d30e0e.webp"
+      ],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "char_han",
+    "role": "portrait",
+    "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-242cdc8d-7fe7-464d-8c06-b63421058fdd.png",
+    "sourceKind": "built-in imagegen",
+    "prompt": "46-year-old Chinese data-service project manager Han, grey temples, rectangular glasses, courteous smile, charcoal business jacket over blue shirt, document folder. Full body actual transparent background, ordinary professional not cartoon villain. Coarse visible square pixels matching char_zhou reference, no text or watermark.",
+    "sourceSha256": "f197d19235478ec24e779a7bd0b748e011517272a7d993d758d85f3095dc693f",
+    "sourceBytes": 1143022,
+    "sourceDimensions": [
+      1024,
+      1536
+    ],
+    "encodedSha256": "16470d2a0c45282b2204407b5599d7de05013f5aae8746f36336d70ed41c0a52",
+    "encodedBytes": 27916,
+    "dimensions": [
+      512,
+      768
+    ],
+    "hasAlpha": true,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\main-prepared\\char_han.webp",
+    "import": {
+      "name": "char_han",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\main-prepared\\char_han.webp",
+      "sourceSha256": "16470d2a0c45282b2204407b5599d7de05013f5aae8746f36336d70ed41c0a52",
+      "sourceBytes": 27916,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 512,
+      "height": 768,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/char_han.16470d2a0c45282b.webp",
+      "deliverySha256": "16470d2a0c45282b2204407b5599d7de05013f5aae8746f36336d70ed41c0a52",
+      "deliveryBytes": 27916,
+      "previewUpdated": false,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "pat_cousin",
+    "role": "portrait",
+    "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-70ddeea9-9eea-4a81-a038-d6c6724ffb3f.png",
+    "sourceKind": "built-in imagegen",
+    "prompt": "30-year-old Chinese cousin 24 weeks pregnant; low tied dark hair, worried ordinary face, beige cardigan, teal maternity dress, leggings, sneakers, folded appointment paper. Normal standing, full body genuine transparent, no bed. Coarse square-pixel dark outlines matched to original char_zhou, no text/watermark.",
+    "sourceSha256": "fc44b5d8a3a71296e3e0365ab5b8202293d354bd6e8420cc19f1c68b6a6dfe87",
+    "sourceBytes": 1265696,
+    "sourceDimensions": [
+      1024,
+      1536
+    ],
+    "encodedSha256": "5ffdd237fc117e808230b5d69494689a820174e0f5e06ac17da4246776e77ec2",
+    "encodedBytes": 36154,
+    "dimensions": [
+      512,
+      768
+    ],
+    "hasAlpha": true,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\main-prepared\\pat_cousin.webp",
+    "import": {
+      "name": "pat_cousin",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\main-prepared\\pat_cousin.webp",
+      "sourceSha256": "5ffdd237fc117e808230b5d69494689a820174e0f5e06ac17da4246776e77ec2",
+      "sourceBytes": 36154,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 512,
+      "height": 768,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/pat_cousin.5ffdd237fc117e80.webp",
+      "deliverySha256": "5ffdd237fc117e808230b5d69494689a820174e0f5e06ac17da4246776e77ec2",
+      "deliveryBytes": 36154,
+      "previewUpdated": false,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "bg_pet_center",
+    "role": "background",
+    "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-fe795528-1f86-4e45-8ed7-d9eb1f2407a2.png",
+    "sourceKind": "built-in imagegen",
+    "prompt": "Provincial hospital PET/CT examination room night; deep PET/CT gantry, long couch, viewing window two-monitor control room, amber practical lights, cream/teal cabinetry. No people, sci-fi ring, readable words or watermarks. 16:9 coarse square-pixel hospital style matched to bg_day. This ID currently denotes examination-center scene; awaiting separate lobby asset if needed.",
+    "sourceSha256": "38e83c63527cc79e4eee1f7e5eaab0a7c1eb39f5a5f136de578cb39df59cd8c6",
+    "sourceBytes": 1930313,
+    "sourceDimensions": [
+      1672,
+      941
+    ],
+    "encodedSha256": "8869ca499b59b0a2a20b1dd768b114f57263762cf8f94898b320a4e5f875dfb5",
+    "encodedBytes": 105570,
+    "dimensions": [
+      1672,
+      941
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\main-prepared\\bg_pet_center.webp",
+    "import": {
+      "name": "bg_pet_center",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\main-prepared\\bg_pet_center.webp",
+      "sourceSha256": "8869ca499b59b0a2a20b1dd768b114f57263762cf8f94898b320a4e5f875dfb5",
+      "sourceBytes": 105570,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 1672,
+      "height": 941,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/bg_pet_center.8869ca499b59b0a2.webp",
+      "deliverySha256": "8869ca499b59b0a2a20b1dd768b114f57263762cf8f94898b320a4e5f875dfb5",
+      "deliveryBytes": 105570,
+      "previewUpdated": true,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "bg_us_room_day",
+    "role": "background",
+    "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-44bc349b-6425-44c6-af6c-5c8818c096b1.png",
+    "sourceKind": "built-in imagegen edit",
+    "prompt": "Change only lighting/time of generated ultrasound room to daytime sunlight and daylight city through same window. Preserve exact cart, couch, cabinet, layout and coarse pixel style. No people/text/watermark.",
+    "sourceSha256": "d6ea5b77ecb28f25761bc96e14e85ac65b7ce65a5e9799b76cd28cbe46b7dd5b",
+    "sourceBytes": 1929318,
+    "sourceDimensions": [
+      1672,
+      941
+    ],
+    "encodedSha256": "33d4b0ae483eea8749fdcd642c0bf450790f059e0774eaa6b35c70fbae9ffa6c",
+    "encodedBytes": 110824,
+    "dimensions": [
+      1672,
+      941
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\main-prepared\\bg_us_room_day.webp",
+    "import": {
+      "name": "bg_us_room_day",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\main-prepared\\bg_us_room_day.webp",
+      "sourceSha256": "33d4b0ae483eea8749fdcd642c0bf450790f059e0774eaa6b35c70fbae9ffa6c",
+      "sourceBytes": 110824,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 1672,
+      "height": 941,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/bg_us_room_day.33d4b0ae483eea87.webp",
+      "deliverySha256": "33d4b0ae483eea8749fdcd642c0bf450790f059e0774eaa6b35c70fbae9ffa6c",
+      "deliveryBytes": 110824,
+      "previewUpdated": true,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "bg_us_bedside",
+    "role": "background",
+    "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-ea209960-34ec-491a-9724-4ae289e32cc9.png",
+    "sourceKind": "built-in imagegen",
+    "prompt": "Night ICU bedside ultrasound scene. Sleeping adult under plain blanket, soft green monitor trace, mobile ultrasound trolley, seat, curtain, blue night window. Real hospital room with bottom clear for dialogue, no staff or blood. 16:9 coarse square-pixel background based on bg_day style.",
+    "sourceSha256": "acd6c1b18d55d48a7e119ebb7f27b9d3e0221839da539ced02076b45a574b13e",
+    "sourceBytes": 1826464,
+    "sourceDimensions": [
+      1672,
+      941
+    ],
+    "encodedSha256": "65b0e5346b0444f371efeca339e9b421e013acec8d07b074bab767796ef72c69",
+    "encodedBytes": 101000,
+    "dimensions": [
+      1672,
+      941
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\main-prepared\\bg_us_bedside.webp",
+    "import": {
+      "name": "bg_us_bedside",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\main-prepared\\bg_us_bedside.webp",
+      "sourceSha256": "65b0e5346b0444f371efeca339e9b421e013acec8d07b074bab767796ef72c69",
+      "sourceBytes": 101000,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 1672,
+      "height": 941,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/bg_us_bedside.65b0e5346b0444f3.webp",
+      "deliverySha256": "65b0e5346b0444f371efeca339e9b421e013acec8d07b074bab767796ef72c69",
+      "deliveryBytes": 101000,
+      "previewUpdated": true,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "us_gallstone",
+    "role": "scan",
+    "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-64a98aa4-15ce-47e5-9a96-848ab7020457.png",
+    "sourceKind": "fictional non-quantitative imagegen sonogram",
+    "prompt": "Grayscale B-mode fan sector gallbladder within liver, dark pear-shaped fluid lumen, small bright dependent stone and narrow posterior acoustic shadow. Believable sonographic speckle and finite resolution, black background. No arrows, numbers, diagnosis labels, circles, AI captions or watermark.",
+    "sourceSha256": "451ed692234de1001889118436f0987d48bd30659333d34aaa5a72361a42c19e",
+    "sourceBytes": 2024440,
+    "sourceDimensions": [
+      1254,
+      1254
+    ],
+    "encodedSha256": "16c94bc2f11b498a0341e6d77dff66cab6fc8e45d389893ff4abf52dda0c144b",
+    "encodedBytes": 32130,
+    "dimensions": [
+      512,
+      512
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\main-prepared\\us_gallstone.webp",
+    "import": {
+      "name": "us_gallstone",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\main-prepared\\us_gallstone.webp",
+      "sourceSha256": "16c94bc2f11b498a0341e6d77dff66cab6fc8e45d389893ff4abf52dda0c144b",
+      "sourceBytes": 32130,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 512,
+      "height": 512,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/us_gallstone.16c94bc2f11b498a.webp",
+      "deliverySha256": "16c94bc2f11b498a0341e6d77dff66cab6fc8e45d389893ff4abf52dda0c144b",
+      "deliveryBytes": 32130,
+      "previewUpdated": false,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "us_breast",
+    "role": "scan",
+    "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-09d5e048-97bb-4237-b54b-7dd8ea03f905.png",
+    "sourceKind": "fictional non-quantitative imagegen sonogram",
+    "prompt": "Grayscale rectangular linear-probe breast sonogram; skin/subcutaneous layers, speckle, small smooth simple fluid-filled oval cyst and posterior enhancement. No aggressive mass, blood, color, arrows, measurements, AI captions or watermark.",
+    "sourceSha256": "80375f16d416dada4714f8c6153594be153d205b283e5ccfed7c52e224c09ed1",
+    "sourceBytes": 2537326,
+    "sourceDimensions": [
+      1254,
+      1254
+    ],
+    "encodedSha256": "6d5c0b7164110c12778e108a3001e2c5a0efe564a56799fd6438975dd5686ae0",
+    "encodedBytes": 47890,
+    "dimensions": [
+      512,
+      512
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\main-prepared\\us_breast.webp",
+    "import": {
+      "name": "us_breast",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\main-prepared\\us_breast.webp",
+      "sourceSha256": "6d5c0b7164110c12778e108a3001e2c5a0efe564a56799fd6438975dd5686ae0",
+      "sourceBytes": 47890,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 512,
+      "height": 512,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/us_breast.6d5c0b7164110c12.webp",
+      "deliverySha256": "6d5c0b7164110c12778e108a3001e2c5a0efe564a56799fd6438975dd5686ae0",
+      "deliveryBytes": 47890,
+      "previewUpdated": false,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "us_fetal",
+    "role": "scan",
+    "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-91fe0fd7-97f4-4065-91ab-6fcc66dd57ed.png",
+    "sourceKind": "fictional non-quantitative imagegen sonogram",
+    "prompt": "Grayscale B-mode 24-week fetal transverse head at lateral ventricular level. Oval bright skull, falx, plausible bilateral structures, slightly prominent atrium, no severe hydrocephalus. Sonographic speckle, fan field black background. No calipers, numbers, arrows, labels, 4D face or watermark.",
+    "sourceSha256": "be52b2eda9313451a96b7e035eadccd7552cfd4d91303b60b238c391e1ff4c9c",
+    "sourceBytes": 2375669,
+    "sourceDimensions": [
+      1254,
+      1254
+    ],
+    "encodedSha256": "ab44d2d95bd565ffb6471aad8d5c1245d002eca90baa4e1d544630fbdcdbd13d",
+    "encodedBytes": 38674,
+    "dimensions": [
+      512,
+      512
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\main-prepared\\us_fetal.webp",
+    "import": {
+      "name": "us_fetal",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\main-prepared\\us_fetal.webp",
+      "sourceSha256": "ab44d2d95bd565ffb6471aad8d5c1245d002eca90baa4e1d544630fbdcdbd13d",
+      "sourceBytes": 38674,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 512,
+      "height": 512,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/us_fetal.ab44d2d95bd565ff.webp",
+      "deliverySha256": "ab44d2d95bd565ffb6471aad8d5c1245d002eca90baa4e1d544630fbdcdbd13d",
+      "deliveryBytes": 38674,
+      "previewUpdated": false,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "us_echo",
+    "role": "scan",
+    "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-84b1ed1d-bb9d-4597-bc9f-52effd9d7f60.png",
+    "sourceKind": "fictional non-quantitative imagegen sonogram",
+    "prompt": "Grayscale fan four-chamber echocardiographic image of recovering adult MI patient. Plausible myocardium, four dark chambers, apex top, atria below, septa and valve plane. No stent in chambers, severe new disease, color, labels, diagnostic arrows or watermark.",
+    "sourceSha256": "6b4cd92caf0a5f8694cca42e557e01ffa7fe4cc8bfe27c9ba5b4a95304d5c6e6",
+    "sourceBytes": 1919044,
+    "sourceDimensions": [
+      1254,
+      1254
+    ],
+    "encodedSha256": "5521dd2242e64df2c087d265fadd546ec162846aa1d83b25ca086565fbdaa4ad",
+    "encodedBytes": 22614,
+    "dimensions": [
+      512,
+      512
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\main-prepared\\us_echo.webp",
+    "import": {
+      "name": "us_echo",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\main-prepared\\us_echo.webp",
+      "sourceSha256": "5521dd2242e64df2c087d265fadd546ec162846aa1d83b25ca086565fbdaa4ad",
+      "sourceBytes": 22614,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 512,
+      "height": 512,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/us_echo.5521dd2242e64df2.webp",
+      "deliverySha256": "5521dd2242e64df2c087d265fadd546ec162846aa1d83b25ca086565fbdaa4ad",
+      "deliveryBytes": 22614,
+      "previewUpdated": false,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  }
+]

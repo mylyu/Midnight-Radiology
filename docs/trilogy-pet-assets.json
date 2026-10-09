@@ -1,0 +1,479 @@
+[
+  {
+    "id": "bg_pet_center",
+    "role": "background",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-assets-20261010/bg_pet_center.webp",
+    "generationRecord": "pet-scenes-and-scans-results.json",
+    "sourceSha256": "2ed19ed53beaa014e7aecaff994b8bad6d8b9babe9300d434dd111bbf9266633",
+    "sourceBytes": 120190,
+    "sourceDimensions": [
+      1672,
+      941
+    ],
+    "encodedSha256": "2ed19ed53beaa014e7aecaff994b8bad6d8b9babe9300d434dd111bbf9266633",
+    "encodedBytes": 120190,
+    "dimensions": [
+      1672,
+      941
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\pet-prepared\\bg_pet_center.webp",
+    "import": {
+      "name": "bg_pet_center",
+      "replaced": true,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\pet-prepared\\bg_pet_center.webp",
+      "sourceSha256": "2ed19ed53beaa014e7aecaff994b8bad6d8b9babe9300d434dd111bbf9266633",
+      "sourceBytes": 120190,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 1672,
+      "height": 941,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/bg_pet_center.2ed19ed53beaa014.webp",
+      "deliverySha256": "2ed19ed53beaa014e7aecaff994b8bad6d8b9babe9300d434dd111bbf9266633",
+      "deliveryBytes": 120190,
+      "previewUpdated": true,
+      "previousDeliveryPath": "media/bg_pet_center.8869ca499b59b0a2.webp",
+      "stalePathCandidates": [
+        "app/public/assets/media/bg_pet_center.8869ca499b59b0a2.webp"
+      ],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "bg_pet_control",
+    "role": "background",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-assets-20261010/bg_pet_control.webp",
+    "generationRecord": "pet-scenes-and-scans-results.json",
+    "sourceSha256": "732f8ba8d4ef4a40f483217c18915cbee16b0a5e74312cde79738cc82f14ebad",
+    "sourceBytes": 102186,
+    "sourceDimensions": [
+      1672,
+      941
+    ],
+    "encodedSha256": "732f8ba8d4ef4a40f483217c18915cbee16b0a5e74312cde79738cc82f14ebad",
+    "encodedBytes": 102186,
+    "dimensions": [
+      1672,
+      941
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\pet-prepared\\bg_pet_control.webp",
+    "import": {
+      "name": "bg_pet_control",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\pet-prepared\\bg_pet_control.webp",
+      "sourceSha256": "732f8ba8d4ef4a40f483217c18915cbee16b0a5e74312cde79738cc82f14ebad",
+      "sourceBytes": 102186,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 1672,
+      "height": 941,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/bg_pet_control.732f8ba8d4ef4a40.webp",
+      "deliverySha256": "732f8ba8d4ef4a40f483217c18915cbee16b0a5e74312cde79738cc82f14ebad",
+      "deliveryBytes": 102186,
+      "previewUpdated": true,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "bg_pet_uptake",
+    "role": "background",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-assets-20261010/bg_pet_uptake.webp",
+    "generationRecord": "pet-scenes-and-scans-results.json",
+    "sourceSha256": "6946ca90801a68d5c9d03b2da4a2c2fa4eb1e338dff0d9b288fa705393d56862",
+    "sourceBytes": 72574,
+    "sourceDimensions": [
+      1672,
+      941
+    ],
+    "encodedSha256": "6946ca90801a68d5c9d03b2da4a2c2fa4eb1e338dff0d9b288fa705393d56862",
+    "encodedBytes": 72574,
+    "dimensions": [
+      1672,
+      941
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\pet-prepared\\bg_pet_uptake.webp",
+    "import": {
+      "name": "bg_pet_uptake",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\pet-prepared\\bg_pet_uptake.webp",
+      "sourceSha256": "6946ca90801a68d5c9d03b2da4a2c2fa4eb1e338dff0d9b288fa705393d56862",
+      "sourceBytes": 72574,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 1672,
+      "height": 941,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/bg_pet_uptake.6946ca90801a68d5.webp",
+      "deliverySha256": "6946ca90801a68d5c9d03b2da4a2c2fa4eb1e338dff0d9b288fa705393d56862",
+      "deliveryBytes": 72574,
+      "previewUpdated": true,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "bg_pet_dorm",
+    "role": "background",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-assets-20261010/bg_pet_dorm.webp",
+    "generationRecord": "pet-scenes-and-scans-results.json",
+    "sourceSha256": "141b67012c64c34f1b91aa74fb3c0ea85470447f7bb34cc2030ea8730183626f",
+    "sourceBytes": 59394,
+    "sourceDimensions": [
+      1672,
+      941
+    ],
+    "encodedSha256": "141b67012c64c34f1b91aa74fb3c0ea85470447f7bb34cc2030ea8730183626f",
+    "encodedBytes": 59394,
+    "dimensions": [
+      1672,
+      941
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\pet-prepared\\bg_pet_dorm.webp",
+    "import": {
+      "name": "bg_pet_dorm",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\pet-prepared\\bg_pet_dorm.webp",
+      "sourceSha256": "141b67012c64c34f1b91aa74fb3c0ea85470447f7bb34cc2030ea8730183626f",
+      "sourceBytes": 59394,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 1672,
+      "height": 941,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/bg_pet_dorm.141b67012c64c34f.webp",
+      "deliverySha256": "141b67012c64c34f1b91aa74fb3c0ea85470447f7bb34cc2030ea8730183626f",
+      "deliveryBytes": 59394,
+      "previewUpdated": true,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "pet_fusion_ct",
+    "role": "scan",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-assets-20261010/pet_fusion_ct.webp",
+    "generationRecord": "pet-scenes-and-scans-results.json",
+    "sourceSha256": "8005c151327778f31c028870d6745567037c293b63c753dbe10446f233a7bacb",
+    "sourceBytes": 23108,
+    "sourceDimensions": [
+      512,
+      512
+    ],
+    "encodedSha256": "8005c151327778f31c028870d6745567037c293b63c753dbe10446f233a7bacb",
+    "encodedBytes": 23108,
+    "dimensions": [
+      512,
+      512
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\pet-prepared\\pet_fusion_ct.webp",
+    "import": {
+      "name": "pet_fusion_ct",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\pet-prepared\\pet_fusion_ct.webp",
+      "sourceSha256": "8005c151327778f31c028870d6745567037c293b63c753dbe10446f233a7bacb",
+      "sourceBytes": 23108,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 512,
+      "height": 512,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/pet_fusion_ct.8005c151327778f3.webp",
+      "deliverySha256": "8005c151327778f31c028870d6745567037c293b63c753dbe10446f233a7bacb",
+      "deliveryBytes": 23108,
+      "previewUpdated": false,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "pet_fusion",
+    "role": "scan",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-assets-20261010/pet_fusion.webp",
+    "generationRecord": "pet-scenes-and-scans-results.json",
+    "sourceSha256": "4616d54e8a65eba151a1e92b2b07ae785686de2570dfeeb0de413797da0d857b",
+    "sourceBytes": 17506,
+    "sourceDimensions": [
+      512,
+      512
+    ],
+    "encodedSha256": "4616d54e8a65eba151a1e92b2b07ae785686de2570dfeeb0de413797da0d857b",
+    "encodedBytes": 17506,
+    "dimensions": [
+      512,
+      512
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\pet-prepared\\pet_fusion.webp",
+    "import": {
+      "name": "pet_fusion",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\pet-prepared\\pet_fusion.webp",
+      "sourceSha256": "4616d54e8a65eba151a1e92b2b07ae785686de2570dfeeb0de413797da0d857b",
+      "sourceBytes": 17506,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 512,
+      "height": 512,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/pet_fusion.4616d54e8a65eba1.webp",
+      "deliverySha256": "4616d54e8a65eba151a1e92b2b07ae785686de2570dfeeb0de413797da0d857b",
+      "deliveryBytes": 17506,
+      "previewUpdated": false,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "pet_lung",
+    "role": "scan",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-assets-20261010/pet_lung-v2.webp",
+    "generationRecord": "pet-scenes-and-scans-results.json",
+    "sourceSha256": "b423cec1be5231eb38d77aa11fc146184d2792db5e63877ca052e00953eb8e07",
+    "sourceBytes": 22216,
+    "sourceDimensions": [
+      512,
+      512
+    ],
+    "encodedSha256": "b423cec1be5231eb38d77aa11fc146184d2792db5e63877ca052e00953eb8e07",
+    "encodedBytes": 22216,
+    "dimensions": [
+      512,
+      512
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\pet-prepared\\pet_lung.webp",
+    "import": {
+      "name": "pet_lung",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\pet-prepared\\pet_lung.webp",
+      "sourceSha256": "b423cec1be5231eb38d77aa11fc146184d2792db5e63877ca052e00953eb8e07",
+      "sourceBytes": 22216,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 512,
+      "height": 512,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/pet_lung.b423cec1be5231eb.webp",
+      "deliverySha256": "b423cec1be5231eb38d77aa11fc146184d2792db5e63877ca052e00953eb8e07",
+      "deliveryBytes": 22216,
+      "previewUpdated": false,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "pet_neck",
+    "role": "scan",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-assets-20261010/pet_neck.webp",
+    "generationRecord": "pet-scenes-and-scans-results.json",
+    "sourceSha256": "67f47c932e8cab1f41c51172ed8bd1bc7e6e6d1823d9729b6ced9543c5bc9d34",
+    "sourceBytes": 12772,
+    "sourceDimensions": [
+      512,
+      512
+    ],
+    "encodedSha256": "67f47c932e8cab1f41c51172ed8bd1bc7e6e6d1823d9729b6ced9543c5bc9d34",
+    "encodedBytes": 12772,
+    "dimensions": [
+      512,
+      512
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\pet-prepared\\pet_neck.webp",
+    "import": {
+      "name": "pet_neck",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\pet-prepared\\pet_neck.webp",
+      "sourceSha256": "67f47c932e8cab1f41c51172ed8bd1bc7e6e6d1823d9729b6ced9543c5bc9d34",
+      "sourceBytes": 12772,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 512,
+      "height": 512,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/pet_neck.67f47c932e8cab1f.webp",
+      "deliverySha256": "67f47c932e8cab1f41c51172ed8bd1bc7e6e6d1823d9729b6ced9543c5bc9d34",
+      "deliveryBytes": 12772,
+      "previewUpdated": false,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "us_mirror",
+    "role": "scan",
+    "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-228596a7-cc05-4986-adea-c643c6f2718c.png",
+    "sourceKind": "built-in fictional non-quantitative sonogram",
+    "prompt": "B-mode liver/diaphragm sonogram, bright curved reflector and weaker mirrored liver/vessel texture above it at apparent symmetric depth. Plausible mirror artifact, not tumor or two actual organs. Speckle, black fan field, no labels, calipers, watermark or AI notes.",
+    "sourceSha256": "ba4676c312ecdaee828ccc37795e48d5997942f487d5b5f26d5bfd5b9bc76690",
+    "sourceBytes": 1849018,
+    "sourceDimensions": [
+      1254,
+      1254
+    ],
+    "encodedSha256": "f4d29063b89ee908b8f04c28ecb2ca3703a45718171fc818690b53bf39a0a254",
+    "encodedBytes": 25482,
+    "dimensions": [
+      512,
+      512
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\pet-prepared\\us_mirror.webp",
+    "import": {
+      "name": "us_mirror",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\pet-prepared\\us_mirror.webp",
+      "sourceSha256": "f4d29063b89ee908b8f04c28ecb2ca3703a45718171fc818690b53bf39a0a254",
+      "sourceBytes": 25482,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 512,
+      "height": 512,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/us_mirror.f4d29063b89ee908.webp",
+      "deliverySha256": "f4d29063b89ee908b8f04c28ecb2ca3703a45718171fc818690b53bf39a0a254",
+      "deliveryBytes": 25482,
+      "previewUpdated": false,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "us_fetal",
+    "role": "scan",
+    "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-0b6c6be8-4519-4234-a2c0-400c578baa8f.png",
+    "sourceKind": "built-in imagegen precise anatomy edit",
+    "prompt": "Preserve generated fetal skull, fan and speckle; reduce the implausibly large round dark cavity. Show only mildly prominent plausible lateral ventricular atria near10mm in24-week transverse fetal head, surrounding brain and falx intact. Not severe hydrocephalus. No numbers, calipers, labels or AI notes.",
+    "reference": "exec-91fe0fd7-97f4-4065-91ab-6fcc66dd57ed.png",
+    "sourceSha256": "5117693344ee12e480fe5bae6e2e6c8809e2b47ff5f701276c2130543843bb83",
+    "sourceBytes": 2417776,
+    "sourceDimensions": [
+      1254,
+      1254
+    ],
+    "encodedSha256": "283f976a6db0630c6bd1d3ba858ab0bb58761de9cd41003660d2fe0d1b6745df",
+    "encodedBytes": 40056,
+    "dimensions": [
+      512,
+      512
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\pet-prepared\\us_fetal.webp",
+    "import": {
+      "name": "us_fetal",
+      "replaced": true,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\pet-prepared\\us_fetal.webp",
+      "sourceSha256": "283f976a6db0630c6bd1d3ba858ab0bb58761de9cd41003660d2fe0d1b6745df",
+      "sourceBytes": 40056,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 512,
+      "height": 512,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/us_fetal.283f976a6db0630c.webp",
+      "deliverySha256": "283f976a6db0630c6bd1d3ba858ab0bb58761de9cd41003660d2fe0d1b6745df",
+      "deliveryBytes": 40056,
+      "previewUpdated": false,
+      "previousDeliveryPath": "media/us_fetal.ab44d2d95bd565ff.webp",
+      "stalePathCandidates": [
+        "app/public/assets/media/us_fetal.ab44d2d95bd565ff.webp"
+      ],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  }
+]

@@ -1,0 +1,217 @@
+{
+  "generatedBy": "prepare-mri-assets.mjs",
+  "encoding": {
+    "portrait": {
+      "width": 512,
+      "height": 768,
+      "fit": "contain",
+      "kernel": "nearest",
+      "quality": 78,
+      "effort": 6,
+      "alphaQuality": 100
+    },
+    "background": {
+      "resize": false,
+      "quality": 78,
+      "effort": 6
+    },
+    "image": {
+      "width": 512,
+      "height": 512,
+      "fit": "contain",
+      "quality": 78,
+      "effort": 6
+    }
+  },
+  "assets": [
+    {
+      "id": "char_mri_colleague",
+      "original": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\mri-originals\\char_mri_colleague.png",
+      "output": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\mri-webp\\char_mri_colleague.webp",
+      "originalSize": [
+        1024,
+        1536
+      ],
+      "outputSize": [
+        512,
+        768
+      ],
+      "originalSha256": "0c7d760aa854e51774fe99e8eca4bb4fef125188cad9c127569f970e9300a298",
+      "outputSha256": "f2761d4951dbebf15eb2245a91417b6cfdfbec8f5f13fefd0f4b024e8f9ae359",
+      "bytes": 35240,
+      "alpha": {
+        "minimum": 0,
+        "maximum": 254,
+        "zero": 1117911,
+        "faint": 24967,
+        "opaque": 418263,
+        "pixels": 1572864,
+        "corners": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "id": "pat_mri_anxious",
+      "original": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\mri-originals\\pat_mri_anxious.png",
+      "output": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\mri-webp\\pat_mri_anxious.webp",
+      "originalSize": [
+        1024,
+        1536
+      ],
+      "outputSize": [
+        512,
+        768
+      ],
+      "originalSha256": "4ebd8c948c221154dd0226d0ec95df2f7a94a7e0000798b3cbb00d0afd02defe",
+      "outputSha256": "e27e873b67b80e9c73c43d8cf9dc47019ebef98358d627adee6a9cfefcc39a70",
+      "bytes": 30250,
+      "alpha": {
+        "minimum": 0,
+        "maximum": 254,
+        "zero": 1060552,
+        "faint": 14775,
+        "opaque": 489488,
+        "pixels": 1572864,
+        "corners": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "id": "bg_mri_control",
+      "original": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\mri-originals\\bg_mri_control.png",
+      "output": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\mri-webp\\bg_mri_control.webp",
+      "originalSize": [
+        1672,
+        941
+      ],
+      "outputSize": [
+        1672,
+        941
+      ],
+      "originalSha256": "c02cad39f18073e40bd7a226fb810ed3d62daecc77987b1ae797eb8dadeb6f6a",
+      "outputSha256": "a7a487b3b338c0236c85158351c1120694efd7aca73738b5d0881478e8508a9e",
+      "bytes": 94116
+    },
+    {
+      "id": "bg_mri_corridor",
+      "original": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\mri-originals\\bg_mri_corridor.png",
+      "output": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\mri-webp\\bg_mri_corridor.webp",
+      "originalSize": [
+        1672,
+        941
+      ],
+      "outputSize": [
+        1672,
+        941
+      ],
+      "originalSha256": "96f2b5ce8a722b692fcfdbe9750add9b544b6704aed7cff3516c906d44bcebb4",
+      "outputSha256": "970ab447960babb7018e4d32375355f9bc8d985694989961873a701ba65b832a",
+      "bytes": 98000
+    },
+    {
+      "id": "mri_wrist_t1",
+      "alias": "mri_wrist",
+      "original": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\mri-originals\\mri_wrist_t1.png",
+      "output": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\mri-webp\\mri_wrist_t1.webp",
+      "originalSize": [
+        1254,
+        1254
+      ],
+      "outputSize": [
+        512,
+        512
+      ],
+      "originalSha256": "bd27a3c6dfbc7b60c4b429e04fe357eeccb920881a26c35f8d0c0a87932e8fa4",
+      "outputSha256": "c62c95836814b042820139acf3a0b463dc6eb109e26597934d2ab44e92b3a52b",
+      "bytes": 32000
+    },
+    {
+      "id": "mri_wrist_t2",
+      "original": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\mri-originals\\mri_wrist_t2.png",
+      "output": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\mri-webp\\mri_wrist_t2.webp",
+      "originalSize": [
+        1254,
+        1254
+      ],
+      "outputSize": [
+        512,
+        512
+      ],
+      "originalSha256": "9c74c21526c6a3ccd705b9cdb49cba0f64ef3db60b7ef2fc60f1ae454cd83101",
+      "outputSha256": "c58beb0bb6b2f2a9e4218ca2e5052d5afa830d2b4e203ce72ab3d872c2470367",
+      "bytes": 34186
+    },
+    {
+      "id": "mri_brain_t1",
+      "original": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\mri-originals\\mri_brain_t1.png",
+      "output": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\mri-webp\\mri_brain_t1.webp",
+      "originalSize": [
+        1254,
+        1254
+      ],
+      "outputSize": [
+        512,
+        512
+      ],
+      "originalSha256": "b1f90894a668a253dc458d285cf0566550df15bb0a93471b1441e50f0c14bbff",
+      "outputSha256": "8688a9efd3c103bfc2cee065c3259ecf06095dcc183459f8f885317561aa787d",
+      "bytes": 21914
+    },
+    {
+      "id": "mri_brain_t2",
+      "original": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\mri-originals\\mri_brain_t2.png",
+      "output": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\mri-webp\\mri_brain_t2.webp",
+      "originalSize": [
+        1254,
+        1254
+      ],
+      "outputSize": [
+        512,
+        512
+      ],
+      "originalSha256": "3a47b498d0918c264b276440927e479358dc88a449c909d672f5e76b5cf8664e",
+      "outputSha256": "0be7f5696bb51fb446f30ae742fa4031076edd3d1e25777270d16b2c8d0dd30c",
+      "bytes": 26080
+    },
+    {
+      "id": "mri_brain_flair",
+      "original": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\mri-originals\\mri_brain_flair.png",
+      "output": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\mri-webp\\mri_brain_flair.webp",
+      "originalSize": [
+        1254,
+        1254
+      ],
+      "outputSize": [
+        512,
+        512
+      ],
+      "originalSha256": "b42b8a8431ea67efe1e5553f380286e5faa2dc459fa0c047ef92a157b0ce1aef",
+      "outputSha256": "06d3c6bc803ab660cac8b825e734d6c120e104dc164e2047d5c41600c9425d6f",
+      "bytes": 22718
+    },
+    {
+      "id": "mri_neck",
+      "original": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\mri-originals\\mri_neck.png",
+      "output": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\mri-webp\\mri_neck.webp",
+      "originalSize": [
+        1254,
+        1254
+      ],
+      "outputSize": [
+        512,
+        512
+      ],
+      "originalSha256": "131000503f12f6a4de0fc24a47018c9dfc9d63f6ab91295afeb8eefa3904500d",
+      "outputSha256": "9085b544919133ee921eff4748901c7a36acd466ad098529bc11a001023c60d5",
+      "bytes": 23164
+    }
+  ]
+}

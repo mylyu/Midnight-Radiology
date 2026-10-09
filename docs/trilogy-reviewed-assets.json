@@ -1,0 +1,707 @@
+[
+  {
+    "id": "char_pet_doctor",
+    "role": "portrait",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-assets-20261010/char_pet_doctor-v2.webp",
+    "generationRecord": "new-character-results.json",
+    "sourceSha256": "72df589fddb56b2c3539c4a639c8835fc1e206d303da457490658c1aa46023ae",
+    "sourceBytes": 28050,
+    "sourceDimensions": [
+      512,
+      768
+    ],
+    "encodedSha256": "72df589fddb56b2c3539c4a639c8835fc1e206d303da457490658c1aa46023ae",
+    "encodedBytes": 28050,
+    "dimensions": [
+      512,
+      768
+    ],
+    "hasAlpha": true,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\reviewed-prepared\\char_pet_doctor.webp",
+    "import": {
+      "name": "char_pet_doctor",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\reviewed-prepared\\char_pet_doctor.webp",
+      "sourceSha256": "72df589fddb56b2c3539c4a639c8835fc1e206d303da457490658c1aa46023ae",
+      "sourceBytes": 28050,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 512,
+      "height": 768,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/char_pet_doctor.72df589fddb56b2c.webp",
+      "deliverySha256": "72df589fddb56b2c3539c4a639c8835fc1e206d303da457490658c1aa46023ae",
+      "deliveryBytes": 28050,
+      "previewUpdated": false,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "char_pet_nurse",
+    "role": "portrait",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-assets-20261010/char_pet_nurse.webp",
+    "generationRecord": "new-character-results.json",
+    "sourceSha256": "99eb598c4397fbbbcbfa8a7772d0084e8826e0da75cd3b106be53d23ef038ea7",
+    "sourceBytes": 27300,
+    "sourceDimensions": [
+      512,
+      768
+    ],
+    "encodedSha256": "99eb598c4397fbbbcbfa8a7772d0084e8826e0da75cd3b106be53d23ef038ea7",
+    "encodedBytes": 27300,
+    "dimensions": [
+      512,
+      768
+    ],
+    "hasAlpha": true,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\reviewed-prepared\\char_pet_nurse.webp",
+    "import": {
+      "name": "char_pet_nurse",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\reviewed-prepared\\char_pet_nurse.webp",
+      "sourceSha256": "99eb598c4397fbbbcbfa8a7772d0084e8826e0da75cd3b106be53d23ef038ea7",
+      "sourceBytes": 27300,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 512,
+      "height": 768,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/char_pet_nurse.99eb598c4397fbbb.webp",
+      "deliverySha256": "99eb598c4397fbbbcbfa8a7772d0084e8826e0da75cd3b106be53d23ef038ea7",
+      "deliveryBytes": 27300,
+      "previewUpdated": false,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "char_new_trainee",
+    "role": "portrait",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-assets-20261010/char_new_trainee.webp",
+    "generationRecord": "new-character-results.json",
+    "sourceSha256": "94fd959ef79053ab2eb913b67ade8e297c740ff7d60f8fa45f4cea832aef08f2",
+    "sourceBytes": 28968,
+    "sourceDimensions": [
+      512,
+      768
+    ],
+    "encodedSha256": "94fd959ef79053ab2eb913b67ade8e297c740ff7d60f8fa45f4cea832aef08f2",
+    "encodedBytes": 28968,
+    "dimensions": [
+      512,
+      768
+    ],
+    "hasAlpha": true,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\reviewed-prepared\\char_new_trainee.webp",
+    "import": {
+      "name": "char_new_trainee",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\reviewed-prepared\\char_new_trainee.webp",
+      "sourceSha256": "94fd959ef79053ab2eb913b67ade8e297c740ff7d60f8fa45f4cea832aef08f2",
+      "sourceBytes": 28968,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 512,
+      "height": 768,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/char_new_trainee.94fd959ef79053ab.webp",
+      "deliverySha256": "94fd959ef79053ab2eb913b67ade8e297c740ff7d60f8fa45f4cea832aef08f2",
+      "deliveryBytes": 28968,
+      "previewUpdated": false,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "pat_qian",
+    "role": "portrait",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-assets-20261010/pat_qian.webp",
+    "generationRecord": "new-character-results.json",
+    "sourceSha256": "ad69ce173ff0ff98056e1e3770a521b5c5eb4ba7fd18b2b6c6159f22ff981752",
+    "sourceBytes": 29896,
+    "sourceDimensions": [
+      512,
+      768
+    ],
+    "encodedSha256": "ad69ce173ff0ff98056e1e3770a521b5c5eb4ba7fd18b2b6c6159f22ff981752",
+    "encodedBytes": 29896,
+    "dimensions": [
+      512,
+      768
+    ],
+    "hasAlpha": true,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\reviewed-prepared\\pat_qian.webp",
+    "import": {
+      "name": "pat_qian",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\reviewed-prepared\\pat_qian.webp",
+      "sourceSha256": "ad69ce173ff0ff98056e1e3770a521b5c5eb4ba7fd18b2b6c6159f22ff981752",
+      "sourceBytes": 29896,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 512,
+      "height": 768,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/pat_qian.ad69ce173ff0ff98.webp",
+      "deliverySha256": "ad69ce173ff0ff98056e1e3770a521b5c5eb4ba7fd18b2b6c6159f22ff981752",
+      "deliveryBytes": 29896,
+      "previewUpdated": false,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "pat_wang_recovery",
+    "role": "portrait",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-assets-20261010/pat_wang_recovery.webp",
+    "generationRecord": "new-character-results.json",
+    "sourceSha256": "79373a8e9bf9b05fd05d2da8ae7e3fd3e8a501356a405d8d62c6ff456d204f7f",
+    "sourceBytes": 25976,
+    "sourceDimensions": [
+      512,
+      768
+    ],
+    "encodedSha256": "79373a8e9bf9b05fd05d2da8ae7e3fd3e8a501356a405d8d62c6ff456d204f7f",
+    "encodedBytes": 25976,
+    "dimensions": [
+      512,
+      768
+    ],
+    "hasAlpha": true,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\reviewed-prepared\\pat_wang_recovery.webp",
+    "import": {
+      "name": "pat_wang_recovery",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\reviewed-prepared\\pat_wang_recovery.webp",
+      "sourceSha256": "79373a8e9bf9b05fd05d2da8ae7e3fd3e8a501356a405d8d62c6ff456d204f7f",
+      "sourceBytes": 25976,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 512,
+      "height": 768,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/pat_wang_recovery.79373a8e9bf9b05f.webp",
+      "deliverySha256": "79373a8e9bf9b05fd05d2da8ae7e3fd3e8a501356a405d8d62c6ff456d204f7f",
+      "deliveryBytes": 25976,
+      "previewUpdated": false,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "char_mri_colleague",
+    "role": "portrait",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-assets-20261010/mri-webp/char_mri_colleague.webp",
+    "generationRecord": "mri-generation.json",
+    "sourceSha256": "f2761d4951dbebf15eb2245a91417b6cfdfbec8f5f13fefd0f4b024e8f9ae359",
+    "sourceBytes": 35240,
+    "sourceDimensions": [
+      512,
+      768
+    ],
+    "encodedSha256": "f2761d4951dbebf15eb2245a91417b6cfdfbec8f5f13fefd0f4b024e8f9ae359",
+    "encodedBytes": 35240,
+    "dimensions": [
+      512,
+      768
+    ],
+    "hasAlpha": true,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\reviewed-prepared\\char_mri_colleague.webp",
+    "import": {
+      "name": "char_mri_colleague",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\reviewed-prepared\\char_mri_colleague.webp",
+      "sourceSha256": "f2761d4951dbebf15eb2245a91417b6cfdfbec8f5f13fefd0f4b024e8f9ae359",
+      "sourceBytes": 35240,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 512,
+      "height": 768,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/char_mri_colleague.f2761d4951dbebf1.webp",
+      "deliverySha256": "f2761d4951dbebf15eb2245a91417b6cfdfbec8f5f13fefd0f4b024e8f9ae359",
+      "deliveryBytes": 35240,
+      "previewUpdated": false,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "pat_mri_anxious",
+    "role": "portrait",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-assets-20261010/mri-webp/pat_mri_anxious.webp",
+    "generationRecord": "mri-generation.json",
+    "sourceSha256": "e27e873b67b80e9c73c43d8cf9dc47019ebef98358d627adee6a9cfefcc39a70",
+    "sourceBytes": 30250,
+    "sourceDimensions": [
+      512,
+      768
+    ],
+    "encodedSha256": "e27e873b67b80e9c73c43d8cf9dc47019ebef98358d627adee6a9cfefcc39a70",
+    "encodedBytes": 30250,
+    "dimensions": [
+      512,
+      768
+    ],
+    "hasAlpha": true,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\reviewed-prepared\\pat_mri_anxious.webp",
+    "import": {
+      "name": "pat_mri_anxious",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\reviewed-prepared\\pat_mri_anxious.webp",
+      "sourceSha256": "e27e873b67b80e9c73c43d8cf9dc47019ebef98358d627adee6a9cfefcc39a70",
+      "sourceBytes": 30250,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 512,
+      "height": 768,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/pat_mri_anxious.e27e873b67b80e9c.webp",
+      "deliverySha256": "e27e873b67b80e9c73c43d8cf9dc47019ebef98358d627adee6a9cfefcc39a70",
+      "deliveryBytes": 30250,
+      "previewUpdated": false,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "bg_mri_control",
+    "role": "background",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-assets-20261010/mri-webp/bg_mri_control.webp",
+    "generationRecord": "mri-generation.json",
+    "sourceSha256": "a7a487b3b338c0236c85158351c1120694efd7aca73738b5d0881478e8508a9e",
+    "sourceBytes": 94116,
+    "sourceDimensions": [
+      1672,
+      941
+    ],
+    "encodedSha256": "a7a487b3b338c0236c85158351c1120694efd7aca73738b5d0881478e8508a9e",
+    "encodedBytes": 94116,
+    "dimensions": [
+      1672,
+      941
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\reviewed-prepared\\bg_mri_control.webp",
+    "import": {
+      "name": "bg_mri_control",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\reviewed-prepared\\bg_mri_control.webp",
+      "sourceSha256": "a7a487b3b338c0236c85158351c1120694efd7aca73738b5d0881478e8508a9e",
+      "sourceBytes": 94116,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 1672,
+      "height": 941,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/bg_mri_control.a7a487b3b338c023.webp",
+      "deliverySha256": "a7a487b3b338c0236c85158351c1120694efd7aca73738b5d0881478e8508a9e",
+      "deliveryBytes": 94116,
+      "previewUpdated": true,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "bg_mri_corridor",
+    "role": "background",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-assets-20261010/mri-webp/bg_mri_corridor.webp",
+    "generationRecord": "mri-generation.json",
+    "sourceSha256": "970ab447960babb7018e4d32375355f9bc8d985694989961873a701ba65b832a",
+    "sourceBytes": 98000,
+    "sourceDimensions": [
+      1672,
+      941
+    ],
+    "encodedSha256": "970ab447960babb7018e4d32375355f9bc8d985694989961873a701ba65b832a",
+    "encodedBytes": 98000,
+    "dimensions": [
+      1672,
+      941
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\reviewed-prepared\\bg_mri_corridor.webp",
+    "import": {
+      "name": "bg_mri_corridor",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\reviewed-prepared\\bg_mri_corridor.webp",
+      "sourceSha256": "970ab447960babb7018e4d32375355f9bc8d985694989961873a701ba65b832a",
+      "sourceBytes": 98000,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 1672,
+      "height": 941,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/bg_mri_corridor.970ab447960babb7.webp",
+      "deliverySha256": "970ab447960babb7018e4d32375355f9bc8d985694989961873a701ba65b832a",
+      "deliveryBytes": 98000,
+      "previewUpdated": true,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "mri_wrist",
+    "role": "scan",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-assets-20261010/mri-webp/mri_wrist_t1.webp",
+    "generationRecord": "mri-generation.json",
+    "sourceSha256": "c62c95836814b042820139acf3a0b463dc6eb109e26597934d2ab44e92b3a52b",
+    "sourceBytes": 32000,
+    "sourceDimensions": [
+      512,
+      512
+    ],
+    "encodedSha256": "c62c95836814b042820139acf3a0b463dc6eb109e26597934d2ab44e92b3a52b",
+    "encodedBytes": 32000,
+    "dimensions": [
+      512,
+      512
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\reviewed-prepared\\mri_wrist.webp",
+    "import": {
+      "name": "mri_wrist",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\reviewed-prepared\\mri_wrist.webp",
+      "sourceSha256": "c62c95836814b042820139acf3a0b463dc6eb109e26597934d2ab44e92b3a52b",
+      "sourceBytes": 32000,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 512,
+      "height": 512,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/mri_wrist.c62c95836814b042.webp",
+      "deliverySha256": "c62c95836814b042820139acf3a0b463dc6eb109e26597934d2ab44e92b3a52b",
+      "deliveryBytes": 32000,
+      "previewUpdated": false,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "mri_wrist_t2",
+    "role": "scan",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-assets-20261010/mri-webp/mri_wrist_t2.webp",
+    "generationRecord": "mri-generation.json",
+    "sourceSha256": "c58beb0bb6b2f2a9e4218ca2e5052d5afa830d2b4e203ce72ab3d872c2470367",
+    "sourceBytes": 34186,
+    "sourceDimensions": [
+      512,
+      512
+    ],
+    "encodedSha256": "c58beb0bb6b2f2a9e4218ca2e5052d5afa830d2b4e203ce72ab3d872c2470367",
+    "encodedBytes": 34186,
+    "dimensions": [
+      512,
+      512
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\reviewed-prepared\\mri_wrist_t2.webp",
+    "import": {
+      "name": "mri_wrist_t2",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\reviewed-prepared\\mri_wrist_t2.webp",
+      "sourceSha256": "c58beb0bb6b2f2a9e4218ca2e5052d5afa830d2b4e203ce72ab3d872c2470367",
+      "sourceBytes": 34186,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 512,
+      "height": 512,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/mri_wrist_t2.c58beb0bb6b2f2a9.webp",
+      "deliverySha256": "c58beb0bb6b2f2a9e4218ca2e5052d5afa830d2b4e203ce72ab3d872c2470367",
+      "deliveryBytes": 34186,
+      "previewUpdated": false,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "mri_brain_t1",
+    "role": "scan",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-assets-20261010/mri-webp/mri_brain_t1.webp",
+    "generationRecord": "mri-generation.json",
+    "sourceSha256": "8688a9efd3c103bfc2cee065c3259ecf06095dcc183459f8f885317561aa787d",
+    "sourceBytes": 21914,
+    "sourceDimensions": [
+      512,
+      512
+    ],
+    "encodedSha256": "8688a9efd3c103bfc2cee065c3259ecf06095dcc183459f8f885317561aa787d",
+    "encodedBytes": 21914,
+    "dimensions": [
+      512,
+      512
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\reviewed-prepared\\mri_brain_t1.webp",
+    "import": {
+      "name": "mri_brain_t1",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\reviewed-prepared\\mri_brain_t1.webp",
+      "sourceSha256": "8688a9efd3c103bfc2cee065c3259ecf06095dcc183459f8f885317561aa787d",
+      "sourceBytes": 21914,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 512,
+      "height": 512,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/mri_brain_t1.8688a9efd3c103bf.webp",
+      "deliverySha256": "8688a9efd3c103bfc2cee065c3259ecf06095dcc183459f8f885317561aa787d",
+      "deliveryBytes": 21914,
+      "previewUpdated": false,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "mri_brain_t2",
+    "role": "scan",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-assets-20261010/mri-webp/mri_brain_t2.webp",
+    "generationRecord": "mri-generation.json",
+    "sourceSha256": "0be7f5696bb51fb446f30ae742fa4031076edd3d1e25777270d16b2c8d0dd30c",
+    "sourceBytes": 26080,
+    "sourceDimensions": [
+      512,
+      512
+    ],
+    "encodedSha256": "0be7f5696bb51fb446f30ae742fa4031076edd3d1e25777270d16b2c8d0dd30c",
+    "encodedBytes": 26080,
+    "dimensions": [
+      512,
+      512
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\reviewed-prepared\\mri_brain_t2.webp",
+    "import": {
+      "name": "mri_brain_t2",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\reviewed-prepared\\mri_brain_t2.webp",
+      "sourceSha256": "0be7f5696bb51fb446f30ae742fa4031076edd3d1e25777270d16b2c8d0dd30c",
+      "sourceBytes": 26080,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 512,
+      "height": 512,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/mri_brain_t2.0be7f5696bb51fb4.webp",
+      "deliverySha256": "0be7f5696bb51fb446f30ae742fa4031076edd3d1e25777270d16b2c8d0dd30c",
+      "deliveryBytes": 26080,
+      "previewUpdated": false,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "mri_brain_flair",
+    "role": "scan",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-assets-20261010/mri-webp/mri_brain_flair.webp",
+    "generationRecord": "mri-generation.json",
+    "sourceSha256": "06d3c6bc803ab660cac8b825e734d6c120e104dc164e2047d5c41600c9425d6f",
+    "sourceBytes": 22718,
+    "sourceDimensions": [
+      512,
+      512
+    ],
+    "encodedSha256": "06d3c6bc803ab660cac8b825e734d6c120e104dc164e2047d5c41600c9425d6f",
+    "encodedBytes": 22718,
+    "dimensions": [
+      512,
+      512
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\reviewed-prepared\\mri_brain_flair.webp",
+    "import": {
+      "name": "mri_brain_flair",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\reviewed-prepared\\mri_brain_flair.webp",
+      "sourceSha256": "06d3c6bc803ab660cac8b825e734d6c120e104dc164e2047d5c41600c9425d6f",
+      "sourceBytes": 22718,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 512,
+      "height": 512,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/mri_brain_flair.06d3c6bc803ab660.webp",
+      "deliverySha256": "06d3c6bc803ab660cac8b825e734d6c120e104dc164e2047d5c41600c9425d6f",
+      "deliveryBytes": 22718,
+      "previewUpdated": false,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "mri_neck",
+    "role": "scan",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-assets-20261010/mri-webp/mri_neck.webp",
+    "generationRecord": "mri-generation.json",
+    "sourceSha256": "9085b544919133ee921eff4748901c7a36acd466ad098529bc11a001023c60d5",
+    "sourceBytes": 23164,
+    "sourceDimensions": [
+      512,
+      512
+    ],
+    "encodedSha256": "9085b544919133ee921eff4748901c7a36acd466ad098529bc11a001023c60d5",
+    "encodedBytes": 23164,
+    "dimensions": [
+      512,
+      512
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\reviewed-prepared\\mri_neck.webp",
+    "import": {
+      "name": "mri_neck",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\reviewed-prepared\\mri_neck.webp",
+      "sourceSha256": "9085b544919133ee921eff4748901c7a36acd466ad098529bc11a001023c60d5",
+      "sourceBytes": 23164,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 512,
+      "height": 512,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/mri_neck.9085b544919133ee.webp",
+      "deliverySha256": "9085b544919133ee921eff4748901c7a36acd466ad098529bc11a001023c60d5",
+      "deliveryBytes": 23164,
+      "previewUpdated": false,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  }
+]

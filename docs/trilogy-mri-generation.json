@@ -1,0 +1,114 @@
+{
+  "generatedAt": "2026-10-10",
+  "mode": "built-in image_gen; no SDK or fallback CLI",
+  "outputRoot": "C:/Users/lvmen/Documents/New project/trilogy-assets-20261010",
+  "scientificNotice": "MRI illustrations are generated, nonquantitative educational images, not measured patient data. T2/FLAIR were generated as separate reference-based edits, not CSS brightness changes.",
+  "sourceSearch": {
+    "queries": [
+      "site.pmc.ncbi.nlm.nih.gov wrist MRI T1 T2 \"Creative Commons Attribution\" coronal"
+    ],
+    "reviewedCandidates": [
+      {
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12985805/",
+        "license": "CC BY 4.0 per indexed article",
+        "reasonNotUsed": "Pediatric gymnast physeal stress injury, not the adult wrist case."
+      },
+      {
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8795032/",
+        "license": "CC BY 4.0 per indexed article",
+        "reasonNotUsed": "3T/7T comparison and PD/PD-FS material does not supply the requested same-slice adult T1/T2 pair."
+      }
+    ],
+    "downloaded": false
+  },
+  "assets": [
+    {
+      "id": "char_mri_colleague",
+      "type": "portrait",
+      "source": "C:/Users/lvmen/.codex/generated_images/01a0cef6-05bd-7b13-a101-413321eb556f/exec-b32893de-18e0-47f6-aed5-e30173e7392a.png",
+      "prompt": "Use case: stylized-concept. Asset type: transparent full-body pixel game character sprite. Input images 1 and 2 are STYLE REFERENCES ONLY, not identities to copy. Draw a completely new character: Xu Ning, 26-year-old Chinese female MRI technologist, standing normally, practical light-blue work shirt and trousers under an open white lab coat, plain comfortable dark shoes. Alert yet relaxed everyday expression, dark hair in a short low ponytail, adult proportions, distinct face from the pink-uniform nurse reference, no nurse cap and no pink outfit. Match the references' large crisp square pixel clusters, dark stepped outlines, limited-shade chunky pixel rendering and warm skin shading. Portrait canvas 1024x1536, whole head and both shoes fully visible, centered with generous transparent padding. One hand lightly holds a slim clipboard at waist, other arm relaxed. The clipboard has no readable writing. Genuine alpha transparent background only, no checkerboard drawn into pixels, no ground/shadow/platform, no border, no extra characters, no logos, no text. Avoid smooth painted/anime gradients and photorealism. Professional ordinary colleague, not glamorous, not childish."
+    },
+    {
+      "id": "pat_mri_anxious",
+      "type": "portrait",
+      "source": "C:/Users/lvmen/.codex/generated_images/01a0cef6-05bd-7b13-a101-413321eb556f/exec-7bbe731f-1df4-40a2-ad2f-82be6c4fd14d.png",
+      "prompt": "Use case: stylized-concept. Asset type: full-body transparent pixel game character. The supplied image is STYLE reference only; do not copy the doctor's face or outfit. New character Old Song, a 50-year-old Chinese male city bus driver coming independently for a hospital visit: ordinary healthy build, broad rectangular everyday face, short greying hair with slightly receding hairline, no beard, visibly middle-aged but not elderly. His expression is a little uneasy and embarrassed, not in pain. Grey-green everyday zip jacket over a muted beige polo shirt, dark trousers, scuffed walking shoes. Standing naturally with both feet grounded, shoulders slightly tense, hands at waist holding a modest car-key ring. He is not a doctor, not on a bed, no wheelchair, no IV, no medical props. Match the reference's dark pixel outlines, large crisp square pixel clusters, restrained shading and full-body 2D pixel game sprite feel. Portrait 1024x1536, entire head and shoes visible, centered with clear margin. Genuinely transparent alpha background, no floor, no shadow, no checkerboard texture, no aura. No text, badges, logos, watermark, extra people. Avoid photorealism or smoothly painted gradients."
+    },
+    {
+      "id": "bg_mri_control",
+      "type": "background",
+      "source": "C:/Users/lvmen/.codex/generated_images/01a0cef6-05bd-7b13-a101-413321eb556f/exec-b7b5ae2c-b5de-4014-989e-4fea8b0cdb74.png",
+      "prompt": "Use case: stylized-concept. Asset type: wide pixel-art visual-novel hospital background, 2048x1152 landscape. Input image 1 is the established MRI room and MACHINE IDENTITY reference; image 2 is visual style only. New viewpoint: inside the adjoining 3.0T MRI control room at night, looking across a realistically proportioned desk and observation window into that exact scanner room. Preserve the same off-white deep long-bore MRI magnet with rounded rectangular body, inset concentric bore and small amber upper panel, same dark blue walls and warm bore light. The scanner is THROUGH THE GLASS in the room behind, not in the control room. Foreground has two believable modern flat monitor workstations showing tiny grayscale MR slice thumbnails, keyboard, intercom, paperwork tray, one wheeled desk chair; actual cable conduits/cabling tucked neatly at desk rear, equipment cabinet next to desk. Cold blue night ambient with a modest warm desk lamp. Strong rectangular pixel clusters, dark stepped contours, textured limited palette, matching first-chapter coarse high-resolution pixel painting. No people. No readable text, no brand logos, no X-ray/radiation hazard symbol, no holograms, no floating interfaces. Keep lower quarter mostly unobstructed desk/space for game dialogue overlay. Physically plausible geometry, machine room separate from operator room."
+    },
+    {
+      "id": "bg_mri_corridor",
+      "type": "background",
+      "source": "C:/Users/lvmen/.codex/generated_images/01a0cef6-05bd-7b13-a101-413321eb556f/exec-8a2b6ece-0287-4071-8141-d4ba66896e81.png",
+      "prompt": "Use case: stylized-concept. Asset type: 2048x1152 landscape pixel hospital game background. Input image 1 is established MRI unit color/material design reference, image 2 is first-chapter pixel style reference only. New scene: believable hospital MRI department entrance and controlled-access changing/storage anteroom at night. Ordinary architectural corridor, off-white walls with dark teal lower panels, one closed access-controlled door to the restricted MRI zone, an observation panel, simple strong-magnet horseshoe pictogram and crossed-out metal-object pictograms (NOT ionizing radiation trefoil). Outside that door: patient changing cubicle door, a bank of modest personal-item lockers, a small reception counter with blank forms and ordinary wall clock, two empty waiting chairs. Use a clear unobstructed walking route and credible fixed architecture, physically attached signs/cabinets and ceiling lights. Dim cool-blue night palette with warm fluorescent pools of light, no gore or ghosts. Coarse crisp square pixel clusters and dark stepped outlines, richly textured pixel painting consistent with the provided game's first chapter. No people, no readable words or labels, no logos, no watermark, no floating objects/screens, no X-ray warning. Do not put a scanner in the hallway. Open lower foreground for dialogue overlay."
+    },
+    {
+      "id": "mri_wrist_t1",
+      "alias": "mri_wrist",
+      "type": "image",
+      "source": "C:/Users/lvmen/.codex/generated_images/01a0cef6-05bd-7b13-a101-413321eb556f/exec-72bac2e7-aa91-47c4-8433-6b415aa48bdd.png",
+      "prompt": "Use case: scientific-educational. Asset type: grayscale MRI-like educational game image, 1024x1024 square on solid pure black. This is a synthetic teaching illustration, not a quantitative clinical scan. Primary request: one anatomically plausible mid-coronal slice through an ADULT RIGHT WRIST, distal radius and smaller ulna below, two orderly rows of carpal bones across center and proximal metacarpal bases above, enough surrounding soft tissue. Appearance of non-fat-suppressed T1-weighted MRI: fatty marrow in radius, ulna, carpals and metacarpals relatively bright, subcutaneous fat bright, cortical bone and tendons dark, thin joint fluid low signal; muscle intermediate-to-low gray. Distal radius at screen left, ulnar head at screen right, coherent carpal rows, no extra bones or fingers. Adult closed growth plates. Natural realistic grayscale MR texture and modest acquisition grain, not an X-ray and not a cartoon/pixel scene. Neutral mild soft-tissue clinical question only, do not invent dramatic fracture, tumor, bone loss, screws or surgical implants. Centered anatomy filling about 80 percent height, with black margin. One slice only, no montage, no orientation letters, no measurements, no text, no markers or arrows, no watermark. This image will be the exact geometric reference for a matching T2 image, so anatomy must be clean and stable."
+    },
+    {
+      "id": "mri_wrist_t2",
+      "type": "image",
+      "source": "C:/Users/lvmen/.codex/generated_images/01a0cef6-05bd-7b13-a101-413321eb556f/exec-3d7e5cef-bbc7-4bfc-bb40-fbaca53a7024.png",
+      "reference": "C:/Users/lvmen/.codex/generated_images/01a0cef6-05bd-7b13-a101-413321eb556f/exec-72bac2e7-aa91-47c4-8433-6b415aa48bdd.png",
+      "prompt": "Use case: precise-object-edit / scientific-educational. EDIT THE SUPPLIED WRIST MRI TEACHING IMAGE. Preserve exact anatomy, every bone outline, carpal arrangement, crop, orientation, pose, soft-tissue contour and all coordinates. Change ONLY tissue-specific MRI contrast from the T1-like reference into a plausible matching conventional NON-fat-suppressed T2-weighted appearance. Joint fluid and small normal recesses become bright relative to T1; fat remains relatively bright but less dominant, fatty bone marrow moderately bright, muscle stays intermediate-low, tendons/ligaments/cortex remain dark. This must not be a global brightness change: fluid gets brighter and fat-versus-water contrast changes independently. No new fracture, edema, mass, fluid collection or lesion; no new anatomical structures. Keep same modest grain and black background, same square image. No labels, no arrow, no text, no UI. The two images are nonquantitative matching synthetic teaching illustrations, not real patient data."
+    },
+    {
+      "id": "mri_brain_t1",
+      "type": "image",
+      "source": "C:/Users/lvmen/.codex/generated_images/01a0cef6-05bd-7b13-a101-413321eb556f/exec-6a2a7c62-c774-4917-b0a1-a1ba60fd5d21.png",
+      "prompt": "Use case: scientific-educational. Asset type: grayscale synthetic MRI teaching image for game, one 1024x1024 square image on black. Make one anatomically plausible adult AXIAL head MRI slice at the lateral ventricular bodies/basal-ganglia level, symmetric geometry, frontal at image top, occipital at bottom. A coherent single slice, with both lateral ventricles, midline and surrounding deep gray/white matter and sulci; intact scalp, skull dark. T1-weighted contrast: CSF in ventricles and sulci very dark, white matter lighter than cortical/deep gray matter, scalp fat bright. Natural MR grain rather than cartoon or radiograph. No definite lesion, no focal bright blob, no hemorrhage, mass effect, hydrocephalus or aneurysm. Balanced mild normal asymmetry only. Keep full head contour centered with about 8 percent black border. No annotations, no arrows, no text, no panels, no UI. This is an illustrative nonquantitative teaching image; the same geometry will subsequently be used as a reference to create T2 and FLAIR contrast, so keep the single slice anatomy clean."
+    },
+    {
+      "id": "mri_brain_t2",
+      "type": "image",
+      "source": "C:/Users/lvmen/.codex/generated_images/01a0cef6-05bd-7b13-a101-413321eb556f/exec-2d76b1ef-003c-43c3-94aa-874005f93464.png",
+      "reference": "C:/Users/lvmen/.codex/generated_images/01a0cef6-05bd-7b13-a101-413321eb556f/exec-6a2a7c62-c774-4917-b0a1-a1ba60fd5d21.png",
+      "prompt": "Use case: precise-object-edit / scientific-educational. EDIT the supplied T1-like AXIAL adult brain MRI teaching illustration into matching T2-weighted contrast. Lock EXACT same slice, head contour, ventricles, sulci, basal ganglia, cortical folds, orientation, crop and black margin. Do not reposition or reshape anything. Only tissue-specific signal contrast changes: CSF in those existing lateral ventricles and sulci becomes bright white; cortical/deep gray matter becomes lighter than white matter, white matter medium darker gray; fat in scalp can remain moderately bright; skull stays dark. Natural modest MR grain; clean anatomy without any focal lesions, tumor, stroke, bleeding or new bright blobs. NOT a global brightness adjustment. No text, arrows, annotations, panels, UI or watermark. Preserve geometry precisely for visual switching with the reference. Synthetic nonquantitative teaching image."
+    },
+    {
+      "id": "mri_brain_flair",
+      "type": "image",
+      "source": "C:/Users/lvmen/.codex/generated_images/01a0cef6-05bd-7b13-a101-413321eb556f/exec-de64b4db-7518-44f2-84e8-06873064ac92.png",
+      "reference": "C:/Users/lvmen/.codex/generated_images/01a0cef6-05bd-7b13-a101-413321eb556f/exec-6a2a7c62-c774-4917-b0a1-a1ba60fd5d21.png",
+      "prompt": "Use case: precise-object-edit / scientific-educational. EDIT the supplied T1-like axial adult brain MRI teaching image into matching T2-FLAIR contrast, preserving EXACT same slice, crop, anatomy, all ventricular and sulcal contours, cortical folds, head border and orientation. Tissue-specific change only: CSF in all existing ventricles and sulci is near-black/suppressed; cortical and deep gray matter are LIGHTER than white matter as in T2-weighted tissue contrast; white matter is medium/darker gray. This distinction is essential: do NOT just reproduce T1 white-matter-bright contrast. No periventricular hyperintense lesions, no bright focal disease, no stroke, no tumor, no hemorrhage; no new anatomy. Scalp and skull preserve geometry. Natural modest MRI grain, pure black exterior. No labels, arrows, text, diagnostic claims or UI. A nonquantitative synthetic teaching illustration visually aligned to reference, not a measured image. Only change tissue signal characteristics."
+    },
+    {
+      "id": "mri_neck",
+      "type": "image",
+      "source": "C:/Users/lvmen/.codex/generated_images/01a0cef6-05bd-7b13-a101-413321eb556f/exec-bdf04ce4-4e24-4c78-9736-86b7e0516467.png",
+      "prompt": "Use case: scientific-educational. Asset type: one synthetic grayscale MRI-like educational image, 1024x1024, full axial adult NECK cross-section on solid black, not tightly magnified. Show a plausible cross-section around upper cervical level C3 below jaw, pharyngeal airway anterior-midline, cervical vertebral body/spinal canal posterior-midline, sternocleidomastoid muscles laterally, vascular bundles and surrounding fat/soft tissue. Conventional radiological orientation: patient LEFT is image RIGHT, anterior at top. In patient LEFT deep cervical chain (image RIGHT), show a modest cluster of several slightly enlarged oval nodal/soft tissue structures beside the vascular bundle, not a single huge destructive mass. They are medium-high signal on a T2-like fat-suppressed image, not glowing white and not labeled cancer. Keep bilateral neck anatomy clear for comparison, all other structures plausible. No fluid-fluid levels, hemorrhage, necrotic cavity, dramatic tumor or definite diagnosis. Realistic MR soft-tissue grayscale texture, not CT, no dense white bony cortex. No arrows, no orientation letters, no labels, no measurements, no text, no watermark. Nonquantitative teaching illustration intended to observe location and extent only, not to claim a definitive diagnosis."
+    }
+  ],
+  "encoding": {
+    "portrait": {
+      "width": 512,
+      "height": 768,
+      "fit": "contain",
+      "kernel": "nearest",
+      "quality": 78,
+      "effort": 6,
+      "alphaQuality": 100
+    },
+    "background": {
+      "resize": false,
+      "quality": 78,
+      "effort": 6
+    },
+    "image": {
+      "width": 512,
+      "height": 512,
+      "fit": "contain",
+      "quality": 78,
+      "effort": 6
+    }
+  },
+  "visualReview": "Individual generated outputs inspected: Xu Ning distinct adult colleague, Old Song ambulatory middle-aged civilian; backgrounds share established MRI magnet and actual architecture. Wrist contours/carpal layout stable between T1/T2; brain contours/ventricular positions stable across T1/T2/FLAIR; CSF is bright in T2 and dark in T1/FLAIR, with gray/white contrast inverted relative to T1. Neck left deep chain abnormality is on image right, no text or diagnostic arrow."
+}

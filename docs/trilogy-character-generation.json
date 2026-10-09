@@ -1,0 +1,233 @@
+{
+  "generatedOn": "2026-10-10",
+  "assets": [
+    {
+      "id": "char_pet_doctor",
+      "source": "C:\\Users\\lvmen\\.codex\\generated_images\\01a12193-6345-72d2-8c27-7b74d11798b3\\exec-9deff05e-81e3-47b0-b1b4-f9743f8e4b3c.png",
+      "prompt": "Use case: stylized-concept.\nAsset type: transparent full-body character sprite for the Chinese pixel visual novel Midnight Radiology.\nPrimary request: one new Chinese male nuclear-medicine physician, Dr Gu, about 45, calm and practical.\nScene/backdrop: genuinely transparent alpha, absolutely no background pixels, no floor or shadow.\nSubject: average build; neat thick short black hair with a small side part, narrow oval face, no glasses, no moustache, clean-shaven. Off-white slightly worn doctor's coat over muted teal shirt, charcoal trousers, plain dark shoes. Arms relaxed, one hand holding a small closed clipboard at waist, other hand hanging naturally. Gentle attentive expression, not smiling broadly. Distinct from an older balding moustached physician and from a hospital director.\nStyle/medium: chunky low-resolution raster pixel art, 1990s narrative-game sprite. The observed existing cast uses warm ochre skin, black-brown broken outlines, blocky stepped silhouettes, coarse rectangular pixel clusters and limited muted shades, not smooth anime painting. Draw as if on a 128x192 pixel grid scaled up with nearest-neighbour to 1024x1536; individual 8x8-pixel square blocks must remain clearly visible. No fine digital brushwork, soft gradients, vector strokes, glossy 3D or photographic skin.\nComposition/framing: exactly one character, full body including both shoes, centered front-facing slight three-quarter pose; comfortable transparent margin on all sides; adult seven-head proportions; 1024x1536 portrait canvas. Body fills about 82% canvas height and 40% width. Match the existing story cast's modest stance and dark outline weight.\nConstraints: transparent background with preserved alpha; no checkerboard painted into image; no text, letters, logos, watermark, UI, border, medical machinery or extra people.",
+      "mode": "built-in image_gen",
+      "sourceReferences": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/char_zhou.6654ff12eb3e23ca.webp",
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/char_tang.d53f4bc08dedd1cd.webp"
+      ],
+      "referenceUse": "Existing char_zhou and char_tang inspected with view_image; palette, coarse block size, outline weight and adult proportions described in generation prompt.",
+      "previousSource": "C:\\Users\\lvmen\\.codex\\generated_images\\01a12193-6345-72d2-8c27-7b74d11798b3\\exec-59273f75-f8df-4260-8415-3180ae20e502.png",
+      "outputName": "char_pet_doctor-v2",
+      "editPrompt": "Use case: identity-preserve.\nInput image: the existing full-body Dr Gu sprite is the edit target.\nPrimary request: make this same physician visibly about45 rather than about30, changing only his apparent facial age. Add modest block-pixel crow's feet, a subtle forehead crease and a few grey pixel clusters at the temples. Keep his clean-shaven face, neat thick side-parted hair, calm attentive expression and identity.\nConstraints: preserve every other aspect: exact1024x1536 canvas, same pose, clipboard, hands, coat, teal shirt, trousers, shoes, coarse dark-outline pixel-art rendering and adult proportions. Preserve genuine transparent background and alpha, with no scenery, ground, glow, checkerboard, text, extra people or watermark. Do not turn him into an elderly bald man, do not add a beard or glasses, do not smooth the pixel clusters.",
+      "originalCopy": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\char_pet_doctor-v2.source.png",
+      "output": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\char_pet_doctor-v2.webp",
+      "sourceBytes": 1159969,
+      "outputBytes": 28050,
+      "sourceSize": [
+        1024,
+        1536
+      ],
+      "outputSize": [
+        512,
+        768
+      ],
+      "sourceSha256": "f2b2f6055bbd3f578baf2a57cdb06ff5fb13039d01cad096f2976a7c21eeda71",
+      "outputSha256": "72df589fddb56b2c3539c4a639c8835fc1e206d303da457490658c1aa46023ae",
+      "alpha": {
+        "sourceHasAlpha": true,
+        "outputHasAlpha": true,
+        "transparentPixels": 1085197,
+        "subjectPixels": 487667,
+        "max": 254,
+        "corners": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "outputAlphaExactlyMatchesNearestResize": true
+      },
+      "encoder": {
+        "quality": 78,
+        "alphaQuality": 100,
+        "effort": 6,
+        "resizeKernel": "nearest"
+      }
+    },
+    {
+      "id": "char_pet_nurse",
+      "source": "C:\\Users\\lvmen\\.codex\\generated_images\\01a12193-6345-72d2-8c27-7b74d11798b3\\exec-225ccddb-ac48-4314-95ee-572163d3d878.png",
+      "prompt": "Use case: stylized-concept.\nAsset type: transparent full-body game character sprite, independent cutout.\nPrimary request: Ning, a Chinese female nuclear-medicine center nurse about 35 years old. One person only.\nScene/backdrop: genuine transparent alpha, no scenery, ground, cast shadow or painted checkerboard.\nSubject: competent, friendly practical adult with short straight black bob to jawline, no braids, no nurse hat, no big anime eyes. Slightly square adult face, small attentive eyes, a relaxed matter-of-fact half-smile. Plain pale blue short-sleeved practical nurse scrub top with two lower pockets and a simple small blank ID clip, matching straight trousers, flat white working shoes. Hands at ease, one holding a thin paper folder against her side, other arm relaxed. Normal proportions and modest upright pose, healthy adult.\nStyle/medium: visibly coarse low-resolution pixel-art sprite for a 1990s Chinese hospital narrative game. Match observed existing cast: dark brown stepped outline, ochre peach skin, muted cloth colors, broken rectangular clusters of pixel shadows and highlights. Pixel grid equivalent about128x192 enlarged with nearest-neighbour to1024x1536; distinct 8-pixel block edges, no smooth brush painting. Keep whole adult silhouette readable at512x768. Do not draw a chibi child, anime maid, apron, pink dress, glossy skin, or detailed photographic hair.\nComposition/framing: exactly one full-body woman centered on a1024x1536 portrait transparent canvas, both shoes entirely visible, character occupies82% height and40% width with clean transparent margin. Near-front three-quarter view, eyes looking gently toward viewer.\nConstraints: transparent background, no extra people, text, logos, watermark or frame; distinct from the game's pink-uniform braided young nurse Tang.",
+      "mode": "built-in image_gen",
+      "sourceReferences": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/char_zhou.6654ff12eb3e23ca.webp",
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/char_tang.d53f4bc08dedd1cd.webp"
+      ],
+      "referenceUse": "Existing char_zhou and char_tang inspected with view_image; palette, coarse block size, outline weight and adult proportions described in generation prompt.",
+      "originalCopy": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\char_pet_nurse.source.png",
+      "output": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\char_pet_nurse.webp",
+      "sourceBytes": 1232177,
+      "outputBytes": 27300,
+      "sourceSize": [
+        1024,
+        1536
+      ],
+      "outputSize": [
+        512,
+        768
+      ],
+      "sourceSha256": "6c6fe091c28b93b6fbd6d891aacecac2d9d0f46d4c40ee473d5bbdf117d4343b",
+      "outputSha256": "99eb598c4397fbbbcbfa8a7772d0084e8826e0da75cd3b106be53d23ef038ea7",
+      "alpha": {
+        "sourceHasAlpha": true,
+        "outputHasAlpha": true,
+        "transparentPixels": 1145799,
+        "subjectPixels": 427065,
+        "max": 254,
+        "corners": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "outputAlphaExactlyMatchesNearestResize": true
+      },
+      "encoder": {
+        "quality": 78,
+        "alphaQuality": 100,
+        "effort": 6,
+        "resizeKernel": "nearest"
+      }
+    },
+    {
+      "id": "char_new_trainee",
+      "source": "C:\\Users\\lvmen\\.codex\\generated_images\\01a12193-6345-72d2-8c27-7b74d11798b3\\exec-8a3751de-111e-42c9-b64d-f08362befacf.png",
+      "prompt": "Use case: stylized-concept.\nAsset type: independent transparent full-body hospital-game sprite.\nPrimary request: one Chinese man age22, a new imaging technologist trainee, youthful but adult and ordinary.\nScene/backdrop: genuine transparent alpha only; no floor, scenery, shadow, checkerboard or glow painted around silhouette.\nSubject: slim normal adult build, short straight black crew-cut hair, narrower face, no moustache, no glasses, no dramatic hairstyle. Light-blue practical work shirt under a simple off-white white lab coat, navy straight work trousers, dark low shoes. Plain blank small ID clip, one hand holding a modest thin notebook against chest, other hand relaxed. Curious slightly unsure expression, small natural eyes; modest neutral standing pose. A real young hospital worker, not a glossy idol, not an engineer in a branded polo.\nStyle/medium: chunky raster pixel art for a 1990s Chinese visual novel. Coarse square blocks equivalent to128x192 enlarged to1024x1536, warm tan skin, brown-black stepped silhouette edges, limited muted shades and block-cluster clothing highlights. No smooth anime shading, vector strokes, blur, gradients or photographic texture. Match observed older physician and braided nurse reference cast's chunky outlines and adult body scale, while drawing a completely different young man.\nComposition/framing: exactly one full body centered on1024x1536 portrait canvas, both feet entirely visible, transparent padding, character occupies82% height and40% width, gentle near-frontal three-quarter stance.\nConstraints: this character must look different from existing manufacturer engineer Kai: use crew-cut hair, work shirt and unbranded lab coat, a thinner youthful face and quiet notebook-holding pose. No text, logo, watermark, frame, extra people, stethoscope or tools. Preserve transparent alpha.",
+      "mode": "built-in image_gen",
+      "sourceReferences": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/char_zhou.6654ff12eb3e23ca.webp",
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/char_tang.d53f4bc08dedd1cd.webp"
+      ],
+      "referenceUse": "Existing char_zhou and char_tang inspected with view_image; palette, coarse block size, outline weight and adult proportions described in generation prompt.",
+      "originalCopy": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\char_new_trainee.source.png",
+      "output": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\char_new_trainee.webp",
+      "sourceBytes": 1137084,
+      "outputBytes": 28968,
+      "sourceSize": [
+        1024,
+        1536
+      ],
+      "outputSize": [
+        512,
+        768
+      ],
+      "sourceSha256": "03bd954194918c4a33aa74f27192714bf4d0678b3227214341a9ff761463178c",
+      "outputSha256": "94fd959ef79053ab2eb913b67ade8e297c740ff7d60f8fa45f4cea832aef08f2",
+      "alpha": {
+        "sourceHasAlpha": true,
+        "outputHasAlpha": true,
+        "transparentPixels": 1103809,
+        "subjectPixels": 469055,
+        "max": 254,
+        "corners": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "outputAlphaExactlyMatchesNearestResize": true
+      },
+      "encoder": {
+        "quality": 78,
+        "alphaQuality": 100,
+        "effort": 6,
+        "resizeKernel": "nearest"
+      }
+    },
+    {
+      "id": "pat_qian",
+      "source": "C:\\Users\\lvmen\\.codex\\generated_images\\01a12193-6345-72d2-8c27-7b74d11798b3\\exec-419d1c2f-cbc8-40f7-b80a-ec3d642b3853.png",
+      "prompt": "Use case: stylized-concept.\nAsset type: independent transparent full-body pixel game patient sprite.\nPrimary request: Old Qian, a Chinese man age61 in2028, a lung-cancer postoperative follow-up patient who is currently able to walk and stand independently.\nScene/backdrop: genuinely transparent alpha only, no ground, shadow, checkerboard, glow or room.\nSubject: ordinary older rural man, medium sturdy build, slightly rounded face, broad gentle nose, short salt-and-pepper hair brushed back, forehead creases and small crow's feet, clean-shaven, attentive warm expression. Worn khaki zip-front jacket over muted beige checked shirt, dark brown practical trousers and plain brown shoes. Stands independently in a calm upright pose, holds a modest brown paper document envelope against his side, other hand resting loosely. Looks about61, neither young nor ancient, not skeletal, terminally ill, bedridden or distressed. No oxygen cannula or hospital gown.\nStyle/medium: coarse raster pixel art for a1990s Chinese hospital visual novel. Warm ochre skin, dark brown stepped outlines, chunky rectangular highlights and shadow clusters, muted khaki-brown palette. Draw on equivalent128x192 pixel grid enlarged with nearest-neighbour to1024x1536; clearly visible large square blocks, no smooth brush texture, vector lines, photographic face or soft gradients. Match observed existing hospital cast's adult proportions and granular shadows.\nComposition/framing: one full-body man centered in1024x1536 portrait canvas; all hair and both shoes fully visible, comfortable transparent margins; character occupies82% height andabout42% width, modest near-frontal three-quarter stance.\nConstraints: must be clearly a different character from the bald moustached physician Zhou and from a homeless frail man. No extra people, text, logos, UI, watermark, background or frame. Preserve genuine transparency.",
+      "mode": "built-in image_gen",
+      "sourceReferences": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/char_zhou.6654ff12eb3e23ca.webp",
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/char_tang.d53f4bc08dedd1cd.webp"
+      ],
+      "referenceUse": "Existing char_zhou and char_tang inspected with view_image; palette, coarse block size, outline weight and adult proportions described in generation prompt.",
+      "originalCopy": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\pat_qian.source.png",
+      "output": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\pat_qian.webp",
+      "sourceBytes": 1440254,
+      "outputBytes": 29896,
+      "sourceSize": [
+        1024,
+        1536
+      ],
+      "outputSize": [
+        512,
+        768
+      ],
+      "sourceSha256": "c46286b8e77e3a15d101366cc434e724b61418e3faac693cf726b3ca61afc799",
+      "outputSha256": "ad69ce173ff0ff98056e1e3770a521b5c5eb4ba7fd18b2b6c6159f22ff981752",
+      "alpha": {
+        "sourceHasAlpha": true,
+        "outputHasAlpha": true,
+        "transparentPixels": 1037741,
+        "subjectPixels": 535123,
+        "max": 254,
+        "corners": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "outputAlphaExactlyMatchesNearestResize": true
+      },
+      "encoder": {
+        "quality": 78,
+        "alphaQuality": 100,
+        "effort": 6,
+        "resizeKernel": "nearest"
+      }
+    },
+    {
+      "id": "pat_wang_recovery",
+      "source": "C:\\Users\\lvmen\\.codex\\generated_images\\01a12193-6345-72d2-8c27-7b74d11798b3\\exec-841051b2-303a-42a1-95e7-d3d2f4c9284d.png",
+      "prompt": "Use case: stylized-concept.\nAsset type: independent transparent full-body patient sprite for a Chinese hospital visual novel.\nPrimary request: Uncle Wang, a Chinese man age53 in2026, recovered after the previous year's coronary intervention; currently independently mobile and energetic in ordinary daily life.\nScene/backdrop: genuinely transparent alpha, absolutely no floor, scenery, cast shadow, halo or painted checkerboard.\nSubject: medium solid build with broad shoulders, rectangular sun-tanned face, strong jaw, flatter straight nose, thick eyebrows, dark short hair with mildly receding temples and just a few grey hairs. Clean-shaven, relaxed bright expression with a slight open conversational smile. Worn dark-navy blue long-sleeved cotton shirt, sleeves simply cuffed at wrists, charcoal work trousers and black practical shoes. One hand lightly holding a folded small white appointment slip near waist, other hand relaxed. Neutral upright independent standing, normal balanced feet, no crutches, wheelchair, hospital gown, oxygen, bandage or hand pressed to chest.\nStyle/medium: coarse low-resolution raster pixel art matching the observed older physician and braided nurse cast: warm ochre skin, broken dark brown pixel outline, blocky stepped clothing folds, limited muted palette. Pixel grid equivalent about128x192 enlarged with nearest-neighbour to1024x1536, visible 8-pixel square clusters; no smooth brush rendering, vector strokes, gradients, photorealism or glossy anime.\nComposition/framing: exactly one man, centered full body with both shoes visible on a1024x1536 portrait transparent canvas;82% canvas height andabout42% width, ordinary near-front three-quarter stance.\nConstraints: distinct from Old Qian's rounded silver-haired61-year-old face and khaki jacket. Wang is younger, square-faced, dark-haired and wears a navy shirt, with an upbeat recovered presence. No extra people, text, logo, watermark, border or background. Preserve alpha.",
+      "mode": "built-in image_gen",
+      "sourceReferences": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/char_zhou.6654ff12eb3e23ca.webp",
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/char_tang.d53f4bc08dedd1cd.webp"
+      ],
+      "referenceUse": "Existing char_zhou and char_tang inspected with view_image; palette, coarse block size, outline weight and adult proportions described in generation prompt.",
+      "originalCopy": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\pat_wang_recovery.source.png",
+      "output": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-assets-20261010\\pat_wang_recovery.webp",
+      "sourceBytes": 1151502,
+      "outputBytes": 25976,
+      "sourceSize": [
+        1024,
+        1536
+      ],
+      "outputSize": [
+        512,
+        768
+      ],
+      "sourceSha256": "a77d1a78fef7bfa019988e6991e4ed4962c3bf321acd209742ce580d7340eb80",
+      "outputSha256": "79373a8e9bf9b05fd05d2da8ae7e3fd3e8a501356a405d8d62c6ff456d204f7f",
+      "alpha": {
+        "sourceHasAlpha": true,
+        "outputHasAlpha": true,
+        "transparentPixels": 1080798,
+        "subjectPixels": 492066,
+        "max": 254,
+        "corners": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "outputAlphaExactlyMatchesNearestResize": true
+      },
+      "encoder": {
+        "quality": 78,
+        "alphaQuality": 100,
+        "effort": 6,
+        "resizeKernel": "nearest"
+      }
+    }
+  ]
+}
