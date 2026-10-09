@@ -25,6 +25,8 @@ import { LDCT_STEPS, LDCT_MEDIA_IDS } from '../src/game/ldct.ts'
 import { LDCT_LAB_MEDIA_IDS } from '../src/game/ldct-experiments.ts'
 import { LDCT_PRESENTATION_AUDIO, LDCT_PRESENTATION_IMAGES } from '../src/game/ldct-presentation.ts'
 import { LDCT_SCAN_IMAGE_IDS, LDCT_SCAN_AUDIO } from '../src/game/ldct-scans.ts'
+import { TRILOGY } from '../src/game/trilogy-registry.ts'
+import { TRILOGY_DOCUMENTS } from '../src/game/trilogy-documents.ts'
 
 export const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 export const manifestPath = path.join(appRoot, 'src/lib/media-manifest.generated.json')
@@ -70,7 +72,7 @@ async function voiceAliases() {
 export async function buildChapterManifest() {
   const catalog = JSON.parse(await read('src/lib/image-assets.catalog.json'))
   const aliases = await voiceAliases()
-  const groups = Object.fromEntries(['shell', 'ch1', 'ch2', 'dr', 'dsa', 'ldct'].map(id => [id, new Set()]))
+  const groups = Object.fromEntries(['shell', 'ch1', 'ch2', 'ch3', 'ch4', 'ch5', 'dr', 'dsa', 'ldct'].map(id => [id, new Set()]))
   const candidates = new Map()
   const imagePath = id => {
     assert(catalog[id], `Unknown image ID in preload data: ${id}`)
@@ -83,6 +85,7 @@ export async function buildChapterManifest() {
   }
   const addImage = (group, id, translate = true) => {
     if (!id || id === 'none') return
+    if (TRILOGY_DOCUMENTS[id] && ['ch3', 'ch4', 'ch5'].includes(group)) return
     if (group === 'ldct' && id === '@luzhou') {
       for (const gender of ['m', 'f']) addImage(group, `ch2_pixel_char_luzhou_${gender}`, false)
       return
@@ -182,6 +185,22 @@ export async function buildChapterManifest() {
   for (const image of LDCT_SCAN_IMAGE_IDS) addImage('ldct', image, false)
   addSound('ldct', LDCT_SCAN_AUDIO)
   for (const audio of Object.values(LDCT_PRESENTATION_AUDIO)) addPath('ldct', audio, 'audio')
+
+  // Ordinary new chapters reuse the same admission service, but never expand
+  // the already-published chapter groups. Dynamic illustrations are explicit.
+  for (const [group, chapter] of Object.entries(TRILOGY)) {
+    collect(group, chapter.steps)
+    collect(group, chapter.cards)
+    collect(group, chapter.characters)
+    collect(group, SHOP_ITEMS)
+    for (const image of [chapter.background, ...chapter.shifts.map(shift => shift.background), ...chapter.assets, 'stamp']) addImage(group, image, false)
+    for (const step of Object.values(chapter.steps)) {
+      for (const image of Object.values(step.tool?.images ?? {})) addImage(group, image, false)
+      if (step.tool?.reference) addImage(group, step.tool.reference, false)
+    }
+    for (const sound of ['click', 'badge', 'stamp']) addSound(group, sound)
+    for (const audio of Object.values(CH2_COMMUNICATION_AUDIO)) addPath(group, audio, 'audio')
+  }
 
   // All legacy canonical artwork can be requested through save-derived extras.
   // This is an index only, NOT a preload group and NOT a public-directory scan.

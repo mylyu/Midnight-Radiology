@@ -141,6 +141,21 @@
       "bytes": 91444,
       "type": "image"
     },
+    "assets/media/bg_mri_control.a7a487b3b338c023.webp": {
+      "sha256": "a7a487b3b338c0236c85158351c1120694efd7aca73738b5d0881478e8508a9e",
+      "bytes": 94116,
+      "type": "image"
+    },
+    "assets/media/bg_mri_corridor.970ab447960babb7.webp": {
+      "sha256": "970ab447960babb7018e4d32375355f9bc8d985694989961873a701ba65b832a",
+      "bytes": 98000,
+      "type": "image"
+    },
+    "assets/media/bg_mri_room.6d8ea59ca90dc81c.webp": {
+      "sha256": "6d8ea59ca90dc81c3fbd782e44a3f1bb1aa62612b0e71348c4d512dbafd56c22",
+      "bytes": 87884,
+      "type": "image"
+    },
     "assets/media/bg_office_day.c715845d3a833f50.webp": {
       "sha256": "c715845d3a833f50b1a67d4b2048c1d9a80005ce048ab0bbbe549bf57bc4162f",
       "bytes": 291402,
@@ -151,9 +166,49 @@
       "bytes": 84710,
       "type": "image"
     },
+    "assets/media/bg_pet_center.2ed19ed53beaa014.webp": {
+      "sha256": "2ed19ed53beaa014e7aecaff994b8bad6d8b9babe9300d434dd111bbf9266633",
+      "bytes": 120190,
+      "type": "image"
+    },
+    "assets/media/bg_pet_control.732f8ba8d4ef4a40.webp": {
+      "sha256": "732f8ba8d4ef4a40f483217c18915cbee16b0a5e74312cde79738cc82f14ebad",
+      "bytes": 102186,
+      "type": "image"
+    },
+    "assets/media/bg_pet_dorm.141b67012c64c34f.webp": {
+      "sha256": "141b67012c64c34f1b91aa74fb3c0ea85470447f7bb34cc2030ea8730183626f",
+      "bytes": 59394,
+      "type": "image"
+    },
+    "assets/media/bg_pet_uptake.6946ca90801a68d5.webp": {
+      "sha256": "6946ca90801a68d5c9d03b2da4a2c2fa4eb1e338dff0d9b288fa705393d56862",
+      "bytes": 72574,
+      "type": "image"
+    },
+    "assets/media/bg_retirement.bf4d89cfcd97b054.webp": {
+      "sha256": "bf4d89cfcd97b0549d098b3ec2b5bd3b296268a3c51d838da08848dfc25889be",
+      "bytes": 118150,
+      "type": "image"
+    },
     "assets/media/bg_title.6b9bcff0508f32af.webp": {
       "sha256": "6b9bcff0508f32af8eadd379075557f313203748734f064185ce5e179d8d6f66",
       "bytes": 101000,
+      "type": "image"
+    },
+    "assets/media/bg_us_bedside.65b0e5346b0444f3.webp": {
+      "sha256": "65b0e5346b0444f371efeca339e9b421e013acec8d07b074bab767796ef72c69",
+      "bytes": 101000,
+      "type": "image"
+    },
+    "assets/media/bg_us_room_day.33d4b0ae483eea87.webp": {
+      "sha256": "33d4b0ae483eea8749fdcd642c0bf450790f059e0774eaa6b35c70fbae9ffa6c",
+      "bytes": 110824,
+      "type": "image"
+    },
+    "assets/media/bg_us_room.59a9ab618e29e031.webp": {
+      "sha256": "59a9ab618e29e031f7dd59eed1fe492ac32a056798bcd8a08729f1691167345d",
+      "bytes": 91744,
       "type": "image"
     },
     "assets/media/bg_waiting.e9b68c8f6d71b8e7.webp": {
@@ -506,6 +561,11 @@
       "bytes": 44202,
       "type": "image"
     },
+    "assets/media/char_han.16470d2a0c45282b.webp": {
+      "sha256": "16470d2a0c45282b2204407b5599d7de05013f5aae8746f36336d70ed41c0a52",
+      "bytes": 27916,
+      "type": "image"
+    },
     "assets/media/char_he.49cf19abecad1659.webp": {
       "sha256": "49cf19abecad16591bc97a75baa1906cdfe7c0d357f4157104d890d467520739",
       "bytes": 43802,
@@ -544,6 +604,31 @@
     "assets/media/char_m.7fd8c4d18c105c36.webp": {
       "sha256": "7fd8c4d18c105c3610f78a6396cb1aa5b791ae4614a4fdd1db59898b952b2b20",
       "bytes": 42222,
+      "type": "image"
+    },
+    "assets/media/char_mei.c765a0bad23431c7.webp": {
+      "sha256": "c765a0bad23431c72bfdf3bced3223d5b771f8c723c01a0b234957f38dc4710d",
+      "bytes": 37504,
+      "type": "image"
+    },
+    "assets/media/char_mri_colleague.f2761d4951dbebf1.webp": {
+      "sha256": "f2761d4951dbebf15eb2245a91417b6cfdfbec8f5f13fefd0f4b024e8f9ae359",
+      "bytes": 35240,
+      "type": "image"
+    },
+    "assets/media/char_new_trainee.94fd959ef79053ab.webp": {
+      "sha256": "94fd959ef79053ab2eb913b67ade8e297c740ff7d60f8fa45f4cea832aef08f2",
+      "bytes": 28968,
+      "type": "image"
+    },
+    "assets/media/char_pet_doctor.72df589fddb56b2c.webp": {
+      "sha256": "72df589fddb56b2c3539c4a639c8835fc1e206d303da457490658c1aa46023ae",
+      "bytes": 28050,
+      "type": "image"
+    },
+    "assets/media/char_pet_nurse.99eb598c4397fbbb.webp": {
+      "sha256": "99eb598c4397fbbbcbfa8a7772d0084e8826e0da75cd3b106be53d23ef038ea7",
+      "bytes": 27300,
       "type": "image"
     },
     "assets/media/char_qian.6e7137c942f3e1b5.webp": {
@@ -1041,6 +1126,36 @@
       "bytes": 46206,
       "type": "image"
     },
+    "assets/media/mri_brain_flair.06d3c6bc803ab660.webp": {
+      "sha256": "06d3c6bc803ab660cac8b825e734d6c120e104dc164e2047d5c41600c9425d6f",
+      "bytes": 22718,
+      "type": "image"
+    },
+    "assets/media/mri_brain_t1.8688a9efd3c103bf.webp": {
+      "sha256": "8688a9efd3c103bfc2cee065c3259ecf06095dcc183459f8f885317561aa787d",
+      "bytes": 21914,
+      "type": "image"
+    },
+    "assets/media/mri_brain_t2.0be7f5696bb51fb4.webp": {
+      "sha256": "0be7f5696bb51fb446f30ae742fa4031076edd3d1e25777270d16b2c8d0dd30c",
+      "bytes": 26080,
+      "type": "image"
+    },
+    "assets/media/mri_neck.9085b544919133ee.webp": {
+      "sha256": "9085b544919133ee921eff4748901c7a36acd466ad098529bc11a001023c60d5",
+      "bytes": 23164,
+      "type": "image"
+    },
+    "assets/media/mri_wrist_t2.c58beb0bb6b2f2a9.webp": {
+      "sha256": "c58beb0bb6b2f2a9e4218ca2e5052d5afa830d2b4e203ce72ab3d872c2470367",
+      "bytes": 34186,
+      "type": "image"
+    },
+    "assets/media/mri_wrist.c62c95836814b042.webp": {
+      "sha256": "c62c95836814b042820139acf3a0b463dc6eb109e26597934d2ab44e92b3a52b",
+      "bytes": 32000,
+      "type": "image"
+    },
     "assets/media/pat_aunt.dd68f06e263bc0e6.webp": {
       "sha256": "dd68f06e263bc0e62287e71a63ab7521b245fb95e80be1de8a9cf0c425394c58",
       "bytes": 29388,
@@ -1049,6 +1164,11 @@
     "assets/media/pat_child.e64c8c6e0972db69.webp": {
       "sha256": "e64c8c6e0972db69409cc2f3a760ba79fccba87e669372abe052758a5072ff51",
       "bytes": 125594,
+      "type": "image"
+    },
+    "assets/media/pat_cousin.5ffdd237fc117e80.webp": {
+      "sha256": "5ffdd237fc117e808230b5d69494689a820174e0f5e06ac17da4246776e77ec2",
+      "bytes": 36154,
       "type": "image"
     },
     "assets/media/pat_dad.42569e3313cf9f34.webp": {
@@ -1096,6 +1216,11 @@
       "bytes": 35180,
       "type": "image"
     },
+    "assets/media/pat_mri_anxious.e27e873b67b80e9c.webp": {
+      "sha256": "e27e873b67b80e9c73c43d8cf9dc47019ebef98358d627adee6a9cfefcc39a70",
+      "bytes": 30250,
+      "type": "image"
+    },
     "assets/media/pat_mystery.f083d78a5f6faebb.webp": {
       "sha256": "f083d78a5f6faebb858a4a1d1f8e39c24e97e7577fca0e97b4df109fdb4b8ad5",
       "bytes": 33672,
@@ -1104,6 +1229,11 @@
     "assets/media/pat_oldman.f5ad30038dfab9a1.webp": {
       "sha256": "f5ad30038dfab9a19650cfbf439602bbf032396aff7179849851db328dc19eed",
       "bytes": 55344,
+      "type": "image"
+    },
+    "assets/media/pat_qian.ad69ce173ff0ff98.webp": {
+      "sha256": "ad69ce173ff0ff98056e1e3770a521b5c5eb4ba7fd18b2b6c6159f22ff981752",
+      "bytes": 29896,
       "type": "image"
     },
     "assets/media/pat_regular.b469007c1b2c88a3.webp": {
@@ -1131,14 +1261,69 @@
       "bytes": 38230,
       "type": "image"
     },
+    "assets/media/pat_us_gallstone.3bd27feab19f815e.webp": {
+      "sha256": "3bd27feab19f815ea1bd7cb9a55fd786298ddfb6a7dd75c70fcdebe4b19340b8",
+      "bytes": 32662,
+      "type": "image"
+    },
+    "assets/media/pat_wang_recovery.79373a8e9bf9b05f.webp": {
+      "sha256": "79373a8e9bf9b05fd05d2da8ae7e3fd3e8a501356a405d8d62c6ff456d204f7f",
+      "bytes": 25976,
+      "type": "image"
+    },
     "assets/media/pat_worker.1da81447c18a8dae.webp": {
       "sha256": "1da81447c18a8dae15b44b34d4a781132083bfb9aa2fc2ede93952d089a146ea",
       "bytes": 126768,
       "type": "image"
     },
+    "assets/media/pet_fusion_ct.8005c151327778f3.webp": {
+      "sha256": "8005c151327778f31c028870d6745567037c293b63c753dbe10446f233a7bacb",
+      "bytes": 23108,
+      "type": "image"
+    },
+    "assets/media/pet_fusion.99040c94890df468.webp": {
+      "sha256": "99040c94890df4688542ea76ced243c8126b0e9ebd72952f53e41a75d79e2ab7",
+      "bytes": 9046,
+      "type": "image"
+    },
+    "assets/media/pet_lung.b423cec1be5231eb.webp": {
+      "sha256": "b423cec1be5231eb38d77aa11fc146184d2792db5e63877ca052e00953eb8e07",
+      "bytes": 22216,
+      "type": "image"
+    },
+    "assets/media/pet_neck.67f47c932e8cab1f.webp": {
+      "sha256": "67f47c932e8cab1f41c51172ed8bd1bc7e6e6d1823d9729b6ced9543c5bc9d34",
+      "bytes": 12772,
+      "type": "image"
+    },
     "assets/media/stamp.72cf222761ee91c0.webp": {
       "sha256": "72cf222761ee91c0875919d4383d102b41393765b6cefd3edd87fdf0c6b97114",
       "bytes": 106542,
+      "type": "image"
+    },
+    "assets/media/us_breast.6d5c0b7164110c12.webp": {
+      "sha256": "6d5c0b7164110c12778e108a3001e2c5a0efe564a56799fd6438975dd5686ae0",
+      "bytes": 47890,
+      "type": "image"
+    },
+    "assets/media/us_echo.5521dd2242e64df2.webp": {
+      "sha256": "5521dd2242e64df2c087d265fadd546ec162846aa1d83b25ca086565fbdaa4ad",
+      "bytes": 22614,
+      "type": "image"
+    },
+    "assets/media/us_fetal.283f976a6db0630c.webp": {
+      "sha256": "283f976a6db0630c6bd1d3ba858ab0bb58761de9cd41003660d2fe0d1b6745df",
+      "bytes": 40056,
+      "type": "image"
+    },
+    "assets/media/us_gallstone.16c94bc2f11b498a.webp": {
+      "sha256": "16c94bc2f11b498a0341e6d77dff66cab6fc8e45d389893ff4abf52dda0c144b",
+      "bytes": 32130,
+      "type": "image"
+    },
+    "assets/media/us_mirror.f4d29063b89ee908.webp": {
+      "sha256": "f4d29063b89ee908b8f04c28ecb2ca3703a45718171fc818690b53bf39a0a254",
+      "bytes": 25482,
       "type": "image"
     },
     "assets/media/xray_battery.d510d99476159b7d.webp": {
@@ -1680,6 +1865,134 @@
       "audio/vox_ch2_waiting.mp3",
       "audio/vox_guy.mp3",
       "audio/vox_kid.mp3"
+    ],
+    "ch3": [
+      "assets/media/bg_breakroom.6e71e372d1ef1b9d.webp",
+      "assets/media/bg_corridor.970560e65398bdf4.webp",
+      "assets/media/bg_day.bb8e2f2392fbc58a.webp",
+      "assets/media/bg_office.a9e1a85d95a882a3.webp",
+      "assets/media/bg_office_day.c715845d3a833f50.webp",
+      "assets/media/bg_us_bedside.65b0e5346b0444f3.webp",
+      "assets/media/bg_us_room.59a9ab618e29e031.webp",
+      "assets/media/bg_us_room_day.33d4b0ae483eea87.webp",
+      "assets/media/bg_waiting.e9b68c8f6d71b8e7.webp",
+      "assets/media/char_han.16470d2a0c45282b.webp",
+      "assets/media/char_he.49cf19abecad1659.webp",
+      "assets/media/char_lei.a046af659f74363b.webp",
+      "assets/media/char_mei.c765a0bad23431c7.webp",
+      "assets/media/char_tang.d53f4bc08dedd1cd.webp",
+      "assets/media/char_wen.afb4dcae9314954d.webp",
+      "assets/media/char_zhou.6654ff12eb3e23ca.webp",
+      "assets/media/item_book.9b32669caa358e79.webp",
+      "assets/media/item_coffee.4368d5294285e799.webp",
+      "assets/media/item_dosimeter.ff4a9ed3f7f6e3e3.webp",
+      "assets/media/item_key.ddbc01d45ea7ded3.webp",
+      "assets/media/item_lottery.995d593f793713b0.webp",
+      "assets/media/item_milktea.52cc8d6958e2f14b.webp",
+      "assets/media/item_notebook.d2d4179f08903ea1.webp",
+      "assets/media/item_snack.f16943baf3b6bdb3.webp",
+      "assets/media/item_toolbox.c7f80a4945342224.webp",
+      "assets/media/pat_aunt.dd68f06e263bc0e6.webp",
+      "assets/media/pat_cousin.5ffdd237fc117e80.webp",
+      "assets/media/pat_mystery.f083d78a5f6faebb.webp",
+      "assets/media/pat_us_gallstone.3bd27feab19f815e.webp",
+      "assets/media/pat_wang_recovery.79373a8e9bf9b05f.webp",
+      "assets/media/stamp.72cf222761ee91c0.webp",
+      "assets/media/us_breast.6d5c0b7164110c12.webp",
+      "assets/media/us_echo.5521dd2242e64df2.webp",
+      "assets/media/us_fetal.283f976a6db0630c.webp",
+      "assets/media/us_gallstone.16c94bc2f11b498a.webp",
+      "assets/media/us_mirror.f4d29063b89ee908.webp",
+      "audio/badge.mp3",
+      "audio/ch2_mobile_call_v1.mp3",
+      "audio/ch2_mobile_message_v1.mp3",
+      "audio/click.mp3",
+      "audio/ring.mp3",
+      "audio/stamp.mp3"
+    ],
+    "ch4": [
+      "assets/media/bg_breakroom.6e71e372d1ef1b9d.webp",
+      "assets/media/bg_mri_control.a7a487b3b338c023.webp",
+      "assets/media/bg_mri_corridor.970ab447960babb7.webp",
+      "assets/media/bg_mri_room.6d8ea59ca90dc81c.webp",
+      "assets/media/ch2_pat_luo_v1.485cd9f1d333d7eb.webp",
+      "assets/media/ch2_patient_wrist_student.dd19e6bcc5ef8cc6.webp",
+      "assets/media/char_director.2ef1885993e5b0e7.webp",
+      "assets/media/char_fan.ae19f9b4035d454f.webp",
+      "assets/media/char_han.16470d2a0c45282b.webp",
+      "assets/media/char_kai.6d316a4e32e7b024.webp",
+      "assets/media/char_lei.a046af659f74363b.webp",
+      "assets/media/char_mri_colleague.f2761d4951dbebf1.webp",
+      "assets/media/char_tang.d53f4bc08dedd1cd.webp",
+      "assets/media/char_zhou.6654ff12eb3e23ca.webp",
+      "assets/media/item_book.9b32669caa358e79.webp",
+      "assets/media/item_coffee.4368d5294285e799.webp",
+      "assets/media/item_dosimeter.ff4a9ed3f7f6e3e3.webp",
+      "assets/media/item_key.ddbc01d45ea7ded3.webp",
+      "assets/media/item_lottery.995d593f793713b0.webp",
+      "assets/media/item_milktea.52cc8d6958e2f14b.webp",
+      "assets/media/item_snack.f16943baf3b6bdb3.webp",
+      "assets/media/item_toolbox.c7f80a4945342224.webp",
+      "assets/media/mri_brain_flair.06d3c6bc803ab660.webp",
+      "assets/media/mri_brain_t1.8688a9efd3c103bf.webp",
+      "assets/media/mri_brain_t2.0be7f5696bb51fb4.webp",
+      "assets/media/mri_neck.9085b544919133ee.webp",
+      "assets/media/mri_wrist.c62c95836814b042.webp",
+      "assets/media/mri_wrist_t2.c58beb0bb6b2f2a9.webp",
+      "assets/media/pat_mri_anxious.e27e873b67b80e9c.webp",
+      "assets/media/pat_mystery.f083d78a5f6faebb.webp",
+      "assets/media/stamp.72cf222761ee91c0.webp",
+      "audio/badge.mp3",
+      "audio/ch2_mobile_call_v1.mp3",
+      "audio/ch2_mobile_message_v1.mp3",
+      "audio/click.mp3",
+      "audio/ring.mp3",
+      "audio/stamp.mp3"
+    ],
+    "ch5": [
+      "assets/media/bg_breakroom.6e71e372d1ef1b9d.webp",
+      "assets/media/bg_corridor.970560e65398bdf4.webp",
+      "assets/media/bg_ctcontrol_ready.10ebe6364699f572.webp",
+      "assets/media/bg_office.a9e1a85d95a882a3.webp",
+      "assets/media/bg_pet_center.2ed19ed53beaa014.webp",
+      "assets/media/bg_pet_control.732f8ba8d4ef4a40.webp",
+      "assets/media/bg_pet_dorm.141b67012c64c34f.webp",
+      "assets/media/bg_pet_uptake.6946ca90801a68d5.webp",
+      "assets/media/bg_retirement.bf4d89cfcd97b054.webp",
+      "assets/media/ch2_pixel_char_director.5c2ab917a089a1f0.webp",
+      "assets/media/ch2_pixel_char_f.c2f01748214fd607.webp",
+      "assets/media/ch2_pixel_char_fan.5b1c9642495266f5.webp",
+      "assets/media/ch2_pixel_char_lei.f3965b6cdad7e5d6.webp",
+      "assets/media/ch2_pixel_char_m.0b89e1474e72d33b.webp",
+      "assets/media/ch2_pixel_char_tang.9695c1149b50f501.webp",
+      "assets/media/ch2_pixel_char_zhou.d03c9a724f736984.webp",
+      "assets/media/ch2_pixel_pat_mystery.e194f860ec43cb60.webp",
+      "assets/media/char_han.16470d2a0c45282b.webp",
+      "assets/media/char_new_trainee.94fd959ef79053ab.webp",
+      "assets/media/char_pet_doctor.72df589fddb56b2c.webp",
+      "assets/media/char_pet_nurse.99eb598c4397fbbb.webp",
+      "assets/media/char_wen.afb4dcae9314954d.webp",
+      "assets/media/item_book.9b32669caa358e79.webp",
+      "assets/media/item_coffee.4368d5294285e799.webp",
+      "assets/media/item_dosimeter.ff4a9ed3f7f6e3e3.webp",
+      "assets/media/item_key.ddbc01d45ea7ded3.webp",
+      "assets/media/item_lottery.995d593f793713b0.webp",
+      "assets/media/item_milktea.52cc8d6958e2f14b.webp",
+      "assets/media/item_snack.f16943baf3b6bdb3.webp",
+      "assets/media/item_toolbox.c7f80a4945342224.webp",
+      "assets/media/pat_oldman.f5ad30038dfab9a1.webp",
+      "assets/media/pat_qian.ad69ce173ff0ff98.webp",
+      "assets/media/pet_fusion.99040c94890df468.webp",
+      "assets/media/pet_fusion_ct.8005c151327778f3.webp",
+      "assets/media/pet_lung.b423cec1be5231eb.webp",
+      "assets/media/pet_neck.67f47c932e8cab1f.webp",
+      "assets/media/stamp.72cf222761ee91c0.webp",
+      "audio/badge.mp3",
+      "audio/ch2_mobile_call_v1.mp3",
+      "audio/ch2_mobile_message_v1.mp3",
+      "audio/click.mp3",
+      "audio/ring.mp3",
+      "audio/stamp.mp3"
     ],
     "dr": [
       "assets/media/bg_control.f9b61cead622380c.webp",

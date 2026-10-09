@@ -13,10 +13,13 @@ export const budgetBytes = 17000000
 export function deliverySizeReport(files, manifest) {
   const groups = { images: 0, numericalPng: 0, audio: 0, codeAndOther: 0 }
   const originalPaths = new Set(Object.entries(manifest.chapters)
-    .filter(([chapter]) => chapter !== 'ldct').flatMap(([, paths]) => paths))
+    .filter(([chapter]) => !['ldct', 'ch3', 'ch4', 'ch5'].includes(chapter)).flatMap(([, paths]) => paths))
   const ldctExclusive = new Set((manifest.chapters.ldct ?? []).filter(file =>
     !originalPaths.has(file) && /^(?:assets\/media|audio)\/ldct[_-]/.test(file)))
   let ldctExclusiveBytes = 0
+  const trilogyExclusive = new Set(['ch3', 'ch4', 'ch5'].flatMap(chapter => manifest.chapters[chapter] ?? [])
+    .filter(file => !originalPaths.has(file) && !ldctExclusive.has(file)))
+  let trilogyExclusiveBytes = 0
   for (const [file, bytes] of files) {
     const category = /\.webp$/.test(file) ? 'images' : /\.png$/.test(file) ? 'numericalPng' : /\.(mp3|ogg|wav)$/.test(file) ? 'audio' : 'codeAndOther'
     groups[category] += bytes
@@ -24,18 +27,23 @@ export function deliverySizeReport(files, manifest) {
       assert.equal(bytes, manifest.assets[file]?.bytes, `LDCT artifact/manifest size mismatch: ${file}`)
       ldctExclusiveBytes += bytes
     }
+    if (trilogyExclusive.has(file)) {
+      assert.equal(bytes, manifest.assets[file]?.bytes, `New chapter artifact/manifest size mismatch: ${file}`)
+      trilogyExclusiveBytes += bytes
+    }
   }
   for (const file of ldctExclusive) assert(files.has(file), `Missing LDCT artifact: ${file}`)
+  for (const file of trilogyExclusive) assert(files.has(file), `Missing new chapter artifact: ${file}`)
   const totalBytes = Object.values(groups).reduce((a, b) => a + b, 0)
   const chapterBytes = Object.fromEntries(Object.entries(manifest.chapters).map(([chapter, paths]) => [chapter,
     [...new Set([...manifest.chapters.shell, ...paths])].reduce((sum, file) => sum + manifest.assets[file].bytes, 0)]))
   return { files: files.size, ...groups, totalBytes, decimalMB: +(totalBytes / 1e6).toFixed(3),
-    ldctExclusiveBytes, protectedBaseBytes: totalBytes - ldctExclusiveBytes, budgetBytes, chapterBytes }
+    ldctExclusiveBytes, trilogyExclusiveBytes, protectedBaseBytes: totalBytes - ldctExclusiveBytes - trilogyExclusiveBytes, budgetBytes, chapterBytes }
 }
 
 export function assertDeliveryBudget(report) {
   assert(report.protectedBaseBytes < budgetBytes,
-    'Original/shared Pages content exceeds its 17 MB budget. Only LDCT-exclusive registered media is exempt; do not refill old PNGs or degrade numerical CT data.')
+    'Original/shared Pages content exceeds its 17 MB budget. Only separately admitted LDCT and Chapters 3–5 registered media are exempt; do not refill old PNGs or degrade numerical CT data.')
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

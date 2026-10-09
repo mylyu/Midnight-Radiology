@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { NIGHTS, BADGES, CHARACTERS, SHOP_ITEMS, QUIZ, BOOK_PAGES } from './game/data'
 import { ch1ExplorationStep } from './game/ch1-exploration'
 import { DLCS, getDlc, DLC_BADGES, CARDS, EVENTS, EVIDENCE, DR_QUEUE, queueWaits } from './game/dlc'
@@ -52,8 +52,14 @@ import { DialogueStage, DialogueShade, DialogueHeader, DialoguePortrait, Dialogu
 import { FullscreenBtn } from './components/FullscreenButton'
 import { enterFullscreenLandscape } from './lib/fullscreen'
 import { DIALOGUE_CHARACTER_MS, DIALOGUE_CHOICE_BUFFER_MS, waitForDialogueChoices } from './game/dialogue-timing'
+import type { TrilogyId } from './game/trilogy-types'
+import { initializeTrilogy } from './game/trilogy-session'
+const TrilogyEntry = lazy(() => import('./components/TrilogyEntry'))
+const TrilogyVerifier = lazy(() => import('./components/TrilogyScreen').then(module => ({ default: module.TrilogyVerify })))
+const TrilogyCollections = lazy(() => import('./components/TrilogyCollections'))
+const loadTrilogyRuntime = () => Promise.all([import('./game/trilogy-registry'), import('./components/TrilogyEntry')])
 
-type Screen = 'title' | 'select' | 'checkin' | 'night' | 'day' | 'badges' | 'quiz' | 'epilogue' | 'chapterEnd' | 'verify' | 'dlcHall' | 'dlc' | 'ch2' | 'ldct'
+type Screen = 'title' | 'select' | 'checkin' | 'night' | 'day' | 'badges' | 'quiz' | 'epilogue' | 'chapterEnd' | 'verify' | 'dlcHall' | 'dlc' | 'ch2' | 'ldct' | 'trilogy'
 
 const IMG = imageAsset
 const LAST_NIGHT = NIGHTS.length
@@ -90,13 +96,28 @@ export default function App() {
   const expireNotice = useCallback((id: number) => setStatNotices(rows => rows.filter(row => row.id !== id)), [])
   const [checkinReward, setCheckinReward] = useState(0)
   const [dlcId, setDlcId] = useState<string | null>(null)
+  const [trilogyId, setTrilogyId] = useState<TrilogyId>('ch3')
+  const routeEpoch = useRef(0)
 
   // 隐藏入口（教师验证入口右侧的 ▪）：#/dlc 或 #/hall → 内容大厅；#/dlc/dr、#/dlc/dsa 直达对应 DLC；#/ch2 直达第二章
   useEffect(() => {
     const applyHash = () => {
+      const epoch = ++routeEpoch.current
       const h = window.location.hash
       const s = loadState()
       const extras = chapterSaveAssets(s)
+      const trilogyRoute = h.match(/^#\/(ch[345])$/)?.[1] as TrilogyId | undefined
+      if (trilogyRoute) {
+        if (!s) { requestEntry('shell', extras, () => { setState(s); setScreen('dlcHall'); setBooted(true) }, true); return }
+        void loadTrilogyRuntime().then(([{ getTrilogy }]) => {
+          if (epoch !== routeEpoch.current || window.location.hash !== h) return
+          requestEntry(trilogyRoute, extras, () => {
+          if (epoch !== routeEpoch.current || window.location.hash !== h) return
+          const next = initializeTrilogy(s, getTrilogy(trilogyRoute)); saveState(next); setState(next)
+          setTrilogyId(trilogyRoute); setScreen('trilogy'); setBooted(true)
+        })}).catch(() => { if (epoch === routeEpoch.current) requestEntry('shell', extras, () => { setState(s); setScreen('dlcHall'); setBooted(true) }, true) })
+        return
+      }
       if (h === '#/dlc/ldct') {
         if (s && ldctUnlocked()) requestEntry('ldct', extras, () => {
           const next = initializeLdct(s)
@@ -130,13 +151,13 @@ export default function App() {
       const path = (event as CustomEvent<{ path: string }>).detail?.path
       if (!path) return
       const saved = liveState.current ?? loadState()
-      const chapter = screen === 'ldct' ? 'ldct' : screen === 'ch2' ? 'ch2' : screen === 'dlc' && (dlcId === 'dr' || dlcId === 'dsa') ? dlcId
+      const chapter = screen === 'trilogy' ? trilogyId : screen === 'ldct' ? 'ldct' : screen === 'ch2' ? 'ch2' : screen === 'dlc' && (dlcId === 'dr' || dlcId === 'dsa') ? dlcId
         : ['checkin', 'night', 'day', 'quiz', 'epilogue', 'chapterEnd'].includes(screen) ? 'ch1' : 'shell'
       requestEntry(chapter, [...chapterSaveAssets(saved), path], () => { setState(saved); setScreen(screen); setBooted(true) })
     }
     window.addEventListener('midnight-radiology:asset-missing', recoverAsset)
     return () => window.removeEventListener('midnight-radiology:asset-missing', recoverAsset)
-  }, [screen, dlcId, requestEntry, setState])
+  }, [screen, dlcId, trilogyId, requestEntry, setState])
 
   const enterDlc = (id: string, s: GameState) => {
     if (id === 'ldct') {
@@ -168,6 +189,16 @@ export default function App() {
       setScreen('ch2')
     })
   }
+  const enterTrilogy = (id: TrilogyId, s: GameState) => {
+    const epoch = ++routeEpoch.current
+    void loadTrilogyRuntime().then(([{ getTrilogy }]) => {
+      if (epoch !== routeEpoch.current) return
+      requestEntry(id, chapterSaveAssets(s), () => {
+      if (epoch !== routeEpoch.current) return
+      const next = initializeTrilogy(s, getTrilogy(id)); saveState(next); setState(next)
+      setTrilogyId(id); window.history.replaceState(null, '', `#/${id}`); setScreen('trilogy')
+    })}).catch(() => { if (epoch === routeEpoch.current) window.alert('章节运行时未能载入，请检查网络后再试。进度没有改变。') })
+  }
 
   const update = (fn: (s: GameState) => GameState) => {
     // Execute the transaction exactly once against the latest committed save,
@@ -180,13 +211,13 @@ export default function App() {
     liveState.current = next
     saveState(next)
     renderState(next)
-    if (['night', 'day', 'quiz', 'epilogue', 'chapterEnd', 'ch2', 'ldct'].includes(screen)) {
-      const changes = statChanges(prev, next, screen === 'ch2')
+    if (['night', 'day', 'quiz', 'epilogue', 'chapterEnd', 'ch2', 'ldct', 'trilogy'].includes(screen)) {
+      const changes = statChanges(prev, next, screen === 'ch2' || screen === 'trilogy')
       const message = giftFeedback(prev, next)
       if (changes.length || message) {
         const now = Date.now()
         const progress = next.dlc?.ch2
-        const context = screen === 'ldct' ? `ldct:${next.dlc?.ldct?.ldct?.revision}` : screen === 'ch2' ? `ch2:${progress?.shift}:${progress?.phase}:${progress?.stepId}`
+        const context = screen === 'trilogy' ? `${trilogyId}:${next.dlc?.[trilogyId]?.chapter?.stepId}` : screen === 'ldct' ? `ldct:${next.dlc?.ldct?.ldct?.revision}` : screen === 'ch2' ? `ch2:${progress?.shift}:${progress?.phase}:${progress?.stepId}`
           : `ch1:${screen}:${next.night}:${next.stepId}`
         const notice = { id: ++nextNotice.current, createdAt: now, context, expiresAt: now + 2800,
           changes, message, reason: screen === 'ldct' ? (message ? '同事间的心意' : next.gold < prev.gold ? '小卖部购物' : '实验记录') : statChangeReason(prev, next) }
@@ -201,6 +232,7 @@ export default function App() {
   const knownBadges = useRef<Set<string> | null>(null)
   useEffect(() => {
     if (!state) return
+    if (screen === 'trilogy') { knownBadges.current = new Set(state.badges); return }
     if (knownBadges.current === null) { knownBadges.current = new Set(state.badges); return }
     const fresh = state.badges.filter(b => !knownBadges.current!.has(b))
     if (fresh.length === 0) return
@@ -208,7 +240,7 @@ export default function App() {
     setBadgePop(fresh)
     // A risk outcome plays its one failure cue at commit, without a celebration sound.
     if (!fresh.includes('good_intentions')) playSfx('badge')
-  }, [state])
+  }, [state, screen])
   // 弹窗自动消失：独立 effect 挂在弹窗内容本身上——state 每步都变，若计时器放在上面的 effect 里会被反复清理，导致弹窗永久挂住
   useEffect(() => {
     if (badgePop.length === 0 || statsVisible) return
@@ -222,13 +254,14 @@ export default function App() {
   useEffect(() => {
     if (!state) return
     const cards = state.cards ?? []
+    if (screen === 'trilogy') { knownCards.current = new Set(cards); return }
     if (knownCards.current === null) { knownCards.current = new Set(cards); return }
     const fresh = cards.filter(c => !knownCards.current!.has(c))
     if (fresh.length === 0) return
     fresh.forEach(c => knownCards.current!.add(c))
     const title = CARDS[fresh[fresh.length - 1]]?.title
     if (title) setCardToast(title)
-  }, [state])
+  }, [state, screen])
   useEffect(() => {
     if (!cardToast) return
     const t = setTimeout(() => setCardToast(null), 2600)
@@ -353,7 +386,7 @@ export default function App() {
       {screen === 'chapterEnd' && state && <ChapterEndScreen state={state} update={update} onBadges={() => setScreen('badges')} onRestart={() => { wipeSave(); setState(null); setScreen('title') }} onDlc={() => { window.location.hash = '#/dlc' }} onHome={() => setScreen('title')} />}
       {screen === 'verify' && <VerifyScreen onBack={() => setScreen('title')} />}
       {screen === 'dlcHall' && (
-        <DlcHallScreen onEnter={enterDlc} onEnterCh2={enterCh2} onBack={() => { window.location.hash = ''; setScreen('title') }} />
+        <DlcHallScreen onEnter={enterDlc} onEnterCh2={enterCh2} onEnterTrilogy={enterTrilogy} onBack={() => { window.location.hash = ''; setScreen('title') }} />
       )}
       {screen === 'ch2' && state && (
         <Ch2Screen
@@ -365,6 +398,10 @@ export default function App() {
       {screen === 'ldct' && state && <LdctScreen state={state} update={update}
         renderText={(text, shown) => <RichText text={text} shown={shown} />}
         onExit={() => { window.location.hash = '#/dlc'; setScreen('dlcHall') }} />}
+      {screen === 'trilogy' && state && <Suspense fallback={<div className="absolute inset-0 bg-slate-950 text-teal-200 grid place-items-center">章节准备中…</div>}>
+        <TrilogyEntry id={trilogyId} state={state} update={update} renderText={(text, shown) => <RichText text={text} shown={shown} />}
+          onExit={() => { window.location.hash = '#/dlc'; setScreen('dlcHall') }} />
+      </Suspense>}
       {screen === 'dlc' && state && dlcId && getDlc(dlcId) && (
         <ScriptScreen
           key={dlcId}
@@ -377,7 +414,7 @@ export default function App() {
 
       {/* 全局知识卡片 toast（第一章与 DLC 共用） */}
       <StatFeedback notices={statNotices} onExpire={expireNotice}
-        active={['night', 'day', 'quiz', 'epilogue', 'chapterEnd', 'ch2', 'ldct'].includes(screen)} />
+        active={['night', 'day', 'quiz', 'epilogue', 'chapterEnd', 'ch2', 'ldct', 'trilogy'].includes(screen)} />
       {cardToast && (
         <div className="fixed top-14 left-1/2 -translate-x-1/2 z-[100] bg-slate-900/95 border-2 border-amber-400/70 rounded-xl px-4 py-2 shadow-2xl text-sm text-amber-200 pointer-events-none">
           📖 知识卡片已收入夜班手册：{cardToast}
@@ -985,7 +1022,7 @@ function DayScreen({ state, update, onNextNight, onBadges }: { state: GameState;
             <p className="text-xs text-slate-400 mt-3 pt-3 border-t border-slate-700">🎒 背包：{state.items.map(id => { const it = SHOP_ITEMS.find(x => x.id === id); return it ? `${it.icon}${it.name}` : id }).join('、')}</p>
           )}
           <div className="mt-4 pt-4 border-t border-slate-700 space-y-2 text-slate-500 text-sm">
-            <p>🔒 二手超声 —— <span className="text-slate-400">第 3 章解锁</span></p>
+            <p>🔒 二手超声 —— <span className="text-slate-400">第 3 章「回声」 · 后续跟班故事，内容大厅可进入</span></p>
             <p>🔒 CT 扫描仪 —— <span className="text-amber-400/70">老的那台还趴在机房等处置，听说设备科在跟收旧设备的贩子谈价钱……（第 2 章）</span></p>
             <p>🔒 3.0T 磁共振 —— <span className="text-slate-400">想什么呢，那是传闻里的东西</span></p>
             <p>🔒 楼上 DR 机房 —— <span className="text-slate-400">主任的命根子，夜间上锁，白班专科技师权限（DLC 预定）</span></p>
@@ -1052,6 +1089,7 @@ function BadgeScreen({ state, onBack }: { state: GameState | null; onBack: () =>
         {owned.some(id => CH2_BADGES_LEGACY.includes(id)) && (
           <p className="text-amber-200/50 text-xs">历史收藏（旧版停颁，不计入分母）：{owned.filter(id => CH2_BADGES_LEGACY.includes(id)).map(id => CH2_BADGES[id]?.name).join('、')}</p>
         )}
+        {state && ['ch3', 'ch4', 'ch5'].some(id => state.dlc?.[id]?.chapter) && <Suspense fallback={<p>准备后续章节收藏…</p>}><TrilogyCollections state={state} mode="badges" /></Suspense>}
         <h3 className="text-amber-200/80 tracking-widest mt-4">📼 番外篇 · 已收集 {owned.filter(id => DLC_BADGES[id]).length}/{Object.keys(DLC_BADGES).length}</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl">
           {Object.entries(DLC_BADGES).map(([id, b]) => {
@@ -1295,6 +1333,7 @@ function ChapterEndScreen({ state, update, onBadges, onRestart, onDlc, onHome }:
 /* ================= 教师验证 ================= */
 function VerifyScreen({ onBack }: { onBack: () => void }) {
   const [chapter2, setChapter2] = useState(false)
+  const [trilogy, setTrilogy] = useState(false)
   const [name, setName] = useState('')
   const [sid, setSid] = useState('')
   const [gold, setGold] = useState('')
@@ -1310,6 +1349,7 @@ function VerifyScreen({ onBack }: { onBack: () => void }) {
   }
 
   if (chapter2) return <Ch2CertificateVerify onBack={() => setChapter2(false)} />
+  if (trilogy) return <div className="h-full overflow-y-auto bg-slate-950 p-4 text-slate-100"><Suspense fallback={<p>准备校验页…</p>}><TrilogyVerifier /></Suspense><button className="min-h-11 text-teal-200" onClick={() => setTrilogy(false)}>← 返回教师验证</button></div>
 
   return (
     <div className="relative w-full h-full overflow-y-auto">
@@ -1318,6 +1358,7 @@ function VerifyScreen({ onBack }: { onBack: () => void }) {
       <div className="relative z-10 min-h-full flex flex-col items-center justify-center px-4 py-10 gap-4">
         <h2 className="text-2xl text-amber-100 tracking-widest">通关凭证 · 教师验证</h2>
         <button onClick={() => setChapter2(true)} className="rounded-lg border border-teal-500/60 px-4 py-2 text-sm text-teal-200 hover:bg-teal-900/30">校验第二章凭证</button>
+        <button onClick={() => setTrilogy(true)} className="rounded-lg border border-teal-500/60 px-4 py-2 text-sm text-teal-200 hover:bg-teal-900/30">校验第三至五章凭证</button>
         <p className="text-slate-400 text-sm max-w-md text-center">输入学生凭证卡上的信息，校验是否为本游戏真实生成的通关记录</p>
         <div className="bg-slate-900/90 border border-slate-600 rounded-xl p-6 w-full max-w-md flex flex-col gap-2">
           {([['姓名', name, setName], ['学号', sid, setSid], ['金币数', gold, setGold], ['勋章数', badges, setBadges], ['夜班数（日志）', stamps, setStamps], ['通关码（YSK-XXXXX-XXXX）', code, setCode]] as const).map(([label, val, set]) => (
@@ -1392,6 +1433,7 @@ function ManualOverlay({ state, onClose }: { state: GameState; onClose: () => vo
                   </div>
                 )
               }))}
+          {tab === 'cards' && ['ch3', 'ch4', 'ch5'].some(id => state.dlc?.[id]?.chapter) && <Suspense fallback={<p>准备后续章节手册…</p>}><TrilogyCollections state={state} mode="manual" /></Suspense>}
           {tab === 'evidence' && (evList.length === 0
             ? <p className="text-slate-500 text-sm py-6 text-center">证物柜还空着。有些物件，要在故事里亲手拿到才会收进来。</p>
             : evList.map(([id, e]) => (
@@ -2576,7 +2618,7 @@ function Ch2Quiz({ state, update, onDone }: { state: GameState; update: (f: (s: 
 }
 
 /* ================= DLC 番外篇大厅（隐藏入口 #/dlc） ================= */
-function DlcHallScreen({ onEnter, onEnterCh2, onBack }: { onEnter: (id: string, s: GameState) => void; onEnterCh2: (s: GameState) => void; onBack: () => void }) {
+function DlcHallScreen({ onEnter, onEnterCh2, onEnterTrilogy, onBack }: { onEnter: (id: string, s: GameState) => void; onEnterCh2: (s: GameState) => void; onEnterTrilogy: (id: TrilogyId, s: GameState) => void; onBack: () => void }) {
   const [save, setSave] = useState<GameState | null>(() => loadState())
   const [manualOpen, setManualOpen] = useState(false)
   const [badgeOpen, setBadgeOpen] = useState(false)
@@ -2693,14 +2735,12 @@ function DlcHallScreen({ onEnter, onEnterCh2, onBack }: { onEnter: (id: string, 
                 </div>
               )
             })()}
-            {/* 后续正篇章节入口位：开发中的章节以锁定卡片形式占位，做好一个解锁一个 */}
-            <div className="bg-slate-900/60 border-2 border-dashed border-slate-800 rounded-2xl p-5 flex items-center gap-3 opacity-60">
-              <span className="text-4xl">🔒</span>
-              <div>
-                <p className="text-lg text-slate-400 font-bold">第三章 · ？？？</p>
-                <p className="text-xs text-slate-600">开发中——做好之后会出现在这里</p>
-              </div>
-            </div>
+            {([{ id: 'ch3', title: '第三章 · 回声', icon: '〰️', desc: '2026年 · 超声科两周跟班，旧患者、新回声，和一张找了多年的寻人启事。' },
+              { id: 'ch4', title: '第四章 · 共振', icon: '🧲', desc: '2027年 · 新MRI的第一批夜班。留针资料、序列差异，以及一份删不掉的旧任务。' },
+              { id: 'ch5', title: '第五章 · 微光', icon: '✨', desc: '2028年 · 省院PET/CT进修。药会衰减，已经流出的记录不会。' }] as const).map(chapter => <section key={chapter.id} className="bg-slate-900/90 border-2 border-teal-500/60 rounded-2xl p-5">
+                <div className="flex items-center gap-3"><span className="text-3xl">{chapter.icon}</span><h3 className="text-lg text-teal-100 font-bold">{chapter.title}</h3><span className="ml-auto text-xs text-slate-400">{save.dlc?.[chapter.id]?.chapter?.done ? '已完成' : save.dlc?.[chapter.id]?.chapter ? '进行中' : '本地新章'}</span></div>
+                <p className="text-sm text-slate-300 my-3">{chapter.desc}</p><button data-enter-trilogy={chapter.id} className="min-h-11 w-full rounded-lg bg-teal-400 text-slate-950 font-bold" onClick={() => onEnterTrilogy(chapter.id, save)}>{save.dlc?.[chapter.id]?.chapter ? '继续 / 回看 →' : '开始 →'}</button>
+              </section>)}
           </div>
         )}
 

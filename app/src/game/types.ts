@@ -1,4 +1,5 @@
 import type { LdctProgress, LdctStoryShelf } from './ldct-types'
+import type { TrilogyProgress } from './trilogy-types'
 
 export interface Effect {
   gold?: number
@@ -140,6 +141,8 @@ export interface GameState {
 }
 
 export interface DlcProgress {
+  /** Chapters 3–5 own their cursors, quizzes, gifts and receipts. */
+  chapter?: TrilogyProgress
   /** 低剂量 CT 开场独立状态；不得借用主章节游标、限购和凭证。 */
   ldct?: LdctProgress
   ldctStories?: LdctStoryShelf

@@ -1,7 +1,7 @@
 import manifestData from './media-manifest.generated.json'
 import imageCatalog from './image-assets.catalog.json'
 
-export type AssetChapter = 'shell' | 'ch1' | 'ch2' | 'dr' | 'dsa' | 'ldct'
+export type AssetChapter = 'shell' | 'ch1' | 'ch2' | 'ch3' | 'ch4' | 'ch5' | 'dr' | 'dsa' | 'ldct'
 export type ChapterId = AssetChapter
 export type MediaEntry = { sha256: string; bytes: number; type: 'image' | 'audio' }
 type Manifest = { version: number; assets: Record<string, MediaEntry>; chapters: Record<AssetChapter, string[]> }
@@ -15,7 +15,7 @@ export interface ChapterLoadProgress {
   failed: string[]
 }
 
-export const chapterMediaManifest = manifestData as Manifest
+export const chapterMediaManifest = manifestData as unknown as Manifest
 const images: Record<string, string> = imageCatalog
 const ready = new Map<string, { hash: string; url: string }>()
 const CACHE_NAME = 'midnight-radiology-media-v1'
