@@ -9,7 +9,7 @@ import { initializeTrilogy, restartTrilogy, enterTrilogyNode, trilogyProgress, t
   trilogyCheckin, trilogyAdvance, trilogyChoose, nextTrilogyShift, updateTrilogyTool,
   completeTrilogyTool, trilogyGive, trilogyReadBook, trilogyBuy, startTrilogyQuiz,
   answerTrilogyQuiz, nextTrilogyQuiz, finishTrilogyQuiz, issueTrilogyCertificate,
-  trilogyCredential } from '../src/game/trilogy-session.ts'
+  trilogyCredential, beginTrilogyScan, completeTrilogyScan } from '../src/game/trilogy-session.ts'
 
 const clone = value => JSON.parse(JSON.stringify(value))
 const output = resolve(process.env.TRILOGY_OUTPUT || '../../trilogy-review-20261010')
@@ -43,7 +43,7 @@ function walk(chapter, all) {
   const untouchedDlc = clone(s.dlc), route = { chapter, all }
   s = initializeTrilogy(s, chapter, `${chapter.id}-${all ? 'explore-history' : 'direct-neutral'}`)
   assert.deepEqual(trilogyProgress(s, chapter.id).snapshots['0'], stats(s))
-  const visited = [], settlements = [], gifts = [], tools = [], choices = [], checkins = new Set()
+  const visited = [], settlements = [], gifts = [], tools = [], scans = [], choices = [], checkins = new Set()
   let iterations = 0, quizBefore, expectedScore = 0
   while (iterations++ < 1000) {
     const p = trilogyProgress(s, chapter.id)
@@ -129,7 +129,19 @@ function walk(chapter, all) {
       gifts.push(`${p.shift}:${step.giftTo}`)
       continue
     }
-    if (step.tool) {
+    if (step.scan) {
+      // Pure persisted-clock simulation, not a browser/real-time acquisition.
+      equalState(trilogyAdvance(clone(s), chapter, id), s, 'Ordinary advance cannot bypass an unfinished scan')
+      const at = p.scans?.[id]?.startedAt ?? 1000000 + iterations * 4000
+      s = beginTrilogyScan(s, chapter, id, at)
+      const duration = step.scan.durationMs ?? 3000
+      equalState(completeTrilogyScan(clone(s), chapter, id, at + duration - 1), s, 'Scan cannot finish before its duration')
+      s = completeTrilogyScan(clone(s), chapter, id, at + duration)
+      assert.equal(trilogyProgress(s, chapter.id).stepId, step.next)
+      assert.equal(trilogyProgress(s, chapter.id).scans[id].completed, true)
+      equalState(completeTrilogyScan(clone(s), chapter, id, at + duration + 1), s, 'Stale scan callback cannot reward twice')
+      scans.push(id)
+    } else if (step.tool) {
       equalState(trilogyAdvance(clone(s), chapter, id), s, 'Ordinary advance cannot bypass the tool')
       const untouched = completeTrilogyTool(clone(s), chapter, id)
       assert.equal(trilogyProgress(untouched, chapter.id).tools[id].value, 25, 'Untouched completion stores displayed default, not invented 50')
@@ -191,7 +203,7 @@ function walk(chapter, all) {
   const prefix = chapter.id.replace('ch', 'c') + '_'
   for (const [key, value] of Object.entries(s.flags)) if (!key.startsWith(prefix)) assert.equal(restarted.flags[key], value)
   report.routes.push({ chapter: chapter.id, route: all ? 'all-exploration/history/first' : 'direct/no-history/alternate',
-    iterations, nodes: [...new Set(visited)].length, settlements, tools, gifts, choices, grade: p.quiz.grade, certificate })
+    iterations, nodes: [...new Set(visited)].length, settlements, tools, scans, gifts, choices, grade: p.quiz.grade, certificate })
   console.log(`PASS pure state ${chapter.id}: ${all ? 'full-history' : 'direct-neutral'}, ${visited.length} story visits, 5 settlements, full quiz/ending/certificate`)
 }
 

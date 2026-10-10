@@ -1,0 +1,47 @@
+[
+  {
+    "id": "vox_c3_gallstone_v2",
+    "sha256": "04cb8b07210285509f0de7ba90b2d36fea3086a14cd8db58b6867aaa598b842a",
+    "question": "只根据这段实际音频，逐字转写说出来的全部内容。是否有整句或部分短语重复，实际说了几遍？是否有额外英语或异常尾音？然后一句话描述声音是随口交谈还是朗诵、喊口号。听不清就说不确定，不要复述本问题。",
+    "answer": "这段音频说的是“这儿疼得厉害，这儿疼得厉害”。没有整句或部分短语重复，实际说了两遍。没有额外英语或异常尾音。声音是随口交谈。如果还有其他音频想分析，你可以随时告诉我哦。",
+    "method": "Local Qwen2.5-Omni-3B blind audio perception; no expected line passed.",
+    "human_listened": false,
+    "limitation": "Second fallible automated opinion; refusal, question repetition or uncertainty is not a content pass."
+  },
+  {
+    "id": "vox_trilogy_han_v2",
+    "sha256": "668e57ad9201ba85da00c8ec562484fcebf44c867a233b359c378c80f7cbbfec",
+    "question": "只根据这段实际音频，逐字转写说出来的全部内容。是否有整句或部分短语重复，实际说了几遍？是否有额外英语或异常尾音？然后一句话描述声音是随口交谈还是朗诵、喊口号。听不清就说不确定，不要复述本问题。",
+    "answer": "这段音频说的是“耽误您两分钟，您两分钟”。没有整句或部分短语重复，实际只说了两遍。没有额外英语或异常尾音。声音是随口交谈。如果还有其他音频想分析，你可以随时告诉我哦。",
+    "method": "Local Qwen2.5-Omni-3B blind audio perception; no expected line passed.",
+    "human_listened": false,
+    "limitation": "Second fallible automated opinion; refusal, question repetition or uncertainty is not a content pass."
+  },
+  {
+    "id": "vox_c3_wang_v2",
+    "sha256": "f47073b8ca1c390399f5a476948e886b4edd40543516d5c11bbc0033f0a522ea",
+    "question": "只根据这段实际音频，逐字转写说出来的全部内容。是否有整句或部分短语重复，实际说了几遍？是否有额外英语或异常尾音？然后一句话描述声音是随口交谈还是朗诵、喊口号。听不清就说不确定，不要复述本问题。",
+    "answer": "只根据这段音频转写的内容，实际说了两遍“这回不抢救啦”。没有整句或部分短语重复，也没有额外英语或异常尾音。声音是随口交谈。如果还有其他音频内容想分析，你可以随时告诉我哦。",
+    "method": "Local Qwen2.5-Omni-3B blind audio perception; no expected line passed.",
+    "human_listened": false,
+    "limitation": "Second fallible automated opinion; refusal, question repetition or uncertainty is not a content pass."
+  },
+  {
+    "id": "vox_c4_song_v2",
+    "sha256": "25c5618159b72ef4a5641d0ba78798ed5a5eacf5038a96433449072705964520",
+    "question": "只根据这段实际音频，逐字转写说出来的全部内容。是否有整句或部分短语重复，实际说了几遍？是否有额外英语或异常尾音？然后一句话描述声音是随口交谈还是朗诵、喊口号。听不清就说不确定，不要复述本问题。",
+    "answer": "我怕这个洞，我怕这个洞。没有整句或部分短语重复，实际说了两遍。没有额外英语或异常尾音。声音是随口交谈。如果还有其他问题，欢迎随时问我。",
+    "method": "Local Qwen2.5-Omni-3B blind audio perception; no expected line passed.",
+    "human_listened": false,
+    "limitation": "Second fallible automated opinion; refusal, question repetition or uncertainty is not a content pass."
+  },
+  {
+    "id": "vox_c3_wang_v2",
+    "sha256": "a444df526ac52239ae47412980790f4cb36c75c2cd9c272540d9171b88f39763",
+    "question": "只根据这段实际音频，逐字转写说出来的全部内容。是否有整句或部分短语重复，实际说了几遍？是否有额外英语或异常尾音？然后一句话描述声音是随口交谈还是朗诵、喊口号。听不清就说不确定，不要复述本问题。",
+    "answer": "这回不抢救了。没有整句或部分短语重复，实际只说了1遍。没有额外英语或异常尾音。声音是随口交谈。如果还有其他问题，欢迎随时问我哦。",
+    "method": "Local Qwen2.5-Omni-3B blind audio perception; no expected line passed.",
+    "human_listened": false,
+    "limitation": "Second fallible automated opinion; refusal, question repetition or uncertainty is not a content pass."
+  }
+]

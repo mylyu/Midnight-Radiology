@@ -1,0 +1,213 @@
+{
+  "task_date": "2026-10-10",
+  "baseline": "7fad7b7",
+  "branch": "codex/trilogy-experience-parity",
+  "generation_mode": "Built-in image_gen only; no CLI/API fallback",
+  "skill": "C:/Users/lvmen/.codex/skills/.system/imagegen/SKILL.md",
+  "prompting": "C:/Users/lvmen/.codex/skills/.system/imagegen/references/prompting.md",
+  "scope": "Ten remaining US/MRI experience assets only. MRI room daylight and Mei probe closeup belong to main agent and were not repeated.",
+  "delivery_directory": "C:/Users/lvmen/Documents/New project/trilogy-experience-assets-20261010",
+  "integration": "Main agent owns compression, catalog, preloading registration, browser review and deployment. This image subtask did not modify game data, import assets, build, run game tests or commit.",
+  "assets": [
+    {
+      "id": "bg_us_bedside_day_v2",
+      "intent": "daylight edit",
+      "source_png": "C:/Users/lvmen/.codex/generated_images/01a125eb-fcd4-7f13-9228-ab015cca9189/exec-7a2951a3-bf21-4020-8fbb-dfd2d884d5c1.png",
+      "final_png": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\bg_us_bedside_day_v2.png",
+      "bytes": 1922352,
+      "sha256": "e4d5598d218c80374783eb18970d3fda894e4446fcca88603f73c4816e098623",
+      "transparent_background": false,
+      "reference_ids": [
+        "bg_us_bedside"
+      ],
+      "reference_paths": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/bg_us_bedside.65b0e5346b0444f3.webp"
+      ],
+      "inputs_viewed_before_generation": true,
+      "prompt": "Use case: lighting-weather. Asset type: 16:9 pixel-art visual-novel hospital background. Image 1 is the edit target. Change ONLY the time-of-day lighting from night to a bright ordinary weekday afternoon. The window must show pale blue DAY sky and the SAME buildings and trees in daylight, without yellow night windows. Preserve the EXACT room geometry, framing, bed, sleeping patient identity and pose, blanket, ECG monitor, IV stand, curtains, ultrasound cart, chairs, desks, screens and every equipment position. Add diffuse neutral daylight from the existing window, giving gently brighter walls and floor while preserving the original muted hospital palette, coarse visible square pixel clusters and dark outline technique. Keep all existing equipment and medical screen content; do not add people or objects. No night blue outside, no smooth photographic rendering, no redesign, no text, no watermark.",
+      "visual_review": "Viewed generated output: same bed, patient, ultrasound cart and perspective; window and floor light clearly daytime."
+    },
+    {
+      "id": "bg_mri_control_day_v2",
+      "intent": "daylight edit",
+      "source_png": "C:/Users/lvmen/.codex/generated_images/01a125eb-fcd4-7f13-9228-ab015cca9189/exec-356756b2-d79e-4e73-befe-11ca4c5f4316.png",
+      "final_png": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\bg_mri_control_day_v2.png",
+      "bytes": 1797913,
+      "sha256": "19fb4fe00b7ba0cacd15f691be439a4167b6d42cc5d071796b6684487e3a76d8",
+      "transparent_background": false,
+      "reference_ids": [
+        "bg_mri_control"
+      ],
+      "reference_paths": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/bg_mri_control.a7a487b3b338c023.webp"
+      ],
+      "inputs_viewed_before_generation": true,
+      "prompt": "Use case: lighting-weather. Asset type: 16:9 pixel-art visual-novel MRI control-room background. Image 1 is the edit target. Change ONLY night lighting into bright normal daytime. Keep the EXACT camera perspective, control-room desk, two monitors, keyboard, chair, intercom, plants, documents, glass viewing-window geometry, MRI gantry and empty bed beyond it, cupboard, doors and equipment positions. Through the existing small room window in the far right background show the SAME buildings in DAYLIGHT with pale blue sky, no glowing night windows. Let neutral daylight and existing ceiling lighting illuminate the room more clearly; keep the muted teal hospital materials and original coarse square pixel clusters and dark outlines. Preserve monitor content and scanner dimensions; do not add people or new hardware. No dark blue night scene, no photorealistic smoothing, no text additions, no watermark.",
+      "visual_review": "Viewed generated output: same desk, dual screens, viewing window and MRI bed/gantry; daytime outside the existing room window."
+    },
+    {
+      "id": "bg_mri_corridor_day_v2",
+      "intent": "daylight edit",
+      "source_png": "C:/Users/lvmen/.codex/generated_images/01a125eb-fcd4-7f13-9228-ab015cca9189/exec-84784c2b-a4db-42e1-ac46-737198267a81.png",
+      "final_png": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\bg_mri_corridor_day_v2.png",
+      "bytes": 1941400,
+      "sha256": "af90b484de42080a69611e7701145469c7ec5600dea33870a3fa22e0590c8e10",
+      "transparent_background": false,
+      "reference_ids": [
+        "bg_mri_corridor"
+      ],
+      "reference_paths": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/bg_mri_corridor.970ab447960babb7.webp"
+      ],
+      "inputs_viewed_before_generation": true,
+      "prompt": "Use case: lighting-weather. Asset type: 16:9 pixel-art visual-novel MRI outside corridor background. Image 1 is the edit target. Change ONLY the time-of-day lighting to a bright normal weekday morning. Preserve the EXACT view, same doors, scan-room door panel, safety pictograms, glass window into control room, two blue waiting seats, lockers, folded towels, clock, reception counter, plants, wall papers and object placements. Through the existing right-side window show the SAME city buildings under a pale blue DAY sky, without yellow night windows. Brighten walls and tiled floor with soft neutral daylight from that window and normal ceiling lights; do not recolor the room into a new palette. Keep the original muted teal/cream hospital palette, coarse visible square pixel clusters and dark outlines. No extra people, no geometry or equipment redesign, no smooth photograph, no additional text or watermark.",
+      "visual_review": "Viewed generated output: door, pictograms, counter and lockers preserved; bright daylight replaces blue night outside."
+    },
+    {
+      "id": "cg_c3_shared_lunch_v2",
+      "intent": "identity-preserving story closeup",
+      "source_png": "C:/Users/lvmen/.codex/generated_images/01a125eb-fcd4-7f13-9228-ab015cca9189/exec-e9f66202-3eaa-4f64-b01f-9f12962d18c9.png",
+      "final_png": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\cg_c3_shared_lunch_v2.png",
+      "bytes": 2148710,
+      "sha256": "216743cf86cb4830929c6d57f1a5630b6c7da414daf2040b494837fd20afb4ba",
+      "transparent_background": false,
+      "reference_ids": [
+        "char_mei",
+        "char_he",
+        "ch2_bg_breakroom_day"
+      ],
+      "reference_paths": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/char_mei.c765a0bad23431c7.webp",
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/char_he.49cf19abecad1659.webp",
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/ch2_bg_breakroom_day.194c9d3ccafbe9ff.webp"
+      ],
+      "inputs_viewed_before_generation": true,
+      "prompt": "Use case: illustration-story. Asset type: 16:9 close-up pixel-art scene for a Chinese county-hospital visual novel. Image 1 is the EXACT identity reference for Mei: middle-aged woman, short wavy brown hair, plum ribbed top under a white doctor's coat. Image 2 is the EXACT identity reference for He: young woman with dark-blue ponytail, navy scrubs, white coat and stethoscope. Image 3 is the ordinary hospital STAFF BREAK ROOM and pixel style reference, not a bathroom. Show these two same colleagues casually eating a quick lunch at that ordinary wooden table in soft DAYLIGHT, plain takeaway rice boxes, a few vegetables, chopsticks, a spoon and a familiar thermos. Mei looks down to put her papers aside while He is casually asking for spare chopsticks; small natural smiles, relaxed tired coworkers. Viewpoint is from the unseen player's seat, with only a white sleeve and the edge of a third lunch box in foreground, no protagonist face or gendered features. Preserve faces, hair silhouettes, ages and clothes from references; draw everyone in the SAME coarse chunky square-pixel clusters, dark outlines and muted warm hospital palette as the game, not glossy anime or smooth painting. No clinical equipment on the dining table, no romantic gaze or posing, no extra people, no written text, no speech bubbles, no logos, no watermark.",
+      "visual_review": "Viewed generated output: Mei and He preserve referenced face/hair/clothes; ordinary takeout lunch and thermos, unseen protagonist represented only by sleeve/hand."
+    },
+    {
+      "id": "cg_c4_first_mri_v2",
+      "intent": "identity-preserving story closeup",
+      "source_png": "C:/Users/lvmen/.codex/generated_images/01a125eb-fcd4-7f13-9228-ab015cca9189/exec-0555a16e-4700-4e6b-abd0-2f0bedf704fc.png",
+      "final_png": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\cg_c4_first_mri_v2.png",
+      "bytes": 1948682,
+      "sha256": "1c20c9c97a6ba2af18f35d94b70cfc2e69b2e27b85793d72bbeb501b44c861bb",
+      "transparent_background": false,
+      "reference_ids": [
+        "char_mri_colleague",
+        "bg_mri_control_day_v2"
+      ],
+      "reference_paths": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/char_mri_colleague.f2761d4951dbebf1.webp",
+        "C:/Users/lvmen/.codex/generated_images/01a125eb-fcd4-7f13-9228-ab015cca9189/exec-356756b2-d79e-4e73-befe-11ca4c5f4316.png"
+      ],
+      "inputs_viewed_before_generation": true,
+      "prompt": "Use case: identity-preserve. Asset type: 16:9 close-up pixel-art scene for a Chinese county-hospital visual novel. Image 1 is the EXACT Xu Ning character identity anchor: young Chinese woman, warm oval face, dark-brown hair in a short low ponytail with bangs, light-blue scrubs, white coat. Image 2 is the SAME MRI control room in DAYLIGHT; use its desk, monitor arrangement, viewing glass and MRI gantry beyond as scene/style reference. Show the same Xu Ning beside the console desk, pointing out the connector and shaped opening of a real compact wrist receiving coil resting beside the keyboard during preparation. The coil is clearly a small wrist-sized clinical component with a curved pale shell, padding and one cable, not a giant head coil or a decorative bracelet. Her face and hands are visible and she speaks to the unseen player; only the player's white-sleeved forearm and clipboard corner may enter foreground, no protagonist head, face or gendered body. Through the viewing glass keep the recognizable MRI gantry and bed in the same relative perspective as the room reference. Monitors show preparation/interface blocks, not a patient result before acquisition. Clear ordinary daylight, practical coworker mood. Match the exact coarse square-pixel clusters, limited muted colors and dark outlines of the references. No extra characters, no beautiful fantasy redesign, no smooth anime/photo, no written text, labels, speech bubbles or watermark.",
+      "visual_review": "Viewed generated output: Xu Ning preserves referenced identity; wrist-sized coil and console preparation view. Empty bed in background means dialogue should describe preparation/demo before patient positioning; main agent was notified."
+    },
+    {
+      "id": "cg_c4_luo_records_v2",
+      "intent": "identity-preserving story closeup",
+      "source_png": "C:/Users/lvmen/.codex/generated_images/01a125eb-fcd4-7f13-9228-ab015cca9189/exec-15f51d71-c623-48be-8f56-6e466bb44081.png",
+      "final_png": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\cg_c4_luo_records_v2.png",
+      "bytes": 2133810,
+      "sha256": "ec8eedf17255a7d0e591892953efa7fca115228639253b93865d239549e59cc6",
+      "transparent_background": false,
+      "reference_ids": [
+        "ch2_pat_luo_v1",
+        "bg_mri_corridor_day_v2"
+      ],
+      "reference_paths": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/ch2_pat_luo_v1.485cd9f1d333d7eb.webp",
+        "C:/Users/lvmen/.codex/generated_images/01a125eb-fcd4-7f13-9228-ab015cca9189/exec-84784c2b-a4db-42e1-ac46-737198267a81.png"
+      ],
+      "inputs_viewed_before_generation": true,
+      "prompt": "Use case: identity-preserve. Asset type: 16:9 close-up pixel-art scene for a Chinese county-hospital visual novel. Image 1 is the EXACT Luo aunt identity anchor: elderly Chinese woman with short softly curled gray hair, kind worried lined face, brown cardigan over gray-green shirt. Image 2 is the MRI outside reception/corridor in bright DAYLIGHT and the environment/style reference. Show the SAME older Luo seated at the outside reception desk, carefully spreading her worn old medical papers and a compact beige-and-blue cloth CD pouch with a silver optical disc visible. She points to a page of the old retained-needle treatment record while staff review it across the desk; staff represented only by white-sleeved hands organizing the sheets and a clipboard, no protagonist face or invented new staff portrait. Her small practical cloth bag and the papers are the foreground focus, her gray-haired recognizable face remains clearly visible. Keep her identity, age, cardigan, hair silhouette and worried but cooperative expression. This is discussion OUTSIDE the MRI controlled room. Paper marks may be simple faint lines and blocks but no legible in-image words, names or numbers. Match the game's coarse square-pixel clusters, dark outlines, muted brown/teal/cream palette and everyday hospital proportions, not smooth photo or anime. No needles visible in her body, no blood, no wounds, no image of an operating procedure, no scary glow, no extra people, no speech bubbles, no watermark.",
+      "visual_review": "Viewed generated output: same older Luo, old papers and cloth disc pouch at outside reception desk; no wound, visible embedded needle or readable clinical conclusion."
+    },
+    {
+      "id": "item_c3_towel_v2",
+      "intent": "transparent inventory icon",
+      "source_png": "C:/Users/lvmen/.codex/generated_images/01a125eb-fcd4-7f13-9228-ab015cca9189/exec-2973b2c8-60ce-4ede-a174-e3ef474065cb.png",
+      "final_png": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\item_c3_towel_v2.png",
+      "bytes": 432630,
+      "sha256": "02c181b6adaa80b80000b2987e0262487d8310daf9585e47bf2b5595112e4500",
+      "transparent_background": true,
+      "reference_ids": [
+        "item_coffee"
+      ],
+      "reference_paths": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/item_coffee.4368d5294285e799.webp"
+      ],
+      "inputs_viewed_before_generation": true,
+      "prompt": "Use case: stylized-concept. Asset type: transparent-background pixel-art inventory/shop icon for an existing Chinese hospital visual novel. Image 1 is ONLY the game's pixel style and item-scale reference; do not reproduce its coffee, lettering or background. Create ONE small folded cream-colored cotton hand towel, three-quarter view, neatly folded soft rectangle with one visible tucked edge and a modest stitched border. Everyday inexpensive cloth for wiping a teaching tabletop, not packaged clinical supplies. Match the same coarse square-pixel clusters, dark charcoal outline, limited warm-muted palette and subtle blocky cloth shading as the reference. Centered complete object with generous transparent padding, clear at tiny inventory size. Genuine alpha transparency everywhere outside the towel; no tabletop, no background or backdrop, no floor shadow. No text, letters, logo, watermark, coffee, extra objects, photorealistic rendering or smooth gradients.",
+      "visual_review": "Viewed generated preview: folded cream cloth silhouette and chunky pixel shading. Source metadata confirms alpha preserved."
+    },
+    {
+      "id": "item_c3_stickers_v2",
+      "intent": "transparent inventory icon",
+      "source_png": "C:/Users/lvmen/.codex/generated_images/01a125eb-fcd4-7f13-9228-ab015cca9189/exec-67bb3d75-a072-4f75-a6d5-64d1ad0bc3cd.png",
+      "final_png": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\item_c3_stickers_v2.png",
+      "bytes": 824285,
+      "sha256": "8ce80d518f175292f27b21a232e2b3098ab38d1df8c1f07abc042bbebb2d48b4",
+      "transparent_background": true,
+      "reference_ids": [
+        "item_coffee"
+      ],
+      "reference_paths": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/item_coffee.4368d5294285e799.webp"
+      ],
+      "inputs_viewed_before_generation": true,
+      "prompt": "Use case: stylized-concept. Asset type: transparent-background pixel-art inventory/shop icon for an existing Chinese hospital visual novel. Image 1 is ONLY the game's pixel style and item-scale reference; do not reproduce coffee, lettering or background. Create ONE small cream sheet of playful cup-name stickers, slightly tilted three-quarter view, with six peel-off labels. Each label has a tiny cartoon fruit at one side (apple, orange, pear, peach, strawberry, grape) and an EMPTY light rectangle for a name; absolutely no printed words, letters or numbers. One corner can curl enough to show it is an actual sticker sheet. Match coarse square-pixel clusters, dark outlines, limited muted fruit colors and blocky highlights of the reference. Center the complete sheet with generous transparent padding and a readable silhouette at tiny shop size. Genuine alpha transparent outside the sheet, no tabletop, no backdrop, no floor shadow, no logo or watermark, no extra objects, no photographic or smooth vector rendering.",
+      "visual_review": "Viewed generated preview: six fruit labels with blank name spaces, coarse pixel outline. Source metadata confirms alpha preserved."
+    },
+    {
+      "id": "item_c4_sleepmask_v2",
+      "intent": "transparent inventory icon",
+      "source_png": "C:/Users/lvmen/.codex/generated_images/01a125eb-fcd4-7f13-9228-ab015cca9189/exec-99667c55-e636-471f-b38f-c67980bff62d.png",
+      "final_png": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\item_c4_sleepmask_v2.png",
+      "bytes": 589694,
+      "sha256": "0d9c1c4411a31f8ede8af25babd0f3d92b0b75fb65197e5c8811cdce4b30745c",
+      "transparent_background": true,
+      "reference_ids": [
+        "item_coffee"
+      ],
+      "reference_paths": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/item_coffee.4368d5294285e799.webp"
+      ],
+      "inputs_viewed_before_generation": true,
+      "prompt": "Use case: stylized-concept. Asset type: transparent-background pixel-art inventory/shop icon for an existing Chinese hospital visual novel. Image 1 is ONLY the game's pixel style and item-scale reference; do not reproduce coffee, lettering or background. Create ONE simple dark navy-blue padded sleep eye mask with rounded eye lobes, a gentle nose notch, subtle stitched edge and a short flexible blue fabric elastic strap curving behind it. Plain inexpensive soft cloth, no face and no person wearing it. Match coarse visible square-pixel clusters, charcoal outlines, a limited muted navy palette and small blocky highlights from the reference. Center the complete mask with generous transparent padding, legible at tiny inventory size. Genuine alpha transparency outside the mask and strap; no tabletop, no backdrop, no cast floor shadow, no stars, no printed text, logo, watermark, extra objects, photorealistic sheen or smooth gradients.",
+      "visual_review": "Viewed generated preview: dark padded eye mask and soft strap, no person. Source metadata confirms alpha preserved."
+    },
+    {
+      "id": "item_c4_postcard_v2",
+      "intent": "transparent inventory icon",
+      "source_png": "C:/Users/lvmen/.codex/generated_images/01a125eb-fcd4-7f13-9228-ab015cca9189/exec-61facdae-7b21-4bdd-8e6e-34f1cf59283a.png",
+      "final_png": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\item_c4_postcard_v2.png",
+      "bytes": 1105246,
+      "sha256": "ba3bee681194f9380224ed1a5c983afc95865dc3e4dd6d1bf7eca8eaf1abb819",
+      "transparent_background": true,
+      "reference_ids": [
+        "item_coffee"
+      ],
+      "reference_paths": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/item_coffee.4368d5294285e799.webp"
+      ],
+      "inputs_viewed_before_generation": true,
+      "prompt": "Use case: stylized-concept. Asset type: transparent-background pixel-art inventory/shop icon for an existing Chinese county-hospital visual novel. Image 1 is ONLY the existing game's pixel style and item-scale reference; do not reproduce its coffee, lettering or background. Create ONE small off-white paper welcome postcard, landscape rectangle slightly tilted in a modest three-quarter view. The upper half has a tiny simple illustration of an ordinary low-rise county hospital with blue windows, cream facade, a front doorway and two little trees. The lower half is blank off-white space for writing later. No words, numbers, printed labels or handwriting anywhere. It is a single real paper object, not a picture frame, envelope or scenic background. Match coarse square-pixel clusters, dark charcoal outlines, limited muted blue/cream/green colors and a tiny blocky edge highlight like the item reference. Center the complete card with generous transparent padding, clearly legible at small shop size. Genuine alpha transparency outside the card, no tabletop, no backdrop, no cast floor shadow, no logo or watermark, no extra objects, no photograph, no smooth gradients.",
+      "visual_review": "One bounded built-in edit requested cleanup of the edge halo. Final generated preview still has a slight edge haze; direct view_image of the transparent first candidate differed from generated preview. PNG metadata confirms transparent corner and an opaque visible central object. Final WebP display needs main-agent review; no claim of complete halo removal.",
+      "repair": {
+        "id": "item_c4_postcard_v2",
+        "refs": [
+          "item_c4_postcard_v2 first candidate"
+        ],
+        "paths": [
+          "C:/Users/lvmen/.codex/generated_images/01a125eb-fcd4-7f13-9228-ab015cca9189/exec-f2bc2810-a77f-43cf-875c-0e8b6eaacbc6.png"
+        ],
+        "prompt": "Use case: background-extraction. Image 1 is the existing hospital postcard icon to preserve. Make a clean fully visible cutout of EXACTLY this same cream paper postcard with the same pixel illustration of the county hospital, the same blank lower half, tilt, scale, coarse pixel edges and internal colors. Remove ONLY the diffuse gray glow/halo or shadow OUTSIDE the paper. Every pixel outside the crisp dark pixel outline must have alpha 0. Keep the actual postcard interior fully opaque and visible, with the same illustration and blank writing area. Preserve the stepped square-pixel silhouette without blur or smoothing. The result must be a genuine transparent PNG with a clear opaque postcard object, not an invisible/empty image, not a black background image. No new text, logos, ornaments, extra objects or watermark. Keep the entire object and transparent padding."
+      },
+      "first_candidate": "C:/Users/lvmen/.codex/generated_images/01a125eb-fcd4-7f13-9228-ab015cca9189/exec-f2bc2810-a77f-43cf-875c-0e8b6eaacbc6.png",
+      "repair_count": 1
+    }
+  ]
+}

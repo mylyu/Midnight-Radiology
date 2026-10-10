@@ -1,0 +1,122 @@
+[
+  {
+    "id": "bg_us_bedside_day_v2",
+    "source": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\bg_us_bedside_day_v2.png",
+    "role": "background"
+  },
+  {
+    "id": "bg_mri_control_day_v2",
+    "source": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\bg_mri_control_day_v2.png",
+    "role": "background"
+  },
+  {
+    "id": "bg_mri_corridor_day_v2",
+    "source": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\bg_mri_corridor_day_v2.png",
+    "role": "background"
+  },
+  {
+    "id": "cg_c3_shared_lunch_v2",
+    "source": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\cg_c3_shared_lunch_v2.png",
+    "role": "background"
+  },
+  {
+    "id": "cg_c4_first_mri_v2",
+    "source": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\cg_c4_first_mri_v2.png",
+    "role": "background"
+  },
+  {
+    "id": "cg_c4_luo_records_v2",
+    "source": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\cg_c4_luo_records_v2.png",
+    "role": "background"
+  },
+  {
+    "id": "item_c3_towel_v2",
+    "source": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\item_c3_towel_v2.png",
+    "role": "item"
+  },
+  {
+    "id": "item_c3_stickers_v2",
+    "source": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\item_c3_stickers_v2.png",
+    "role": "item"
+  },
+  {
+    "id": "item_c4_sleepmask_v2",
+    "source": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\item_c4_sleepmask_v2.png",
+    "role": "item"
+  },
+  {
+    "id": "item_c4_postcard_v2",
+    "source": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\item_c4_postcard_v2.png",
+    "role": "item"
+  },
+  {
+    "id": "bg_pet_center_day_v2",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-experience-assets-20261010/bg_pet_center_day_v2.png",
+    "role": "background"
+  },
+  {
+    "id": "cg_c5_zhou_handoff_v2",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-experience-assets-20261010/cg_c5_zhou_handoff_v2.png",
+    "role": "background"
+  },
+  {
+    "id": "bg_pet_control_day_v2",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-experience-assets-20261010/bg_pet_control_day_v2.png",
+    "role": "background"
+  },
+  {
+    "id": "bg_pet_uptake_day_v2",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-experience-assets-20261010/bg_pet_uptake_day_v2.png",
+    "role": "background"
+  },
+  {
+    "id": "cg_c5_record_confrontation_v2",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-experience-assets-20261010/cg_c5_record_confrontation_v2.png",
+    "role": "background"
+  },
+  {
+    "id": "cg_c5_father_letter_v2",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-experience-assets-20261010/cg_c5_father_letter_v2.png",
+    "role": "background"
+  },
+  {
+    "id": "trilogy_mri_scan_room_v2",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-experience-assets-20261010/trilogy_mri_scan_room_v2.png",
+    "role": "background"
+  },
+  {
+    "id": "trilogy_pet_scan_room_v2",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-experience-assets-20261010/trilogy_pet_scan_room_v2.png",
+    "role": "background"
+  },
+  {
+    "id": "item_c5_postcard_v2",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-experience-assets-20261010/item_c5_postcard_v2.png",
+    "role": "item"
+  },
+  {
+    "id": "item_c5_seedpot_v2",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-experience-assets-20261010/item_c5_seedpot_v2.png",
+    "role": "item"
+  },
+  {
+    "id": "bg_waiting_day_v2",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-experience-assets-20261010/bg_waiting_day_v2.png",
+    "role": "background"
+  },
+  {
+    "id": "bg_corridor_day_v2",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-experience-assets-20261010/bg_corridor_day_v2.png",
+    "role": "background"
+  },
+  {
+    "id": "bg_mri_room_day_v2",
+    "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-81252fcd-f3ba-4c22-b9ca-494ecdc2b67c.png",
+    "role": "background"
+  },
+  {
+    "id": "cg_c3_mei_probe_v2",
+    "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-371993aa-f074-443b-9bc0-fb74c68e5e31.png",
+    "role": "background"
+  }
+]

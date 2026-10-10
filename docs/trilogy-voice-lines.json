@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-10",
+  "scope": "New chapter 3–5 short entrances. Existing approved audio is never overwritten.",
+  "lines": [
+    {"id":"vox_c3_mei_v2","role":"梅姐","text":"来啦？这边。","age":43,"seconds":1.8,"seed":2026101001,"voice":"四十三岁女性，县医院超声科夜班医师，中音略厚，干脆利落，招呼刚到的同事进门。嘴快但声音亲切，普通话日常交谈，先问来啦，稍停后说这边。收尾平稳自然。","reference":null},
+    {"id":"vox_c4_xuning_v2","role":"许宁","text":"来，认个门。","age":30,"seconds":1.7,"seed":2026101002,"voice":"三十岁女性，医院磁共振技师，清晰明亮的中音，在走廊招呼同事熟悉房间，放松的普通话日常语气，语速正常，句尾轻轻落下。","reference":null},
+    {"id":"vox_c5_gu_v2","role":"顾老师","text":"到了？我是顾老师。","age":45,"seconds":2.5,"seed":2026101003,"voice":"四十五岁男性，省院核医学带教老师，温和沉稳的中低音，看见远道来的进修同事，先随口问到了，再自然介绍自己。普通话自然交谈，有短停顿，不端着。","reference":null},
+    {"id":"vox_c5_ning_v2","role":"宁宁","text":"我叫宁宁。","age":26,"seconds":1.5,"seed":2026101004,"voice":"二十六岁女性，省院护士，轻快清楚的中音，随口向新来的进修同事介绍自己的名字。普通话自然生活语气，句尾落下，语速正常。","reference":null},
+    {"id":"vox_trilogy_han_v2","role":"韩经理","text":"耽误您两分钟。","age":46,"seconds":2.2,"seed":2026101005,"voice":"四十六岁男性，医疗设备公司项目经理，偏中低音，礼貌克制，面对医院工作人员先开口打招呼，客气但不夸张。普通话自然办公室对话，重音轻，结尾平稳。","reference":null},
+    {"id":"vox_c3_cousin_v2","role":"表姐","text":"陪我等会儿。","age":30,"seconds":1.9,"seed":2026101006,"voice":"三十岁女性，孕期来医院候诊，普通成熟女声，和熟悉的表弟或表妹说话，有点紧张但尽量平常，声音柔和自然，语速正常，像请家人坐下来陪自己。","reference":null},
+    {"id":"vox_c3_gallstone_v2","role":"腹痛患者","text":"这儿疼得厉害。","age":38,"seconds":2.0,"seed":2026101007,"voice":"三十八岁女性患者，普通中年女声，自己能走进检查室，腹部阵阵疼痛，忍着不适对医师轻声说明，气息稍紧，有一点短停顿，发音清楚自然。","reference":null},
+    {"id":"vox_c4_song_v2","role":"老宋","text":"我怕这个洞。","age":58,"seconds":1.9,"seed":2026101008,"voice":"五十八岁男性，偏低略粗的普通男声，进入磁共振房间后有些局促，对技师小心地说我怕这个洞。声音克制，有一点犹豫，日常普通话。","reference":null},
+    {"id":"vox_c3_wang_v2","role":"王叔","text":"这回不抢救啦。","age":53,"seconds":2.1,"seed":2026101009,"voice":"五十三岁男性，心脏治疗后恢复，普通中年男声，来门诊复查遇到旧同事，带一点宽慰和朴实的自嘲，轻声说这回不抢救啦，普通话自然，声音有力量但不大喊。","reference":null,"consistencyNote":"DSA ds_9 introduces Wang without an individual audio clip. No approved prior Wang reference found; this is his first fixed voiced entrance."},
+    {"id":"vox_c5_qian_v2","role":"老钱","text":"我姓钱。","age":61,"seconds":1.3,"seed":2026101010,"voice":"六十一岁男性，肺癌术后复查患者，柔和偏低的男性嗓音，略带气息，向医院工作人员客气地报姓氏，普通话日常交谈，语速稍慢，态度亲切。","reference":null,"consistencyNote":"DR p_qian has no individual prior voice. Existing vox_qian is the female insurance clerk 钱姐 and is deliberately not used. First fixed voiced entrance; no full past-timbre consistency claim."},
+    {"id":"vox_c4_wrist_v2","role":"小程","text":"最近又疼了。","age":24,"seconds":1.9,"seed":2026101011,"voice":"二十四岁男性，腕伤学生回访，年轻普通男声，清楚平常，轻声说最近又疼了。","reference":"app/public/audio/vox_ch2_wrist.mp3","consistencyNote":"Use the actual approved wrist-student entrance as zero-shot reference; exact official template, no appended acting instruction."},
+    {"id":"vox_trilogy_zhou_v2","role":"老周","text":"来了？茶还热着。","age":64,"seconds":2.1,"seed":2026101012,"reference":"app/public/audio/vox_ch2_natural_zhou_v2.mp3","consistencyNote":"Approved relaxed mature Zhou reference; distinct from the dry weak elderly mystery-patient reference."},
+    {"id":"vox_trilogy_lei_v2","role":"小雷","text":"你电脑借我一下。","age":29,"seconds":2.0,"seed":2026101013,"reference":"app/public/audio/vox_ch2_natural_lei_v2.mp3"},
+    {"id":"vox_trilogy_tang_v2","role":"小唐","text":"饭还热着，快吃。","age":29,"seconds":2.0,"seed":2026101014,"reference":"app/public/audio/vox_ch2_natural_tang.mp3"},
+    {"id":"vox_trilogy_fan_v2","role":"老范","text":"来，搭把手。","age":64,"seconds":1.7,"seed":2026101015,"reference":"app/public/audio/vox_ch1_fan_mature_20260923.mp3","consistencyNote":"Use author's explicitly approved mature fan revision, not superseded vox_fan raw voice."},
+    {"id":"vox_trilogy_he_v2","role":"小何","text":"我先接个电话。","age":44,"seconds":1.8,"seed":2026101016,"reference":"app/public/audio/vox_ch2_natural_he_v2.mp3"},
+    {"id":"vox_trilogy_wen_v2","role":"雯雯","text":"喂，听得见吗？","age":34,"seconds":1.9,"seed":2026101017,"reference":"app/public/audio/vox2_wen.mp3","consistencyNote":"Author-restored current vox2_wen, not the superseded natural-wen candidate."},
+    {"id":"vox_trilogy_mystery_v2","role":"许建平","text":"我带了旧片。","age":75,"seconds":2.0,"seed":2026101018,"reference":"app/public/audio/vox2_mystery.mp3","consistencyNote":"Approved distinctly elderly mystery patient recording after 2026-09-16 age correction; do not use archived middle-age draft."},
+    {"id":"vox_trilogy_luo_v2","role":"罗阿姨","text":"这次我带齐了。","age":72,"seconds":2.0,"seed":2026101019,"reference":"app/public/audio/vox_ch2_luo_entrance_20260925.mp3"},
+    {"id":"vox_trilogy_aunt_v2","role":"钼靶阿姨","text":"今天没来晚吧？","age":59,"seconds":2.1,"seed":2026101020,"reference":"app/public/audio/vox_aunt.mp3"},
+    {"id":"vox_trilogy_director_v2","role":"主任","text":"先把交接讲清楚。","age":59,"seconds":2.4,"seed":2026101021,"reference":"app/public/audio/vox_ch2_natural_director_day_v3.mp3"}
+  ]
+}

@@ -44,11 +44,20 @@ function fixture(history) {
 
 async function walk({ chapter, variant }) {
   const mobile = variant === 'mobile', all = !mobile, label = `${chapter.id}-${variant}`
+  const resumePath = process.env.TRILOGY_RESUME_DIR && resolve(process.env.TRILOGY_RESUME_DIR, `${label}-flow.json`)
+  const prior = resumePath ? JSON.parse(readFileSync(resumePath, 'utf8')) : undefined
+  if (prior) assert(prior.status === 'failed' && prior.chapter === chapter.id && prior.variant === variant && prior.lastState?.dlc?.[chapter.id]?.chapter,
+    'Resume only an actual failed isolated-browser log; never invent prior walk evidence')
   const log = { kind: 'real-browser-full-walk', chapter: chapter.id, variant, viewport: mobile ? '390x844-touch' : '1280x900',
-    started: new Date().toISOString(), nodes: [], screenshots: [], errors: [], settlements: [], tools: [], gifts: [], quizzes: [] }
+    started: new Date().toISOString(), nodes: [], screenshots: [], errors: [], settlements: [], tools: [], scans: [], gifts: [], quizzes: [] }
+  if (prior) {
+    for (const field of ['nodes', 'screenshots', 'settlements', 'tools', 'scans', 'gifts', 'quizzes']) log[field] = [...prior[field]]
+    log.resumedFrom = { path: resumePath, node: prior.lastState.dlc[chapter.id].chapter.stepId, originalFailure: prior.error }
+  }
   const context = await browser.newContext({ viewport: mobile ? { width: 390, height: 844 } : { width: 1280, height: 900 },
     isMobile: mobile, hasTouch: mobile, deviceScaleFactor: 1 })
-  const initial = fixture(all), untouched = JSON.parse(JSON.stringify(initial.dlc))
+  const initial = prior?.lastState ?? fixture(all), untouched = JSON.parse(JSON.stringify(initial.dlc))
+  delete untouched[chapter.id]
   await context.addInitScript(({ initial, key }) => {
     if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(initial))
   }, { initial, key: storageKey })
@@ -58,7 +67,8 @@ async function walk({ chapter, variant }) {
   page.on('response', response => { if (response.status() >= 400) log.errors.push({ kind: 'http', status: response.status(), url: response.url() }) })
   page.on('requestfailed', request => { if (!request.failure()?.errorText?.includes('ERR_ABORTED')) log.errors.push({ kind: 'requestfailed', url: request.url(), failure: request.failure() }) })
   const cdp = mobile ? await context.newCDPSession(page) : undefined
-  let lastInput = 0, checkedGuard = false, refreshedTool = false, count = 0
+  let lastInput = 0, checkedGuard = log.nodes.some(n => n.kind === 'choice-guard-rejected-three-real-taps'),
+    refreshedTool = log.nodes.some(n => n.kind === 'reload' && n.phase === 'story' && prior?.lastState.dlc[chapter.id].chapter.tools[n.at]), count = 0
   const captured = new Set(), seenImages = new Set(), seenPortraits = new Set()
   const read = () => page.evaluate(key => JSON.parse(localStorage.getItem(key)), storageKey)
   const progress = s => s.dlc[chapter.id].chapter
@@ -121,7 +131,7 @@ async function walk({ chapter, variant }) {
     await page.locator(`[data-scene-background="${bg}"]`).waitFor()
     await imageVisible(bg)
     const person = p.giftReply?.person ?? step.speaker ?? 'sys'
-    const sprite = p.giftReply ? chapter.characters[person]?.sprite : step.phone || step.radio ? undefined
+    const sprite = step.closeup ? undefined : p.giftReply ? chapter.characters[person]?.sprite : step.phone || step.radio ? undefined
       : step.sprite ?? (person !== 'me' && person !== 'sys' ? chapter.characters[person]?.sprite : undefined)
     assert.equal(await page.locator('.trilogy-root .sprite-l').count(), sprite ? 1 : 0, `${p.stepId}: current-node portrait, never sticky previous actor`)
     if (sprite) {
@@ -129,8 +139,14 @@ async function walk({ chapter, variant }) {
       const patient = /(^pat_|patient|pat_luo|pat_mystery)/.test(sprite)
       if (patient && !seenPortraits.has(sprite)) { seenPortraits.add(sprite); await screen(`patient-${sprite}`) }
     }
-    if (step.image && !step.tool) {
-      if (TRILOGY_DOCUMENTS[step.image]) await page.locator('.trilogy-story-image .trilogy-document').waitFor()
+    if (step.image && !step.tool && !step.scan) {
+      if (step.closeup) {
+        const cinematic = page.locator(`[data-ldct-cinematic="${p.stepId}"]`)
+        await cinematic.waitFor()
+        assert.equal(await page.locator('.trilogy-root .sprite-l, .trilogy-root .sprite-r').count(), 0, `${p.stepId}: closeup carries the scene without duplicate portraits`)
+        await imageVisible(step.image)
+        await fit(cinematic.locator('.ldct-cinematic__frame'), `${p.stepId}: closeup frame`)
+      } else if (TRILOGY_DOCUMENTS[step.image]) await page.locator('.trilogy-story-image .trilogy-document').waitFor()
       else {
         await imageVisible(step.image)
         await fit(page.locator('.trilogy-story-image img'), `${p.stepId}: case image`)
@@ -138,6 +154,28 @@ async function walk({ chapter, variant }) {
       if (!seenImages.has(step.image)) { seenImages.add(step.image); await screen(`image-${step.image}`) }
     }
     if (step.phone) await imageVisible(step.phone)
+  }
+  async function acquisition(s, step) {
+    const p = progress(s), scan = page.locator(`[data-trilogy-scan="${p.stepId}"]`), duration = step.scan.durationMs ?? 3000
+    await scan.waitFor()
+    assert.equal(await scan.getAttribute('data-scan-kind'), step.scan.kind)
+    await fit(scan.locator('.ch2-scan-panel'), `${p.stepId}: acquisition panel`)
+    const pending = progress(await read())
+    assert.equal(pending.stepId, p.stepId, 'Acquisition remains on its node while running')
+    assert(Number.isFinite(pending.scans?.[p.stepId]?.startedAt), 'Acquisition has a real saved wall-clock receipt')
+    assert.equal(await page.locator('.trilogy-story-image, .ldct-cinematic, [data-trilogy-lab]').count(), 0, 'Clinical result and tools are hidden during acquisition')
+    const progressbar = scan.getByRole('progressbar', { name: '图像采集进度', exact: true })
+    await progressbar.waitFor()
+    assert(Number(await progressbar.getAttribute('aria-valuenow')) < 100, 'Saw the actual acquisition before completion')
+    if (!captured.has(`scan:${step.scan.kind}`)) { await screen(`scan-${step.scan.kind}`); captured.add(`scan:${step.scan.kind}`) }
+    // Observe the production timer. Never alter wall clocks, receipts or cursor.
+    await scan.waitFor({ state: 'detached', timeout: duration + 5000 })
+    await transition(p)
+    const after = progress(await read()), receipt = after.scans[p.stepId]
+    assert.equal(receipt.completed, true)
+    assert(Date.now() - receipt.startedAt >= duration, 'Full real acquisition duration elapsed')
+    assert.equal(after.stepId, step.next, 'Finished acquisition reveals its configured result')
+    log.scans.push({ node: p.stepId, kind: step.scan.kind, duration, next: after.stepId })
   }
   async function reveal(s, step) {
     const text = (progress(s).giftReply?.text ?? step.text ?? '').replaceAll('**', '')
@@ -187,10 +225,15 @@ async function walk({ chapter, variant }) {
     const p = progress(s), task = step.tool.task, lab = page.locator('[data-trilogy-lab]')
     await lab.waitFor()
     await fit(page.locator('[data-trilogy-tool-done]'), `${p.stepId}: tool continuation`, true)
-    const beforeImage = async () => step.tool.kind === 'ultrasound'
-      ? page.locator('[data-ultrasound-phantom]').evaluate(canvas => canvas.toDataURL())
+    const diagrams = lab.locator('.trilogy-course-view canvas, .trilogy-course-view svg, .trilogy-mri-visuals canvas, .trilogy-mri-visuals svg, [data-ultrasound-phantom]')
+    const beforeImage = async () => await diagrams.count()
+      ? diagrams.evaluateAll((elements, includeLabels) => elements.map(element => element.tagName.toLowerCase() === 'canvas' ? element.toDataURL()
+        : [...element.querySelectorAll('path,rect,circle,line,g,use')].map(shape => `${shape.tagName}:${[...shape.attributes].map(a => `${a.name}=${a.value}`).join(';')}`).join('|')
+          + (includeLabels ? [...element.querySelectorAll('text')].map(t => t.textContent).join('|') : '')).join('\n'), task === 'coincidence')
       : lab.locator('img[alt="当前图像"]').count().then(async count => count ? lab.locator('img[alt="当前图像"]').getAttribute('src') : '')
-    if (step.tool.kind === 'ultrasound') await fit(page.locator('[data-ultrasound-phantom]'), `${p.stepId}: phantom canvas`)
+    if (await diagrams.count()) {
+      for (let i = 0; i < await diagrams.count(); i++) await fit(diagrams.nth(i), `${p.stepId}: numerical diagram ${i}`)
+    } else if (step.tool.kind === 'ultrasound') assert.fail(`${p.stepId}: ultrasound tool needs a visible numerical canvas or SVG`)
     const firstImage = await beforeImage()
     if (task === 'sequence') {
       assert(step.tool.images && Object.keys(step.tool.images).length >= 2, `${p.stepId}: displayed sequence tabs require distinct image mappings`)
@@ -213,14 +256,32 @@ async function walk({ chapter, variant }) {
         await fit(range, `${p.stepId}: parameter ${i}`, true)
         await range.focus(); await range.press('End'); lastInput = Date.now()
         const endImage = await beforeImage()
-        await range.press('Home'); lastInput = Date.now()
-        if (step.tool.kind === 'ultrasound') assert.notEqual(await beforeImage(), endImage, `${task}: actual parameter changes pixels`)
+        // Opposite RF offsets have symmetric longitudinal/transverse magnitudes.
+        // Compare off-resonance against resonance, not +600 against -600 Hz.
+        if (task === 'mri-relax' && step.tool.variant === 'signal' && i === 1) {
+          for (let k = 0; k < 50; k++) await range.press('ArrowLeft')
+        } else await range.press('Home')
+        lastInput = Date.now()
+        if (await diagrams.count()) assert.notEqual(await beforeImage(), endImage, `${task}: actual parameter changes rendered pixels or geometry`)
         const box = await range.boundingBox()
         const fraction = task === 'decay' ? .5 : .55
         await quiet()
         if (mobile) await page.touchscreen.tap(box.x + box.width * fraction, box.y + box.height / 2)
         else await page.mouse.click(box.x + box.width * fraction, box.y + box.height / 2)
         lastInput = Date.now()
+      }
+      if (task === 'echo') await click(lab.getByRole('button', { name: '发出一次脉冲', exact: true }))
+      if (task === 'counting') {
+        await click(lab.getByRole('button', { name: '从短采集回看', exact: true }))
+        const shortImage = await beforeImage()
+        for (let i = 0; i < 3; i++) await click(lab.getByRole('button', { name: '再积累一小段计数', exact: true }))
+        assert.notEqual(await beforeImage(), shortImage, 'Additional actual counting changes the same teaching distribution')
+      }
+      const courseButtons = lab.locator('.trilogy-course-buttons button, .trilogy-mri-presets button, .trilogy-mri-patterns button')
+      if (await courseButtons.count()) {
+        const beforeButtons = await beforeImage()
+        for (let i = 0; i < await courseButtons.count(); i++) { await fit(courseButtons.nth(i), `${p.stepId}: numerical option ${i}`, true); await click(courseButtons.nth(i)) }
+        assert.notEqual(await beforeImage(), beforeButtons, `${task}: actual numerical option changes the diagram`)
       }
       if (task === 'fusion') assert.equal(await lab.locator('img[alt="PET摄取层"]').count(), 1)
     }
@@ -345,6 +406,7 @@ async function walk({ chapter, variant }) {
         }
         continue
       }
+      if (step.scan) { await acquisition(s, step); continue }
       await sceneVisuals(s, step)
       log.nodes.push({ kind: p.giftReply ? 'gift-reply' : 'story', node: p.stepId, shift: p.shift, phase: p.phase,
         text: p.giftReply?.text ?? step.text, speaker: p.giftReply?.person ?? step.speaker, bg: p.viewBg })

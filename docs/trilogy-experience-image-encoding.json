@@ -1,0 +1,1106 @@
+[
+  {
+    "id": "bg_us_bedside_day_v2",
+    "source": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\bg_us_bedside_day_v2.png",
+    "role": "background",
+    "sourceSha256": "e4d5598d218c80374783eb18970d3fda894e4446fcca88603f73c4816e098623",
+    "sourceBytes": 1922352,
+    "sourceDimensions": [
+      1672,
+      941
+    ],
+    "encodedSha256": "9b96cb6b99da0569b1c5a1eafa1ef3a44005976bca38f3289d6728627bd9d268",
+    "encodedBytes": 125032,
+    "dimensions": [
+      1672,
+      941
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\bg_us_bedside_day_v2.webp",
+    "import": {
+      "name": "bg_us_bedside_day_v2",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\bg_us_bedside_day_v2.webp",
+      "sourceSha256": "9b96cb6b99da0569b1c5a1eafa1ef3a44005976bca38f3289d6728627bd9d268",
+      "sourceBytes": 125032,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 1672,
+      "height": 941,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/bg_us_bedside_day_v2.9b96cb6b99da0569.webp",
+      "deliverySha256": "9b96cb6b99da0569b1c5a1eafa1ef3a44005976bca38f3289d6728627bd9d268",
+      "deliveryBytes": 125032,
+      "previewUpdated": true,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "bg_mri_control_day_v2",
+    "source": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\bg_mri_control_day_v2.png",
+    "role": "background",
+    "sourceSha256": "19fb4fe00b7ba0cacd15f691be439a4167b6d42cc5d071796b6684487e3a76d8",
+    "sourceBytes": 1797913,
+    "sourceDimensions": [
+      1672,
+      941
+    ],
+    "encodedSha256": "433d4fc168a68d35fa7e2a2f6bbc3d52fefd479955e9331e76aacea8bad45e5f",
+    "encodedBytes": 115470,
+    "dimensions": [
+      1672,
+      941
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\bg_mri_control_day_v2.webp",
+    "import": {
+      "name": "bg_mri_control_day_v2",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\bg_mri_control_day_v2.webp",
+      "sourceSha256": "433d4fc168a68d35fa7e2a2f6bbc3d52fefd479955e9331e76aacea8bad45e5f",
+      "sourceBytes": 115470,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 1672,
+      "height": 941,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/bg_mri_control_day_v2.433d4fc168a68d35.webp",
+      "deliverySha256": "433d4fc168a68d35fa7e2a2f6bbc3d52fefd479955e9331e76aacea8bad45e5f",
+      "deliveryBytes": 115470,
+      "previewUpdated": true,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "bg_mri_corridor_day_v2",
+    "source": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\bg_mri_corridor_day_v2.png",
+    "role": "background",
+    "sourceSha256": "af90b484de42080a69611e7701145469c7ec5600dea33870a3fa22e0590c8e10",
+    "sourceBytes": 1941400,
+    "sourceDimensions": [
+      1672,
+      941
+    ],
+    "encodedSha256": "f51979fbd08e5b3722373554d2ffe8a56d658b2a7647348bc7b677a2ae7bdd6d",
+    "encodedBytes": 119370,
+    "dimensions": [
+      1672,
+      941
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\bg_mri_corridor_day_v2.webp",
+    "import": {
+      "name": "bg_mri_corridor_day_v2",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\bg_mri_corridor_day_v2.webp",
+      "sourceSha256": "f51979fbd08e5b3722373554d2ffe8a56d658b2a7647348bc7b677a2ae7bdd6d",
+      "sourceBytes": 119370,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 1672,
+      "height": 941,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/bg_mri_corridor_day_v2.f51979fbd08e5b37.webp",
+      "deliverySha256": "f51979fbd08e5b3722373554d2ffe8a56d658b2a7647348bc7b677a2ae7bdd6d",
+      "deliveryBytes": 119370,
+      "previewUpdated": true,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "cg_c3_shared_lunch_v2",
+    "source": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\cg_c3_shared_lunch_v2.png",
+    "role": "background",
+    "sourceSha256": "216743cf86cb4830929c6d57f1a5630b6c7da414daf2040b494837fd20afb4ba",
+    "sourceBytes": 2148710,
+    "sourceDimensions": [
+      1672,
+      941
+    ],
+    "encodedSha256": "b955cff09bde32319e052c75dc68385868e34c3341e2433e60c67647d4684fd6",
+    "encodedBytes": 184330,
+    "dimensions": [
+      1672,
+      941
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\cg_c3_shared_lunch_v2.webp",
+    "import": {
+      "name": "cg_c3_shared_lunch_v2",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\cg_c3_shared_lunch_v2.webp",
+      "sourceSha256": "b955cff09bde32319e052c75dc68385868e34c3341e2433e60c67647d4684fd6",
+      "sourceBytes": 184330,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 1672,
+      "height": 941,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/cg_c3_shared_lunch_v2.b955cff09bde3231.webp",
+      "deliverySha256": "b955cff09bde32319e052c75dc68385868e34c3341e2433e60c67647d4684fd6",
+      "deliveryBytes": 184330,
+      "previewUpdated": false,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "cg_c4_first_mri_v2",
+    "source": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\cg_c4_first_mri_v2.png",
+    "role": "background",
+    "sourceSha256": "1c20c9c97a6ba2af18f35d94b70cfc2e69b2e27b85793d72bbeb501b44c861bb",
+    "sourceBytes": 1948682,
+    "sourceDimensions": [
+      1672,
+      941
+    ],
+    "encodedSha256": "586da62385ee8335bc602d2adc7c6b632ade43af586eaeb1d4d4bc75e10c3f49",
+    "encodedBytes": 149748,
+    "dimensions": [
+      1672,
+      941
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\cg_c4_first_mri_v2.webp",
+    "import": {
+      "name": "cg_c4_first_mri_v2",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\cg_c4_first_mri_v2.webp",
+      "sourceSha256": "586da62385ee8335bc602d2adc7c6b632ade43af586eaeb1d4d4bc75e10c3f49",
+      "sourceBytes": 149748,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 1672,
+      "height": 941,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/cg_c4_first_mri_v2.586da62385ee8335.webp",
+      "deliverySha256": "586da62385ee8335bc602d2adc7c6b632ade43af586eaeb1d4d4bc75e10c3f49",
+      "deliveryBytes": 149748,
+      "previewUpdated": false,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "cg_c4_luo_records_v2",
+    "source": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\cg_c4_luo_records_v2.png",
+    "role": "background",
+    "sourceSha256": "ec8eedf17255a7d0e591892953efa7fca115228639253b93865d239549e59cc6",
+    "sourceBytes": 2133810,
+    "sourceDimensions": [
+      1672,
+      941
+    ],
+    "encodedSha256": "5c9aa4441a82f444cd2863a938062540de971dfd31492d63361fa0b6883ca7c4",
+    "encodedBytes": 177934,
+    "dimensions": [
+      1672,
+      941
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\cg_c4_luo_records_v2.webp",
+    "import": {
+      "name": "cg_c4_luo_records_v2",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\cg_c4_luo_records_v2.webp",
+      "sourceSha256": "5c9aa4441a82f444cd2863a938062540de971dfd31492d63361fa0b6883ca7c4",
+      "sourceBytes": 177934,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 1672,
+      "height": 941,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/cg_c4_luo_records_v2.5c9aa4441a82f444.webp",
+      "deliverySha256": "5c9aa4441a82f444cd2863a938062540de971dfd31492d63361fa0b6883ca7c4",
+      "deliveryBytes": 177934,
+      "previewUpdated": false,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "item_c3_towel_v2",
+    "source": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\item_c3_towel_v2.png",
+    "role": "item",
+    "sourceSha256": "02c181b6adaa80b80000b2987e0262487d8310daf9585e47bf2b5595112e4500",
+    "sourceBytes": 432630,
+    "sourceDimensions": [
+      1254,
+      1254
+    ],
+    "encodedSha256": "92f1004b08a1e80837753c716d41e8300c9ef3a7a4f7dd9a66089736107de266",
+    "encodedBytes": 5128,
+    "dimensions": [
+      256,
+      256
+    ],
+    "hasAlpha": true,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\item_c3_towel_v2.webp",
+    "import": {
+      "name": "item_c3_towel_v2",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\item_c3_towel_v2.webp",
+      "sourceSha256": "92f1004b08a1e80837753c716d41e8300c9ef3a7a4f7dd9a66089736107de266",
+      "sourceBytes": 5128,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 256,
+      "height": 256,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/item_c3_towel_v2.92f1004b08a1e808.webp",
+      "deliverySha256": "92f1004b08a1e80837753c716d41e8300c9ef3a7a4f7dd9a66089736107de266",
+      "deliveryBytes": 5128,
+      "previewUpdated": false,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "item_c3_stickers_v2",
+    "source": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\item_c3_stickers_v2.png",
+    "role": "item",
+    "sourceSha256": "8ce80d518f175292f27b21a232e2b3098ab38d1df8c1f07abc042bbebb2d48b4",
+    "sourceBytes": 824285,
+    "sourceDimensions": [
+      1254,
+      1254
+    ],
+    "encodedSha256": "b35847e64c82b2bbdb9a6548133fdd69d07e89ec4e55cfafbed5f8dca69965a1",
+    "encodedBytes": 11238,
+    "dimensions": [
+      256,
+      256
+    ],
+    "hasAlpha": true,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\item_c3_stickers_v2.webp",
+    "import": {
+      "name": "item_c3_stickers_v2",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\item_c3_stickers_v2.webp",
+      "sourceSha256": "b35847e64c82b2bbdb9a6548133fdd69d07e89ec4e55cfafbed5f8dca69965a1",
+      "sourceBytes": 11238,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 256,
+      "height": 256,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/item_c3_stickers_v2.b35847e64c82b2bb.webp",
+      "deliverySha256": "b35847e64c82b2bbdb9a6548133fdd69d07e89ec4e55cfafbed5f8dca69965a1",
+      "deliveryBytes": 11238,
+      "previewUpdated": false,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "item_c4_sleepmask_v2",
+    "source": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\item_c4_sleepmask_v2.png",
+    "role": "item",
+    "sourceSha256": "0d9c1c4411a31f8ede8af25babd0f3d92b0b75fb65197e5c8811cdce4b30745c",
+    "sourceBytes": 589694,
+    "sourceDimensions": [
+      1254,
+      1254
+    ],
+    "encodedSha256": "a7ef5bb4ad5aa4b2d10c3ccdc0e6806eaee57874fe082e1158b63242f4936af5",
+    "encodedBytes": 5460,
+    "dimensions": [
+      256,
+      256
+    ],
+    "hasAlpha": true,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\item_c4_sleepmask_v2.webp",
+    "import": {
+      "name": "item_c4_sleepmask_v2",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\item_c4_sleepmask_v2.webp",
+      "sourceSha256": "a7ef5bb4ad5aa4b2d10c3ccdc0e6806eaee57874fe082e1158b63242f4936af5",
+      "sourceBytes": 5460,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 256,
+      "height": 256,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/item_c4_sleepmask_v2.a7ef5bb4ad5aa4b2.webp",
+      "deliverySha256": "a7ef5bb4ad5aa4b2d10c3ccdc0e6806eaee57874fe082e1158b63242f4936af5",
+      "deliveryBytes": 5460,
+      "previewUpdated": false,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "item_c4_postcard_v2",
+    "source": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\item_c4_postcard_v2.png",
+    "role": "item",
+    "sourceSha256": "ba3bee681194f9380224ed1a5c983afc95865dc3e4dd6d1bf7eca8eaf1abb819",
+    "sourceBytes": 1105246,
+    "sourceDimensions": [
+      1536,
+      1024
+    ],
+    "encodedSha256": "d263f500ee425af97e14670a762b50b473510e65d76a4cb374e442df09008eda",
+    "encodedBytes": 6092,
+    "dimensions": [
+      256,
+      171
+    ],
+    "hasAlpha": true,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\item_c4_postcard_v2.webp",
+    "import": {
+      "name": "item_c4_postcard_v2",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\item_c4_postcard_v2.webp",
+      "sourceSha256": "d263f500ee425af97e14670a762b50b473510e65d76a4cb374e442df09008eda",
+      "sourceBytes": 6092,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 256,
+      "height": 171,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/item_c4_postcard_v2.d263f500ee425af9.webp",
+      "deliverySha256": "d263f500ee425af97e14670a762b50b473510e65d76a4cb374e442df09008eda",
+      "deliveryBytes": 6092,
+      "previewUpdated": false,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "bg_pet_center_day_v2",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-experience-assets-20261010/bg_pet_center_day_v2.png",
+    "role": "background",
+    "sourceSha256": "c163c87f96e451e9a0a3332a749414585ee05e68439d10b8709b905bbed006ca",
+    "sourceBytes": 2056099,
+    "sourceDimensions": [
+      1672,
+      941
+    ],
+    "encodedSha256": "aa08153d66fe8d363072b9715f91efd787acf04a8b900946cda52e8beda14b74",
+    "encodedBytes": 124376,
+    "dimensions": [
+      1672,
+      941
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\bg_pet_center_day_v2.webp",
+    "import": {
+      "name": "bg_pet_center_day_v2",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\bg_pet_center_day_v2.webp",
+      "sourceSha256": "aa08153d66fe8d363072b9715f91efd787acf04a8b900946cda52e8beda14b74",
+      "sourceBytes": 124376,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 1672,
+      "height": 941,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/bg_pet_center_day_v2.aa08153d66fe8d36.webp",
+      "deliverySha256": "aa08153d66fe8d363072b9715f91efd787acf04a8b900946cda52e8beda14b74",
+      "deliveryBytes": 124376,
+      "previewUpdated": true,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "cg_c5_zhou_handoff_v2",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-experience-assets-20261010/cg_c5_zhou_handoff_v2.png",
+    "role": "background",
+    "sourceSha256": "627234ec8bb2771bc669cb92c1e3c204d5f42126e476482b64f2ae50b44b169a",
+    "sourceBytes": 1836788,
+    "sourceDimensions": [
+      1672,
+      941
+    ],
+    "encodedSha256": "69d20e91baabcb3b8394b7b45687b3ac5c08bfd3abee9bea87d52613539e9a84",
+    "encodedBytes": 143814,
+    "dimensions": [
+      1672,
+      941
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\cg_c5_zhou_handoff_v2.webp",
+    "import": {
+      "name": "cg_c5_zhou_handoff_v2",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\cg_c5_zhou_handoff_v2.webp",
+      "sourceSha256": "69d20e91baabcb3b8394b7b45687b3ac5c08bfd3abee9bea87d52613539e9a84",
+      "sourceBytes": 143814,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 1672,
+      "height": 941,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/cg_c5_zhou_handoff_v2.69d20e91baabcb3b.webp",
+      "deliverySha256": "69d20e91baabcb3b8394b7b45687b3ac5c08bfd3abee9bea87d52613539e9a84",
+      "deliveryBytes": 143814,
+      "previewUpdated": false,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "bg_pet_control_day_v2",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-experience-assets-20261010/bg_pet_control_day_v2.png",
+    "role": "background",
+    "sourceSha256": "050cc10c6fbfd7eb95866a02f8ff702977354fcffbc00d32d359d9b60a744789",
+    "sourceBytes": 1877623,
+    "sourceDimensions": [
+      1672,
+      941
+    ],
+    "encodedSha256": "6785d105847f6a06788e8be491cc7cf7922a48fa2790c457bf93f0e32d2e17a9",
+    "encodedBytes": 118334,
+    "dimensions": [
+      1672,
+      941
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\bg_pet_control_day_v2.webp",
+    "import": {
+      "name": "bg_pet_control_day_v2",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\bg_pet_control_day_v2.webp",
+      "sourceSha256": "6785d105847f6a06788e8be491cc7cf7922a48fa2790c457bf93f0e32d2e17a9",
+      "sourceBytes": 118334,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 1672,
+      "height": 941,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/bg_pet_control_day_v2.6785d105847f6a06.webp",
+      "deliverySha256": "6785d105847f6a06788e8be491cc7cf7922a48fa2790c457bf93f0e32d2e17a9",
+      "deliveryBytes": 118334,
+      "previewUpdated": true,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "bg_pet_uptake_day_v2",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-experience-assets-20261010/bg_pet_uptake_day_v2.png",
+    "role": "background",
+    "sourceSha256": "a70398fbc32687cfd18969f88bc5d1458e1baa3dc064795a441829aab0e12d69",
+    "sourceBytes": 1834691,
+    "sourceDimensions": [
+      1672,
+      941
+    ],
+    "encodedSha256": "bdd0c7f9ea0aac553af63fb9646f7aec2125308451e51345aa0f88a86aefbd5c",
+    "encodedBytes": 86530,
+    "dimensions": [
+      1672,
+      941
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\bg_pet_uptake_day_v2.webp",
+    "import": {
+      "name": "bg_pet_uptake_day_v2",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\bg_pet_uptake_day_v2.webp",
+      "sourceSha256": "bdd0c7f9ea0aac553af63fb9646f7aec2125308451e51345aa0f88a86aefbd5c",
+      "sourceBytes": 86530,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 1672,
+      "height": 941,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/bg_pet_uptake_day_v2.bdd0c7f9ea0aac55.webp",
+      "deliverySha256": "bdd0c7f9ea0aac553af63fb9646f7aec2125308451e51345aa0f88a86aefbd5c",
+      "deliveryBytes": 86530,
+      "previewUpdated": true,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "cg_c5_record_confrontation_v2",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-experience-assets-20261010/cg_c5_record_confrontation_v2.png",
+    "role": "background",
+    "sourceSha256": "0a459552719a7eeaef0500cf62eb428e4c9b37f63afb787b83cf201985673ac3",
+    "sourceBytes": 1876368,
+    "sourceDimensions": [
+      1672,
+      941
+    ],
+    "encodedSha256": "58dc6bc870396eec4259045b893e6beeaf4a060590d3876747d2767f08e8832f",
+    "encodedBytes": 131140,
+    "dimensions": [
+      1672,
+      941
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\cg_c5_record_confrontation_v2.webp",
+    "import": {
+      "name": "cg_c5_record_confrontation_v2",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\cg_c5_record_confrontation_v2.webp",
+      "sourceSha256": "58dc6bc870396eec4259045b893e6beeaf4a060590d3876747d2767f08e8832f",
+      "sourceBytes": 131140,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 1672,
+      "height": 941,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/cg_c5_record_confrontation_v2.58dc6bc870396eec.webp",
+      "deliverySha256": "58dc6bc870396eec4259045b893e6beeaf4a060590d3876747d2767f08e8832f",
+      "deliveryBytes": 131140,
+      "previewUpdated": false,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "cg_c5_father_letter_v2",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-experience-assets-20261010/cg_c5_father_letter_v2.png",
+    "role": "background",
+    "sourceSha256": "0404330236895aad54c88c2bde2613bde04ad20b59eca5c2bc6a7c98071c9cd1",
+    "sourceBytes": 1748250,
+    "sourceDimensions": [
+      1672,
+      941
+    ],
+    "encodedSha256": "3339007d3ea5ee8279131e6bd1036bacb8b779a2541e6a55a139269009605480",
+    "encodedBytes": 99760,
+    "dimensions": [
+      1672,
+      941
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\cg_c5_father_letter_v2.webp",
+    "import": {
+      "name": "cg_c5_father_letter_v2",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\cg_c5_father_letter_v2.webp",
+      "sourceSha256": "3339007d3ea5ee8279131e6bd1036bacb8b779a2541e6a55a139269009605480",
+      "sourceBytes": 99760,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 1672,
+      "height": 941,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/cg_c5_father_letter_v2.3339007d3ea5ee82.webp",
+      "deliverySha256": "3339007d3ea5ee8279131e6bd1036bacb8b779a2541e6a55a139269009605480",
+      "deliveryBytes": 99760,
+      "previewUpdated": false,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "trilogy_mri_scan_room_v2",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-experience-assets-20261010/trilogy_mri_scan_room_v2.png",
+    "role": "background",
+    "sourceSha256": "762f2cd46fd42eab0ab416bd1ec2a3dbe8689c8641999744d376a32c1fcd2ad9",
+    "sourceBytes": 1767850,
+    "sourceDimensions": [
+      1672,
+      941
+    ],
+    "encodedSha256": "9a88aedeec7a2d1667f06cab3681c255318f88102dfb056527f9fcdb468fb664",
+    "encodedBytes": 77834,
+    "dimensions": [
+      1672,
+      941
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\trilogy_mri_scan_room_v2.webp",
+    "import": {
+      "name": "trilogy_mri_scan_room_v2",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\trilogy_mri_scan_room_v2.webp",
+      "sourceSha256": "9a88aedeec7a2d1667f06cab3681c255318f88102dfb056527f9fcdb468fb664",
+      "sourceBytes": 77834,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 1672,
+      "height": 941,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/trilogy_mri_scan_room_v2.9a88aedeec7a2d16.webp",
+      "deliverySha256": "9a88aedeec7a2d1667f06cab3681c255318f88102dfb056527f9fcdb468fb664",
+      "deliveryBytes": 77834,
+      "previewUpdated": false,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "trilogy_pet_scan_room_v2",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-experience-assets-20261010/trilogy_pet_scan_room_v2.png",
+    "role": "background",
+    "sourceSha256": "8ee0ef0fcb3c596c6615ab1d95d10584a222dcb09e2dccc6d7f7964495c816a2",
+    "sourceBytes": 1755235,
+    "sourceDimensions": [
+      1672,
+      941
+    ],
+    "encodedSha256": "5523d54bf0e652215f92a74cebc15c0f66830b5650c8f923d3eee257ca67b3e7",
+    "encodedBytes": 85710,
+    "dimensions": [
+      1672,
+      941
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\trilogy_pet_scan_room_v2.webp",
+    "import": {
+      "name": "trilogy_pet_scan_room_v2",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\trilogy_pet_scan_room_v2.webp",
+      "sourceSha256": "5523d54bf0e652215f92a74cebc15c0f66830b5650c8f923d3eee257ca67b3e7",
+      "sourceBytes": 85710,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 1672,
+      "height": 941,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/trilogy_pet_scan_room_v2.5523d54bf0e65221.webp",
+      "deliverySha256": "5523d54bf0e652215f92a74cebc15c0f66830b5650c8f923d3eee257ca67b3e7",
+      "deliveryBytes": 85710,
+      "previewUpdated": false,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "item_c5_postcard_v2",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-experience-assets-20261010/item_c5_postcard_v2.png",
+    "role": "item",
+    "sourceSha256": "9eeeeccd6b2cd2b513ab3c824601fb6f7cb8e0a6869417ded853617dd808af9b",
+    "sourceBytes": 1093240,
+    "sourceDimensions": [
+      1402,
+      1122
+    ],
+    "encodedSha256": "3ce9084b7052e95b2ea6e40500e7f6df4000199bd96898588ee05ecb4e7473c6",
+    "encodedBytes": 12974,
+    "dimensions": [
+      256,
+      205
+    ],
+    "hasAlpha": true,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\item_c5_postcard_v2.webp",
+    "import": {
+      "name": "item_c5_postcard_v2",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\item_c5_postcard_v2.webp",
+      "sourceSha256": "3ce9084b7052e95b2ea6e40500e7f6df4000199bd96898588ee05ecb4e7473c6",
+      "sourceBytes": 12974,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 256,
+      "height": 205,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/item_c5_postcard_v2.3ce9084b7052e95b.webp",
+      "deliverySha256": "3ce9084b7052e95b2ea6e40500e7f6df4000199bd96898588ee05ecb4e7473c6",
+      "deliveryBytes": 12974,
+      "previewUpdated": false,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "item_c5_seedpot_v2",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-experience-assets-20261010/item_c5_seedpot_v2.png",
+    "role": "item",
+    "sourceSha256": "6087f2694accc4dfaec6e9ee1c63d0781f0a317def9b9c88785e10b0f2a4f878",
+    "sourceBytes": 684477,
+    "sourceDimensions": [
+      1254,
+      1254
+    ],
+    "encodedSha256": "e7d528773b70325b4df8ee81e97153f27db3116459703347fe3c486e1c8d9b2e",
+    "encodedBytes": 6486,
+    "dimensions": [
+      256,
+      256
+    ],
+    "hasAlpha": true,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\item_c5_seedpot_v2.webp",
+    "import": {
+      "name": "item_c5_seedpot_v2",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\item_c5_seedpot_v2.webp",
+      "sourceSha256": "e7d528773b70325b4df8ee81e97153f27db3116459703347fe3c486e1c8d9b2e",
+      "sourceBytes": 6486,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 256,
+      "height": 256,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/item_c5_seedpot_v2.e7d528773b70325b.webp",
+      "deliverySha256": "e7d528773b70325b4df8ee81e97153f27db3116459703347fe3c486e1c8d9b2e",
+      "deliveryBytes": 6486,
+      "previewUpdated": false,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "bg_waiting_day_v2",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-experience-assets-20261010/bg_waiting_day_v2.png",
+    "role": "background",
+    "sourceSha256": "ca94ac89d31f1a899e5db245773544c22a6cbfe82c2ddd1c6d6d491620b7ceb2",
+    "sourceBytes": 2318759,
+    "sourceDimensions": [
+      1672,
+      941
+    ],
+    "encodedSha256": "30916f32479aad55a9e7b06997cf97ff6b95fff9c6b78dda24eea6a002794193",
+    "encodedBytes": 147236,
+    "dimensions": [
+      1672,
+      941
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\bg_waiting_day_v2.webp",
+    "import": {
+      "name": "bg_waiting_day_v2",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\bg_waiting_day_v2.webp",
+      "sourceSha256": "30916f32479aad55a9e7b06997cf97ff6b95fff9c6b78dda24eea6a002794193",
+      "sourceBytes": 147236,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 1672,
+      "height": 941,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/bg_waiting_day_v2.30916f32479aad55.webp",
+      "deliverySha256": "30916f32479aad55a9e7b06997cf97ff6b95fff9c6b78dda24eea6a002794193",
+      "deliveryBytes": 147236,
+      "previewUpdated": true,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "bg_corridor_day_v2",
+    "source": "C:/Users/lvmen/Documents/New project/trilogy-experience-assets-20261010/bg_corridor_day_v2.png",
+    "role": "background",
+    "sourceSha256": "3c8ddf35657aefe72216a3d51e44aa72ab3df265f07560d94281ed4229157d22",
+    "sourceBytes": 1681826,
+    "sourceDimensions": [
+      1672,
+      941
+    ],
+    "encodedSha256": "24d181ac5d661a7a2c822cacec315f8481627283fb9f1ff1809b679c0bfd09ca",
+    "encodedBytes": 78452,
+    "dimensions": [
+      1672,
+      941
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\bg_corridor_day_v2.webp",
+    "import": {
+      "name": "bg_corridor_day_v2",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\bg_corridor_day_v2.webp",
+      "sourceSha256": "24d181ac5d661a7a2c822cacec315f8481627283fb9f1ff1809b679c0bfd09ca",
+      "sourceBytes": 78452,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 1672,
+      "height": 941,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/bg_corridor_day_v2.24d181ac5d661a7a.webp",
+      "deliverySha256": "24d181ac5d661a7a2c822cacec315f8481627283fb9f1ff1809b679c0bfd09ca",
+      "deliveryBytes": 78452,
+      "previewUpdated": true,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "bg_mri_room_day_v2",
+    "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-81252fcd-f3ba-4c22-b9ca-494ecdc2b67c.png",
+    "role": "background",
+    "sourceSha256": "41eb254b1b10f746d1b11243891fc12690dd64f75e05ef083d900012438978ee",
+    "sourceBytes": 1916988,
+    "sourceDimensions": [
+      1672,
+      941
+    ],
+    "encodedSha256": "39a786d764c27e95f44e15aeb0f90be001ede7bf8a1d0c1e0224bdbb2733c633",
+    "encodedBytes": 116802,
+    "dimensions": [
+      1672,
+      941
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\bg_mri_room_day_v2.webp",
+    "import": {
+      "name": "bg_mri_room_day_v2",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\bg_mri_room_day_v2.webp",
+      "sourceSha256": "39a786d764c27e95f44e15aeb0f90be001ede7bf8a1d0c1e0224bdbb2733c633",
+      "sourceBytes": 116802,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 1672,
+      "height": 941,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/bg_mri_room_day_v2.39a786d764c27e95.webp",
+      "deliverySha256": "39a786d764c27e95f44e15aeb0f90be001ede7bf8a1d0c1e0224bdbb2733c633",
+      "deliveryBytes": 116802,
+      "previewUpdated": true,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  },
+  {
+    "id": "cg_c3_mei_probe_v2",
+    "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-371993aa-f074-443b-9bc0-fb74c68e5e31.png",
+    "role": "background",
+    "sourceSha256": "94429bfc02fe3aca483121ad6b0000e33950aa23361e389db94c4a10411887f5",
+    "sourceBytes": 1720949,
+    "sourceDimensions": [
+      1672,
+      941
+    ],
+    "encodedSha256": "91a5dd021ce3cd86ea3b9433a54832136a9225730d5d91e0759c84e737a70792",
+    "encodedBytes": 117848,
+    "dimensions": [
+      1672,
+      941
+    ],
+    "hasAlpha": false,
+    "encodedPath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\cg_c3_mei_probe_v2.webp",
+    "import": {
+      "name": "cg_c3_mei_probe_v2",
+      "replaced": false,
+      "sourcePath": "C:\\Users\\lvmen\\Documents\\New project\\trilogy-experience-assets-20261010\\encoded\\cg_c3_mei_probe_v2.webp",
+      "sourceSha256": "91a5dd021ce3cd86ea3b9433a54832136a9225730d5d91e0759c84e737a70792",
+      "sourceBytes": 117848,
+      "pipeline": "reviewed-webp-passthrough-v1",
+      "encoder": {
+        "sharp": "0.35.3",
+        "webp": "1.6.0"
+      },
+      "mode": "reviewed-webp-unchanged",
+      "quality": null,
+      "width": 1672,
+      "height": 941,
+      "alphaExact": true,
+      "visibleRgbExact": true,
+      "rgbaExact": true,
+      "visibleRgbMeanAbsoluteError": 0,
+      "deliveryPath": "app/public/assets/media/cg_c3_mei_probe_v2.91a5dd021ce3cd86.webp",
+      "deliverySha256": "91a5dd021ce3cd86ea3b9433a54832136a9225730d5d91e0759c84e737a70792",
+      "deliveryBytes": 117848,
+      "previewUpdated": false,
+      "previousDeliveryPath": null,
+      "stalePathCandidates": [],
+      "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+    }
+  }
+]

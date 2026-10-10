@@ -1,0 +1,228 @@
+{
+  "date": "2026-10-10",
+  "branch": "codex/trilogy-experience-parity",
+  "baseline": "7fad7b7",
+  "tool": "Built-in image_gen only; initial ten calls plus two requested integration daylight edits, twelve calls/twelve assets total; no API/CLI fallback.",
+  "integrationExtension": "Two shared public-space daytime IDs were explicitly requested after integration revealed generic waiting/corridor tone mismatches in ultrasound/MRI afternoon scenes. Original logical IDs/files remain untouched; this is required day-tone coverage, not additional plot imagery.",
+  "status": "Generated source candidates copied outside formal public; main agent owns compression/import/catalogs and animation/viewport QA.",
+  "metadataVerification": {
+    "eightBackgroundAndCgAssets": { "width": 1672, "height": 941, "hasAlpha": false },
+    "item_c5_postcard_v2": { "width": 1402, "height": 1122, "hasAlpha": true, "alphaMin": 0, "alphaMax": 255 },
+    "item_c5_seedpot_v2": { "width": 1254, "height": 1254, "hasAlpha": true, "alphaMin": 0, "alphaMax": 255 },
+    "method": "Read-only sharp metadata/stats inspection of copied PNG sources, not browser or animation QA. Main agent may downsize icons before import."
+  },
+  "outputDirectory": "C:/Users/lvmen/Documents/New project/trilogy-experience-assets-20261010/",
+  "styleReferencePolicy": "Every local edit/reference was inspected with view_image before generation. Original pixel character identities and environment palettes supplied as references.",
+  "assets": [
+    {
+      "id": "bg_pet_center_day_v2",
+      "path": "C:/Users/lvmen/Documents/New project/trilogy-experience-assets-20261010/bg_pet_center_day_v2.png",
+      "generatedPath": "C:/Users/lvmen/.codex/generated_images/01a125ec-7e88-74b3-bdc4-4d17597d38e9/exec-0a40a23e-81b2-4b85-adf8-73c5c22e9ff6.png",
+      "observed": "Original geometry preserved; daytime sky/light visible; no new people.",
+      "category": "lighting-weather",
+      "transparentBackground": false,
+      "referenceIds": [
+        "bg_pet_center"
+      ],
+      "referencePaths": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/bg_pet_center.2ed19ed53beaa014.webp"
+      ],
+      "prompt": "Use case: lighting-weather. Asset type: 16:9 pixel-art visual-novel hospital background. Image 1 is the edit target. Change ONLY this existing provincial PET/CT center reception and corridor from night to ordinary afternoon daylight. Keep the exact camera, perspective, floor tile grid, walls, doors, chairs, reception counter, glass panels, plants, ceiling, clock and equipment positions. Keep the same muted cream/teal/navy palette and visible coarse pixel treatment. Replace the dark blue night outside both windows with soft daytime sky and daytime distant buildings, and let restrained natural daylight enter. Do not add people, instruments, readable text, captions, watermarks, speech bubbles, or new scenery. Preserve the original room and all silhouettes; no redesign, no photorealism, no smooth painterly blur. Wide landscape at the same 1672 by 941 framing."
+    },
+    {
+      "id": "cg_c5_zhou_handoff_v2",
+      "path": "C:/Users/lvmen/Documents/New project/trilogy-experience-assets-20261010/cg_c5_zhou_handoff_v2.png",
+      "generatedPath": "C:/Users/lvmen/.codex/generated_images/01a125ec-7e88-74b3-bdc4-4d17597d38e9/exec-7cac8fd6-d853-4ac2-8eee-6631c221fa98.png",
+      "observed": "Recognizable Zhou with brown cup at door, Tang and staff hands receiving seated elder's papers.",
+      "category": "illustration-story",
+      "transparentBackground": false,
+      "referenceIds": [
+        "ch2_pixel_char_zhou",
+        "pat_oldman",
+        "ch2_pixel_char_tang",
+        "bg_corridor"
+      ],
+      "referencePaths": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/ch2_pixel_char_zhou.d03c9a724f736984.webp",
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/pat_oldman.f5ad30038dfab9a1.webp",
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/ch2_pixel_char_tang.9695c1149b50f501.webp",
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/bg_corridor.970560e65398bdf4.webp"
+      ],
+      "prompt": "Use case: illustration-story. Asset type: 16:9 close-up story CG for an existing coarse-pixel hospital visual novel. Images 1, 2, 3 are exact character identity and pixel style references: Dr Zhou, elderly patient, nurse Tang. Image 4 is corridor setting/palette reference only. Draw one quiet evening handover scene: Zhou stands by the doorway holding his familiar worn dark brown cup, watching the work get received by the next staff. Preserve his balding head, broad eyebrows, mature face and simple white coat from image 1; do not turn him into a different silver-haired man. The frail older man from image 2, same lined face, beard and old brown coat, is seated while nurse Tang from image 3 and a young staff member seen only as sleeve/hands receive his application and a small temporary-ID slip. Zhou's hand stays around his cup, not taking the application. Concrete warm understated action, no deathbed, no crying crowd, no dramatic embrace. Match the reference chunky pixel contours, pixel-shaded faces, teal hospital walls and warm light. Composition clearly shows Zhou's face/cup and the document passing to staff; ordinary hospital doors in background. No readable letters or numbers on papers or walls. NO text, speech balloons, labels, AI captions, border, watermark, photorealism or painted smoothness."
+    },
+    {
+      "id": "bg_pet_control_day_v2",
+      "generatedPath": "C:/Users/lvmen/.codex/generated_images/01a125ec-7e88-74b3-bdc4-4d17597d38e9/exec-ec6eb53d-175c-4f7e-8fbf-e4efc358a91d.png",
+      "observed": "Same desk, chair, scanner/window geometry; daylight through existing blinds.",
+      "path": "C:/Users/lvmen/Documents/New project/trilogy-experience-assets-20261010/bg_pet_control_day_v2.png",
+      "category": "lighting-weather",
+      "transparentBackground": false,
+      "referenceIds": [
+        "bg_pet_control"
+      ],
+      "referencePaths": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/bg_pet_control.732f8ba8d4ef4a40.webp"
+      ],
+      "prompt": "Use case: lighting-weather. Asset type: 16:9 coarse-pixel visual-novel PET/CT control-room background. Image 1 is the edit target. Change ONLY this existing room from evening/night orange lighting to calm ordinary afternoon clinical daylight. Preserve the EXACT camera, perspective, foreground desk/chair/monitors, large observation window frame, PET/CT gantry, bed, cabinets, wall fixtures, doors, floor tile grid and shadows' geometry. Preserve the muted cream/teal/navy pixel palette and chunky pixel-shaded surfaces. The existing small exterior window behind the scanner on the left now shows pale daylight through the same blinds; neutral daylight enters the scan room and control room with modest warm ceiling lights, rather than dark night. Keep the scans on the same monitors, no changed patient images or new content. Do not add people or new windows. No readable added text, no captions, no speech balloons, logos, watermarks, smooth painterly blur, photorealism, or redesigned equipment. Same wide landscape framing, 1672 by 941."
+    },
+    {
+      "id": "bg_pet_uptake_day_v2",
+      "generatedPath": "C:/Users/lvmen/.codex/generated_images/01a125ec-7e88-74b3-bdc4-4d17597d38e9/exec-eccd6165-5a93-436c-9e8b-9eafb1a9083d.png",
+      "observed": "Same three recliners/curtains/sink; ordinary sky outside existing window.",
+      "path": "C:/Users/lvmen/Documents/New project/trilogy-experience-assets-20261010/bg_pet_uptake_day_v2.png",
+      "category": "lighting-weather",
+      "transparentBackground": false,
+      "referenceIds": [
+        "bg_pet_uptake"
+      ],
+      "referencePaths": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/bg_pet_uptake.6946ca90801a68d5.webp"
+      ],
+      "prompt": "Use case: lighting-weather. Asset type: 16:9 pixel-art visual-novel quiet PET uptake-room background. Image 1 is the edit target. Change ONLY this existing empty uptake room from night to ordinary calm afternoon daylight. Preserve the EXACT camera, room geometry, doors, three recliner chairs, all curtain tracks and curtain positions, tables, plants, tissue boxes, sink, wall fixtures and floor tiles. Keep the established muted cream/teal palette and coarse pixel treatment. Through the existing window on the left behind the plant and blinds, replace dark night city with pale daytime sky/buildings; let soft natural light gently brighten the same room. Keep ceiling lamps subtle and the quiet normal clinical mood. No patients, no added objects, no new windows, no signs/labels/captions/readable text, no watermark, no smoothing or photorealism. Preserve original 1672 by 941 landscape framing."
+    },
+    {
+      "id": "cg_c5_record_confrontation_v2",
+      "generatedPath": "C:/Users/lvmen/.codex/generated_images/01a125ec-7e88-74b3-bdc4-4d17597d38e9/exec-eb5966fb-4804-4bb4-b089-9da64316c0ba.png",
+      "observed": "Original paper documents foreground; Lei identifiable only on remote monitor; small illegible line marks, no speech balloons.",
+      "path": "C:/Users/lvmen/Documents/New project/trilogy-experience-assets-20261010/cg_c5_record_confrontation_v2.png",
+      "category": "illustration-story",
+      "transparentBackground": false,
+      "referenceIds": [
+        "bg_pet_control",
+        "ch2_pixel_char_lei"
+      ],
+      "referencePaths": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/bg_pet_control.732f8ba8d4ef4a40.webp",
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/ch2_pixel_char_lei.f3965b6cdad7e5d6.webp"
+      ],
+      "prompt": "Use case: illustration-story. Asset type: 16:9 close-up story CG for a coarse-pixel hospital visual novel. Image 1 is setting/palette/style reference: the same provincial PET/CT control room in an off-duty evening. Image 2 is exact identity reference for Lei, the young information technician with dark hair, rectangular glasses and dark navy hoodie. Foreground close-up: an orderly spread of original paper files on the desk, one open proposal sheet, a batch list, a payment receipt, folder edges and a person's ordinary hand keeping the sheets in view. In the same scene a monitor clearly shows Lei REMOTELY participating, chest and head visible, gaze down and tense; he is not physically in the room. His recognizable glasses/hair/hoodie/face must match image 2, no redesign. Preserve the room's muted teal/cream/navy and amber evening lighting, clearly visible chunky pixel edges like existing character art. The scene conveys discovery through paper evidence plus the remote person, no trial theatrics. Documents have understated illegible line marks only, NO rendered words/numbers, no handwritten slogan, no speech balloons, no manager silhouette, no floating UI labels, captions, logo, watermark, photorealism, or smooth painted faces. Wide 16:9 composition."
+    },
+    {
+      "id": "cg_c5_father_letter_v2",
+      "generatedPath": "C:/Users/lvmen/.codex/generated_images/01a125ec-7e88-74b3-bdc4-4d17597d38e9/exec-25461ce3-33d3-44e7-abaf-d32a6d957f92.png",
+      "observed": "Older Xu face/jacket match; seated at waiting table opening letter; ordinary envelope/papers/two document bags; no specimen imagery.",
+      "path": "C:/Users/lvmen/Documents/New project/trilogy-experience-assets-20261010/cg_c5_father_letter_v2.png",
+      "category": "illustration-story",
+      "transparentBackground": false,
+      "referenceIds": [
+        "ch2_pixel_pat_mystery",
+        "bg_pet_center_day_v2"
+      ],
+      "referencePaths": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/ch2_pixel_pat_mystery.e194f860ec43cb60.webp",
+        "C:/Users/lvmen/Documents/New project/trilogy-experience-assets-20261010/bg_pet_center_day_v2.png"
+      ],
+      "prompt": "Use case: illustration-story. Asset type: 16:9 close-up story CG for a coarse-pixel hospital visual novel. Image 1 is exact identity/style reference: older Xu Jianping, tired lined face, dark greying side-parted hair, grey blue patterned jacket and brown shirt/trousers. Image 2 is setting and afternoon-light palette reference. Draw this same elderly man seated at a small ordinary hospital waiting-area table, opening and reading an old letter with both hands. Preserve his recognizable age, face, hair and jacket; he is not a handsome young man, not the bearded homeless elder. On the table are a plain old envelope with folded edges, several verified paper reply sheets and two modest separate document bags; all marks are illegible minimal strokes, no rendered text. A quiet still moment: gaze lowered to the letter, hand gently flattening a fold, restrained grief and concentration. Background teal hospital wall/window and blue waiting seats, daylight; no crowd or other featured person. Match visible chunky pixel outlines, pixel shaded face and surfaces, same muted cream/teal/navy style as references. NO readable text/numbers, speech balloons, captions, logos, watermark, blood, human tissue, clots, anatomy specimen, bizarre symbolic objects, tears streaming, photorealism or smooth painterly face. Wide landscape, 1672 by 941 framing."
+    },
+    {
+      "id": "trilogy_mri_scan_room_v2",
+      "generatedPath": "C:/Users/lvmen/.codex/generated_images/01a125ec-7e88-74b3-bdc4-4d17597d38e9/exec-000cef04-e35f-430b-8d87-377495653fb0.png",
+      "observed": "MRI-like longer magnet housing; empty fixed rails and support visually aligned to original; no moving mattress or patient. Pixel-level motion/occlusion acceptance remains main agent's integration check.",
+      "path": "C:/Users/lvmen/Documents/New project/trilogy-experience-assets-20261010/trilogy_mri_scan_room_v2.png",
+      "category": "precise-object-edit",
+      "transparentBackground": false,
+      "referenceIds": [
+        "ch2_ct_motion_room_v1"
+      ],
+      "referencePaths": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/ch2_ct_motion_room_v1.3e7727b60fc9d2ab.webp"
+      ],
+      "prompt": "Use case: precise-object-edit. Asset type: exact-coordinate 1672 by 941 pixel-art scanning-room BASE layer for a bed-motion animation. Image 1 is the edit target, existing CT motion room. Change ONLY the scanner gantry shell and deeper rear bore from CT to a recognizable long MRI magnet. Critical invariants: keep camera and image size/framing EXACTLY; keep floor grid, lights, cabinets, walls, doors, room equipment and every FIXED empty bed rail/support pixel position unchanged. Keep the front circular aperture's outer position and INNER BORE BOUNDARY at exactly the same x/y as source. The shared occlusion area near x1060..1137,y266..504 must stay aligned, and the empty fixed bed rails point along exactly the original bed-travel direction (+200,-40). No crop, no shift, no zoom, no moved rail. Give the magnet a visibly longer solid rear body extending behind the same front ring, with a deeper static tubular bore and MRI-like smooth magnet housing. Remove CT-specific surface controls if necessary, but no X-ray tube heads, exposed rotating gantry parts, rotating indicators, or CT ring behind it. Keep same low-resolution chunky pixel shading and dark blue/cream clinical room lighting. NO moving tabletop/mattress, NO patient, NO new table, NO people, NO coils on the bed, no text/logos/watermarks. The visible structure under the rail is the unchanged fixed bed support, not a newly drawn patient table. This is a still background, not an animation frame or diagram."
+    },
+    {
+      "id": "trilogy_pet_scan_room_v2",
+      "generatedPath": "C:/Users/lvmen/.codex/generated_images/01a125ec-7e88-74b3-bdc4-4d17597d38e9/exec-c9df84e3-2080-4766-b92e-16e6b3575f5e.png",
+      "observed": "Longer rear detector shell behind front ring; fixed rails/bore visually aligned; no moving mattress or patient. Pixel-level motion/occlusion acceptance remains main agent's integration check.",
+      "path": "C:/Users/lvmen/Documents/New project/trilogy-experience-assets-20261010/trilogy_pet_scan_room_v2.png",
+      "category": "precise-object-edit",
+      "transparentBackground": false,
+      "referenceIds": [
+        "ch2_ct_motion_room_v1"
+      ],
+      "referencePaths": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/ch2_ct_motion_room_v1.3e7727b60fc9d2ab.webp"
+      ],
+      "prompt": "Use case: precise-object-edit. Asset type: exact-coordinate 1672 by 941 pixel-art PET/CT scanning-room BASE layer for a bed-motion animation. Image 1 is the edit target, existing CT motion room. Change ONLY the scanner gantry shell and deeper rear detector body to a long hybrid PET/CT scanner with a front CT ring and visibly longer detector section behind it. Critical invariants: same EXACT camera, perspective, canvas size and framing; all cabinets, lights, walls, floor grid, room fixtures, doors and fixed empty bed rail/support positions unchanged. Preserve the SAME front gantry position and INNER BORE BOUNDARY at the same x/y coordinates as the source. Shared occlusion near x1060..1137,y266..504 stays aligned, and original bed-travel direction is (+200,-40). No crop, no shift, no zoom, no rail movement. Make the posterior body noticeably longer than a thin CT doughnut, with an additional detector housing section behind the front ring and a deeper empty axial opening. Match original cream/dark blue muted palette and chunky coarse pixel shading. No gamma-camera arms, no exposed X-ray heads, no flashy radiation rays. NO moving tabletop/mattress, NO patient, NO newly drawn table, NO people, no text/logos/watermarks. Existing fixed support and rail stay exactly as shown; main application overlays its separate transparent moving bed. Static background only."
+    },
+    {
+      "id": "item_c5_postcard_v2",
+      "generatedPath": "C:/Users/lvmen/.codex/generated_images/01a125ec-7e88-74b3-bdc4-4d17597d38e9/exec-c51f75f6-8367-41e1-afac-6eadd6a68072.png",
+      "observed": "Single postcard hospital/ginkgo picture, no words; isolated transparent icon.",
+      "path": "C:/Users/lvmen/Documents/New project/trilogy-experience-assets-20261010/item_c5_postcard_v2.png",
+      "category": "stylized-concept",
+      "transparentBackground": true,
+      "referenceIds": [
+        "item_book"
+      ],
+      "referencePaths": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/item_book.9b32669caa358e79.webp"
+      ],
+      "prompt": "Use case: stylized-concept. Asset type: small game inventory item icon, genuinely transparent alpha background. Image 1 is pixel game item style reference only. Draw one actual rectangular provincial-hospital postcard, slightly tilted in three-quarter view, isolated with generous transparent padding. On its front is a tiny simple pixel picture of a normal hospital exterior with a yellow ginkgo tree, framed by a cream paper border. All remaining paper areas are BLANK, absolutely no writing, words, letters, numbers, logos or marks pretending to be text. Clear coarse pixel edges, dark outline, restrained cream/teal/navy with golden tree palette, shaded like the existing game item art, readable silhouette at thumbnail size. No scene background, no hands, no second postcard, no envelope, no drop-shadow rectangle, no checkerboard painted into image, no photorealism or smooth vector look. Actual transparent background, not white."
+    },
+    {
+      "id": "item_c5_seedpot_v2",
+      "generatedPath": "C:/Users/lvmen/.codex/generated_images/01a125ec-7e88-74b3-bdc4-4d17597d38e9/exec-fc3e2ccc-6c04-4bdb-a8f9-007e873e2667.png",
+      "observed": "Empty terracotta pot with saucer, no plant or flower; isolated transparent icon.",
+      "path": "C:/Users/lvmen/Documents/New project/trilogy-experience-assets-20261010/item_c5_seedpot_v2.png",
+      "category": "stylized-concept",
+      "transparentBackground": true,
+      "referenceIds": [
+        "item_book"
+      ],
+      "referencePaths": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/item_book.9b32669caa358e79.webp"
+      ],
+      "prompt": "Use case: stylized-concept. Asset type: small game inventory item icon, genuinely transparent alpha background. Image 1 is pixel game object style reference only. Draw one small empty terracotta seedling pot with its matching shallow detachable saucer beneath it, slightly three-quarter view so the open empty dark interior and thick round rim are visible. This is the actual gardening object before planting: NO plant, leaves, sprout, flowers, stems, seeds floating above it, or decorated face. Simple muted reddish brown ceramic, dark coarse-pixel outline and restrained pixel-shaded highlights matching existing game item art, clear silhouette at thumbnail size and generous transparent padding. No soil spill, extra tools, hands, words, letters, labels, logos or background scene. No painted checkerboard or opaque backdrop, no photorealism, no smooth vector style. Actual transparent alpha background."
+    },
+    {
+      "id": "bg_waiting_day_v2",
+      "generatedPath": "C:/Users/lvmen/.codex/generated_images/01a125ec-7e88-74b3-bdc4-4d17597d38e9/exec-c2b22b84-2218-4a21-869a-37aa81205d7f.png",
+      "observed": "Existing daylight normalized to clear afternoon; same chairs/reception/clock/plant/trolley; no new people or readable labels/AI footer.",
+      "path": "C:/Users/lvmen/Documents/New project/trilogy-experience-assets-20261010/bg_waiting_day_v2.png",
+      "category": "lighting-weather",
+      "transparentBackground": false,
+      "referenceIds": [
+        "bg_waiting"
+      ],
+      "referencePaths": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/bg_waiting.e9b68c8f6d71b8e7.webp"
+      ],
+      "cause": "Integration found shared waiting-room background remains too dim for new ultrasound/MRI afternoon scenes; create independent daytime ID without changing Chapter 1/2 original asset.",
+      "prompt": "Use case: lighting-weather. Asset type: 16:9 pixel-art hospital waiting-room background, an independent daytime variant of the existing scene. Image 1 is the edit target. Preserve the EXACT camera, crop, room perspective, floor tile grid, all chair rows, reception window/counter, doors, clock position, wall poster/sign panel shapes, brochure rack, plant and cleaning trolley locations. The existing source already has some sunlight: make it ordinary clear afternoon clinical daylight with balanced brightness, natural pale sky through the SAME left windows and softly bright indoor surfaces, keeping the original muted green/cream/navy pixel palette. Keep the room empty, with no newly added people, instruments, scenery or windows. Do not redesign or rearrange anything. No captions, no speech balloons, no logos or AI watermark/footer; remove the small existing AI caption area cleanly. Existing sign panels can retain their shapes and minimal indistinct marks, but no new readable labels or renderable words. Keep coarse visible pixel treatment and dark contours, not photorealism or smooth illustration. Same full 2048 by 1152 wide landscape framing, no borders or cropping.",
+      "metadata": {
+        "id": "bg_waiting_day_v2",
+        "width": 1672,
+        "height": 941,
+        "hasAlpha": false
+      }
+    },
+    {
+      "id": "bg_corridor_day_v2",
+      "generatedPath": "C:/Users/lvmen/.codex/generated_images/01a125ec-7e88-74b3-bdc4-4d17597d38e9/exec-3567c6bf-223d-470c-9b5e-28f17419dedb.png",
+      "observed": "Night windows changed to daylight; same elevator/doors/rails/empty gurney; original letterbox areas retained without old caption; no new people.",
+      "path": "C:/Users/lvmen/Documents/New project/trilogy-experience-assets-20261010/bg_corridor_day_v2.png",
+      "category": "lighting-weather",
+      "transparentBackground": false,
+      "referenceIds": [
+        "bg_corridor"
+      ],
+      "referencePaths": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/bg_corridor.970560e65398bdf4.webp"
+      ],
+      "cause": "Integration found generic night corridor still used during new ultrasound/MRI day scenes; create independent daytime ID without changing Chapter 1/2 original asset.",
+      "prompt": "Use case: lighting-weather. Asset type: 16:9 coarse-pixel hospital corridor background. Image 1 is the edit target. Change ONLY the environmental lighting from night to ordinary afternoon daylight. Preserve the EXACT camera, crop, perspective, ceiling grid, doors, central elevator, floor tiles, wall railings, signs' rectangular positions, plant and the existing empty wheeled gurney/bed on the left. No covered equipment is present here; do not add any. Keep muted teal/cream/navy palette and chunky pixel shaded surfaces. Through the SAME existing windows on the left, show pale daylight sky and daytime distant buildings instead of night stars/building lights; let natural daylight brighten the open corridor and floor while ceiling lamps remain subtle. No added patients, staff, new windows, new equipment, changed furniture or rearrangement. No new readable labels, captions, speech balloons, logos or AI footer; remove the old small AI caption cleanly, and leave wall sign shapes understated/indistinct rather than inventing readable words. Preserve original 2048 by 1152 full wide landscape frame, no crop, borders, photorealism or smooth painterly blur.",
+      "metadata": {
+        "id": "bg_corridor_day_v2",
+        "width": 1672,
+        "height": 941,
+        "hasAlpha": false
+      }
+    }
+  ],
+  "limitations": [
+    "Image-generation visual inspection is not a browser integration review.",
+    "MRI/PET scanner backgrounds preserve original camera and fixed rail/bore positions visually. Main agent must check motion/occlusion alignment against shared coordinates before accepting.",
+    "The seed-pot asset requested by main agent is empty terracotta with saucer; earlier story text says folding pot and requires naming/action wording reconciliation.",
+    "Formal assets/catalogs/audio/build/test files were not edited by this media task."
+  ]
+}
