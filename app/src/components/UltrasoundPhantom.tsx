@@ -7,6 +7,8 @@ export interface UltrasoundPhantomProps {
   gain: number
   depth: number
   probe: string
+  /** Depth compensation in dB at the bottom of the field; default preserves old views. */
+  tgc?: number
 }
 
 type ProbeKind = 'linear' | 'convex' | 'phased'
@@ -179,6 +181,7 @@ export function renderUltrasoundPhantom(input: UltrasoundPhantomProps, width = 5
       const attenuation = Math.exp(-ray.distance * (.004 + profile.frequency * .001))
       const envelope = Math.hypot(real, imag) * attenuation * ultrasoundTransmission(ray)
       const db = 20 * Math.log10(Math.max(.00005, envelope)) + params.gainDb - 8
+        + (input.tgc ?? 0) * ray.distance / params.depthMm
       const gray = Math.round(255 * clamp((db + 45) / 45, 0, 1))
       pixels[index] = gray; pixels[index + 1] = gray; pixels[index + 2] = gray
     }
@@ -188,11 +191,11 @@ export function renderUltrasoundPhantom(input: UltrasoundPhantomProps, width = 5
 
 export function UltrasoundPhantom(props: UltrasoundPhantomProps) {
   const canvas = useRef<HTMLCanvasElement>(null)
-  const { position, gain, depth, probe } = props
+  const { position, gain, depth, probe, tgc } = props
   useEffect(() => {
     const context = canvas.current?.getContext('2d')
     if (!context) return
-    const frame = renderUltrasoundPhantom({ position, gain, depth, probe })
+    const frame = renderUltrasoundPhantom({ position, gain, depth, probe, tgc })
     context.putImageData(new ImageData(frame.pixels, frame.width, frame.height), 0, 0)
     const { params: p, geometry: g } = frame
     context.font = '12px ui-monospace, monospace'
@@ -221,7 +224,7 @@ export function UltrasoundPhantom(props: UltrasoundPhantomProps) {
     context.fillText(`${p.probe.label} · 模体切面`, 14, 373)
     context.textAlign = 'right'
     context.fillText(`位置 ${p.positionMm >= 0 ? '+' : ''}${p.positionMm.toFixed(1)} mm`, 498, 373)
-  }, [position, gain, depth, probe])
+  }, [position, gain, depth, probe, tgc])
   return <canvas ref={canvas} width={512} height={384} data-ultrasound-phantom
     role="img" aria-label={`${probe}探头的教学模体B模式切面，位置、深度与增益随控件变化`}
     style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block', maxWidth: '100%', maxHeight: '100%' }} />

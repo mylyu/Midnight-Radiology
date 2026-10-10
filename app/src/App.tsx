@@ -53,6 +53,7 @@ import { FullscreenBtn } from './components/FullscreenButton'
 import { enterFullscreenLandscape } from './lib/fullscreen'
 import { DIALOGUE_CHARACTER_MS, DIALOGUE_CHOICE_BUFFER_MS, waitForDialogueChoices } from './game/dialogue-timing'
 import type { TrilogyId } from './game/trilogy-types'
+import { trilogyVisibleChanges } from './game/trilogy-feedback'
 import { initializeTrilogy } from './game/trilogy-session'
 const TrilogyEntry = lazy(() => import('./components/TrilogyEntry'))
 const TrilogyVerifier = lazy(() => import('./components/TrilogyScreen').then(module => ({ default: module.TrilogyVerify })))
@@ -212,7 +213,7 @@ export default function App() {
     saveState(next)
     renderState(next)
     if (['night', 'day', 'quiz', 'epilogue', 'chapterEnd', 'ch2', 'ldct', 'trilogy'].includes(screen)) {
-      const changes = statChanges(prev, next, screen === 'ch2' || screen === 'trilogy')
+      const changes = screen === 'trilogy' ? trilogyVisibleChanges(prev, next, trilogyId) : statChanges(prev, next, screen === 'ch2')
       const message = giftFeedback(prev, next)
       if (changes.length || message) {
         const now = Date.now()

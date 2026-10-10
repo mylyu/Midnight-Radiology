@@ -1,6 +1,23 @@
 import type { GameState, Step, Ch2QuizProgress } from './types'
 
 export type TrilogyId = 'ch3' | 'ch4' | 'ch5'
+export interface TrilogyScanConfig {
+  kind: 'ultrasound' | 'mri' | 'pet'
+  label: string
+  image?: string
+  durationMs?: number
+  sound?: string
+}
+export interface TrilogyShopItem {
+  id: string
+  name: string
+  price: number
+  desc: string
+  image?: string
+  /** Actual one-time use receipt, not a promise to give the item a use later. */
+  use?: string
+  lastShift?: number
+}
 export interface TrilogyTool {
   kind: 'ultrasound' | 'mri' | 'pet'
   title: string
@@ -9,11 +26,16 @@ export interface TrilogyTool {
   reference?: string
   images?: Record<string, string>
   /** A small, concrete task. Runtime provides one principal interaction. */
-  task: 'probe' | 'gain' | 'depth' | 'sequence' | 'artifact' | 'fusion' | 'decay'
+  task: 'probe' | 'gain' | 'depth' | 'echo' | 'tgc' | 'm_mode' | 'doppler' | 'resolution'
+    | 'sequence' | 'artifact' | 'mri-relax' | 'mri-encoding' | 'mri-sampling'
+    | 'fusion' | 'decay' | 'collimator' | 'spect' | 'coincidence' | 'counting'
+  variant?: string
   help: string
   next: string
 }
 export interface TrilogyStep extends Step {
+  voice?: string
+  scan?: TrilogyScanConfig
   tool?: TrilogyTool
   /** Gifts offered only while this colleague is physically present. */
   giftTo?: string
@@ -49,6 +71,7 @@ export interface TrilogyChapter {
   book: { title: string; body: string }[]
   quiz: { q: string; options: string[]; answer: number; explain: string }[]
   assets: string[]
+  shopItems?: TrilogyShopItem[]
   /** Exact previous-history checks; missing flags never invent memories. */
   adapt?: (id: string, step: TrilogyStep, state: GameState) => TrilogyStep
 }
@@ -67,8 +90,11 @@ export interface TrilogyProgress {
   shop: { shift: number; lotteryCount: number; buyCount: number }
   pendingCoffee?: boolean
   quiz?: Ch2QuizProgress
+  /** Freeze wording/answers for an in-progress assessment across content updates. */
+  quizContent?: TrilogyChapter['quiz']
   certificate?: { name: string; studentId: string; grade: string; code: string; gold: number; badgeCount: number }
   done?: boolean
   viewBg?: string
   heardCues?: string[]
+  scans?: Record<string, { startedAt: number; completed?: boolean }>
 }

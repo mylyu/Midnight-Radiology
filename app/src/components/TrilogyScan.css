@@ -1,0 +1,12 @@
+.trilogy-scan .ch2-scan-panel{width:min(100%,820px)}
+.trilogy-scan-pictures{display:grid;grid-template-columns:1.15fr .85fr;gap:16px;align-items:center;margin:12px 0}
+.trilogy-device-picture{display:block;width:100%;border:2px solid #536c83;background:#142637;image-rendering:pixelated}
+.trilogy-scan .ch2-ct-motion{position:relative;inset:auto;aspect-ratio:1672/941}
+.trilogy-scan-monitor{position:relative;aspect-ratio:1;overflow:hidden;border:3px solid #536c83;background:#020912}
+.trilogy-scan-monitor img{width:100%;height:100%;object-fit:contain;image-rendering:pixelated}
+.trilogy-scan-monitor>small{position:absolute;bottom:5px;left:0;right:0;color:#a6d3cd;background:#03131ddb;margin:0;padding:4px}
+.trilogy-scan-sweep{position:absolute;left:0;right:0;height:2px;background:#66d8ca;box-shadow:0 0 8px #7cdacf}
+.trilogy-scan-data-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:15%;height:100%}
+.trilogy-scan-data-grid i{border:3px solid #547383;background:repeating-radial-gradient(ellipse at center,#9bb9be 0 5px,#1d3f50 6px 12px);transition:opacity .12s}
+@media(max-width:600px){.trilogy-scan-pictures{grid-template-columns:1.05fr .95fr;gap:8px}.trilogy-scan .ch2-scan-panel{padding:16px 12px}}
+@media(max-height:500px){.trilogy-scan-pictures{max-width:430px;margin:5px auto;grid-template-columns:1.35fr .65fr}.trilogy-scan-monitor{max-height:130px}.trilogy-scan .ch2-scan-phase{margin:5px 0}.trilogy-scan .ch2-scan-controls{margin:0}}

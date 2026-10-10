@@ -4,7 +4,7 @@ import './LdctCinematic.css'
 
 /** A quiet camera beat inside the normal shared dialogue stage. It neither
  * captures input nor owns playback/state: click-to-advance stays unchanged. */
-export function LdctCinematic({ scene }: { scene: Scene }) {
+export function LdctCinematic({ scene }: { scene: Pick<Scene, 'image' | 'alt' | 'motion' | 'locked'> & { id: string } }) {
   return <figure className={`ldct-cinematic ldct-cinematic--${scene.motion}`}
     data-ldct-cinematic={scene.id}>
     <div className="ldct-cinematic__frame">

@@ -4,6 +4,12 @@
 .trilogy-root .dialog-box { background:rgba(15,23,42,.96); }
 .trilogy-root .dialog-box p { min-height:5.4rem; }
 .trilogy-root button { touch-action:manipulation; }
+.trilogy-root .ldct-cinematic{top:calc(var(--trilogy-header-height,76px) + 8px);bottom:calc(var(--trilogy-dialog-height,14rem) + 8px)}
+.trilogy-root .trilogy-lab{top:calc(var(--trilogy-header-height,76px) + 8px)}
+.trilogy-root .trilogy-story-image{top:calc(var(--trilogy-header-height,76px) + 8px)}
+.trilogy-root .trilogy-communication{top:calc(var(--trilogy-header-height,76px) + 8px)}
+.trilogy-root .trilogy-settlement{top:var(--trilogy-header-height,55px)}
+.trilogy-root .trilogy-quiz{top:var(--trilogy-header-height,55px)}
 .trilogy-root h1 { font-size:clamp(1.45rem,3vw,2.5rem); margin:.6rem 0; }
 .trilogy-root h2 { font-size:clamp(1.2rem,2.6vw,1.75rem); font-weight:bold; margin:.4rem 0; }
 .trilogy-root h3 { font-weight:bold; margin:.3rem 0; }

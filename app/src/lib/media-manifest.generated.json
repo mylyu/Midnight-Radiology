@@ -141,19 +141,24 @@
       "bytes": 91444,
       "type": "image"
     },
+    "assets/media/bg_mri_control_day_v2.433d4fc168a68d35.webp": {
+      "sha256": "433d4fc168a68d35fa7e2a2f6bbc3d52fefd479955e9331e76aacea8bad45e5f",
+      "bytes": 115470,
+      "type": "image"
+    },
     "assets/media/bg_mri_control.a7a487b3b338c023.webp": {
       "sha256": "a7a487b3b338c0236c85158351c1120694efd7aca73738b5d0881478e8508a9e",
       "bytes": 94116,
       "type": "image"
     },
-    "assets/media/bg_mri_corridor.970ab447960babb7.webp": {
-      "sha256": "970ab447960babb7018e4d32375355f9bc8d985694989961873a701ba65b832a",
-      "bytes": 98000,
+    "assets/media/bg_mri_corridor_day_v2.f51979fbd08e5b37.webp": {
+      "sha256": "f51979fbd08e5b3722373554d2ffe8a56d658b2a7647348bc7b677a2ae7bdd6d",
+      "bytes": 119370,
       "type": "image"
     },
-    "assets/media/bg_mri_room.6d8ea59ca90dc81c.webp": {
-      "sha256": "6d8ea59ca90dc81c3fbd782e44a3f1bb1aa62612b0e71348c4d512dbafd56c22",
-      "bytes": 87884,
+    "assets/media/bg_mri_room_day_v2.39a786d764c27e95.webp": {
+      "sha256": "39a786d764c27e95f44e15aeb0f90be001ede7bf8a1d0c1e0224bdbb2733c633",
+      "bytes": 116802,
       "type": "image"
     },
     "assets/media/bg_office_day.c715845d3a833f50.webp": {
@@ -166,9 +171,19 @@
       "bytes": 84710,
       "type": "image"
     },
+    "assets/media/bg_pet_center_day_v2.aa08153d66fe8d36.webp": {
+      "sha256": "aa08153d66fe8d363072b9715f91efd787acf04a8b900946cda52e8beda14b74",
+      "bytes": 124376,
+      "type": "image"
+    },
     "assets/media/bg_pet_center.2ed19ed53beaa014.webp": {
       "sha256": "2ed19ed53beaa014e7aecaff994b8bad6d8b9babe9300d434dd111bbf9266633",
       "bytes": 120190,
+      "type": "image"
+    },
+    "assets/media/bg_pet_control_day_v2.6785d105847f6a06.webp": {
+      "sha256": "6785d105847f6a06788e8be491cc7cf7922a48fa2790c457bf93f0e32d2e17a9",
+      "bytes": 118334,
       "type": "image"
     },
     "assets/media/bg_pet_control.732f8ba8d4ef4a40.webp": {
@@ -179,6 +194,11 @@
     "assets/media/bg_pet_dorm.141b67012c64c34f.webp": {
       "sha256": "141b67012c64c34f1b91aa74fb3c0ea85470447f7bb34cc2030ea8730183626f",
       "bytes": 59394,
+      "type": "image"
+    },
+    "assets/media/bg_pet_uptake_day_v2.bdd0c7f9ea0aac55.webp": {
+      "sha256": "bdd0c7f9ea0aac553af63fb9646f7aec2125308451e51345aa0f88a86aefbd5c",
+      "bytes": 86530,
       "type": "image"
     },
     "assets/media/bg_pet_uptake.6946ca90801a68d5.webp": {
@@ -196,6 +216,11 @@
       "bytes": 101000,
       "type": "image"
     },
+    "assets/media/bg_us_bedside_day_v2.9b96cb6b99da0569.webp": {
+      "sha256": "9b96cb6b99da0569b1c5a1eafa1ef3a44005976bca38f3289d6728627bd9d268",
+      "bytes": 125032,
+      "type": "image"
+    },
     "assets/media/bg_us_bedside.65b0e5346b0444f3.webp": {
       "sha256": "65b0e5346b0444f371efeca339e9b421e013acec8d07b074bab767796ef72c69",
       "bytes": 101000,
@@ -211,6 +236,11 @@
       "bytes": 91744,
       "type": "image"
     },
+    "assets/media/bg_waiting_day_v2.30916f32479aad55.webp": {
+      "sha256": "30916f32479aad55a9e7b06997cf97ff6b95fff9c6b78dda24eea6a002794193",
+      "bytes": 147236,
+      "type": "image"
+    },
     "assets/media/bg_waiting.e9b68c8f6d71b8e7.webp": {
       "sha256": "e9b68c8f6d71b8e77c89304efbfcd7f3e247a5949157a7aa3a93b1736e5650b0",
       "bytes": 213618,
@@ -219,6 +249,41 @@
     "assets/media/bg_xrayroom.bfd0e0a881cb1966.webp": {
       "sha256": "bfd0e0a881cb1966aa791a73c1e809556c68745ae49c610f7a94aae2212d6bfe",
       "bytes": 90068,
+      "type": "image"
+    },
+    "assets/media/cg_c3_mei_probe_v2.91a5dd021ce3cd86.webp": {
+      "sha256": "91a5dd021ce3cd86ea3b9433a54832136a9225730d5d91e0759c84e737a70792",
+      "bytes": 117848,
+      "type": "image"
+    },
+    "assets/media/cg_c3_shared_lunch_v2.b955cff09bde3231.webp": {
+      "sha256": "b955cff09bde32319e052c75dc68385868e34c3341e2433e60c67647d4684fd6",
+      "bytes": 184330,
+      "type": "image"
+    },
+    "assets/media/cg_c4_first_mri_v2.586da62385ee8335.webp": {
+      "sha256": "586da62385ee8335bc602d2adc7c6b632ade43af586eaeb1d4d4bc75e10c3f49",
+      "bytes": 149748,
+      "type": "image"
+    },
+    "assets/media/cg_c4_luo_records_v2.5c9aa4441a82f444.webp": {
+      "sha256": "5c9aa4441a82f444cd2863a938062540de971dfd31492d63361fa0b6883ca7c4",
+      "bytes": 177934,
+      "type": "image"
+    },
+    "assets/media/cg_c5_father_letter_v2.3339007d3ea5ee82.webp": {
+      "sha256": "3339007d3ea5ee8279131e6bd1036bacb8b779a2541e6a55a139269009605480",
+      "bytes": 99760,
+      "type": "image"
+    },
+    "assets/media/cg_c5_record_confrontation_v2.58dc6bc870396eec.webp": {
+      "sha256": "58dc6bc870396eec4259045b893e6beeaf4a060590d3876747d2767f08e8832f",
+      "bytes": 131140,
+      "type": "image"
+    },
+    "assets/media/cg_c5_zhou_handoff_v2.69d20e91baabcb3b.webp": {
+      "sha256": "69d20e91baabcb3b8394b7b45687b3ac5c08bfd3abee9bea87d52613539e9a84",
+      "bytes": 143814,
       "type": "image"
     },
     "assets/media/ch2_aorta_volume_cutaway_v1.e88db59e537282d3.webp": {
@@ -901,6 +966,36 @@
       "bytes": 7214,
       "type": "image"
     },
+    "assets/media/item_c3_stickers_v2.b35847e64c82b2bb.webp": {
+      "sha256": "b35847e64c82b2bbdb9a6548133fdd69d07e89ec4e55cfafbed5f8dca69965a1",
+      "bytes": 11238,
+      "type": "image"
+    },
+    "assets/media/item_c3_towel_v2.92f1004b08a1e808.webp": {
+      "sha256": "92f1004b08a1e80837753c716d41e8300c9ef3a7a4f7dd9a66089736107de266",
+      "bytes": 5128,
+      "type": "image"
+    },
+    "assets/media/item_c4_postcard_v2.d263f500ee425af9.webp": {
+      "sha256": "d263f500ee425af97e14670a762b50b473510e65d76a4cb374e442df09008eda",
+      "bytes": 6092,
+      "type": "image"
+    },
+    "assets/media/item_c4_sleepmask_v2.a7ef5bb4ad5aa4b2.webp": {
+      "sha256": "a7ef5bb4ad5aa4b2d10c3ccdc0e6806eaee57874fe082e1158b63242f4936af5",
+      "bytes": 5460,
+      "type": "image"
+    },
+    "assets/media/item_c5_postcard_v2.3ce9084b7052e95b.webp": {
+      "sha256": "3ce9084b7052e95b2ea6e40500e7f6df4000199bd96898588ee05ecb4e7473c6",
+      "bytes": 12974,
+      "type": "image"
+    },
+    "assets/media/item_c5_seedpot_v2.e7d528773b70325b.webp": {
+      "sha256": "e7d528773b70325b4df8ee81e97153f27db3116459703347fe3c486e1c8d9b2e",
+      "bytes": 6486,
+      "type": "image"
+    },
     "assets/media/item_coffee.4368d5294285e799.webp": {
       "sha256": "4368d5294285e79918ee47f93f0c90bcacb6464d3300e2e685729606f7f7e4d4",
       "bytes": 4360,
@@ -1301,6 +1396,16 @@
       "bytes": 106542,
       "type": "image"
     },
+    "assets/media/trilogy_mri_scan_room_v2.9a88aedeec7a2d16.webp": {
+      "sha256": "9a88aedeec7a2d1667f06cab3681c255318f88102dfb056527f9fcdb468fb664",
+      "bytes": 77834,
+      "type": "image"
+    },
+    "assets/media/trilogy_pet_scan_room_v2.5523d54bf0e65221.webp": {
+      "sha256": "5523d54bf0e652215f92a74cebc15c0f66830b5650c8f923d3eee257ca67b3e7",
+      "bytes": 85710,
+      "type": "image"
+    },
     "assets/media/us_breast.6d5c0b7164110c12.webp": {
       "sha256": "6d5c0b7164110c12778e108a3001e2c5a0efe564a56799fd6438975dd5686ae0",
       "bytes": 47890,
@@ -1426,6 +1531,21 @@
       "bytes": 24703,
       "type": "audio"
     },
+    "audio/trilogy_mri_scan_v2.mp3": {
+      "sha256": "0430517d7b654d6c79c0d5bfc217e9210e7398400ad1136ec1fbf9315d90f062",
+      "bytes": 18525,
+      "type": "audio"
+    },
+    "audio/trilogy_pet_scan_v2.mp3": {
+      "sha256": "171cc21999e0e2a03a29c558fd1102a8bc07b4b9a4b740c3c6e7a04b6a16f266",
+      "bytes": 18525,
+      "type": "audio"
+    },
+    "audio/trilogy_us_scan_v2.mp3": {
+      "sha256": "34b4cbbfd6daf6da9196f1ed450bdd52ec635bb7d2300e635540294b86cff18e",
+      "bytes": 18525,
+      "type": "audio"
+    },
     "audio/vox_aunt.mp3": {
       "sha256": "40e4b5ee50c11af0f24b4556eefa4e8f83219096b2818359623344425cf8b9f5",
       "bytes": 21933,
@@ -1434,6 +1554,56 @@
     "audio/vox_bai.mp3": {
       "sha256": "84b8bcc12159a6d2d909a2250f3eaaf7f3c6c2fc724b167660ea1691ca101451",
       "bytes": 26541,
+      "type": "audio"
+    },
+    "audio/vox_c3_cousin_v2.mp3": {
+      "sha256": "937993ca536dcad8d54786142833a7303513093091c4bed76a5c4c8ae938cb4a",
+      "bytes": 11325,
+      "type": "audio"
+    },
+    "audio/vox_c3_gallstone_v2.mp3": {
+      "sha256": "6a394752e10b53e7e93b6a27740bbe7b6a83647246d44f32e69b5ad786cf072e",
+      "bytes": 7005,
+      "type": "audio"
+    },
+    "audio/vox_c3_mei_v2.mp3": {
+      "sha256": "7e3a7074448476eb974699c26f4c6d23a705880c5cc8b22693cee49d38dac44c",
+      "bytes": 10461,
+      "type": "audio"
+    },
+    "audio/vox_c3_wang_v2.mp3": {
+      "sha256": "a444df526ac52239ae47412980790f4cb36c75c2cd9c272540d9171b88f39763",
+      "bytes": 7005,
+      "type": "audio"
+    },
+    "audio/vox_c4_song_v2.mp3": {
+      "sha256": "fb68df6d5e7bdfaf5e153ecca8220bd5c8fa000caed6d32b1b983cc90bba6b1f",
+      "bytes": 7293,
+      "type": "audio"
+    },
+    "audio/vox_c4_wrist_v2.mp3": {
+      "sha256": "8f19c41dcedf1100d3d70d22c94ec5e281f4cca5dfc9ea010341176d53ae5358",
+      "bytes": 10893,
+      "type": "audio"
+    },
+    "audio/vox_c4_xuning_v2.mp3": {
+      "sha256": "c99c9df04d487a2b047101d45f27793817096fa994698f423cf7f0ae26ea6903",
+      "bytes": 10029,
+      "type": "audio"
+    },
+    "audio/vox_c5_gu_v2.mp3": {
+      "sha256": "0f8e66685ac44015848bce4288f2a96b72e4f19da320e08924ef4b52102d7c18",
+      "bytes": 14493,
+      "type": "audio"
+    },
+    "audio/vox_c5_ning_v2.mp3": {
+      "sha256": "83c43be110865f4f25ec5416fe02d910663a99e6438c0c85c9ad03e714c2b095",
+      "bytes": 8301,
+      "type": "audio"
+    },
+    "audio/vox_c5_qian_v2.mp3": {
+      "sha256": "9fefa1b24e14fa0714c34a824afe86c8fce7c5acca23345d70a87cd828581f05",
+      "bytes": 7725,
       "type": "audio"
     },
     "audio/vox_ch1_fan_mature_20260923.mp3": {
@@ -1589,6 +1759,51 @@
     "audio/vox_tang.mp3": {
       "sha256": "3b7f695898a4ba2365c7d95aa9f9695716f56780567178db2ca7a0416f72e01b",
       "bytes": 44973,
+      "type": "audio"
+    },
+    "audio/vox_trilogy_aunt_v2.mp3": {
+      "sha256": "dfaf45e6de274dd371b6786b878afa8c5d6ee041f8c4f92cfbabd67cf989c159",
+      "bytes": 12477,
+      "type": "audio"
+    },
+    "audio/vox_trilogy_director_v2.mp3": {
+      "sha256": "b2813bf1c5a63141f5aa602cb99a006d180cc92f0850a2542155dc18c504facd",
+      "bytes": 14349,
+      "type": "audio"
+    },
+    "audio/vox_trilogy_han_v2.mp3": {
+      "sha256": "9e6a81dc8ddb3f78290fed8979400c16314bc3235151a395a853d79f70645e34",
+      "bytes": 7869,
+      "type": "audio"
+    },
+    "audio/vox_trilogy_he_v2.mp3": {
+      "sha256": "400b63f35957998d11d0baeb7144ed0f4e14b89590d27fcea926c28d9f40bade",
+      "bytes": 10605,
+      "type": "audio"
+    },
+    "audio/vox_trilogy_luo_v2.mp3": {
+      "sha256": "e1a6ea193c09d27172f6848b29064d2edd7c4ca46778a155cf3ce4e8d4a46221",
+      "bytes": 11757,
+      "type": "audio"
+    },
+    "audio/vox_trilogy_mystery_v2.mp3": {
+      "sha256": "71cf1b80d786aafa519e8c10a3010a2bfa2b593d83d6266628676f2f8d66ca9c",
+      "bytes": 11901,
+      "type": "audio"
+    },
+    "audio/vox_trilogy_tang_v2.mp3": {
+      "sha256": "9bc56e0f49dcf8a8da6c3b89ba9ca0e2a3aef556ba1d50f3ffdd4120b205a042",
+      "bytes": 12621,
+      "type": "audio"
+    },
+    "audio/vox_trilogy_wen_v2.mp3": {
+      "sha256": "01d283a5b4d1bc4e685236ac2737319d29e4708845683ace64f4ad59f51879a4",
+      "bytes": 10749,
+      "type": "audio"
+    },
+    "audio/vox_trilogy_zhou_v2.mp3": {
+      "sha256": "428b24bef9bdfb5cdf0232e2225b040fb4eeeee1fd2e72c6db19318421615f78",
+      "bytes": 12477,
       "type": "audio"
     },
     "audio/vox_wen.mp3": {
@@ -1867,15 +2082,16 @@
       "audio/vox_kid.mp3"
     ],
     "ch3": [
-      "assets/media/bg_breakroom.6e71e372d1ef1b9d.webp",
-      "assets/media/bg_corridor.970560e65398bdf4.webp",
       "assets/media/bg_day.bb8e2f2392fbc58a.webp",
-      "assets/media/bg_office.a9e1a85d95a882a3.webp",
       "assets/media/bg_office_day.c715845d3a833f50.webp",
       "assets/media/bg_us_bedside.65b0e5346b0444f3.webp",
+      "assets/media/bg_us_bedside_day_v2.9b96cb6b99da0569.webp",
       "assets/media/bg_us_room.59a9ab618e29e031.webp",
       "assets/media/bg_us_room_day.33d4b0ae483eea87.webp",
-      "assets/media/bg_waiting.e9b68c8f6d71b8e7.webp",
+      "assets/media/bg_waiting_day_v2.30916f32479aad55.webp",
+      "assets/media/cg_c3_mei_probe_v2.91a5dd021ce3cd86.webp",
+      "assets/media/cg_c3_shared_lunch_v2.b955cff09bde3231.webp",
+      "assets/media/ch2_bg_breakroom_day.194c9d3ccafbe9ff.webp",
       "assets/media/char_han.16470d2a0c45282b.webp",
       "assets/media/char_he.49cf19abecad1659.webp",
       "assets/media/char_lei.a046af659f74363b.webp",
@@ -1884,6 +2100,8 @@
       "assets/media/char_wen.afb4dcae9314954d.webp",
       "assets/media/char_zhou.6654ff12eb3e23ca.webp",
       "assets/media/item_book.9b32669caa358e79.webp",
+      "assets/media/item_c3_stickers_v2.b35847e64c82b2bb.webp",
+      "assets/media/item_c3_towel_v2.92f1004b08a1e808.webp",
       "assets/media/item_coffee.4368d5294285e799.webp",
       "assets/media/item_dosimeter.ff4a9ed3f7f6e3e3.webp",
       "assets/media/item_key.ddbc01d45ea7ded3.webp",
@@ -1908,13 +2126,29 @@
       "audio/ch2_mobile_message_v1.mp3",
       "audio/click.mp3",
       "audio/ring.mp3",
-      "audio/stamp.mp3"
+      "audio/stamp.mp3",
+      "audio/trilogy_us_scan_v2.mp3",
+      "audio/vox_c3_cousin_v2.mp3",
+      "audio/vox_c3_gallstone_v2.mp3",
+      "audio/vox_c3_mei_v2.mp3",
+      "audio/vox_c3_wang_v2.mp3",
+      "audio/vox_trilogy_aunt_v2.mp3",
+      "audio/vox_trilogy_han_v2.mp3",
+      "audio/vox_trilogy_he_v2.mp3",
+      "audio/vox_trilogy_mystery_v2.mp3",
+      "audio/vox_trilogy_wen_v2.mp3"
     ],
     "ch4": [
       "assets/media/bg_breakroom.6e71e372d1ef1b9d.webp",
       "assets/media/bg_mri_control.a7a487b3b338c023.webp",
-      "assets/media/bg_mri_corridor.970ab447960babb7.webp",
-      "assets/media/bg_mri_room.6d8ea59ca90dc81c.webp",
+      "assets/media/bg_mri_control_day_v2.433d4fc168a68d35.webp",
+      "assets/media/bg_mri_corridor_day_v2.f51979fbd08e5b37.webp",
+      "assets/media/bg_mri_room_day_v2.39a786d764c27e95.webp",
+      "assets/media/bg_office_day.c715845d3a833f50.webp",
+      "assets/media/cg_c4_first_mri_v2.586da62385ee8335.webp",
+      "assets/media/cg_c4_luo_records_v2.5c9aa4441a82f444.webp",
+      "assets/media/ch2_bg_breakroom_day.194c9d3ccafbe9ff.webp",
+      "assets/media/ch2_ct_motion_bed_v1.f1eaee8617eb5678.webp",
       "assets/media/ch2_pat_luo_v1.485cd9f1d333d7eb.webp",
       "assets/media/ch2_patient_wrist_student.dd19e6bcc5ef8cc6.webp",
       "assets/media/char_director.2ef1885993e5b0e7.webp",
@@ -1926,6 +2160,8 @@
       "assets/media/char_tang.d53f4bc08dedd1cd.webp",
       "assets/media/char_zhou.6654ff12eb3e23ca.webp",
       "assets/media/item_book.9b32669caa358e79.webp",
+      "assets/media/item_c4_postcard_v2.d263f500ee425af9.webp",
+      "assets/media/item_c4_sleepmask_v2.a7ef5bb4ad5aa4b2.webp",
       "assets/media/item_coffee.4368d5294285e799.webp",
       "assets/media/item_dosimeter.ff4a9ed3f7f6e3e3.webp",
       "assets/media/item_key.ddbc01d45ea7ded3.webp",
@@ -1942,12 +2178,20 @@
       "assets/media/pat_mri_anxious.e27e873b67b80e9c.webp",
       "assets/media/pat_mystery.f083d78a5f6faebb.webp",
       "assets/media/stamp.72cf222761ee91c0.webp",
+      "assets/media/trilogy_mri_scan_room_v2.9a88aedeec7a2d16.webp",
       "audio/badge.mp3",
       "audio/ch2_mobile_call_v1.mp3",
       "audio/ch2_mobile_message_v1.mp3",
       "audio/click.mp3",
       "audio/ring.mp3",
-      "audio/stamp.mp3"
+      "audio/stamp.mp3",
+      "audio/trilogy_mri_scan_v2.mp3",
+      "audio/vox_c4_song_v2.mp3",
+      "audio/vox_c4_wrist_v2.mp3",
+      "audio/vox_c4_xuning_v2.mp3",
+      "audio/vox_trilogy_han_v2.mp3",
+      "audio/vox_trilogy_luo_v2.mp3",
+      "audio/vox_trilogy_mystery_v2.mp3"
     ],
     "ch5": [
       "assets/media/bg_breakroom.6e71e372d1ef1b9d.webp",
@@ -1955,10 +2199,17 @@
       "assets/media/bg_ctcontrol_ready.10ebe6364699f572.webp",
       "assets/media/bg_office.a9e1a85d95a882a3.webp",
       "assets/media/bg_pet_center.2ed19ed53beaa014.webp",
+      "assets/media/bg_pet_center_day_v2.aa08153d66fe8d36.webp",
       "assets/media/bg_pet_control.732f8ba8d4ef4a40.webp",
+      "assets/media/bg_pet_control_day_v2.6785d105847f6a06.webp",
       "assets/media/bg_pet_dorm.141b67012c64c34f.webp",
       "assets/media/bg_pet_uptake.6946ca90801a68d5.webp",
+      "assets/media/bg_pet_uptake_day_v2.bdd0c7f9ea0aac55.webp",
       "assets/media/bg_retirement.bf4d89cfcd97b054.webp",
+      "assets/media/cg_c5_father_letter_v2.3339007d3ea5ee82.webp",
+      "assets/media/cg_c5_record_confrontation_v2.58dc6bc870396eec.webp",
+      "assets/media/cg_c5_zhou_handoff_v2.69d20e91baabcb3b.webp",
+      "assets/media/ch2_ct_motion_bed_v1.f1eaee8617eb5678.webp",
       "assets/media/ch2_pixel_char_director.5c2ab917a089a1f0.webp",
       "assets/media/ch2_pixel_char_f.c2f01748214fd607.webp",
       "assets/media/ch2_pixel_char_fan.5b1c9642495266f5.webp",
@@ -1973,6 +2224,8 @@
       "assets/media/char_pet_nurse.99eb598c4397fbbb.webp",
       "assets/media/char_wen.afb4dcae9314954d.webp",
       "assets/media/item_book.9b32669caa358e79.webp",
+      "assets/media/item_c5_postcard_v2.3ce9084b7052e95b.webp",
+      "assets/media/item_c5_seedpot_v2.e7d528773b70325b.webp",
       "assets/media/item_coffee.4368d5294285e799.webp",
       "assets/media/item_dosimeter.ff4a9ed3f7f6e3e3.webp",
       "assets/media/item_key.ddbc01d45ea7ded3.webp",
@@ -1987,12 +2240,22 @@
       "assets/media/pet_lung.b423cec1be5231eb.webp",
       "assets/media/pet_neck.67f47c932e8cab1f.webp",
       "assets/media/stamp.72cf222761ee91c0.webp",
+      "assets/media/trilogy_pet_scan_room_v2.5523d54bf0e65221.webp",
       "audio/badge.mp3",
       "audio/ch2_mobile_call_v1.mp3",
       "audio/ch2_mobile_message_v1.mp3",
       "audio/click.mp3",
       "audio/ring.mp3",
-      "audio/stamp.mp3"
+      "audio/stamp.mp3",
+      "audio/trilogy_pet_scan_v2.mp3",
+      "audio/vox_c5_gu_v2.mp3",
+      "audio/vox_c5_ning_v2.mp3",
+      "audio/vox_c5_qian_v2.mp3",
+      "audio/vox_trilogy_director_v2.mp3",
+      "audio/vox_trilogy_mystery_v2.mp3",
+      "audio/vox_trilogy_tang_v2.mp3",
+      "audio/vox_trilogy_wen_v2.mp3",
+      "audio/vox_trilogy_zhou_v2.mp3"
     ],
     "dr": [
       "assets/media/bg_control.f9b61cead622380c.webp",

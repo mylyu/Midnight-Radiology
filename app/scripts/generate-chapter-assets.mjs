@@ -27,6 +27,7 @@ import { LDCT_PRESENTATION_AUDIO, LDCT_PRESENTATION_IMAGES } from '../src/game/l
 import { LDCT_SCAN_IMAGE_IDS, LDCT_SCAN_AUDIO } from '../src/game/ldct-scans.ts'
 import { TRILOGY } from '../src/game/trilogy-registry.ts'
 import { TRILOGY_DOCUMENTS } from '../src/game/trilogy-documents.ts'
+import { trilogyVoiceAssets } from '../src/game/trilogy-audio.ts'
 
 export const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 export const manifestPath = path.join(appRoot, 'src/lib/media-manifest.generated.json')
@@ -109,7 +110,7 @@ export async function buildChapterManifest() {
     if (!value || typeof value !== 'object') return
     for (const [key, child] of Object.entries(value)) {
       if (typeof child === 'string' && mediaFields.has(key)) addImage(group, child)
-      else if (typeof child === 'string' && soundFields.has(key)) addSound(group, child)
+      else if (typeof child === 'string' && (soundFields.has(key) || key === 'sound' && ['ch3', 'ch4', 'ch5'].includes(group))) addSound(group, child)
       else if (child && typeof child === 'object') collect(group, child)
     }
   }
@@ -192,6 +193,7 @@ export async function buildChapterManifest() {
     collect(group, chapter.steps)
     collect(group, chapter.cards)
     collect(group, chapter.characters)
+    collect(group, chapter.shopItems)
     collect(group, SHOP_ITEMS)
     for (const image of [chapter.background, ...chapter.shifts.map(shift => shift.background), ...chapter.assets, 'stamp']) addImage(group, image, false)
     for (const step of Object.values(chapter.steps)) {
@@ -199,6 +201,12 @@ export async function buildChapterManifest() {
       if (step.tool?.reference) addImage(group, step.tool.reference, false)
     }
     for (const sound of ['click', 'badge', 'stamp']) addSound(group, sound)
+    for (const sound of trilogyVoiceAssets(chapter)) addSound(group, sound)
+    addSound(group, `trilogy_${group === 'ch3' ? 'us' : group === 'ch4' ? 'mri' : 'pet'}_scan_v2`)
+    if (group !== 'ch3') {
+      addImage(group, group === 'ch4' ? 'trilogy_mri_scan_room_v2' : 'trilogy_pet_scan_room_v2', false)
+      addImage(group, CH2_CT_MOTION.bed, false)
+    }
     for (const audio of Object.values(CH2_COMMUNICATION_AUDIO)) addPath(group, audio, 'audio')
   }
 

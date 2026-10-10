@@ -23,6 +23,7 @@ for (const job of jobs) {
     let image = sharp(original)
     if (job.role === 'portrait') image = image.resize({ width: 512, height: 768, fit: 'inside', kernel: 'nearest' })
     if (job.role === 'scan') image = image.resize({ width: 512, height: 512, fit: 'inside' })
+    if (job.role === 'item') image = image.resize({ width: 256, height: 256, fit: 'inside', kernel: 'nearest' })
     encoded = await image.webp({ quality: 78, alphaQuality: 100, effort: 6 }).toBuffer()
   }
   assert(encoded.length <= 614400, `${job.id} exceeds per-image budget`)

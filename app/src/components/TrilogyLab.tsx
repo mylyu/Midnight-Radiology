@@ -5,6 +5,10 @@ import { imageAsset } from '../lib/image-assets'
 import { useRef } from 'react'
 import { acceptInput } from '../game/input-gate'
 import { UltrasoundPhantom } from './UltrasoundPhantom'
+import { TrilogyUltrasoundLab } from './TrilogyUltrasoundLab'
+import { TrilogyNuclearLab } from './TrilogyNuclearLab'
+import { TrilogyMriLab } from './TrilogyMriLab'
+import './TrilogyCourseLab.css'
 
 export function TrilogyLab({ state, chapter, tool, update }: { state: GameState; chapter: TrilogyChapter;
   tool: TrilogyTool; update: (fn: (s: GameState) => GameState) => void }) {
@@ -16,9 +20,14 @@ export function TrilogyLab({ state, chapter, tool, update }: { state: GameState;
   const image = tool.images?.[saved.choice] ?? tool.image
   const choices = tool.kind === 'mri' ? Object.keys(tool.images ?? { T1: '', T2: '', FLAIR: '' })
     : tool.task === 'probe' ? ['凸阵', '线阵', '相控阵'] : []
+  const ultrasound = ['echo', 'tgc', 'm_mode', 'doppler', 'resolution'].includes(tool.task)
+  const nuclear = ['collimator', 'spect', 'coincidence', 'counting'].includes(tool.task)
+  const magnetic = tool.task.startsWith('mri-')
+  const course = ultrasound || nuclear || magnetic
+  const courseProps = { task: tool.task, variant: tool.variant, value: saved.value, secondary: saved.secondary, choice: saved.choice, onChange: set }
   return <div data-trilogy-lab={tool.task} className="trilogy-lab" onClick={e => e.stopPropagation()}>
     <header><span className="text-teal-200 text-xs">{tool.kind === 'ultrasound' ? '探头与显示' : tool.kind === 'mri' ? '工作站 · 序列对照' : '核医学工作站'}</span><h2>{tool.title}</h2><p>{tool.prompt}</p></header>
-    <div className="trilogy-lab-work">
+    {ultrasound ? <TrilogyUltrasoundLab {...courseProps} /> : nuclear ? <TrilogyNuclearLab {...courseProps} /> : magnetic ? <TrilogyMriLab {...courseProps} /> : <div className="trilogy-lab-work">
       <div className="trilogy-lab-image">
         {tool.kind === 'ultrasound' ? <UltrasoundPhantom position={tool.task === 'probe' ? saved.value : 50} gain={tool.task === 'gain' ? saved.value : 50}
           depth={tool.task === 'depth' ? saved.value : 55} probe={tool.task === 'probe' ? saved.choice : '线阵'} /> : image && <img src={imageAsset(tool.task === 'fusion' ? tool.reference ?? image : image)} className="pixel" alt="当前图像" style={{
@@ -48,7 +57,8 @@ export function TrilogyLab({ state, chapter, tool, update }: { state: GameState;
                 : tool.task === 'artifact' ? saved.value < 50 ? '重影让轮廓不稳。试着改善运动条件。' : '轮廓稳定了，再交老师核对。' : '调整后与对照比较，不必一次做到完美。'}</p>
         <details><summary>请同事带我看看</summary><p>{tool.help}</p><button onClick={() => finish(true, performance.now())}>一起看过了，回到故事</button></details>
       </aside>
-    </div>
+    </div>}
+    {course && <details className="trilogy-course-help"><summary>请同事带我看看</summary><p>{tool.help}</p><button onClick={() => finish(true, performance.now())}>一起看过了，回到故事</button></details>}
     <footer><button data-trilogy-tool-done className="trilogy-primary" onClick={() => finish(false, performance.now())}>留这一版，接着聊 →</button></footer>
   </div>
 }

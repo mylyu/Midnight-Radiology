@@ -2,6 +2,7 @@ import { applyEffect, condOk } from './store'
 import { SHOP_ITEMS } from './data'
 import type { Choice, GameState } from './types'
 import type { TrilogyChapter, TrilogyId, TrilogyProgress, TrilogyStep } from './trilogy-types'
+import { TRILOGY_LEGACY_QUIZ } from './trilogy-quiz-legacy'
 
 export const trilogyProgress = (s: GameState, id: TrilogyId) => s.dlc?.[id]?.chapter
 const snapshot = (s: GameState) => ({ gold: s.gold, skill: s.skill, heart: s.heart, wealth: s.wealth })
@@ -69,6 +70,7 @@ export function trilogyAdvance(s: GameState, chapter: TrilogyChapter, expected: 
   if (p.giftReply) return patchTrilogy(s, chapter.id, { giftReply: undefined })
   const step = trilogyStep(s, chapter)
   if (step.tool && !p.tools[expected]?.completed) return s
+  if (step.scan && !p.scans?.[expected]?.completed) return s
   if (step.end) return patchTrilogy(s, chapter.id, p.phase === 'epilogue'
     ? { phase: 'done', done: true } : { phase: 'settle' })
   return step.next && !step.choices?.length ? enterTrilogyNode(s, chapter, step.next) : s
@@ -128,9 +130,23 @@ export function trilogyHeardCue(s: GameState, id: TrilogyId, node: string): Game
   const p = trilogyProgress(s, id)
   return p && !p.heardCues?.includes(node) ? patchTrilogy(s, id, { heardCues: [...(p.heardCues ?? []), node] }) : s
 }
+/** Persist before mounting an acquisition; its clock survives refresh/background. */
+export function beginTrilogyScan(s: GameState, chapter: TrilogyChapter, node: string, now = Date.now()): GameState {
+  const p = trilogyProgress(s, chapter.id)
+  if (!p || p.stepId !== node || !chapter.steps[node]?.scan || p.scans?.[node]) return s
+  return patchTrilogy(s, chapter.id, { scans: { ...p.scans, [node]: { startedAt: now } } })
+}
+export function completeTrilogyScan(s: GameState, chapter: TrilogyChapter, node: string, now = Date.now()): GameState {
+  const p = trilogyProgress(s, chapter.id), scan = chapter.steps[node]?.scan, receipt = p?.scans?.[node]
+  if (!p || p.stepId !== node || !scan || !receipt) return s
+  const duration = scan.durationMs ?? 3000
+  if (Number.isFinite(receipt.startedAt) && receipt.startedAt <= now + duration && now - receipt.startedAt < duration) return s
+  const next = patchTrilogy(s, chapter.id, { scans: { ...p.scans, [node]: { ...receipt, completed: true } } })
+  return trilogyAdvance(next, chapter, node)
+}
 export function trilogyBuy(s: GameState, chapter: TrilogyChapter, itemId: string): GameState {
-  const p = trilogyProgress(s, chapter.id), item = SHOP_ITEMS.find(i => i.id === itemId)
-  if (!p || !item || s.gold < item.price || !trilogyShopItems(chapter).some(row => row.id === itemId)) return s
+  const p = trilogyProgress(s, chapter.id), item = trilogyShopItems(chapter, s).find(i => i.id === itemId)
+  if (!p || !item || s.gold < item.price) return s
   if (!['coffee', 'lottery'].includes(itemId) && s.items.includes(itemId)) return s
   if ((itemId === 'milktea' || itemId === 'snack') && ['done', 'epilogue', 'quiz'].includes(p.phase)) return s
   if (itemId === 'coffee' && (['quiz', 'done', 'epilogue'].includes(p.phase) || p.phase === 'settle' && p.shift === 4 || p.pendingCoffee)) return s
@@ -149,15 +165,20 @@ function shuffled(length: number, seed: number): number[] {
   for (let i = values.length - 1; i > 0; i--) { const j = hash(seed, String(i)) % (i + 1); [values[i], values[j]] = [values[j], values[i]] }
   return values
 }
-export function trilogyShopItems(chapter: TrilogyChapter) {
+export function trilogyShopItems(chapter: TrilogyChapter, state?: GameState) {
   const uses = new Set(Object.values(chapter.steps).flatMap(step => (step.choices ?? []).map(choice => choice.cond?.item)))
-  return SHOP_ITEMS.filter(item => ['coffee', 'milktea', 'snack', 'book', 'lottery'].includes(item.id) || uses.has(item.id))
+  const standard = SHOP_ITEMS.filter(item => ['coffee', 'milktea', 'snack', 'book', 'lottery'].includes(item.id) || uses.has(item.id))
+  const p = state && trilogyProgress(state, chapter.id)
+  const added = (chapter.shopItems ?? []).filter(item => !state || !p ||
+    !(item.use && state.flags[item.use]) && p.shift <= (item.lastShift ?? 4)
+    && !(p.shift === (item.lastShift ?? 4) && ['settle', 'quiz', 'epilogue', 'done'].includes(p.phase)))
+  return [...standard, ...added]
 }
 export function startTrilogyQuiz(s: GameState, chapter: TrilogyChapter): GameState {
   const p = trilogyProgress(s, chapter.id)
   if (!p || p.quiz) return s
   const seed = hash(s.seed, p.runId)
-  return patchTrilogy(s, chapter.id, { phase: 'quiz', quiz: { index: 0, completed: false,
+  return patchTrilogy(s, chapter.id, { phase: 'quiz', quizContent: chapter.quiz, quiz: { index: 0, completed: false,
     questions: shuffled(chapter.quiz.length, seed).slice(0, 5).map(question => ({ question, order: shuffled(chapter.quiz[question].options.length, seed + question) })) } })
 }
 export function answerTrilogyQuiz(s: GameState, chapter: TrilogyChapter, answer: number): GameState {
@@ -167,11 +188,16 @@ export function answerTrilogyQuiz(s: GameState, chapter: TrilogyChapter, answer:
   if (!row.order.includes(answer)) return s
   return patchTrilogy(s, chapter.id, { quiz: { ...q, questions: q.questions.map((r, i) => i === q.index ? { ...r, selected: answer } : r) } })
 }
+export function trilogyQuizContent(s: GameState, chapter: TrilogyChapter) {
+  const p = trilogyProgress(s, chapter.id)
+  return p?.quizContent ?? (p?.quiz ? TRILOGY_LEGACY_QUIZ[chapter.id] : chapter.quiz)
+}
 export function nextTrilogyQuiz(s: GameState, chapter: TrilogyChapter): GameState {
   const p = trilogyProgress(s, chapter.id), q = p?.quiz
   if (!p || !q || q.completed || q.questions[q.index].selected === undefined) return s
   if (q.index < q.questions.length - 1) return patchTrilogy(s, chapter.id, { quiz: { ...q, index: q.index + 1 } })
-  const score = q.questions.filter(row => row.selected === chapter.quiz[row.question].answer).length
+  const content = trilogyQuizContent(s, chapter)
+  const score = q.questions.filter(row => row.selected === content[row.question].answer).length
   const grade = score === 5 ? 'S' : score >= 4 ? 'A' : score >= 3 ? 'B' : 'C'
   return patchTrilogy(applyEffect(s, { gold: score * 20, skill: 1 }), chapter.id,
     { quiz: { ...q, completed: true, rewarded: true, grade } })
