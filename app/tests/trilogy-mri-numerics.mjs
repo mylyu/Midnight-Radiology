@@ -1,6 +1,6 @@
 // A bounded numerical check; no browser or chapter walkthrough.
 import assert from 'node:assert/strict'
-import { mriFft2, mriPhantom, mriSample, mriMotion, mriEncode, mriExcitation,
+import { MRI_B0_T, mriFft2, mriPhantom, mriSample, mriMotion, mriEncode, mriExcitation,
   mriRelaxAt, mriSeSignal, mriContrast, mriImagePixels } from '../src/game/trilogy-mri-numerics.ts'
 const phantom = mriPhantom(), fft = mriFft2(phantom), restored = mriFft2(fft, true)
 const maxError = Math.max(...restored.real.map((v, i) => Math.abs(v - phantom.real[i])))
@@ -21,6 +21,8 @@ assert(Math.max(...mriMotion(0, 50).image.real.map((v, i) => Math.abs(v - phanto
 const moved = mriMotion(100, 50)
 assert(moved.image.real.some((v, i) => Math.abs(v - phantom.real[i]) > .01), 'Motion changes sampled phase and therefore reconstruction')
 const pulse = mriExcitation(50), off = mriExcitation(100)
+assert.equal(MRI_B0_T, .55, 'RF demonstration uses the chapter purchased field strength')
+assert(Math.abs(pulse.frequencyHz - 23.419e6) < 1e-6, 'Proton resonance matches 0.55T rather than the earlier 3T wish')
 assert(Math.abs(pulse.mz) < 1e-12 && Math.abs(pulse.mxy - 1) < 1e-12, 'On-resonance 1ms pulse gives 90° magnetization')
 assert(off.mxy < pulse.mxy, 'Off-resonance RF has a smaller transverse response')
 assert(Math.abs(mriRelaxAt(1200, pulse).mz - (1 - Math.exp(-1))) < 1e-12)

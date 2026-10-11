@@ -1,0 +1,197 @@
+{
+  "date": "2026-10-11",
+  "baseline": "7c2fa89",
+  "branch": "codex/trilogy-openings-procurement",
+  "images": [
+    {
+      "id": "cg_c3_cousin_call_v3",
+      "refs": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/pat_cousin.5ffdd237fc117e80.webp",
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/cg_c3_mei_probe_v2.91a5dd021ce3cd86.webp"
+      ],
+      "prompt": "Use case: illustration-story. Create one 16:9 landscape cinematic game still for a Chinese pixel visual novel. Image 1 is the character identity reference, Image 2 is pixel-art style reference only (do not include its doctor or machine). Same pregnant Chinese cousin, about 30, dark brown hair in low ponytail, teal maternity dress and beige cardigan, recognizable exact identity and outfit. Medium close-up at her own small kitchen table in daytime, one hand holding her mobile phone naturally to her ear, other hand resting on an ordinary closed appointment folder on the table. She is calling her younger cousin to ask how to book an ultrasound appointment; mildly concerned yet conversational, not distressed. Warm daylight, cup and ordinary chair, lived-in Chinese apartment. Camera near table height, face and calling gesture clearly visible, space around figure for mild zoom/pan. Match existing coarse chunky high-resolution pixel painting: dark stepped outlines, visible square pixel clusters, limited shaded palettes, not a smooth anime painting, not photoreal. No dialogue box, no subtitles, no readable medical text, no logos or watermark. One continuous scene, not comic panels. Opaque complete scene.",
+      "source": "C:\\Users\\lvmen\\.codex\\generated_images\\01a03d87-f338-71d1-ac31-cfd37ee2d8bb\\exec-d513a3ac-7fde-4eb2-978e-4824a7278680.png",
+      "tool": "built-in image_gen",
+      "imported": {
+        "name": "cg_c3_cousin_call_v3",
+        "replaced": false,
+        "sourcePath": "C:\\Users\\lvmen\\.codex\\generated_images\\01a03d87-f338-71d1-ac31-cfd37ee2d8bb\\exec-d513a3ac-7fde-4eb2-978e-4824a7278680.png",
+        "sourceSha256": "a31cbbe04506cc556f3455b3dac444df8d9f381bb1cfa7129fda6b0f5f75fb9f",
+        "sourceBytes": 1932059,
+        "pipeline": "manual-import-webp-q78-alpha100-v1",
+        "encoder": {
+          "sharp": "0.35.3",
+          "webp": "1.6.0"
+        },
+        "mode": "lossy-webp",
+        "quality": 78,
+        "width": 1672,
+        "height": 941,
+        "alphaExact": true,
+        "visibleRgbExact": false,
+        "rgbaExact": false,
+        "visibleRgbMeanAbsoluteError": 2.3602,
+        "deliveryPath": "app/public/assets/media/cg_c3_cousin_call_v3.93c016e84a49e539.webp",
+        "deliverySha256": "93c016e84a49e5397d95c71445fda8bce9a1e1b8033d4bb80314c30812ead71a",
+        "deliveryBytes": 127174,
+        "previewUpdated": false,
+        "previousDeliveryPath": null,
+        "stalePathCandidates": [],
+        "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+      },
+      "review": "Original generated image visually inspected: character identity, pixel style, gesture and setting matched. No clinical labels embedded."
+    },
+    {
+      "id": "cg_c3_us_visit_v3",
+      "refs": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/char_mei.c765a0bad23431c7.webp",
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/cg_c3_mei_probe_v2.91a5dd021ce3cd86.webp"
+      ],
+      "prompt": "Use case: illustration-story. One 16:9 landscape pixel-game cinematic close-up. Reference image 1 fixes Mei's identity, reference image 2 fixes her outfit and game style. Same 43-year-old Chinese woman doctor, short wavy brown bob, dark eyebrows, purple sweater under white coat, warm capable slightly amused expression. Daytime at doorway/reception edge of a county hospital ultrasound department; Mei pauses between appointments holding a paper appointment schedule, gestures toward a seat while talking to the player who has come to ask about an ordinary family appointment. Only a blurred/blocky white-coated shoulder and a hand of the player at the near lower edge, no identifiable player face or gender. A closed ultrasound exam door and part of a mobile ultrasound machine behind her, no patient being scanned. Close camera on Mei and the paper/hand exchange, practical hospital blue-green room with warm sunlight. Coarse chunky pixel painting consistent with references, dark stepped outlines, obvious pixel clusters and dithered small palette shading, no smooth anime rendering. No text, captions, watermarks, logos or UI. Single coherent environment, modest margins to allow 3-second camera push.",
+      "source": "C:\\Users\\lvmen\\.codex\\generated_images\\01a03d87-f338-71d1-ac31-cfd37ee2d8bb\\exec-065c8ac7-36c0-4ed2-9188-441c7434b585.png",
+      "tool": "built-in image_gen",
+      "imported": {
+        "name": "cg_c3_us_visit_v3",
+        "replaced": false,
+        "sourcePath": "C:\\Users\\lvmen\\.codex\\generated_images\\01a03d87-f338-71d1-ac31-cfd37ee2d8bb\\exec-065c8ac7-36c0-4ed2-9188-441c7434b585.png",
+        "sourceSha256": "89e59cd2ebf4060faaf355b0fd664154f3bec01b3da20742b634d01eb3454164",
+        "sourceBytes": 1739791,
+        "pipeline": "manual-import-webp-q78-alpha100-v1",
+        "encoder": {
+          "sharp": "0.35.3",
+          "webp": "1.6.0"
+        },
+        "mode": "lossy-webp",
+        "quality": 78,
+        "width": 1672,
+        "height": 941,
+        "alphaExact": true,
+        "visibleRgbExact": false,
+        "rgbaExact": false,
+        "visibleRgbMeanAbsoluteError": 2.188,
+        "deliveryPath": "app/public/assets/media/cg_c3_us_visit_v3.683d78eddc52974a.webp",
+        "deliverySha256": "683d78eddc52974ab6ca80eb6edbd9416327708772aa4dc165fbf8eab8594789",
+        "deliveryBytes": 107060,
+        "previewUpdated": false,
+        "previousDeliveryPath": null,
+        "stalePathCandidates": [],
+        "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+      },
+      "review": "Original generated image visually inspected: character identity, pixel style, gesture and setting matched. No clinical labels embedded."
+    },
+    {
+      "id": "cg_c4_procurement_v3",
+      "refs": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/ch2_pixel_char_fan.5b1c9642495266f5.webp",
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/ch2_pixel_char_director.5c2ab917a089a1f0.webp",
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/cg_c3_mei_probe_v2.91a5dd021ce3cd86.webp"
+      ],
+      "prompt": "Use case: illustration-story. One 16:9 cinematic close-up for the same Chinese pixel game. Image1 fixes older equipment engineer Lao Fan: grey short hair, blue workwear. Image2 fixes the middle-aged grey-haired director in white coat, dark tie. Image3 is coarse pixel style only; do not put Mei in this scene. Daylit hospital equipment office, procurement meeting at an ordinary crowded wooden table: Lao Fan leaning over three printed generic MRI equipment brochures, director beside him comparing a quote and pointing at a maintenance contract page. Player's hand holding a pen enters foreground, no player face or gender. Brochures show small generic MRI ring diagrams with visibly different bore sizes and simple graph shapes, NO readable letters or numbers; game text supplies parameters. A calculator, capped tea mug, binder, wall shelving. Expressions engaged and mildly skeptical, negotiation not sinister conspiracy. Medium close camera emphasizes hands, brochures and faces. Coarse high-resolution pixel art with square clusters, stepped deep navy outlines and restrained warm/cool palette, not smooth painted anime, not photoreal. No text, logo, speech bubble, watermark or UI. No actual scanner inside this office.",
+      "source": "C:\\Users\\lvmen\\.codex\\generated_images\\01a03d87-f338-71d1-ac31-cfd37ee2d8bb\\exec-3f6561e9-fb6a-4e3b-bec0-b86a7554b4b7.png",
+      "tool": "built-in image_gen",
+      "imported": {
+        "name": "cg_c4_procurement_v3",
+        "replaced": false,
+        "sourcePath": "C:\\Users\\lvmen\\.codex\\generated_images\\01a03d87-f338-71d1-ac31-cfd37ee2d8bb\\exec-3f6561e9-fb6a-4e3b-bec0-b86a7554b4b7.png",
+        "sourceSha256": "4181551878ce5038a37ba04cb9cd3a96b93dbda6923502f0622d5b719ab8d267",
+        "sourceBytes": 1880486,
+        "pipeline": "manual-import-webp-q78-alpha100-v1",
+        "encoder": {
+          "sharp": "0.35.3",
+          "webp": "1.6.0"
+        },
+        "mode": "lossy-webp",
+        "quality": 78,
+        "width": 1672,
+        "height": 941,
+        "alphaExact": true,
+        "visibleRgbExact": false,
+        "rgbaExact": false,
+        "visibleRgbMeanAbsoluteError": 2.7314,
+        "deliveryPath": "app/public/assets/media/cg_c4_procurement_v3.cde277f2df467dbd.webp",
+        "deliverySha256": "cde277f2df467dbdc93c57d4615e6ea854d30055131a0d1809b91990fac0272e",
+        "deliveryBytes": 161932,
+        "previewUpdated": false,
+        "previousDeliveryPath": null,
+        "stalePathCandidates": [],
+        "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+      },
+      "review": "Original generated image visually inspected: character identity, pixel style, gesture and setting matched. No clinical labels embedded."
+    },
+    {
+      "id": "cg_c4_wide_bore_v3",
+      "refs": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/bg_mri_room_day_v2.39a786d764c27e95.webp",
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/cg_c3_mei_probe_v2.91a5dd021ce3cd86.webp"
+      ],
+      "prompt": "Use case: illustration-story. One 16:9 pixel-game cinematic close-up, newly commissioned lower-field wide-bore MRI scanner in the same county hospital MRI room as reference1; reference2 is only coarse pixel style. Camera closer, slightly low three-quarter angle to emphasize a genuinely spacious circular bore, roughly 80cm across relative to the standard 50cm padded patient table; compact short white magnet casing, thick magnet housing still present, not a thin CT ring. Empty table lined up through the middle, suitable receive coil off to side, control window and daylit blue-green walls in background. No persons/patients, tools, wheeled service cart or metal objects inside magnet room. Show installed ready-for-use machine, not transport. Consistent chunky coarse pixel painting, stepped dark edges and visible square pixels, cool room and warm daylight. No brand, scanner name, field-strength label, readable text, watermark or UI. Use spacious bore geometry, don't put an oversized human inside for scale. Detailed but restrained cinematic composition with room for mild pan/zoom.",
+      "source": "C:\\Users\\lvmen\\.codex\\generated_images\\01a03d87-f338-71d1-ac31-cfd37ee2d8bb\\exec-5b0af223-c831-401c-8129-0a05c47679b5.png",
+      "tool": "built-in image_gen",
+      "imported": {
+        "name": "cg_c4_wide_bore_v3",
+        "replaced": false,
+        "sourcePath": "C:\\Users\\lvmen\\.codex\\generated_images\\01a03d87-f338-71d1-ac31-cfd37ee2d8bb\\exec-5b0af223-c831-401c-8129-0a05c47679b5.png",
+        "sourceSha256": "4a76ee1f1347f3d9a413c9f1d2284968d0ec6dd71eb5862063fc9346370c8a24",
+        "sourceBytes": 1716465,
+        "pipeline": "manual-import-webp-q78-alpha100-v1",
+        "encoder": {
+          "sharp": "0.35.3",
+          "webp": "1.6.0"
+        },
+        "mode": "lossy-webp",
+        "quality": 78,
+        "width": 1672,
+        "height": 941,
+        "alphaExact": true,
+        "visibleRgbExact": false,
+        "rgbaExact": false,
+        "visibleRgbMeanAbsoluteError": 2.3373,
+        "deliveryPath": "app/public/assets/media/cg_c4_wide_bore_v3.af900b27b3e818ab.webp",
+        "deliverySha256": "af900b27b3e818ab09e9a8cc2db03a8fc3355898221d994bf58435f1a44a7d85",
+        "deliveryBytes": 104256,
+        "previewUpdated": false,
+        "previousDeliveryPath": null,
+        "stalePathCandidates": [],
+        "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+      },
+      "review": "Original generated image visually inspected: character identity, pixel style, gesture and setting matched. No clinical labels embedded."
+    },
+    {
+      "id": "cg_c5_training_notice_v3",
+      "refs": [
+        "C:/Users/lvmen/Documents/New project/Midnight-Radiology/app/public/assets/media/cg_c3_mei_probe_v2.91a5dd021ce3cd86.webp"
+      ],
+      "prompt": "Use case: illustration-story. One 16:9 landscape cinematic pixel-art game close-up. Reference fixes game pixel style only, no reference character is required. A county-hospital staff breakroom table in late afternoon daylight, viewed obliquely close: foreground a young staff member's gender-neutral hand rests on a small zipped overnight bag next to a neatly folded white coat and an official-looking training envelope and simple travel ticket. On the envelope only a generic small circular hospital emblem and blank horizontal lines, NO readable text. Nearby another colleague's hand slides a small notebook across the table, a familiar glass tea mug, bus visible as small out-of-focus shape through window. This is a concrete departure preparation for a two-week nuclear-medicine placement at the city's tertiary hospital, not mystery evidence. Warm conversational hopeful mood, not solemn farewell. Coarse high-resolution pixel painting, visible square clusters, dark stepped outlines, restrained warm/cool palette and mild dithering. No face, no named person, no text, no captions, no logos or watermark. One scene, no split panels; camera can gently pull back.",
+      "source": "C:\\Users\\lvmen\\.codex\\generated_images\\01a03d87-f338-71d1-ac31-cfd37ee2d8bb\\exec-895e10ff-79ba-49cb-9935-5edf10ab8244.png",
+      "tool": "built-in image_gen",
+      "imported": {
+        "name": "cg_c5_training_notice_v3",
+        "replaced": false,
+        "sourcePath": "C:\\Users\\lvmen\\.codex\\generated_images\\01a03d87-f338-71d1-ac31-cfd37ee2d8bb\\exec-895e10ff-79ba-49cb-9935-5edf10ab8244.png",
+        "sourceSha256": "09916164f9940f8fda8835108af4e3c8db4a20a7a1d67760245aad1a71687fcb",
+        "sourceBytes": 1945947,
+        "pipeline": "manual-import-webp-q78-alpha100-v1",
+        "encoder": {
+          "sharp": "0.35.3",
+          "webp": "1.6.0"
+        },
+        "mode": "lossy-webp",
+        "quality": 78,
+        "width": 1672,
+        "height": 941,
+        "alphaExact": true,
+        "visibleRgbExact": false,
+        "rgbaExact": false,
+        "visibleRgbMeanAbsoluteError": 2.4224,
+        "deliveryPath": "app/public/assets/media/cg_c5_training_notice_v3.d1c7ce206a837036.webp",
+        "deliverySha256": "d1c7ce206a837036119f3263f48beede748837ce8fe3078d24b6681cd73e42e2",
+        "deliveryBytes": 138030,
+        "previewUpdated": false,
+        "previousDeliveryPath": null,
+        "stalePathCandidates": [],
+        "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。"
+      },
+      "review": "Original generated image visually inspected: character identity, pixel style, gesture and setting matched. No clinical labels embedded."
+    }
+  ]
+}
