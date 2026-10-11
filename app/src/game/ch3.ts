@@ -40,9 +40,43 @@ function hub(id: string, text: string, places: [string, string][], clinical: str
   })
 }
 
-// First shift: the familiar patient arrives before the unfamiliar machine becomes familiar.
+// A family phone call comes before the invitation and paid rotation. These
+// pre-shift scenes only record what actually happened; they carry no wages/AP.
+const cousinPhone: Partial<TrilogyStep> = { communication: 'call', sprite: '', phone: 'pat_cousin', voice: undefined }
+const cousinSms: Partial<TrilogyStep> = { communication: 'sms', sprite: '', phone: 'pat_cousin', voice: undefined }
+scene('c3_intro_call', [
+  ['sys', '2026年10月30日傍晚，天还亮着。你刚从放射科出来，表姐的电话就响了。她先问你下班没，又在那头翻起了纸。', cousinPhone],
+  ['cousin', '你别笑我，预约页面我来回点了三遍。产科让我下周做结构检查，到时二十四周了。你帮我问问，超声这边怎么约？', { ...cousinPhone, image: 'cg_c3_cousin_call_v3', imageLabel: '表姐从家里打来电话', closeup: true, cameraMotion: 'push' }],
+  ['me', '先把产科的申请单拍给我。我明早过去问排期和登记方式，问清了发你，你按窗口的安排约。', cousinPhone],
+  ['cousin', '好。我就怕点错了，到医院才知道要带的东西都留在家里。还有，孩子的名字还没定呢，你可别跟家里乱猜。', cousinPhone],
+  ['me', '我只帮你问检查，不参加家里的取名大会。单子拍全，别又只给我看个右下角。', cousinPhone],
+  ['sys', '挂了电话，手机里收到申请单和既往产检记录的照片。你把需要问的时间、地点、材料记在一张便签上，第二天去超声科。'],
+], 'c3_intro_visit_0', 'bg_day')
+scene('c3_intro_visit', [
+  ['sys', '10月31日上午，超声科门口还坐着几位预约者。你等梅兰医师送走上一位患者，再把申请单照片和便签拿给她看。', { bg: 'bg_waiting_day_v2' }],
+  ['mei', '来啦？这边。我是梅兰，大家叫梅姐。来问检查，还是找人？', { voice: 'vox_c3_mei_v2' }],
+  ['me', '表姐下周做产科安排的结构检查。我在放射科，她让我先来问排期和登记，怕走错窗口。', { image: 'cg_c3_us_visit_v3', imageLabel: '梅姐在门口递来排期说明', closeup: true, cameraMotion: 'settle' }],
+  ['mei', '预约台在右边。让她带着申请和以前的记录，先核时间；下周三上午还有位置，具体号由窗口确认。我把要带的写给你。'],
+  ['me', '好，我发给她。我平常看CT，看您这儿一动探头图就跟着动，还挺想知道它怎么收回声。'],
+  ['mei', '那正好。院里在安排跨科培训，我这边还留着一个跟班位。愿不愿意来两周？设备、图像和教学模体，从头跟着学。'],
+  ['me', '我本来来问她的预约，怎么连我自己的日程都问出来了。'],
+  ['mei', '你要愿意，我跟你们主任对排班。临床我扫，你先从设备和模体学起。', { choices: [
+    { text: '「来。咱们先把两边排班对好。」', next: 'c3_intro_accept' },
+    { text: '「我探头都不熟，能从最基本的跟起吗？」', next: 'c3_intro_ask' },
+  ] }],
+], undefined)
+put('c3_intro_accept', { speaker: 'mei', sprite: 'char_mei', bg: 'bg_us_room_day', text: '行。我报给科里，你回去也跟主任说一声。等班表确认再来，别明天就把自己塞进诊室。', effect: { flag: 'c3_rotation_invited' }, next: 'c3_intro_confirm_0' })
+put('c3_intro_ask', { speaker: 'mei', sprite: 'char_mei', bg: 'bg_us_room_day', text: '就从基本的起。你先会看回波怎么回来，再看它怎么成图；病例跟着我，不会把你往前一推就走。排班我跟主任对。', effect: { flag: 'c3_rotation_invited' }, next: 'c3_intro_confirm_0' })
+scene('c3_intro_confirm', [
+  ['sys', '当天下午，表姐发来窗口确认的预约信息：11月4日，上午十点。她按正常预约登记好了，申请单也装进了片袋。', { ...cousinSms, effect: { flag: 'c3_cousin_booking' } }],
+  ['cousin', '这回看懂了。谢谢啊。听说你也要到超声科？我这一通电话，还顺便给你找了个课上。', cousinSms],
+  ['me', '还没开始，得先把放射科的班交接好。两边主任确认以后，我周一再正式过去。你周三按预约来就行。', cousinSms],
+  ['sys', '放射科和超声科随后对好了两周跟班表：四个白班，一个傍晚床旁班。正式报到定在11月2日早上八点；这次问预约和聊天，没有算进值班。', { effect: { flag: 'c3_rotation_arranged' } }],
+], 'c3_s1_start_0', 'bg_day')
+
+// First paid shift: keep the original cursor and its check-in receipt valid.
 scene('c3_s1_start', [
-  ['sys', '2026年11月2日，早上八点。你在放射科干了两年，CT的交班本还没合上，就收到一张跨科培训表：超声科跟班两周，四个白班、一个傍晚床旁班。院里要大家多懂一种设备，这两周由梅兰医师带你。'],
+  ['sys', '2026年11月2日，早上八点。放射科的班已经交接好，你拿着确认过的两周培训表来到超声科。今天正式跟梅兰医师上第一个白班，打卡后才开始轮转。'],
   ['mei', '来啦？这边。我是梅兰，喊梅姐就行。……袖子收进去，柜门夹住了，别还往前走。', { voice: 'vox_c3_mei_v2' }],
   ['me', '难怪走不动。我还想着第一天来，不能显得太慌。'],
   ['mei', '不慌，昨天来的学生把柜门卸了。你先看设备和图像，临床我扫；要自己试探头，就去旁边那块模体。'],
@@ -121,9 +155,9 @@ scene('c3_s1_gain', [
 // Second shift: family closeness cannot replace the physician's explanation.
 scene('c3_s2_start', [
   ['sys', '11月4日，上午九点多。教学台已经摆好，表姐的消息跳了出来：二十四周的预约在十点，车却堵在桥上。她附了一张照片，车窗边有个已经吃空的饼干袋。'],
-  ['cousin', '别替我求情啊。我只是提前跟你报备，省得你回家说我又出门晚。', { communication: 'sms', sprite: undefined, phone: 'pat_cousin' }],
-  ['me', '我正想给她找后门，她先把这条路堵死了。那我帮她问问窗口，晚到怎么安排。'],
-  ['mei', '去问吧。别一着急就说“我替您加个号”，待会儿还得我把你撤下来。'],
+  ['cousin', '先告诉你一声，免得你以为我又起晚了。我已经跟窗口说在路上，等他们回复怎么安排。', { communication: 'sms', sprite: undefined, phone: 'pat_cousin', voice: undefined }],
+  ['me', '我去跟窗口核一下，怕她一着急连回复都没看清。预约信息和申请单都还在，先别自己改号。'],
+  ['mei', '去吧。看看窗口能怎么顺延，确认好了再告诉她，咱们这边照常叫号。'],
 ], 'c3_s2_hub', 'bg_us_room_day')
 hub('c3_s2_hub', '表姐还在路上，上午的预约照常叫号。你可以趁准备的空当问问同事。', [
   ['陪梅姐看一眼排班表（1行动力）', 'c3_s2_roster'],
@@ -557,13 +591,20 @@ scene('c3_epilogue', [
   ['cousin', '好，那我们把下次时间记上。今天先吃饭，我真的饿了。', { bg: 'bg_waiting_day_v2' }],
   ['me', '走。车站那家太挤了，咱们多走一条街，找个能坐下慢慢吃的。', { bg: 'bg_day' }],
   ['sys', '之后的超声随访显示测量稳定。表姐发来新消息，前半段是复查安排，后半段已经在问哪种婴儿车能进老楼电梯。', { bg: 'bg_day', effect: { flag: 'c3_cousin_followup_stable' } }],
-  ['sys', '回院那天，老周正看新设备论证材料。听见你说起市里的MRI，他把笔往耳后一夹。', { bg: 'bg_office_day' }],
-  ['zhou', '明年咱们那台也准备进来了。你去市里看了什么，先给我讲讲；设备科总问机房外要留多少等候位。', { bg: 'bg_office_day' }],
-  ['me', '先留能放下片袋的椅子。我这回坐了一上午，袋子一滑下来就得弯腰捡。', { bg: 'bg_office_day' }],
+  ['sys', '回院那天，老周的桌上摊着一份MRI购置申请，还有几本设备资料。听你讲起市里的检查，他把没填完的需求页推过来。', { bg: 'bg_office_day' }],
+  ['zhou', '申请还没报齐，哪台都没定。主任让你跟设备科做前期选型：先列咱们常做什么检查、病人有哪些需要，再看机房和维保。', { bg: 'bg_office_day' }],
+  ['me', '还没选机器，先选中我干活了。我去找老范借清单，别等看中一台，才发现搬不进来。', { bg: 'bg_office_day' }],
   ['sys', '回科后，你在文件夹上分开写下“B型切面”“M型时间记录”“多普勒血流”。梅姐留下的反馈夹在前面，第一张就是你曾把深处一口气推亮的模体图。', { bg: 'bg_us_room_day' }],
   ['mei', '下回有人问“为什么这块黑”，你先别抢着答病名。把收到什么、怎么显示的说清，再跟负责医师核。', { bg: 'bg_us_room_day' }],
   ['sys', '你走出办公室，听见超声科又叫了一个号。窗外天亮着，下一班还没有开始。第三章「回声」结束。', { bg: 'bg_day', end: true, effect: { flag: 'c3_completed' } }],
 ])
+
+steps.c3_epilogue_17.next = 'c3_mri_selection_0'
+scene('c3_mri_selection', [
+  ['zhou', '先把需求问全。宣传册上的数字我也会圈，可圈完还是得问，咱们每天做的检查能不能接住。'],
+  ['me', '那我带着问题去问。候诊座位也记上，表姐这回等了一上午，片袋都快被我抱热了。'],
+  ['sys', '你在任务栏写下“与设备科整理MRI选型需求”。购置申请还在准备，型号与配置留待讨论；回到超声科，你先把这两周的学习记录交齐。', { effect: { flag: 'c3_mri_selection_task' } }],
+], 'c3_epilogue_18', 'bg_office_day')
 
 const cards: TrilogyChapter['cards'] = {
   c3_probe: { title: '探头发，也收', body: '压电材料把电脉冲变成机械振动发声，再把返回振动变成电信号。探头里的保护/匹配层、吸声材料和阵元各有作用；外形要适合目标深度和声窗。' },
@@ -619,6 +660,12 @@ const quiz: TrilogyChapter['quiz'] = [
 
 function adapt(id: string, step: TrilogyStep, state: GameState): TrilogyStep {
   const tools = state.dlc?.ch3?.chapter?.tools
+  if (id === 'c3_s1_start_1' && state.flags.c3_rotation_invited) {
+    return { ...step, text: '来啦？这边。今天正式报到，柜子给你留好了。……袖子收进去，别刚打开门就卡住了。' }
+  }
+  if (id === 'c3_s2_start_0' && state.flags.c3_cousin_booking) {
+    return { ...step, text: '11月4日，上午九点多。今天是表姐按窗口确认的十点预约，教学台也已摆好。她发来堵在桥上的照片，车窗边有个已经吃空的饼干袋。' }
+  }
   if (id === 'c3_s1_aunt_7' && tools?.c3_s1_aunt_6?.choice && tools.c3_s1_aunt_6.choice.replace(/^assisted:/, '') !== '线阵') {
     return { ...step, text: '你刚才那支看得更深，不代表它更差。这块目标浅，换高频线阵，边界会更容易分开。来，跟我对照一下。' }
   }
@@ -649,7 +696,7 @@ export const CH3: TrilogyChapter = {
   id: 'ch3', title: '回声', subtitle: '第三章 · 超声', icon: '◉', year: 2026,
   equipment: '超声设备与教学模体', background: 'bg_us_room_day',
   shifts: [
-    { id: 'c3s1', title: '第一班 · 回声先回来', subtitle: '白班 · 探头收发 / A到B / 声影', date: '2026-11-02 · 白班', start: 'c3_s1_start_0', background: 'bg_us_room_day' },
+    { id: 'c3s1', title: '第一班 · 回声先回来', subtitle: '先问预约，再正式跟班 · 探头收发 / A到B / 声影', date: '2026-10-30来电 → 11-02白班', start: 'c3_intro_call_0', checkinAt: 'c3_s1_start_0', background: 'bg_day' },
     { id: 'c3s2', title: '第二班 · 看多深，补哪里', subtitle: '白班 · 频率 / 深度 / TGC / 表姐', date: '2026-11-04 · 白班', start: 'c3_s2_start_0', background: 'bg_us_room_day' },
     { id: 'c3s3', title: '第三班 · 跟着这一条线', subtitle: '下午至傍晚 · 心超 / M型 / 床旁', date: '2026-11-07 · 下午至晚间床旁班', start: 'c3_s3_start_0', background: 'bg_us_room_day' },
     { id: 'c3s4', title: '第四班 · 颜色跟谁比', subtitle: '白班 · 血流方向 / 多普勒频移', date: '2026-11-10 · 白班', start: 'c3_s4_start_0', background: 'bg_us_room_day' },
@@ -695,5 +742,6 @@ export const CH3: TrilogyChapter = {
     'char_mei', 'pat_cousin', 'char_han', 'pat_aunt', 'pat_mystery', 'pat_wang_recovery', 'char_lei', 'char_zhou', 'char_he', 'char_tang',
     'us_gallstone', 'us_breast', 'us_fetal', 'us_echo', 'us_mirror', 'item_missing_notice', 'item_reunion_gifts', 'item_notebook',
     'cg_c3_mei_probe_v2', 'cg_c3_shared_lunch_v2', 'item_c3_towel_v2', 'item_c3_stickers_v2',
+    'cg_c3_cousin_call_v3', 'cg_c3_us_visit_v3',
   ],
 }

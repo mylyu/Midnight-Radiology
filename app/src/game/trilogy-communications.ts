@@ -1,5 +1,6 @@
 /** Arrival cues, not every sentence of a telephone conversation. */
 export const TRILOGY_COMMUNICATION_CUES: Record<string, 'call' | 'sms'> = {
+  c3_intro_call_0: 'call',
   c3_s2_start_1: 'sms', c3_s4_zhou_0: 'call', c3_s4_wen_0: 'call',
   c4_5_family_0: 'sms',
   c5_s3_lei_0: 'call', c5_s3_reveal_5: 'call',

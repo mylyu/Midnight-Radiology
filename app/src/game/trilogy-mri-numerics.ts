@@ -3,7 +3,7 @@
  * advanced pp34–49/58. Same object and fixed grayscale throughout comparisons.
  */
 export const MRI_GRID = 64
-export const MRI_B0_T = 3
+export const MRI_B0_T = .55
 export const MRI_GAMMA_HZ_T = 42.58e6
 export interface MriComplexField { size: number; real: Float64Array; imag: Float64Array }
 export type MriSampling = 'full' | 'center' | 'edge' | 'r2' | 'r4'
@@ -160,7 +160,8 @@ export function mriContrast(value: number, secondary: number) {
 
 /** Exact constant rectangular RF rotation in its rotating frame, then ideal
  * longitudinal/transverse relaxation. 250Hz B1 for 1ms gives 90° on resonance.
- * B0=3T is fixed. Offsets are in Hz, never mixed with angular-frequency units.
+ * B0 follows this chapter's 0.55T purchase. Offsets are in Hz, never mixed
+ * with angular-frequency units; sample relaxation values are illustrative.
  */
 export function mriExcitation(secondary: number) {
   const detuningHz = (mriControl(secondary) - 50) * 12

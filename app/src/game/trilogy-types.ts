@@ -41,6 +41,7 @@ export interface TrilogyStep extends Step {
   giftTo?: string
   communication?: 'call' | 'sms'
   closeup?: boolean
+  cameraMotion?: 'push' | 'settle'
   caseId?: string
 }
 export interface TrilogyShift {

@@ -251,6 +251,11 @@
       "bytes": 90068,
       "type": "image"
     },
+    "assets/media/cg_c3_cousin_call_v3.93c016e84a49e539.webp": {
+      "sha256": "93c016e84a49e5397d95c71445fda8bce9a1e1b8033d4bb80314c30812ead71a",
+      "bytes": 127174,
+      "type": "image"
+    },
     "assets/media/cg_c3_mei_probe_v2.91a5dd021ce3cd86.webp": {
       "sha256": "91a5dd021ce3cd86ea3b9433a54832136a9225730d5d91e0759c84e737a70792",
       "bytes": 117848,
@@ -259,6 +264,11 @@
     "assets/media/cg_c3_shared_lunch_v2.b955cff09bde3231.webp": {
       "sha256": "b955cff09bde32319e052c75dc68385868e34c3341e2433e60c67647d4684fd6",
       "bytes": 184330,
+      "type": "image"
+    },
+    "assets/media/cg_c3_us_visit_v3.683d78eddc52974a.webp": {
+      "sha256": "683d78eddc52974ab6ca80eb6edbd9416327708772aa4dc165fbf8eab8594789",
+      "bytes": 107060,
       "type": "image"
     },
     "assets/media/cg_c4_first_mri_v2.586da62385ee8335.webp": {
@@ -271,6 +281,16 @@
       "bytes": 177934,
       "type": "image"
     },
+    "assets/media/cg_c4_procurement_v3.cde277f2df467dbd.webp": {
+      "sha256": "cde277f2df467dbdc93c57d4615e6ea854d30055131a0d1809b91990fac0272e",
+      "bytes": 161932,
+      "type": "image"
+    },
+    "assets/media/cg_c4_wide_bore_v3.af900b27b3e818ab.webp": {
+      "sha256": "af900b27b3e818ab09e9a8cc2db03a8fc3355898221d994bf58435f1a44a7d85",
+      "bytes": 104256,
+      "type": "image"
+    },
     "assets/media/cg_c5_father_letter_v2.3339007d3ea5ee82.webp": {
       "sha256": "3339007d3ea5ee8279131e6bd1036bacb8b779a2541e6a55a139269009605480",
       "bytes": 99760,
@@ -279,6 +299,11 @@
     "assets/media/cg_c5_record_confrontation_v2.58dc6bc870396eec.webp": {
       "sha256": "58dc6bc870396eec4259045b893e6beeaf4a060590d3876747d2767f08e8832f",
       "bytes": 131140,
+      "type": "image"
+    },
+    "assets/media/cg_c5_training_notice_v3.d1c7ce206a837036.webp": {
+      "sha256": "d1c7ce206a837036119f3263f48beede748837ce8fe3078d24b6681cd73e42e2",
+      "bytes": 138030,
       "type": "image"
     },
     "assets/media/cg_c5_zhou_handoff_v2.69d20e91baabcb3b.webp": {
@@ -2089,8 +2114,10 @@
       "assets/media/bg_us_room.59a9ab618e29e031.webp",
       "assets/media/bg_us_room_day.33d4b0ae483eea87.webp",
       "assets/media/bg_waiting_day_v2.30916f32479aad55.webp",
+      "assets/media/cg_c3_cousin_call_v3.93c016e84a49e539.webp",
       "assets/media/cg_c3_mei_probe_v2.91a5dd021ce3cd86.webp",
       "assets/media/cg_c3_shared_lunch_v2.b955cff09bde3231.webp",
+      "assets/media/cg_c3_us_visit_v3.683d78eddc52974a.webp",
       "assets/media/ch2_bg_breakroom_day.194c9d3ccafbe9ff.webp",
       "assets/media/char_han.16470d2a0c45282b.webp",
       "assets/media/char_he.49cf19abecad1659.webp",
@@ -2147,6 +2174,8 @@
       "assets/media/bg_office_day.c715845d3a833f50.webp",
       "assets/media/cg_c4_first_mri_v2.586da62385ee8335.webp",
       "assets/media/cg_c4_luo_records_v2.5c9aa4441a82f444.webp",
+      "assets/media/cg_c4_procurement_v3.cde277f2df467dbd.webp",
+      "assets/media/cg_c4_wide_bore_v3.af900b27b3e818ab.webp",
       "assets/media/ch2_bg_breakroom_day.194c9d3ccafbe9ff.webp",
       "assets/media/ch2_ct_motion_bed_v1.f1eaee8617eb5678.webp",
       "assets/media/ch2_pat_luo_v1.485cd9f1d333d7eb.webp",
@@ -2198,6 +2227,7 @@
       "assets/media/bg_corridor.970560e65398bdf4.webp",
       "assets/media/bg_ctcontrol_ready.10ebe6364699f572.webp",
       "assets/media/bg_office.a9e1a85d95a882a3.webp",
+      "assets/media/bg_office_day.c715845d3a833f50.webp",
       "assets/media/bg_pet_center.2ed19ed53beaa014.webp",
       "assets/media/bg_pet_center_day_v2.aa08153d66fe8d36.webp",
       "assets/media/bg_pet_control.732f8ba8d4ef4a40.webp",
@@ -2208,6 +2238,7 @@
       "assets/media/bg_retirement.bf4d89cfcd97b054.webp",
       "assets/media/cg_c5_father_letter_v2.3339007d3ea5ee82.webp",
       "assets/media/cg_c5_record_confrontation_v2.58dc6bc870396eec.webp",
+      "assets/media/cg_c5_training_notice_v3.d1c7ce206a837036.webp",
       "assets/media/cg_c5_zhou_handoff_v2.69d20e91baabcb3b.webp",
       "assets/media/ch2_ct_motion_bed_v1.f1eaee8617eb5678.webp",
       "assets/media/ch2_pixel_char_director.5c2ab917a089a1f0.webp",

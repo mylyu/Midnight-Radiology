@@ -13,6 +13,7 @@ import { assetUrl } from '../lib/chapter-assets'
 import { useDialogueChoiceGuard } from '../hooks/use-dialogue-choice-guard'
 import { DIALOGUE_CHARACTER_MS, waitForDialogueChoices } from '../game/dialogue-timing'
 import { acceptInput } from '../game/input-gate'
+import { createTrilogyDialogueClick, trilogyDialoguePresentationKey, trilogyTargetHasDialogue } from '../game/trilogy-dialogue-click'
 import { DialogueStage, DialogueShade, DialogueHeader, DialoguePortrait, DialoguePanel, DialogueChoices, DialogueChoice } from './DialogueScene'
 import { SceneBackground } from './SceneBackground'
 import { FullscreenBtn } from './FullscreenButton'
@@ -41,12 +42,14 @@ export function TrilogyScreen({ state, chapter, update, onExit, renderText }: Pr
   const [readyScope, setReadyScope] = useState('')
   const [badge, setBadge] = useState<string | null>(null)
   const [muted, setMuted] = useState(() => { try { return localStorage.getItem('mr-trilogy-muted') === '1' } catch { return false } })
-  const pendingVoice = useRef<(() => void) | null>(null)
+  const pendingVoice = useRef<{ scope: string; play: () => void } | null>(null)
+  const dialogueClick = useRef(createTrilogyDialogueClick(() => playSfx('click')))
   const known = useRef(new Set(state.badges)), nav = useRef({ until: 0 }), sounds = useRef(new Set<string>())
   const stage = useRef<HTMLDivElement>(null), dialog = useRef<HTMLDivElement>(null)
-  const scope = `${chapter.id}:${p.runId}:${node}:${p.giftReply ? 'gift' : 'story'}:${overlay ?? ''}:${p.phase}:${presentation}`
   const reply = p.giftReply
   const text = reply?.text ?? raw.text ?? ''
+  const scope = trilogyDialoguePresentationKey({ chapter: chapter.id, runId: p.runId, node, phase: p.phase,
+    presentation, overlay, speaker: reply?.person ?? raw.speaker ?? 'sys', replyPerson: reply?.person, text })
   const plain = text.replaceAll('**', '')
   const shown = typing.scope === scope ? typing.count : 0
   const done = shown >= plain.length
@@ -58,6 +61,14 @@ export function TrilogyScreen({ state, chapter, update, onExit, renderText }: Pr
   const canGive = !!raw.giftTo && !reply && !blocked && !p.gifts.includes(`${p.shift}:${raw.giftTo}`)
   const giftItems = canGive ? (['milktea', 'snack'] as const).filter(item => state.items.includes(item)) : []
   const choiceGuard = useDialogueChoiceGuard(scope, ready && !blocked)
+  useEffect(() => {
+    const click = dialogueClick.current
+    if (blocked || !plain.length) { click.cancel(); return }
+    click.begin(scope, !muted && !document.hidden)
+    const hide = () => { if (document.hidden) click.cancel() }
+    document.addEventListener('visibilitychange', hide)
+    return () => { document.removeEventListener('visibilitychange', hide); click.cancel() }
+  }, [scope, blocked, plain.length, muted])
   useEffect(() => {
     if (blocked || done) return
     const started = performance.now()
@@ -121,13 +132,14 @@ export function TrilogyScreen({ state, chapter, update, onExit, renderText }: Pr
     const voiceId = trilogyVoice(chapter, raw)
     const voiceKey = `voice:${voiceId}`
     if (voiceId && !p.heardCues?.includes(voiceKey) && !p.heardCues?.includes(`voice:${node}`)) {
+      const voiceScope = scope
       const voice = new Audio(assetUrl(`audio/${voiceId}.mp3`)); audio.push(voice); voice.volume = .42
       const play = () => {
         if (canceled || document.hidden) return
         void voice.play().then(() => {
           if (canceled) return
           pendingVoice.current = null; update(s => trilogyProgress(s, chapter.id)?.stepId === node ? trilogyHeardCue(s, chapter.id, voiceKey) : s)
-        }, () => { if (!canceled) pendingVoice.current = play })
+        }, () => { if (!canceled) pendingVoice.current = { scope: voiceScope, play } })
       }
       play()
     } else if (raw.sfx) void playSfx(raw.sfx === 'vox_luzhou' ? `vox_luzhou_${state.gender}` : raw.sfx)
@@ -136,18 +148,31 @@ export function TrilogyScreen({ state, chapter, update, onExit, renderText }: Pr
   useEffect(() => { if (!blocked) return playSceneCue() }, [node, blocked, muted])
   const advance = (now: number) => {
     if (blocked || !acceptInput(nav.current, now, 300)) return
-    pendingVoice.current?.()
-    if (!done) { if (!muted) void playSfx('click'); setTyping({ scope, count: plain.length }); return }
-    if (!choices.length && !giftItems.length) { if (!muted) void playSfx('click'); update(s => trilogyAdvance(s, chapter, node)) }
+    if (!done) {
+      dialogueClick.current.gesture(scope, !muted && !document.hidden)
+      if (!muted && !document.hidden && pendingVoice.current?.scope === scope) pendingVoice.current.play()
+      setTyping({ scope, count: plain.length }); return
+    }
+    if (!choices.length && !giftItems.length) {
+      if (!reply && (raw.end || !trilogyTargetHasDialogue(chapter, state, raw.next)) && !muted) void playSfx('click')
+      update(s => trilogyAdvance(s, chapter, node))
+    }
   }
   const choose = (index: number, now: number) => {
     if (!choiceGuard.accept(index) || !acceptInput(nav.current, now, 300)) return
-    if (!muted) void playSfx('click')
     if (index < choices.length && ['@shop', '@book'].includes(choices[index].next)) {
+      if (!muted) void playSfx('click')
       changeOverlay(choices[index].next === '@shop' ? 'shop' : 'book')
       if (choices[index].next === '@book') update(s => trilogyReadBook(s, chapter))
     }
-    else if (index < choices.length) update(s => trilogyChoose(s, chapter, node, choices[index]))
+    else if (index < choices.length) {
+      const choice = choices[index]
+      if (!condOk(state, choice.cond)) return
+      const flags = choice.effect?.flag ? { ...state.flags, [choice.effect.flag]: true } : state.flags
+      if (!trilogyTargetHasDialogue(chapter, { flags }, choice.next)
+          && (!choice.risk || !trilogyTargetHasDialogue(chapter, { flags }, choice.risk.next)) && !muted) void playSfx('click')
+      update(s => trilogyChoose(s, chapter, node, choice))
+    }
     else if (index < choices.length + giftItems.length) update(s => trilogyGive(s, chapter, node, giftItems[index - choices.length]))
     else update(s => trilogyAdvance(s, chapter, node))
   }
@@ -173,7 +198,7 @@ export function TrilogyScreen({ state, chapter, update, onExit, renderText }: Pr
     </DialogueHeader>
     {['story', 'epilogue'].includes(p.phase) && <>
       {raw.image && !raw.tool && !raw.scan && (raw.closeup
-        ? <LdctCinematic key={node} scene={{ id: node, image: raw.image, alt: raw.imageLabel ?? '剧情特写', motion: 'push' }} />
+        ? <LdctCinematic key={node} scene={{ id: node, image: raw.image, alt: raw.imageLabel ?? '剧情特写', motion: raw.cameraMotion ?? 'push' }} />
         : <div className="trilogy-story-image">{TRILOGY_DOCUMENTS[raw.image] ? <TrilogyDocument id={raw.image} /> : <img src={imageAsset(raw.image)} alt={raw.imageLabel ?? '剧情图像'} className="pixel" />}{raw.imageLabel && <span>{raw.imageLabel}</span>}</div>)}
       {sprite && !raw.closeup && <DialoguePortrait src={imageAsset(sprite === 'me' ? `char_${state.gender}` : sprite)} alt={person?.name ?? '人物'} />}
       {raw.sprite2 && !raw.closeup && <DialoguePortrait side="right" src={imageAsset(raw.sprite2)} alt="同场人物" />}
@@ -190,7 +215,7 @@ export function TrilogyScreen({ state, chapter, update, onExit, renderText }: Pr
       {raw.tool && !checkin && <TrilogyLab state={state} chapter={chapter} tool={raw.tool} update={update} />}
       {raw.scan && p.scans?.[node] && <TrilogyScan key={`${p.runId}:${node}`} scan={raw.scan} node={node} startedAt={p.scans[node].startedAt}
         muted={muted} onDone={() => update(s => completeTrilogyScan(s, chapter, node))} />}
-      {checkin && <Ch2Checkin title={`${shift.date} · ${shift.title}`} rewardText="打卡上岗 · 金币＋50" onComplete={() => { void playSfx('stamp'); update(s => trilogyCheckin(s, chapter)) }} />}
+      {checkin && <Ch2Checkin title={`${shift.date} · ${shift.title}`} rewardText="打卡上岗 · 金币＋50" onComplete={() => { if (!muted) void playSfx('stamp'); update(s => trilogyCheckin(s, chapter)) }} />}
     </>}
     {(p.phase === 'settle' || p.phase === 'done') && <TrilogySettlement state={state} chapter={chapter} update={update}
       onNext={() => update(s => nextTrilogyShift(s, chapter))} onOverlay={changeOverlay} onExit={onExit} />}
@@ -249,7 +274,7 @@ const itemName = (id: string) => SHOP_ITEMS.find(item => item.id === id)?.name ?
   c3_mei_probe_card: '梅姐的探头选择小卡', c3_aunt_cloth: '阿姨送的擦镜布', c3_lei_label_roll: '小雷的线号标签', c3_missing_copy: '寻人启事副本',
   c4_gift_coaster: '许宁的分机杯垫', c5_zhou_note: '老周的交接便笺', c5_qian_seeds: '老钱的菜种', c5_pet_bookmark: '顾老师的进修书签',
   c3_pocket_towel: '随身小方巾', c3_cup_stickers: '水果杯贴', c4_sleep_mask: '午休眼罩', c4_postcard: '欢迎小卡片',
-  c5_postcard: '省院银杏明信片', c5_seed_pot: '育苗小盆',
+  c5_postcard: '市院银杏明信片', c5_seed_pot: '育苗小盆',
 }[id] ?? id)
 function TrilogyOverlay({ overlay, state, chapter, update, close, renderText }: Omit<Props, 'onExit'> & { overlay: Overlay; close: () => void }) {
   const p = trilogyProgress(state, chapter.id)!, gate = useRef({ until: 0 })

@@ -33,9 +33,16 @@ function finish(id: string, text: string, flag: string) {
   steps[id] = scene('sys', text, { bg: 'bg_pet_dorm', effect: { gold: 150, flag }, end: true })
 }
 
+// 名额、排班与交通已经落实；出发前仍不打卡，不产生额外工资。
+chain('c5_training_depart', [
+  ['sys', '2028年11月2日下午。明天到澜江市三甲医院核医学中心报到，通知上写着两周、五次跟班，带教联系人和宿舍地址也已确认。你把车票放进透明袋，拉好行李箱的拉链。', { image: 'cg_c5_training_notice_v3', imageLabel: '核医学进修出发｜通知、车票与行李', closeup: true }],
+  ['me', '我自己报的名，这回可别在报到楼下迷路。地址存好了，宿舍怎么走也问过了。'],
+  ['sys', '小吴接下这两周的县院排班，在电话里又确认了一遍。通知和本子放进随身包，你去科室参加今晚的送行饭：明天自己出发，老周今晚正式交接。'],
+], 'c5_pro_0', { bg: 'bg_office_day' })
+
 // 出发前：老周完成交接；第一班不会把退休聚餐错算成第二次班后结算。
 chain('c5_pro', [
-  ['sys', '2028年11月2日。明天你要去省院进修，今晚科室先给老周送行。最后一盘饺子端过来，大家又给他腾出一块地方。', { bg: 'bg_retirement' }],
+  ['sys', '2028年11月2日晚。明天你要去市院进修，今晚科室先给老周送行。最后一盘饺子端过来，大家又给他腾出一块地方。', { bg: 'bg_retirement' }],
   ['tang', '哎，饭来了。周老师，您是正式离岗，还是明天又回来拿充电器？', { voice: 'vox_trilogy_tang_v2' }],
   ['zhou', '来了？茶还热着。充电器拿了，醋还没给我。', { voice: 'vox_trilogy_zhou_v2' }],
   ['fan', '大学那边有您讲课的照片，记得发。别只拍一排空椅子。'],
@@ -49,7 +56,7 @@ chain('c5_pro', [
   ['zhou', '日常保养写在上面了。最后那行你看了再走。', { giftTo: 'zhou' }],
 ], 'c5_pro_q', { bg: 'bg_retirement' })
 ask('c5_pro_q', '纸条的最后一行写着：“早餐别总吃泡面。”你把它折好。', [
-  { text: '「省院食堂好不好吃，等我回来告诉您。」', next: 'c5_pro_food' },
+  { text: '「市院食堂好不好吃，等我回来告诉您。」', next: 'c5_pro_food' },
   { text: '「以后带学生，不许只让人自己想。」', next: 'c5_pro_student' },
 ], { bg: 'bg_office', sprite: portraits.zhou, image: 'item_zhou_note' })
 steps.c5_pro_food = scene('zhou', '你先拍菜单。别只拍食堂门口。', { bg: 'bg_office', next: 'c5_pro_note_0' })
@@ -73,11 +80,11 @@ chain('c5_pro_receiving', [
 ], 'c5_arrival_0', { bg: 'bg_corridor' })
 chain('c5_arrival', [
   ['sys', '第二天清晨，你拖着箱子出门。小唐把昨晚没吃完的饺子装好，说路上别再买一碗泡面。车窗外的县城退成一排屋顶，老周的便笺夹在进修通知里。'],
-  ['sys', '午后抵达省院。门诊大厅比县里大得多，你绕错一次楼，才在核医学中心的路牌下找到报到处。', { bg: 'bg_pet_center_day_v2' }],
+  ['sys', '午后抵达澜江市三甲医院。门诊大厅比县里大得多，你绕错一次楼，才在核医学中心的路牌下找到报到处。', { bg: 'bg_pet_center_day_v2' }],
   ['sys', '登记、领进修证、确认宿舍和带教安排。工作人员在地图上圈出三个地方：中心、宿舍、食堂；你把食堂旁边的关门时间也抄了下来。'],
   ['sys', '傍晚，你把箱子送进宿舍。床头灯亮着，窗外开始暗下来。室友留了一张纸：“热水往左拧，右边只是看起来像热水。”', { bg: 'bg_pet_dorm' }],
   ['sys', '简单安顿后，你按约回到中心。先跟着走了一遍候诊区、摄取区和控制台，把门禁范围、设备交接与求助分机认清；行李留在宿舍，随身只带本子。', { bg: 'bg_pet_center' }],
-  ['sys', '18:10，晚间交接开始。进修证挂好，你来到打卡机前，省院的第一班从这里算起。'],
+  ['sys', '18:10，晚间交接开始。进修证挂好，你来到打卡机前，市院的第一班从这里算起。'],
 ], 'c5_s1_0', { bg: 'bg_corridor' })
 
 // 第1班：新地方、示踪剂订单、设备原理。资料间两件独立事项可免费返回。
@@ -163,7 +170,7 @@ ask('c5_s2_hub', '检查准备按计划进行。你可以完成一件短交接�
   detour('控制台旁：核对宁宁的外渗质控记录', 'c5_s2_leak_0', 'c5_leak_seen'),
   detour('休息室：顾老师的“消失的晚饭”', 'c5_s2_food_0', 'c5_s2_food_done'),
   detour('资料角：翻旧片对照的日期索引', 'c5_s2_index_0', 'c5_s2_index_done'),
-  { text: '用省院明信片，给老周写两句', next: 'c5_s2_postcard_0', cond: { item: 'c5_postcard', notFlag: 'c5_postcard_used' }, effect: { loseItem: 'c5_postcard', flag: 'c5_postcard_used' } },
+  { text: '用市院明信片，给老周写两句', next: 'c5_s2_postcard_0', cond: { item: 'c5_postcard', notFlag: 'c5_postcard_used' }, effect: { loseItem: 'c5_postcard', flag: 'c5_postcard_used' } },
   { text: '回控制台，看看探测器怎样配对，再准备采集', next: 'c5_s2_pair_intro_0' },
 ], { bg: 'bg_pet_control_day_v2' })
 chain('c5_s2_leak', [
@@ -262,7 +269,7 @@ chain('c5_s3_late', [
 ], 'c5_s3_after_hub', { bg: 'bg_pet_control_day_v2' })
 ask('c5_s3_after_hub', '收班前还有一小段空档。', [
   detour('休息室：看旧项目回函（可选旧线收尾）', 'c5_s3_meeting_0', 'c5_sms_resolved'),
-  { text: '用省院明信片，给老周写两句', next: 'c5_s3_postcard_0', cond: { item: 'c5_postcard', notFlag: 'c5_postcard_used' }, effect: { loseItem: 'c5_postcard', flag: 'c5_postcard_used' } },
+  { text: '用市院明信片，给老周写两句', next: 'c5_s3_postcard_0', cond: { item: 'c5_postcard', notFlag: 'c5_postcard_used' }, effect: { loseItem: 'c5_postcard', flag: 'c5_postcard_used' } },
   { text: '收好教具，下班', next: 'c5_s3_end' },
 ], { bg: 'bg_pet_control' })
 // 可选八句闭合旧线；资料处理由院方完成，玩家不参加整班核查会。
@@ -282,8 +289,8 @@ for (const id of ["c5_s3_lei_0","c5_s3_lei_1","c5_s3_lei_2","c5_s3_han_0","c5_s3
 
 // 第4班：先就诊，再查询旧记录；延迟显像属于同日医师安排。
 chain('c5_s4', [
-  ['sys', '11月11日，14:40。下午跟班前，你在中心接到许建平的电话。他按预约来到省院，县里医生告诉过他你正在这里进修。', { bg: 'bg_pet_control_day_v2', communication: 'call' }],
-  ['xu', '县里医生告诉我，你在省院。我不是让你给我插队，就是想问清楚走哪扇门。', { communication: 'call', phone: portraits.xu, sprite: '' }],
+  ['sys', '11月11日，14:40。下午跟班前，你在中心接到许建平的电话。他按预约来到市院，县里医生告诉过他你正在这里进修。', { bg: 'bg_pet_control_day_v2', communication: 'call' }],
+  ['xu', '县里医生告诉我，你在市院。我不是让你给我插队，就是想问清楚走哪扇门。', { communication: 'call', phone: portraits.xu, sprite: '' }],
   ['me', '按预约到核医学中心。我在交接后过来。您的旧资料都带上。'],
   ['sys', '你来到候诊区，叫号屏亮起“许建平”。他把名字写得很慢，每个字都写在格子中间。', { bg: 'bg_pet_center_day_v2' }],
   ['xu', '我带了旧片。许建平，退休前跑长途客车。以前白天赶车，夜里赶回来，字就没好好写。', { voice: 'vox_trilogy_mystery_v2' }],
@@ -360,7 +367,7 @@ ask('c5_s5_hub', '最后一班的计数比较已经准备好。开始前还有�
   detour('休息室：和顾老师整理转诊联系人', 'c5_s5_contacts_0', 'c5_contacts_done'),
   detour('走廊：宁宁教你认采集结束的提示', 'c5_s5_buzzer_0', 'c5_buzzer_done'),
   detour('窗口旁：给老钱的回复安排回访', 'c5_s5_qian_0', 'c5_qian_followed'),
-  { text: '用省院明信片，给老周写两句', next: 'c5_s5_postcard_0', cond: { item: 'c5_postcard', notFlag: 'c5_postcard_used' }, effect: { loseItem: 'c5_postcard', flag: 'c5_postcard_used' } },
+  { text: '用市院明信片，给老周写两句', next: 'c5_s5_postcard_0', cond: { item: 'c5_postcard', notFlag: 'c5_postcard_used' }, effect: { loseItem: 'c5_postcard', flag: 'c5_postcard_used' } },
   { text: '拿育苗小盆，向老钱问问这两包菜种', next: 'c5_seed_pot_0', cond: { item: 'c5_seed_pot', flag: 'c5_qian_gift', notFlag: 'c5_seed_pot_used' }, effect: { loseItem: 'c5_seed_pot', flag: 'c5_seed_pot_used' } },
   { text: '回工作站，累计同一模体的计数', next: 'c5_s5_noise_0' },
 ], { bg: 'bg_pet_center_day_v2' })
@@ -378,7 +385,7 @@ chain('c5_s5_qian', [
   ['sys', '老钱按约定联系了转诊医师，后续评估正在进行。他从县里给护士站回了电话。', { communication: 'call' }],
   ['qian', '没有丢那张单子。老伴还拿透明袋给我套了一层。', { communication: 'call', phone: portraits.qian, sprite: '' }],
   ['me', '好的，后面的结果跟负责医师核对。菜种我收好了。'],
-  ['qian', '你是收到的这个年轻人？那就等你回去再种。省里这会儿的窗台太冷。', { communication: 'call', phone: portraits.qian, sprite: '', effect: { flag: 'c5_qian_followed' } }],
+  ['qian', '你是收到的这个年轻人？那就等你回去再种。市里这会儿的窗台太冷。', { communication: 'call', phone: portraits.qian, sprite: '', effect: { flag: 'c5_qian_followed' } }],
 ], 'c5_s5_hub', { bg: 'bg_pet_control_day_v2' })
 chain('c5_s5_noise', [
   ['me', '同一个目标，计数也会抖。那我怎么知道图上这一小团灰是结构，还是这一回恰好少接了几颗？'],
@@ -393,7 +400,7 @@ chain('c5_s5_dusk', [
 // 商品只在持有且尚未用过时出现；消费、旗标与游标由共享运行时一起保存。
 function postcard(prefix: string, next: string) {
   chain(prefix, [
-    ['sys', '你把省院明信片摊在休息室桌上。正面是楼前那棵银杏，背面留着一大片空白，你把老周要的菜单照片调出来。', { image: 'item_c5_postcard_v2' }],
+    ['sys', '你把市院明信片摊在休息室桌上。正面是楼前那棵银杏，背面留着一大片空白，你把老周要的菜单照片调出来。', { image: 'item_c5_postcard_v2' }],
     ['me', '“食堂二楼的面还行。宁宁说不能只拍食堂门口，我连菜单拍好了。”这样写，您总不能再说我偷懒。'],
     ['sys', '你写好地址，把卡片交到护士站的代寄袋里，又拍了背面发给老周。手机亮了一下。', { communication: 'sms' }],
     ['zhou', '字写太满了，邮票贴哪儿？菜单那张重发，看不清汤多少钱。', { communication: 'sms', phone: portraits.zhou, sprite: '', effect: { badge: 'c5_postcard_reply' } }],
@@ -436,7 +443,7 @@ ask('c5_epi_pause', '行李还在宿舍。你可以在这里坐一小会儿，�
   { text: '陪许建平看看父亲的回函和那封旧信（可选）', next: 'c5_epi_4', cond: { notFlag: 'c5_father_resolved' } },
   { text: '收好本子，准备回县', next: 'c5_epi_after_0' },
 ], { bg: 'bg_pet_center_day_v2' })
-steps.c5_epi_4 = scene('sys', '两院身份、转诊索引与留存记录已相互核验：许守义1998年转往外地就诊，2001年在当地病逝。交付的旧影像复制件属于他，姓名和登记号都能对应。', { bg: 'bg_pet_center_day_v2', image: 'item_father_film', imageLabel: '许守义｜经核验的旧影像复制件', next: 'c5_epi_5' })
+steps.c5_epi_4 = scene('sys', '县院与当年接收他的外地省院已核对身份、转诊索引和留存记录：许守义1998年转往该院，2001年在当地病逝。交付的旧影像复制件属于他，姓名和登记号都能对应。', { bg: 'bg_pet_center_day_v2', image: 'item_father_film', imageLabel: '许守义｜经核验的旧影像复制件', next: 'c5_epi_5' })
 steps.c5_epi_5 = scene('xu', '这次真是父亲那份。我以前总拿一张像他的片子猜，名字都没问清。', { bg: 'bg_pet_center_day_v2', next: 'c5_epi_6' })
 steps.c5_epi_6 = scene('sys', '老工友家属回函和旧登记相符：许守义转院后暂住工友家，想把病看完再回禾川。2000年寄给儿子的信因迁址退回；2001年的后续记录与家属回函也已核对。', { bg: 'bg_pet_center_day_v2', next: 'c5_epi_father_0' })
 steps.c5_epi_father_0 = scene('xu', '那年车队换宿舍，我也搬了家。吵完那一架，我出车走了，以为他会回来……他寄信还用着旧地址。复查我还来，找人的事不用再麻烦你了。', { bg: 'bg_pet_center_day_v2', next: 'c5_epi_father_6' })
@@ -453,7 +460,7 @@ chain('c5_epi_after', [
   ['sys', '雯雯提交的两版附件已留存，旧副本继续追溯。你收好自己的本子。', { skipUnlessFlag: 'c5_sms_resolved' }],
   ['sys', '行李箱合上。你把观察本、老周的便笺与菜种放在不同的夹层。两周进修结束了。'],
   ['sys', '回县后的一个晚上，老周来电。电话那边有学生搬椅子的声音。', { bg: 'bg_office', communication: 'call' }],
-  ['zhou', '省院的饭怎么样？', { communication: 'call', phone: portraits.zhou, sprite: '' }],
+  ['zhou', '市院的饭怎么样？', { communication: 'call', phone: portraits.zhou, sprite: '' }],
   ['me', '不错。宁宁说您的寻杯启事写得特别详细。'],
   ['zhou', '学生问我以前为什么不出去。我说想留，他们还在等第二段。', { communication: 'call', phone: portraits.zhou, sprite: '' }],
   ['me', '然后呢？'],
@@ -482,7 +489,7 @@ const badges: TrilogyChapter['badges'] = {
   c5_connection: { name: '能接上人', icon: '🤝', desc: '主动落实转诊、会诊与回复责任人' },
   c5_found_name: { name: '片上有名字', icon: '🎞️', desc: '领取真正属于许守义的核验旧影像' },
   c5_next_shift: { name: '下一位夜班', icon: '🌙', desc: '完成第五章真正尾声，开始带新人' },
-  c5_postcard_reply: { name: '邮票贴哪儿', icon: '📮', desc: '用省院明信片给老周写信，收到他的菜单追问' },
+  c5_postcard_reply: { name: '邮票贴哪儿', icon: '📮', desc: '用市院明信片给老周写信，收到他的菜单追问' },
   c5_window_seed: { name: '带回去种', icon: '🌱', desc: '准备育苗小盆，向老钱问清菜种怎么种' },
   c5_pair_line: { name: '先是一条线', icon: '↔️', desc: '观察时间窗与符合配对怎样产生响应线' },
   c5_projection_turn: { name: '转过去才分开', icon: '🔄', desc: '用同一模体追踪SPECT多角度投影、正弦图与断层' },
@@ -549,6 +556,7 @@ const quiz: TrilogyChapter['quiz'] = [
 
 function adapt(id: string, step: TrilogyStep, state: GameState): TrilogyStep {
   const f = state.flags
+  if (id === 'c5_training_depart_0' && f.c4_nuclear_training_ready) return { ...step, text: '2028年11月2日下午。此前确认的进修安排明天开始：澜江市三甲医院核医学中心，两周、五次跟班。县院替班、带教联系人和宿舍都已落实，你把车票放进透明袋，拉好行李箱的拉链。' }
   if (id === 'c5_pro_note_0' && f.c2_payoff_zhou_cup) return { ...step, text: '纸上是设备交接联系人和保养要点。老周看你拿着以前他送的杯子：“还没丢，挺好。”你把便笺夹进随身本。' }
   if (id === 'c5_pro_receiving_0' && f.zhou_truth) return { ...step, text: '急诊护士领来一位穿旧外套的老人。你认出他是2024年老周照顾过的那位。今天申请单夹着临时身份条码，证件栏还等着补齐。' }
   if (id === 'c5_s2_0' && state.dlc?.dr?.served?.includes('p_qian')) return { ...step, text: '11月5日，15:10。下午门诊。那位在2025年DR白班见过的老钱，提着又厚了一层的片袋站在中心门口。' }
@@ -573,7 +581,7 @@ export const CH5: TrilogyChapter = {
   id: 'ch5', title: '微光', subtitle: '核医学篇 · 两周进修，五次跟班', icon: '✨', year: 2028,
   equipment: 'γ相机 / SPECT / PET-CT · 发射、探测与重建', background: 'bg_pet_center',
   shifts: [
-    { id: 'c5_shift1', title: '第一班 · 赶不上钟', subtitle: '出发、交接与示踪剂订单', date: '2028年11月3日 · 晚班', start: 'c5_pro_0', checkinAt: 'c5_s1_0', background: 'bg_pet_center' },
+    { id: 'c5_shift1', title: '第一班 · 赶不上钟', subtitle: '进修出发、交接与示踪剂订单', date: '2028年11月3日 · 晚班', start: 'c5_training_depart_0', checkinAt: 'c5_s1_0', background: 'bg_office_day' },
     { id: 'c5_shift2', title: '第二班 · 环上的一对', subtitle: '老钱的PET，符合探测与同次融合', date: '2028年11月5日 · 下午门诊', start: 'c5_s2_0', background: 'bg_pet_center_day_v2' },
     { id: 'c5_shift3', title: '第三班 · 孔与方向', subtitle: 'γ相机接收链，SPECT投影与断层', date: '2028年11月8日 · 下午跟班', start: 'c5_s3_0', background: 'bg_pet_control_day_v2' },
     { id: 'c5_shift4', title: '第四班 · 功能与位置', subtitle: '许建平的PET/CT，衰减校正与定量', date: '2028年11月11日 · 下午至傍晚', start: 'c5_s4_0', background: 'bg_pet_center_day_v2' },
@@ -598,15 +606,15 @@ export const CH5: TrilogyChapter = {
   },
   badges, cards, book, quiz, adapt,
   shopItems: [
-    { id: 'c5_postcard', name: '省院银杏明信片', price: 25, desc: '空档时写给老周，告诉他省院的饭到底怎样。', image: 'item_c5_postcard_v2', use: 'c5_postcard_used', lastShift: 4 },
+    { id: 'c5_postcard', name: '市院银杏明信片', price: 25, desc: '空档时写给老周，告诉他市院的饭到底怎样。', image: 'item_c5_postcard_v2', use: 'c5_postcard_used', lastShift: 4 },
     { id: 'c5_seed_pot', name: '育苗小盆', price: 45, desc: '收到老钱菜种后，最后一班可请他讲讲怎么用，带回县里种。', image: 'item_c5_seedpot_v2', use: 'c5_seed_pot_used', lastShift: 4 },
   ],
   assets: [...new Set([
-    'bg_retirement', 'bg_office', 'bg_breakroom', 'bg_corridor', 'bg_pet_center', 'bg_pet_control', 'bg_pet_uptake', 'bg_pet_dorm', 'bg_ctcontrol_ready',
+    'bg_retirement', 'bg_office', 'bg_office_day', 'bg_breakroom', 'bg_corridor', 'bg_pet_center', 'bg_pet_control', 'bg_pet_uptake', 'bg_pet_dorm', 'bg_ctcontrol_ready',
     ...Object.values(portraits), 'char_new_trainee', 'pet_lung', 'pet_fusion', 'pet_neck',
     'item_father_film', 'item_zhou_note', 'item_qian_seeds', 'item_pet_bookmark',
     'bg_pet_center_day_v2', 'bg_pet_control_day_v2', 'bg_pet_uptake_day_v2',
-    'cg_c5_zhou_handoff_v2', 'cg_c5_record_confrontation_v2', 'cg_c5_father_letter_v2',
+    'cg_c5_zhou_handoff_v2', 'cg_c5_record_confrontation_v2', 'cg_c5_father_letter_v2', 'cg_c5_training_notice_v3',
     'item_c5_postcard_v2', 'item_c5_seedpot_v2',
     'ch2_pixel_char_m', 'ch2_pixel_char_f',
   ])],

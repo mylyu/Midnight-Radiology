@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react'
-import { MRI_GRID, MRI_KSPACE_REFERENCE_AMPLITUDE, MRI_TISSUES, mriContrast, mriControl, mriEncode, mriExcitation,
+import { MRI_GRID, MRI_B0_T, MRI_GAMMA_HZ_T, MRI_KSPACE_REFERENCE_AMPLITUDE, MRI_TISSUES, mriContrast, mriControl, mriEncode, mriExcitation,
   mriImagePixels, mriKspacePixels, mriMotion, mriReference, mriRelaxAt, mriSample,
   mriSamplingName } from '../game/trilogy-mri-numerics'
 import './TrilogyMriLab.css'
@@ -65,7 +65,7 @@ export function TrilogyMriLab({ task, variant, value, secondary, choice, onChang
           <text x="3" y="20">1</text><text x="3" y="140">0</text><text x="18" y="157">RF停</text><text x="257" y="157">3000 ms</text>
         </svg>
         <p><i className="trilogy-mri-key-z" />纵向恢复 <i className="trilogy-mri-key-xy" />横向衰减</p>
-        <small>3.0T · 1 ms矩形RF脉冲 · 均匀场教学样品</small>
+        <small>{MRI_B0_T}T · 1 ms矩形RF脉冲 · 均匀场教学样品</small>
       </div> : contrast ? <div className="trilogy-mri-contrast">
         <Pixels pixels={imagePixels} label="同一模体 · 固定灰度尺" />
         <div className="trilogy-mri-materials">{MRI_TISSUES.map((tissue, i) => <div key={tissue.name}><span>{tissue.name}</span><meter min="0" max="1" value={comparison.signals[i]} /><strong style={{ color: tissue.color }}>{comparison.signals[i].toFixed(2)}</strong></div>)}</div>
@@ -87,7 +87,7 @@ export function TrilogyMriLab({ task, variant, value, secondary, choice, onChang
       {signal ? <>
         <Slider name="观察时间" value={control} label={`RF停后：${time} ms`} onChange={value => onChange({ value })} />
         <Slider name="射频频率偏移" value={second} label={`RF ${(excitation.frequencyHz / 1e6).toFixed(6)} MHz · 偏移 ${Math.round(excitation.detuningHz)} Hz`} onChange={secondary => onChange({ secondary })} />
-        <button onClick={() => onChange({ secondary: 50 })}>对准 127.740 MHz</button>
+        <button onClick={() => onChange({ secondary: 50 })}>对准 {(MRI_B0_T * MRI_GAMMA_HZ_T / 1e6).toFixed(3)} MHz</button>
         <p>先对准RF，再看两个分量一起变；纵向不是等横向掉完才恢复。</p>
       </> : contrast ? <>
         <Slider name="重复时间TR" value={control} label={`TR：${comparison.tr} ms`} onChange={value => onChange({ value })} />
