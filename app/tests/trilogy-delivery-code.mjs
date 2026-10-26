@@ -12,7 +12,8 @@ const plugin = loaded.config.plugins.flat(Infinity).find(p => p?.name === 'deliv
 assert(plugin?.generateBundle, 'Use the actual configured Rollup hook, not a copied mock producer')
 const story = 'assets/trilogy-registry-test.js', index = 'assets/index-test.js', mixed = 'assets/mixed-test.js'
 const baseImage = 'assets/media/base.webp', newMedia = 'audio/vox_c3_test.mp3'
-const sources = ['src/game/ch3.ts', 'src/game/ch4.ts', 'src/game/ch5.ts', 'src/game/trilogy-registry.ts']
+const sources = ['src/game/ch3.ts', 'src/game/ch4.ts', 'src/game/ch5.ts', 'src/game/trilogy-registry.ts',
+  'src/game/ch3-places.ts', 'src/game/ch3-staging.ts']
 const code = { [story]: 'export const chapter = "课程";\n' + ' '.repeat(25000), [index]: 'export const shared = 1;', [mixed]: 'export const mixed = 2;' }
 const chunk = (file, modules, extra = {}) => ({ type: 'chunk', fileName: file, code: code[file], isEntry: false,
   isDynamicEntry: true, modules: Object.fromEntries(modules.map(id => [id, { renderedLength: 0 }])), ...extra })

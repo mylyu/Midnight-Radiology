@@ -33,6 +33,10 @@ type Props = { state: GameState; chapter: TrilogyChapter; update: (fn: (s: GameS
   onExit: () => void; renderText: (text: string, shown?: number) => ReactNode }
 const BTN = 'min-h-10 rounded-lg border border-slate-600 bg-slate-800/90 px-3 py-2 text-sm text-slate-100 hover:border-teal-400'
 const HEADER_BTN = 'text-xs text-slate-400 hover:text-teal-300 border border-slate-700 rounded px-2 py-0.5'
+// Like Chapters 1/2, destination icons live in the choice wording. Unmarked
+// replies get a neutral speech icon; icons never reveal rewards or correctness.
+const ch3ChoiceLabel = (text: string) => /^\p{Extended_Pictographic}/u.test(text.trimStart()) ? text : `💬 ${text}`
+const CH3_CHOICE_CLASS = 'shrink-0 disabled:opacity-60 disabled:cursor-not-allowed'
 
 /** The same dialogue primitives, timing and pointer guard as Chapters 1 and 2. */
 export function TrilogyScreen({ state, chapter, update, onExit, renderText }: Props) {
@@ -214,13 +218,14 @@ export function TrilogyScreen({ state, chapter, update, onExit, renderText }: Pr
       </div>}
       {!raw.tool && !raw.scan && !checkin && <DialoguePanel dialogRef={dialog} speaker={person} textKey={scope} text={renderText(text, shown)} arrow={done && !optionsVisible}>
         {optionsVisible && <DialogueChoices>{choices.map((choice, index) => <DialogueChoice key={`${choice.next}:${index}`} data-dialogue-choice={String(index)}
-          disabled={!condOk(state, choice.cond)} aria-disabled={!ready || !condOk(state, choice.cond)} onClick={event => choose(index, event.timeStamp)}>{renderText(choice.text)}</DialogueChoice>)}
-          {giftItems.map((item, index) => <DialogueChoice key={item} data-dialogue-choice={String(choices.length + index)} aria-disabled={!ready}
+          className={chapter.id === 'ch3' ? CH3_CHOICE_CLASS : ''}
+          disabled={!condOk(state, choice.cond)} aria-disabled={!ready || !condOk(state, choice.cond)} onClick={event => choose(index, event.timeStamp)}>{renderText(chapter.id === 'ch3' ? ch3ChoiceLabel(choice.text) : choice.text)}</DialogueChoice>)}
+          {giftItems.map((item, index) => <DialogueChoice key={item} className={chapter.id === 'ch3' ? CH3_CHOICE_CLASS : ''} data-dialogue-choice={String(choices.length + index)} aria-disabled={!ready}
             onClick={event => choose(choices.length + index, event.timeStamp)}>{item === 'milktea' ? '🧋 把奶茶递过去' : '🍪 拆开零食一起吃'}</DialogueChoice>)}
-          {giftItems.length > 0 && !choices.length && <DialogueChoice data-dialogue-choice={String(giftItems.length)} aria-disabled={!ready} onClick={event => choose(giftItems.length, event.timeStamp)}>{chapter.id === 'ch3' ? '继续交谈 →' : '接着聊 →'}</DialogueChoice>}
+          {giftItems.length > 0 && !choices.length && <DialogueChoice className={chapter.id === 'ch3' ? CH3_CHOICE_CLASS : ''} data-dialogue-choice={String(giftItems.length)} aria-disabled={!ready} onClick={event => choose(giftItems.length, event.timeStamp)}>{chapter.id === 'ch3' ? '💬 继续交谈 →' : '接着聊 →'}</DialogueChoice>}
         </DialogueChoices>}
         {optionsVisible && choices.some(choice => !condOk(state, choice.cond)) && <small className="block mt-2 text-amber-200">行动力不足，可以先去小卖部喝杯咖啡。</small>}
-        {/hub$/.test(node) && done && <button className="mt-2 text-xs text-amber-200" onClick={e => { e.stopPropagation(); changeOverlay('shop') }}>🛒 去小卖部 · 咖啡可补行动力</button>}
+        {chapter.id !== 'ch3' && /hub$/.test(node) && done && <button className="mt-2 text-xs text-amber-200" onClick={e => { e.stopPropagation(); changeOverlay('shop') }}>🛒 去小卖部 · 咖啡可补行动力</button>}
       </DialoguePanel>}
       {raw.tool && !checkin && <TrilogyLab state={state} chapter={chapter} tool={raw.tool} update={update} />}
       {raw.scan && p.scans?.[node] && <TrilogyScan key={`${p.runId}:${node}`} scan={raw.scan} node={node} startedAt={p.scans[node].startedAt}

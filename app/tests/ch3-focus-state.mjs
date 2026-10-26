@@ -113,9 +113,10 @@ for (const [from, target, flag, badge, card] of [
 for (const borrowed of [false, true]) for (const met of [false, true]) {
   let s = fixture('c3_s5_hub', { ...(borrowed ? { c3_s4_lei_done: true } : {}), ...(met ? { c3_han_met: true } : {}) })
   const p = trilogyStep(s, CH3).choices.find(c => c.next === 'c3_s5_lei_0')
-  assert.equal(p.text.includes('还'), borrowed, 'Returning an item requires actually borrowing it')
+  assert.match(p.text, /休息室/, 'The hall offers a place, not a person or an invented prior action')
   const beforeAP = s.ap
   s = trilogyChoose(s, CH3, 'c3_s5_hub', p)
+  assert.equal(trilogyStep(s, CH3).text.includes('标签机还得'), borrowed, 'Returning an item requires actually borrowing it')
   s = walkTo(s, 'c3_s5_hub')
   assert.equal(s.ap, beforeAP - 1)
   assert(s.flags.c3_s5_lei_done, 'Optional paper follow-up cannot overwrite exploration completion')

@@ -12,7 +12,9 @@ const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 // chunks may additionally use the new-chapter increment. Shared/unknown code,
 // metadata itself and unregistered files remain under the unchanged base cap.
 export const budgetBytes = 17000000
-const trilogyStorySources = new Set(['src/game/ch3.ts', 'src/game/ch4.ts', 'src/game/ch5.ts', 'src/game/trilogy-registry.ts'])
+const trilogyStorySources = new Set(['src/game/ch3.ts', 'src/game/ch4.ts', 'src/game/ch5.ts', 'src/game/trilogy-registry.ts',
+  // CH3-only location graph and explicit scene cast split out of ch3.ts.
+  'src/game/ch3-places.ts', 'src/game/ch3-staging.ts'])
 
 /** Optional build evidence preserves the original two-argument report API.
  * Every rejected/missing record remains protected; hashes come from artifact

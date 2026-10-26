@@ -1,5 +1,7 @@
 import type { GameState } from './types'
 import type { TrilogyChapter, TrilogyStep } from './trilogy-types'
+import { applyCh3Staging } from './ch3-staging'
+import { installCh3Places } from './ch3-places'
 
 /** Chapter-local graph. Clinical acquisition/reporting always belongs to Mei. */
 const steps: Record<string, TrilogyStep> = {}
@@ -80,7 +82,7 @@ scene('c3_s1_start', [
   ['sys', '梅姐拿出培训表，让你签上到科时间。教学台在窗边，临床机在帘子里面；你刚把两处认清，窗口就送来了上午的预约单。'],
   ['mei', '八点半开诊，先转一圈。纸巾在右边第二格，省得待会儿全科帮你找。'],
 ], 'c3_s1_hub')
-hub('c3_s1_hub', '窗外有人骑车进院。距上午开诊还有一会儿，你可以认认地方，也可以直接回诊室。', [
+hub('c3_s1_hub', '距开诊还有一会儿。你站在科室走廊，休息室飘来一点茶香。先去哪儿转转？', [
   ['看看教学台上的三支探头', 'c3_s1_probes'],
   ['去茶水间认杯子', 'c3_s1_tea'],
   ['到候诊区帮忙找预约号', 'c3_s1_wait'],
@@ -91,7 +93,7 @@ exploration('c3_s1_probes', [
   ['me', '怪不得不是“大中小”。我先拿线阵看浅表模体，另外两支等您带着试。', { card: 'c3_probe' }],
 ], 'c3_s1_hub')
 exploration('c3_s1_tea', [
-  ['mei', '这杯是我的，写着“梅”。那个写“梅”的也是我的，盖子坏了还没舍得扔。', { giftTo: 'mei' }],
+  ['mei', '进来坐。要接水吗？这杯是我的，写着“梅”。那个写“梅”的也是我的，盖子坏了还没舍得扔。', { giftTo: 'mei' }],
   ['me', '我还以为超声科有两位梅姐。'],
   ['mei', '那个漏水。扔了吧，像还能用；留着吧，每天骗我一次。你先用自己的，别学我攒破杯子。'],
 ], 'c3_s1_hub', 'ch2_bg_breakroom_day')
@@ -156,7 +158,7 @@ scene('c3_s2_start', [
   ['me', '梅姐，我表姐堵桥上了。您给她留的时间……要不我先下去等她？'],
   ['mei', '别急，还没到呢。到了你去接进来，我看完手上这位给她做。'],
 ], 'c3_s2_hub', 'bg_us_room_day')
-hub('c3_s2_hub', '表姐还在路上，上午的预约照常叫号。你可以趁准备的空当问问同事。', [
+hub('c3_s2_hub', '表姐还在路上，上午的检查照常叫号。你把手机音量开大，趁准备的空当在科里走走。', [
   ['陪梅姐看一眼排班表', 'c3_s2_roster'],
   ['跟小何分半袋饼干', 'c3_s2_he'],
   ['整理教学机的图像标签', 'c3_s2_label'],
@@ -165,17 +167,17 @@ exploration('c3_s2_roster', [
   ['mei', '这儿写“休”，不等于我能休。旁边那个小括号，写的是院里培训。', { giftTo: 'mei' }],
   ['me', '括号比正文还厉害。'],
   ['mei', '这个月我休了三回，三回都在开会。下回干脆写个“会”，我还不用高兴半天。'],
-], 'c3_s2_hub', 'bg_us_room_day')
+], 'c3_s2_hub', 'bg_office_day')
 exploration('c3_s2_he', [
-  ['he', '听说你来这边了。我来送申请单，顺便看看叛逃人口伙食怎样。', { giftTo: 'he' }],
+  ['he', '正想找你呢，坐。我来送申请单，顺便看看叛逃人口伙食怎样。', { giftTo: 'he' }],
   ['me', '目前还在找纸巾，比放射科更考验空间定位。'],
   ['he', '给你留两块。我从急诊一路带来，袋子都快被我捏空了，再聊下去就真没了。', { effect: { item: 'snack' } }],
 ], 'c3_s2_hub', 'ch2_bg_breakroom_day')
 exploration('c3_s2_label', [
-  ['sys', '教学文件夹里，一张图只写了“最好的一张”。你盯着它，完全想不起好在哪里。'],
+  ['sys', '阅片工作站旁摞着几盒旧教学片。梅姐让你找一组对照，打开文件夹，一张图只写了“最好的一张”。你盯着它，完全想不起好在哪里。'],
   ['me', '我把探头、目标和深度写上了。下回至少不用猜这是哪一块模体。'],
   ['mei', '调整前的也放进去。今天比频率和深部补偿，别拿两块不同模体说自己调清楚了。', { card: 'c3_compare' }],
-], 'c3_s2_hub', 'bg_us_room_day')
+], 'c3_s2_hub', 'bg_office_day')
 scene('c3_s2_arrive', [
   ['sys', '你在楼梯口接到表姐，帮她拎过那个鼓鼓囊囊的包。她跟在你身后，压低声音问：这里是不是每栋楼都长一个样？', { bg: 'bg_waiting_day_v2' }],
   ['cousin', '我刚差点拐进住院部。还好看见你，不然又得打电话求救。', { bg: 'bg_waiting_day_v2' }],
@@ -228,12 +230,12 @@ exploration('c3_s3_tang', [
   ['tang', '你负责推车？转弯留点地方。上回我被人用仪器车追了半层楼。', { giftTo: 'tang' }],
   ['me', '那我慢点推。你在前面带路，我跟着。'],
   ['tang', '我待会儿去病区交单，东边病床梯一起走。你别跟着我拐去库房，我上回就领错过一队人。'],
-], 'c3_s3_hub', 'bg_us_bedside_day_v2')
+], 'c3_s3_hub', 'bg_waiting_day_v2')
 exploration('c3_s3_cart', [
   ['sys', '你把电源线从轮子旁收起，检查外观和电量。备用线在侧袋，不在你想当然的抽屉里。'],
   ['mei', '这回好，少一个人蹲在床底下找插座。'],
   ['me', '这里贴个“备用线”，回去也收这格。我可不想推到半路再折回来。', { card: 'c3_bedside', effect: { badge: 'c3_cart_ready' } }],
-], 'c3_s3_hub', 'bg_us_bedside_day_v2')
+], 'c3_s3_hub', 'bg_us_room_day')
 exploration('c3_s3_bag', [
   ['aunt', '前几天走得急，外面这个空布袋落下了。窗口说你替我放好了，我过来拿一下。'],
   ['me', '给您。您当时把片子拿走了，我还松了口气，不然得让您多跑一趟。'],
@@ -293,7 +295,7 @@ scene('c3_s4_start', [
   ['me', '我以前见着红蓝，总先认成动脉、静脉。今天先不猜。'],
   ['mei', '先看图例，再看探头朝哪儿。你把这位以前的检查调出来，我先看看。'],
 ], 'c3_s4_hub')
-hub('c3_s4_hub', '教学血流演示已经准备好。开诊前还能找同事聊几句，或看看新送来的用品。', [
+hub('c3_s4_hub', '诊室还在做开诊前的准备，几箱新用品靠墙放着。走廊那头有人喊借剪刀，休息室的门也开了。', [
   ['找小雷借标签机', 'c3_s4_lei'],
   ['和梅姐拆新包装', 'c3_s4_pack'],
   ['给老周回个电话', 'c3_s4_zhou'],
@@ -312,7 +314,7 @@ exploration('c3_s4_zhou', [
   ['zhou', '在超声科怎么样？还找得到食堂吗？', { communication: 'call', sprite: undefined, phone: 'char_zhou' }],
   ['me', '找得到。就是他们那边的饭点，和饭点没什么关系。', { communication: 'call' }],
   ['zhou', '那就熟悉了。周末回来，给我讲讲那个轮子。后勤上回答应给我们修椅子，还欠着呢。', { communication: 'call', sprite: undefined, phone: 'char_zhou' }],
-], 'c3_s4_hub', 'bg_office_day')
+], 'c3_s4_hub', 'bg_waiting_day_v2')
 scene('c3_s4_cost', [
   ['sys', '你把三个月的数据摊开。总金额上去了，但门诊与床旁检查的人次也增加了。另有一批旧包装到了使用期限，报废单单独放着。'],
   ['mei', '财务把这两张加一起了。你看，报废那批还算在本月用量里，可不是我们一人多挤了半瓶。'],
@@ -371,7 +373,7 @@ scene('c3_s5_start', [
   ['me', '正式考核？'],
   ['mei', '表都拿来了，还能逗你？先把模体摆好，别紧张。'],
 ], 'c3_s5_hub', 'bg_us_room_day')
-hub('c3_s5_hub', '考核开始前，熟悉的人陆续从门口经过。你已经不用先问每一个柜子放什么。', [
+hub('c3_s5_hub', '考核还没开始。走廊还是那些门，你这回已经知道哪间能找着热水，哪间的椅子坐下会响。', [
   ['跟老周聊聊这两周', 'c3_s5_zhou'],
   ['把标签机还给小雷', 'c3_s5_lei'],
   ['陪梅姐收拾教学台', 'c3_s5_mei'],
@@ -504,6 +506,7 @@ steps.c3_s5_notice_route.text = '你写清窗口位置，许建平自己过去�
 steps.c3_s5_notice_end_3.text = '窗口登记好请求，许建平收起原件。你陪他确认联系人，又看了一眼时间，该回梅姐那边了。'
 steps.c3_s5_notice_end_3.effect = { flag: 'c3_xu_query_started' }
 steps.c3_s5_notice_end_3.next = 'c3_s5_hub'
+steps.c3_s5_notice_end_5.bg = 'bg_us_room_day'
 steps.c3_s2_finish_1.card = 'c3_compare'
 
 // Every real examination acquires before revealing its result. These nodes carry
@@ -654,13 +657,18 @@ const quiz: TrilogyChapter['quiz'] = [
   { q: '简单逐线模型中，每帧增加线数、同时显示更深，需要比较什么代价？', options: ['轴向分辨率必定变差', '声波频率必定下降', '累计等待与帧频下降', '回波强度一定相同'], answer: 2, explain: '更多声线及更深回波都需要等待，空间采样和时间分辨应结合任务权衡。' },
 ]
 
+applyCh3Staging(steps)
+const adaptPlaces = installCh3Places(steps)
+
 function adapt(id: string, step: TrilogyStep, state: GameState): TrilogyStep {
+  const place = adaptPlaces(id, step, state)
+  if (place) return place
   const progress = state.dlc?.ch3?.chapter
   const tools = progress?.tools
   // Old saves inside the removed city-trip sequence resume with one bridge,
   // then join the current follow-up; no new visit or reward is fabricated.
   if (/^c3_epilogue_(?:[5-9]|1[0-3])$/.test(id)) return { ...step,
-    speaker: 'sys', sprite: '', phone: undefined, image: undefined, imageLabel: undefined,
+    speaker: 'sys', sprite: '', sprite2: '', phone: undefined, image: undefined, imageLabel: undefined,
     voice: undefined, effect: undefined, card: undefined, choices: undefined, closeup: false,
     text: state.flags.c3_cousin_followup_stable
       ? '你翻到表姐之前发来的消息，又把下次复查的时间标进日历。这次谁也没忘。'
@@ -710,9 +718,6 @@ function adapt(id: string, step: TrilogyStep, state: GameState): TrilogyStep {
   if (id === 'c3_s4_cost_1' && state.finished && state.stamps.includes(3)) {
     return { ...step, text: '你们两年前是不是就传“超声科耦合剂用量第一”？这回别光听八卦，帮我把人次和损耗算明白。' }
   }
-  if (id === 'c3_s5_hub' && !state.flags.c3_s4_lei_done) {
-    return { ...step, choices: step.choices?.map(choice => choice.next === 'c3_s5_lei_0' ? { ...choice, text: '去休息室和小雷聊几句' } : choice) }
-  }
   if (!state.flags.c3_s4_lei_done && id === 'c3_s5_lei_0') return { ...step, text: '最后一天了？坐会儿。你刚来还问纸巾，现在梅姐直接喊你找文件了。' }
   if (id === 'c3_s5_lei_1') return { ...step,
     text: state.flags.c3_s4_lei_done ? step.text : '文件找得着，就是她那个“最好的一张”，到底是哪张还得再问。',
@@ -725,9 +730,11 @@ function adapt(id: string, step: TrilogyStep, state: GameState): TrilogyStep {
   }
   if (id === 'c3_epilogue_19' && state.flags.c3_cousin_followup_stable) return { ...step, next: 'c3_epilogue_20' }
   if (id === 'c3_epilogue_14' && state.flags.c3_cousin_followup_stable) return { ...step,
+    sprite: '', sprite2: '',
     text: '你把表姐之前发来的复查时间重新标进日历，又给她回了条消息：“这次我记着呢。”',
     effect: undefined, next: 'c3_epilogue_20' }
   if (id === 'c3_epilogue_20' && state.flags.c3_cousin_followup_stable) return { ...step,
+    sprite: '', sprite2: '',
     text: '你把梅姐的小卡和自己的记录放在一起，收好饭盒，回放射科上班。表姐的复查日期已经标进日历，下回再陪她来。第三章「回声」结束。', bg: 'bg_day' }
   return step
 }
