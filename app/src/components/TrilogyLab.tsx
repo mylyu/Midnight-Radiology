@@ -4,7 +4,7 @@ import { completeTrilogyTool, trilogyProgress, updateTrilogyTool } from '../game
 import { imageAsset } from '../lib/image-assets'
 import { useRef } from 'react'
 import { acceptInput } from '../game/input-gate'
-import { UltrasoundPhantom } from './UltrasoundPhantom'
+import { UltrasoundPhantom, ultrasoundParameters } from './UltrasoundPhantom'
 import { TrilogyUltrasoundLab } from './TrilogyUltrasoundLab'
 import { TrilogyNuclearLab } from './TrilogyNuclearLab'
 import { TrilogyMriLab } from './TrilogyMriLab'
@@ -20,12 +20,13 @@ export function TrilogyLab({ state, chapter, tool, update }: { state: GameState;
   const image = tool.images?.[saved.choice] ?? tool.image
   const choices = tool.kind === 'mri' ? Object.keys(tool.images ?? { T1: '', T2: '', FLAIR: '' })
     : tool.task === 'probe' ? ['凸阵', '线阵', '相控阵'] : []
-  const ultrasound = ['echo', 'tgc', 'm_mode', 'doppler', 'resolution'].includes(tool.task)
+  const ultrasound = ['echo', 'tgc', 'm_mode', 'doppler', 'resolution', 'spatial_resolution'].includes(tool.task)
   const nuclear = ['collimator', 'spect', 'coincidence', 'counting'].includes(tool.task)
   const magnetic = tool.task.startsWith('mri-')
   const course = ultrasound || nuclear || magnetic
   const courseProps = { task: tool.task, variant: tool.variant, value: saved.value, secondary: saved.secondary, choice: saved.choice, onChange: set }
-  return <div data-trilogy-lab={tool.task} className="trilogy-lab" onClick={e => e.stopPropagation()}>
+  const probe = ultrasoundParameters({ position: saved.value, gain: 50, depth: 55, probe: saved.choice }).probe
+  return <div data-trilogy-lab={tool.task} data-trilogy-kind={tool.kind} className="trilogy-lab" onClick={e => e.stopPropagation()}>
     <header><span className="text-teal-200 text-xs">{tool.kind === 'ultrasound' ? '探头与显示' : tool.kind === 'mri' ? '工作站 · 序列对照' : '核医学工作站'}</span><h2>{tool.title}</h2><p>{tool.prompt}</p></header>
     {ultrasound ? <TrilogyUltrasoundLab {...courseProps} /> : nuclear ? <TrilogyNuclearLab {...courseProps} /> : magnetic ? <TrilogyMriLab {...courseProps} /> : <div className="trilogy-lab-work">
       <div className="trilogy-lab-image">
@@ -52,7 +53,7 @@ export function TrilogyLab({ state, chapter, tool, update }: { state: GameState;
         {tool.task === 'fusion' && <label>纵向对齐<input aria-label="纵向对齐" type="range" min="0" max="100" value={saved.secondary} onChange={e => set({ secondary: Number(e.target.value) })} /></label>}
         <p className="text-sm text-slate-300">{tool.task === 'gain' ? saved.value < 35 ? '暗处还埋着细节。慢慢调亮看看。' : saved.value > 80 ? '亮得发白，层次开始挤在一起。' : '能分开亮暗了。先留这一版。'
           : tool.task === 'decay' ? '同一批药会随时间衰减，不是等够时间就凭空补回来。'
-            : tool.task === 'probe' ? `当前：${saved.choice} · 换一种视野，再移动观察位置。`
+              : tool.task === 'probe' ? `这支${probe.label}探头：${probe.frequency.toFixed(1)} MHz。${probe.kind === 'linear' ? '矩形视野，浅处细节更清楚，深处衰减也更明显。' : probe.kind === 'convex' ? '弧顶展开的视野，频率较低，兼顾深处与范围。' : '从小接触面展开扇形视野，方便从肋间观察。'}`
               : tool.task === 'sequence' ? `当前查看 ${saved.choice}。同一处结构，换一种对比。`
                 : tool.task === 'artifact' ? saved.value < 50 ? '重影让轮廓不稳。试着改善运动条件。' : '轮廓稳定了，再交老师核对。' : '调整后与对照比较，不必一次做到完美。'}</p>
         <details><summary>请同事带我看看</summary><p>{tool.help}</p><button onClick={() => finish(true, performance.now())}>一起看过了，回到故事</button></details>

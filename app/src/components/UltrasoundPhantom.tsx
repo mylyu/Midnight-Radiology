@@ -9,6 +9,8 @@ export interface UltrasoundPhantomProps {
   probe: string
   /** Depth compensation in dB at the bottom of the field; default preserves old views. */
   tgc?: number
+  /** Optional acquisition line count; does not resize the image or field of view. */
+  scanLines?: number
 }
 
 type ProbeKind = 'linear' | 'convex' | 'phased'
@@ -167,8 +169,23 @@ export function renderUltrasoundPhantom(input: UltrasoundPhantomProps, width = 5
       const index = (y * w + x) * 4
       pixels[index] = 3; pixels[index + 1] = 7; pixels[index + 2] = 12; pixels[index + 3] = 255
       if (y < top || y > bottom || x < w * .025 || x > w * .94) continue
-      const ray = ultrasoundRay(input, (x - centerX) / scale, z)
-      if (!ray) continue
+      const displayRay = ultrasoundRay(input, (x - centerX) / scale, z)
+      if (!displayRay) continue
+      let ray = displayRay
+      if (input.scanLines !== undefined && Number.isFinite(input.scanLines)) {
+        const lineCount = clamp(Math.round(input.scanLines), 16, 512)
+        // Acquire at discrete parallel rays or fan angles, then display the
+        // nearest acquired line. The probe, field and target positions stay fixed.
+        if (profile.kind === 'linear') {
+          const lineX = Math.round((ray.x - params.positionMm + 20) / 40 * (lineCount - 1)) / (lineCount - 1) * 40 - 20 + params.positionMm
+          ray = { ...ray, x: lineX, originX: lineX }
+        } else {
+          const a = Math.atan2(ray.dx, ray.dz)
+          const sampledAngle = Math.round((a + profile.halfAngle) / (2 * profile.halfAngle) * (lineCount - 1)) / (lineCount - 1) * 2 * profile.halfAngle - profile.halfAngle
+          const dx = Math.sin(sampledAngle), dz = Math.cos(sampledAngle), radius = ray.distance + profile.radius
+          ray = { ...ray, x: params.positionMm + dx * radius, z: dz * radius - profile.radius, dx, dz }
+        }
+      }
       const lateralSigma = profile.lateralPSF + Math.max(0, ray.distance - 22) * .006
       let real = 0, imag = 0
       for (const sample of kernel) {
@@ -191,11 +208,11 @@ export function renderUltrasoundPhantom(input: UltrasoundPhantomProps, width = 5
 
 export function UltrasoundPhantom(props: UltrasoundPhantomProps) {
   const canvas = useRef<HTMLCanvasElement>(null)
-  const { position, gain, depth, probe, tgc } = props
+  const { position, gain, depth, probe, tgc, scanLines } = props
   useEffect(() => {
     const context = canvas.current?.getContext('2d')
     if (!context) return
-    const frame = renderUltrasoundPhantom({ position, gain, depth, probe, tgc })
+    const frame = renderUltrasoundPhantom({ position, gain, depth, probe, tgc, scanLines })
     context.putImageData(new ImageData(frame.pixels, frame.width, frame.height), 0, 0)
     const { params: p, geometry: g } = frame
     context.font = '12px ui-monospace, monospace'
@@ -224,7 +241,7 @@ export function UltrasoundPhantom(props: UltrasoundPhantomProps) {
     context.fillText(`${p.probe.label} · 模体切面`, 14, 373)
     context.textAlign = 'right'
     context.fillText(`位置 ${p.positionMm >= 0 ? '+' : ''}${p.positionMm.toFixed(1)} mm`, 498, 373)
-  }, [position, gain, depth, probe, tgc])
+  }, [position, gain, depth, probe, tgc, scanLines])
   return <canvas ref={canvas} width={512} height={384} data-ultrasound-phantom
     role="img" aria-label={`${probe}探头的教学模体B模式切面，位置、深度与增益随控件变化`}
     style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block', maxWidth: '100%', maxHeight: '100%' }} />

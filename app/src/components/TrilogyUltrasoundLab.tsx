@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { UltrasoundPhantom, renderUltrasoundPhantom } from './UltrasoundPhantom'
+import { ultrasoundEcho, ultrasoundResolutionFrame } from '../game/trilogy-ultrasound-numerics'
 
 type Props = { task: string; value: number; secondary: number; choice: string;
   onChange: (patch: { value?: number; secondary?: number; choice?: string }) => void }
@@ -10,40 +11,54 @@ const clamp = (n: number, a: number, b: number) => Math.max(a, Math.min(b, n))
 export function TrilogyUltrasoundLab({ task, value, secondary, choice, onChange }: Props) {
   const [pulse, setPulse] = useState(0)
   const canvas = useRef<HTMLCanvasElement>(null)
-  const depth = Math.round(15 + value * .7), delay = 2 * depth / 1.54
+  const echo = ultrasoundEcho(value, secondary)
+  const depth = Math.round(echo.depthMm), delay = echo.roundTripUs
+  const echoLines = choice.startsWith('echo-lines-') ? clamp(Number(choice.slice(11)) || 0, 0, 24) : 0
   const angle = Math.round(5 + value * .84), away = choice === '远离探头'
   const frequency = 2 * 5e6 * .35 * Math.cos(angle * Math.PI / 180) / 1540 / 1000 * (away ? -1 : 1)
-  const lines = 64 + Math.round(value / 100 * 192 / 16) * 16
-  const maxDepth = 30 + secondary * .9
+  const lines = 64 + Math.round(clamp(value, 0, 100) / 100 * 192 / 16) * 16
+  const maxDepth = 30 + clamp(secondary, 0, 65) * .9
   useEffect(() => {
-    if (task !== 'resolution' || !canvas.current) return
-    const frame = renderUltrasoundPhantom({ position: 50, gain: 50, depth: clamp((maxDepth - 20) / .7, 0, 100), probe: '凸阵' }, lines, 240)
+    if (!['resolution', 'spatial_resolution'].includes(task) || !canvas.current) return
+    const frame = task === 'spatial_resolution' ? ultrasoundResolutionFrame(value, secondary)
+      : renderUltrasoundPhantom({ position: 50, gain: 50, depth: clamp((maxDepth - 20) / .7, 0, 100), probe: '凸阵', scanLines: lines }, 384, 288)
     canvas.current.width = frame.width; canvas.current.height = frame.height
-    canvas.current.getContext('2d')?.putImageData(new ImageData(frame.pixels, frame.width, frame.height), 0, 0)
-  }, [task, lines, maxDepth])
+    const context = canvas.current.getContext('2d')
+    context?.putImageData(new ImageData(frame.pixels, frame.width, frame.height), 0, 0)
+    if (task === 'spatial_resolution' && context) {
+      context.font = '15px sans-serif'; context.fillStyle = '#cbd5e1'; context.textAlign = 'center'
+      context.fillText('前后两点', 109, 30); context.fillText('左右两点', 291, 30)
+      context.textAlign = 'left'; context.fillStyle = '#5eead4'; context.fillText('声束 ↓', 14, 220)
+    }
+  }, [task, lines, maxDepth, value, secondary])
   const path = (fn: (x: number) => number, from = 0, to = 240) => Array.from({ length: 121 }, (_, i) => {
     const x = from + (to - from) * i / 120
     return `${i ? 'L' : 'M'}${x.toFixed(1)},${fn(x).toFixed(1)}`
   }).join(' ')
-  return <div className="trilogy-course-work">
+  return <div className="trilogy-course-work trilogy-ultrasound-work">
     <div className="trilogy-course-view">
       {task === 'tgc' ? <UltrasoundPhantom position={50} gain={value} depth={90} probe="凸阵" tgc={secondary * .24} />
-        : task === 'resolution' ? <canvas ref={canvas} aria-label="同一模体在不同扫描线数和深度下的B图" role="img" style={{ imageRendering: 'pixelated' }} />
+        : task === 'resolution' || task === 'spatial_resolution' ? <canvas ref={canvas} aria-label={task === 'spatial_resolution' ? '位置不变的前后和左右两对细丝：改变脉冲长度与声束宽度' : '同一模体在不同扫描线数和深度下的B图'} role="img" style={{ imageRendering: 'pixelated' }} />
           : <svg viewBox="0 0 480 300" role="img" aria-label={task === 'echo' ? '同一条声束的回波时间、深度和亮点对应' : task === 'm_mode' ? '运动界面从B图的一条线展开成M模式' : '血流相对探头的方向与频移'}>
             <rect width="480" height="300" fill="#07121e" />
             {task === 'echo' ? <>
-              <text x="22" y="24">探头发出脉冲，再接回波</text>
+              <text x="22" y="24">同一组界面 · 一条声束得到一条A线</text>
               <rect x="24" y="62" width="55" height="40" rx="6" fill="#b5cfcc" />
               <path d="M80 82H446" stroke="#466579" strokeDasharray="4 5" />
               <path d={`M${95 + depth * 3.6} 50V120`} stroke="#f9d180" strokeWidth="5" />
               <path d="M132 55V113" stroke="#7999a9" strokeWidth="3" />
               {pulse > 0 && <circle key={pulse} cy="82" r="5" fill="#5eead4"><animate attributeName="cx" values={`80;${95 + depth * 3.6};80`} dur="1.3s" repeatCount="1" /></circle>}
-              <text x="100" y="145">{depth} mm · 往返约 {delay.toFixed(0)} μs</text>
-              <path d="M30 248H440M30 172V248" stroke="#64748b" fill="none" />
-              <path d={path(x => 244 - 57 * Math.exp(-(((x - (45 + 2 * 10 / 1.54 * 3)) / 4) ** 2)) - 83 * Math.exp(-(((x - (45 + delay * 3)) / 5) ** 2)), 30, 440)} stroke="#5eead4" fill="none" strokeWidth="2" />
-              <text x="34" y="278">A：峰的位置是回波时间</text>
-              <rect x="453" y="170" width="12" height="82" fill="#182b3e" />
-              <rect x="453" y={173 + depth * .8} width="12" height="3" fill="#f8fafc" />
+              <text x="100" y="145">{depth} mm · 回波往返 {delay.toFixed(0)} μs</text>
+              <path d="M30 248H265M30 172V248" stroke="#64748b" fill="none" />
+              <path d={path(x => 244 - 33 * Math.exp(-(((x - 62) / 3) ** 2)) - 65 * echo.amplitude * Math.exp(-(((x - (37 + delay * 1.95)) / 3) ** 2)), 30, 265)} stroke="#5eead4" fill="none" strokeWidth="2" />
+              <text x="30" y="278">A：时间 → 深度；峰高 → 亮度</text>
+              <rect x="294" y="173" width="160" height="82" fill="#182b3e" />
+              {Array.from({ length: echoLines }, (_, i) => <g key={i}>
+                <rect x={295 + i * 6.6} y="182" width="6.3" height="3" fill="#777" />
+                <rect x={295 + i * 6.6} y={174 + depth * .87} width="6.3" height="3" fill={`rgb(${Math.round(255 * echo.amplitude)},${Math.round(255 * echo.amplitude)},${Math.round(255 * echo.amplitude)})`} />
+              </g>)}
+              {echoLines > 0 && <path d={`M${295 + (echoLines - 1) * 6.6} 173V255`} stroke="#5eead4" strokeWidth="1" />}
+              <text x="298" y="278">B：已铺 {echoLines} 条线</text>
             </> : task === 'm_mode' ? <>
               <text x="20" y="24">B图里的一条线 → 随时间展开</text>
               <rect x="20" y="50" width="125" height="185" fill="#172936" />
@@ -65,11 +80,12 @@ export function TrilogyUltrasoundLab({ task, value, secondary, choice, onChange 
           </svg>}
     </div>
     <aside className="trilogy-lab-controls">
-      {task === 'echo' && <><label>反射界面深度 · {depth} mm<input aria-label="反射界面深度" type="range" min="0" max="100" value={value} onChange={e => onChange({ value: +e.target.value })} /></label><button onClick={() => setPulse(n => n + 1)}>发出一次脉冲</button><p>把界面挪远一点，回波会往后到。往返时间除以二，才是单程距离。</p></>}
+      {task === 'echo' && <><label>把界面挪远一点 · {depth} mm<input aria-label="反射界面深度" type="range" min="0" max="100" value={value} onChange={e => onChange({ value: +e.target.value, choice: 'echo-lines-0' })} /></label><button onClick={() => { setPulse(n => n + 1); onChange({ choice: `echo-lines-${Math.min(24, echoLines + 4)}` }) }}>发出脉冲，扫过四条线</button><p>回波晚到，亮点就更深。横着一条条铺开，便成了B图。</p><details><summary>再看看回波强弱</summary><label>反射强弱<input aria-label="反射强弱" type="range" min="0" max="100" value={secondary} onChange={e => onChange({ secondary: +e.target.value, choice: 'echo-lines-0' })} /></label><p>A线的峰变矮，B图对应的线也变暗。</p></details></>}
       {task === 'tgc' && <><label>总体增益<input aria-label="总体增益" type="range" min="0" max="100" value={value} onChange={e => onChange({ value: +e.target.value })} /></label><label>深处补偿<input aria-label="深处补偿" type="range" min="0" max="100" value={secondary} onChange={e => onChange({ secondary: +e.target.value })} /></label><p>先让浅处看着合适，再补深处。无回波的囊腔和后方声影不会凭空补出组织。</p></>}
       {task === 'm_mode' && <><label>沿时间回看<input aria-label="沿时间回看" type="range" min="0" max="100" value={value} onChange={e => onChange({ value: +e.target.value })} /></label><p>竖线停在哪儿，就对应B图那一刻的界面位置。M模式擅长把运动摊开看。</p></>}
       {task === 'doppler' && <><label>声束与血流夹角 · {angle}°<input aria-label="声束夹角" type="range" min="0" max="100" value={value} onChange={e => onChange({ value: +e.target.value })} /></label><div className="trilogy-course-buttons">{['朝向探头', '远离探头'].map(c => <button key={c} aria-pressed={away === (c === '远离探头')} onClick={() => onChange({ choice: c })}>{c}</button>)}</div><p>本图红蓝只表示相对探头的方向，不表示动脉和静脉。</p></>}
       {task === 'resolution' && <><label>每帧扫描线 · {lines}<input aria-label="扫描线数" type="range" min="0" max="100" value={value} onChange={e => onChange({ value: +e.target.value })} /></label><label>扫到多深 · {Math.round(maxDepth)} mm<input aria-label="最大扫描深度" type="range" min="0" max="65" value={Math.min(secondary, 65)} onChange={e => onChange({ secondary: +e.target.value })} /></label><p>只算声波往返，约 {Math.round(1540000 / (2 * maxDepth * lines))} 帧/秒。线越密、看得越深，每帧等得越久；实际还要处理数据。</p></>}
+      {task === 'spatial_resolution' && <><label>先缩短脉冲，看看前后两点<input aria-label="缩短脉冲" type="range" min="0" max="100" value={value} onChange={e => onChange({ value: +e.target.value })} /><span className="trilogy-us-range-ends"><span>长</span><span>短</span></span></label><label>再收窄声束，看看左右两点<input aria-label="收窄声束" type="range" min="0" max="100" value={secondary} onChange={e => onChange({ secondary: +e.target.value })} /><span className="trilogy-us-range-ends"><span>宽</span><span>窄</span></span></label><p>四根细丝一直没动。前后能否分开看脉冲，左右能否分开看声束。</p></>}
     </aside>
   </div>
 }

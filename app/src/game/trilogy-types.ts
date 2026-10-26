@@ -26,7 +26,7 @@ export interface TrilogyTool {
   reference?: string
   images?: Record<string, string>
   /** A small, concrete task. Runtime provides one principal interaction. */
-  task: 'probe' | 'gain' | 'depth' | 'echo' | 'tgc' | 'm_mode' | 'doppler' | 'resolution'
+  task: 'probe' | 'gain' | 'depth' | 'echo' | 'tgc' | 'm_mode' | 'doppler' | 'resolution' | 'spatial_resolution'
     | 'sequence' | 'artifact' | 'mri-relax' | 'mri-encoding' | 'mri-sampling'
     | 'fusion' | 'decay' | 'collimator' | 'spect' | 'coincidence' | 'counting'
   variant?: string
