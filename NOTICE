@@ -13,3 +13,9 @@ simulation limitations, and file-specific terms. In particular, ImageCAS-based
 coronary previews use CC BY-NC 4.0 data and must be replaced or separately
 licensed before commercial use. KU Leuven wrist-derived previews retain
 CC BY-SA 4.0 independently; they are not relicensed under the project NC-SA terms.
+
+Chapter 3 uses "Steatosis hepatis - Sonographie 001" by Hellerhoff,
+licensed CC BY-SA 3.0. The ultrasound image retains that license independently.
+It has only been converted to WebP and compressed. Source, license links and
+the exact delivery file are listed in app/public/ch3-ultrasound-sources.txt
+(available as ch3-ultrasound-sources.txt on the published site).

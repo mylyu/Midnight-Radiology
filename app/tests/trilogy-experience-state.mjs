@@ -264,7 +264,7 @@ function schedules() {
 try {
   for (const chapter of Object.values(TRILOGY)) run(`${chapter.id} saved cursors / actual graph`, () => graph(chapter))
   const scans = Object.values(TRILOGY).flatMap(chapter => Object.entries(chapter.steps).filter(([, step]) => step.scan).map(([id, step]) => ({ chapter, id, step })))
-  run('13 actual acquisitions across all three modalities', () => assert.equal(scans.length, 13))
+  run('14 actual acquisitions across all three modalities', () => assert.equal(scans.length, 14))
   for (const { chapter, id, step } of scans) run(id, () => scan(chapter, id, step))
   for (const chapter of Object.values(TRILOGY)) for (const item of chapter.shopItems ?? []) run(item.id, () => useItem(chapter, item))
   run('six added items have real use scenes', () => assert.equal(report.items.length, 6))

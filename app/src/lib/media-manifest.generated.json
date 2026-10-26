@@ -1281,6 +1281,11 @@
       "bytes": 29388,
       "type": "image"
     },
+    "assets/media/pat_c3_young_liver_v1.ad144dd257425807.webp": {
+      "sha256": "ad144dd2574258079f15587093cee67db46bc9e315c644018a524fe71e3bdeac",
+      "bytes": 39212,
+      "type": "image"
+    },
     "assets/media/pat_child.e64c8c6e0972db69.webp": {
       "sha256": "e64c8c6e0972db69409cc2f3a760ba79fccba87e669372abe052758a5072ff51",
       "bytes": 125594,
@@ -1434,6 +1439,11 @@
     "assets/media/us_breast.6d5c0b7164110c12.webp": {
       "sha256": "6d5c0b7164110c12778e108a3001e2c5a0efe564a56799fd6438975dd5686ae0",
       "bytes": 47890,
+      "type": "image"
+    },
+    "assets/media/us_c3_hepatorenal_v1.589c8d1e6b950279.webp": {
+      "sha256": "589c8d1e6b9502790faa4e3accfd2f22844e324a19a4980ad6a211d4be0b9b31",
+      "bytes": 40108,
       "type": "image"
     },
     "assets/media/us_echo.5521dd2242e64df2.webp": {
@@ -2138,12 +2148,14 @@
       "assets/media/item_snack.f16943baf3b6bdb3.webp",
       "assets/media/item_toolbox.c7f80a4945342224.webp",
       "assets/media/pat_aunt.dd68f06e263bc0e6.webp",
+      "assets/media/pat_c3_young_liver_v1.ad144dd257425807.webp",
       "assets/media/pat_cousin.5ffdd237fc117e80.webp",
       "assets/media/pat_mystery.f083d78a5f6faebb.webp",
       "assets/media/pat_us_gallstone.3bd27feab19f815e.webp",
       "assets/media/pat_wang_recovery.79373a8e9bf9b05f.webp",
       "assets/media/stamp.72cf222761ee91c0.webp",
       "assets/media/us_breast.6d5c0b7164110c12.webp",
+      "assets/media/us_c3_hepatorenal_v1.589c8d1e6b950279.webp",
       "assets/media/us_echo.5521dd2242e64df2.webp",
       "assets/media/us_fetal.283f976a6db0630c.webp",
       "assets/media/us_gallstone.16c94bc2f11b498a.webp",

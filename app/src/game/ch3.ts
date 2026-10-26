@@ -9,6 +9,7 @@ type Line = [speaker: string, text: string, detail?: Partial<TrilogyStep>]
 const portraits: Record<string, string> = {
   mei: 'char_mei', cousin: 'pat_cousin', aunt: 'pat_aunt', xu: 'pat_mystery',
   han: 'char_han', wen: 'char_wen', lei: 'char_lei', zhou: 'char_zhou', he: 'ch2_pixel_char_he', tang: 'char_tang', wang: 'pat_wang_recovery', patient: 'pat_us_gallstone',
+  fatty_patient: 'pat_c3_young_liver_v1',
 }
 
 function put(id: string, step: TrilogyStep) {
@@ -82,6 +83,15 @@ scene('c3_s1_start', [
   ['sys', '梅姐拿出培训表，让你签上到科时间。教学台在窗边，临床机在帘子里面；你刚把两处认清，窗口就送来了上午的预约单。'],
   ['mei', '八点半开诊，先转一圈。纸巾在右边第二格，省得待会儿全科帮你找。'],
 ], 'c3_s1_hub')
+// Familiar colleagues still cross paths during a rotation, outside patient care.
+steps.c3_s1_start_5.next = 'c3_tang_first_0'
+scene('c3_tang_first', [
+  ['sys', '你刚走到走廊，小唐抱着一叠申请单从电梯口过来，看见你，腾出一只手招了招。'],
+  ['tang', '还真在这儿！早上老周说把你借出去了，我还以为他开玩笑。'],
+  ['me', '借两周。刚认完柜子，人还没认全。'],
+  ['tang', '行，有事给我发消息。我常来送单子，找不到路也能问我。', { giftTo: 'tang' }],
+  ['sys', '她把最上面一张单子夹正，去窗口交接。你往休息室那边走，隔着门已经闻到了茶味。'],
+], 'c3_s1_hub', 'bg_waiting_day_v2')
 hub('c3_s1_hub', '距开诊还有一会儿。你站在科室走廊，休息室飘来一点茶香。先去哪儿转转？', [
   ['看看教学台上的三支探头', 'c3_s1_probes'],
   ['去茶水间认杯子', 'c3_s1_tea'],
@@ -213,6 +223,48 @@ scene('c3_s2_finish', [
   ['mei', '对。下回深处又暗，先看看探头贴合没有，再检查频率，别一上来就拧亮度。'],
   ['sys', '下午交班后，表姐发来“我在楼下”，后面跟着一家粥店的位置。你回复“等我换衣服”，把培训表放回柜子。', { end: true, effect: { gold: 100, flag: 'c3_shift2_done' } }],
 ])
+
+// The display lesson meets an actual examination, after a short pause. Older
+// saves already at the handover keep their position rather than being rewound.
+steps.c3_s2_finish_2.next = 'c3_liver_arrive_0'
+scene('c3_liver_arrive', [
+  ['sys', '你把模体收回软垫，坐下来喝了两口水。窗口叫到下一位：二十七岁的年轻人，背着电脑包，把一张折了四折的体检单摊在桌上。', { sprite: 'pat_c3_young_liver_v1' }],
+  ['fatty_patient', '公司催第三遍了，我终于来了。再拖下去，明年的体检都能一起做了。'],
+  ['mei', '先把包放椅子上。最近有没有哪儿不舒服？'],
+  ['fatty_patient', '没什么感觉。就是天天坐着，外卖一到就算我下班了。'],
+  ['mei', '躺这边，衣服往上挪一点。我先给你看看。'],
+], 'c3_liver_scan')
+put('c3_liver_observe', { speaker: 'mei', sprite: '', bg: 'bg_us_room_day',
+  text: '肝脏和右肾在这张里都看得见。先不改设置，你想怎么比较？',
+  image: 'us_c3_hepatorenal_v1', imageLabel: '肝脏与右肾 · 同一切面', caseId: 'c3_young_liver',
+  choices: [
+    { text: '「找深度差不多的肝和肾，比较一下亮暗。」', next: 'c3_liver_compare' },
+    { text: '「是不是整体增益开大了？先把整张调暗试试。」', next: 'c3_liver_gain' },
+    { text: '「肾里也有很亮的地方，您指给我看看该比哪儿。」', next: 'c3_liver_help' },
+  ],
+})
+const liverView = { bg: 'bg_us_room_day', sprite: '', image: 'us_c3_hepatorenal_v1', imageLabel: '肝脏与右肾 · 同一切面' }
+put('c3_liver_compare', { speaker: 'mei', ...liverView,
+  text: '嗯，别拿浅处和最深处硬比。看肾外圈这层，跟旁边深度接近的肝放一起看。', next: 'c3_liver_explain_0' })
+put('c3_liver_gain', { speaker: 'mei', ...liverView,
+  text: '整体增益会把两边一起调暗，差别还在。先保持设置，看肝和旁边深度接近的肾皮质。', next: 'c3_liver_explain_0' })
+put('c3_liver_help', { speaker: 'mei', ...liverView,
+  text: '看肾外圈这层，叫肾皮质。中间很亮的肾窦本来就不一样，不拿它来比。', next: 'c3_liver_explain_0' })
+scene('c3_liver_explain', [
+  ['mei', '这里**肝脏回声明显比右肾皮质亮**。比的是皮质，不是肾中央本来就亮的肾窦。', liverView],
+  ['me', '所以把整张图调暗，也不能把这个差别调没。', liverView],
+  ['mei', '对。我也换切面核对过了，**超声提示脂肪肝**，不是凭一个亮点就定的。', { card: 'c3_liver_compare' }],
+  ['fatty_patient', '啊？我才二十七，酒都不喝。每次聚餐拒酒，怎么还轮到我了？'],
+  ['mei', '不喝酒也可能有，年轻也不例外。拿报告回体检门诊，跟血脂、血糖这些结果一起看，别光盯着一张图猜严重不严重。'],
+  ['fatty_patient', '这回不拖了。您别给我折，我放电脑包外层，省得又塞包底下忘了。'],
+  ['sys', '年轻人把报告夹进电脑包的外层，特意拉上拉链。你回到桌边，刚才那杯水已经凉了。', { effect: { flag: 'c3_liver_seen' } }],
+], 'c3_tang_break_0')
+scene('c3_tang_break', [
+  ['sys', '小唐送来下午的交接单，见你对着杯子发呆，顺手把单子放到干燥的那一边。'],
+  ['tang', '水凉了吧？我去接热的，给你捎半杯？', { giftTo: 'tang' }],
+  ['me', '救急。想喝的时候烫，能喝的时候又忘了。'],
+  ['tang', '你这杯子一早搬过来，我下班了它还这么满。先喝两口，别等我明天再来验收。'],
+], 'c3_s2_finish_3')
 
 // Third shift: a recovering heart, an optical-looking scare, and a name finally spoken.
 scene('c3_s3_start', [
@@ -507,6 +559,14 @@ steps.c3_s5_notice_end_3.text = '窗口登记好请求，许建平收起原件�
 steps.c3_s5_notice_end_3.effect = { flag: 'c3_xu_query_started' }
 steps.c3_s5_notice_end_3.next = 'c3_s5_hub'
 steps.c3_s5_notice_end_5.bg = 'bg_us_room_day'
+steps.c3_s5_notice_end_5.text = '你答应一声，回诊室放好培训表。梅姐收起交接材料，把晨会时间写给你。你拉开柜门，拿上自己的东西，去找他们吃饭。'
+steps.c3_s5_notice_end_4.next = 'c3_tang_return_0'
+scene('c3_tang_return', [
+  ['sys', '你收好培训表，出去接水。小唐刚交完单子，正靠着走廊的窗台拆一包饼干。'],
+  ['tang', '两周这么快就完了？明天回去上班？', { giftTo: 'tang' }],
+  ['me', '先过晨会这关。梅姐说考成像原理，我现在看什么都像会出题。'],
+  ['tang', '那先别看我。走，吃饭去，老周还等着听你这两周的事呢。'],
+], 'c3_s5_notice_end_5', 'bg_waiting_day_v2')
 steps.c3_s2_finish_1.card = 'c3_compare'
 
 // Every real examination acquires before revealing its result. These nodes carry
@@ -515,6 +575,7 @@ const acquisitions: [string, string, string, string, string, string][] = [
   ['c3_s1_aunt_4', 'c3_s1_aunt_scan', 'c3_s1_aunt_8', 'bg_us_room_day', '乳腺超声 · 梅姐持探头扫查', '梅姐拉好帘子，在临床机上开始扫查。你站在显示器侧，等她确定要保存的切面。'],
   ['c3_s1_stone_2', 'c3_s1_stone_scan', 'c3_s1_stone_3', 'bg_us_room_day', '腹部超声 · 梅姐持探头扫查', '梅姐换好腹部探头，先问清疼痛位置，再沿着声窗扫查。你按她的示意记录切面，患者不舒服时她就停下来调整。'],
   ['c3_s2_arrive_6', 'c3_s2_cousin_scan', 'c3_s2_arrive_7', 'bg_us_room_day', '产科超声 · 梅姐持探头扫查', '表姐躺稳，梅姐开始检查，按顺序寻找需要观察的结构。你收好手机，留在工作站旁，等她保存测量切面。'],
+  ['c3_liver_arrive_4', 'c3_liver_scan', 'c3_liver_observe', 'bg_us_room_day', '腹部超声 · 梅姐采集肝肾切面', '梅姐在右上腹换了几个角度，找到同时显示肝脏与右肾的切面。你在工作站旁等她保存图像。'],
   ['c3_s3_wang_4', 'c3_s3_wang_scan', 'c3_s3_wang_5', 'bg_us_room_day', '超声心动图 · 梅姐采集心脏切面', '王叔按梅姐的指示躺好。她从声窗寻找心脏切面，你帮忙标记、留存她选定的图像。'],
   ['c3_s3_mirror_0', 'c3_s3_bedside_scan', 'c3_s3_mirror_1', 'bg_us_bedside', '床旁超声 · 梅姐持探头采集', '床旁团队让出位置，梅姐在患者身边扫查。你看着移动机上的采集状态，保存她选定的膈肌附近切面。'],
   ['c3_s3_xu_2', 'c3_s3_xu_scan', 'c3_s3_xu_3', 'bg_us_room_day', '腹部超声 · 许建平本次检查', '许建平收好外套，梅姐核对开单问题后开始腹部扫查。你按她的指示留存切面，旧病历的话题等检查完成再接着谈。'],
@@ -606,6 +667,7 @@ scene('c3_cousin_mri_wait', [
 ], 'c3_epilogue_20', 'bg_waiting_day_v2')
 
 const cards: TrilogyChapter['cards'] = {
+  c3_liver_compare: { title: '肝和肾，放一起看', body: '同一画面、相近深度比较肝实质与右肾皮质的回声亮度。肝明显偏亮可支持脂肪肝的判断；不与肾中央本来就亮的肾窦相比。增益、深度和肾脏本身的情况都会影响对照，医师还要核对其他切面和检查结果，不能单凭亮度定诊断或严重程度。', image: 'us_c3_hepatorenal_v1' },
   c3_probe: { title: '探头发，也收', body: '压电材料把电脉冲变成机械振动发声，再把返回振动变成电信号。探头里的保护/匹配层、吸声材料和阵元各有作用；外形要适合目标深度和声窗。' },
   c3_frequency: { title: '细一点，还是深一点', body: '同一介质中频率越高、波长越短。高频有利于细节，却通常衰减更快；选择探头时同时看目标深度、声窗和所需分辨能力。', image: 'us_breast' },
   c3_breast: { title: '一份回波，两种显示', body: 'A型把回波显示为峰，峰的位置对应深度、高度对应强度。B型将回波强度转为亮度，并组合不同位置的声线形成切面。它与X光提供的信息不同，旧片仍要一起对照。', image: 'us_breast' },
@@ -761,6 +823,7 @@ export const CH3: TrilogyChapter = {
     cousin: { name: '表姐', color: '#eab8c9', sprite: 'pat_cousin' },
     xu: { name: '许建平', color: '#bac8c0', sprite: 'pat_mystery' },
     wang: { name: '王叔', color: '#d1bf99', sprite: 'pat_wang_recovery' }, patient: { name: '腹痛患者', color: '#c4cedb' },
+    fatty_patient: { name: '体检青年', color: '#c4cedb', sprite: 'pat_c3_young_liver_v1' },
     han: { name: '韩经理', color: '#a9c5d0', sprite: 'char_han' },
     wen: { name: '雯雯', color: '#d7b9dc', sprite: 'char_wen' },
     lei: { name: '小雷', color: '#a9c7e0', sprite: 'char_lei' },
@@ -788,6 +851,7 @@ export const CH3: TrilogyChapter = {
     'bg_us_room', 'bg_us_room_day', 'bg_us_bedside', 'bg_us_bedside_day_v2', 'ch2_bg_breakroom_day', 'bg_waiting_day_v2', 'bg_office_day', 'bg_day',
     'char_mei', 'pat_cousin', 'char_han', 'pat_aunt', 'pat_mystery', 'pat_wang_recovery', 'char_lei', 'char_zhou', 'ch2_pixel_char_he', 'char_tang',
     'us_gallstone', 'us_breast', 'us_fetal', 'us_echo', 'us_mirror', 'item_missing_notice', 'item_reunion_gifts', 'item_notebook',
+    'pat_c3_young_liver_v1', 'us_c3_hepatorenal_v1',
     'cg_c3_mei_probe_v2', 'cg_c3_shared_lunch_v2', 'item_c3_towel_v2', 'item_c3_stickers_v2',
     'cg_c3_cousin_call_v3', 'cg_c3_us_visit_v3',
   ],

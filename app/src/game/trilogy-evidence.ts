@@ -19,6 +19,7 @@ export const TRILOGY_EVIDENCE: Record<TrilogyId, { flag: string; title: string; 
 }
 export const TRILOGY_CASE_NAMES: Record<string, string> = {
   c3_aunt: '钼靶阿姨·本次乳腺超声', c3_gallstone: '腹痛患者·胆囊声影', c3_cousin: '表姐·二十四周检查', c3_wang: '王叔·心超复诊',
+  c3_young_liver: '体检青年·肝肾回声对照',
   c4_wrist: '小程·新腕痛', c4_luo_safety: '罗阿姨·留针资料核实', c4_song_motion: '老宋·呼叫与运动', c4_xu_neck: '许建平·头部与颈部评估',
   c5_qian: '老钱·术后新变化', c5_xu: '许建平·第五诊',
 }

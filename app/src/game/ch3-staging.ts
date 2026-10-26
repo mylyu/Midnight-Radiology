@@ -23,6 +23,8 @@ export function applyCh3Staging(steps: Record<string, TrilogyStep>) {
 
   cast(['c3_intro_visit_0', ...range('c3_intro_visit', 1, 7), 'c3_intro_accept', 'c3_intro_ask'], mei)
   cast(range('c3_s1_start', 1, 5), mei)
+  cast(range('c3_tang_first', 0, 3), tang)
+  // The last line explicitly sends Tang to the window; do not carry her into the hub.
   cast(range('c3_s1_probes', 1, 2), mei)
   cast(range('c3_s1_tea', 0, 2), mei)
   cast(range('c3_s1_wait', 0, 2), aunt)
@@ -48,6 +50,10 @@ export function applyCh3Staging(steps: Record<string, TrilogyStep>) {
   cast(range('c3_s2_plan', 5, 6), mei) // She has left; the practice resumes with Mei.
   cast(range('c3_s2_depth', 0, 3), mei)
   cast(range('c3_s2_finish', 0, 2), mei)
+  cast(range('c3_liver_arrive', 0, 4), 'pat_c3_young_liver_v1', mei)
+  cast(range('c3_liver_explain', 2, 5), 'pat_c3_young_liver_v1', mei)
+  cast(['c3_liver_explain_6'], mei) // The young patient has taken the report and left.
+  cast(range('c3_tang_break', 0, 3), tang)
 
   cast(range('c3_s3_start', 1, 3), mei)
   cast(range('c3_s3_tang', 0, 2), tang)
@@ -85,6 +91,7 @@ export function applyCh3Staging(steps: Record<string, TrilogyStep>) {
   cast([...range('c3_s5_notice', 0, 4), 'c3_s5_notice_desk', 'c3_s5_notice_route',
     ...range('c3_s5_notice_end', 0, 3)], xu)
   cast(range('c3_s5_notice_end', 4, 5), mei)
+  cast(range('c3_tang_return', 0, 3), tang)
 
   for (let shift = 1; shift <= 5; shift++) {
     cast(range(`c3_s${shift}_towel_use`, 0, 4), mei)

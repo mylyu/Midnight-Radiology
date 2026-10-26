@@ -33,7 +33,7 @@ function walkTo(s, target, visited = []) {
 assert(isTrilogyPlayable('ch3'))
 assert(!isTrilogyPlayable('ch4') && !isTrilogyPlayable('ch5'))
 assert.equal(Object.values(CH3.steps).filter(s => s.tool).length, 8)
-assert.equal(Object.values(CH3.steps).filter(s => s.scan).length, 6)
+assert.equal(Object.values(CH3.steps).filter(s => s.scan).length, 7)
 for (const step of Object.values(CH3.steps)) for (const c of step.choices ?? [])
   assert(!/[（(]\d+行动力[）)]/.test(c.text), 'No prose AP suffix on choices')
 

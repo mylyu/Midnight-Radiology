@@ -1,0 +1,15 @@
+Chapter 3 ultrasound image attribution
+
+Title: Steatosis hepatis - Sonographie 001
+Creator: Hellerhoff (own work, Wikimedia Commons)
+Source: https://commons.wikimedia.org/wiki/File:Steatosis_hepatis_-_Sonographie_001.jpg
+License: Creative Commons Attribution-ShareAlike 3.0 Unported
+License URL: https://creativecommons.org/licenses/by-sa/3.0/
+Changes: JPEG converted to WebP quality 78. Original 1053 x 892 dimensions retained.
+No crop, repainting, diagnostic markings, or altered anatomy.
+Delivery file: assets/media/us_c3_hepatorenal_v1.589c8d1e6b950279.webp
+SHA-256: 589c8d1e6b9502790faa4e3accfd2f22844e324a19a4980ad6a211d4be0b9b31
+
+This image remains under CC BY-SA 3.0 independently of the game's NC-SA license.
+The game's 27-year-old character and dialogue are fictional; the source image
+is not claimed to depict that character or a patient of the same age.
