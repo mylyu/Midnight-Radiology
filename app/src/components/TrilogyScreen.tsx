@@ -198,7 +198,9 @@ export function TrilogyScreen({ state, chapter, update, onExit, renderText }: Pr
       <button className={HEADER_BTN} onClick={e => { e.stopPropagation(); changeOverlay('badges') }}>🏅 勋章</button>
       <button className={HEADER_BTN} onClick={e => { e.stopPropagation(); changeOverlay('book'); update(s => trilogyReadBook(s, chapter)) }}>📚 旧书</button>
       <button className={HEADER_BTN} onClick={e => { e.stopPropagation(); const value = !muted; setMuted(value); try { localStorage.setItem('mr-trilogy-muted', value ? '1' : '0') } catch { /* Session-only preference remains usable. */ } }}>{muted ? '🔇 声音关' : '🔊 声音开'}</button>
-      <FullscreenBtn /><button className={HEADER_BTN} title="进度已自动保存，可随时离开" onClick={e => { e.stopPropagation(); onExit() }}>💾 回大厅</button>
+      <FullscreenBtn />
+      {chapter.id === 'ch3' && <button className={HEADER_BTN} title="重置第三章，从开场重玩" onClick={e => { e.stopPropagation(); changeOverlay('replay') }}>↻ 重置本章</button>}
+      <button className={HEADER_BTN} title="进度已自动保存，可随时离开" onClick={e => { e.stopPropagation(); onExit() }}>💾 回大厅</button>
     </DialogueHeader>
     {['story', 'epilogue'].includes(p.phase) && <>
       {raw.image && !raw.tool && !raw.scan && (raw.closeup
@@ -254,7 +256,7 @@ function TrilogySettlement({ state, chapter, update, onNext, onOverlay, onExit }
     <div className="trilogy-bottom-menu">{!p.done && <button className="trilogy-primary" data-trilogy-next-shift onClick={onNext}>{p.shift === 4 ? '前往晨会 →' : '进入下一班 →'}</button>}
       <button className={BTN} onClick={() => onOverlay('shop')}>🛒 小卖部</button><button className={BTN} onClick={() => onOverlay('manual')}>📖 手册</button>
       <button className={BTN} onClick={() => onOverlay('badges')}>🏅 勋章墙</button><button className={BTN} onClick={() => { onOverlay('book'); update(s => trilogyReadBook(s, chapter)) }}>📚 旧书</button>
-      {p.done && <button className={BTN} onClick={() => onOverlay('replay')}>重玩本章</button>}<button className={BTN} onClick={onExit}>💾 回大厅</button></div>
+      {(p.done || chapter.id === 'ch3') && <button className={BTN} onClick={() => onOverlay('replay')}>{chapter.id === 'ch3' ? '重置本章' : '重玩本章'}</button>}<button className={BTN} onClick={onExit}>💾 回大厅</button></div>
   </main>
 }
 
@@ -301,7 +303,7 @@ const CH3_SHOP_DESCRIPTIONS: Record<string, string> = {
 }
 function TrilogyOverlay({ overlay, state, chapter, update, close, renderText }: Omit<Props, 'onExit'> & { overlay: Overlay; close: () => void }) {
   const p = trilogyProgress(state, chapter.id)!, gate = useRef({ until: 0 })
-  const titles: Record<Overlay, string> = { shop: '小卖部', book: '值班室旧书', manual: '夜班手册', badges: '勋章墙', bag: '背包与用途', replay: '重玩本章' }
+  const titles: Record<Overlay, string> = { shop: '小卖部', book: '值班室旧书', manual: '夜班手册', badges: '勋章墙', bag: '背包与用途', replay: chapter.id === 'ch3' ? '重置第三章' : '重玩本章' }
   return <div className="trilogy-modal" onClick={e => e.stopPropagation()}><section className="trilogy-modal-sheet">
     <header><h2>{titles[overlay]}</h2><button className={BTN} data-trilogy-close-overlay onClick={close}>关闭 ×</button></header>
     {overlay === 'shop' && <><p className="text-sm text-slate-300">金币 {state.gold} · {chapter.id === 'ch3' ? '奶茶、零食可以送同事。咖啡在探索时补行动力，班后购买留到下一班。' : '消耗品在同事在场时送出。咖啡在探索时补行动力，班后购买留给下一班。'}</p>
@@ -317,7 +319,9 @@ function TrilogyOverlay({ overlay, state, chapter, update, close, renderText }: 
       <details className="trilogy-book-page"><summary>大事记 · 本章已经走过的片段</summary><p>{p.visited.filter(id => chapter.steps[id].caseId).map(id => chapter.steps[id].caseId!).filter((value, i, rows) => rows.indexOf(value) === i).map(id => TRILOGY_CASE_NAMES[id] ?? id).join(' · ') || '病例记录随剧情解锁。'}</p></details></>}
     {overlay === 'badges' && <div className="trilogy-badge-grid">{Object.entries(chapter.badges).map(([id, badge]) => <section key={id} className={`trilogy-panel ${state.badges.includes(id) ? '' : 'opacity-40'}`}><span className="text-3xl">{badge.icon}</span><h3>{badge.name}</h3><p>{badge.desc}</p><small>{state.badges.includes(id) ? '已获得' : '尚未获得'}</small></section>)}</div>}
     {overlay === 'bag' && <><p>{chapter.id === 'ch3' ? '遇到同事时，可以在闲聊中递奶茶或分享零食。' : '礼物只在同事在场的闲聊选项中使用，不在班后统一赠送。'}</p>{state.items.map(id => <p className="trilogy-book-page" key={id}>🎒 {itemName(id, chapter)}<br /><small>{id === 'milktea' ? '递给在场同事；购买时人心＋2，送出不重复加。' : id === 'snack' ? '拆开分享，人心＋1。' : id === 'dosimeter' ? '工作人员个人受照监测，不测患者剂量。' : id === 'toolbox' ? chapter.id === 'ch3' ? '工具箱已收好，这次轮转暂时用不上。' : '保留给非医疗设备小修或教学展示，不拆修扫描仪。' : chapter.id === 'ch3' ? CH3_ITEM_USES[id] ?? '已收在背包中。' : '留存物品可在相应剧情中回响。'}</small></p>)}</>}
-    {overlay === 'replay' && <><p>只重开本章剧情、探索、考核和凭证，第一二章及其他章进度不动，累计属性和既得勋章保留。</p><button className="trilogy-primary" onClick={() => { const runId = `${chapter.id}-${Date.now()}`; update(s => restartTrilogy(s, chapter, runId)); close() }}>确认重玩本章</button></>}
+    {overlay === 'replay' && <><p>{chapter.id === 'ch3' ? '从表姐来电重新开始第三章。本章剧情、探索、考核和通关凭证将重置；金币、累计属性、背包、卡片和勋章保留，第一二章及其他DLC进度不变。' : '只重开本章剧情、探索、考核和凭证，第一二章及其他章进度不动，累计属性和既得勋章保留。'}</p>
+      {chapter.id === 'ch3' && <button className={BTN} onClick={close}>取消，继续玩</button>}
+      <button className="trilogy-primary" onClick={() => { const runId = `${chapter.id}-${Date.now()}`; update(s => restartTrilogy(s, chapter, runId)); close() }}>{chapter.id === 'ch3' ? '确认重置第三章' : '确认重玩本章'}</button></>}
   </section></div>
 }
 
