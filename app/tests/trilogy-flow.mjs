@@ -250,6 +250,8 @@ async function walk({ chapter, variant }) {
       if (task === 'probe') {
         for (const name of ['线阵', '相控阵', '线阵']) await click(lab.getByRole('button', { name, exact: true }))
       }
+      // The second echo control is intentionally optional on the compact tool.
+      if (task === 'echo') await click(lab.locator('summary').filter({ hasText: '再看看回波强弱' }))
       const ranges = lab.locator('input[type="range"]')
       for (let i = 0; i < await ranges.count(); i++) {
         const range = ranges.nth(i)
@@ -270,7 +272,7 @@ async function walk({ chapter, variant }) {
         else await page.mouse.click(box.x + box.width * fraction, box.y + box.height / 2)
         lastInput = Date.now()
       }
-      if (task === 'echo') await click(lab.getByRole('button', { name: '发出一次脉冲', exact: true }))
+      if (task === 'echo') await click(lab.getByRole('button', { name: '发出脉冲，扫过四条线', exact: true }))
       if (task === 'counting') {
         await click(lab.getByRole('button', { name: '从短采集回看', exact: true }))
         const shortImage = await beforeImage()

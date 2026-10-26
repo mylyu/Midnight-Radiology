@@ -652,6 +652,13 @@ const quiz: TrilogyChapter['quiz'] = [
 function adapt(id: string, step: TrilogyStep, state: GameState): TrilogyStep {
   const progress = state.dlc?.ch3?.chapter
   const tools = progress?.tools
+  // Old saves inside the removed city-trip sequence resume with one bridge,
+  // then join the current follow-up; no new visit or reward is fabricated.
+  if (/^c3_epilogue_(?:[5-9]|1[0-3])$/.test(id)) return { ...step,
+    speaker: 'sys', sprite: '', phone: undefined, image: undefined, imageLabel: undefined,
+    voice: undefined, effect: undefined, card: undefined, choices: undefined, closeup: false,
+    text: '之后，表姐按专科安排完成了补充检查。你陪她把下次超声复查的时间记进手机，这回谁也没忘。',
+    next: 'c3_epilogue_14' }
   // The practice moved before the patient. Older in-patient cursors finish the
   // same task then go straight to acquisition, never re-introducing the aunt.
   const auntArrived = progress?.visited.includes('c3_s1_aunt_0') ?? false

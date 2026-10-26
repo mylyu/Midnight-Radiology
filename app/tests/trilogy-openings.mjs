@@ -59,8 +59,17 @@ for (const spec of [
     }
   }
   walk(initializeTrilogy(initial, chapter, `${spec.id}-opening-test`))
-  assert(endpoints.length > 1, 'Both opening questions and alternatives were exercised')
-  assert.deepEqual([...reached].sort(), Object.keys(chapter.steps).filter(id => id.startsWith(spec.prefix)).sort(), 'All authored prelude nodes are reachable and converge')
+  // CH3's two equivalent invitation responses were deliberately collapsed.
+  // The old question node remains a valid resume connector, not a new-run branch.
+  const resumeOnly = spec.id === 'ch3' ? ['c3_intro_ask'] : []
+  assert.equal(endpoints.length, spec.id === 'ch3' ? 1 : 12, 'Approved opening routes converge without redundant invitation choices')
+  assert.deepEqual([...reached].sort(), Object.keys(chapter.steps).filter(id => id.startsWith(spec.prefix) && !resumeOnly.includes(id)).sort(), 'All current prelude nodes are reachable and converge')
+  for (const id of resumeOnly) {
+    const legacy = patchTrilogy(initializeTrilogy(base(), chapter, 'legacy-invitation'), spec.id, { stepId: id })
+    assert.equal(trilogyProgress(legacy, spec.id).stepId, id, 'Legacy cursor is retained')
+    const continued = trilogyAdvance(legacy, chapter, id)
+    assert.equal(trilogyProgress(continued, spec.id).stepId, 'c3_intro_confirm_0')
+  }
   for (const s of endpoints) {
     for (const flag of spec.flags) assert.equal(s.flags[flag], true)
     const checked = trilogyCheckin(s, chapter)
