@@ -13,6 +13,7 @@ import './TrilogyCourseLab.css'
 export function TrilogyLab({ state, chapter, tool, update }: { state: GameState; chapter: TrilogyChapter;
   tool: TrilogyTool; update: (fn: (s: GameState) => GameState) => void }) {
   const p = trilogyProgress(state, chapter.id)!, node = p.stepId
+  const ch3 = chapter.id === 'ch3'
   const saved = p.tools[node] ?? { value: 25, secondary: 50, choice: tool.kind === 'mri' ? 'T1' : '凸阵' }
   const gate = useRef({ until: 0 })
   const set = (patch: Partial<typeof saved>) => update(s => updateTrilogyTool(s, chapter.id, node, { ...saved, ...patch }))
@@ -51,15 +52,15 @@ export function TrilogyLab({ state, chapter, tool, update }: { state: GameState;
           : tool.task !== 'sequence' && <label>{tool.task === 'fusion' ? '横向对齐' : tool.task === 'decay' ? '等待时间' : tool.task === 'probe' ? '探头位置' : tool.task === 'depth' ? '显示深度' : '总增益'}
             <input aria-label={tool.task === 'decay' ? '等待时间' : '主要调节'} type="range" min="0" max={tool.task === 'decay' ? 220 : 100} value={saved.value} onChange={e => set({ value: Number(e.target.value) })} /></label>}
         {tool.task === 'fusion' && <label>纵向对齐<input aria-label="纵向对齐" type="range" min="0" max="100" value={saved.secondary} onChange={e => set({ secondary: Number(e.target.value) })} /></label>}
-        <p className="text-sm text-slate-300">{tool.task === 'gain' ? saved.value < 35 ? '暗处还埋着细节。慢慢调亮看看。' : saved.value > 80 ? '亮得发白，层次开始挤在一起。' : '能分开亮暗了。先留这一版。'
+        <p className="text-sm text-slate-300">{tool.task === 'gain' ? saved.value < 35 ? '暗处还埋着细节。慢慢调亮看看。' : saved.value > 80 ? '亮得发白，层次开始挤在一起。' : ch3 ? '亮暗层次能分辨了。' : '能分开亮暗了。先留这一版。'
           : tool.task === 'decay' ? '同一批药会随时间衰减，不是等够时间就凭空补回来。'
               : tool.task === 'probe' ? `这支${probe.label}探头：${probe.frequency.toFixed(1)} MHz。${probe.kind === 'linear' ? '矩形视野，浅处细节更清楚，深处衰减也更明显。' : probe.kind === 'convex' ? '弧顶展开的视野，频率较低，兼顾深处与范围。' : '从小接触面展开扇形视野，方便从肋间观察。'}`
               : tool.task === 'sequence' ? `当前查看 ${saved.choice}。同一处结构，换一种对比。`
-                : tool.task === 'artifact' ? saved.value < 50 ? '重影让轮廓不稳。试着改善运动条件。' : '轮廓稳定了，再交老师核对。' : '调整后与对照比较，不必一次做到完美。'}</p>
-        <details><summary>请同事带我看看</summary><p>{tool.help}</p><button onClick={() => finish(true, performance.now())}>一起看过了，回到故事</button></details>
+                : tool.task === 'artifact' ? saved.value < 50 ? '重影让轮廓不稳。试着改善运动条件。' : '轮廓稳定了，再交老师核对。' : ch3 ? '调整显示深度，看看目标是否完整、大小是否合适。' : '调整后与对照比较，不必一次做到完美。'}</p>
+        {!ch3 && <details><summary>请同事带我看看</summary><p>{tool.help}</p><button onClick={() => finish(true, performance.now())}>一起看过了，回到故事</button></details>}
       </aside>
     </div>}
-    {course && <details className="trilogy-course-help"><summary>请同事带我看看</summary><p>{tool.help}</p><button onClick={() => finish(true, performance.now())}>一起看过了，回到故事</button></details>}
-    <footer><button data-trilogy-tool-done className="trilogy-primary" onClick={() => finish(false, performance.now())}>留这一版，接着聊 →</button></footer>
+    {(course || ch3) && <details className="trilogy-course-help"><summary>{ch3 ? '请梅姐讲讲' : '请同事带我看看'}</summary><p>{tool.help}</p><button onClick={() => finish(true, performance.now())}>{ch3 ? '结束练习 →' : '一起看过了，回到故事'}</button></details>}
+    <footer><button data-trilogy-tool-done className="trilogy-primary" onClick={() => finish(false, performance.now())}>{ch3 ? '结束练习 →' : '留这一版，接着聊 →'}</button></footer>
   </div>
 }

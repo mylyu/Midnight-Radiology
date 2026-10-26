@@ -2,9 +2,9 @@ import type { TrilogyId } from './trilogy-types'
 
 export const TRILOGY_EVIDENCE: Record<TrilogyId, { flag: string; title: string; body: string; image?: string }[]> = {
   ch3: [
-    { flag: 'c3_missing_notice', title: '许守义的寻人启事', body: '许建平许可留下的副本；姓名与1998年离家线索供正式查询，不是已经认出无名片。', image: 'item_missing_notice' },
+    { flag: 'c3_missing_notice', title: '许守义的寻人启事', body: '许建平留下的副本。上面写着父亲的姓名、1998年离家的时间，以及最后有人见到他的地点。查询申请已交给受理窗口。', image: 'item_missing_notice' },
     { flag: 'c3_han_scope_recorded', title: '“仅核对，未交接”', body: '你要求澄清回收范围、逐件编号。核对联与未签回收联不同，设备和留存件没有现场交出。' },
-    { flag: 'c3_wen_copy_kept', title: '雯雯的来电', body: '已知联系人问回收范围是否包括备份，并表示留着新版附件；这里只记下通话，尚未确定她为何特别提醒。' },
+    { flag: 'c3_wen_copy_kept', title: '雯雯的来电', body: '雯雯来电确认核对联仍在院里，并说她手上也有新版附件，可以提交给院里核查。你已把附件名称记下并发给小雷。' },
   ],
   ch4: [
     { flag: 'c4_receipt_conflict', title: '回函与旧任务范围不同', body: '2025旧任务索引与2027“全部删除”回函存在范围缺口；原件已登记，不等于盒子恢复联网。' },

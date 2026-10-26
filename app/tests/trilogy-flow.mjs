@@ -292,7 +292,7 @@ async function walk({ chapter, variant }) {
     const beforeDone = progress(await read())
     if (mobile && log.tools.length === 0) {
       await click(lab.locator('summary'))
-      await click(lab.getByRole('button', { name: '一起看过了，回到故事', exact: true }))
+      await click(lab.locator('details').getByRole('button', { name: chapter.id === 'ch3' ? '结束练习 →' : '一起看过了，回到故事', exact: true }))
     } else await click(page.locator('[data-trilogy-tool-done]'))
     await transition(beforeDone)
     const saved = progress(await read()).tools[p.stepId]
@@ -320,7 +320,7 @@ async function walk({ chapter, variant }) {
         : all ? choices.find(c => c.tag === 'good') ?? choices[0] : choices.at(-1)
     }
     const button = choice ? page.locator('.choice-in').getByRole('button', { name: choice.text.replaceAll('**', ''), exact: true })
-      : page.locator('.choice-in').getByRole('button', { name: '接着聊 →', exact: true })
+      : page.locator('.choice-in').getByRole('button', { name: chapter.id === 'ch3' ? '继续交谈 →' : '接着聊 →', exact: true })
     await button.waitFor()
     await button.scrollIntoViewIfNeeded()
     await fit(button, `${p.stepId}: chosen answer`, true)

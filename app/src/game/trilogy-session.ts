@@ -115,7 +115,13 @@ export function trilogyGive(s: GameState, chapter: TrilogyChapter, node: string,
   if (!p || p.stepId !== node || !step.giftTo || p.giftReply || p.gifts.includes(key) || !s.items.includes(item)) return s
   const person = chapter.characters[step.giftTo]?.name ?? step.giftTo
   const next = applyEffect(s, { loseItem: item, ...(item === 'snack' ? { heart: 1 } : {}) })
-  const replies: Record<string, string> = { mei: '先放这儿，等我擦干手。……你也拿一份。', lei: '给我的？行，今晚不用啃键盘了。',
+  const replies: Record<string, string> = chapter.id === 'ch3' ? item === 'milktea' ? {
+    mei: '先放桌上，我擦个手。谢谢啊。', lei: '给我的？正好，杯子里那点早凉透了。',
+    zhou: '行，今天换个口味。谢谢你啊。', he: '谢谢，跑一趟正口渴呢。', tang: '谢谢！我刚才还惦记着买一杯。',
+  } : {
+    mei: '谢谢，忙到现在，正想找点吃的。', lei: '我拿两块，正好垫垫。你也吃。',
+    zhou: '这个配茶不错。坐，一起吃点。', he: '来得正好，我饭还没顾上吃。', tang: '来得正好，我正翻包找吃的呢。',
+  } : { mei: '先放这儿，等我擦干手。……你也拿一份。', lei: '给我的？行，今晚不用啃键盘了。',
     zhou: '茶还没喝完呢。先留着，别给我扔了。', he: '来得正好，我饭还没顾上吃。', tang: '我正翻包找吃的。你要不要也坐会儿？' }
   return patchTrilogy(next, chapter.id, { gifts: [...p.gifts, key], giftReply: { node, person: step.giftTo,
     text: replies[step.giftTo] ?? `${person}接过去，把另一把椅子拉开：「坐，别站着吃。」` } })

@@ -198,6 +198,8 @@ try {
       await enter('ch3', fixture(node)); await page.locator('[data-trilogy-lab]').waitFor()
       await context.setOffline(true)
       const lab = page.locator('[data-trilogy-lab]'), ranges = lab.locator('input[type=range]')
+      assert.equal((await lab.locator('[data-trilogy-tool-done]').textContent()).trim(), '结束练习 →')
+      assert(!/留这(?:一)?版|回到故事/.test(await lab.textContent()), 'Tool labels describe the action, not an invented saved version')
       assert(await ranges.count() > 0, `${step.tool.task}: real control exists`)
       await ranges.first().focus(); await ranges.first().press('Home')
       if (step.tool.task === 'spatial_resolution') { await ranges.nth(1).focus(); await ranges.nth(1).press('Home') }
@@ -217,7 +219,10 @@ try {
         await fit(page.locator('[data-trilogy-tool-done]'), 'landscape spatial footer', true)
         await shot('tool-spatial-resolution-landscape')
       }
-      await page.locator('[data-trilogy-tool-done]').tap()
+      if (step.tool.task === 'probe') {
+        await lab.getByText('请梅姐讲讲', { exact: true }).tap()
+        await lab.locator('details').getByRole('button', { name: '结束练习 →', exact: true }).tap()
+      } else await page.locator('[data-trilogy-tool-done]').tap()
       await page.waitForFunction(({ key, node }) => JSON.parse(localStorage.getItem(key)).dlc.ch3.chapter.stepId !== node, { key, node })
       assert.equal(await page.locator('[data-chapter-loader]').count(), 0, 'Offline operation requires no media reload')
       row.tasks.push(step.tool.task)

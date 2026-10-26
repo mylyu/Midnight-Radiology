@@ -221,7 +221,7 @@ try {
     const lab = t.page.locator('[data-trilogy-lab]')
     await t.tap(lab.getByRole('button', { name: '线阵', exact: true }))
     await t.tap(lab.locator('summary'))
-    const help = lab.getByRole('button', { name: '一起看过了，回到故事', exact: true })
+    const help = lab.locator('details').getByRole('button', { name: '结束练习 →', exact: true })
     await help.scrollIntoViewIfNeeded(); await t.fit(help, 'Assisted completion button', true)
     await t.tap(help)
     await t.page.locator('[data-trilogy-node="c3_s1_aunt_7"]').waitFor()
