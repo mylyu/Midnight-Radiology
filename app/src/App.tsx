@@ -2749,7 +2749,7 @@ function DlcHallScreen({ onEnter, onEnterCh2, onEnterTrilogy, onBack }: { onEnte
                 </div>
               )
             })()}
-            {([{ id: 'ch3', title: '第三章 · 回声', icon: '〰️', desc: '2026年 · 表姐一通电话，把你带到了超声科。先问预约，后来连自己的跟班也安排上了。' },
+            {([{ id: 'ch3', title: '第三章 · 回声', icon: '〰️', desc: '2026年 · 表姐一通电话，你拍胸脯答应帮忙。本想去超声科找个熟人，没想到自己也成了跟班。' },
               { id: 'ch4', title: '第四章 · 共振', icon: '🧲', desc: '2027年 · 从MRI选型谈判，到0.55T大口径新机的日间跟班。报价里的数字，终于变成眼前的机器。' },
               { id: 'ch5', title: '第五章 · 微光', icon: '✨', desc: '2028年 · 接到进修名额，带着县院的问题去市三甲核医学中心。两周，认识另一种成像。' }] as const).filter(chapter => isTrilogyPlayable(chapter.id)).map(chapter => <section key={chapter.id} className="bg-slate-900/90 border-2 border-teal-500/60 rounded-2xl p-5">
                 <div className="flex items-center gap-3"><span className="text-3xl">{chapter.icon}</span><h3 className="text-lg text-teal-100 font-bold">{chapter.title}</h3><span className="ml-auto text-xs text-slate-400">{save.dlc?.[chapter.id]?.chapter?.done ? '已完成' : save.dlc?.[chapter.id]?.chapter ? '进行中' : '未开始'}</span></div>

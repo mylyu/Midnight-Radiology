@@ -46,37 +46,37 @@ const cousinPhone: Partial<TrilogyStep> = { communication: 'call', sprite: '', p
 const cousinSms: Partial<TrilogyStep> = { communication: 'sms', sprite: '', phone: 'pat_cousin', voice: undefined }
 scene('c3_intro_call', [
   ['sys', '2026年10月30日傍晚，天还亮着。你刚从放射科出来，手机就响了。是表姐。她先问你下班没，又在那头翻起了纸。', cousinPhone],
-  ['cousin', '你别笑我，预约页面我来回点了三遍。产科让我下周做结构检查，到时二十四周了。你帮我问问，超声这边怎么约？', { ...cousinPhone, image: 'cg_c3_cousin_call_v3', imageLabel: '表姐从家里打来电话', closeup: true, cameraMotion: 'push' }],
-  ['me', '先把产科的申请单拍给我。我明早过去问排期和登记方式，问清了发你，你按窗口的安排约。', cousinPhone],
-  ['cousin', '好。我就怕点错了，到医院才知道要带的东西都留在家里。还有，孩子的名字还没定呢，你可别跟家里乱猜。', cousinPhone],
-  ['me', '我只帮你问检查，不参加家里的取名大会。单子拍全，别又只给我看个右下角。', cousinPhone],
-  ['sys', '挂了电话，手机里收到申请单和既往产检记录的照片。你把需要问的时间、地点、材料记在一张便签上，第二天去超声科。'],
+  ['cousin', '下周该做大排畸了，二十四周。你们超声科有没有熟人？帮姐安排一下呗，我一想到去医院就头大。', { ...cousinPhone, image: 'cg_c3_cousin_call_v3', imageLabel: '表姐从家里打来电话', closeup: true, cameraMotion: 'push' }],
+  ['me', '包在我身上！单子发来，到时候我下楼接你。', cousinPhone],
+  ['cousin', '哟，现在说话这么硬气了？行，我可指望你了。办好了，姐请你吃顿好的。', cousinPhone],
+  ['me', '那我先想想吃什么。以前的检查单也拍来，别又只拍个右下角。', cousinPhone],
+  ['sys', '电话一挂，你才想起来：超声科的梅姐是见过，可还没正经说上几句话。“包在我身上”已经说出去了。你存好表姐发来的单子，打算明早去碰碰运气。'],
 ], 'c3_intro_visit_0', 'bg_day')
 scene('c3_intro_visit', [
-  ['sys', '10月31日上午，超声科门口还坐着几位预约者。你等梅兰医师送走上一位患者，再把申请单照片和便签拿给她看。', { bg: 'bg_waiting_day_v2' }],
-  ['mei', '来啦？这边。我是梅兰，大家叫梅姐。来问检查，还是找人？', { voice: 'vox_c3_mei_v2' }],
-  ['me', '表姐下周做产科安排的结构检查。我在放射科，她让我先来问排期和登记，怕走错窗口。', { image: 'cg_c3_us_visit_v3', imageLabel: '梅姐在门口递来排期说明', closeup: true, cameraMotion: 'settle' }],
-  ['mei', '预约台在右边。让她带着申请和以前的记录，先核时间；下周三上午还有位置，具体号由窗口确认。我把要带的写给你。'],
-  ['me', '好，我发给她。我平常看CT，看您这儿一动探头图就跟着动，还挺想知道它怎么收回声。'],
-  ['mei', '那正好。院里在安排跨科培训，我这边还留着一个跟班位。愿不愿意来两周？设备、图像和教学模体，从头跟着学。'],
-  ['me', '我本来来问她的预约，怎么连我自己的日程都问出来了。'],
-  ['me', '来，我先回去交接排班。探头我还不熟，到时候可得从头跟。', { next: 'c3_intro_accept' }],
+  ['sys', '10月31日上午。你在超声科门口绕了两趟，想着等她不忙再开口。手机偏在这时亮了，表姐问：“怎么样啦？”梅姐送走一位患者，抬眼看见了你。', { bg: 'bg_waiting_day_v2' }],
+  ['mei', '来啦？这边。你是放射科的吧？在门口转半天了，找我有事？', { voice: 'vox_c3_mei_v2' }],
+  ['me', '梅姐，想请您帮个忙。我表姐下周做大排畸，我跟她说都安排好了，其实……还没来问您。', { image: 'cg_c3_us_visit_v3', imageLabel: '梅姐接过表姐的检查单', closeup: true, cameraMotion: 'settle' }],
+  ['mei', '先答应了才来找我啊？单子给我看看。走咱们职工家属这边，我帮你安排。下周三上午十点带她来，到了直接找我。'],
+  ['me', '太谢谢您了，我刚在门口还不敢进。……您这探头一动，图就跟着变，跟CT真不一样。'],
+  ['mei', '想试试？下周跨科跟班还有个名额，来两周呗。先拿模体练，哪儿不会就问。'],
+  ['me', '我来替表姐找您帮忙，怎么把自己也安排进来了。'],
+  ['me', '来！不过我这点超声底子，您可别指望我一上手就会。', { next: 'c3_intro_accept' }],
 ], undefined)
-put('c3_intro_accept', { speaker: 'mei', sprite: 'char_mei', bg: 'bg_us_room_day', text: '行。我报给科里，你回去也跟主任说一声。等班表确认再来，别明天就把自己塞进诊室。', effect: { flag: 'c3_rotation_invited' }, next: 'c3_intro_confirm_0' })
-put('c3_intro_ask', { speaker: 'mei', sprite: 'char_mei', bg: 'bg_us_room_day', text: '就从基本的起。你先会看回波怎么回来，再看它怎么成图；病例跟着我，不会把你往前一推就走。排班我跟主任对。', effect: { flag: 'c3_rotation_invited' }, next: 'c3_intro_confirm_0' })
+put('c3_intro_accept', { speaker: 'mei', sprite: 'char_mei', bg: 'bg_us_room_day', text: '谁让你一上来就会了。跟你们主任说一声，班排开了周一过来，别两头找不到人。', effect: { flag: 'c3_rotation_invited' }, next: 'c3_intro_confirm_0' })
+put('c3_intro_ask', { speaker: 'mei', sprite: 'char_mei', bg: 'bg_us_room_day', text: '不会才来学嘛。先跟着我看，有空就上教学台试，没人催你。班我去对，你记得跟主任说一声。', effect: { flag: 'c3_rotation_invited' }, next: 'c3_intro_confirm_0' })
 scene('c3_intro_confirm', [
-  ['sys', '当天下午，表姐发来窗口确认的预约信息：11月4日，上午十点。她按正常预约登记好了，申请单也装进了片袋。', { ...cousinSms, effect: { flag: 'c3_cousin_booking' } }],
-  ['cousin', '这回看懂了。谢谢啊。听说你也要到超声科？我这一通电话，还顺便给你找了个课上。', cousinSms],
-  ['me', '还没开始，得先把放射科的班交接好。两边主任确认以后，我周一再正式过去。你周三按预约来就行。', cousinSms],
+  ['sys', '走出科室，你立刻给表姐发消息：“安排好了，11月4日周三，上午十点。到了给我电话。”发完又补一句：“报告都带上，别只顾着带零食。”', { ...cousinSms, effect: { flag: 'c3_cousin_booking' } }],
+  ['cousin', '我妈刚还说你在医院也不认识几个人。等会儿我就跟她显摆去。', cousinSms],
+  ['me', '先别往家族群里嚷嚷。我周一也去那边跟班，周三你来了我接你。请饭的事可别忘了。', cousinSms],
   ['sys', '放射科和超声科随后对好了两周跟班表：四个白班，一个傍晚床旁班。你在日历上圈出11月2日，旁边写着：早上八点，到超声科报到。', { effect: { flag: 'c3_rotation_arranged' } }],
 ], 'c3_s1_start_0', 'bg_day')
 
 // First paid shift: keep the original cursor and its check-in receipt valid.
 scene('c3_s1_start', [
   ['sys', '2026年11月2日，早上八点。放射科的班已经交接好，你拿着两周培训表来到超声科。今天是正式跟班的第一天。'],
-  ['mei', '来啦？这边。我是梅兰，喊梅姐就行。……袖子收进去，柜门夹住了，别还往前走。', { voice: 'vox_c3_mei_v2' }],
+  ['mei', '来啦？这边，柜子给你留了一个。……别动，袖子夹门里了。', { voice: 'vox_c3_mei_v2' }],
   ['me', '难怪走不动。我还想着第一天来，不能显得太慌。'],
-  ['mei', '不慌，昨天来的学生把柜门卸了。你先看设备和图像，临床我扫；要自己试探头，就去旁边那块模体。'],
+  ['mei', '第一天都这样。先坐我旁边看，等有空了，拿窗边那块模体练手。'],
   ['sys', '梅姐拿出培训表，让你签上到科时间。教学台在窗边，临床机在帘子里面；你刚把两处认清，窗口就送来了上午的预约单。'],
   ['mei', '八点半开诊，先转一圈。纸巾在右边第二格，省得待会儿全科帮你找。'],
 ], 'c3_s1_hub')
@@ -113,7 +113,7 @@ scene('c3_s1_aunt', [
   ['mei', '这块浅，用线阵容易把边界分开。频率高，波长短，能看细一点；可往深处走，衰减也更快，不能一支包办。', { card: 'c3_frequency', effect: { skill: 1, badge: 'c3_first_probe' } }],
   ['sys', '梅姐在临床机上完成扫查。你按她的指示调整显示，保存她选定的切面。', { image: 'us_breast', imageLabel: '乳腺超声 · 梅姐完成的检查切面', caseId: 'c3_aunt' }],
   ['aunt', '这个也做了，是不是以前那张就不用看了？'],
-  ['me', '旧片还得看。这里显示的是返回的回声，不是再给您拍一张X光，梅姐把两种检查一起对照。'],
+  ['me', '留着留着，今天这个跟上回拍片看的不一样。梅姐还得把两份放一起比。'],
   ['mei', '对，两份我都看了。新报告给您夹在前面，回门诊时连旧片一起递给医生。'],
   ['aunt', '那我把袋子留好。买菜可以少拎一只袋，这只可不能扔。'],
   ['sys', '阿姨带走检查资料，空布袋却落在椅子上。你写好她的姓名，把布袋交给窗口暂存。回来时，梅姐已经整理好台面，示意你喝口水。', { effect: { flag: 'c3_aunt_reviewed' }, card: 'c3_breast' }],
@@ -132,7 +132,7 @@ put('c3_s1_shadow_good', { speaker: 'mei', sprite: 'char_mei', bg: 'bg_us_room_d
 put('c3_s1_shadow_retry', { speaker: 'mei', sprite: 'char_mei', bg: 'bg_us_room_day', text: '先盯着前面这个亮点，再看它后面。等我换个方向，你看看这道影是不是还接在它后头。', next: 'c3_s1_shadow_0' })
 scene('c3_s1_shadow', [
   ['sys', '梅姐改变扫查方向，亮点和暗影又出现了。你把她要的切面顺序保存下来。'],
-  ['mei', '两张能对上。结合检查，这里考虑胆囊结石，我把完整报告发回急诊，他们再结合您的疼痛情况评估。', { card: 'c3_shadow', effect: { skill: 1, badge: 'c3_shadow_reader', flag: 'c3_gallstone_seen' } }],
+  ['mei', '两张能对上，看着是胆囊结石，后面这道就是声影。我把片子和报告发给急诊，让他们接着看。', { card: 'c3_shadow', effect: { skill: 1, badge: 'c3_shadow_reader', flag: 'c3_gallstone_seen' } }],
   ['patient', '那我现在是不是就得开刀？'],
   ['mei', '现在还不能在这儿定。先回急诊，医生拿着报告跟您说下一步。转回去的同事已经在门口了。'],
   ['sys', '患者被送回急诊。你把台面整理好，梅姐发现你还盯着那道黑影。'],
@@ -151,10 +151,10 @@ scene('c3_s1_gain', [
 
 // Second shift: family closeness cannot replace the physician's explanation.
 scene('c3_s2_start', [
-  ['sys', '11月4日，上午九点多。教学台已经摆好，表姐的消息跳了出来：二十四周的预约在十点，车却堵在桥上。她附了一张照片，车窗边有个已经吃空的饼干袋。'],
-  ['cousin', '先告诉你一声，免得你以为我又起晚了。我已经跟窗口说在路上，等他们回复怎么安排。', { communication: 'sms', sprite: undefined, phone: 'pat_cousin', voice: undefined }],
-  ['me', '我去跟窗口核一下，再给她回消息。怕她一着急，又把预约取消了。'],
-  ['mei', '去吧。看看窗口能怎么顺延，确认好了再告诉她，咱们这边照常叫号。'],
+  ['sys', '11月4日，上午九点多。你刚摆好教学台，表姐发来一张堵在桥上的照片。车窗边的饼干袋已经空了，她说再不动，连袋子都想啃。'],
+  ['cousin', '你先替我跟梅姐说一声啊，别以为我睡过头。你姐夫还非说这条路快，快半天了！', { communication: 'sms', sprite: undefined, phone: 'pat_cousin', voice: undefined }],
+  ['me', '梅姐，我表姐堵桥上了。您给她留的时间……要不我先下去等她？'],
+  ['mei', '别急，还没到呢。到了你去接进来，我看完手上这位给她做。'],
 ], 'c3_s2_hub', 'bg_us_room_day')
 hub('c3_s2_hub', '表姐还在路上，上午的预约照常叫号。你可以趁准备的空当问问同事。', [
   ['陪梅姐看一眼排班表', 'c3_s2_roster'],
@@ -177,30 +177,30 @@ exploration('c3_s2_label', [
   ['mei', '调整前的也放进去。今天比频率和深部补偿，别拿两块不同模体说自己调清楚了。', { card: 'c3_compare' }],
 ], 'c3_s2_hub', 'bg_us_room_day')
 scene('c3_s2_arrive', [
-  ['sys', '表姐终于赶到，额前一层细汗。她先去窗口处理预约，没有直接往诊室里闯。', { bg: 'bg_waiting_day_v2' }],
-  ['cousin', '我今天原本提前一小时出门。每次这么说，听起来都像借口。', { bg: 'bg_waiting_day_v2' }],
-  ['mei', '窗口跟我对过了，上午后面有位患者取消，能往后顺一顺。您先坐，等我们叫号就行。'],
-  ['cousin', '那我就放心等。你别陪着我站，站得我更像插队了。'],
-  ['sys', '她坐下来，把那只饼干袋折成很小一块。轮到她时，梅姐先核对孕周与既往检查。'],
+  ['sys', '你在楼梯口接到表姐，帮她拎过那个鼓鼓囊囊的包。她跟在你身后，压低声音问：这里是不是每栋楼都长一个样？', { bg: 'bg_waiting_day_v2' }],
+  ['cousin', '我刚差点拐进住院部。还好看见你，不然又得打电话求救。', { bg: 'bg_waiting_day_v2' }],
+  ['mei', '这就是你表姐？来，坐这儿歇口气。单子给我，人到了就好。'],
+  ['cousin', '麻烦您了。电话里跟我说得可稳了，我还怕是吹牛呢。'],
+  ['sys', '你咳了一声，把她的外套挂好。梅姐笑着接过产检本，一边翻，一边问她最近怎么样。'],
   ['cousin', '能不能顺便拍一张脸？家里人都问像谁，现在谁也没见过，已经吵起来了。'],
-  ['mei', '先把二维切面看全，再看看能不能留张三维脸照。三维能看出立体模样，前面的结构检查可不能省。还得看他肯不肯转脸。'],
+  ['mei', '行，我先把该看的看全。孩子肯转脸，就给你留一张。三维看着立体，不过前面这些二维切面还得一张张看。'],
   ['sys', '梅姐握着探头扫查，先前的笑话慢慢停了。她回到一个二维切面，重新调整位置、测量。', { image: 'us_fetal', imageLabel: '胎儿二维超声 · 侧脑室测量切面', caseId: 'c3_cousin' }],
   ['cousin', '怎么又看这儿？是不是有问题？'],
-  ['mei', '侧脑室这项测量在十毫米左右，到了轻度增宽的范围。我需要把脑部结构再详细看一遍。'],
-  ['cousin', '十毫米是多大？刚才还在想像谁……你现在说这个，我都不知道先问什么。'],
-  ['me', '先问接下来怎么办吧。我帮你记，回去咱们还能再看。'],
-  ['mei', '我先把其他结构看完整，再把报告和复核安排写清。这一个测量还不能把后面的事都定下来。', { card: 'c3_ventricle' }],
-  ['me', '外套给我。你现在最想问哪件事？', { next: 'c3_s2_listen' }],
+  ['mei', '侧脑室这里量着十毫米左右，有点增宽。我再换个切面量一遍，其他地方也得看仔细。'],
+  ['cousin', '刚才不是还好好的？……你别光看屏幕，你跟我说句话。'],
+  ['me', '我在呢。先听梅姐把话说完，我陪着你。'],
+  ['mei', '这一个数还定不了后面的事。我再看看，等会儿咱们坐下说，你有什么想问的就问。', { card: 'c3_ventricle' }],
+  ['me', '包给我拿着。你要问什么就问，我帮你记。', { next: 'c3_s2_listen' }],
 ])
-put('c3_s2_listen', { speaker: 'cousin', sprite: 'pat_cousin', bg: 'bg_us_room_day', text: '今天先去哪儿，还有下回什么时候来。你帮我记着吧，我现在听一句，前一句就忘了。', effect: { flag: 'c3_cousin_listened' }, next: 'c3_s2_plan_0' })
+put('c3_s2_listen', { speaker: 'cousin', sprite: 'pat_cousin', bg: 'bg_us_room_day', text: '我现在脑子里乱得很。你先别上网查啊，一会儿查出一堆吓人的，我更睡不着了。', effect: { flag: 'c3_cousin_listened' }, next: 'c3_s2_plan_0' })
 put('c3_s2_promise', { speaker: 'me', bg: 'bg_us_room_day', text: '……等一下，我这句说快了。先让梅姐把今天能确定的讲完，我陪你记。', next: 'c3_s2_plan_0' })
 scene('c3_s2_plan', [
-  ['mei', '今天先拿报告回产科。我把联系人写这儿，详细评估和复查的时间要跟他们定。听不清就再问，不用怕耽误我们。'],
+  ['mei', '待会儿我给产科打个电话，把这里的测量跟他们说清楚。你拿着报告过去，有几项还得再细看。'],
   ['cousin', '磁共振也要做吗？我听人说那台机器很吓人。'],
   ['mei', '胎儿MRI有时能补充信息，要看详细超声和专科评估，不是看到这个数字就人人立刻做。'],
-  ['sys', '你把门诊地点和联系人抄在空白处，读给表姐听。她重复了一遍楼层，梅姐复核完才把报告递过去。', { effect: { badge: 'c3_stay_beside', flag: 'c3_cousin_plan' } }],
-  ['cousin', '我先去产科。你继续上班吧，等下班陪我吃点东西，别再聊数字了。'],
-  ['sys', '她离开后，你坐回教学台。梅姐把刚才没有讲完的设备设置换到模体画面上。'],
+  ['sys', '你在报告袋上写好楼层和医师名字，带表姐走到电梯口。她又问了一遍往哪儿拐，你干脆给她画了个小箭头。', { effect: { badge: 'c3_stay_beside', flag: 'c3_cousin_plan' } }],
+  ['cousin', '我先过去。你下班给我发消息，陪我吃点热的，别让我一个人瞎想。'],
+  ['sys', '电梯门关上，你才发现她的外套还在自己手里。你叠好放到椅背上，回到教学台。梅姐把模体往你这边挪了挪。'],
   ['mei', '深度选好了，深处还比较暗。别把浅处一块儿拉白，只补深部这一段试试。', {
     tool: { kind: 'ultrasound', task: 'tgc', title: '教学台 · 深处为什么更暗', prompt: '调一调深部补偿，让深处清楚些，别把浅处调得发白。', help: '深部回波走得更远，衰减更多。总增益会把整幅图一起调亮；TGC可以按深度补偿。两者调整的都是接收到的信号，没有增加发射功率。', next: 'c3_s2_finish_0' },
   }],
@@ -226,7 +226,7 @@ hub('c3_s3_hub', '王叔还在窗口报到，傍晚的床旁任务也已约好�
 ], 'c3_s3_wang_0', 'bg_us_room_day')
 exploration('c3_s3_tang', [
   ['tang', '你负责推车？转弯留点地方。上回我被人用仪器车追了半层楼。', { giftTo: 'tang' }],
-  ['me', '车已经检查过了，接下来重点检查我。'],
+  ['me', '那我慢点推。你在前面带路，我跟着。'],
   ['tang', '我待会儿去病区交单，东边病床梯一起走。你别跟着我拐去库房，我上回就领错过一队人。'],
 ], 'c3_s3_hub', 'bg_us_bedside_day_v2')
 exploration('c3_s3_cart', [
@@ -242,9 +242,9 @@ exploration('c3_s3_bag', [
 scene('c3_s3_wang', [
   ['sys', '出发前，梅姐先完成一位复诊患者的心超。王叔把药袋放在椅子上，坐下又马上站起来。', { sprite: 'pat_wang_recovery' }],
   ['wang', '这回不抢救啦，是心内科约的复查。躺哪边？刚才差点把药袋交给窗口当申请单。', { voice: 'vox_c3_wang_v2' }],
-  ['mei', '先别急，资料给我。今天看看心脏的结构和功能，结果交给心内科一起评估。'],
+  ['mei', '先躺这边，资料给我。我看看心脏收缩怎么样、瓣膜动得好不好，再给心内科看。'],
   ['wang', '我现在散步，走到菜场就往回拐。不是医生不让，是再走两步就忍不住买烧饼。'],
-  ['me', '那您的路线设计，很考验意志力。'],
+  ['me', '那摊烧饼确实香。我每次路过也想买。'],
   ['sys', '梅姐完成必要核对，持探头寻找心脏切面。屏幕里的瓣膜来回开合，你负责按指示留存图像。', { image: 'us_echo', imageLabel: '超声心动图 · 心脏结构与运动', caseId: 'c3_wang' }],
   ['wang', '这个能看见我支架里面通不通吗？'],
   ['mei', '这次主要看心脏怎么收缩、瓣膜怎么动，不能直接看清支架里面。您看，这条线记录的就是瓣膜一段时间里的运动。'],
@@ -266,22 +266,22 @@ scene('c3_s3_mirror_end', [
   ['mei', '报告交给当班医师了，咱们把车推回去。那只轮子还没修，转弯慢点。'],
 ], 'c3_s3_xu_9', 'bg_us_bedside')
 scene('c3_s3_waiting', [
-  ['sys', '五点前，床旁任务还没集合。表姐来取随访安排，候诊区只空着一把椅子，她坐到一位穿旧夹克的男人旁边；那是今天下午最后一位腹部预约者。'],
+  ['sys', '五点前，表姐来拿梅姐帮她问好的后续检查安排。候诊区只空着一把椅子，她坐到一位穿旧夹克的男人旁边，手里那瓶水一直没拧开。'],
   ['cousin', '您也是来复查的？'],
   ['xu', '消化内科开的腹部检查，约的今天下午。做完就能回去，不耽误你们出科吧？'],
   ['cousin', '我现在一听见医生停顿，就忍不住胡思乱想。'],
   ['xu', '我以前跑长途，乘客一问“怎么停了”，我也得赶紧说只是等红灯。没人解释，等着的人心里就悬着。'],
-  ['sys', '表姐笑了一下。窗口把确认好的随访时间交给她，她拍照发给家里，和你说了声就先回去了。男人没有追问她的报告，她也没问他的。'],
+  ['sys', '表姐笑了一下。你把写着时间的纸递过去，顺手替她拧开水。她拍了拍你的胳膊：“你忙吧，我回去做饭。”走到电梯口，又转头叮嘱你别忘了吃。'],
 ], 'c3_s3_xu_0', 'bg_waiting_day_v2')
 scene('c3_s3_xu', [
   ['sys', '轮到男人时，梅姐核对申请单。姓名栏这回没有被挂号条挡住：许建平。'],
   ['xu', '退休了，以前开长途客车。今天消化内科让我来查腹部。还有件旧事，做完能不能问你们两句？'],
-  ['mei', '先把今天的检查完成，身体上的事一样得认真。别的事，待会儿坐下说。'],
+  ['mei', '不急，您先躺好。查完了坐这儿慢慢说。'],
   ['sys', '腹部检查由梅姐完成，仅见一个约三毫米的胆囊息肉样病变。她结合资料写好报告，交代回开单门诊评估、按医嘱随访。', { effect: { flag: 'c3_xu_third_visit' } }],
   ['xu', '我父亲叫许守义。1998年离开家，最后有人见到他，是在这家医院。'],
   ['me', '您一直在找他？'],
   ['xu', '先找记录吧。我那阵子跑车，一个月没几天在家，总拖着说下一趟。现在能问的人换了好几拨，问到后来，还得先解释自己是谁。'],
-  ['me', '我把正式受理窗口写给您。下回带上关系材料，让他们核旧记录；今天的报告也别忘了拿回门诊。'],
+  ['me', '档案那边我帮您问问。下回来把能证明亲属关系的材料也带上，省得白跑。今天这份报告先拿回门诊。'],
   ['xu', '好，下回带。今天这份报告我先拿回门诊，老资料的事另外问。', { effect: { flag: 'c3_xu_identity', badge: 'c3_name_spoken' } }],
   ['sys', '傍晚班交接完，你把移动机接回电源，报修单贴在响轮子旁边。手机里是表姐下午发的“到家了，时间记好了”。你这才回了个好，脱下工作服。', { end: true, effect: { gold: 110, flag: 'c3_shift3_done' } }],
 ], undefined, 'bg_us_room_day')
@@ -289,9 +289,9 @@ scene('c3_s3_xu', [
 // Fourth shift: a blood-flow signal lesson, with optional ordinary office work.
 scene('c3_s4_start', [
   ['sys', '11月10日，上午八点。梅姐翻到今天的血管检查申请：开单医师想了解血流情况。教学机上也放好了演示，黑白管道旁边有红蓝两色。'],
-  ['mei', '光留黑白形状，回答不了这份申请。待会儿看我怎么找血流方向，间歇再用教学数据试。'],
+  ['mei', '这位要看血流，光看黑白图还不够。待会儿你坐旁边，看我怎么找；忙完咱们再试。'],
   ['me', '我以前见着红蓝，总先认成动脉、静脉。今天先不猜。'],
-  ['mei', '先看图例和探头方向。你把两份文件夹开好，教学的、患者的别放混。'],
+  ['mei', '先看图例，再看探头朝哪儿。你把这位以前的检查调出来，我先看看。'],
 ], 'c3_s4_hub')
 hub('c3_s4_hub', '教学血流演示已经准备好。开诊前还能找同事聊几句，或看看新送来的用品。', [
   ['找小雷借标签机', 'c3_s4_lei'],
@@ -367,9 +367,9 @@ scene('c3_s4_wen', [
 // Fifth shift and the post-quiz ending are deliberately separated by the settlement page.
 scene('c3_s5_start', [
   ['sys', '11月13日，最后一个跟班日，上午八点。你已经会先把备用纸和模体摆好。梅姐拿来培训表，把今天的教学考核圈上，下午再完成轮转交接。'],
-  ['mei', '今天我坐旁边。你把设备准备、探头、显示和记录连起来做一遍。'],
+  ['mei', '今天换你来，从拿探头开始。我坐这儿看，不插嘴。'],
   ['me', '正式考核？'],
-  ['mei', '不正式的话，我就能让你替我写评语了？先准备，病人的检查照常由我来。'],
+  ['mei', '表都拿来了，还能逗你？先把模体摆好，别紧张。'],
 ], 'c3_s5_hub', 'bg_us_room_day')
 hub('c3_s5_hub', '考核开始前，熟悉的人陆续从门口经过。你已经不用先问每一个柜子放什么。', [
   ['跟老周聊聊这两周', 'c3_s5_zhou'],
@@ -378,8 +378,8 @@ hub('c3_s5_hub', '考核开始前，熟悉的人陆续从门口经过。你已�
 ], 'c3_s5_assess_0', 'bg_us_room_day')
 exploration('c3_s5_zhou', [
   ['zhou', '我来送会诊资料。还行，没瘦。梅姐没让你天天搬最重那台吧？', { giftTo: 'zhou' }],
-  ['me', '以前B、M、D放在一张屏上，我还以为都是给同一张图换皮肤。现在知道每块看的信息不同。'],
-  ['zhou', '回来我考你：先讲你这两周看过什么，不许一开口就背病名。顺便，下周饭堂换窗口了，你别又站在旧门前等。'],
+  ['me', '天天推车，那只轮子比我还认路。梅姐倒是真舍得教，我问她就停下来讲。'],
+  ['zhou', '那就好。回来给我讲讲，都拿模体折腾什么了。对了，下周饭堂换窗口，别还往旧门那边走。'],
 ], 'c3_s5_hub', 'bg_office_day')
 exploration('c3_s5_lei', [
   ['lei', '标签机还得这么准时，我都有点不习惯。', { giftTo: 'lei' }],
@@ -389,7 +389,7 @@ exploration('c3_s5_lei', [
 exploration('c3_s5_mei', [
   ['mei', '这块模体又被擦得亮晶晶的。你不会以为擦得干净能加考核分吧？', { giftTo: 'mei' }],
   ['me', '本来只想少扣一点。'],
-  ['mei', '给你张探头小卡。我常忘在洗手池边，给你之前特意重新写的。遇到深的、浅的各先想什么，都在上面，拿不准回来问。', { image: 'item_notebook', effect: { item: 'c3_mei_probe_card', badge: 'c3_mei_pocket_card' } }],
+  ['mei', '这张拿着，我平时选探头用的小抄。别嫌字乱，拿不准就翻翻，找我也行。', { image: 'item_notebook', effect: { item: 'c3_mei_probe_card', badge: 'c3_mei_pocket_card' } }],
 ], 'c3_s5_hub', 'bg_us_room_day')
 scene('c3_s5_assess', [
   ['sys', '你摆正模体，在记录表上写下探头和设置。梅姐坐到旁边，等着看你怎么调。'],
@@ -453,7 +453,7 @@ scene('c3_s3_motion', [
     tool: { kind: 'ultrasound', task: 'm_mode', title: '教学台 · 同一条线，怎样动', prompt: '拖动时间线，看看B图里的界面和M图里的轨迹如何对应。', help: 'B型把不同位置的声线排成切面；M型反复看同一条声线。M图竖着看深度，横着看时间，亮度表示回波强弱。移动时间线，就能对上B图里那一刻的位置。', next: 'c3_s3_motion_3' },
   }],
   ['me', '原来横轴是时间，不是身体的左右。界面一动，这条轨迹也跟着起伏。'],
-  ['mei', '对，先用B型定位，再用M型跟着这一条线看运动。临床要测什么由我核，你记清模式和位置就行。', { card: 'c3_echo' }],
+  ['mei', '对，先在B型里找准位置，再盯着这条线看它怎么动。回头看王叔刚才那张，就好认了。', { card: 'c3_echo' }],
 ], 'c3_s3_waiting_0')
 steps.c3_s3_xu_5.next = 'c3_s3_xu_6'
 steps.c3_s3_xu_8.next = 'c3_s3_mirror_0'
@@ -462,7 +462,7 @@ steps.c3_s3_xu_9.bg = 'bg_us_room'
 scene('c3_s4_doppler', [
   ['sys', '送走上午的患者，梅姐打开血流演示。管道的黑白轮廓没变，旁边的信号却随着探头方向改变。'],
   ['me', '看形状还是B型，红蓝这块又多看到了什么？'],
-  ['mei', '流动的散射体让接收到的频率变了。用这份演示换个方向，你别先给红的起名叫动脉。'],
+  ['mei', '血流在动，反回来的声波频率就会变。来，把方向掉个头，看看颜色跟不跟着换。'],
   ['mei', '一次先改探测角度，盯住同一条流动通道。', {
     tool: { kind: 'ultrasound', task: 'doppler', title: '教学台 · 血流往哪儿走', prompt: '转动声束方向，看看频移怎么变，再切换血流方向。', help: '按这里的图例，朝向探头是红色，远离是蓝色，不表示动脉和静脉。血流越接近与声束垂直，能测到的频移越小，但管道里的流动并没有停止。', next: 'c3_s4_doppler_4' },
   }],
@@ -569,33 +569,38 @@ scene('c3_epilogue', [
   ['sys', '几天后，专科医生结合表姐的详细检查和咨询，安排她到市里补充胎儿MRI。你调好休息，陪她坐早班车。', { bg: 'bg_day' }],
   ['cousin', '这次我提前两个小时出门。你别笑，我已经把堵车的钱都算进车票了。', { bg: 'bg_day' }],
   ['me', '我没笑。我在想早餐是不是也算进去了。', { bg: 'bg_day' }],
-  ['sys', '到市里后，工作人员重新核对资料与安全信息。轮到表姐时，你留在等候区，没有跟着闯进检查室。', { bg: 'bg_waiting_day_v2' }],
+  ['sys', '到了市里，表姐把检查单往你手里一塞，自己先去找厕所。你抱着包和外套坐下来，刚拿出手机，她又探头问你带没带纸。', { bg: 'bg_waiting_day_v2' }],
   ['cousin', '手机替我拿着。要是家里问，就说我在按计划检查，别帮他们直播每一分钟。', { bg: 'bg_waiting_day_v2' }],
   ['sys', '你把手机静音。墙上的钟走得很慢，叫号屏换了好几次名字。', { bg: 'bg_waiting_day_v2' }],
-  ['sys', '检查后，专科医生拿着MRI和此前的报告，一项项解释：这次未见其他中枢结构异常，之后仍要按约复查超声。表姐把下次日期念了一遍，你替她记到手机里。', { bg: 'bg_waiting_day_v2' }],
-  ['cousin', '好，那我们把下次时间记上。今天先吃饭，我真的饿了。', { bg: 'bg_waiting_day_v2' }],
-  ['me', '走。车站那家太挤了，咱们多走一条街，找个能坐下慢慢吃的。', { bg: 'bg_day' }],
-  ['sys', '几周后，表姐发来消息：按专科安排补充的MRI未见其他中枢结构异常，之后的超声复查测量也稳定。她圈出了下回日期，紧接着问你哪种婴儿车能进老楼电梯。', { ...cousinSms, bg: 'bg_day', effect: { flag: 'c3_cousin_followup_stable' } }],
+  ['sys', '检查做完，表姐坐回你身边。报告还没出来，她把产检本翻开又合上，连上面翘起来的贴纸都捋平了。', { bg: 'bg_waiting_day_v2' }],
+  ['cousin', '是不是还得等会儿？我现在也不知道饿不饿。', { bg: 'bg_waiting_day_v2' }],
+  ['me', '等会儿一起去吃。先喝口水，我在这儿呢。', { bg: 'bg_waiting_day_v2' }],
+  ['sys', '几周后，产科结合复核情况安排了胎儿MRI，你陪表姐到了市医院。检查已经做完，报告还没出来。她把产检本翻开又合上，你抱着两个人的外套，坐在她旁边。', { bg: 'bg_waiting_day_v2', effect: { flag: 'c3_cousin_mri_pending' } }],
   ['sys', '那周回放射科，老周的桌上多了几本MRI设备资料。你刚放下饭盒，他就把一张需求表推过来。', { bg: 'bg_office_day' }],
-  ['zhou', '申请还没报齐，哪台都没定。主任让你跟设备科做前期选型：先列咱们常做什么检查、病人有哪些需要，再看机房和维保。', { bg: 'bg_office_day' }],
+  ['zhou', '还没定哪台呢。主任让你先跟设备科聊聊，咱们常做什么、病人最不方便的是什么，先弄清楚。', { bg: 'bg_office_day' }],
   ['me', '还没选机器，先选中我干活了。我去找老范借清单，别等看中一台，才发现搬不进来。', { bg: 'bg_office_day' }],
   ['sys', '你把B型切面、M型时间记录和血流演示分好，装进包里。梅姐将反馈页塞回夹层，指指桌上：你的半个包子还没拿。', { bg: 'bg_us_room_day' }],
   ['me', '收到。包子带走，纸巾留在右边第二格，下个学生不用满屋找了。', { bg: 'bg_us_room_day' }],
-  ['sys', '你把需求表夹进文件袋，先打开饭盒。梅姐的反馈还在夹层里，旁边是第一天选探头的记录。第三章「回声」结束。', { bg: 'bg_day', end: true, effect: { flag: 'c3_completed' } }],
+  ['sys', '诊室的门开了，里面叫到表姐的名字。她攥住你的袖口，声音很轻：“你跟我一起。”你抱紧报告袋，陪她站了起来。第三章「回声」结束。', { bg: 'bg_waiting_day_v2', end: true, effect: { flag: 'c3_completed' } }],
 ])
 
-// Normal ending stays with ultrasound. The longer city-trip/selection cursors
-// remain as readable connectors for saves from earlier builds.
+// Finish the ultrasound farewell/next-year teaser before the family's MRI wait.
+// Earlier travel cursors remain compatible, without revealing the old result.
 steps.c3_epilogue_4.next = 'c3_epilogue_18'
 steps.c3_epilogue_18.next = 'c3_epilogue_19'
-steps.c3_epilogue_19.next = 'c3_epilogue_14'
+steps.c3_epilogue_19.next = 'c3_epilogue_15'
 steps.c3_epilogue_15.next = 'c3_mri_selection_2'
 steps.c3_epilogue_17.next = 'c3_mri_selection_2'
 scene('c3_mri_selection', [
   ['zhou', '先把需求问全。宣传册上的数字我也会圈，可圈完还是得问，咱们每天做的检查能不能接住。'],
   ['me', '那我带着问题去问。候诊座位也记上，表姐这回等了一上午，片袋都快被我抱热了。'],
   ['zhou', '明年想上MRI，主任让你跟设备科先问需求。哪台还没定，别急着圈最贵的，先吃饭，下午再看。', { effect: { flag: 'c3_mri_selection_task' } }],
-], 'c3_epilogue_20', 'bg_office_day')
+], 'c3_epilogue_14', 'bg_office_day')
+steps.c3_epilogue_14.next = 'c3_cousin_mri_wait_0'
+scene('c3_cousin_mri_wait', [
+  ['cousin', '里面怎么响成那样，我躺着都不敢动。……片子还没好吗？'],
+  ['me', '还没。你刚才躺着，我在外面看钟，也没好到哪儿去。包给我，先别来回翻了。'],
+], 'c3_epilogue_20', 'bg_waiting_day_v2')
 
 const cards: TrilogyChapter['cards'] = {
   c3_probe: { title: '探头发，也收', body: '压电材料把电脉冲变成机械振动发声，再把返回振动变成电信号。探头里的保护/匹配层、吸声材料和阵元各有作用；外形要适合目标深度和声窗。' },
@@ -657,7 +662,9 @@ function adapt(id: string, step: TrilogyStep, state: GameState): TrilogyStep {
   if (/^c3_epilogue_(?:[5-9]|1[0-3])$/.test(id)) return { ...step,
     speaker: 'sys', sprite: '', phone: undefined, image: undefined, imageLabel: undefined,
     voice: undefined, effect: undefined, card: undefined, choices: undefined, closeup: false,
-    text: '之后，表姐按专科安排完成了补充检查。你陪她把下次超声复查的时间记进手机，这回谁也没忘。',
+    text: state.flags.c3_cousin_followup_stable
+      ? '你翻到表姐之前发来的消息，又把下次复查的时间标进日历。这次谁也没忘。'
+      : '表姐的补充检查安排在两周跟班结束之后。你把陪她去市里的那天圈出来，提前换好了休息。',
     next: 'c3_epilogue_14' }
   // The practice moved before the patient. Older in-patient cursors finish the
   // same task then go straight to acquisition, never re-introducing the aunt.
@@ -681,10 +688,10 @@ function adapt(id: string, step: TrilogyStep, state: GameState): TrilogyStep {
     || id === 'c3_s4_cost_right' && state.flags.c3_gel_ledger
     || id === 'c3_s5_notice_desk' && state.flags.c3_xu_query_assisted) return { ...step, effect: undefined }
   if (id === 'c3_s1_start_1' && state.flags.c3_rotation_invited) {
-    return { ...step, text: '来啦？这边。今天正式报到，柜子给你留好了。……袖子收进去，别刚打开门就卡住了。' }
+    return { ...step, text: '来啦？这边。还真准点，柜子给你留好了。……别动，袖子夹门里了。' }
   }
   if (id === 'c3_s2_start_0' && state.flags.c3_cousin_booking) {
-    return { ...step, text: '11月4日，上午九点多。表姐约了今天十点的检查，却还堵在桥上。她发来车窗外的照片，旁边有个已经吃空的饼干袋。' }
+    return { ...step, text: '11月4日，上午九点多。梅姐给表姐留了今天十点的时间，她却发来堵在桥上的照片，说饼干都吃完了，车还没挪几米。' }
   }
   if (id === 'c3_s1_aunt_1' && state.flags.n4_kind) {
     return { ...step, text: '哎，是你！两年前帮我讲清楚检查、写预约便签的那个。这次门诊让我复查，我就把旧钼靶也带来了。' }
@@ -717,6 +724,11 @@ function adapt(id: string, step: TrilogyStep, state: GameState): TrilogyStep {
     if (!borrowed) return { ...step, text: '我也被文件名坑过。改天给她设个模板，不然下次轮转的又得猜两周。' }
   }
   if (id === 'c3_epilogue_19' && state.flags.c3_cousin_followup_stable) return { ...step, next: 'c3_epilogue_20' }
+  if (id === 'c3_epilogue_14' && state.flags.c3_cousin_followup_stable) return { ...step,
+    text: '你把表姐之前发来的复查时间重新标进日历，又给她回了条消息：“这次我记着呢。”',
+    effect: undefined, next: 'c3_epilogue_20' }
+  if (id === 'c3_epilogue_20' && state.flags.c3_cousin_followup_stable) return { ...step,
+    text: '你把梅姐的小卡和自己的记录放在一起，收好饭盒，回放射科上班。表姐的复查日期已经标进日历，下回再陪她来。第三章「回声」结束。', bg: 'bg_day' }
   return step
 }
 
@@ -724,7 +736,7 @@ export const CH3: TrilogyChapter = {
   id: 'ch3', title: '回声', subtitle: '第三章 · 超声', icon: '◉', year: 2026,
   equipment: '超声设备与教学模体', background: 'bg_us_room_day',
   shifts: [
-    { id: 'c3s1', title: '第一班 · 回声先回来', subtitle: '先问预约，再正式跟班 · 探头收发 / A到B / 声影', date: '2026-10-30来电 → 11-02白班', start: 'c3_intro_call_0', checkinAt: 'c3_s1_start_0', background: 'bg_day' },
+    { id: 'c3s1', title: '第一班 · 回声先回来', subtitle: '替表姐找人帮忙，顺道成了跟班 · 探头收发 / A到B / 声影', date: '2026-10-30来电 → 11-02白班', start: 'c3_intro_call_0', checkinAt: 'c3_s1_start_0', background: 'bg_day' },
     { id: 'c3s2', title: '第二班 · 看多深，补哪里', subtitle: '白班 · 频率 / 深度 / TGC / 表姐', date: '2026-11-04 · 白班', start: 'c3_s2_start_0', background: 'bg_us_room_day' },
     { id: 'c3s3', title: '第三班 · 跟着这一条线', subtitle: '下午至傍晚 · 心超 / M型 / 床旁', date: '2026-11-07 · 下午至晚间床旁班', start: 'c3_s3_start_0', background: 'bg_us_room_day' },
     { id: 'c3s4', title: '第四班 · 颜色跟谁比', subtitle: '白班 · 血流方向 / 多普勒频移', date: '2026-11-10 · 白班', start: 'c3_s4_start_0', background: 'bg_us_room_day' },

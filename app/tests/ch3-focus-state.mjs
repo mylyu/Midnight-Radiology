@@ -58,6 +58,30 @@ const finished = patchTrilogy(fixture('c3_s5_assess_4'), 'ch3', {
   applied: ['c3_s5_assess_4'] })
 assert.deepEqual(initializeTrilogy(finished, CH3), finished, 'Old completed gain exercise does not require a new exercise or repay')
 
+// The family story leaves this run's MRI result open, without undoing an old ending.
+const endingStart = patchTrilogy(fixture('c3_epilogue_0'), 'ch3', { phase: 'epilogue' })
+const endingPath = []
+const pendingEnding = walkTo(endingStart, 'c3_epilogue_20', endingPath)
+assert(endingPath.indexOf('c3_mri_selection_2') < endingPath.indexOf('c3_epilogue_14'), 'Next-year teaser precedes the MRI suspense')
+assert(endingPath.includes('c3_cousin_mri_wait_0') && endingPath.includes('c3_cousin_mri_wait_1'))
+assert.equal(pendingEnding.flags.c3_cousin_mri_pending, true)
+assert.equal(pendingEnding.flags.c3_cousin_followup_stable, undefined)
+assert(!endingPath.some(id => /未见其他中枢结构异常|复查测量也稳定/.test(CH3.steps[id].text)))
+for (const key of ['gold', 'skill', 'heart', 'wealth', 'ap']) assert.equal(pendingEnding[key], endingStart[key], 'Family dialogue adds no stats')
+assert.equal(trilogyProgress(trilogyAdvance(pendingEnding, CH3, 'c3_epilogue_20'), 'ch3').phase, 'done')
+for (const node of ['c3_epilogue_5', 'c3_epilogue_14', 'c3_epilogue_19']) {
+  const legacy = patchTrilogy(fixture(node, { c3_cousin_followup_stable: true }), 'ch3', { phase: 'epilogue' })
+  const resumed = walkTo(legacy, 'c3_epilogue_20')
+  assert(resumed.flags.c3_cousin_followup_stable)
+  assert.equal(resumed.flags.c3_cousin_mri_pending, undefined, 'Already known ending is not made pending again')
+}
+assert.match(CH3.steps.c3_intro_call_2.text, /包在我身上/)
+assert.match(CH3.steps.c3_intro_visit_3.text, /家属/)
+for (const flags of [{}, { c3_rotation_invited: true, c3_cousin_booking: true }]) {
+  assert(!/我是梅兰/.test(trilogyStep(fixture('c3_s1_start_1', flags), CH3).text))
+  assert(!/预约|窗口/.test(trilogyStep(fixture('c3_s2_start_0', flags), CH3).text))
+}
+
 for (const [node, flag, field, delta] of [
   ['c3_s2_listen', 'c3_cousin_listened', 'heart', 0],
   ['c3_s4_cost_right', 'c3_gel_ledger', 'wealth', 2],
