@@ -6,7 +6,7 @@ const steps: Record<string, TrilogyStep> = {}
 type Line = [speaker: string, text: string, detail?: Partial<TrilogyStep>]
 const portraits: Record<string, string> = {
   mei: 'char_mei', cousin: 'pat_cousin', aunt: 'pat_aunt', xu: 'pat_mystery',
-  han: 'char_han', wen: 'char_wen', lei: 'char_lei', zhou: 'char_zhou', he: 'char_he', tang: 'char_tang', wang: 'pat_wang_recovery', patient: 'pat_us_gallstone',
+  han: 'char_han', wen: 'char_wen', lei: 'char_lei', zhou: 'char_zhou', he: 'ch2_pixel_char_he', tang: 'char_tang', wang: 'pat_wang_recovery', patient: 'pat_us_gallstone',
 }
 
 function put(id: string, step: TrilogyStep) {
@@ -746,7 +746,7 @@ export const CH3: TrilogyChapter = {
     wen: { name: '雯雯', color: '#d7b9dc', sprite: 'char_wen' },
     lei: { name: '小雷', color: '#a9c7e0', sprite: 'char_lei' },
     zhou: { name: '老周', color: '#dfbb83', sprite: 'char_zhou' },
-    he: { name: '小何', color: '#dfbcde', sprite: 'char_he' },
+    he: { name: '小何', color: '#dfbcde', sprite: 'ch2_pixel_char_he' },
     tang: { name: '小唐', color: '#b3d2cb', sprite: 'char_tang' },
   },
   badges: {
@@ -767,7 +767,7 @@ export const CH3: TrilogyChapter = {
   },
   assets: [
     'bg_us_room', 'bg_us_room_day', 'bg_us_bedside', 'bg_us_bedside_day_v2', 'ch2_bg_breakroom_day', 'bg_waiting_day_v2', 'bg_office_day', 'bg_day',
-    'char_mei', 'pat_cousin', 'char_han', 'pat_aunt', 'pat_mystery', 'pat_wang_recovery', 'char_lei', 'char_zhou', 'char_he', 'char_tang',
+    'char_mei', 'pat_cousin', 'char_han', 'pat_aunt', 'pat_mystery', 'pat_wang_recovery', 'char_lei', 'char_zhou', 'ch2_pixel_char_he', 'char_tang',
     'us_gallstone', 'us_breast', 'us_fetal', 'us_echo', 'us_mirror', 'item_missing_notice', 'item_reunion_gifts', 'item_notebook',
     'cg_c3_mei_probe_v2', 'cg_c3_shared_lunch_v2', 'item_c3_towel_v2', 'item_c3_stickers_v2',
     'cg_c3_cousin_call_v3', 'cg_c3_us_visit_v3',
