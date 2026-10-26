@@ -59,7 +59,7 @@ const finished = patchTrilogy(fixture('c3_s5_assess_4'), 'ch3', {
 assert.deepEqual(initializeTrilogy(finished, CH3), finished, 'Old completed gain exercise does not require a new exercise or repay')
 
 for (const [node, flag, field, delta] of [
-  ['c3_s2_listen', 'c3_cousin_listened', 'heart', 2],
+  ['c3_s2_listen', 'c3_cousin_listened', 'heart', 0],
   ['c3_s4_cost_right', 'c3_gel_ledger', 'wealth', 2],
   ['c3_s5_notice_desk', 'c3_xu_query_assisted', 'heart', 1],
 ]) {
@@ -68,6 +68,22 @@ for (const [node, flag, field, delta] of [
   assert.deepEqual(clone(enterTrilogyNode(clone(earned), CH3, node)), clone(earned))
   const legacy = fixture(node, { [flag]: true }), resumed = enterTrilogyNode(legacy, CH3, node)
   assert.equal(resumed[field], legacy[field], 'Original choice flag guards relocated reward')
+}
+
+// Ordinary mandatory dialogue keeps story receipts/collections, not stat rewards.
+for (const [from, target, flag, badge, card] of [
+  ['c3_s2_arrive_13', 'c3_s2_listen', 'c3_cousin_listened'],
+  ['c3_s3_mirror_end_0', 'c3_s3_mirror_end_1', undefined, 'c3_second_angle', 'c3_mirror'],
+  ['c3_s3_xu_7', 'c3_s3_xu_8', 'c3_xu_identity', 'c3_name_spoken'],
+]) {
+  const before = { ...fixture(from), skill: 12, heart: 17, wealth: 4 }
+  const after = trilogyAdvance(before, CH3, from)
+  assert.equal(trilogyProgress(after, 'ch3').stepId, target)
+  for (const field of ['skill', 'heart', 'wealth', 'gold', 'ap']) assert.equal(after[field], before[field], `${target}: no dialogue points`)
+  if (flag) assert(after.flags[flag])
+  if (badge) assert(after.badges.includes(badge))
+  if (card) assert(after.cards.includes(card))
+  assert.deepEqual(enterTrilogyNode(clone(after), CH3, target), after, 'Resume neither grants nor claws back old points')
 }
 
 for (const borrowed of [false, true]) for (const met of [false, true]) {

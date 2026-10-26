@@ -192,7 +192,7 @@ scene('c3_s2_arrive', [
   ['mei', '我先把其他结构看完整，再把报告和复核安排写清。这一个测量还不能把后面的事都定下来。', { card: 'c3_ventricle' }],
   ['me', '外套给我。你现在最想问哪件事？', { next: 'c3_s2_listen' }],
 ])
-put('c3_s2_listen', { speaker: 'cousin', sprite: 'pat_cousin', bg: 'bg_us_room_day', text: '今天先去哪儿，还有下回什么时候来。你帮我记着吧，我现在听一句，前一句就忘了。', effect: { heart: 2, flag: 'c3_cousin_listened' }, next: 'c3_s2_plan_0' })
+put('c3_s2_listen', { speaker: 'cousin', sprite: 'pat_cousin', bg: 'bg_us_room_day', text: '今天先去哪儿，还有下回什么时候来。你帮我记着吧，我现在听一句，前一句就忘了。', effect: { flag: 'c3_cousin_listened' }, next: 'c3_s2_plan_0' })
 put('c3_s2_promise', { speaker: 'me', bg: 'bg_us_room_day', text: '……等一下，我这句说快了。先让梅姐把今天能确定的讲完，我陪你记。', next: 'c3_s2_plan_0' })
 scene('c3_s2_plan', [
   ['mei', '今天先拿报告回产科。我把联系人写这儿，详细评估和复查的时间要跟他们定。听不清就再问，不用怕耽误我们。'],
@@ -261,7 +261,7 @@ put('c3_s3_mirror_check', { speaker: 'mei', sprite: 'char_mei', bg: 'bg_us_bedsi
 put('c3_s3_mirror_wait', { speaker: 'mei', sprite: 'char_mei', bg: 'bg_us_bedside', text: '先别写那个结论。把它描述为重复影像，我们换声窗再看。', next: 'c3_s3_mirror_end_0' })
 scene('c3_s3_mirror_end', [
   ['sys', '梅姐调整角度，那份“多出来的肝脏”随之变化。她又从别的声窗核对，没有急着结束检查。'],
-  ['mei', '镜像伪影。这里回声多绕了一段路，机器却还按直来直去算，就把位置画到另一边。别的声窗已经核过了。', { card: 'c3_mirror', effect: { skill: 1, badge: 'c3_second_angle' } }],
+  ['mei', '镜像伪影。这里回声多绕了一段路，机器却还按直来直去算，就把位置画到另一边。别的声窗已经核过了。', { card: 'c3_mirror', effect: { badge: 'c3_second_angle' } }],
   ['me', '原来是回声绕路了。我还以为自己把解剖全忘了。'],
   ['mei', '报告交给当班医师了，咱们把车推回去。那只轮子还没修，转弯慢点。'],
 ], 'c3_s3_xu_9', 'bg_us_bedside')
@@ -282,7 +282,7 @@ scene('c3_s3_xu', [
   ['me', '您一直在找他？'],
   ['xu', '先找记录吧。我那阵子跑车，一个月没几天在家，总拖着说下一趟。现在能问的人换了好几拨，问到后来，还得先解释自己是谁。'],
   ['me', '我把正式受理窗口写给您。下回带上关系材料，让他们核旧记录；今天的报告也别忘了拿回门诊。'],
-  ['xu', '好，下回带。今天这份报告我先拿回门诊，老资料的事另外问。', { effect: { heart: 1, flag: 'c3_xu_identity', badge: 'c3_name_spoken' } }],
+  ['xu', '好，下回带。今天这份报告我先拿回门诊，老资料的事另外问。', { effect: { flag: 'c3_xu_identity', badge: 'c3_name_spoken' } }],
   ['sys', '傍晚班交接完，你把移动机接回电源，报修单贴在响轮子旁边。手机里是表姐下午发的“到家了，时间记好了”。你这才回了个好，脱下工作服。', { end: true, effect: { gold: 110, flag: 'c3_shift3_done' } }],
 ], undefined, 'bg_us_room_day')
 
@@ -675,8 +675,8 @@ function adapt(id: string, step: TrilogyStep, state: GameState): TrilogyStep {
       ? '你刚才那支看得更深，不代表它更差。这块目标浅，换这支高频线阵，边界会更容易分开。来，跟我对照一下。'
       : step.text }
   }
-  // These rewards used to live on choices. Their existing flags are the
-  // legacy receipts when the same action is now narrated once without a menu.
+  // Preserve receipts from former choices; optional assistance still pays
+  // once, while the mandatory cousin conversation now only records its flag.
   if (id === 'c3_s2_listen' && state.flags.c3_cousin_listened
     || id === 'c3_s4_cost_right' && state.flags.c3_gel_ledger
     || id === 'c3_s5_notice_desk' && state.flags.c3_xu_query_assisted) return { ...step, effect: undefined }
