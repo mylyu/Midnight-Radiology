@@ -122,7 +122,7 @@ scene('c3_s1_aunt', [
   ['sys', '窗边的模体已经涂好耦合剂。你把三支探头放在手边，先找浅处那个小目标。', {
     tool: { kind: 'ultrasound', task: 'probe', title: '教学台 · 选择探头', prompt: '换一支探头，看看哪支更容易看清浅处的小目标。', help: '先看目标在哪儿，再看探头的频率和视野。高频通常能看细一些，但深处的回声也更弱；把三支探头放在同一位置比较。', next: 'c3_s1_aunt_7' },
   }],
-  ['mei', '这块浅，用线阵容易把边界分开。频率高，波长短，能看细一点；可往深处走，衰减也更快，不能一支包办。', { card: 'c3_frequency', effect: { skill: 1, badge: 'c3_first_probe' } }],
+  ['mei', '这块浅，线阵把边界分得更清楚。也别一味挑高频，到了深处，回声容易弱下去。', { card: 'c3_frequency', effect: { skill: 1, badge: 'c3_first_probe' } }],
   ['sys', '梅姐在临床机上完成扫查。你按她的指示调整显示，保存她选定的切面。', { image: 'us_breast', imageLabel: '乳腺超声 · 梅姐完成的检查切面', caseId: 'c3_aunt' }],
   ['aunt', '这个也做了，是不是以前那张就不用看了？'],
   ['me', '留着留着，今天这个跟上回拍片看的不一样。梅姐还得把两份放一起比。'],
@@ -142,6 +142,11 @@ scene('c3_s1_stone', [
 ], undefined)
 put('c3_s1_shadow_good', { speaker: 'mei', sprite: 'char_mei', bg: 'bg_us_room_day', text: '嗯，我再换个角度。你帮我留着前一张，等下放在一起看。', next: 'c3_s1_shadow_0' })
 put('c3_s1_shadow_retry', { speaker: 'mei', sprite: 'char_mei', bg: 'bg_us_room_day', text: '先盯着前面这个亮点，再看它后面。等我换个方向，你看看这道影是不是还接在它后头。', next: 'c3_s1_shadow_0' })
+// Keep the acquired frame visible while the player decides or asks for help.
+// A new scan direction is described afterwards; do not relabel this as a second image.
+for (const id of ['c3_s1_stone_4', 'c3_s1_shadow_good', 'c3_s1_shadow_retry']) {
+  Object.assign(steps[id], { image: 'us_gallstone', imageLabel: '腹部超声 · 刚才保存的切面', sprite: '', sprite2: '' })
+}
 scene('c3_s1_shadow', [
   ['sys', '梅姐改变扫查方向，亮点和暗影又出现了。你把她要的切面顺序保存下来。'],
   ['mei', '两张能对上，看着是胆囊结石，后面这道就是声影。我把片子和报告发给急诊，让他们接着看。', { card: 'c3_shadow', effect: { skill: 1, badge: 'c3_shadow_reader', flag: 'c3_gallstone_seen' } }],
@@ -157,7 +162,7 @@ scene('c3_s1_gain', [
   ['mei', '把这个目标往深处挪一点，看看它的回波往哪儿走。', {
     tool: { kind: 'ultrasound', task: 'echo', title: '教学台 · 回波什么时候回来', prompt: '点击发出脉冲，看看回波和亮点，再逐步补齐扫描线。', help: '先看同一条声线：回波晚到，亮点放得深；回波强，亮点就亮。不同位置的声线排在一起，就有了二维切面。挪动目标后再发一次，比较它们的变化。', next: 'c3_s1_gain_2' },
   }],
-  ['mei', '同一份回波，峰晚到，亮点就放得更深；峰高一点，亮点就更亮。把很多条不同位置的声线排起来，才有眼前这张B型切面。', { card: 'c3_breast' }],
+  ['mei', '看，峰往后，亮点就往深处走；峰高一点，点也亮一点。你刚扫过的这些线排在一起，就有了这张切面。', { card: 'c3_breast' }],
   ['sys', '下午交班，梅姐把你的培训表放回窗边。你找到纸巾擦了教学台，才发现柜门上贴着很大一张“纸巾”，早上一直没看见。', { end: true, effect: { gold: 90, flag: 'c3_shift1_done' } }],
 ])
 
@@ -180,7 +185,7 @@ exploration('c3_s2_roster', [
 ], 'c3_s2_hub', 'bg_office_day')
 exploration('c3_s2_he', [
   ['he', '正想找你呢，坐。我来送申请单，顺便看看叛逃人口伙食怎样。', { giftTo: 'he' }],
-  ['me', '目前还在找纸巾，比放射科更考验空间定位。'],
+  ['me', '还没顾上吃。刚看见你这袋饼干，肚子就开始替我打招呼。'],
   ['he', '给你留两块。我从急诊一路带来，袋子都快被我捏空了，再聊下去就真没了。', { effect: { item: 'snack' } }],
 ], 'c3_s2_hub', 'ch2_bg_breakroom_day')
 exploration('c3_s2_label', [
@@ -343,7 +348,7 @@ scene('c3_s3_xu', [
 // Fourth shift: a blood-flow signal lesson, with optional ordinary office work.
 scene('c3_s4_start', [
   ['sys', '11月10日，上午八点。梅姐翻到今天的血管检查申请：开单医师想了解血流情况。教学机上也放好了演示，黑白管道旁边有红蓝两色。'],
-  ['mei', '这位要看血流，光看黑白图还不够。待会儿你坐旁边，看我怎么找；忙完咱们再试。'],
+  ['mei', '今天跟我留意一下血流检查。先看黑白图找位置，切颜色时看看我还调了什么，忙完咱们再试。'],
   ['me', '我以前见着红蓝，总先认成动脉、静脉。今天先不猜。'],
   ['mei', '先看图例，再看探头朝哪儿。你把这位以前的检查调出来，我先看看。'],
 ], 'c3_s4_hub')
@@ -351,6 +356,11 @@ hub('c3_s4_hub', '诊室还在做开诊前的准备，几箱新用品靠墙放�
   ['找小雷借标签机', 'c3_s4_lei'],
   ['和梅姐拆新包装', 'c3_s4_pack'],
   ['给老周回个电话', 'c3_s4_zhou'],
+], 'c3_s4_clinic_0')
+scene('c3_s4_clinic', [
+  ['sys', '上午的诊室忙了起来。你在工作站旁留图，梅姐先在黑白图上找到血管，再切到彩色。几次调整探头方向时，你都在本子上画了个小箭头。'],
+  ['me', '您刚才一转探头，颜色就换了。我差点以为找到了另一根血管。'],
+  ['mei', '所以黑白图的位置要先认住。先把这些交接好，空下来拿演示慢慢转，别跟着颜色跑。'],
 ], 'c3_s4_doppler_0')
 exploration('c3_s4_lei', [
   ['lei', '标签机借你，别像上次那个人，打一张“标签机”，然后把卷用完了。', { giftTo: 'lei' }],
@@ -481,9 +491,9 @@ scene('c3_s5_notice_end', [
 steps.c3_s1_aunt_5.next = 'c3_s1_signal_0'
 scene('c3_s1_signal', [
   ['me', '探头既发又收？我以为里面至少得分成喇叭和麦克风。'],
-  ['mei', '里面有压电材料。给它电脉冲，它振动发声；回声回来，它又把机械振动变成电信号。发一小段，留时间收回来。'],
-  ['me', '难怪先等回波，不是一直把声打出去。'],
-  ['mei', '对。前面的匹配层帮声音进出，后面的背衬让它别一直振。再用胶赶走接触面的空气，才听得见里面那些界面的回声。'],
+  ['mei', '这块压电材料能两头干活。给电脉冲，它振动发声；回声回来，又变回电信号。'],
+  ['me', '所以得一发一等，不能光顾着喊。'],
+  ['mei', '对。前面匹配层帮声音进出，后面背衬让它快点停。胶里别留气泡，你贴上试试。'],
 ], 'c3_s1_aunt_6')
 steps.c3_s1_aunt_7.next = 'c3_s1_aunt_0'
 
@@ -514,7 +524,7 @@ steps.c3_s3_xu_8.next = 'c3_s3_mirror_0'
 steps.c3_s3_xu_9.bg = 'bg_us_room'
 
 scene('c3_s4_doppler', [
-  ['sys', '送走上午的患者，梅姐打开血流演示。管道的黑白轮廓没变，旁边的信号却随着探头方向改变。'],
+  ['sys', '午后轮休，接班同事守着临床机。你交好上午的图像，和梅姐回到窗边，打开血流演示。这回可以盯着同一段，慢慢换方向。'],
   ['me', '看形状还是B型，红蓝这块又多看到了什么？'],
   ['mei', '血流在动，反回来的声波频率就会变。来，把方向掉个头，看看颜色跟不跟着换。'],
   ['mei', '一次先改探测角度，盯住同一条流动通道。', {
@@ -719,6 +729,13 @@ const quiz: TrilogyChapter['quiz'] = [
   { q: '简单逐线模型中，每帧增加线数、同时显示更深，需要比较什么代价？', options: ['轴向分辨率必定变差', '声波频率必定下降', '累计等待与帧频下降', '回波强度一定相同'], answer: 2, explain: '更多声线及更深回波都需要等待，空间采样和时间分辨应结合任务权衡。' },
 ]
 
+// A phone counterpart is explicit for the whole call, even on the protagonist's reply.
+for (const id of ['c3_s4_zhou_0', 'c3_s4_zhou_1', 'c3_s4_zhou_2']) {
+  Object.assign(steps[id], { phone: 'char_zhou', sprite: '', sprite2: '' })
+}
+for (const id of ['c3_s4_wen_0', 'c3_s4_wen_1', 'c3_s4_wen_2', 'c3_s4_wen_3']) {
+  Object.assign(steps[id], { phone: 'char_wen', sprite: '', sprite2: '' })
+}
 applyCh3Staging(steps)
 const adaptPlaces = installCh3Places(steps)
 

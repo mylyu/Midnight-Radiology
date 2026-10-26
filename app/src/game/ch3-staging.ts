@@ -70,6 +70,7 @@ export function applyCh3Staging(steps: Record<string, TrilogyStep>) {
   cast(['c3_s3_mirror_check', 'c3_s3_mirror_wait', ...range('c3_s3_mirror_end', 0, 3)], mei)
 
   cast(range('c3_s4_start', 0, 3), mei)
+  cast(range('c3_s4_clinic', 0, 2), mei)
   cast(range('c3_s4_lei', 0, 2), lei)
   cast(range('c3_s4_pack', 0, 2), mei)
   cast(range('c3_s4_cost', 0, 3), mei)
