@@ -5,7 +5,7 @@ import { mkdirSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { TRILOGY } from '../src/game/trilogy-registry.ts'
 import { condOk } from '../src/game/store.ts'
-import { initializeTrilogy, restartTrilogy, enterTrilogyNode, trilogyProgress, trilogyStep,
+import { initializeTrilogy, resetTrilogy, restartTrilogy, enterTrilogyNode, trilogyProgress, trilogyStep,
   trilogyCheckin, trilogyAdvance, trilogyChoose, nextTrilogyShift, updateTrilogyTool,
   completeTrilogyTool, trilogyGive, trilogyReadBook, trilogyBuy, startTrilogyQuiz,
   answerTrilogyQuiz, nextTrilogyQuiz, finishTrilogyQuiz, issueTrilogyCertificate,
@@ -194,6 +194,12 @@ function walk(chapter, all) {
   const spent = trilogyBuy(s, chapter, 'lottery')
   assert.deepEqual(trilogyProgress(spent, chapter.id).certificate, certificate, 'Later spending preserves certificate')
   for (const [id, value] of Object.entries(untouchedDlc)) assert.deepEqual(s.dlc[id], value, `Other progress preserved: ${id}`)
+  const reset = resetTrilogy(clone(s), chapter.id)
+  assert.equal(reset.dlc[chapter.id], undefined, 'Hall reset must not initialize chapter progress')
+  for (const key of Object.keys(s)) if (!['dlc', 'flags'].includes(key)) assert.deepEqual(reset[key], s[key], `Hall reset preserves ${key}, including AP`)
+  for (const [id, value] of Object.entries(s.dlc)) if (id !== chapter.id) assert.deepEqual(reset.dlc[id], value)
+  assert.deepEqual(reset.flags, Object.fromEntries(Object.entries(s.flags).filter(([key]) => !key.startsWith(chapter.id.replace('ch', 'c') + '_'))))
+  equalState(resetTrilogy(clone(reset), chapter.id), reset, 'Repeat hall reset has no extra effects')
   const restarted = restartTrilogy(clone(s), chapter, `${chapter.id}-new-run`)
   for (const [id, value] of Object.entries(s.dlc)) if (id !== chapter.id) assert.deepEqual(restarted.dlc[id], value)
   assert.deepEqual(stats(restarted), stats(s)); assert.deepEqual(restarted.badges, s.badges); assert.deepEqual(restarted.stamps, s.stamps)

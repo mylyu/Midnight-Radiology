@@ -52,10 +52,14 @@ export function initializeTrilogy(s: GameState, chapter: TrilogyChapter, runId =
   const next = { ...s, ap: 3, dlc: { ...s.dlc, [chapter.id]: { ...s.dlc?.[chapter.id], chapter: progress } } }
   return enterTrilogyNode(next, chapter, progress.stepId)
 }
+/** Hall reset clears this chapter without starting it or changing shared AP. */
+export function resetTrilogy(s: GameState, id: TrilogyId): GameState {
+  const flags = Object.fromEntries(Object.entries(s.flags).filter(([key]) => !key.startsWith(`${id.replace('ch', 'c')}_`)))
+  const dlc = { ...s.dlc }; delete dlc[id]
+  return { ...s, flags, dlc }
+}
 export function restartTrilogy(s: GameState, chapter: TrilogyChapter, runId: string): GameState {
-  const flags = Object.fromEntries(Object.entries(s.flags).filter(([key]) => !key.startsWith(`${chapter.id.replace('ch', 'c')}_`)))
-  const dlc = { ...s.dlc }; delete dlc[chapter.id]
-  return initializeTrilogy({ ...s, flags, dlc }, chapter, runId)
+  return initializeTrilogy(resetTrilogy(s, chapter.id), chapter, runId)
 }
 export function trilogyCheckin(s: GameState, chapter: TrilogyChapter): GameState {
   const p = trilogyProgress(s, chapter.id)

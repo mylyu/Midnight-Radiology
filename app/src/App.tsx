@@ -54,7 +54,7 @@ import { enterFullscreenLandscape } from './lib/fullscreen'
 import { DIALOGUE_CHARACTER_MS, DIALOGUE_CHOICE_BUFFER_MS, waitForDialogueChoices } from './game/dialogue-timing'
 import type { TrilogyId } from './game/trilogy-types'
 import { trilogyVisibleChanges } from './game/trilogy-feedback'
-import { initializeTrilogy } from './game/trilogy-session'
+import { initializeTrilogy, resetTrilogy } from './game/trilogy-session'
 import { isTrilogyPlayable } from './game/chapter-availability'
 const TrilogyEntry = lazy(() => import('./components/TrilogyEntry'))
 const TrilogyVerifier = lazy(() => import('./components/TrilogyScreen').then(module => ({ default: module.TrilogyVerify })))
@@ -2648,7 +2648,9 @@ function DlcHallScreen({ onEnter, onEnterCh2, onEnterTrilogy, onBack }: { onEnte
 
   const resetDlc = (id: string) => {
     if (!save) return
-    const s: GameState = id === 'ch2' ? restartCh2(save) : { ...save, dlc: { ...(save.dlc ?? {}), [id]: {} } }
+    const s: GameState = id === 'ch2' ? restartCh2(save)
+      : id === 'ch3' || id === 'ch4' || id === 'ch5' ? resetTrilogy(save, id)
+      : { ...save, dlc: { ...(save.dlc ?? {}), [id]: {} } }
     saveState(s)
     setSave(s)
     setConfirmReset(null)
@@ -2750,8 +2752,14 @@ function DlcHallScreen({ onEnter, onEnterCh2, onEnterTrilogy, onBack }: { onEnte
             {([{ id: 'ch3', title: '第三章 · 回声', icon: '〰️', desc: '2026年 · 表姐一通电话，把你带到了超声科。先问预约，后来连自己的跟班也安排上了。' },
               { id: 'ch4', title: '第四章 · 共振', icon: '🧲', desc: '2027年 · 从MRI选型谈判，到0.55T大口径新机的日间跟班。报价里的数字，终于变成眼前的机器。' },
               { id: 'ch5', title: '第五章 · 微光', icon: '✨', desc: '2028年 · 接到进修名额，带着县院的问题去市三甲核医学中心。两周，认识另一种成像。' }] as const).filter(chapter => isTrilogyPlayable(chapter.id)).map(chapter => <section key={chapter.id} className="bg-slate-900/90 border-2 border-teal-500/60 rounded-2xl p-5">
-                <div className="flex items-center gap-3"><span className="text-3xl">{chapter.icon}</span><h3 className="text-lg text-teal-100 font-bold">{chapter.title}</h3><span className="ml-auto text-xs text-slate-400">{save.dlc?.[chapter.id]?.chapter?.done ? '已完成' : save.dlc?.[chapter.id]?.chapter ? '进行中' : '本地新章'}</span></div>
-                <p className="text-sm text-slate-300 my-3">{chapter.desc}</p><button data-enter-trilogy={chapter.id} className="min-h-11 w-full rounded-lg bg-teal-400 text-slate-950 font-bold" onClick={() => onEnterTrilogy(chapter.id, save)}>{save.dlc?.[chapter.id]?.chapter ? '继续 / 回看 →' : '开始 →'}</button>
+                <div className="flex items-center gap-3"><span className="text-3xl">{chapter.icon}</span><h3 className="text-lg text-teal-100 font-bold">{chapter.title}</h3><span className="ml-auto text-xs text-slate-400">{save.dlc?.[chapter.id]?.chapter?.done ? '已完成' : save.dlc?.[chapter.id]?.chapter ? '进行中' : '未开始'}</span></div>
+                <p className="text-sm text-slate-300 my-3">{chapter.desc}</p>
+                <div className="flex gap-2 mt-1">
+                  <button data-enter-trilogy={chapter.id} className="min-h-11 flex-1 rounded-lg bg-teal-400 text-slate-950 font-bold" onClick={() => onEnterTrilogy(chapter.id, save)}>{save.dlc?.[chapter.id]?.chapter ? '继续 / 回看 →' : '开始 →'}</button>
+                  {save.dlc?.[chapter.id]?.chapter && (confirmReset === chapter.id
+                    ? <button onClick={() => resetDlc(chapter.id)} className="px-3 py-2.5 rounded-lg bg-red-700/80 text-red-50 text-sm animate-pulse">确认重置</button>
+                    : <button onClick={() => { playSfx('click'); setConfirmReset(chapter.id) }} className="px-3 py-2.5 rounded-lg bg-slate-800 border border-slate-600 text-slate-400 text-sm hover:border-red-400">重置</button>)}
+                </div>
               </section>)}
           </div>
         )}
