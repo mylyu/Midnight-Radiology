@@ -23,6 +23,7 @@ import { TRILOGY_DOCUMENTS } from '../game/trilogy-documents'
 import { TrilogyDocument } from './TrilogyDocument'
 import { TRILOGY_COMMUNICATION_CUES } from '../game/trilogy-communications'
 import { TRILOGY_EVIDENCE, TRILOGY_CASE_NAMES } from '../game/trilogy-evidence'
+import { isTrilogyPlayable } from '../game/chapter-availability'
 import { TrilogyScan } from './TrilogyScan'
 import { LdctCinematic } from './LdctCinematic'
 import './TrilogyScreen.css'
@@ -31,6 +32,7 @@ type Overlay = 'shop' | 'book' | 'manual' | 'badges' | 'bag' | 'replay'
 type Props = { state: GameState; chapter: TrilogyChapter; update: (fn: (s: GameState) => GameState) => void;
   onExit: () => void; renderText: (text: string, shown?: number) => ReactNode }
 const BTN = 'min-h-10 rounded-lg border border-slate-600 bg-slate-800/90 px-3 py-2 text-sm text-slate-100 hover:border-teal-400'
+const HEADER_BTN = 'text-xs text-slate-400 hover:text-teal-300 border border-slate-700 rounded px-2 py-0.5'
 
 /** The same dialogue primitives, timing and pointer guard as Chapters 1 and 2. */
 export function TrilogyScreen({ state, chapter, update, onExit, renderText }: Props) {
@@ -177,7 +179,8 @@ export function TrilogyScreen({ state, chapter, update, onExit, renderText }: Pr
     else update(s => trilogyAdvance(s, chapter, node))
   }
   const speakerKey = reply?.person ?? raw.speaker ?? 'sys'
-  const person = chapter.characters[speakerKey] ?? CHARACTERS[speakerKey]
+  const character = chapter.characters[speakerKey] ?? CHARACTERS[speakerKey]
+  const person = speakerKey === 'me' && character ? { ...character, name: state.gender === 'f' ? '林小满' : '陈一帆' } : character
   const sprite = reply ? chapter.characters[reply.person]?.sprite : raw.phone || raw.radio ? undefined
     : raw.sprite ?? (speakerKey !== 'sys' && speakerKey !== 'me' ? chapter.characters[speakerKey]?.sprite : undefined)
   const phoneSprite = raw.phone
@@ -190,26 +193,33 @@ export function TrilogyScreen({ state, chapter, update, onExit, renderText }: Pr
     onKeyDownCapture={choiceGuard.keyDown} onClickCapture={choiceGuard.click} onClick={event => advance(event.timeStamp)}>
     <SceneBackground name={background} /><DialogueShade />
     <DialogueHeader title={`${chapter.icon} 第${chapter.id.slice(2)}章 · ${chapter.title} · ${p.phase === 'epilogue' ? '尾声' : shift.title}`}>
-      <span>💰{state.gold} ⚡×{state.ap}</span><button onClick={e => { e.stopPropagation(); changeOverlay('manual') }}>📖 手册</button>
-      <button onClick={e => { e.stopPropagation(); changeOverlay('badges') }}>🏅 勋章</button>
-      <button onClick={e => { e.stopPropagation(); changeOverlay('book'); update(s => trilogyReadBook(s, chapter)) }}>📚 旧书</button>
-      <button onClick={e => { e.stopPropagation(); const value = !muted; setMuted(value); try { localStorage.setItem('mr-trilogy-muted', value ? '1' : '0') } catch { /* Session-only preference remains usable. */ } }}>{muted ? '🔇 声音关' : '🔊 声音开'}</button>
-      <FullscreenBtn /><button onClick={e => { e.stopPropagation(); onExit() }}>💾 回大厅</button>
+      <span>💰 {state.gold}</span><span className={state.ap > 0 ? 'text-sky-300' : 'text-slate-600'}>⚡×{state.ap}</span>
+      <button className={HEADER_BTN} onClick={e => { e.stopPropagation(); changeOverlay('manual') }}>📖 手册</button>
+      <button className={HEADER_BTN} onClick={e => { e.stopPropagation(); changeOverlay('badges') }}>🏅 勋章</button>
+      <button className={HEADER_BTN} onClick={e => { e.stopPropagation(); changeOverlay('book'); update(s => trilogyReadBook(s, chapter)) }}>📚 旧书</button>
+      <button className={HEADER_BTN} onClick={e => { e.stopPropagation(); const value = !muted; setMuted(value); try { localStorage.setItem('mr-trilogy-muted', value ? '1' : '0') } catch { /* Session-only preference remains usable. */ } }}>{muted ? '🔇 声音关' : '🔊 声音开'}</button>
+      <FullscreenBtn /><button className={HEADER_BTN} title="进度已自动保存，可随时离开" onClick={e => { e.stopPropagation(); onExit() }}>💾 回大厅</button>
     </DialogueHeader>
     {['story', 'epilogue'].includes(p.phase) && <>
       {raw.image && !raw.tool && !raw.scan && (raw.closeup
         ? <LdctCinematic key={node} scene={{ id: node, image: raw.image, alt: raw.imageLabel ?? '剧情特写', motion: raw.cameraMotion ?? 'push' }} />
         : <div className="trilogy-story-image">{TRILOGY_DOCUMENTS[raw.image] ? <TrilogyDocument id={raw.image} /> : <img src={imageAsset(raw.image)} alt={raw.imageLabel ?? '剧情图像'} className="pixel" />}{raw.imageLabel && <span>{raw.imageLabel}</span>}</div>)}
-      {sprite && !raw.closeup && <DialoguePortrait src={imageAsset(sprite === 'me' ? `char_${state.gender}` : sprite)} alt={person?.name ?? '人物'} />}
-      {raw.sprite2 && !raw.closeup && <DialoguePortrait side="right" src={imageAsset(raw.sprite2)} alt="同场人物" />}
-      {(raw.communication || phoneSprite) && <div className="trilogy-communication"><span>{raw.communication === 'sms' ? '📩' : '☎️'}</span>{phoneSprite && <img src={imageAsset(phoneSprite)} alt="来电头像" />}<small>{person?.name || '手机消息'}</small></div>}
+      {sprite && !raw.closeup && <DialoguePortrait className="pointer-events-none" src={imageAsset(sprite === 'me' ? `char_${state.gender}` : sprite)} alt={person?.name ?? '人物'} />}
+      {raw.sprite2 && !raw.closeup && <DialoguePortrait className="pointer-events-none" side="right" src={imageAsset(raw.sprite2)} alt="同场人物" />}
+      {(raw.communication || phoneSprite) && <div className="trilogy-communication absolute top-12 right-4 portrait:top-[4.5rem] portrait:right-2 portrait:px-2 portrait:py-1 portrait:gap-2 z-30 flex items-center gap-3 bg-slate-900/90 border-2 border-emerald-600 rounded-xl px-3 py-2 shadow-2xl">
+        <div className="portrait:w-10 portrait:h-10 w-14 h-14 md:w-16 md:h-16 rounded-full overflow-hidden border-2 border-emerald-400 bg-slate-800 shrink-0 flex items-center justify-center">
+          {phoneSprite ? <img src={imageAsset(phoneSprite)} className="w-full h-full object-cover object-top pixel" alt="来电头像" /> : <span className="text-2xl">{raw.communication === 'sms' ? '📩' : '☎️'}</span>}
+        </div>
+        <div className="text-left"><p className="text-emerald-300 text-xs md:text-sm tracking-widest animate-pulse">{raw.communication === 'sms' ? '📩 短信' : '📞 通话中'}</p><p className="text-slate-400 text-xs">{person?.name || '手机消息'}</p></div>
+      </div>}
       {!raw.tool && !raw.scan && !checkin && <DialoguePanel dialogRef={dialog} speaker={person} textKey={scope} text={renderText(text, shown)} arrow={done && !optionsVisible}>
         {optionsVisible && <DialogueChoices>{choices.map((choice, index) => <DialogueChoice key={`${choice.next}:${index}`} data-dialogue-choice={String(index)}
-          disabled={!condOk(state, choice.cond)} aria-disabled={!ready || !condOk(state, choice.cond)} onClick={event => choose(index, event.timeStamp)}>{renderText(choice.text)}{!condOk(state, choice.cond) && <small className="block text-amber-200">{choice.disabledReason ?? '行动力不足，可以先去小卖部喝杯咖啡。'}</small>}</DialogueChoice>)}
+          disabled={!condOk(state, choice.cond)} aria-disabled={!ready || !condOk(state, choice.cond)} onClick={event => choose(index, event.timeStamp)}>{renderText(choice.text)}</DialogueChoice>)}
           {giftItems.map((item, index) => <DialogueChoice key={item} data-dialogue-choice={String(choices.length + index)} aria-disabled={!ready}
             onClick={event => choose(choices.length + index, event.timeStamp)}>{item === 'milktea' ? '🧋 把奶茶递过去' : '🍪 拆开零食一起吃'}</DialogueChoice>)}
           {giftItems.length > 0 && !choices.length && <DialogueChoice data-dialogue-choice={String(giftItems.length)} aria-disabled={!ready} onClick={event => choose(giftItems.length, event.timeStamp)}>接着聊 →</DialogueChoice>}
         </DialogueChoices>}
+        {optionsVisible && choices.some(choice => !condOk(state, choice.cond)) && <small className="block mt-2 text-amber-200">行动力不足，可以先去小卖部喝杯咖啡。</small>}
         {/hub$/.test(node) && done && <button className="mt-2 text-xs text-amber-200" onClick={e => { e.stopPropagation(); changeOverlay('shop') }}>🛒 去小卖部 · 咖啡可补行动力</button>}
       </DialoguePanel>}
       {raw.tool && !checkin && <TrilogyLab state={state} chapter={chapter} tool={raw.tool} update={update} />}
@@ -238,7 +248,7 @@ function TrilogySettlement({ state, chapter, update, onNext, onOverlay, onExit }
       <section><small>📅 值班日志</small><strong>{p.shift + 1} / 5 班</strong><span>晨会另行记入</span></section><section><small>设备交接</small><strong className="text-teal-200">交班待机</strong><span>{chapter.equipment}</span></section></div>
     <section className="trilogy-panel"><h3 className="text-amber-200">设备间 · {chapter.equipment}</h3><p>图像与记录已交接，设备运行按本科室安排，不新增耐久或维修费用。</p>
       <div className="my-3 border-y border-slate-600 py-3 text-sm">🎒 {state.items.length ? state.items.map(itemName).join('、') : '背包暂时空着'}<button className={`${BTN} ml-2`} onClick={() => onOverlay('bag')}>查看用途</button></div>
-      <ul className="space-y-2 text-sm"><li>🔓 老伙计 · 第一章 · CR / X光</li><li>🔓 快与狠 · 第二章 · CT</li><li>🔓 回声 · 第三章 · 超声</li><li>🔓 共振 · 第四章 · MRI</li><li>🔓 微光 · 第五章 · PET/CT</li><li>🔓 DR / DSA / 低剂量CT · 番外篇 · 可从大厅进入</li></ul>
+      <ul className="space-y-2 text-sm"><li>🔓 老伙计 · 第一章 · CR / X光</li><li>🔓 快与狠 · 第二章 · CT</li><li>🔓 回声 · 第三章 · 超声</li><li>{isTrilogyPlayable('ch4') ? '🔓' : '🔒'} 共振 · 第四章 · MRI · {isTrilogyPlayable('ch4') ? '可从大厅进入' : '尚未开放'}</li><li>{isTrilogyPlayable('ch5') ? '🔓' : '🔒'} 微光 · 第五章 · PET/CT · {isTrilogyPlayable('ch5') ? '可从大厅进入' : '尚未开放'}</li><li>🔓 DR / DSA / 低剂量CT · 番外篇 · 可从大厅进入</li></ul>
     </section>
     {p.done && <TrilogyCertificate state={state} chapter={chapter} update={update} />}
     <div className="trilogy-bottom-menu">{!p.done && <button className="trilogy-primary" data-trilogy-next-shift onClick={onNext}>{p.shift === 4 ? '前往晨会 →' : '进入下一班 →'}</button>}

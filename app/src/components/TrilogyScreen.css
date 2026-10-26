@@ -1,8 +1,5 @@
 .trilogy-root { overflow:hidden; color:#e2e8f0; }
-.trilogy-root .sprite-l,.trilogy-root .sprite-r { bottom:clamp(190px,29vh,310px); max-width:42%; }
-.trilogy-root .dialog-wrap { max-height:52%; overflow-y:auto; }
-.trilogy-root .dialog-box { background:rgba(15,23,42,.96); }
-.trilogy-root .dialog-box p { min-height:5.4rem; }
+/* Ordinary dialogue inherits DialogueScene and the same responsive rules as CH2. */
 .trilogy-root button { touch-action:manipulation; }
 .trilogy-root .ldct-cinematic{top:calc(var(--trilogy-header-height,76px) + 8px);bottom:calc(var(--trilogy-dialog-height,14rem) + 8px)}
 .trilogy-root .trilogy-lab{top:calc(var(--trilogy-header-height,76px) + 8px)}
@@ -31,9 +28,6 @@
 .trilogy-closeup { width:85%; }
 .trilogy-closeup img { animation:trilogy-push 9s ease-out both; }
 @keyframes trilogy-push { from { transform:scale(.96) } to { transform:scale(1.025) } }
-.trilogy-communication { position:absolute; top:75px; right:20px; z-index:16; display:flex; align-items:center; gap:.5rem; padding:.65rem; background:#0f172aee; border:1px solid #64748b; border-radius:.75rem; }
-.trilogy-communication img { width:48px; height:48px; object-fit:cover; object-position:top; }
-.trilogy-communication span { font-size:1.5rem; }
 .trilogy-modal { position:absolute; z-index:70; inset:0; display:flex; align-items:center; justify-content:center; padding:1rem; background:#020617cc; }
 .trilogy-modal-sheet { width:min(100%,850px); max-height:92%; overflow-y:auto; border:2px solid #64748b; border-radius:1rem; padding:1rem; background:#0f172a; }
 .trilogy-modal-sheet>header { display:flex; justify-content:space-between; align-items:center; position:sticky; top:-1rem; z-index:1; background:#0f172a; padding:.5rem 0; }
@@ -76,12 +70,6 @@
 .trilogy-decay-dots { display:grid; grid-template-columns:repeat(6,1fr); gap:8px; max-width:230px; margin:1rem auto; }
 .trilogy-decay-dots i { width:20px; height:20px; border-radius:50%; background:#2dd4bf; margin:auto; }
 @media (max-width:600px) and (orientation:portrait) {
- .trilogy-root .sprite-l,.trilogy-root .sprite-r { bottom:46%; height:200px; max-width:40%; left:8px; }
- .trilogy-root .sprite-r { left:auto; right:8px; }
- .trilogy-root .dialog-wrap { max-height:45%; padding:.6rem; }
- .trilogy-root .dialog-box { padding:1rem .8rem; }
- .trilogy-root .dialog-box p { font-size:.95rem; line-height:1.65; }
- .trilogy-root .dialog-wrap .choice-in { max-height:25vh; }
  .trilogy-story-image { top:90px; height:calc(50% - 95px); width:75%; }
  .trilogy-closeup { width:95%; }
  .trilogy-settlement { top:80px; padding:.8rem; }
@@ -94,16 +82,9 @@
  .trilogy-lab header p { font-size:.85rem; }
  .trilogy-lab-controls details { max-height:80px; overflow:auto; }
  .trilogy-lab footer button { width:100%; }
- .trilogy-communication { top:90px; right:8px; padding:.35rem; }
 }
 @media (max-height:500px) and (orientation:landscape) {
- .trilogy-root .dialog-wrap { max-height:48%; padding:.5rem 1rem; }
- .trilogy-root .dialog-box { padding:.6rem .9rem; }
- .trilogy-root .dialog-box p { min-height:2.5rem; font-size:.9rem; }
- .trilogy-root .sprite-l,.trilogy-root .sprite-r { bottom:47%; height:150px; }
  .trilogy-story-image { top:43px; height:45%; width:40%; }
- .trilogy-root .dialog-wrap .choice-in { margin-top:.35rem; max-height:22vh; gap:.3rem; }
- .trilogy-root .dialog-wrap button { padding:.4rem .7rem; font-size:.85rem; }
  .trilogy-lab { inset:45px .5rem .5rem; padding:.6rem; }
  .trilogy-lab header h2 { font-size:1rem; display:inline; margin-right:1rem; }
  .trilogy-lab header p { font-size:.8rem; }

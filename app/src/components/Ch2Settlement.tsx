@@ -2,6 +2,7 @@ import { CH2_ACTIVE_BADGES, CH2_ACTIVE_CARDS, CH2_BADGES_LEGACY, CH2_CARDS_LEGAC
 import { SHOP_ITEMS } from '../game/data'
 import { getDlc } from '../game/dlc'
 import { CH2_STAT_KEYS, ch2NetChange } from '../game/ch2-ledger'
+import { isTrilogyPlayable } from '../game/chapter-availability'
 import { ch2PayoffKeepsakes } from '../game/ch2-payoffs'
 import type { GameState } from '../game/types'
 import { SceneBackground } from './SceneBackground'
@@ -103,8 +104,8 @@ export function Ch2Settlement({ state, update, onNext, onShop, onBackpack, onMan
           <p data-equipment="cr" data-unlock={state.finished ? 'complete' : 'available'} className="text-slate-300">{state.finished ? '✅' : '🔓'} 老伙计（CR · X光机）—— <span className="text-slate-400">第一章「老伙计」 · {state.finished ? '已完成' : state.stepId || state.night > 1 ? '进行中' : '可体验'}</span></p>
           <p data-equipment="ct" data-unlock={complete ? 'complete' : 'current'} className="text-teal-200">{complete ? '✅' : '🔓'} CT 扫描仪（国产128排）—— <span className="text-amber-200/90">第二章「快与狠」 · {complete ? '已完成' : '正在值守'}</span></p>
           <p data-equipment="us" data-unlock="locked" className="text-slate-400">🔒 二手超声 —— <span>第三章「回声」 · 后续超声科跟班，内容大厅可进入</span></p>
-          <p data-equipment="mri" data-unlock="locked" className="text-slate-400">🔒 3.0T 磁共振 —— <span>第四章「共振」 · 本班仍是传闻，后续故事已开放</span></p>
-          <p data-equipment="pet" data-unlock="locked" className="text-slate-400">🔒 PET/CT —— <span>第五章「微光」 · 后续省院进修，内容大厅可进入</span></p>
+          <p data-equipment="mri" data-unlock="locked" className="text-slate-400">🔒 3.0T 磁共振 —— <span>第四章「共振」 · 本班仍是传闻，{isTrilogyPlayable('ch4') ? '内容大厅可进入' : '尚未开放'}</span></p>
+          <p data-equipment="pet" data-unlock="locked" className="text-slate-400">🔒 PET/CT —— <span>第五章「微光」 · 后续进修故事，{isTrilogyPlayable('ch5') ? '内容大厅可进入' : '尚未开放'}</span></p>
           <p data-equipment="dr" data-unlock={getDlc('dr') ? state.dlc?.dr?.done ? 'complete' : 'available' : 'locked'} className="text-slate-300">{getDlc('dr') ? '🔓' : '🔒'} 楼上 DR 机房 —— <span className="text-slate-400">{getDlc('dr')?.title ?? '番外篇 · DR 白班'} · {dlcStatus('dr')}</span></p>
           <p data-equipment="dsa" data-unlock={getDlc('dsa') ? state.dlc?.dsa?.done ? 'complete' : 'available' : 'locked'} className="text-slate-300">{getDlc('dsa') ? '🔓' : '🔒'} 介入室 C型臂DSA —— <span className="text-slate-400">{getDlc('dsa')?.title ?? '番外篇 · DSA 导管室'} · {dlcStatus('dsa')}</span></p>
           <p data-equipment="ldct" data-unlock="locked" className="text-slate-400">🔒 低剂量CT —— <span>独立番外已开放 · 大厅内需访问码</span></p>
