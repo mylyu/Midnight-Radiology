@@ -1,5 +1,11 @@
 # 开发交接 · 2026-10-27
 
+## 2026-10-27：超声精简版已上线
+
+- 功能提交 **`c603579`** 已推送 `origin/main` 与 `codex/ch3-story-tighten`。[Pages发布 40529234672](https://github.com/mylyu/Midnight-Radiology/actions/runs/40529234672) 已完成且成功，运行head `c603579c4585eecdf55dfd7b0315f6dde24a015c`。
+- 正式站点 `trilogy-registry-C4gpHWlA.js`、`TrilogyScreen-fH9zPfgW.js` 的SHA-256与线上构建清单一致；已确认下午门诊新对白、被删段落的旧档桥接、历史收藏界面，不再含原推车收尾。入口：[第三章《回声》](https://mylyu.github.io/Midnight-Radiology/#/ch3)，无需清档。
+- 回退功能用 `git revert c603579` 后重建；旧图catalog与文件随提交一同恢复。本回执 `[skip ci]` 不重复部署。
+
 ## 2026-10-27：超声章删杂务，留回响（授权发布）
 
 - 基点 `c4951a3`，分支 `codex/ch3-story-tighten`。整条床旁镜像及推车铺垫撤掉，第三班改下午门诊；删除排班表、找教学图、拆耗材和核账，三探头介绍并入原练习。保留五班、六病例、B→M→D心超、脂肪肝TGC、探索/送礼、晨会及表姐MRI悬念。阿姨、梅姐、标签机按真实经历回应；小雷末班无借机/厂家前情时隐藏。第一二章、其他DLC、原交互、所有批准配音不改。
