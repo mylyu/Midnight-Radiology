@@ -25,11 +25,15 @@
 .trilogy-story-image { position:absolute; top:65px; left:50%; transform:translateX(-50%); width:min(48vw,600px); height:calc(100% - 320px); max-height:470px; z-index:8; display:flex; align-items:center; justify-content:center; flex-direction:column; }
 .trilogy-story-image img { max-width:100%; max-height:100%; object-fit:contain; border:1px solid #64748b; border-radius:.65rem; box-shadow:0 0 30px #0008; }
 .trilogy-story-image span { background:#0f172ae0; font-size:.75rem; padding:.4rem .7rem; }
-/* CH3 object shots occupy spare scene space, bounded by the live dialogue height. */
-.trilogy-story-object { position:absolute; top:calc(var(--trilogy-header-height,76px) + 8px); right:clamp(1rem,10vw,9rem); width:min(32vw,320px); height:min(32vh,280px); max-height:max(0px,calc(100% - var(--trilogy-header-height,76px) - var(--trilogy-dialog-height,14rem) - 24px)); z-index:8; display:grid; grid-template-rows:minmax(0,1fr) auto; gap:.35rem; pointer-events:none; }
-.trilogy-story-object[data-two-portraits] { right:auto; left:50%; transform:translateX(-50%); }
+/* A colleague is showing this object to the player, not a thumbnail in a corner.
+   The measured dialogue height also includes choices; leave it entirely clear. */
+.trilogy-story-object { position:absolute; top:calc(var(--trilogy-header-height,76px) + 8px); left:50%; transform:translateX(-50%); width:clamp(240px,calc(100% - 720px),820px); height:max(0px,calc(100% - var(--trilogy-header-height,76px) - var(--trilogy-dialog-height,14rem) - 24px)); z-index:8; display:grid; grid-template-rows:minmax(0,1fr) auto; gap:.35rem; pointer-events:none; }
 .trilogy-story-object>img { width:100%; height:100%; min-height:0; object-fit:contain; filter:drop-shadow(0 8px 10px #020617b3); }
 .trilogy-story-object>span { justify-self:center; max-width:100%; padding:.3rem .55rem; border:1px solid #64748b; border-radius:.4rem; background:#0f172ae8; font-size:.75rem; line-height:1.35; text-align:center; }
+/* CH3 picture questions use the same free scene region, even with long choices. */
+.trilogy-root[data-trilogy=ch3] .trilogy-story-image { width:min(70vw,760px); height:max(0px,calc(100% - var(--trilogy-header-height,76px) - var(--trilogy-dialog-height,14rem) - 24px)); max-height:none; display:grid; grid-template-rows:minmax(0,1fr) auto; justify-items:center; gap:.35rem; }
+.trilogy-root[data-trilogy=ch3] .trilogy-story-image>img { width:100%; height:100%; min-height:0; }
+.trilogy-root[data-trilogy=ch3] .trilogy-story-image>span { max-width:100%; text-align:center; }
 .trilogy-closeup { width:85%; }
 .trilogy-closeup img { animation:trilogy-push 9s ease-out both; }
 @keyframes trilogy-push { from { transform:scale(.96) } to { transform:scale(1.025) } }
@@ -79,7 +83,12 @@
 .trilogy-decay-dots i { width:20px; height:20px; border-radius:50%; background:#2dd4bf; margin:auto; }
 @media (max-width:600px) and (orientation:portrait) {
  .trilogy-story-image { top:90px; height:calc(50% - 95px); width:75%; }
- .trilogy-story-object { right:.75rem; width:min(56vw,220px); height:min(27vh,205px); }
+ .trilogy-story-object { width:calc(100% - 2rem); height:max(0px,calc(100% - var(--trilogy-header-height,76px) - var(--trilogy-dialog-height,14rem) - 140px)); }
+ .trilogy-root[data-trilogy=ch3]:has(.trilogy-story-object) .sprite-l,
+ .trilogy-root[data-trilogy=ch3]:has(.trilogy-story-object) .sprite-r { height:104px !important; bottom:calc(var(--trilogy-dialog-height,14rem) + 8px) !important; }
+ .trilogy-root[data-trilogy=ch3]:has(.trilogy-story-object) .sprite-l { left:.75rem !important; }
+ .trilogy-root[data-trilogy=ch3]:has(.trilogy-story-object) .sprite-r { right:.75rem !important; }
+ .trilogy-root[data-trilogy=ch3] .trilogy-story-image { width:calc(100% - 1.5rem); }
  .trilogy-story-object>span { font-size:.7rem; }
  .trilogy-closeup { width:95%; }
  .trilogy-settlement { top:80px; padding:.8rem; }
@@ -96,7 +105,12 @@
 }
 @media (max-height:500px) and (orientation:landscape) {
  .trilogy-story-image { top:43px; height:45%; width:40%; }
- .trilogy-story-object { right:1rem; width:min(25vw,220px); height:150px; }
+ .trilogy-story-object { width:min(52vw,460px); }
+ /* On a short landscape phone, stacking the choices under the scan leaves only
+    a thumbnail. Use the same dialogue panel beside the image instead. */
+ .trilogy-root[data-trilogy=ch3] .trilogy-story-image { left:.75rem; transform:none; width:calc(38% - 1.5rem); height:max(0px,calc(100% - var(--trilogy-header-height,76px) - 24px)); }
+ .trilogy-root[data-trilogy=ch3]:has(.trilogy-story-image)>.dialog-wrap { left:38%; top:calc(var(--trilogy-header-height,76px) + 14px); bottom:8px; display:flex; align-items:center; padding:.5rem !important; }
+ .trilogy-root[data-trilogy=ch3]:has(.trilogy-story-image)>.dialog-wrap>.dialog-box { width:100%; max-height:100% !important; }
  .trilogy-story-object>span { padding:.2rem .4rem; font-size:.65rem; }
  .trilogy-lab { inset:45px .5rem .5rem; padding:.6rem; }
  .trilogy-lab header h2 { font-size:1rem; display:inline; margin-right:1rem; }

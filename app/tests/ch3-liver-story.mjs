@@ -49,8 +49,12 @@ for (const [id, step] of liver) {
   if (step.speaker === 'fatty_patient' || id.startsWith('c3_liver_arrive'))
     assert(!/腹痛|疼痛|肚子疼|捂腹|捂着肚|痛苦|呻吟|担架/.test(step.text), `${id}: routine asymptomatic examination`)
   if (step.image) assert.equal(step.image, 'us_c3_hepatorenal_v1', `${id}: one consistent hepatorenal image`)
-  for (const effect of [step.effect, ...(step.choices ?? []).map(c => c.effect)])
-    for (const key of ['gold', 'skill', 'heart', 'wealth', 'ap']) assert.equal(effect?.[key] ?? 0, 0, `${id}: no compulsory dialogue points`)
+  // The newly approved correct image observation earns one point; ordinary
+  // dialogue, wrong answers and help remain free of automatic stat changes.
+  for (const [index, effect] of [step.effect, ...(step.choices ?? []).map(c => c.effect)].entries())
+    for (const key of ['gold', 'skill', 'heart', 'wealth', 'ap'])
+      assert.equal(effect?.[key] ?? 0, id === 'c3_liver_compare' && index === 0 && key === 'skill' ? 1 : 0,
+        `${id}: only the correct image observation earns skill`)
 }
 assert.match(CH3.steps.c3_liver_arrive_3.text, /没什么感觉/)
 assert.equal(CH3.characters.fatty_patient.sprite, 'pat_c3_young_liver_v1')
@@ -59,6 +63,7 @@ assert(!/脂肪肝/.test(CH3.steps.c3_liver_observe.imageLabel), 'Image label do
 assert.equal(CH3.steps.c3_liver_observe.choices.length, 3)
 
 for (const target of ['c3_liver_compare', 'c3_liver_gain', 'c3_liver_help']) {
+  const earnedSkill = target === 'c3_liver_compare' ? 1 : 0
   const start = fixture('c3_s2_finish_2'), path = []
   let s = walk(copy(start), 'c3_liver_observe', path)
   assert(path.includes('c3_liver_arrive_0') && path.includes('c3_liver_scan'))
@@ -70,14 +75,16 @@ for (const target of ['c3_liver_compare', 'c3_liver_gain', 'c3_liver_help']) {
   assert.equal(trilogyProgress(s, 'ch3').stepId, target)
   sameSave(trilogyChoose(copy(s), CH3, 'c3_liver_observe', choice), s, 'Stale second choice cannot replay')
   s = walk(s, 'c3_liver_explain_6', path)
-  assert.deepEqual(numbers(s), numbers(start), 'Every response, including help, has no penalty or auto points')
+  assert.deepEqual(numbers(s), { ...numbers(start), skill: start.skill + earnedSkill },
+    'Correct observation earns one point; wrong/help responses have no penalty or automatic points')
   assert(s.flags.c3_liver_seen)
   assert.equal(s.cards.filter(id => id === 'c3_liver_compare').length, 1)
   const atCard = enterTrilogyNode(copy(s), CH3, 'c3_liver_explain_2')
   sameSave(enterTrilogyNode(copy(atCard), CH3, 'c3_liver_explain_2'), atCard, 'Card entry resumes without duplicate reward')
   s = walk(copy(s), 'c3_s2_finish_3', path)
   assert(path.includes('c3_tang_break_0'), 'A short colleague pause precedes the handover')
-  assert.deepEqual(numbers(s), { ...numbers(start), gold: start.gold + 100 }, 'Only the original handover wage is added')
+  assert.deepEqual(numbers(s), { ...numbers(start), gold: start.gold + 100, skill: start.skill + earnedSkill },
+    'Only the original handover wage is added after the observation')
   sameSave(enterTrilogyNode(copy(s), CH3, 'c3_s2_finish_3'), s, 'Original handover wage still grants once')
   assert.deepEqual(s.dlc.ch2, start.dlc.ch2)
   assert.deepEqual(s.dlc.ldct, start.dlc.ldct)

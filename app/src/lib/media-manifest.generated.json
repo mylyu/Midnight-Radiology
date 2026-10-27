@@ -1041,6 +1041,11 @@
       "bytes": 5128,
       "type": "image"
     },
+    "assets/media/item_c3_training_photo_v1.62d0e87653525de7.webp": {
+      "sha256": "62d0e87653525de764537144fe2c70571bfd5c295e0c7ce990c993180ca8ebcc",
+      "bytes": 194106,
+      "type": "image"
+    },
     "assets/media/item_c3_us_phantom_v1.53d0096d2d868b51.webp": {
       "sha256": "53d0096d2d868b51495991f68f7c538b4e8e05d2ef9f00229986fa0e3eed0a68",
       "bytes": 19098,
@@ -2192,6 +2197,7 @@
       "assets/media/item_c3_probes_v1.3374b11babc4a0a2.webp",
       "assets/media/item_c3_stickers_v2.b35847e64c82b2bb.webp",
       "assets/media/item_c3_towel_v2.92f1004b08a1e808.webp",
+      "assets/media/item_c3_training_photo_v1.62d0e87653525de7.webp",
       "assets/media/item_c3_us_phantom_v1.53d0096d2d868b51.webp",
       "assets/media/item_coffee.4368d5294285e799.webp",
       "assets/media/item_dosimeter.ff4a9ed3f7f6e3e3.webp",

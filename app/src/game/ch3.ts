@@ -1,6 +1,7 @@
 import type { GameState } from './types'
 import type { TrilogyChapter, TrilogyStep } from './trilogy-types'
 import { applyCh3Staging } from './ch3-staging'
+import { installCh3PictureObservations } from './ch3-picture-observations'
 import { installCh3Places } from './ch3-places'
 
 /** Chapter-local graph. Clinical acquisition/reporting always belongs to Mei. */
@@ -134,7 +135,7 @@ scene('c3_s1_stone', [
   ['sys', '上午十点多，窗口来问能否接急诊的一位右上腹痛患者。梅姐核完申请，让前一位预约者先到候诊区等一会儿，你把门边的椅子挪开，给轮椅留出位置。'],
   ['patient', '这儿疼得厉害。路上车一拐弯，我把门把手都攥住了。', { voice: 'vox_c3_gallstone_v2' }],
   ['mei', '我会尽量轻一些。不舒服就告诉我，不用憋着。'],
-  ['sys', '屏幕上，一个亮点后面拖着长长的暗影。梅姐保存了这一帧，让你凑近看看。', { image: 'us_gallstone', imageLabel: '腹部超声 · 采集后的当前切面', caseId: 'c3_gallstone' }],
+  ['sys', '梅姐保存了这一帧，把显示器朝你转了转。你往前挪了一点，仔细看着画面。', { image: 'us_gallstone', imageLabel: '腹部超声 · 采集后的当前切面', caseId: 'c3_gallstone' }],
   ['mei', '先说你看见什么。病名不急着抢答。', { choices: [
     { text: '「亮点后面有暗影。换个方向，它还跟着吗？」', next: 'c3_s1_shadow_good' },
     { text: '「我分不清这道影，您带我看一遍。」', next: 'c3_s1_shadow_retry' },
@@ -149,7 +150,7 @@ for (const id of ['c3_s1_stone_4', 'c3_s1_shadow_good', 'c3_s1_shadow_retry']) {
 }
 scene('c3_s1_shadow', [
   ['sys', '梅姐改变扫查方向，亮点和暗影又出现了。你把她要的切面顺序保存下来。'],
-  ['mei', '两张能对上，看着是胆囊结石，后面这道就是**声影**。我把片子和报告发给急诊，让他们接着看。', { card: 'c3_shadow', effect: { skill: 1, badge: 'c3_shadow_reader', flag: 'c3_gallstone_seen' } }],
+  ['mei', '两张能对上，看着是胆囊结石，后面这道就是**声影**。我把片子和报告发给急诊，让他们接着看。', { card: 'c3_shadow', effect: { badge: 'c3_shadow_reader', flag: 'c3_gallstone_seen' } }],
   ['patient', '那我现在是不是就得开刀？'],
   ['mei', '现在还不能在这儿定。先回急诊，医生拿着报告跟您说下一步。转回去的同事已经在门口了。'],
   ['sys', '患者被送回急诊。你把台面整理好，梅姐发现你还盯着那道黑影。'],
@@ -312,8 +313,8 @@ scene('c3_s3_wang', [
 ], 'c3_s3_motion_0')
 scene('c3_s3_mirror', [
   ['sys', '六点多，王叔已经回门诊。你和梅姐推车到重症病区，接诊医师说明会诊问题。你把车侧身停好，让出床边，梅姐核对资料、拉好帘子。', { bg: 'bg_us_bedside' }],
-  ['sys', '夜灯已经调暗。采集留存的画面上，膈肌上方又出现了一块像肝脏的结构，你下意识看了一眼患者，再看回屏幕。', { bg: 'bg_us_bedside', image: 'us_mirror', imageLabel: '床旁超声 · 采集后的膈肌附近切面' }],
-  ['me', '等一下，上面那块……这里怎么还有一份？', { bg: 'bg_us_bedside' }],
+  ['sys', '夜灯已经调暗。你保存好这一帧，刚准备抬头，又把目光移回了屏幕。', { bg: 'bg_us_bedside', image: 'us_mirror', imageLabel: '床旁超声 · 采集后的膈肌附近切面' }],
+  ['me', '等一下，这张看着有点怪。', { bg: 'bg_us_bedside' }],
   ['mei', '看见了。先留这一帧，我换个声窗，你盯住它。', { bg: 'bg_us_bedside', next: 'c3_s3_mirror_end_0' }],
 ])
 put('c3_s3_mirror_check', { speaker: 'mei', sprite: 'char_mei', bg: 'bg_us_bedside', text: '对，先验证。你记下现象，我来换声窗，别只拿这一帧下结论。', next: 'c3_s3_mirror_end_0' })
@@ -325,12 +326,12 @@ scene('c3_s3_mirror_end', [
   ['mei', '报告交给当班医师了，咱们把车推回去。那只轮子还没修，转弯慢点。'],
 ], 'c3_s3_xu_9', 'bg_us_bedside')
 scene('c3_s3_waiting', [
-  ['sys', '五点前，表姐来拿梅姐帮她问好的后续检查安排。候诊区只空着一把椅子，她坐到一位穿旧夹克的男人旁边，手里那瓶水一直没拧开。'],
-  ['cousin', '您也是来复查的？'],
+  ['sys', '五点前，你到候诊区叫下一位。穿旧夹克的男人已经把申请单拿在手里，听见叫号，立刻站了起来。'],
+  ['me', '到您了。这边走，袋子也带上。'],
   ['xu', '消化内科开的腹部检查，约的今天下午。做完就能回去，不耽误你们出科吧？'],
-  ['cousin', '我现在一听见医生停顿，就忍不住胡思乱想。'],
-  ['xu', '我以前跑长途，乘客一问“怎么停了”，我也得赶紧说只是等红灯。没人解释，等着的人心里就悬着。'],
-  ['sys', '表姐笑了一下。你把写着时间的纸递过去，顺手替她拧开水。她拍了拍你的胳膊：“你忙吧，我回去做饭。”走到电梯口，又转头叮嘱你别忘了吃。'],
+  ['me', '不耽误，还没到交班呢。慢点，您袋子拉链没拉好。'],
+  ['xu', '哎，亏你提醒。出门前翻了好几遍，最后还是忘了拉。'],
+  ['sys', '他把袋口拢好，抽出今天的申请单递给你，跟着走进诊室。'],
 ], 'c3_s3_xu_0', 'bg_waiting_day_v2')
 scene('c3_s3_xu', [
   ['sys', '轮到男人时，梅姐核对申请单。姓名栏这回没有被挂号条挡住：**许建平**。'],
@@ -342,7 +343,7 @@ scene('c3_s3_xu', [
   ['xu', '先找记录吧。我那阵子跑车，一个月没几天在家，总拖着说下一趟。现在能问的人换了好几拨，问到后来，还得先解释自己是谁。'],
   ['me', '档案那边我帮您问问。下回来把能证明亲属关系的材料也带上，省得白跑。今天这份报告先拿回门诊。'],
   ['xu', '好，下回带。今天这份报告我先拿回门诊，老资料的事另外问。', { effect: { flag: 'c3_xu_identity', badge: 'c3_name_spoken' } }],
-  ['sys', '傍晚班交接完，你把移动机接回电源，报修单贴在响轮子旁边。手机里是表姐下午发的“到家了，时间记好了”。你这才回了个好，脱下工作服。', { end: true, effect: { gold: 110, flag: 'c3_shift3_done' } }],
+  ['sys', '傍晚班交接完，你把移动机接回电源，报修单贴在响轮子旁边。脱下工作服才发现口袋里还揣着耦合剂瓶盖，又折回去放好。', { end: true, effect: { gold: 110, flag: 'c3_shift3_done' } }],
 ], undefined, 'bg_us_room_day')
 
 // Fourth shift: a blood-flow signal lesson, with optional ordinary office work.
@@ -739,6 +740,9 @@ showObject(['c3_s2_depth_0', 'c3_s5_mei_0', 'c3_s5_mei_1', 'c3_s5_assess_0'], 'i
 showObject(['c3_s4_lei_0', 'c3_s4_lei_1', 'c3_s4_lei_2', 'c3_s5_lei_0', 'c3_s5_lei_1', 'c3_s5_lei_2'], 'item_c3_label_printer_v1', '标签机与卷纸')
 showObject(['c3_s5_mei_2'], 'item_c3_probe_card_v1', '梅姐的探头小卡')
 showObject(['c3_s3_bag_2'], 'item_c3_towel_v2', '阿姨缝的擦镜布')
+for (let shift = 1; shift <= 5; shift++) {
+  showObject([1, 2, 3, 4].map(index => `c3_s${shift}_towel_use_${index}`), 'item_c3_training_photo_v1', '梅姐留在教学台下的培训合照')
+}
 steps.c3_s1_aunt_6.tool!.objectImages = {
   '线阵': 'item_c3_probe_linear_v1', '凸阵': 'item_c3_probe_convex_v1', '相控阵': 'item_c3_probe_phased_v1',
 }
@@ -753,6 +757,7 @@ for (const id of ['c3_s4_zhou_0', 'c3_s4_zhou_1', 'c3_s4_zhou_2']) {
 for (const id of ['c3_s4_wen_0', 'c3_s4_wen_1', 'c3_s4_wen_2', 'c3_s4_wen_3']) {
   Object.assign(steps[id], { phone: 'char_wen', sprite: '', sprite2: '' })
 }
+installCh3PictureObservations(steps)
 applyCh3Staging(steps)
 const adaptPlaces = installCh3Places(steps)
 
@@ -893,6 +898,6 @@ export const CH3: TrilogyChapter = {
     'cg_c3_mei_probe_v2', 'cg_c3_shared_lunch_v2', 'item_c3_towel_v2', 'item_c3_stickers_v2',
     'cg_c3_cousin_call_v3', 'cg_c3_us_visit_v3',
     'item_c3_probes_v1', 'item_c3_probe_linear_v1', 'item_c3_probe_convex_v1', 'item_c3_probe_phased_v1',
-    'item_c3_gel_supplies_v1', 'item_c3_label_printer_v1', 'item_c3_label_roll_v1', 'item_c3_us_phantom_v1', 'item_c3_probe_card_v1',
+    'item_c3_gel_supplies_v1', 'item_c3_label_printer_v1', 'item_c3_label_roll_v1', 'item_c3_us_phantom_v1', 'item_c3_probe_card_v1', 'item_c3_training_photo_v1',
   ],
 }

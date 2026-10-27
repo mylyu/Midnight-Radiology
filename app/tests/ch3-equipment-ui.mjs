@@ -199,6 +199,68 @@ try {
     }
   })
 
+  await test('centered-closeups-and-picture-observations', async row => {
+    row.views = []
+    for (const [width, height, node, image] of [
+      [1920, 1080, 'c3_s1_probes_1', 'item_c3_probes_v1'],
+      [2560, 1080, 'c3_s1_towel_use_2', 'item_c3_training_photo_v1'],
+      [390, 844, 'c3_s1_towel_use_2', 'item_c3_training_photo_v1'],
+      [844, 390, 'c3_s1_probes_1', 'item_c3_probes_v1'],
+    ]) {
+      await page.setViewportSize({ width, height }); await enter(fixture(node)); await reveal()
+      const object = page.locator('.trilogy-story-object')
+      await imageIs(object.locator('img'), image)
+      const box = await fit(object, `${node} centered object`)
+      const dialog = await page.locator('.dialog-wrap').boundingBox()
+      assert(Math.abs(box.x + box.width / 2 - width / 2) < 2, 'Object is centered, not a corner thumbnail')
+      assert(box.y + box.height <= dialog.y, 'Picture and caption stay above dialogue')
+      if (width >= 1920) assert(box.width >= 750, 'Wide desktop closeup is substantially larger than the former 320 px')
+      await shot(`centered-${node}-${width}`)
+      row.views.push({ node, width, height, bounds: box })
+    }
+    const observations = [
+      ['c3_breast_observe', 0, 'us_breast', 'c3_breast_right'],
+      ['c3_s1_stone_4', 0, 'us_gallstone', 'c3_s1_shadow_good'],
+      ['c3_liver_observe', 1, 'us_c3_hepatorenal_v1', 'c3_liver_compare'],
+      ['c3_s3_mirror_2', 2, 'us_mirror', 'c3_s3_mirror_check'],
+    ]
+    for (const size of [{ width: 1920, height: 1080 }, { width: 390, height: 844 }, { width: 844, height: 390 }]) {
+      await page.setViewportSize(size)
+      for (const [node, shift, image, target] of size.width === 844 ? observations.slice(1, 2) : observations) {
+        await enter(fixture(node, shift)); await reveal()
+        const choices = page.locator('[data-dialogue-choice]')
+        await choices.first().waitFor()
+        const picture = page.locator('.trilogy-story-image img')
+        await imageIs(picture, image)
+        const box = await fit(page.locator('.trilogy-story-image'), `${node} image`)
+        const dialog = await page.locator('.dialog-wrap').boundingBox()
+        assert(box.y + box.height <= dialog.y + 1 || box.x + box.width <= dialog.x,
+          'Image stays clear of choices, above them or beside them on a short landscape screen')
+        assert(box.height > 90, 'There is an actual visible observation image')
+        assert.equal(await page.locator('.sprite-l,.sprite-r').count(), 0, 'No patient portrait overlays the picture question')
+        for (const button of await choices.all()) await fit(button, `${node} choice`, true)
+        await shot(`observe-${node}-${size.width}`)
+        const before = await read()
+        const index = chapter.steps[node].choices.findIndex(choice => choice.next === target)
+        await page.waitForTimeout(950) // Existing full-text choice buffer remains in force.
+        await choices.nth(index).click(); await nodeIs(target)
+        await page.locator('[data-stat-notice]').filter({ hasText: /医术.*1/ }).waitFor()
+        assert.equal((await read()).skill, before.skill + 1)
+        if (size.width === 1920 && node === 'c3_s1_stone_4') await shot('observation-skill-bubble')
+        await page.reload(); await loaded(); await nodeIs(target)
+        assert.equal((await read()).skill, before.skill + 1, 'Reload cannot repeat the picture reward')
+        assert.equal(await page.locator('[data-stat-notice]').count(), 0, 'Restoring does not invent a second change bubble')
+        row.views.push({ node, viewport: size, bounds: box, reward: 1, restored: true })
+      }
+    }
+    await page.setViewportSize({ width: 1920, height: 1080 })
+    await enter(fixture('c3_s3_waiting_1', 2)); await reveal()
+    const portraits = page.locator('.sprite-l,.sprite-r')
+    assert.equal(await portraits.count(), 1)
+    await imageIs(portraits.first(), 'pat_mystery')
+    await shot('xu-waiting-without-cousin')
+  })
+
   await test('probe-image-buttons-and-live-calculation-fit', async row => {
     row.views = []
     const node = 'c3_s1_aunt_6', choices = { '凸阵': 'item_c3_probe_convex_v1', '线阵': 'item_c3_probe_linear_v1', '相控阵': 'item_c3_probe_phased_v1' }

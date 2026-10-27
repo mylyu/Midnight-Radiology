@@ -26,22 +26,25 @@ function walk(s, target, path = []) {
 }
 
 // Retain the acquired gallstone frame during the question and either response.
-for (const node of ['c3_s1_stone_3', 'c3_s1_stone_4', 'c3_s1_shadow_good', 'c3_s1_shadow_retry']) {
+for (const node of ['c3_s1_stone_3', 'c3_s1_stone_4', 'c3_s1_shadow_good', 'c3_s1_shadow_miss', 'c3_s1_shadow_retry']) {
   const step = trilogyStep(fixture(node), CH3)
   assert.equal(step.image, 'us_gallstone', `${node}: original acquired frame stays visible`)
   assert(!step.sprite && !step.sprite2, `${node}: no portrait covering the observation frame`)
   assert(!step.scan && !step.tool, `${node}: retaining a frame does not add another acquisition/task`)
 }
-for (const target of ['c3_s1_shadow_good', 'c3_s1_shadow_retry']) {
+for (const target of ['c3_s1_shadow_good', 'c3_s1_shadow_miss', 'c3_s1_shadow_retry']) {
+  const earnedSkill = target === 'c3_s1_shadow_good' ? 1 : 0
   const start = fixture('c3_s1_stone_3')
   let s = trilogyAdvance(start, CH3, 'c3_s1_stone_3')
   const choice = trilogyStep(s, CH3).choices.find(row => row.next === target)
   assert(choice)
   s = trilogyChoose(s, CH3, 'c3_s1_stone_4', choice)
-  assert.deepEqual(numbers(s), numbers(start), 'Observation/help response adds no new reward or penalty')
+  assert.deepEqual(numbers(s), { ...numbers(start), skill: start.skill + earnedSkill },
+    'The original skill reward now belongs to the correct observation, not compulsory dialogue')
   assert.strictEqual(trilogyChoose(s, CH3, 'c3_s1_stone_4', choice), s, 'Stale observation click is ignored')
   s = walk(s, 'c3_s1_shadow_1')
-  assert.deepEqual(numbers(s), { ...numbers(start), skill: start.skill + 1 }, 'Only the existing case reward is retained')
+  assert.deepEqual(numbers(s), { ...numbers(start), skill: start.skill + earnedSkill },
+    'The common explanation does not duplicate the relocated observation reward')
   assert.equal(s.badges.filter(id => id === 'c3_shadow_reader').length, 1)
   assert.equal(s.cards.filter(id => id === 'c3_shadow').length, 1)
   assert.strictEqual(enterTrilogyNode(s, CH3, 'c3_s1_shadow_1').skill, s.skill)

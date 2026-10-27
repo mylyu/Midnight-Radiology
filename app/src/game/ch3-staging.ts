@@ -62,8 +62,7 @@ export function applyCh3Staging(steps: Record<string, TrilogyStep>) {
   cast(range('c3_s3_wang', 0, 7), wang, mei)
   cast(range('c3_s3_wang', 8, 9), wang)
   cast(range('c3_s3_motion', 0, 4), mei) // Wang has returned to cardiology.
-  cast(range('c3_s3_waiting', 0, 4), cousin, xu)
-  cast(['c3_s3_waiting_5'], cousin)
+  cast(range('c3_s3_waiting', 0, 5), xu)
   cast(range('c3_s3_xu', 0, 3), xu, mei)
   cast(range('c3_s3_xu', 4, 8), xu)
   cast(range('c3_s3_mirror', 0, 3), mei)
