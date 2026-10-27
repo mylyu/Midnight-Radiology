@@ -99,6 +99,16 @@ async function advance() {
   await page.mouse.click(6, Math.min(240, page.viewportSize().height / 2))
   await page.waitForFunction(({ key, node }) => JSON.parse(localStorage.getItem(key)).dlc.ch3.chapter.stepId !== node, { key, node })
 }
+async function chooseNext(target) {
+  const node = progress(await read()).stepId
+  const index = chapter.steps[node].choices?.findIndex(choice => choice.next === target) ?? -1
+  assert(index >= 0, `${node}: has choice to ${target}`)
+  await reveal()
+  const button = page.locator('[data-dialogue-choice]').nth(index)
+  await button.waitFor()
+  await page.waitForTimeout(950) // Full-text 900 ms buffer and fresh 300 ms gesture are preserved.
+  await button.click(); await nodeIs(target)
+}
 async function fit(locator, label, hit = false) {
   const box = await locator.evaluate((element, hit) => {
     const r = element.getBoundingClientRect(), target = document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2)
@@ -206,6 +216,9 @@ try {
       await shot(`cardiac-${size.width}`)
       await advance(); await nodeIs('c3_wang_color_1')
       await imageIs(image, 'us_c3_cardiac_color_v1')
+      await advance(); await nodeIs('c3_wang_color_question')
+      await chooseNext('c3_wang_color_direction'); await reveal()
+      await imageIs(image, 'us_c3_cardiac_color_v1')
       await advance(); await nodeIs('c3_s3_wang_8')
       assert.equal(await page.locator('.trilogy-story-image').count(), 0)
     }
@@ -230,6 +243,90 @@ try {
     await enter(fixture('c3_s3_waiting_2', 2, saved)); await reveal()
     assert.equal((await audioEvents()).filter(e => e.event === 'playing' && e.paths.includes(target)).length, 0)
     row.voice = 'One native playback, completed; later line/reload silent'
+  })
+
+  await test('mei-farewell-and-color-questions', async row => {
+    row.views = []
+    for (const size of [{ width: 1920, height: 1080 }, { width: 390, height: 844 }]) {
+      await page.setViewportSize(size)
+      // The grayscale image and a spoken reason precede the color-flow comparison.
+      await enter(fixture('c3_wang_color_intro_0', 2))
+      const cardiacBefore = await read(), picture = page.locator('.trilogy-story-image img')
+      for (const node of ['c3_wang_color_intro_0', 'c3_wang_color_intro_1']) {
+        await nodeIs(node); await reveal(); await imageIs(picture, 'us_echo')
+        assert.equal(await page.locator('.sprite-l,.sprite-r').count(), 0)
+        await advance()
+      }
+      for (const node of ['c3_wang_color_0', 'c3_wang_color_1']) {
+        await nodeIs(node); await reveal(); await imageIs(picture, 'us_c3_cardiac_color_v1')
+        await advance()
+      }
+      await nodeIs('c3_wang_color_question'); await reveal()
+      await imageIs(picture, 'us_c3_cardiac_color_v1')
+      const colorBounds = await fit(picture, 'Heart-flow picture while asking a question')
+      assert(Math.abs(colorBounds.x + colorBounds.width / 2 - size.width / 2) < 2)
+      assert(colorBounds.y + colorBounds.height <= (await page.locator('.dialog-wrap').boundingBox()).y + 1)
+      const choices = page.locator('[data-dialogue-choice]')
+      assert.equal(await choices.count(), 2)
+      for (const button of await choices.all()) await fit(button, 'Cardiac follow-up choice', true)
+      await shot(`cardiac-question-${size.width}`)
+      const target = size.width === 1920 ? 'c3_wang_color_direction' : 'c3_wang_color_vessel'
+      await chooseNext(target); await reveal(); await imageIs(picture, 'us_c3_cardiac_color_v1')
+      assert.match(await page.locator('.dialog-box > p').textContent(), size.width === 1920 ? /不是按动静脉分/ : /切面和设置/)
+      await advance(); await nodeIs('c3_s3_wang_8'); await reveal()
+      assert.equal(await page.locator('.trilogy-story-image').count(), 0, 'Color comparison clears before Wang collects the report')
+      await imageIs(page.locator('.sprite-l,.sprite-r').first(), 'pat_wang_recovery')
+      assert.match(await page.locator('.dialog-box > p').textContent(), /诊室工作站写好报告/)
+      const cardiacAfter = await read()
+      for (const key of ['gold', 'skill', 'heart', 'wealth', 'ap']) assert.equal(cardiacAfter[key], cardiacBefore[key])
+
+      // Mei stays present across the six-line check-in; discussing a relative does not summon her portrait.
+      await enter(fixture('c3_s5_cousin_check_0', 4))
+      const cousinBefore = await read()
+      let meiBounds
+      for (let i = 0; i < 6; i++) {
+        await nodeIs(`c3_s5_cousin_check_${i}`); await reveal()
+        const portraits = page.locator('.sprite-l,.sprite-r')
+        assert.equal(await portraits.count(), 1, 'Only Mei is physically in the room')
+        await imageIs(portraits.first(), 'char_mei')
+        const bounds = await fit(portraits.first(), 'Mei during cousin follow-up')
+        if (meiBounds) for (const axis of ['x', 'y', 'width', 'height']) assert(Math.abs(bounds[axis] - meiBounds[axis]) < 2,
+          `Mei stays in the same position while dialogue length changes: ${axis}`)
+        else meiBounds = bounds
+        if (i === 2) await shot(`mei-cousin-followup-${size.width}`)
+        await advance()
+      }
+      await nodeIs('c3_s5_start_1')
+      for (const key of ['gold', 'skill', 'heart', 'wealth', 'ap']) assert.equal((await read())[key], cousinBefore[key])
+
+      // Actual story transition into the new closeup, then back to the existing portrait and handover.
+      await enter(fixture('c3_s5_assess_7', 4)); await advance(); await nodeIs('c3_s5_mei_farewell_0')
+      await reveal()
+      const closeup = page.locator('.ldct-cinematic__image')
+      await imageIs(closeup, 'cg_c3_mei_farewell_v1')
+      const farewellBounds = await fit(closeup, 'Mei farewell closeup')
+      assert(Math.abs(farewellBounds.x + farewellBounds.width / 2 - size.width / 2) < 2)
+      assert(farewellBounds.y + farewellBounds.height <= (await page.locator('.dialog-wrap').boundingBox()).y + 1)
+      assert.equal(await page.locator('.sprite-l,.sprite-r').count(), 0, 'The closeup does not also draw a second Mei portrait')
+      const camera = await closeup.evaluate(element => {
+        const style = getComputedStyle(element), animation = element.getAnimations()[0]
+        return { name: style.animationName, duration: style.animationDuration,
+          transforms: animation?.effect?.getKeyframes().map(frame => frame.transform).filter(Boolean) ?? [] }
+      })
+      assert.equal(camera.name, 'ch3-centered-push')
+      assert(camera.transforms.includes('scale(0.965)') && camera.transforms.includes('scale(1)'), 'Small centered push-in remains active')
+      await shot(`mei-farewell-${size.width}`)
+      for (let i = 1; i <= 2; i++) {
+        await advance(); await nodeIs(`c3_s5_mei_farewell_${i}`); await reveal()
+        assert.equal(await page.locator('.ldct-cinematic,.trilogy-story-image').count(), 0, 'Closeup clears on the following dialogue')
+        const portraits = page.locator('.sprite-l,.sprite-r')
+        assert.equal(await portraits.count(), 1)
+        await imageIs(portraits.first(), 'char_mei')
+      }
+      await advance(); await nodeIs('c3_s5_notice_end_4')
+      row.views.push({ viewport: size, colorQuestion: target, colorBounds, meiBounds, farewellBounds, camera })
+    }
+    row.scope = 'Two desktop/mobile local paths only; no repeat of the TGC or voice acceptance cases'
   })
 
   await test('dialogue-figures-centered-on-all-screens', async row => {

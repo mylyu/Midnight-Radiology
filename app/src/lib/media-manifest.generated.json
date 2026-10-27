@@ -261,6 +261,11 @@
       "bytes": 127174,
       "type": "image"
     },
+    "assets/media/cg_c3_mei_farewell_v1.ec2b545c5442803b.webp": {
+      "sha256": "ec2b545c5442803bf433603269f4a748728b69bbec843bdd221280464de5fb75",
+      "bytes": 140226,
+      "type": "image"
+    },
     "assets/media/cg_c3_mei_probe_v2.91a5dd021ce3cd86.webp": {
       "sha256": "91a5dd021ce3cd86ea3b9433a54832136a9225730d5d91e0759c84e737a70792",
       "bytes": 117848,
@@ -2205,6 +2210,7 @@
       "assets/media/bg_us_room_day.33d4b0ae483eea87.webp",
       "assets/media/bg_waiting_day_v2.30916f32479aad55.webp",
       "assets/media/cg_c3_cousin_call_v3.93c016e84a49e539.webp",
+      "assets/media/cg_c3_mei_farewell_v1.ec2b545c5442803b.webp",
       "assets/media/cg_c3_mei_probe_v2.91a5dd021ce3cd86.webp",
       "assets/media/cg_c3_shared_lunch_v2.b955cff09bde3231.webp",
       "assets/media/cg_c3_us_visit_v3.683d78eddc52974a.webp",

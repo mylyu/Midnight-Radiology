@@ -313,12 +313,25 @@ scene('c3_s3_wang', [
 ], 'c3_s3_motion_0')
 // Keep the acquired grayscale view, then briefly compare its color-flow view
 // before Mei writes the report and the separate M-mode teaching scene begins.
-steps.c3_s3_wang_7.next = 'c3_wang_color_0'
+steps.c3_s3_wang_7.next = 'c3_wang_color_intro_0'
+scene('c3_wang_color_intro', [
+  ['me', '瓣膜开开合合已经看得见了，还要切彩色吗？', { image: 'us_echo', imageLabel: '心脏结构与运动', sprite: '', sprite2: '' }],
+  ['mei', '要。刚才看它怎么动，现在看看**血流经过瓣膜**时是什么样。你盯着这块，我把彩色取样框放上去。', { image: 'us_echo', imageLabel: '心脏结构与运动', sprite: '', sprite2: '' }],
+], 'c3_wang_color_0')
 const cardiacColorView = { image: 'us_c3_cardiac_color_v1', imageLabel: '心脏彩色多普勒 · 结构与血流', sprite: '', sprite2: '' }
 scene('c3_wang_color', [
-  ['me', '这张心脏图里也有颜色，是接着看血往哪儿走？', cardiacColorView],
-  ['mei', '对，结构上叠的是**血流信息**。红蓝得对着色标看，再跟刚才的灰阶图一起核对。', cardiacColorView],
-], 'c3_s3_wang_8')
+  ['me', '原来不是整张换成彩色，是在刚才的结构上加了**血流信息**。这下知道您在看哪儿了。', cardiacColorView],
+  ['mei', '嗯，位置还得靠黑白图。红蓝先对着**色标**看，再和瓣膜的运动一起核对。', cardiacColorView],
+], 'c3_wang_color_question')
+put('c3_wang_color_question', { speaker: 'sys', bg: 'bg_us_room_day', ...cardiacColorView,
+  text: '你看着颜色随着心跳变化，又往屏幕前凑了凑。', choices: [
+    { text: '「红的、蓝的，是动脉和静脉吗？」', next: 'c3_wang_color_direction' },
+    { text: '「查脖子上的血管，也是这么看的？」', next: 'c3_wang_color_vessel' },
+  ] })
+put('c3_wang_color_direction', { speaker: 'mei', bg: 'bg_us_room_day', ...cardiacColorView,
+  text: '不是按动静脉分的。这里主要表示血流**朝向还是离开探头**，要按这张图的色标认。下回跟血管检查，你试着换个角度就明白了。', next: 'c3_s3_wang_8' })
+put('c3_wang_color_vessel', { speaker: 'mei', bg: 'bg_us_room_day', ...cardiacColorView,
+  text: '也是用**多普勒**看血流，不过切面和设置得跟着检查对象换。下回正好有血管检查，你看看探头角度一变，信号会怎样。', next: 'c3_s3_wang_8' })
 scene('c3_s3_mirror', [
   ['sys', '六点多，电梯到了重症病区。接诊医师说明会诊问题，你把车侧身停好，让出床边，梅姐核对资料、拉好帘子。', { bg: 'bg_us_bedside' }],
   ['sys', '夜灯已经调暗。你保存好这一帧，刚准备抬头，又把目光移回了屏幕。', { bg: 'bg_us_bedside', image: 'us_mirror', imageLabel: '床旁超声 · 采集后的膈肌附近切面' }],
@@ -358,7 +371,7 @@ scene('c3_s3_xu', [
 scene('c3_s4_start', [
   ['sys', '11月10日，上午八点。梅姐翻到今天的血管检查申请：开单医师想了解血流情况。教学机上也放好了演示，黑白管道旁边有红蓝两色。'],
   ['mei', '今天跟我留意一下血流检查。先看黑白图找位置，切颜色时看看我还调了什么，忙完咱们再试。'],
-  ['me', '我以前见着红蓝，总先认成动脉、静脉。今天先不猜。'],
+  ['me', '上回王叔心超里的颜色一跳一跳的。这次看血管，能让我看看探头角度一变，信号会怎样吗？'],
   ['mei', '先看图例，再看探头朝哪儿。你把这位以前的检查调出来，我先看看。'],
 ], 'c3_s4_hub')
 hub('c3_s4_hub', '诊室还在做开诊前的准备，几箱新用品靠墙放着。走廊那头有人喊借剪刀，休息室的门也开了。', [
@@ -368,7 +381,7 @@ hub('c3_s4_hub', '诊室还在做开诊前的准备，几箱新用品靠墙放�
 ], 'c3_s4_clinic_0')
 scene('c3_s4_clinic', [
   ['sys', '梅姐写好这位的报告，请患者回来取走。等他离开，她才把保存的**灰阶图和彩色血流图**并排调出来，示意你看同一条血管。'],
-  ['me', '左边黑黑的，右边就红了。我以前还真以为，动脉才会涂成红色。'],
+  ['me', '这回是一整段血管，不是心脏里的瓣膜了。不过还是先认位置，再对着色标看血流，对吧？'],
   ['mei', '这条是**颈总动脉**，可不是因为它是动脉才红。左边认位置，右边看血流；红蓝得对着**色条**看，表示相对探头的方向。交好班，咱们拿演示转一转。'],
 ], 'c3_s4_doppler_0')
 for (const id of ['c3_s4_clinic_0', 'c3_s4_clinic_1', 'c3_s4_clinic_2']) {
@@ -453,6 +466,15 @@ scene('c3_s5_start', [
   ['me', '正式考核？'],
   ['mei', '表都拿来了，还能逗你？先把模体摆好，别紧张。'],
 ], 'c3_s5_hub', 'bg_us_room_day')
+steps.c3_s5_start_0.next = 'c3_s5_cousin_check_0'
+scene('c3_s5_cousin_check', [
+  ['mei', '对了，你表姐这几天怎么样？上回出去的时候，话都少了。'],
+  ['me', '还惦记着那个十毫米。嘴上说不查，半夜给我转了五六个网页，看得我也睡不着。'],
+  ['mei', '别被网上那些吓着了。**轻度侧脑室增宽**的宝宝，很多后来都好好的，照样上学、到处跑。咱们再看看有没有别的问题。'],
+  ['me', '那**MRI**，就是把超声没看清的地方再看看？'],
+  ['mei', '对，**脑部结构**再看细一点。你陪她去，有个人搭话，总比她自己坐那儿胡思乱想强。'],
+  ['me', '行，我陪着。她要知道您还记着这事，肯定也高兴。'],
+], 'c3_s5_start_1', 'bg_us_room_day')
 hub('c3_s5_hub', '考核还没开始。走廊还是那些门，你这回已经知道哪间能找着热水，哪间的椅子坐下会响。', [
   ['跟老周聊聊这两周', 'c3_s5_zhou'],
   ['把标签机还给小雷', 'c3_s5_lei'],
@@ -486,6 +508,13 @@ scene('c3_s5_assess', [
   ['mei', '过了。探头放回软垫，别激动得往桌上一搁。以后调图拿不准，这两张就是你的参考。'],
   ['me', '我知道。纸巾的位置倒是可以独立回答了。'],
   ['mei', '这项满分。把**B超的切面**、**M超的时间线**、血流演示各放回文件夹，别全叫“最好看的一张”。'],
+], 'c3_s5_notice_end_4', 'bg_us_room_day')
+steps.c3_s5_assess_7.next = 'c3_s5_mei_farewell_0'
+scene('c3_s5_mei_farewell', [
+  ['mei', '其实你**悟性挺高**的。刚来还不敢碰探头，现在会自己找原因了。以后肯定能干出点名堂。', {
+    image: 'cg_c3_mei_farewell_v1', imageLabel: '梅姐收好培训表，笑着看向你', closeup: true, cameraMotion: 'push', sprite: '', sprite2: '' }],
+  ['me', '这话我可记住了。回去先跟老周显摆一下。'],
+  ['mei', '行，就说我夸的。以后碰到看不明白的图，拿来一起琢磨，别跟我客气。'],
 ], 'c3_s5_notice_end_4', 'bg_us_room_day')
 scene('c3_s5_notice', [
   ['sys', '许建平从文件袋里取出一张旧寻人启事。边角磨得发白，新贴的透明胶压住一道裂口。', { image: 'item_missing_notice' }],
@@ -818,6 +847,8 @@ function adapt(id: string, step: TrilogyStep, state: GameState): TrilogyStep {
   if (place) return place
   const progress = state.dlc?.ch3?.chapter
   const tools = progress?.tools
+  if (id === 'c3_s5_cousin_check_1' && state.flags.c3_cousin_followup_stable) return { ...step,
+    text: '她按安排复查，最近踏实多了。不过有时候刷到网上的消息，还是会发过来问我。' }
   // Old saves inside the removed city-trip sequence resume with one bridge,
   // then join the current follow-up; no new visit or reward is fabricated.
   if (/^c3_epilogue_(?:[5-9]|1[0-3])$/.test(id)) return { ...step,
@@ -950,6 +981,7 @@ export const CH3: TrilogyChapter = {
     c3_pocket_towel: 'item_c3_towel_v2', c3_cup_stickers: 'item_c3_stickers_v2', c3_aunt_cloth: 'item_c3_towel_v2',
   },
   assets: [
+    'cg_c3_mei_farewell_v1',
     'bg_us_room', 'bg_us_room_day', 'bg_us_bedside', 'bg_us_bedside_day_v2', 'ch2_bg_breakroom_day', 'bg_waiting_day_v2', 'bg_c3_shared_office_day_v1', 'bg_day',
     'char_mei', 'pat_cousin', 'char_han', 'pat_aunt', 'pat_mystery', 'pat_wang_recovery', 'char_lei', 'char_zhou', 'ch2_pixel_char_he', 'char_tang',
     'us_gallstone', 'us_breast', 'us_c3_breast_cyst_compare_v1', 'us_fetal', 'us_echo', 'us_c3_cardiac_color_v1', 'us_mirror', 'us_c3_color_doppler_v1', 'item_missing_notice', 'item_reunion_gifts', 'item_notebook',

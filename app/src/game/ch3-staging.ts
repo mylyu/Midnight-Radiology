@@ -89,6 +89,8 @@ export function applyCh3Staging(steps: Record<string, TrilogyStep>) {
   cast(range('c3_s4_doppler', 0, 5), mei)
 
   cast(range('c3_s5_start', 0, 3), mei)
+  cast(range('c3_s5_cousin_check', 0, 5), mei)
+  cast(range('c3_s5_mei_farewell', 1, 2), mei)
   cast(range('c3_s5_zhou', 0, 2), zhou)
   cast(range('c3_s5_lei', 0, 2), lei)
   cast(range('c3_s5_mei', 0, 2), mei)
