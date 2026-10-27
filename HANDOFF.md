@@ -1,5 +1,10 @@
 # 开发交接 · 2026-10-27
 
+## 2026-10-27：晨会反馈与梅姐关怀已上线
+
+- `94731cd`（晨会反馈）与 `600043c`（心超提问/关怀/近景/交接）已推送 `origin/main` 和 `codex/ch3-quiz-and-farewell`。[Pages发布 40508864322](https://github.com/mylyu/Midnight-Radiology/actions/runs/40508864322) build、deploy均成功；游戏上线版本 **`600043c`**。
+- 正式站点读取的 `trilogy-registry-C_WnT2Q0.js`、`TrilogyScreen-Bqquo1yl.js` 已包含最新日常口吻、追问及答题反馈。新图在线140,226B，SHA-256与本地完全一致。入口：[第三章](https://mylyu.github.io/Midnight-Radiology/#/ch3)。本回执使用 `[skip ci]`，不再次部署。回退分别 `git revert 600043c` / `git revert 94731cd`，涉及新增游标时按专题文档保留桥接，不清玩家存档。
+
 ## 2026-10-27：晨会答题反馈、心超提问与梅姐出科鼓励
 
 - 基点 `9b23d51`，分支 `codex/ch3-quiz-and-farewell`。第三章晨会参照第一章：正确项绿色✓、错选红色✗、其余变暗；答后明确说明对错、解释与正确答案。使用原题目/洗牌索引，原保存、900/300ms保护及奖励逻辑不动，仅CH3启用显示。
