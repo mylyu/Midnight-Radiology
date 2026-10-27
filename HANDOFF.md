@@ -1,5 +1,11 @@
 # 开发交接 · 2026-10-27
 
+## 2026-10-27：心超 / 脂肪肝TGC已上线
+
+- 功能提交 **`d38d17b`** 已推送 `origin/main` 与 `codex/ch3-echo-tgc-flow`。[Pages发布 40515756297](https://github.com/mylyu/Midnight-Radiology/actions/runs/40515756297) 已成功，运行head为完整 `d38d17b80ca4d7ba6ead5d37da49dcd943e92f8c`。
+- 正式站点已取得 `trilogy-registry-D60k_oVx.js` 和 `TrilogyScreen-CtmbXG4b.js`，分别核对新心超链、肝肾TGC节点、频谱与病例增益组件，文件SHA-256均与线上构建清单一致。入口：[第三章《回声》](https://mylyu.github.io/Midnight-Radiology/#/ch3)。无需清档。
+- 本回执 `[skip ci]` 不重复部署。回退功能使用 `git revert d38d17b`，并遵守 [兼容桥接说明](docs/ch3-echo-tgc-flow.md)；已停在新增节点的玩家不可通过清档处理。
+
 ## 2026-10-27：王叔心超连贯流程，TGC移入脂肪肝（授权发布）
 
 - 基点 `bfaae24`，分支 `codex/ch3-echo-tgc-flow`。按作者PDF串成一次B超定位→M超看沿线运动→D超彩色与频谱看血流→报告，王叔离开后不再突然返回M超；保留一次原M互动、两条自然追问，新增频谱小图随对白展示，不堆任务。
