@@ -1,5 +1,10 @@
 # 开发交接 · 2026-10-27
 
+## 2026-10-27：8题单选题库已发布
+
+- 作者授权后，`5cc2ee9` 已推送 `origin/main` 与 `codex/ch3-course-quiz-bank`。[Pages发布 40510873773](https://github.com/mylyu/Midnight-Radiology/actions/runs/40510873773) build/deploy均成功；部署版本 **`5cc2ee9`**。
+- 正式站点 `trilogy-registry-DUbfunNT.js` 已逐项核对8道新题，未包含移除的判断/多选题。继续每轮抽5道；中途旧考核按原快照完成。线上入口：[第三章](https://mylyu.github.io/Midnight-Radiology/#/ch3)。复用上轮已通过的构建与定点验证，没有重复通关。本回执 `[skip ci]` 不再次部署；回退游戏修改用 `git revert 5cc2ee9` 并重新发布，不清档。
+
 ## 2026-10-27：第三章晨会改为作者提供的8题单选池（本地）
 
 - 基点 `f643e95`，分支 `codex/ch3-course-quiz-bank`。按作者最新“去掉判断和多选”裁定，删除所给列表的这两题，仅保留8道单选：频率、纵波、声阻抗、适用组织、界面反射、压电、近场、回波信息。题干/选项/答案按原表，答案索引 `1,1,2,1,0,0,0,1`，每题仅一句解释。每轮沿用原机制不重复抽5题，选项仍洗牌；没有改答题UI、题型接口、状态、奖励、剧情或素材。
