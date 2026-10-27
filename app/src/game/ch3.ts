@@ -367,7 +367,7 @@ hub('c3_s4_hub', '诊室还在做开诊前的准备，几箱新用品靠墙放�
   ['给老周回个电话', 'c3_s4_zhou'],
 ], 'c3_s4_clinic_0')
 scene('c3_s4_clinic', [
-  ['sys', '上午的扫查结束，患者先到门外等。梅姐在诊室工作站写好报告、交给患者，又把保存的**灰阶图和彩色血流图**并排调出来，示意你看同一条血管。'],
+  ['sys', '梅姐写好这位的报告，请患者回来取走。等他离开，她才把保存的**灰阶图和彩色血流图**并排调出来，示意你看同一条血管。'],
   ['me', '左边黑黑的，右边就红了。我以前还真以为，动脉才会涂成红色。'],
   ['mei', '这条是**颈总动脉**，可不是因为它是动脉才红。左边认位置，右边看血流；红蓝得对着**色条**看，表示相对探头的方向。交好班，咱们拿演示转一转。'],
 ], 'c3_s4_doppler_0')
@@ -854,6 +854,10 @@ function adapt(id: string, step: TrilogyStep, state: GameState): TrilogyStep {
   if (id === 'c3_s2_start_0' && state.flags.c3_cousin_booking) {
     return { ...step, text: '11月4日，上午九点多。梅姐给表姐留了今天十点的时间，她却发来堵在桥上的照片，说饼干都吃完了，车还没挪几米。' }
   }
+  if (id === 'c3_s1_aunt_0' && state.flags.c3_s1_wait_done) return { ...step,
+    text: '开诊后，刚才在窗口整理单子的阿姨第一个进来。这回她直接翻到最上面，把你替她夹好的申请单递过来。' }
+  if (id === 'c3_s1_aunt_1' && state.flags.c3_s1_wait_done) return { ...step,
+    text: '刚才多亏你把单子夹好了。原来你也在这屋啊？' }
   if (id === 'c3_s1_aunt_1' && state.flags.n4_kind) {
     return { ...step, text: '哎，是你！两年前帮我讲清楚检查、写预约便签的那个。这次门诊让我复查，我就把旧钼靶也带来了。' }
   }

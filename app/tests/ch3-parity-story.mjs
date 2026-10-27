@@ -55,13 +55,20 @@ for (const target of ['c3_s1_shadow_good', 'c3_s1_shadow_miss', 'c3_s1_shadow_re
 // Fourth-shift clinical work now precedes a clearly later, optional-speed teaching demonstration.
 const hub = fixture('c3_s4_hub', 3)
 const clinic = trilogyStep(hub, CH3).choices.at(-1)
-assert.equal(clinic.next, 'c3_s4_clinic_0')
+assert.equal(clinic.next, 'c3_s4_open_clinic_0')
 let s = trilogyChoose(hub, CH3, 'c3_s4_hub', clinic)
 const clinicalPath = []
 s = walk(s, 'c3_s4_doppler_0', clinicalPath)
-assert.deepEqual(clinicalPath, ['c3_s4_clinic_0', 'c3_s4_clinic_1', 'c3_s4_clinic_2', 'c3_s4_doppler_0'])
+assert.deepEqual(clinicalPath, ['c3_s4_open_clinic_0', 'c3_s4_open_clinic_1', 'c3_s4_open_clinic_2',
+  'c3_s4_clinic_0', 'c3_s4_clinic_1', 'c3_s4_clinic_2', 'c3_s4_doppler_0'])
 assert.deepEqual(numbers(s), numbers(hub), 'The clinical bridge does not add points/AP or another wage')
-for (const node of clinicalPath.slice(0, -1)) {
+for (const node of clinicalPath.slice(0, 3)) {
+  const step = trilogyStep(fixture(node, 3), CH3)
+  assert.equal(step.sprite, 'char_mei')
+  assert.equal(step.image, undefined, 'Examination handover precedes the acquired image')
+  assert(!step.effect && !step.scan && !step.tool && !step.choices)
+}
+for (const node of clinicalPath.slice(3, -1)) {
   const step = trilogyStep(fixture(node, 3), CH3)
   assert.equal(step.image, 'us_c3_color_doppler_v1', 'Actual grayscale/color comparison stays visible during all three lines')
   assert(!step.sprite && !step.sprite2, 'No portrait covers the clinical image')
