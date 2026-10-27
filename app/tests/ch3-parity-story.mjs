@@ -63,12 +63,21 @@ assert.deepEqual(clinicalPath, ['c3_s4_clinic_0', 'c3_s4_clinic_1', 'c3_s4_clini
 assert.deepEqual(numbers(s), numbers(hub), 'The clinical bridge does not add points/AP or another wage')
 for (const node of clinicalPath.slice(0, -1)) {
   const step = trilogyStep(fixture(node, 3), CH3)
-  assert.equal(step.sprite, 'char_mei')
+  assert.equal(step.image, 'us_c3_color_doppler_v1', 'Actual grayscale/color comparison stays visible during all three lines')
+  assert(!step.sprite && !step.sprite2, 'No portrait covers the clinical image')
   assert.equal(step.effect, undefined)
   assert(!step.scan && !step.tool && !step.choices, 'Short clinical bridge is not a new task')
 }
 assert.match(CH3.steps.c3_s4_doppler_0.text, /午后轮休/)
 assert.match(CH3.steps.c3_s4_doppler_0.text, /接班同事/)
+assert.equal(trilogyStep(fixture('c3_s4_doppler_0', 3), CH3).sprite, 'char_mei', 'Mei returns for the subsequent demonstration')
+assert.equal(CH3.cards.c3_trace.image, 'us_c3_color_doppler_v1')
+assert(CH3.assets.includes('us_c3_color_doppler_v1'))
+assert(CH3.assets.includes('bg_c3_shared_office_day_v1'))
+for (const step of Object.values(CH3.steps)) assert.notEqual(step.bg, 'bg_office_day', 'CH3 communal work never uses the director private office')
+for (const node of ['c3_s2_roster_0', 'c3_s2_label_0', 'c3_s4_han_0', 'c3_s4_han_1', 'c3_s4_han_note']) {
+  assert.equal(trilogyStep(fixture(node, node.includes('_s4_') ? 3 : 1), CH3).bg, 'bg_c3_shared_office_day_v1')
+}
 
 // Fixed remote identities cover narration and protagonist replies as well as their own lines.
 const calls = [

@@ -183,7 +183,7 @@ exploration('c3_s2_roster', [
   ['mei', '这儿写“休”，不等于我能休。旁边那个小括号，写的是院里培训。', { giftTo: 'mei' }],
   ['me', '括号比正文还厉害。'],
   ['mei', '这个月我休了三回，三回都在开会。下回干脆写个“会”，我还不用高兴半天。'],
-], 'c3_s2_hub', 'bg_office_day')
+], 'c3_s2_hub', 'bg_c3_shared_office_day_v1')
 exploration('c3_s2_he', [
   ['he', '正想找你呢，坐。我来送申请单，顺便看看叛逃人口伙食怎样。', { giftTo: 'he' }],
   ['me', '还没顾上吃。刚看见你这袋饼干，肚子就开始替我打招呼。'],
@@ -193,7 +193,7 @@ exploration('c3_s2_label', [
   ['sys', '阅片工作站旁摞着几盒旧教学片。梅姐让你找一组对照，打开文件夹，一张图只写了“最好的一张”。你盯着它，完全想不起好在哪里。'],
   ['me', '我把探头、目标和深度写上了。下回至少不用猜这是哪一块模体。'],
   ['mei', '调整前的也放进去。今天比频率和深部补偿，别拿两块不同模体说自己调清楚了。', { card: 'c3_compare' }],
-], 'c3_s2_hub', 'bg_office_day')
+], 'c3_s2_hub', 'bg_c3_shared_office_day_v1')
 scene('c3_s2_arrive', [
   ['sys', '你在楼梯口接到表姐，帮她拎过那个鼓鼓囊囊的包。她跟在你身后，压低声音问：这里是不是每栋楼都长一个样？', { bg: 'bg_waiting_day_v2' }],
   ['cousin', '我刚差点拐进住院部。还好看见你，不然又得打电话求救。', { bg: 'bg_waiting_day_v2' }],
@@ -359,10 +359,14 @@ hub('c3_s4_hub', '诊室还在做开诊前的准备，几箱新用品靠墙放�
   ['给老周回个电话', 'c3_s4_zhou'],
 ], 'c3_s4_clinic_0')
 scene('c3_s4_clinic', [
-  ['sys', '上午的诊室忙了起来。你在工作站旁留图，梅姐先在黑白图上找到血管，再切到彩色。几次调整探头方向时，你都在本子上画了个小箭头。'],
-  ['me', '您刚才一转探头，颜色就换了。我差点以为找到了另一根血管。'],
-  ['mei', '所以黑白图的位置要先认住。先把这些交接好，空下来拿演示慢慢转，别跟着颜色跑。'],
+  ['sys', '上午的诊室忙了起来。梅姐保存好颈部血管的切面，把**灰阶图和彩色血流图**并排调出来，示意你看同一条血管。'],
+  ['me', '左边黑黑的，右边就红了。我以前还真以为，动脉才会涂成红色。'],
+  ['mei', '这条是**颈总动脉**，可不是因为它是动脉才红。左边认位置，右边看血流；红蓝得对着**色条**看，表示相对探头的方向。交好班，咱们拿演示转一转。'],
 ], 'c3_s4_doppler_0')
+for (const id of ['c3_s4_clinic_0', 'c3_s4_clinic_1', 'c3_s4_clinic_2']) {
+  Object.assign(steps[id], { image: 'us_c3_color_doppler_v1',
+    imageLabel: '颈总动脉 · 左灰阶 / 右彩色血流｜Cerevisae · CC BY-SA 4.0', sprite: '', sprite2: '' })
+}
 exploration('c3_s4_lei', [
   ['lei', '标签机借你，别像上次那个人，打一张“标签机”，然后把卷用完了。', { giftTo: 'lei' }],
   ['me', '只打“开封日期”和批次。我连卷芯都给你带回来，够意思吧？'],
@@ -397,17 +401,17 @@ scene('c3_s4_cost_end', [
   ['sys', '他把一份回收清单留在门边，页签贴得很整齐。其中一项写着“旧终端及相关留存件”。'],
 ], 'c3_s4_han_0')
 scene('c3_s4_han', [
-  ['sys', '检查间歇，你去办公室递清单。小雷核对着编号，韩经理把笔盖扣上，又拔下来。', { bg: 'bg_office_day' }],
-  ['lei', '先对**试运行那批的编号**。相关留存件，具体列到哪一份？', { bg: 'bg_office_day' }],
-  ['han', '旧终端的配套存储、备件之类。统一回收，免得留在各科没人管。', { bg: 'bg_office_day' }],
-  ['me', '这张表现在是核对，还是签了就允许带走？', { bg: 'bg_office_day' }],
-  ['han', '今天先核对。处置当然还要走你们院里的流程。', { bg: 'bg_office_day', choices: [
+  ['sys', '检查间歇，你去大办公室递清单。小雷从一摞资料旁腾出半张桌面，开始核对编号；韩经理把笔盖扣上，又拔下来。', { bg: 'bg_c3_shared_office_day_v1' }],
+  ['lei', '先对**试运行那批的编号**。相关留存件，具体列到哪一份？', { bg: 'bg_c3_shared_office_day_v1' }],
+  ['han', '旧终端的配套存储、备件之类。统一回收，免得留在各科没人管。', { bg: 'bg_c3_shared_office_day_v1' }],
+  ['me', '这张表现在是核对，还是签了就允许带走？', { bg: 'bg_c3_shared_office_day_v1' }],
+  ['han', '今天先核对。处置当然还要走你们院里的流程。', { bg: 'bg_c3_shared_office_day_v1', choices: [
     { text: '把“仅核对，未交接”写清，请他补列每件编号', next: 'c3_s4_han_note', effect: { flag: 'c3_han_scope_recorded' } },
     { text: '先把模糊条目交给小雷确认，不代签交接', next: 'c3_s4_han_ask' },
   ] }],
 ])
-put('c3_s4_han_note', { speaker: 'lei', sprite: 'char_lei', bg: 'bg_office_day', text: '就这么写。我把编号补上再回给他，别让这几页附件都成了待回收设备。', card: 'c3_trace', effect: { badge: 'c3_keep_the_record' }, next: 'c3_s4_han_end_0' })
-put('c3_s4_han_ask', { speaker: 'lei', sprite: 'char_lei', bg: 'bg_office_day', text: '我来核对。你先别代签，有的附件院里还得继续查，不能让他这一栏全带走。', card: 'c3_trace', next: 'c3_s4_han_end_0' })
+put('c3_s4_han_note', { speaker: 'lei', sprite: 'char_lei', bg: 'bg_c3_shared_office_day_v1', text: '就这么写。我把编号补上再回给他，别让这几页附件都成了待回收设备。', card: 'c3_trace', effect: { badge: 'c3_keep_the_record' }, next: 'c3_s4_han_end_0' })
+put('c3_s4_han_ask', { speaker: 'lei', sprite: 'char_lei', bg: 'bg_c3_shared_office_day_v1', text: '我来核对。你先别代签，有的附件院里还得继续查，不能让他这一栏全带走。', card: 'c3_trace', next: 'c3_s4_han_end_0' })
 scene('c3_s4_han_end', [
   ['han', '那我重列一版，正式走院方确认。今天我就不带东西了。'],
   ['sys', '他收回未签的回收联，核对联留在桌上。两张纸的页脚编号相同，“留存件”三个字也还在。'],
@@ -416,7 +420,7 @@ scene('c3_s4_han_end', [
   ['lei', '可能。他这张只列了终端。我再问问，**最早那版项目附件**算不算在里面。', { effect: { flag: 'c3_han_met' } }],
   ['sys', '下午交班前，你把教学血流的方向、探测角度和颜色图例一起记好。梅姐翻到最上面，终于不用猜哪一张是朝向探头。', { bg: 'bg_us_room_day' }],
   ['sys', '第四班交接完，临床图像各归原报告，教学演示留在自己的文件夹。梅姐把预约单收起，你提着已经洗好的饭盒去换衣服。', { bg: 'bg_us_room_day', end: true, effect: { gold: 110, flag: 'c3_shift4_done' } }],
-], undefined, 'bg_office_day')
+], undefined, 'bg_c3_shared_office_day_v1')
 
 // The known caller and the old anonymous number are not identified as the same
 // person here. Chapter five must verify the sender independently.
@@ -427,7 +431,7 @@ scene('c3_s4_wen', [
   ['me', '核对联留下了，回收联没签。到底要收什么，还得重列。', { communication: 'call' }],
   ['wen', '行，那先别把原件装进去。我这边留着新版附件，院里要核我就交。……现在有个电话进来，你先忙，有消息我再找你。', { communication: 'call', sprite: undefined, phone: 'char_wen' }],
   ['sys', '电话断了。你在核对联旁记下时间和她提的“新版附件”，又发去一句“请按正式渠道交”。雯雯回复“好”，你才收起手机回诊室。', { effect: { flag: 'c3_wen_copy_kept' } }],
-], 'c3_s4_han_end_5', 'bg_office_day')
+], 'c3_s4_han_end_5', 'bg_c3_shared_office_day_v1')
 
 // Fifth shift and the post-quiz ending are deliberately separated by the settlement page.
 scene('c3_s5_start', [
@@ -445,7 +449,7 @@ exploration('c3_s5_zhou', [
   ['zhou', '我来送会诊资料。还行，没瘦。梅姐没让你天天搬最重那台吧？', { giftTo: 'zhou' }],
   ['me', '天天推车，那只轮子比我还认路。梅姐倒是真舍得教，我问她就停下来讲。'],
   ['zhou', '那就好。回来给我讲讲，都拿模体折腾什么了。对了，下周饭堂换窗口，别还往旧门那边走。'],
-], 'c3_s5_hub', 'bg_office_day')
+], 'c3_s5_hub', 'bg_c3_shared_office_day_v1')
 exploration('c3_s5_lei', [
   ['lei', '标签机还得这么准时，我都有点不习惯。', { giftTo: 'lei' }],
   ['me', '里面还剩一截。没给机子起名，也没给你打奖状。'],
@@ -477,7 +481,7 @@ scene('c3_s5_notice', [
   ['xu', '找过门诊，也问过住院处。那阵子我跑长途，他说不舒服，我还嫌他老念叨。出门前吵了一架，后来就没回来。'],
   ['sys', '他把要留下的复印件分好，向你确认窗口位置。你指了指旁边的门，陪他把申请递过去。', { next: 'c3_s5_notice_desk' }],
 ], undefined, 'bg_waiting_day_v2')
-put('c3_s5_notice_desk', { speaker: 'sys', bg: 'bg_office_day', text: '工作人员核对身份与授权材料，登记了查询请求，将原件还给他。你帮他把受理号码抄在文件袋外面。', effect: { heart: 1, flag: 'c3_xu_query_assisted' }, next: 'c3_s5_notice_end_0' })
+put('c3_s5_notice_desk', { speaker: 'sys', bg: 'bg_c3_shared_office_day_v1', text: '工作人员核对身份与授权材料，登记了查询请求，将原件还给他。你帮他把受理号码抄在文件袋外面。', effect: { heart: 1, flag: 'c3_xu_query_assisted' }, next: 'c3_s5_notice_end_0' })
 put('c3_s5_notice_route', { speaker: 'sys', bg: 'bg_waiting_day_v2', text: '你把材料清单和窗口位置写清，许建平自己打电话确认了受理时间。他把纸折好，这次没有塞进旧报告中间。', next: 'c3_s5_notice_end_0' })
 scene('c3_s5_notice_end', [
   ['xu', '这份复印件你可以留下，只用于帮我对这件事。查不到也告诉我，别因为怕我难受就一直拖着。', { image: 'item_missing_notice', effect: { item: 'c3_missing_copy', flag: 'c3_missing_notice' } }],
@@ -651,9 +655,9 @@ scene('c3_epilogue', [
   ['cousin', '是不是还得等会儿？我现在也不知道饿不饿。', { bg: 'bg_waiting_day_v2' }],
   ['me', '等会儿一起去吃。先喝口水，我在这儿呢。', { bg: 'bg_waiting_day_v2' }],
   ['sys', '几周后，产科结合复核情况安排了**胎儿MRI**，你陪表姐到了市医院。检查已经做完，**报告还没出来**。她把产检本翻开又合上，你抱着两个人的外套，坐在她旁边。', { bg: 'bg_waiting_day_v2', effect: { flag: 'c3_cousin_mri_pending' } }],
-  ['sys', '那周回放射科，老周的桌上多了几本MRI设备资料。你刚放下饭盒，他就把一张需求表推过来。', { bg: 'bg_office_day' }],
-  ['zhou', '还没定哪台呢。主任让你先跟设备科聊聊，咱们常做什么、病人最不方便的是什么，先弄清楚。', { bg: 'bg_office_day' }],
-  ['me', '还没选机器，先选中我干活了。我去找老范借清单，别等看中一台，才发现搬不进来。', { bg: 'bg_office_day' }],
+  ['sys', '那周回放射科，老周的桌上多了几本MRI设备资料。你刚放下饭盒，他就把一张需求表推过来。', { bg: 'bg_c3_shared_office_day_v1' }],
+  ['zhou', '还没定哪台呢。主任让你先跟设备科聊聊，咱们常做什么、病人最不方便的是什么，先弄清楚。', { bg: 'bg_c3_shared_office_day_v1' }],
+  ['me', '还没选机器，先选中我干活了。我去找老范借清单，别等看中一台，才发现搬不进来。', { bg: 'bg_c3_shared_office_day_v1' }],
   ['sys', '你把B型切面、M型时间记录和血流演示分好，装进包里。梅姐将反馈页塞回夹层，指指桌上：你的半个包子还没拿。', { bg: 'bg_us_room_day' }],
   ['me', '收到。包子带走，纸巾留在右边第二格，下个学生不用满屋找了。', { bg: 'bg_us_room_day' }],
   ['sys', '诊室的门开了，里面叫到表姐的名字。她攥住你的袖口，声音很轻：“你跟我一起。”你抱紧报告袋，陪她站了起来。第三章「回声」结束。', { bg: 'bg_waiting_day_v2', end: true, effect: { flag: 'c3_completed' } }],
@@ -670,7 +674,7 @@ scene('c3_mri_selection', [
   ['zhou', '先把需求问全。宣传册上的数字我也会圈，可圈完还是得问，咱们每天做的检查能不能接住。'],
   ['me', '那我带着问题去问。候诊座位也记上，表姐这回等了一上午，片袋都快被我抱热了。'],
   ['zhou', '**明年想上MRI**，主任让你跟设备科**先问需求**。哪台还没定，别急着圈最贵的，先吃饭，下午再看。', { effect: { flag: 'c3_mri_selection_task' } }],
-], 'c3_epilogue_14', 'bg_office_day')
+], 'c3_epilogue_14', 'bg_c3_shared_office_day_v1')
 steps.c3_epilogue_14.next = 'c3_cousin_mri_wait_0'
 scene('c3_cousin_mri_wait', [
   ['cousin', '里面怎么响成那样，我躺着都不敢动。……片子还没好吗？'],
@@ -749,6 +753,7 @@ steps.c3_s1_aunt_6.tool!.objectImages = {
 cards.c3_probe.image = 'item_c3_probes_v1'
 cards.c3_gel.image = 'item_c3_gel_supplies_v1'
 cards.c3_compare.image = 'item_c3_us_phantom_v1'
+cards.c3_trace.image = 'us_c3_color_doppler_v1'
 
 // A phone counterpart is explicit for the whole call, even on the protagonist's reply.
 for (const id of ['c3_s4_zhou_0', 'c3_s4_zhou_1', 'c3_s4_zhou_2']) {
@@ -891,9 +896,9 @@ export const CH3: TrilogyChapter = {
     c3_pocket_towel: 'item_c3_towel_v2', c3_cup_stickers: 'item_c3_stickers_v2', c3_aunt_cloth: 'item_c3_towel_v2',
   },
   assets: [
-    'bg_us_room', 'bg_us_room_day', 'bg_us_bedside', 'bg_us_bedside_day_v2', 'ch2_bg_breakroom_day', 'bg_waiting_day_v2', 'bg_office_day', 'bg_day',
+    'bg_us_room', 'bg_us_room_day', 'bg_us_bedside', 'bg_us_bedside_day_v2', 'ch2_bg_breakroom_day', 'bg_waiting_day_v2', 'bg_c3_shared_office_day_v1', 'bg_day',
     'char_mei', 'pat_cousin', 'char_han', 'pat_aunt', 'pat_mystery', 'pat_wang_recovery', 'char_lei', 'char_zhou', 'ch2_pixel_char_he', 'char_tang',
-    'us_gallstone', 'us_breast', 'us_fetal', 'us_echo', 'us_mirror', 'item_missing_notice', 'item_reunion_gifts', 'item_notebook',
+    'us_gallstone', 'us_breast', 'us_fetal', 'us_echo', 'us_mirror', 'us_c3_color_doppler_v1', 'item_missing_notice', 'item_reunion_gifts', 'item_notebook',
     'pat_c3_young_liver_v1', 'us_c3_hepatorenal_v1',
     'cg_c3_mei_probe_v2', 'cg_c3_shared_lunch_v2', 'item_c3_towel_v2', 'item_c3_stickers_v2',
     'cg_c3_cousin_call_v3', 'cg_c3_us_visit_v3',

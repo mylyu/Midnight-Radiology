@@ -1,6 +1,7 @@
 {
   "bg_archive": "media/bg_archive.71910b10c72e59b9.webp",
   "bg_breakroom": "media/bg_breakroom.6e71e372d1ef1b9d.webp",
+  "bg_c3_shared_office_day_v1": "media/bg_c3_shared_office_day_v1.ef850712677b87db.webp",
   "bg_cathlab": "media/bg_cathlab.820b4679ce3afe6d.webp",
   "bg_control": "media/bg_control.f9b61cead622380c.webp",
   "bg_corridor": "media/bg_corridor.970560e65398bdf4.webp",
@@ -286,6 +287,7 @@
   "trilogy_mri_scan_room_v2": "media/trilogy_mri_scan_room_v2.9a88aedeec7a2d16.webp",
   "trilogy_pet_scan_room_v2": "media/trilogy_pet_scan_room_v2.5523d54bf0e65221.webp",
   "us_breast": "media/us_breast.6d5c0b7164110c12.webp",
+  "us_c3_color_doppler_v1": "media/us_c3_color_doppler_v1.aca91febb9925835.webp",
   "us_c3_hepatorenal_v1": "media/us_c3_hepatorenal_v1.589c8d1e6b950279.webp",
   "us_echo": "media/us_echo.5521dd2242e64df2.webp",
   "us_fetal": "media/us_fetal.283f976a6db0630c.webp",

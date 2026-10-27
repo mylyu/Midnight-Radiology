@@ -19,3 +19,8 @@ licensed CC BY-SA 3.0. The ultrasound image retains that license independently.
 It has only been converted to WebP and compressed. Source, license links and
 the exact delivery file are listed in app/public/ch3-ultrasound-sources.txt
 (available as ch3-ultrasound-sources.txt on the published site).
+
+Chapter 3 also uses "Right common carotid artery without and with doppler flow"
+by Cerevisae (2023), licensed CC BY-SA 4.0, converted to WebP without cropping
+or altering flow colors. This image independently retains CC BY-SA 4.0.
+Source, license and delivery file: app/public/ch3-ultrasound-sources.txt.

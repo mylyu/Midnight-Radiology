@@ -13,3 +13,17 @@ SHA-256: 589c8d1e6b9502790faa4e3accfd2f22844e324a19a4980ad6a211d4be0b9b31
 This image remains under CC BY-SA 3.0 independently of the game's NC-SA license.
 The game's 27-year-old character and dialogue are fictional; the source image
 is not claimed to depict that character or a patient of the same age.
+
+Title: Right common carotid artery without and with doppler flow
+Creator: Cerevisae (own work, 2023, Wikimedia Commons)
+Source: https://commons.wikimedia.org/wiki/File:Right_common_carotid_artery_without_and_with_doppler_flow.jpg
+Original file: https://upload.wikimedia.org/wikipedia/commons/7/75/Right_common_carotid_artery_without_and_with_doppler_flow.jpg
+License: Creative Commons Attribution-ShareAlike 4.0 International
+License URL: https://creativecommons.org/licenses/by-sa/4.0/
+Changes: JPEG converted to WebP quality 78. Original 1024 x 698 dimensions retained.
+No crop, repainting, artificial flow color, or altered anatomy.
+Delivery file: assets/media/us_c3_color_doppler_v1.aca91febb9925835.webp
+SHA-256: aca91febb9925835b00afef6c7aa3c9075d229391ea88061c20588eca3fbc2bd
+This image remains under CC BY-SA 4.0 independently of the game's NC-SA license.
+The grayscale/color pair illustrates vascular ultrasound; fictional hospital
+dialogue does not identify the real subject as one of the game's patients.

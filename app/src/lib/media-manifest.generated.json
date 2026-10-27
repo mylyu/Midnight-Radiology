@@ -81,6 +81,11 @@
       "bytes": 92740,
       "type": "image"
     },
+    "assets/media/bg_c3_shared_office_day_v1.ef850712677b87db.webp": {
+      "sha256": "ef850712677b87db782d0ef22093f35bef49ace8c2f1715b748d74c20169d56e",
+      "bytes": 164042,
+      "type": "image"
+    },
     "assets/media/bg_cathlab.820b4679ce3afe6d.webp": {
       "sha256": "820b4679ce3afe6d5af8e98e708ab10d2793fcc6d815a4379c7eddbecfc24549",
       "bytes": 127320,
@@ -1491,6 +1496,11 @@
       "bytes": 47890,
       "type": "image"
     },
+    "assets/media/us_c3_color_doppler_v1.aca91febb9925835.webp": {
+      "sha256": "aca91febb9925835b00afef6c7aa3c9075d229391ea88061c20588eca3fbc2bd",
+      "bytes": 33108,
+      "type": "image"
+    },
     "assets/media/us_c3_hepatorenal_v1.589c8d1e6b950279.webp": {
       "sha256": "589c8d1e6b9502790faa4e3accfd2f22844e324a19a4980ad6a211d4be0b9b31",
       "bytes": 40108,
@@ -2167,8 +2177,8 @@
       "audio/vox_kid.mp3"
     ],
     "ch3": [
+      "assets/media/bg_c3_shared_office_day_v1.ef850712677b87db.webp",
       "assets/media/bg_day.bb8e2f2392fbc58a.webp",
-      "assets/media/bg_office_day.c715845d3a833f50.webp",
       "assets/media/bg_us_bedside.65b0e5346b0444f3.webp",
       "assets/media/bg_us_bedside_day_v2.9b96cb6b99da0569.webp",
       "assets/media/bg_us_room.59a9ab618e29e031.webp",
@@ -2215,6 +2225,7 @@
       "assets/media/pat_wang_recovery.79373a8e9bf9b05f.webp",
       "assets/media/stamp.72cf222761ee91c0.webp",
       "assets/media/us_breast.6d5c0b7164110c12.webp",
+      "assets/media/us_c3_color_doppler_v1.aca91febb9925835.webp",
       "assets/media/us_c3_hepatorenal_v1.589c8d1e6b950279.webp",
       "assets/media/us_echo.5521dd2242e64df2.webp",
       "assets/media/us_fetal.283f976a6db0630c.webp",

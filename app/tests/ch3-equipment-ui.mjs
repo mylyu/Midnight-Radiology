@@ -135,6 +135,39 @@ try {
   await page.goto(`${url}#/dlc`)
   await page.getByRole('heading', { name: /章节与番外/ }).waitFor({ timeout: 15000 })
 
+  await test('doppler-and-shared-office', async row => {
+    row.views = []
+    for (const size of [{ width: 1920, height: 1080 }, { width: 390, height: 844 }]) {
+      await page.setViewportSize(size)
+      await enter(fixture('c3_s4_clinic_0', 3))
+      const initial = await read()
+      for (let i = 0; i < 3; i++) {
+        await nodeIs(`c3_s4_clinic_${i}`); await reveal()
+        const picture = page.locator('.trilogy-story-image')
+        await imageIs(picture.locator('img'), 'us_c3_color_doppler_v1')
+        const bounds = await fit(picture, 'color Doppler picture')
+        const dialogue = await page.locator('.dialog-wrap').boundingBox()
+        assert(bounds.y + bounds.height <= dialogue.y + 1, 'Picture and caption remain above the dialogue')
+        assert.equal(await page.locator('.sprite-l,.sprite-r').count(), 0, 'No overlapping portrait')
+        if (i === 1) { await shot(`doppler-${size.width}`); row.views.push({ viewport: size, bounds }) }
+        await advance()
+      }
+      await nodeIs('c3_s4_doppler_0')
+      assert.equal(await page.locator('.trilogy-story-image').count(), 0, 'Picture exits at the next teaching scene')
+      await imageIs(page.locator('.sprite-l,.sprite-r').first(), 'char_mei')
+      const after = await read()
+      for (const key of ['gold', 'skill', 'heart', 'wealth', 'ap']) assert.equal(after[key], initial[key], 'Image dialogue adds no numerical rewards')
+
+      await enter(fixture('c3_s4_han_1', 3)); await reveal()
+      await imageIs(page.locator('[data-scene-background]'), 'bg_c3_shared_office_day_v1')
+      assert.equal(await page.locator('[data-scene-background="bg_office_day"]').count(), 0)
+      const portraits = page.locator('.sprite-l,.sprite-r')
+      assert.equal(await portraits.count(), 2, 'Lei and Han are present at the shared work desk')
+      for (const portrait of await portraits.all()) await portrait.evaluate(image => image.decode())
+      await shot(`shared-office-${size.width}`)
+    }
+  })
+
   await test('cousin-first-call-native-audio-and-receipt', async row => {
     await enter(base()) // No injected CH3 progress: normal chapter initialization.
     await nodeIs('c3_intro_call_0')
