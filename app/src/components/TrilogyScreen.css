@@ -25,6 +25,11 @@
 .trilogy-story-image { position:absolute; top:65px; left:50%; transform:translateX(-50%); width:min(48vw,600px); height:calc(100% - 320px); max-height:470px; z-index:8; display:flex; align-items:center; justify-content:center; flex-direction:column; }
 .trilogy-story-image img { max-width:100%; max-height:100%; object-fit:contain; border:1px solid #64748b; border-radius:.65rem; box-shadow:0 0 30px #0008; }
 .trilogy-story-image span { background:#0f172ae0; font-size:.75rem; padding:.4rem .7rem; }
+/* CH3 object shots occupy spare scene space, bounded by the live dialogue height. */
+.trilogy-story-object { position:absolute; top:calc(var(--trilogy-header-height,76px) + 8px); right:clamp(1rem,10vw,9rem); width:min(32vw,320px); height:min(32vh,280px); max-height:max(0px,calc(100% - var(--trilogy-header-height,76px) - var(--trilogy-dialog-height,14rem) - 24px)); z-index:8; display:grid; grid-template-rows:minmax(0,1fr) auto; gap:.35rem; pointer-events:none; }
+.trilogy-story-object[data-two-portraits] { right:auto; left:50%; transform:translateX(-50%); }
+.trilogy-story-object>img { width:100%; height:100%; min-height:0; object-fit:contain; filter:drop-shadow(0 8px 10px #020617b3); }
+.trilogy-story-object>span { justify-self:center; max-width:100%; padding:.3rem .55rem; border:1px solid #64748b; border-radius:.4rem; background:#0f172ae8; font-size:.75rem; line-height:1.35; text-align:center; }
 .trilogy-closeup { width:85%; }
 .trilogy-closeup img { animation:trilogy-push 9s ease-out both; }
 @keyframes trilogy-push { from { transform:scale(.96) } to { transform:scale(1.025) } }
@@ -58,6 +63,9 @@
 .trilogy-lab-controls input { accent-color:#2dd4bf; width:100%; min-height:30px; }
 .trilogy-lab-controls button { border:1px solid #64748b; border-radius:.5rem; background:#1e293b; min-height:44px; padding:.5rem; font-size:.85rem; }
 .trilogy-lab-controls button[aria-pressed=true] { border-color:#2dd4bf; background:#134e4a; }
+.trilogy-probe-choices { flex-shrink:0; }
+.trilogy-lab-controls .trilogy-probe-choices button { display:grid; grid-template-rows:minmax(0,1fr) auto; justify-items:center; gap:.2rem; min-width:0; height:102px; padding:.35rem; }
+.trilogy-probe-choices img { display:block; width:100%; height:100%; min-height:0; object-fit:contain; }
 .trilogy-lab-controls details { font-size:.85rem; line-height:1.6; color:#cbd5e1; }
 .trilogy-lab footer { flex-shrink:0; display:flex; justify-content:center; }
 .trilogy-document { position:relative; width:min(100%,360px); max-height:100%; overflow-y:auto; padding:1.1rem; border:3px solid #786146; background:#e5ddc9; color:#352e25; box-shadow:8px 8px 0 #1119; font-family:monospace; }
@@ -71,6 +79,8 @@
 .trilogy-decay-dots i { width:20px; height:20px; border-radius:50%; background:#2dd4bf; margin:auto; }
 @media (max-width:600px) and (orientation:portrait) {
  .trilogy-story-image { top:90px; height:calc(50% - 95px); width:75%; }
+ .trilogy-story-object { right:.75rem; width:min(56vw,220px); height:min(27vh,205px); }
+ .trilogy-story-object>span { font-size:.7rem; }
  .trilogy-closeup { width:95%; }
  .trilogy-settlement { top:80px; padding:.8rem; }
  .trilogy-stats strong { font-size:1.1rem; }
@@ -78,6 +88,7 @@
  .trilogy-lab { inset:95px .5rem .5rem; padding:.75rem; }
  .trilogy-lab-work { grid-template-columns:1fr; grid-template-rows:minmax(0,1fr) auto; gap:.65rem; margin:.65rem 0; }
  .trilogy-lab-controls { gap:.4rem; max-height:155px; }
+ .trilogy-lab-controls .trilogy-probe-choices button { height:72px; padding:.2rem; font-size:.8rem; }
  .trilogy-lab header h2 { font-size:1.2rem; }
  .trilogy-lab header p { font-size:.85rem; }
  .trilogy-lab-controls details { max-height:80px; overflow:auto; }
@@ -85,11 +96,14 @@
 }
 @media (max-height:500px) and (orientation:landscape) {
  .trilogy-story-image { top:43px; height:45%; width:40%; }
+ .trilogy-story-object { right:1rem; width:min(25vw,220px); height:150px; }
+ .trilogy-story-object>span { padding:.2rem .4rem; font-size:.65rem; }
  .trilogy-lab { inset:45px .5rem .5rem; padding:.6rem; }
  .trilogy-lab header h2 { font-size:1rem; display:inline; margin-right:1rem; }
  .trilogy-lab header p { font-size:.8rem; }
  .trilogy-lab-work { grid-template-columns:1.2fr 1fr; gap:.65rem; margin:.5rem 0; }
  .trilogy-lab-controls { gap:.35rem; font-size:.75rem; }
+ .trilogy-lab-controls .trilogy-probe-choices button { height:64px; padding:.2rem; font-size:.75rem; }
  .trilogy-lab-controls p { font-size:.75rem; }
  .trilogy-lab-controls label { font-size:.75rem; }
  .trilogy-lab footer button { min-height:36px; padding:.4rem 1rem; }

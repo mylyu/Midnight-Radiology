@@ -1,0 +1,296 @@
+{
+  "date": "2026-10-27",
+  "generator": "Built-in image_gen; transparent_background=true; no model override available",
+  "originalsRetained": true,
+  "entries": [
+    {
+      "id": "item_c3_probes_v1",
+      "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-9a98d99e-11ed-4855-b38f-41aa0dc15241.png",
+      "maxEdge": 512,
+      "sourceSha256": "740d91e7ce06bef534587b989a74792a6a0ad1a0e99452386238bf8f71c62e21",
+      "sourceBytes": 815256,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "sourceAlpha": true,
+      "transparentPixels": 983437,
+      "opaquePixels": 2169,
+      "compression": {
+        "format": "webp",
+        "quality": 78,
+        "alphaQuality": 100,
+        "effort": 6,
+        "resizeKernel": "nearest"
+      },
+      "outputSha256": "3374b11babc4a0a26bb8c8c29c301a09a9f51522a46c6743626bc8e8b10461a6",
+      "outputBytes": 38538,
+      "outputDimensions": [
+        512,
+        512
+      ],
+      "deliveryPath": "app/public/assets/media/item_c3_probes_v1.3374b11babc4a0a2.webp"
+    },
+    {
+      "id": "item_c3_gel_supplies_v1",
+      "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-80e2c837-aa52-42c7-b1d3-e1373c6f05e0.png",
+      "maxEdge": 512,
+      "sourceSha256": "d453177bce53ceefdd56e40f493bf274e985f8a1c237ecb9978bb26a3954dc19",
+      "sourceBytes": 1452667,
+      "sourceDimensions": [
+        1536,
+        1024
+      ],
+      "sourceAlpha": true,
+      "transparentPixels": 912088,
+      "opaquePixels": 0,
+      "compression": {
+        "format": "webp",
+        "quality": 78,
+        "alphaQuality": 100,
+        "effort": 6,
+        "resizeKernel": "nearest"
+      },
+      "outputSha256": "0a7e6da6ff0c354f7c813f0bf46e4111e089fd537c24db60f820b4ff0870ee35",
+      "outputBytes": 25930,
+      "outputDimensions": [
+        512,
+        341
+      ],
+      "deliveryPath": "app/public/assets/media/item_c3_gel_supplies_v1.0a7e6da6ff0c354f.webp"
+    },
+    {
+      "id": "item_c3_label_printer_v1",
+      "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-dd510dc7-09ef-4d53-9323-90c72b23ed69.png",
+      "maxEdge": 512,
+      "sourceSha256": "a03e9ae8b524e31b0d6cce27d70fb9a7361ba8aa7fa1157e187f435480770235",
+      "sourceBytes": 1270647,
+      "sourceDimensions": [
+        1536,
+        1024
+      ],
+      "sourceAlpha": true,
+      "transparentPixels": 1011971,
+      "opaquePixels": 0,
+      "compression": {
+        "format": "webp",
+        "quality": 78,
+        "alphaQuality": 100,
+        "effort": 6,
+        "resizeKernel": "nearest"
+      },
+      "outputSha256": "49fd72c9eb6d239688445220b65772393c76c350a8904fa956a75d6a093d1f87",
+      "outputBytes": 21298,
+      "outputDimensions": [
+        512,
+        341
+      ],
+      "deliveryPath": "app/public/assets/media/item_c3_label_printer_v1.49fd72c9eb6d2396.webp"
+    },
+    {
+      "id": "item_c3_us_phantom_v1",
+      "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-d0f7dc1f-1a89-4d10-81e3-0332832c7697.png",
+      "maxEdge": 512,
+      "sourceSha256": "b8abff0d8f72adab24cd3a7afb35f8cde79ae90af104aafca19caa8372bed595",
+      "sourceBytes": 1288029,
+      "sourceDimensions": [
+        1536,
+        1024
+      ],
+      "sourceAlpha": true,
+      "transparentPixels": 822621,
+      "opaquePixels": 0,
+      "compression": {
+        "format": "webp",
+        "quality": 78,
+        "alphaQuality": 100,
+        "effort": 6,
+        "resizeKernel": "nearest"
+      },
+      "outputSha256": "53d0096d2d868b51495991f68f7c538b4e8e05d2ef9f00229986fa0e3eed0a68",
+      "outputBytes": 19098,
+      "outputDimensions": [
+        512,
+        341
+      ],
+      "deliveryPath": "app/public/assets/media/item_c3_us_phantom_v1.53d0096d2d868b51.webp"
+    },
+    {
+      "id": "item_c3_probe_linear_v1",
+      "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-6b982306-3bc3-4cc9-9c70-740524af7bd0.png",
+      "maxEdge": 256,
+      "sourceSha256": "78a7555d87cc9fb145fc386be736a1331635e0311401e0056d4a5c153c1e81ee",
+      "sourceBytes": 376855,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "sourceAlpha": true,
+      "transparentPixels": 1296545,
+      "opaquePixels": 1767,
+      "compression": {
+        "format": "webp",
+        "quality": 78,
+        "alphaQuality": 100,
+        "effort": 6,
+        "resizeKernel": "nearest"
+      },
+      "outputSha256": "92851728b5a5cb2b386235bfc3edc1021ce85290fe759a7fecf1b112ac3a1f45",
+      "outputBytes": 5576,
+      "outputDimensions": [
+        256,
+        256
+      ],
+      "deliveryPath": "app/public/assets/media/item_c3_probe_linear_v1.92851728b5a5cb2b.webp"
+    },
+    {
+      "id": "item_c3_probe_convex_v1",
+      "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-44370fda-849b-4857-b39a-47bd2de5a3dc.png",
+      "maxEdge": 256,
+      "sourceSha256": "bf88521a7af40f83ef3473a58ec761f956400e82f4810f60f6424e6673ba25bf",
+      "sourceBytes": 362758,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "sourceAlpha": true,
+      "transparentPixels": 1317538,
+      "opaquePixels": 1630,
+      "compression": {
+        "format": "webp",
+        "quality": 78,
+        "alphaQuality": 100,
+        "effort": 6,
+        "resizeKernel": "nearest"
+      },
+      "outputSha256": "6f912cbd5594046e5339851147c5414d6a163c7eed804d3bfcce965fd3012968",
+      "outputBytes": 5434,
+      "outputDimensions": [
+        256,
+        256
+      ],
+      "deliveryPath": "app/public/assets/media/item_c3_probe_convex_v1.6f912cbd5594046e.webp"
+    },
+    {
+      "id": "item_c3_probe_phased_v1",
+      "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-8f8989f2-9ede-476b-a8b2-42457a252ccc.png",
+      "maxEdge": 256,
+      "sourceSha256": "48a46dc01b34801bf44f2776c5039eb30cc6151378f817220577abe70eda85d3",
+      "sourceBytes": 291005,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "sourceAlpha": true,
+      "transparentPixels": 1377157,
+      "opaquePixels": 1459,
+      "compression": {
+        "format": "webp",
+        "quality": 78,
+        "alphaQuality": 100,
+        "effort": 6,
+        "resizeKernel": "nearest"
+      },
+      "outputSha256": "5f26d3f3755dbdf289345754bade0e3956dcc2daa22553a0a564bdbe48f4d771",
+      "outputBytes": 4592,
+      "outputDimensions": [
+        256,
+        256
+      ],
+      "deliveryPath": "app/public/assets/media/item_c3_probe_phased_v1.5f26d3f3755dbdf2.webp"
+    },
+    {
+      "id": "item_c3_probe_card_v1",
+      "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-c5517031-7e04-4770-a7c2-4e146c12292d.png",
+      "maxEdge": 512,
+      "sourceSha256": "dc9fe3a16d049817e99baad3d7ffd3529f0a7f48ce10b9876e6dad8bc1e0f418",
+      "sourceBytes": 1810160,
+      "sourceDimensions": [
+        1536,
+        1024
+      ],
+      "sourceAlpha": true,
+      "transparentPixels": 734431,
+      "opaquePixels": 0,
+      "compression": {
+        "format": "webp",
+        "quality": 78,
+        "alphaQuality": 100,
+        "effort": 6,
+        "resizeKernel": "nearest"
+      },
+      "outputSha256": "cde955fe155f59a128306b8037bd452c667b9893e97dffc18a670455b008feee",
+      "outputBytes": 22776,
+      "outputDimensions": [
+        512,
+        341
+      ],
+      "deliveryPath": "app/public/assets/media/item_c3_probe_card_v1.cde955fe155f59a1.webp"
+    },
+    {
+      "id": "item_c3_label_roll_v1",
+      "source": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-97d34ff0-c7cb-4789-938d-8a091fad1c0b.png",
+      "maxEdge": 256,
+      "sourceSha256": "fc457a38d6189bec2520bde94b6e70dc9cf7dfe29d88b12d9ea0a423519fc8da",
+      "sourceBytes": 450939,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "sourceAlpha": true,
+      "compression": {
+        "format": "webp",
+        "quality": 78,
+        "alphaQuality": 100,
+        "effort": 6,
+        "resizeKernel": "nearest"
+      },
+      "outputSha256": "a46ba8e5caf6dae81af86168adb9203121ede91534687795889992ab63234d9d",
+      "outputBytes": 6052,
+      "outputDimensions": [
+        256,
+        256
+      ],
+      "deliveryPath": "app/public/assets/media/item_c3_label_roll_v1.a46ba8e5caf6dae8.webp"
+    }
+  ],
+  "prompts": {
+    "initial": [
+      {
+        "id": "item_c3_probes_v1",
+        "prompt": "Create a standalone game inventory illustration for a Chinese hospital pixel-art visual novel. Coarse hand-placed square pixel clusters, strong dark navy outlines, limited warm off-white/blue-grey/teal palette, restrained highlights. Match detailed retro game item sprites, NOT a glossy 3D render, NOT smooth vector art, NOT photorealistic. Clearly legible at small game size. Real transparent background, no ground plane, no checkerboard, no people, no typography, no labels, no logos, no watermark. Keep every object inside a generous transparent margin. Square canvas, three evenly spaced separate vertical columns, no objects crossing column boundaries. Left: linear-array ultrasound transducer, long broad flat rectangular dark contact face and ergonomic ivory handle. Center: convex abdominal ultrasound transducer, broad curved dark contact face and ivory handle. Right: phased-array cardiac ultrasound transducer, small narrow near-square flat dark contact face and compact ivory handle. Same scale, three-quarter view, each probe upright with its contact face visible at top and a short neatly curled dark cable below it, each cable contained within its own column. Clearly distinguish flat wide vs curved wide vs small contact footprint. ONLY these three probes."
+      },
+      {
+        "id": "item_c3_gel_supplies_v1",
+        "prompt": "Create a standalone game inventory illustration for a Chinese hospital pixel-art visual novel. Coarse hand-placed square pixel clusters, strong dark navy outlines, limited warm off-white/blue-grey/teal palette, restrained highlights. Match detailed retro game item sprites, NOT a glossy 3D render, NOT smooth vector art, NOT photorealistic. Clearly legible at small game size. Real transparent background, no ground plane, no checkerboard, no people, no typography, no labels, no logos, no watermark. Keep every object inside a generous transparent margin. One compact coordinated inventory grouping in three-quarter view: left a translucent pale-blue ultrasound coupling gel squeeze bottle with a blue flip-top cap and a plain blue rectangular blank label; center two separate sealed single-use sterile gel sachets, silver-white with a small blue stripe, visibly UNOPENED; right/back a small off-white tabletop gel bottle warmer with two round wells and one seated bottle, short black power cord. Keep the bottle/sachets prominent and unmistakably different packages. No writing. Do not depict mixing or refilling anything."
+      },
+      {
+        "id": "item_c3_label_printer_v1",
+        "prompt": "Create a standalone game inventory illustration for a Chinese hospital pixel-art visual novel. Coarse hand-placed square pixel clusters, strong dark navy outlines, limited warm off-white/blue-grey/teal palette, restrained highlights. Match detailed retro game item sprites, NOT a glossy 3D render, NOT smooth vector art, NOT photorealistic. Clearly legible at small game size. Real transparent background, no ground plane, no checkerboard, no people, no typography, no labels, no logos, no watermark. Keep every object inside a generous transparent margin. One handheld thermal adhesive label maker with a compact navy-grey rounded rectangular body, tiny dark display, simple buttons and a short white blank tape emerging from its top. Beside it one spare roll of white adhesive label tape with visible brown cardboard core and a loose empty cardboard core. The complete set fits as one compact isometric still life. NO notebook, NO book, NO printed letters on tape. Crisp visible pixel edges."
+      },
+      {
+        "id": "item_c3_us_phantom_v1",
+        "prompt": "Create a standalone game inventory illustration for a Chinese hospital pixel-art visual novel. Coarse hand-placed square pixel clusters, strong dark navy outlines, limited warm off-white/blue-grey/teal palette, restrained highlights. Match detailed retro game item sprites, NOT a glossy 3D render, NOT smooth vector art, NOT photorealistic. Clearly legible at small game size. Real transparent background, no ground plane, no checkerboard, no people, no typography, no labels, no logos, no watermark. Keep every object inside a generous transparent margin. One physical ultrasound tissue-mimicking teaching phantom matching a tan/brown rectangular soft gel block with gently beveled corners, smooth flat scan surface, placed on a thin dark blue rubber mat. Beside it a tiny protective lid leaned upright behind the block. One modest clear gel bead on the scan surface, no probe, no CT cylinder, no floating circles and no cutaway window into its contents. It is an unmarked tabletop training block, not an anatomical organ. Three-quarter viewpoint, coarse retro pixel painting."
+      }
+    ],
+    "probeEdits": [
+      [
+        "item_c3_probe_linear_v1",
+        "leftmost broad flat rectangular LINEAR probe"
+      ],
+      [
+        "item_c3_probe_convex_v1",
+        "middle broad curved CONVEX abdominal probe"
+      ],
+      [
+        "item_c3_probe_phased_v1",
+        "rightmost small-footprint PHASED ARRAY cardiac probe"
+      ]
+    ],
+    "pocketCard": "Create one isolated small inventory item for a hospital retro pixel-art game: a cream paper pocket reference card with slightly worn corners inside a clear plastic sleeve, lying at a shallow three-quarter angle. On its front are three tiny but recognizable blue-grey drawings side by side: a wide flat linear ultrasound probe, a wide curved convex probe, a small phased-array probe. Beneath them three simple short blue horizontal rule marks, NO letters or numbers or text at all. Dark navy outline, coarse hand-placed square pixels, warm ivory paper, restrained teal accent, same retro pixel illustration look as game inventory objects, no glossy render. Real transparent background, no people, no hand, no notebook, no ground plane, no watermark. Full card visible with transparent margins.",
+    "labelRoll": "Edit this reference pixel-art item set: retain ONLY the spare roll of white adhesive label tape with brown cardboard core and a small loose blank tape end. Remove the handheld label maker and remove the empty cardboard tube. Center this one roll on a true transparent square canvas, generous transparent margin. Preserve the reference coarse square pixel illustration, navy outline, warm ivory paper and subdued shading. No glow, no ground, no background, no text, no numbers, no people, no logos. The object is the leftover label paper carried in a hospital game inventory after returning the borrowed label maker.",
+    "probeEditTemplate": "Edit this supplied transparent pixel-art inventory sheet into ONE isolated object: retain ONLY the {which}. Remove the other two probes entirely. Preserve this probe's exact type, recognizable contact-face geometry, dark outline, ivory handle, dark short curled cable, coarse pixel clusters and colors. Center the single probe on a transparent square canvas with generous transparent margins. Do not add typography, labels, people, ground, checkerboard or logos. Do not change it into smooth 3D art. This will be a small image on a game selection button.",
+    "probeEditReference": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-9a98d99e-11ed-4855-b38f-41aa0dc15241.png",
+    "labelRollReference": "C:/Users/lvmen/.codex/generated_images/01a03d87-f338-71d1-ac31-cfd37ee2d8bb/exec-dd510dc7-09ef-4d53-9323-90c72b23ed69.png"
+  }
+}

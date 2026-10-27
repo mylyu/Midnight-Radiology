@@ -991,6 +991,46 @@
       "bytes": 7214,
       "type": "image"
     },
+    "assets/media/item_c3_gel_supplies_v1.0a7e6da6ff0c354f.webp": {
+      "sha256": "0a7e6da6ff0c354f7c813f0bf46e4111e089fd537c24db60f820b4ff0870ee35",
+      "bytes": 25930,
+      "type": "image"
+    },
+    "assets/media/item_c3_label_printer_v1.49fd72c9eb6d2396.webp": {
+      "sha256": "49fd72c9eb6d239688445220b65772393c76c350a8904fa956a75d6a093d1f87",
+      "bytes": 21298,
+      "type": "image"
+    },
+    "assets/media/item_c3_label_roll_v1.a46ba8e5caf6dae8.webp": {
+      "sha256": "a46ba8e5caf6dae81af86168adb9203121ede91534687795889992ab63234d9d",
+      "bytes": 6052,
+      "type": "image"
+    },
+    "assets/media/item_c3_probe_card_v1.cde955fe155f59a1.webp": {
+      "sha256": "cde955fe155f59a128306b8037bd452c667b9893e97dffc18a670455b008feee",
+      "bytes": 22776,
+      "type": "image"
+    },
+    "assets/media/item_c3_probe_convex_v1.6f912cbd5594046e.webp": {
+      "sha256": "6f912cbd5594046e5339851147c5414d6a163c7eed804d3bfcce965fd3012968",
+      "bytes": 5434,
+      "type": "image"
+    },
+    "assets/media/item_c3_probe_linear_v1.92851728b5a5cb2b.webp": {
+      "sha256": "92851728b5a5cb2b386235bfc3edc1021ce85290fe759a7fecf1b112ac3a1f45",
+      "bytes": 5576,
+      "type": "image"
+    },
+    "assets/media/item_c3_probe_phased_v1.5f26d3f3755dbdf2.webp": {
+      "sha256": "5f26d3f3755dbdf289345754bade0e3956dcc2daa22553a0a564bdbe48f4d771",
+      "bytes": 4592,
+      "type": "image"
+    },
+    "assets/media/item_c3_probes_v1.3374b11babc4a0a2.webp": {
+      "sha256": "3374b11babc4a0a26bb8c8c29c301a09a9f51522a46c6743626bc8e8b10461a6",
+      "bytes": 38538,
+      "type": "image"
+    },
     "assets/media/item_c3_stickers_v2.b35847e64c82b2bb.webp": {
       "sha256": "b35847e64c82b2bbdb9a6548133fdd69d07e89ec4e55cfafbed5f8dca69965a1",
       "bytes": 11238,
@@ -999,6 +1039,11 @@
     "assets/media/item_c3_towel_v2.92f1004b08a1e808.webp": {
       "sha256": "92f1004b08a1e80837753c716d41e8300c9ef3a7a4f7dd9a66089736107de266",
       "bytes": 5128,
+      "type": "image"
+    },
+    "assets/media/item_c3_us_phantom_v1.53d0096d2d868b51.webp": {
+      "sha256": "53d0096d2d868b51495991f68f7c538b4e8e05d2ef9f00229986fa0e3eed0a68",
+      "bytes": 19098,
       "type": "image"
     },
     "assets/media/item_c4_postcard_v2.d263f500ee425af9.webp": {
@@ -2137,8 +2182,17 @@
       "assets/media/char_wen.afb4dcae9314954d.webp",
       "assets/media/char_zhou.6654ff12eb3e23ca.webp",
       "assets/media/item_book.9b32669caa358e79.webp",
+      "assets/media/item_c3_gel_supplies_v1.0a7e6da6ff0c354f.webp",
+      "assets/media/item_c3_label_printer_v1.49fd72c9eb6d2396.webp",
+      "assets/media/item_c3_label_roll_v1.a46ba8e5caf6dae8.webp",
+      "assets/media/item_c3_probe_card_v1.cde955fe155f59a1.webp",
+      "assets/media/item_c3_probe_convex_v1.6f912cbd5594046e.webp",
+      "assets/media/item_c3_probe_linear_v1.92851728b5a5cb2b.webp",
+      "assets/media/item_c3_probe_phased_v1.5f26d3f3755dbdf2.webp",
+      "assets/media/item_c3_probes_v1.3374b11babc4a0a2.webp",
       "assets/media/item_c3_stickers_v2.b35847e64c82b2bb.webp",
       "assets/media/item_c3_towel_v2.92f1004b08a1e808.webp",
+      "assets/media/item_c3_us_phantom_v1.53d0096d2d868b51.webp",
       "assets/media/item_coffee.4368d5294285e799.webp",
       "assets/media/item_dosimeter.ff4a9ed3f7f6e3e3.webp",
       "assets/media/item_key.ddbc01d45ea7ded3.webp",

@@ -21,6 +21,7 @@ export function TrilogyLab({ state, chapter, tool, update }: { state: GameState;
   const image = tool.images?.[saved.choice] ?? tool.image
   const choices = tool.kind === 'mri' ? Object.keys(tool.images ?? { T1: '', T2: '', FLAIR: '' })
     : tool.task === 'probe' ? ['凸阵', '线阵', '相控阵'] : []
+  const objectImages = ch3 && tool.task === 'probe' ? tool.objectImages : undefined
   const ultrasound = ['echo', 'tgc', 'm_mode', 'doppler', 'resolution', 'spatial_resolution'].includes(tool.task)
   const nuclear = ['collimator', 'spect', 'coincidence', 'counting'].includes(tool.task)
   const magnetic = tool.task.startsWith('mri-')
@@ -47,7 +48,7 @@ export function TrilogyLab({ state, chapter, tool, update }: { state: GameState;
         {tool.task === 'decay' && <div className="trilogy-decay-display"><span>F-18</span><strong>{Math.round(100 * 2 ** (-saved.value / 110))}%</strong><div className="trilogy-decay-dots">{Array.from({ length: 30 }, (_, i) => <i key={i} style={{ opacity: i < 30 * 2 ** (-saved.value / 110) ? 1 : .12 }} />)}</div><small>相对活度 · 等待 {saved.value} 分钟</small></div>}
       </div>
       <aside className="trilogy-lab-controls">
-        {choices.length > 0 && <div className="grid grid-cols-3 gap-2">{choices.map(choice => <button key={choice} aria-pressed={saved.choice === choice} onClick={() => set({ choice })}>{choice}</button>)}</div>}
+        {choices.length > 0 && <div className={`grid grid-cols-3 gap-2${objectImages ? ' trilogy-probe-choices' : ''}`}>{choices.map(choice => <button key={choice} aria-pressed={saved.choice === choice} onClick={() => set({ choice })}>{objectImages ? <>{objectImages[choice] && <img src={imageAsset(objectImages[choice])} alt="" className="pixel" />}<span>{choice}</span></> : choice}</button>)}</div>}
         {tool.task === 'artifact' ? <div className="grid grid-cols-2 gap-2"><button aria-pressed={saved.value < 50} onClick={() => set({ value: 25 })}>看受运动影响的那段</button><button aria-pressed={saved.value >= 50} onClick={() => set({ value: 75 })}>沟通后必要补采</button></div>
           : tool.task !== 'sequence' && <label>{tool.task === 'fusion' ? '横向对齐' : tool.task === 'decay' ? '等待时间' : tool.task === 'probe' ? '探头位置' : tool.task === 'depth' ? '显示深度' : '总增益'}
             <input aria-label={tool.task === 'decay' ? '等待时间' : '主要调节'} type="range" min="0" max={tool.task === 'decay' ? 220 : 100} value={saved.value} onChange={e => set({ value: Number(e.target.value) })} /></label>}

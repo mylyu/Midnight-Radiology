@@ -25,6 +25,8 @@ export interface TrilogyTool {
   image?: string
   reference?: string
   images?: Record<string, string>
+  /** Physical tools shown inside the existing choice buttons. */
+  objectImages?: Record<string, string>
   /** A small, concrete task. Runtime provides one principal interaction. */
   task: 'probe' | 'gain' | 'depth' | 'echo' | 'tgc' | 'm_mode' | 'doppler' | 'resolution' | 'spatial_resolution'
     | 'sequence' | 'artifact' | 'mri-relax' | 'mri-encoding' | 'mri-sampling'
@@ -41,6 +43,8 @@ export interface TrilogyStep extends Step {
   giftTo?: string
   communication?: 'call' | 'sms'
   closeup?: boolean
+  /** Compact object illustration alongside the current characters. */
+  imageKind?: 'object'
   cameraMotion?: 'push' | 'settle'
   caseId?: string
 }
@@ -73,6 +77,8 @@ export interface TrilogyChapter {
   quiz: { q: string; options: string[]; answer: number; explain: string }[]
   assets: string[]
   shopItems?: TrilogyShopItem[]
+  /** Optional inventory thumbnails keyed by the existing item IDs. */
+  itemImages?: Record<string, string>
   /** Exact previous-history checks; missing flags never invent memories. */
   adapt?: (id: string, step: TrilogyStep, state: GameState) => TrilogyStep
 }

@@ -199,6 +199,7 @@ export function TrilogyScreen({ state, chapter, update, onExit, renderText }: Pr
   const savedBackground = raw.bg ?? p.viewBg ?? shift.background
   const background = savedBackground === 'bg_mri_room' ? 'bg_mri_room_day_v2'
     : savedBackground === 'bg_mri_corridor' ? 'bg_mri_corridor_day_v2' : savedBackground
+  const objectImage = chapter.id === 'ch3' && raw.imageKind === 'object'
   const optionsVisible = done && (choices.length + giftItems.length > 0 || settlementChoice)
   return <DialogueStage ref={stage} className="trilogy-root" data-trilogy={chapter.id} data-trilogy-node={node} data-trilogy-phase={p.phase}
     onPointerDownCapture={choiceGuard.pointerDown} onPointerCancelCapture={choiceGuard.cancel}
@@ -215,7 +216,7 @@ export function TrilogyScreen({ state, chapter, update, onExit, renderText }: Pr
     {['story', 'epilogue'].includes(p.phase) && <>
       {raw.image && !raw.tool && !raw.scan && (raw.closeup
         ? <LdctCinematic key={node} scene={{ id: node, image: raw.image, alt: raw.imageLabel ?? '剧情特写', motion: raw.cameraMotion ?? 'push' }} />
-        : <div className="trilogy-story-image">{TRILOGY_DOCUMENTS[raw.image] ? <TrilogyDocument id={raw.image} /> : <img src={imageAsset(raw.image)} alt={raw.imageLabel ?? '剧情图像'} className="pixel" />}{raw.imageLabel && <span>{raw.imageLabel}</span>}</div>)}
+        : <div className={objectImage ? 'trilogy-story-object' : 'trilogy-story-image'} data-two-portraits={objectImage && !!sprite && !!raw.sprite2 || undefined}>{TRILOGY_DOCUMENTS[raw.image] ? <TrilogyDocument id={raw.image} /> : <img src={imageAsset(raw.image)} alt={raw.imageLabel ?? (objectImage ? '物品' : '剧情图像')} className="pixel" />}{raw.imageLabel && <span>{raw.imageLabel}</span>}</div>)}
       {sprite && !raw.closeup && <DialoguePortrait className="pointer-events-none" src={imageAsset(sprite === 'me' ? `char_${state.gender}` : sprite)} alt={person?.name ?? '人物'} />}
       {raw.sprite2 && !raw.closeup && <DialoguePortrait className="pointer-events-none" side="right" src={imageAsset(raw.sprite2)} alt="同场人物" />}
       {(raw.communication || phoneSprite) && <div className="trilogy-communication absolute top-12 right-4 portrait:top-[4.5rem] portrait:right-2 portrait:px-2 portrait:py-1 portrait:gap-2 z-30 flex items-center gap-3 bg-slate-900/90 border-2 border-emerald-600 rounded-xl px-3 py-2 shadow-2xl">
@@ -339,7 +340,12 @@ function TrilogyOverlay({ overlay, state, chapter, update, close, renderText }: 
       <h3 className="mt-4 text-sky-200">证物与线索回看</h3>{TRILOGY_EVIDENCE[chapter.id].filter(row => state.flags[row.flag]).map(row => <details className="trilogy-book-page" key={row.flag}><summary>{row.title}</summary>{row.image && <TrilogyDocument id={row.image} />}<p>{row.body}</p></details>)}
       <details className="trilogy-book-page"><summary>大事记 · 本章已经走过的片段</summary><p>{p.visited.filter(id => chapter.steps[id].caseId).map(id => chapter.steps[id].caseId!).filter((value, i, rows) => rows.indexOf(value) === i).map(id => TRILOGY_CASE_NAMES[id] ?? id).join(' · ') || '病例记录随剧情解锁。'}</p></details></>}
     {overlay === 'badges' && <div className="trilogy-badge-grid">{Object.entries(chapter.badges).map(([id, badge]) => <section key={id} className={`trilogy-panel ${state.badges.includes(id) ? '' : 'opacity-40'}`}><span className="text-3xl">{badge.icon}</span><h3>{badge.name}</h3><p>{badge.desc}</p><small>{state.badges.includes(id) ? '已获得' : '尚未获得'}</small></section>)}</div>}
-    {overlay === 'bag' && <><p>{chapter.id === 'ch3' ? '遇到同事时，可以在闲聊中递奶茶或分享零食。' : '礼物只在同事在场的闲聊选项中使用，不在班后统一赠送。'}</p>{state.items.map(id => <p className="trilogy-book-page" key={id}>🎒 {itemName(id, chapter)}<br /><small>{id === 'milktea' ? '递给在场同事；购买时人心＋2，送出不重复加。' : id === 'snack' ? '拆开分享，人心＋1。' : id === 'dosimeter' ? '工作人员个人受照监测，不测患者剂量。' : id === 'toolbox' ? chapter.id === 'ch3' ? '工具箱已收好，这次轮转暂时用不上。' : '保留给非医疗设备小修或教学展示，不拆修扫描仪。' : chapter.id === 'ch3' ? CH3_ITEM_USES[id] ?? '已收在背包中。' : '留存物品可在相应剧情中回响。'}</small></p>)}</>}
+    {overlay === 'bag' && <><p>{chapter.id === 'ch3' ? '遇到同事时，可以在闲聊中递奶茶或分享零食。' : '礼物只在同事在场的闲聊选项中使用，不在班后统一赠送。'}</p>{state.items.map(id => {
+      const image = chapter.id === 'ch3' ? chapter.itemImages?.[id] ?? SHOP_ITEMS.find(item => item.id === id)?.image : undefined
+      const content = <>🎒 {itemName(id, chapter)}<br /><small>{id === 'milktea' ? '递给在场同事；购买时人心＋2，送出不重复加。' : id === 'snack' ? '拆开分享，人心＋1。' : id === 'dosimeter' ? '工作人员个人受照监测，不测患者剂量。' : id === 'toolbox' ? chapter.id === 'ch3' ? '工具箱已收好，这次轮转暂时用不上。' : '保留给非医疗设备小修或教学展示，不拆修扫描仪。' : chapter.id === 'ch3' ? CH3_ITEM_USES[id] ?? '已收在背包中。' : '留存物品可在相应剧情中回响。'}</small></>
+      return image ? <div className="trilogy-book-page flex items-center gap-3" key={id}><img src={imageAsset(image)} alt="" className="h-16 w-16 shrink-0 object-contain pixel" /><p className="min-w-0 flex-1">{content}</p></div>
+        : <p className="trilogy-book-page" key={id}>{content}</p>
+    })}</>}
     {overlay === 'replay' && <><p>只重开本章剧情、探索、考核和凭证，第一二章及其他章进度不动，累计属性和既得勋章保留。</p><button className="trilogy-primary" onClick={() => { const runId = `${chapter.id}-${Date.now()}`; update(s => restartTrilogy(s, chapter, runId)); close() }}>确认重玩本章</button></>}
   </section></div>
 }

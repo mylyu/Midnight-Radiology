@@ -195,9 +195,10 @@ export async function buildChapterManifest() {
     collect(group, chapter.characters)
     collect(group, chapter.shopItems)
     collect(group, SHOP_ITEMS)
-    for (const image of [chapter.background, ...chapter.shifts.map(shift => shift.background), ...chapter.assets, 'stamp']) addImage(group, image, false)
+    for (const image of [chapter.background, ...chapter.shifts.map(shift => shift.background), ...chapter.assets, ...Object.values(chapter.itemImages ?? {}), 'stamp']) addImage(group, image, false)
     for (const step of Object.values(chapter.steps)) {
       for (const image of Object.values(step.tool?.images ?? {})) addImage(group, image, false)
+      for (const image of Object.values(step.tool?.objectImages ?? {})) addImage(group, image, false)
       if (step.tool?.reference) addImage(group, step.tool.reference, false)
     }
     for (const sound of ['click', 'badge', 'stamp']) addSound(group, sound)

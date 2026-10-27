@@ -49,7 +49,7 @@ const cousinPhone: Partial<TrilogyStep> = { communication: 'call', sprite: '', p
 const cousinSms: Partial<TrilogyStep> = { communication: 'sms', sprite: '', phone: 'pat_cousin', voice: undefined }
 scene('c3_intro_call', [
   ['sys', '2026年10月30日傍晚，天还亮着。你刚从放射科出来，手机就响了。是表姐。她先问你下班没，又在那头翻起了纸。', cousinPhone],
-  ['cousin', '下周该做大排畸了，二十四周。你们超声科有没有熟人？帮姐安排一下呗，我一想到去医院就头大。', { ...cousinPhone, image: 'cg_c3_cousin_call_v3', imageLabel: '表姐从家里打来电话', closeup: true, cameraMotion: 'push' }],
+  ['cousin', '下周该做大排畸了，二十四周。你们超声科有没有熟人？帮姐安排一下呗，我一想到去医院就头大。', { ...cousinPhone, voice: 'vox_c3_cousin_v2', image: 'cg_c3_cousin_call_v3', imageLabel: '表姐从家里打来电话', closeup: true, cameraMotion: 'push' }],
   ['me', '包在我身上！单子发来，到时候我下楼接你。', cousinPhone],
   ['cousin', '哟，现在说话这么硬气了？行，我可指望你了。办好了，姐请你吃顿好的。', cousinPhone],
   ['me', '那我先想想吃什么。以前的检查单也拍来，别又只拍个右下角。', cousinPhone],
@@ -98,7 +98,7 @@ hub('c3_s1_hub', '距开诊还有一会儿。你站在科室走廊，休息室�
   ['到候诊区帮忙找预约号', 'c3_s1_wait'],
 ], 'c3_s1_aunt_5')
 exploration('c3_s1_probes', [
-  ['sys', '教学台上有三支探头。你拿起长条那支，指腹碰到一排细密的刻线，又把它放回软垫。'],
+  ['sys', '教学台上有三支探头。你拿起长条那支，看了看宽平的接触面，又把它放回软垫。'],
   ['mei', '这支线阵。旁边弧面的是凸阵，小的那支方便找肋间声窗。先说你要看浅还是深，再拿。'],
   ['me', '怪不得不是“大中小”。我先拿线阵看浅表模体，另外两支等您带着试。', { card: 'c3_probe' }],
 ], 'c3_s1_hub')
@@ -365,7 +365,7 @@ scene('c3_s4_clinic', [
 exploration('c3_s4_lei', [
   ['lei', '标签机借你，别像上次那个人，打一张“标签机”，然后把卷用完了。', { giftTo: 'lei' }],
   ['me', '只打“开封日期”和批次。我连卷芯都给你带回来，够意思吧？'],
-  ['lei', '行，用完把卷芯带回来，我照着买。剩下的纸给梅姐用；别只贴个“开封日期”，却忘了写日期。', { image: 'item_notebook', effect: { item: 'c3_lei_label_roll' } }],
+  ['lei', '行，用完把卷芯带回来，我照着买。剩下的纸给梅姐用；别只贴个“开封日期”，却忘了写日期。', { effect: { item: 'c3_lei_label_roll' } }],
 ], 'c3_s4_hub', 'ch2_bg_breakroom_day')
 exploration('c3_s4_pack', [
   ['mei', '这边普通外用，这边无菌单包，别因为外包装差不多，就塞进同一个格子。', { giftTo: 'mei' }],
@@ -453,7 +453,7 @@ exploration('c3_s5_lei', [
 exploration('c3_s5_mei', [
   ['mei', '这块模体又被擦得亮晶晶的。你不会以为擦得干净能加考核分吧？', { giftTo: 'mei' }],
   ['me', '本来只想少扣一点。'],
-  ['mei', '这张拿着，我平时选探头用的小抄。别嫌字乱，拿不准就翻翻，找我也行。', { image: 'item_notebook', effect: { item: 'c3_mei_probe_card', badge: 'c3_mei_pocket_card' } }],
+  ['mei', '这张拿着，我平时选探头用的小抄。别嫌字乱，拿不准就翻翻，找我也行。', { effect: { item: 'c3_mei_probe_card', badge: 'c3_mei_pocket_card' } }],
 ], 'c3_s5_hub', 'bg_us_room_day')
 scene('c3_s5_assess', [
   ['sys', '你摆正模体，在记录表上写下探头和设置。梅姐坐到旁边，等着看你怎么调。'],
@@ -729,6 +729,23 @@ const quiz: TrilogyChapter['quiz'] = [
   { q: '简单逐线模型中，每帧增加线数、同时显示更深，需要比较什么代价？', options: ['轴向分辨率必定变差', '声波频率必定下降', '累计等待与帧频下降', '回波强度一定相同'], answer: 2, explain: '更多声线及更深回波都需要等待，空间采样和时间分辨应结合任务权衡。' },
 ]
 
+// Physical equipment stays distinct from clinical images and calculation canvases.
+const showObject = (ids: string[], image: string, imageLabel: string) => {
+  for (const id of ids) Object.assign(steps[id], { image, imageLabel, imageKind: 'object' })
+}
+showObject(['c3_s1_probes_0', 'c3_s1_probes_1', 'c3_s1_probes_2', 'c3_s1_signal_0', 'c3_s1_aunt_7'], 'item_c3_probes_v1', '线阵 · 凸阵 · 相控阵探头')
+showObject(['c3_s1_signal_3', 'c3_s4_pack_0', 'c3_s4_pack_1', 'c3_s4_pack_2', 'c3_s4_cost_1', 'c3_s4_cost_limit', 'c3_s4_cost_mix', 'c3_s4_cost_end_0'], 'item_c3_gel_supplies_v1', '耦合剂 · 独立包装 · 加温设备')
+showObject(['c3_s2_depth_0', 'c3_s5_mei_0', 'c3_s5_mei_1', 'c3_s5_assess_0'], 'item_c3_us_phantom_v1', '教学用超声模体')
+showObject(['c3_s4_lei_0', 'c3_s4_lei_1', 'c3_s4_lei_2', 'c3_s5_lei_0', 'c3_s5_lei_1', 'c3_s5_lei_2'], 'item_c3_label_printer_v1', '标签机与卷纸')
+showObject(['c3_s5_mei_2'], 'item_c3_probe_card_v1', '梅姐的探头小卡')
+showObject(['c3_s3_bag_2'], 'item_c3_towel_v2', '阿姨缝的擦镜布')
+steps.c3_s1_aunt_6.tool!.objectImages = {
+  '线阵': 'item_c3_probe_linear_v1', '凸阵': 'item_c3_probe_convex_v1', '相控阵': 'item_c3_probe_phased_v1',
+}
+cards.c3_probe.image = 'item_c3_probes_v1'
+cards.c3_gel.image = 'item_c3_gel_supplies_v1'
+cards.c3_compare.image = 'item_c3_us_phantom_v1'
+
 // A phone counterpart is explicit for the whole call, even on the protagonist's reply.
 for (const id of ['c3_s4_zhou_0', 'c3_s4_zhou_1', 'c3_s4_zhou_2']) {
   Object.assign(steps[id], { phone: 'char_zhou', sprite: '', sprite2: '' })
@@ -864,6 +881,10 @@ export const CH3: TrilogyChapter = {
     c3_training_photo: { name: '抱模体的人', icon: '▧', desc: '使用口袋小毛巾整理教学台，找到梅姐的培训合照。' },
     c3_cup_detective: { name: '第三只梅杯', icon: '☕', desc: '使用姓名贴，认出梅姐那只只能当笔筒的奖品杯。' },
   },
+  itemImages: {
+    c3_lei_label_roll: 'item_c3_label_roll_v1', c3_mei_probe_card: 'item_c3_probe_card_v1',
+    c3_pocket_towel: 'item_c3_towel_v2', c3_cup_stickers: 'item_c3_stickers_v2', c3_aunt_cloth: 'item_c3_towel_v2',
+  },
   assets: [
     'bg_us_room', 'bg_us_room_day', 'bg_us_bedside', 'bg_us_bedside_day_v2', 'ch2_bg_breakroom_day', 'bg_waiting_day_v2', 'bg_office_day', 'bg_day',
     'char_mei', 'pat_cousin', 'char_han', 'pat_aunt', 'pat_mystery', 'pat_wang_recovery', 'char_lei', 'char_zhou', 'ch2_pixel_char_he', 'char_tang',
@@ -871,5 +892,7 @@ export const CH3: TrilogyChapter = {
     'pat_c3_young_liver_v1', 'us_c3_hepatorenal_v1',
     'cg_c3_mei_probe_v2', 'cg_c3_shared_lunch_v2', 'item_c3_towel_v2', 'item_c3_stickers_v2',
     'cg_c3_cousin_call_v3', 'cg_c3_us_visit_v3',
+    'item_c3_probes_v1', 'item_c3_probe_linear_v1', 'item_c3_probe_convex_v1', 'item_c3_probe_phased_v1',
+    'item_c3_gel_supplies_v1', 'item_c3_label_printer_v1', 'item_c3_label_roll_v1', 'item_c3_us_phantom_v1', 'item_c3_probe_card_v1',
   ],
 }
