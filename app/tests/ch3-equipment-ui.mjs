@@ -135,6 +135,44 @@ try {
   await page.goto(`${url}#/dlc`)
   await page.getByRole('heading', { name: /章节与番外/ }).waitFor({ timeout: 15000 })
 
+  await test('workflow-tgc-cardiac-xu', async row => {
+    for (const size of [{ width: 1920, height: 1080 }, { width: 390, height: 844 }]) {
+      await page.setViewportSize(size)
+      await enter(fixture('c3_wang_color_0', 2)); await reveal()
+      const image = page.locator('.trilogy-story-image img')
+      await imageIs(image, 'us_c3_cardiac_color_v1')
+      const bounds = await fit(image, 'Cardiac color Doppler')
+      assert(Math.abs(bounds.x + bounds.width / 2 - size.width / 2) < 2)
+      assert(bounds.y + bounds.height <= (await page.locator('.dialog-wrap').boundingBox()).y + 1)
+      await shot(`cardiac-${size.width}`)
+      await advance(); await nodeIs('c3_wang_color_1')
+      await imageIs(image, 'us_c3_cardiac_color_v1')
+      await advance(); await nodeIs('c3_s3_wang_8')
+      assert.equal(await page.locator('.trilogy-story-image').count(), 0)
+    }
+    await enter(fixture('c3_s2_plan_5', 1)); await advance(); await nodeIs('c3_s2_plan_6')
+    const compensation = page.getByRole('slider', { name: '深处补偿', exact: true })
+    await compensation.waitFor(); assert.equal(await compensation.inputValue(), '0')
+    await shot('tgc-uncompensated-390')
+    await compensation.fill('75')
+    await shot('tgc-compensated-390')
+    await page.reload(); await loaded(); await nodeIs('c3_s2_plan_6')
+    assert.equal(await compensation.inputValue(), '75', 'Saved adjustment survives reload')
+    await enter(fixture('c3_s3_waiting_1', 2)); await advance(); await nodeIs('c3_s3_waiting_2')
+    await page.waitForFunction(key => JSON.parse(localStorage.getItem(key)).dlc.ch3.chapter.heardCues?.includes('voice:vox_c3_xu_greeting_v3'), key)
+    const target = 'audio/vox_c3_xu_greeting_v3.mp3'
+    const voices = (await audioEvents()).filter(e => e.event === 'playing' && e.paths.includes(target))
+    assert.equal(voices.length, 1)
+    await page.waitForFunction(id => window.__nativeAudioEvents.some(e => e.id === id && e.event === 'ended'), voices[0].id)
+    await reveal(); await advance(); await advance(); await nodeIs('c3_s3_waiting_4')
+    assert.equal((await audioEvents()).filter(e => e.event === 'playing' && e.paths.includes(target)).length, 1)
+    assert.equal((await audioEvents()).filter(e => e.paths.includes('audio/vox_trilogy_mystery_v2.mp3')).length, 0)
+    const saved = await read()
+    await enter(fixture('c3_s3_waiting_2', 2, saved)); await reveal()
+    assert.equal((await audioEvents()).filter(e => e.event === 'playing' && e.paths.includes(target)).length, 0)
+    row.voice = 'One native playback, completed; later line/reload silent'
+  })
+
   await test('dialogue-figures-centered-on-all-screens', async row => {
     row.views = []
     const cases = [

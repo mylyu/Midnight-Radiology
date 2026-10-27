@@ -4,6 +4,7 @@ import { completeTrilogyTool, trilogyProgress, updateTrilogyTool } from '../game
 import { imageAsset } from '../lib/image-assets'
 import { useRef } from 'react'
 import { acceptInput } from '../game/input-gate'
+import { trilogyToolDefaults } from '../game/trilogy-tool-defaults'
 import { UltrasoundPhantom, ultrasoundParameters } from './UltrasoundPhantom'
 import { TrilogyUltrasoundLab } from './TrilogyUltrasoundLab'
 import { TrilogyNuclearLab } from './TrilogyNuclearLab'
@@ -14,7 +15,7 @@ export function TrilogyLab({ state, chapter, tool, update }: { state: GameState;
   tool: TrilogyTool; update: (fn: (s: GameState) => GameState) => void }) {
   const p = trilogyProgress(state, chapter.id)!, node = p.stepId
   const ch3 = chapter.id === 'ch3'
-  const saved = p.tools[node] ?? { value: 25, secondary: 50, choice: tool.kind === 'mri' ? 'T1' : '凸阵' }
+  const saved = p.tools[node] ?? trilogyToolDefaults(tool)
   const gate = useRef({ until: 0 })
   const set = (patch: Partial<typeof saved>) => update(s => updateTrilogyTool(s, chapter.id, node, { ...saved, ...patch }))
   const finish = (assisted: boolean, now: number) => { if (acceptInput(gate.current, now, 500)) update(s => completeTrilogyTool(s, chapter, node, assisted)) }

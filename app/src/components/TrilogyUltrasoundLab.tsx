@@ -37,9 +37,9 @@ export function TrilogyUltrasoundLab({ task, value, secondary, choice, onChange 
   }).join(' ')
   return <div className="trilogy-course-work trilogy-ultrasound-work" data-us-task={task}>
     <div className="trilogy-course-view">
-      {task === 'tgc' ? <UltrasoundPhantom position={50} gain={value} depth={90} probe="凸阵" tgc={secondary * .24} />
+      {task === 'tgc' ? <UltrasoundPhantom position={50} gain={value} depth={90} probe="凸阵" tgc={secondary * .32} depthLossDb={24} />
         : task === 'resolution' || task === 'spatial_resolution' ? <canvas ref={canvas} aria-label={task === 'spatial_resolution' ? '位置不变的前后和左右两对细丝：改变脉冲长度与声束宽度' : '同一模体在不同扫描线数和深度下的B图'} role="img" style={{ imageRendering: 'pixelated' }} />
-          : <svg viewBox={task === 'm_mode' ? '0 15 480 255' : '0 0 480 300'} role="img" aria-label={task === 'echo' ? '同一条声束的回波时间、深度和亮点对应' : task === 'm_mode' ? '运动界面从B图的一条线展开成M模式' : '血流相对探头的方向与频移'}>
+          : <svg viewBox={task === 'm_mode' ? '0 15 480 255' : '0 0 480 300'} role="img" aria-label={task === 'echo' ? '同一条声束的回波时间、深度和亮点对应' : task === 'm_mode' ? '运动界面从B超图的一条线展开成M超' : '血流相对探头的方向与频移'}>
             <rect width="480" height="300" fill="#07121e" />
             {task === 'echo' ? <>
               <text x="22" y="24">同一组界面 · 逐条扫过</text>
@@ -60,7 +60,7 @@ export function TrilogyUltrasoundLab({ task, value, secondary, choice, onChange 
               {echoLines > 0 && <path d={`M${295 + (echoLines - 1) * 6.6} 173V255`} stroke="#5eead4" strokeWidth="1" />}
               <text x="298" y="278">B图 · {echoLines} 条线</text>
             </> : task === 'm_mode' ? <>
-              <text x="20" y="45" className="trilogy-mmode-label">B图</text><text x="188" y="45" className="trilogy-mmode-label">M图</text>
+              <text x="20" y="45" className="trilogy-mmode-label">B超</text><text x="188" y="45" className="trilogy-mmode-label">M超</text>
               <rect x="20" y="50" width="125" height="185" fill="#172936" />
               <path d="M83 50V235" stroke="#5eead4" strokeDasharray="5 4" />
               {[0, 1].map(k => { const y = 120 + k * 55 + Math.sin(value / 100 * Math.PI * 6) * (k ? -12 : 12); return <path key={k} d={`M22 ${y}H143`} stroke="#cbd5e1" strokeWidth="5" fill="none" /> })}

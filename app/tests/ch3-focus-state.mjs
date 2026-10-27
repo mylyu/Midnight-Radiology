@@ -32,10 +32,34 @@ function walkTo(s, target, visited = []) {
 
 assert(isTrilogyPlayable('ch3'))
 assert(!isTrilogyPlayable('ch4') && !isTrilogyPlayable('ch5'))
-assert.equal(Object.values(CH3.steps).filter(s => s.tool).length, 8)
+assert.equal(Object.values(CH3.steps).filter(s => s.tool).length, 7, 'The author retired only the display-depth exercise')
 assert.equal(Object.values(CH3.steps).filter(s => s.scan).length, 7)
 for (const step of Object.values(CH3.steps)) for (const c of step.choices ?? [])
   assert(!/[（(]\d+行动力[）)]/.test(c.text), 'No prose AP suffix on choices')
+
+// Current play goes straight to the retained gain/TGC exercise. Old cursors
+// continue without the retired task, replayed rewards or lost collectibles.
+assert.equal(CH3.steps.c3_s2_plan_5.next, 'c3_s2_plan_6')
+assert.equal(CH3.steps.c3_s2_plan_6.tool.task, 'tgc')
+assert.equal(CH3.steps.c3_s2_plan_6.tool.title, '教学台 · 深处为什么更暗')
+assert(!Object.values(CH3.steps).some(s => s.tool?.task === 'depth'))
+for (let i = 0; i < 4; i++) for (const completed of [false, true]) {
+  const node = `c3_s2_depth_${i}`
+  let s = { ...fixture(node), badges: ['c3_depth_keeper'], cards: ['c3_depth'] }
+  s = patchTrilogy(s, 'ch3', { tools: { c3_s2_depth_1: { value: 60, secondary: 50, choice: '凸阵', completed } } })
+  const step = trilogyStep(s, CH3)
+  assert(!step.tool && !step.effect && !step.card, 'A retired cursor is plain narration')
+  assert.deepEqual(completeTrilogyTool(clone(s), CH3, node), clone(s), 'Stale tool completion cannot pay or advance')
+  const continued = trilogyAdvance(clone(s), CH3, node)
+  assert.equal(trilogyProgress(continued, 'ch3').stepId, 'c3_s2_plan_6')
+  for (const field of ['gold', 'skill', 'heart', 'wealth', 'ap', 'badges', 'cards'])
+    assert.deepEqual(continued[field], s[field], `Legacy bridge preserves ${field}`)
+  assert.deepEqual(trilogyProgress(continued, 'ch3').tools, trilogyProgress(s, 'ch3').tools)
+  assert.deepEqual(initializeTrilogy(clone(continued), CH3), clone(continued), 'Restore stays at the retained exercise')
+}
+assert(!/B型|M型|B模式|M模式|B超超声|M超超声/.test(JSON.stringify({
+  steps: CH3.steps, cards: CH3.cards, book: CH3.book, quiz: CH3.quiz, shifts: CH3.shifts,
+})), 'CH3 dialogue, handbooks and quizzes use B超/M超 consistently')
 
 const path = []
 walkTo(fixture('c3_s1_hub'), 'c3_s1_aunt_8', path)
@@ -126,4 +150,4 @@ let empty = { ...fixture('c3_s1_hub'), ap: 0 }
 const exploration = trilogyStep(empty, CH3).choices.find(c => c.cond?.ap)
 assert.deepEqual(trilogyChoose(empty, CH3, 'c3_s1_hub', exploration), empty, 'Zero AP cannot spend or start exploration')
 walkTo(empty, 'c3_s1_aunt_0')
-console.log('PASS CH3 pre-patient practice, legacy receipts, eight tasks, four borrowed/paper routes, zero AP and future-entry config')
+console.log('PASS CH3 pre-patient practice, retired depth compatibility, seven tasks, terminology, legacy receipts, borrowed/paper routes and zero AP')

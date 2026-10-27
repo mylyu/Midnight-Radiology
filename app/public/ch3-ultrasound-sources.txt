@@ -27,3 +27,18 @@ SHA-256: aca91febb9925835b00afef6c7aa3c9075d229391ea88061c20588eca3fbc2bd
 This image remains under CC BY-SA 4.0 independently of the game's NC-SA license.
 The grayscale/color pair illustrates vascular ultrasound; fictional hospital
 dialogue does not identify the real subject as one of the game's patients.
+
+Title: Ultrasound video of a human heart (Additional file 3)
+Creators: Alexander Ziegler, Daniel Mietchen, Cornelius Faber, Wolfram von Hausen,
+Christoph Schöbel, Markus Sellerer, Andreas Ziegler (2011)
+Source: https://commons.wikimedia.org/wiki/File:Ultrasound_video_of_a_human_heart_-_1741-7015-9-17.ogv
+Article: https://doi.org/10.1186/1741-7015-9-17
+License: Creative Commons Attribution 2.0 Generic
+License URL: https://creativecommons.org/licenses/by/2.0/
+Changes: Extracted zero-indexed frame 15 (0.681818 seconds at 22 fps); removed
+the top 60-pixel identifying information bar. The 800 x 540 imaging area is
+unchanged except WebP quality-78 compression. No synthetic flow or anatomy.
+Delivery: assets/media/us_c3_cardiac_color_v1.9ed8b34e5a45688e.webp
+SHA-256: 9ed8b34e5a45688e905632816bf4287f41206ba4b157c23f8e7f8cf9ff86843a
+The source depicts a healthy male volunteer, not the fictional Wang character.
+This image retains CC BY 2.0 independently of the game's NC-SA license.

@@ -75,9 +75,11 @@ assert.equal(CH3.cards.c3_trace.image, 'us_c3_color_doppler_v1')
 assert(CH3.assets.includes('us_c3_color_doppler_v1'))
 assert(CH3.assets.includes('bg_c3_shared_office_day_v1'))
 for (const step of Object.values(CH3.steps)) assert.notEqual(step.bg, 'bg_office_day', 'CH3 communal work never uses the director private office')
-for (const node of ['c3_s2_roster_0', 'c3_s2_label_0', 'c3_s4_han_0', 'c3_s4_han_1', 'c3_s4_han_note']) {
+for (const node of ['c3_s2_roster_0', 'c3_s4_han_0', 'c3_s4_han_1', 'c3_s4_han_note']) {
   assert.equal(trilogyStep(fixture(node, node.includes('_s4_') ? 3 : 1), CH3).bg, 'bg_c3_shared_office_day_v1')
 }
+assert.equal(trilogyStep(fixture('c3_s2_label_0', 1), CH3).bg, 'bg_us_room_day',
+  'The author moved teaching-file review to the examination-room workstation')
 
 // Fixed remote identities cover narration and protagonist replies as well as their own lines.
 const calls = [

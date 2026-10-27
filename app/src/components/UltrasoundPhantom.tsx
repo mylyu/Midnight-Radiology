@@ -9,6 +9,8 @@ export interface UltrasoundPhantomProps {
   probe: string
   /** Depth compensation in dB at the bottom of the field; default preserves old views. */
   tgc?: number
+  /** Additional round-trip envelope loss at the field bottom for the TGC exercise. */
+  depthLossDb?: number
   /** Optional acquisition line count; does not resize the image or field of view. */
   scanLines?: number
 }
@@ -198,7 +200,7 @@ export function renderUltrasoundPhantom(input: UltrasoundPhantomProps, width = 5
       const attenuation = Math.exp(-ray.distance * (.004 + profile.frequency * .001))
       const envelope = Math.hypot(real, imag) * attenuation * ultrasoundTransmission(ray)
       const db = 20 * Math.log10(Math.max(.00005, envelope)) + params.gainDb - 8
-        + (input.tgc ?? 0) * ray.distance / params.depthMm
+        + ((input.tgc ?? 0) - (input.depthLossDb ?? 0)) * ray.distance / params.depthMm
       const gray = Math.round(255 * clamp((db + 45) / 45, 0, 1))
       pixels[index] = gray; pixels[index + 1] = gray; pixels[index + 2] = gray
     }
@@ -208,18 +210,18 @@ export function renderUltrasoundPhantom(input: UltrasoundPhantomProps, width = 5
 
 export function UltrasoundPhantom(props: UltrasoundPhantomProps) {
   const canvas = useRef<HTMLCanvasElement>(null)
-  const { position, gain, depth, probe, tgc, scanLines } = props
+  const { position, gain, depth, probe, tgc, depthLossDb, scanLines } = props
   useEffect(() => {
     const context = canvas.current?.getContext('2d')
     if (!context) return
-    const frame = renderUltrasoundPhantom({ position, gain, depth, probe, tgc, scanLines })
+    const frame = renderUltrasoundPhantom({ position, gain, depth, probe, tgc, depthLossDb, scanLines })
     context.putImageData(new ImageData(frame.pixels, frame.width, frame.height), 0, 0)
     const { params: p, geometry: g } = frame
     context.font = '12px ui-monospace, monospace'
     context.textBaseline = 'middle'
     context.textAlign = 'left'
     context.fillStyle = '#b9c9ce'
-    context.fillText(`B-MODE  ${p.probe.frequency.toFixed(1)} MHz`, 14, 15)
+    context.fillText(`B超  ${p.probe.frequency.toFixed(1)} MHz`, 14, 15)
     context.textAlign = 'right'
     context.fillText(`${Math.round(p.depthMm)} mm  /  ${p.gainDb >= 0 ? '+' : ''}${p.gainDb.toFixed(0)} dB`, 498, 15)
     // This is a contact-position indicator, not a cursor painted onto an image.
@@ -241,8 +243,8 @@ export function UltrasoundPhantom(props: UltrasoundPhantomProps) {
     context.fillText(`${p.probe.label} · 模体切面`, 14, 373)
     context.textAlign = 'right'
     context.fillText(`位置 ${p.positionMm >= 0 ? '+' : ''}${p.positionMm.toFixed(1)} mm`, 498, 373)
-  }, [position, gain, depth, probe, tgc, scanLines])
+  }, [position, gain, depth, probe, tgc, depthLossDb, scanLines])
   return <canvas ref={canvas} width={512} height={384} data-ultrasound-phantom
-    role="img" aria-label={`${probe}探头的教学模体B模式切面，位置、深度与增益随控件变化`}
+    role="img" aria-label={`${probe}探头的教学模体B超切面，位置、深度与增益随控件变化`}
     style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block', maxWidth: '100%', maxHeight: '100%' }} />
 }

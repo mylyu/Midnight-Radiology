@@ -314,7 +314,7 @@ try {
       await enter(fixture(node, { shift }))
       const lab = page.locator('[data-trilogy-lab]'), svg = lab.locator('.trilogy-course-view svg')
       await lab.waitFor(); await fit(svg, 'visible diagram')
-      assert.match(await svg.getAttribute('aria-label'), node.includes('motion') ? /B图.*M模式/ : /回波时间.*深度.*亮点/)
+      assert.match(await svg.getAttribute('aria-label'), node.includes('motion') ? /B超图.*M超/ : /回波时间.*深度.*亮点/)
       const main = lab.getByRole('slider', { name: label, exact: true })
       await main.scrollIntoViewIfNeeded(); await fit(main, 'primary slider', true)
       await main.focus(); await main.press('Home')

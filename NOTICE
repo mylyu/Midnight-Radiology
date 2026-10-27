@@ -24,3 +24,8 @@ Chapter 3 also uses "Right common carotid artery without and with doppler flow"
 by Cerevisae (2023), licensed CC BY-SA 4.0, converted to WebP without cropping
 or altering flow colors. This image independently retains CC BY-SA 4.0.
 Source, license and delivery file: app/public/ch3-ultrasound-sources.txt.
+
+Chapter 3 uses a cardiac color-Doppler frame from "Ultrasound video of a human
+heart" by Alexander Ziegler et al. (2011), CC BY 2.0, independently retained.
+The identifying header was cropped and the image compressed to WebP.
+Full credits, source and changes: app/public/ch3-ultrasound-sources.txt.

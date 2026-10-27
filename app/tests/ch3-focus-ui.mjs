@@ -189,10 +189,10 @@ try {
     await page.waitForFunction(key => JSON.parse(localStorage.getItem(key)).dlc.ch3.chapter.stepId !== 'c3_s1_start_2', key)
   })
 
-  await test('eight-tools-offline-and-visible-controls', async row => {
+  await test('seven-tools-offline-and-visible-controls', async row => {
     row.tasks = []
     const tools = Object.entries(chapter.steps).filter(([, step]) => step.tool)
-    assert.equal(tools.length, 8)
+    assert.equal(tools.length, 7)
     for (const [node, step] of tools) {
       await page.setViewportSize({ width: 390, height: 780 })
       await enter('ch3', fixture(node)); await page.locator('[data-trilogy-lab]').waitFor()

@@ -9,6 +9,8 @@ const entrances: Record<string, string> = {
 }
 export function trilogyVoice(_chapter: TrilogyChapter, step: TrilogyStep) {
   if (Object.hasOwn(step, 'voice')) return step.voice
+  // The new CH3 greeting is bound explicitly; CH4/5 keep their previous voice.
+  if (_chapter.id === 'ch3' && step.speaker === 'xu') return undefined
   if (step.tool || step.scan || step.communication || step.closeup || step.speaker === 'sys') return undefined
   return entrances[step.speaker ?? '']
 }

@@ -1496,6 +1496,11 @@
       "bytes": 47890,
       "type": "image"
     },
+    "assets/media/us_c3_cardiac_color_v1.9ed8b34e5a45688e.webp": {
+      "sha256": "9ed8b34e5a45688e905632816bf4287f41206ba4b157c23f8e7f8cf9ff86843a",
+      "bytes": 26330,
+      "type": "image"
+    },
     "assets/media/us_c3_color_doppler_v1.aca91febb9925835.webp": {
       "sha256": "aca91febb9925835b00afef6c7aa3c9075d229391ea88061c20588eca3fbc2bd",
       "bytes": 33108,
@@ -1669,6 +1674,11 @@
     "audio/vox_c3_wang_v2.mp3": {
       "sha256": "a444df526ac52239ae47412980790f4cb36c75c2cd9c272540d9171b88f39763",
       "bytes": 7005,
+      "type": "audio"
+    },
+    "audio/vox_c3_xu_greeting_v3.mp3": {
+      "sha256": "74b965b2070714b0163349166fca6c073ef3fdde8186a3b7d9dd7103a60cc8ef",
+      "bytes": 9165,
       "type": "audio"
     },
     "audio/vox_c4_song_v2.mp3": {
@@ -2225,6 +2235,7 @@
       "assets/media/pat_wang_recovery.79373a8e9bf9b05f.webp",
       "assets/media/stamp.72cf222761ee91c0.webp",
       "assets/media/us_breast.6d5c0b7164110c12.webp",
+      "assets/media/us_c3_cardiac_color_v1.9ed8b34e5a45688e.webp",
       "assets/media/us_c3_color_doppler_v1.aca91febb9925835.webp",
       "assets/media/us_c3_hepatorenal_v1.589c8d1e6b950279.webp",
       "assets/media/us_echo.5521dd2242e64df2.webp",
@@ -2242,11 +2253,11 @@
       "audio/vox_c3_gallstone_v2.mp3",
       "audio/vox_c3_mei_v2.mp3",
       "audio/vox_c3_wang_v2.mp3",
+      "audio/vox_c3_xu_greeting_v3.mp3",
       "audio/vox_ch2_natural_tang.mp3",
       "audio/vox_trilogy_aunt_v2.mp3",
       "audio/vox_trilogy_han_v2.mp3",
       "audio/vox_trilogy_he_v2.mp3",
-      "audio/vox_trilogy_mystery_v2.mp3",
       "audio/vox_trilogy_wen_v2.mp3"
     ],
     "ch4": [

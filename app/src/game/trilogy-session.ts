@@ -3,6 +3,7 @@ import { SHOP_ITEMS } from './data'
 import type { Choice, GameState } from './types'
 import type { TrilogyChapter, TrilogyId, TrilogyProgress, TrilogyStep } from './trilogy-types'
 import { TRILOGY_LEGACY_QUIZ } from './trilogy-quiz-legacy'
+import { trilogyToolDefaults } from './trilogy-tool-defaults'
 
 export const trilogyProgress = (s: GameState, id: TrilogyId) => s.dlc?.[id]?.chapter
 const snapshot = (s: GameState) => ({ gold: s.gold, skill: s.skill, heart: s.heart, wealth: s.wealth })
@@ -108,7 +109,7 @@ export function updateTrilogyTool(s: GameState, id: TrilogyId, node: string,
 export function completeTrilogyTool(s: GameState, chapter: TrilogyChapter, node: string, assisted = false): GameState {
   const p = trilogyProgress(s, chapter.id), step = chapter.steps[node]
   if (!p || p.stepId !== node || !step?.tool || p.tools[node]?.completed) return s
-  const entry = { ...(p.tools[node] ?? { value: 25, secondary: 50, choice: step.tool.kind === 'mri' ? 'T1' : '凸阵' }) }
+  const entry = { ...(p.tools[node] ?? trilogyToolDefaults(step.tool)) }
   if (assisted) entry.choice = `assisted:${entry.choice}`
   const next = patchTrilogy(s, chapter.id, { tools: { ...p.tools, [node]: { ...entry, completed: true } } })
   return enterTrilogyNode(next, chapter, step.tool.next)

@@ -8,7 +8,8 @@ const places: Record<string, Place> = {
   rest: { label: '☕ 休息室', bg: 'ch2_bg_breakroom_day', text: '热水壶刚跳了闸，桌边还空着一把椅子。几只写着名字的杯子挤在一起，谁的饭盒又忘了拿。' },
   waiting: { label: '🪑 候诊区', bg: 'bg_waiting_day_v2', text: '窗口边腾出一点空地方，资料和片袋都放在柜台内侧。你绕开等候的队伍，走过去看看。' },
   office: { label: '🗂️ 大办公室', bg: 'bg_c3_shared_office_day_v1', text: '大办公室里几张桌子拼成两排，打印机还在吐纸。你绕过椅背，找到同事留出的空位。' },
-  reading: { label: '🖥️ 阅片资料区', bg: 'bg_c3_shared_office_day_v1', text: '工作站旁放着旧教学片盒，屏幕上的文件夹却只叫“新建文件夹”。梅姐说过，需要的图都在这里——至于哪一张，得找找。' },
+  // Keep the old location key for saved cursors; this workstation is in the examination room.
+  reading: { label: '🖥️ 诊室工作站', bg: 'bg_us_room_day', text: '诊室里，工作站就在超声机旁。梅姐刚写完上一位的报告，留出的空当正好能找找教学图；屏幕上的文件夹却只叫“新建文件夹”。' },
   corridor: { label: '🚪 科室走廊', bg: 'bg_waiting_day_v2', text: '走廊里有推车经过，电梯的到站声响了一下。你往边上让了让，没挡在门口。' },
   parking: { label: '🔌 设备停放处', bg: 'bg_us_room_day', text: '移动机停在诊室门边，电源线收在侧袋。那只响轮子安静下来，倒像刚才什么也没发生。' },
   supplies: { label: '📦 备物区', bg: 'bg_us_room_day', text: '诊室边的柜子刚打开，新箱子压着几张领用单。梅姐把纸从箱底抽出来，拍掉上面的灰。' },

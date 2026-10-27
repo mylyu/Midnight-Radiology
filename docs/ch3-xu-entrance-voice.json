@@ -1,0 +1,602 @@
+{
+  "date": "2026-10-27",
+  "base": "53c03a8",
+  "id": "vox_c3_xu_greeting_v3",
+  "role": "许建平",
+  "text": "医生，怎么又是你...",
+  "method": "Installed local auk-infer CLI, AuK-Flash Instruct TTS",
+  "description": "六十五岁左右的中国男性，声音有自然的年纪感，音色略干、低沉但清楚，正常说话的音量。来检查的患者一抬头认出了以前见过的年轻医生，像碰到熟人一样随口说话。有一点意外，也有一点奔波后的疲惫，但不害怕、不生气。医生是轻轻招呼一下，短暂停顿后自然连着问怎么又是你，轻微强调又，句尾轻轻落下。朴实日常交谈，不逐字念稿，不表演悬疑，不气声耳语，不拖长尾音。只说指定的一句话，一遍。",
+  "reference": null,
+  "offline": true,
+  "license": "Local AuK code/weights recorded under its MIT LICENSE; original generated voice, no third-party reference.",
+  "source": {
+    "date": "2026-10-27",
+    "base": "53c03a8",
+    "branch": "codex/ch3-ultrasound-workflow",
+    "id": "vox_c3_xu_greeting_v3",
+    "role": "许建平",
+    "take": 2,
+    "text": "医生，怎么又是你...",
+    "description": "六十五岁左右的中国男性，声音有自然的年纪感，音色略干、低沉但清楚，正常说话的音量。来检查的患者一抬头认出了以前见过的年轻医生，像碰到熟人一样随口说话。有一点意外，也有一点奔波后的疲惫，但不害怕、不生气。医生是轻轻招呼一下，短暂停顿后自然连着问怎么又是你，轻微强调又，句尾轻轻落下。朴实日常交谈，不逐字念稿，不表演悬疑，不气声耳语，不拖长尾音。只说指定的一句话，一遍。",
+    "instruction": "请基于下面的描述: \"六十五岁左右的中国男性，声音有自然的年纪感，音色略干、低沉但清楚，正常说话的音量。来检查的患者一抬头认出了以前见过的年轻医生，像碰到熟人一样随口说话。有一点意外，也有一点奔波后的疲惫，但不害怕、不生气。医生是轻轻招呼一下，短暂停顿后自然连着问怎么又是你，轻微强调又，句尾轻轻落下。朴实日常交谈，不逐字念稿，不表演悬疑，不气声耳语，不拖长尾音。只说指定的一句话，一遍。\",生成语音内容\"医生，怎么又是你...\".",
+    "seed": 2026102720,
+    "gen_seconds": 2.2,
+    "reference": null,
+    "method": "Installed local auk-infer CLI, AuK-Flash Instruct TTS",
+    "argv": [
+      "C:\\Users\\lvmen\\Documents\\New project\\AuK\\.venv\\Scripts\\auk-infer.exe",
+      "--ckpt",
+      "C:\\Users\\lvmen\\Documents\\New project\\AuK\\ckpts\\AuK-Flash\\auk_flash.safetensors",
+      "--qwen_path",
+      "C:\\Users\\lvmen\\Documents\\New project\\AuK\\ckpts\\Qwen2.5-Omni-3B",
+      "--dtype",
+      "bf16",
+      "--device",
+      "cuda:0",
+      "--cpu_offload",
+      "--seed",
+      "2026102720",
+      "--gen_seconds",
+      "2.2",
+      "--instruction",
+      "请基于下面的描述: \"六十五岁左右的中国男性，声音有自然的年纪感，音色略干、低沉但清楚，正常说话的音量。来检查的患者一抬头认出了以前见过的年轻医生，像碰到熟人一样随口说话。有一点意外，也有一点奔波后的疲惫，但不害怕、不生气。医生是轻轻招呼一下，短暂停顿后自然连着问怎么又是你，轻微强调又，句尾轻轻落下。朴实日常交谈，不逐字念稿，不表演悬疑，不气声耳语，不拖长尾音。只说指定的一句话，一遍。\",生成语音内容\"医生，怎么又是你...\".",
+      "--output",
+      "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-xu-entrance-20261027\\vox_c3_xu_greeting_v3.repair.raw.wav"
+    ],
+    "offline": true,
+    "implicit_token_disabled": true,
+    "license": "Local AuK code/weights recorded under its MIT LICENSE; original generated voice, no third-party reference.",
+    "raw": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-xu-entrance-20261027\\vox_c3_xu_greeting_v3.repair.raw.wav",
+    "raw_sha256": "a5ccaea7504f9722f08c1fe843bbe4fc77fffada433b2ac5e04accd81af16d10",
+    "wav": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-xu-entrance-20261027\\vox_c3_xu_greeting_v3.repair.wav",
+    "wav_sha256": "0a15c491d926c2d82bc4cfe185703c656324b3946485dac4ce55db27ab22bd6e",
+    "mp3": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-xu-entrance-20261027\\vox_c3_xu_greeting_v3.repair.mp3",
+    "mp3_sha256": "88aa2c103494f41e4cf96b227c9e8833dda0850cbc8a90e148843a66f945f012",
+    "mp3_bytes": 13053,
+    "processing": "silenceremove=start_periods=1:start_duration=0.03:start_threshold=-50dB:start_silence=0.06,loudnorm=I=-20:TP=-2:LRA=7",
+    "ffmpeg_argv": [
+      [
+        "ffmpeg",
+        "-y",
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-i",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-xu-entrance-20261027\\vox_c3_xu_greeting_v3.repair.raw.wav",
+        "-af",
+        "silenceremove=start_periods=1:start_duration=0.03:start_threshold=-50dB:start_silence=0.06,loudnorm=I=-20:TP=-2:LRA=7",
+        "-map_metadata",
+        "-1",
+        "-ar",
+        "24000",
+        "-ac",
+        "1",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-xu-entrance-20261027\\vox_c3_xu_greeting_v3.repair.wav"
+      ],
+      [
+        "ffmpeg",
+        "-y",
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-i",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-xu-entrance-20261027\\vox_c3_xu_greeting_v3.repair.wav",
+        "-map_metadata",
+        "-1",
+        "-c:a",
+        "libmp3lame",
+        "-b:a",
+        "48k",
+        "-ar",
+        "24000",
+        "-ac",
+        "1",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-xu-entrance-20261027\\vox_c3_xu_greeting_v3.repair.mp3"
+      ]
+    ],
+    "speed_or_pitch_edit": false,
+    "sample_rate": 24000,
+    "channels": 1,
+    "bitrate": 48000,
+    "decoded_seconds": 2.0803,
+    "decoded_peak": 0.7063510417938232,
+    "clipping_samples": 0,
+    "generation_processing_seconds": 38.61,
+    "human_listened": false,
+    "limit": "ASR and waveform checks cannot certify perceived age, naturalness, performance or author approval.",
+    "asr_segments": [
+      {
+        "start": 0.0,
+        "end": 2.0,
+        "text": "又別了,醫生,怎麼又是你",
+        "words": [
+          {
+            "start": 0.0,
+            "end": 0.22,
+            "word": "又",
+            "probability": 0.4214570224285126
+          },
+          {
+            "start": 0.22,
+            "end": 0.38,
+            "word": "別",
+            "probability": 0.12526780366897583
+          },
+          {
+            "start": 0.38,
+            "end": 0.64,
+            "word": "了,",
+            "probability": 0.08248448371887207
+          },
+          {
+            "start": 0.82,
+            "end": 0.9,
+            "word": "醫",
+            "probability": 0.8281134366989136
+          },
+          {
+            "start": 0.9,
+            "end": 1.26,
+            "word": "生,",
+            "probability": 0.9970846772193909
+          },
+          {
+            "start": 1.48,
+            "end": 1.54,
+            "word": "怎麼",
+            "probability": 0.9732014536857605
+          },
+          {
+            "start": 1.54,
+            "end": 1.72,
+            "word": "又",
+            "probability": 0.995587944984436
+          },
+          {
+            "start": 1.72,
+            "end": 1.86,
+            "word": "是",
+            "probability": 0.998941957950592
+          },
+          {
+            "start": 1.86,
+            "end": 2.0,
+            "word": "你",
+            "probability": 0.9933823347091675
+          }
+        ]
+      }
+    ],
+    "asr": "又別了,醫生,怎麼又是你",
+    "asr_method": "local faster-whisper-medium CPU int8; no transcript hint; word timestamps retained",
+    "measured_loudness": {
+      "input_i": "-20.41",
+      "input_tp": "-3.01",
+      "input_lra": "0.00",
+      "input_thresh": "-30.67",
+      "output_i": "-20.00",
+      "output_tp": "-2.60",
+      "output_lra": "0.00",
+      "output_thresh": "-30.26",
+      "normalization_type": "linear",
+      "target_offset": "-0.00"
+    },
+    "silence_log": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-xu-entrance-20261027\\vox_c3_xu_greeting_v3.repair.silence.log"
+  },
+  "first_take": {
+    "record": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-xu-entrance-20261027\\record.json",
+    "reason_rejected": "Full-line repetition detected in ASR; never imported.",
+    "generation_record": {
+      "date": "2026-10-27",
+      "base": "53c03a8",
+      "branch": "codex/ch3-ultrasound-workflow",
+      "id": "vox_c3_xu_greeting_v3",
+      "role": "许建平",
+      "text": "医生，怎么又是你...",
+      "description": "六十五岁左右的中国男性，声音有自然的年纪感，音色略干、低沉但清楚，正常说话的音量。来检查的患者一抬头认出了以前见过的年轻医生，像碰到熟人一样随口说话。有一点意外，也有一点奔波后的疲惫，但不害怕、不生气。医生是轻轻招呼一下，短暂停顿后自然连着问怎么又是你，轻微强调又，句尾轻轻落下。朴实日常交谈，不逐字念稿，不表演悬疑，不气声耳语，不拖长尾音。只说指定的一句话，一遍。",
+      "instruction": "请基于下面的描述: \"六十五岁左右的中国男性，声音有自然的年纪感，音色略干、低沉但清楚，正常说话的音量。来检查的患者一抬头认出了以前见过的年轻医生，像碰到熟人一样随口说话。有一点意外，也有一点奔波后的疲惫，但不害怕、不生气。医生是轻轻招呼一下，短暂停顿后自然连着问怎么又是你，轻微强调又，句尾轻轻落下。朴实日常交谈，不逐字念稿，不表演悬疑，不气声耳语，不拖长尾音。只说指定的一句话，一遍。\",生成语音内容\"医生，怎么又是你...\".",
+      "seed": 2026102719,
+      "gen_seconds": 3.0,
+      "reference": null,
+      "method": "Installed local auk-infer CLI, AuK-Flash Instruct TTS",
+      "argv": [
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\.venv\\Scripts\\auk-infer.exe",
+        "--ckpt",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\ckpts\\AuK-Flash\\auk_flash.safetensors",
+        "--qwen_path",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\ckpts\\Qwen2.5-Omni-3B",
+        "--dtype",
+        "bf16",
+        "--device",
+        "cuda:0",
+        "--cpu_offload",
+        "--seed",
+        "2026102719",
+        "--gen_seconds",
+        "3.0",
+        "--instruction",
+        "请基于下面的描述: \"六十五岁左右的中国男性，声音有自然的年纪感，音色略干、低沉但清楚，正常说话的音量。来检查的患者一抬头认出了以前见过的年轻医生，像碰到熟人一样随口说话。有一点意外，也有一点奔波后的疲惫，但不害怕、不生气。医生是轻轻招呼一下，短暂停顿后自然连着问怎么又是你，轻微强调又，句尾轻轻落下。朴实日常交谈，不逐字念稿，不表演悬疑，不气声耳语，不拖长尾音。只说指定的一句话，一遍。\",生成语音内容\"医生，怎么又是你...\".",
+        "--output",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-xu-entrance-20261027\\vox_c3_xu_greeting_v3.raw.wav"
+      ],
+      "offline": true,
+      "implicit_token_disabled": true,
+      "license": "Local AuK code/weights recorded under its MIT LICENSE; original generated voice, no third-party reference.",
+      "raw": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-xu-entrance-20261027\\vox_c3_xu_greeting_v3.raw.wav",
+      "raw_sha256": "e8872dda86661da5b47122daf5d5e1006d680dba21588c9ec259c63bb459f7cd",
+      "wav": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-xu-entrance-20261027\\vox_c3_xu_greeting_v3.wav",
+      "wav_sha256": "5ac9aa610fa15d8e2122f78d9cab917ce0cc813326e3052be8469926ac6ce27a",
+      "mp3": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-xu-entrance-20261027\\vox_c3_xu_greeting_v3.mp3",
+      "mp3_sha256": "a96c49240f91f89cbf3d2bc1e9cdd3689d98a1531f726c129bd06514f6250549",
+      "mp3_bytes": 17949,
+      "processing": "silenceremove=start_periods=1:start_duration=0.03:start_threshold=-50dB:start_silence=0.06,loudnorm=I=-20:TP=-2:LRA=7",
+      "ffmpeg_argv": [
+        [
+          "ffmpeg",
+          "-y",
+          "-hide_banner",
+          "-loglevel",
+          "error",
+          "-i",
+          "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-xu-entrance-20261027\\vox_c3_xu_greeting_v3.raw.wav",
+          "-af",
+          "silenceremove=start_periods=1:start_duration=0.03:start_threshold=-50dB:start_silence=0.06,loudnorm=I=-20:TP=-2:LRA=7",
+          "-map_metadata",
+          "-1",
+          "-ar",
+          "24000",
+          "-ac",
+          "1",
+          "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-xu-entrance-20261027\\vox_c3_xu_greeting_v3.wav"
+        ],
+        [
+          "ffmpeg",
+          "-y",
+          "-hide_banner",
+          "-loglevel",
+          "error",
+          "-i",
+          "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-xu-entrance-20261027\\vox_c3_xu_greeting_v3.wav",
+          "-map_metadata",
+          "-1",
+          "-c:a",
+          "libmp3lame",
+          "-b:a",
+          "48k",
+          "-ar",
+          "24000",
+          "-ac",
+          "1",
+          "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-xu-entrance-20261027\\vox_c3_xu_greeting_v3.mp3"
+        ]
+      ],
+      "speed_or_pitch_edit": false,
+      "sample_rate": 24000,
+      "channels": 1,
+      "bitrate": 48000,
+      "decoded_seconds": 2.8829,
+      "decoded_peak": 0.4860372543334961,
+      "clipping_samples": 0,
+      "generation_processing_seconds": 67.94,
+      "human_listened": false,
+      "limit": "ASR and waveform checks cannot certify perceived age, naturalness, performance or author approval.",
+      "asr_segments": [
+        {
+          "start": 0.0,
+          "end": 2.64,
+          "text": "医生怎么又是你医生相旁又是你",
+          "words": [
+            {
+              "start": 0.0,
+              "end": 0.26,
+              "word": "医",
+              "probability": 0.632698580622673
+            },
+            {
+              "start": 0.26,
+              "end": 0.76,
+              "word": "生",
+              "probability": 0.9998329877853394
+            },
+            {
+              "start": 0.76,
+              "end": 0.96,
+              "word": "怎么",
+              "probability": 0.5291831493377686
+            },
+            {
+              "start": 0.96,
+              "end": 1.14,
+              "word": "又",
+              "probability": 0.9879732131958008
+            },
+            {
+              "start": 1.14,
+              "end": 1.26,
+              "word": "是",
+              "probability": 0.9991605281829834
+            },
+            {
+              "start": 1.26,
+              "end": 1.36,
+              "word": "你",
+              "probability": 0.9741976261138916
+            },
+            {
+              "start": 1.36,
+              "end": 1.48,
+              "word": "医",
+              "probability": 0.9833501577377319
+            },
+            {
+              "start": 1.48,
+              "end": 1.84,
+              "word": "生",
+              "probability": 0.9999576807022095
+            },
+            {
+              "start": 1.84,
+              "end": 2.04,
+              "word": "相",
+              "probability": 0.7007935047149658
+            },
+            {
+              "start": 2.04,
+              "end": 2.14,
+              "word": "旁",
+              "probability": 0.7593659460544586
+            },
+            {
+              "start": 2.14,
+              "end": 2.28,
+              "word": "又",
+              "probability": 0.8404647707939148
+            },
+            {
+              "start": 2.28,
+              "end": 2.46,
+              "word": "是",
+              "probability": 0.9979016780853271
+            },
+            {
+              "start": 2.46,
+              "end": 2.64,
+              "word": "你",
+              "probability": 0.997543215751648
+            }
+          ]
+        }
+      ],
+      "asr": "医生怎么又是你医生相旁又是你",
+      "asr_method": "local faster-whisper-medium CPU int8; no transcript hint; word timestamps retained",
+      "measured_loudness": {
+        "input_i": "-20.38",
+        "input_tp": "-6.20",
+        "input_lra": "0.00",
+        "input_thresh": "-30.55",
+        "output_i": "-19.99",
+        "output_tp": "-5.82",
+        "output_lra": "0.00",
+        "output_thresh": "-30.17",
+        "normalization_type": "linear",
+        "target_offset": "-0.01"
+      },
+      "silence_log": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-xu-entrance-20261027\\silence.log"
+    }
+  },
+  "generation_count": 2,
+  "third_generation": false,
+  "prefix_cut_seconds": 0.65,
+  "cut_basis": {
+    "silence_start": 0.607042,
+    "silence_end": 0.6965,
+    "threshold_db": -40,
+    "minimum_seconds": 0.04,
+    "target_onset_margin_seconds": 0.0465,
+    "temporal_inspection": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-xu-entrance-20261027\\temporal-inspection.json",
+    "rationale": "Delete an unwanted generated prefix at real silence; retain the entire target line and its internal pause."
+  },
+  "processing": "atrim=start=0.65,asetpts=PTS-STARTPTS,afade=t=in:d=0.005,loudnorm=I=-20:TP=-2:LRA=7",
+  "ffmpeg_argv": [
+    [
+      "ffmpeg",
+      "-y",
+      "-v",
+      "error",
+      "-i",
+      "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-xu-entrance-20261027\\vox_c3_xu_greeting_v3.repair.wav",
+      "-af",
+      "atrim=start=0.65,asetpts=PTS-STARTPTS,afade=t=in:d=0.005,loudnorm=I=-20:TP=-2:LRA=7",
+      "-map_metadata",
+      "-1",
+      "-ar",
+      "24000",
+      "-ac",
+      "1",
+      "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-xu-entrance-20261027\\vox_c3_xu_greeting_v3.final.wav"
+    ],
+    [
+      "ffmpeg",
+      "-y",
+      "-v",
+      "error",
+      "-i",
+      "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-xu-entrance-20261027\\vox_c3_xu_greeting_v3.final.wav",
+      "-map_metadata",
+      "-1",
+      "-c:a",
+      "libmp3lame",
+      "-b:a",
+      "48k",
+      "-ar",
+      "24000",
+      "-ac",
+      "1",
+      "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-xu-entrance-20261027\\vox_c3_xu_greeting_v3.final.mp3"
+    ]
+  ],
+  "speed_or_pitch_edit": false,
+  "wav": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-xu-entrance-20261027\\vox_c3_xu_greeting_v3.final.wav",
+  "wav_sha256": "7eb9e254ae07557e3b68e35151d186711c6a4e0548554c3817320312fe89734c",
+  "mp3": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-xu-entrance-20261027\\vox_c3_xu_greeting_v3.final.mp3",
+  "mp3_sha256": "74b965b2070714b0163349166fca6c073ef3fdde8186a3b7d9dd7103a60cc8ef",
+  "mp3_bytes": 9165,
+  "decoded_seconds": 1.4303,
+  "sample_rate": 24000,
+  "channels": 1,
+  "bitrate": 48000,
+  "decoded_peak": 0.6636733412742615,
+  "clipping_samples": 0,
+  "measured_loudness": {
+    "input_i": "-20.40",
+    "input_tp": "-3.55",
+    "input_lra": "0.00",
+    "input_thresh": "-30.81",
+    "output_i": "-20.00",
+    "output_tp": "-3.15",
+    "output_lra": "0.00",
+    "output_thresh": "-30.41",
+    "normalization_type": "linear",
+    "target_offset": "0.00"
+  },
+  "asr": "医生 怎么又是你",
+  "asr_segments": [
+    {
+      "start": 0.0,
+      "end": 1.36,
+      "text": "医生 怎么又是你",
+      "words": [
+        {
+          "start": 0.0,
+          "end": 0.22,
+          "word": "医"
+        },
+        {
+          "start": 0.22,
+          "end": 0.58,
+          "word": "生"
+        },
+        {
+          "start": 0.8,
+          "end": 0.88,
+          "word": " 怎么"
+        },
+        {
+          "start": 0.88,
+          "end": 1.08,
+          "word": "又"
+        },
+        {
+          "start": 1.08,
+          "end": 1.2,
+          "word": "是"
+        },
+        {
+          "start": 1.2,
+          "end": 1.36,
+          "word": "你"
+        }
+      ]
+    }
+  ],
+  "asr_method": "local faster-whisper-medium CPU int8; no transcript hint; word timestamps retained",
+  "expected_words_match": true,
+  "human_listened": false,
+  "limit": "Exact-line ASR, measured pause boundaries and waveform checks do not certify subjective age or naturalness; author listening remains decisive.",
+  "delivery": "C:\\Users\\lvmen\\Documents\\New project\\Midnight-Radiology\\app\\public\\audio\\vox_c3_xu_greeting_v3.mp3",
+  "independent_final_audio_model_review": {
+    "mp3": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-xu-entrance-20261027\\vox_c3_xu_greeting_v3.final.mp3",
+    "sha256": "74b965b2070714b0163349166fca6c073ef3fdde8186a3b7d9dd7103a60cc8ef",
+    "question": "请逐字转写这段音频里实际说出的全部内容。不要解释，不要续写，不要省略重复的词句。",
+    "answer": "医生，怎么又是你？",
+    "method": "One local Qwen2.5-Omni-3B audio perception request, no expected transcript supplied",
+    "human_listened": false,
+    "limitation": "Fallible automated opinion, not human listening or subjective acceptance."
+  },
+  "uncut_repair_audio_model_review": {
+    "mp3": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-xu-entrance-20261027\\vox_c3_xu_greeting_v3.repair.mp3",
+    "sha256": "88aa2c103494f41e4cf96b227c9e8833dda0850cbc8a90e148843a66f945f012",
+    "question": "只根据实际音频逐字转写全部内容。有没有整句重复、局部短语重复、额外英语或异常尾音？实际说了几遍？再简述声音的年龄感、语气和停顿是否像日常交谈；不确定就说明不确定。",
+    "answer": "嗯…你刚说的“又是你”是重复的，语气比较轻快，停顿比较自然，像是日常交谈。不确定还有没有其他问题，你可以再和我说说。",
+    "method": "One local Qwen2.5-Omni-3B audio perception request, no expected transcript supplied",
+    "human_listened": false,
+    "limitation": "Fallible automated opinion, not human listening or subjective acceptance."
+  },
+  "temporal_inspection": [
+    {
+      "label": "extra-opening",
+      "start": 0,
+      "end": 0.65,
+      "path": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-xu-entrance-20261027\\inspection-extra-opening.wav",
+      "segments": [
+        {
+          "start": 0.0,
+          "end": 0.62,
+          "text": "有线了",
+          "words": [
+            {
+              "word": "有",
+              "start": 0.0,
+              "end": 0.24
+            },
+            {
+              "word": "线",
+              "start": 0.24,
+              "end": 0.46
+            },
+            {
+              "word": "了",
+              "start": 0.46,
+              "end": 0.62
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "target-only",
+      "start": 0.65,
+      "end": 2.0803,
+      "path": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-xu-entrance-20261027\\inspection-target-only.wav",
+      "segments": [
+        {
+          "start": 0.0,
+          "end": 1.34,
+          "text": "医生 怎么又是你",
+          "words": [
+            {
+              "word": "医",
+              "start": 0.0,
+              "end": 0.22
+            },
+            {
+              "word": "生",
+              "start": 0.22,
+              "end": 0.6
+            },
+            {
+              "word": " 怎么",
+              "start": 0.78,
+              "end": 0.88
+            },
+            {
+              "word": "又",
+              "start": 0.88,
+              "end": 1.08
+            },
+            {
+              "word": "是",
+              "start": 1.08,
+              "end": 1.22
+            },
+            {
+              "word": "你",
+              "start": 1.22,
+              "end": 1.34
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

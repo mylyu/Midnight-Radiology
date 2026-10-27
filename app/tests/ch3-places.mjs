@@ -44,6 +44,28 @@ const withStickers = fixture('c3_s1_hub', { items: ['c3_cup_stickers'] })
 assert(choices(withStickers).some(c => c.next === 'c3_s1_place_rest'))
 assert(!choices(withStickers).some(c => c.next === 'c3_s1_stickers_use_0'))
 
+// The former reading-location cursor is the same examination-room workstation.
+// Its existing teaching-file event keeps the original cost and completion flag.
+const workstationHub = fixture('c3_s2_hub')
+const workstationChoice = choices(workstationHub).find(c => c.next === 'c3_s2_label_0')
+assert.equal(workstationChoice.text, '🖥️ 诊室工作站')
+for (const node of ['c3_s2_place_reading', 'c3_s2_label_0', 'c3_s2_label_1', 'c3_s2_label_2'])
+  assert.equal(trilogyStep(fixture(node), CH3).bg, 'bg_us_room_day', 'The workstation shares the ultrasound examination room')
+let workstation = pick(workstationHub, 'c3_s2_label_0')
+assert.equal(workstation.ap, workstationHub.ap - 1)
+workstation = finishScene(workstation, 'c3_s2_hub')
+assert(workstation.flags.c3_s2_label_done)
+assert(workstation.cards.includes('c3_compare'))
+assert(!choices(workstation).some(c => /诊室工作站/.test(c.text)))
+const oldWorkstation = fixture('c3_s2_place_reading')
+const restoredWorkstation = finishScene(pick(oldWorkstation, 'c3_s2_label_0'), 'c3_s2_hub')
+assert.equal(restoredWorkstation.ap, oldWorkstation.ap - 1)
+assert(restoredWorkstation.flags.c3_s2_label_done)
+for (const step of Object.values(CH3.steps)) {
+  assert(!/阅片室|阅片资料区/.test(step.text))
+  for (const choice of step.choices ?? []) assert(!/阅片室|阅片资料区/.test(choice.text))
+}
+
 // Entering/leaving a room is free. The original event, not its menu, spends AP.
 let inRest = pick(withStickers, 'c3_s1_place_rest')
 assert.deepEqual(numbers(inRest), numbers(withStickers))
