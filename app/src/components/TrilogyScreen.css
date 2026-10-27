@@ -34,6 +34,18 @@
 .trilogy-root[data-trilogy=ch3] .trilogy-story-image { width:min(70vw,760px); height:max(0px,calc(100% - var(--trilogy-header-height,76px) - var(--trilogy-dialog-height,14rem) - 24px)); max-height:none; display:grid; grid-template-rows:minmax(0,1fr) auto; justify-items:center; gap:.35rem; }
 .trilogy-root[data-trilogy=ch3] .trilogy-story-image>img { width:100%; height:100%; min-height:0; }
 .trilogy-root[data-trilogy=ch3] .trilogy-story-image>span { max-width:100%; text-align:center; }
+/* All in-dialogue figures share the scene center, including paper keepsakes.
+   Keep the closeup zoom, but do not drift the artwork sideways as it settles. */
+.trilogy-root[data-trilogy=ch3] :is(.trilogy-story-image,.trilogy-story-object) { left:50%; right:auto; transform:translateX(-50%); }
+.trilogy-root[data-trilogy=ch3] :is(.trilogy-story-image,.trilogy-story-object)>img { object-position:center; }
+.trilogy-root[data-trilogy=ch3] .trilogy-document { justify-self:center; align-self:center; min-height:0; }
+.trilogy-root[data-trilogy=ch3] .trilogy-document>span { background:none; padding:0; }
+.trilogy-root[data-trilogy=ch3] .ldct-cinematic__image { object-position:center; }
+.trilogy-root[data-trilogy=ch3] .ldct-cinematic--push .ldct-cinematic__image { animation-name:ch3-centered-push; }
+.trilogy-root[data-trilogy=ch3] .ldct-cinematic--settle .ldct-cinematic__image { animation-name:ch3-centered-settle; }
+@keyframes ch3-centered-push { from { transform:scale(.965) } to { transform:scale(1) } }
+@keyframes ch3-centered-settle { from { transform:scale(1) } to { transform:scale(.975) } }
+@media (prefers-reduced-motion:reduce) { .trilogy-root[data-trilogy=ch3] .ldct-cinematic__image { animation:none; transform:none; } }
 .trilogy-closeup { width:85%; }
 .trilogy-closeup img { animation:trilogy-push 9s ease-out both; }
 @keyframes trilogy-push { from { transform:scale(.96) } to { transform:scale(1.025) } }
@@ -106,11 +118,14 @@
 @media (max-height:500px) and (orientation:landscape) {
  .trilogy-story-image { top:43px; height:45%; width:40%; }
  .trilogy-story-object { width:min(52vw,460px); }
- /* On a short landscape phone, stacking the choices under the scan leaves only
-    a thumbnail. Use the same dialogue panel beside the image instead. */
- .trilogy-root[data-trilogy=ch3] .trilogy-story-image { left:.75rem; transform:none; width:calc(38% - 1.5rem); height:max(0px,calc(100% - var(--trilogy-header-height,76px) - 24px)); }
- .trilogy-root[data-trilogy=ch3]:has(.trilogy-story-image)>.dialog-wrap { left:38%; top:calc(var(--trilogy-header-height,76px) + 14px); bottom:8px; display:flex; align-items:center; padding:.5rem !important; }
- .trilogy-root[data-trilogy=ch3]:has(.trilogy-story-image)>.dialog-wrap>.dialog-box { width:100%; max-height:100% !important; }
+ /* Short screens keep the same centered image above the original dialogue.
+    Long text/choices scroll inside the panel rather than push the figure left. */
+ .trilogy-root[data-trilogy=ch3]:has(.trilogy-story-image,.trilogy-story-object,.ldct-cinematic)>.dialog-wrap>.dialog-box { max-height:48vh !important; }
+ .trilogy-root[data-trilogy=ch3] .trilogy-document { padding:.4rem .75rem; border-width:2px; }
+ .trilogy-root[data-trilogy=ch3] .trilogy-document>span { font-size:1.1rem; line-height:1.2; }
+ .trilogy-root[data-trilogy=ch3] .trilogy-document>h3 { font-size:.85rem; margin:.2rem 0; }
+ .trilogy-root[data-trilogy=ch3] .trilogy-document>p { font-size:.7rem; line-height:1.3; padding:.15rem 0; }
+ .trilogy-root[data-trilogy=ch3] .trilogy-document-stamp { margin-top:.25rem; width:46px; font-size:.65rem; padding:.15rem; }
  .trilogy-story-object>span { padding:.2rem .4rem; font-size:.65rem; }
  .trilogy-lab { inset:45px .5rem .5rem; padding:.6rem; }
  .trilogy-lab header h2 { font-size:1rem; display:inline; margin-right:1rem; }

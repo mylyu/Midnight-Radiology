@@ -135,6 +135,52 @@ try {
   await page.goto(`${url}#/dlc`)
   await page.getByRole('heading', { name: /章节与番外/ }).waitFor({ timeout: 15000 })
 
+  await test('dialogue-figures-centered-on-all-screens', async row => {
+    row.views = []
+    const cases = [
+      ['c3_s4_clinic_1', 3, '.trilogy-story-image img', 'doppler'],
+      ['c3_s1_stone_4', 0, '.trilogy-story-image img', 'question'],
+      ['c3_s1_probes_1', 0, '.trilogy-story-object img', 'object'],
+      ['c3_s1_towel_use_2', 0, '.trilogy-story-object img', 'photo'],
+      ['c3_s5_notice_0', 4, '.trilogy-document', 'document'],
+      ['c3_intro_call_1', 0, '.ldct-cinematic__image', 'closeup-push'],
+      ['c3_intro_visit_2', 0, '.ldct-cinematic__image', 'closeup-settle'],
+    ]
+    for (const size of [{ width: 1920, height: 1080 }, { width: 390, height: 844 }, { width: 844, height: 390 }]) {
+      await page.setViewportSize(size)
+      for (const [node, shift, selector, kind] of cases) {
+        await enter(fixture(node, shift)); await reveal()
+        const figure = page.locator(selector)
+        await figure.waitFor()
+        if (kind !== 'document') await figure.evaluate(image => image.decode())
+        const bounds = await fit(figure, `${node} figure`)
+        const scene = await page.locator('[data-trilogy="ch3"]').boundingBox()
+        assert(Math.abs(bounds.x + bounds.width / 2 - scene.x - scene.width / 2) < .75,
+          `${node}: visible figure shares the scene center, not a left column`)
+        const dialogue = await page.locator('.dialog-wrap').boundingBox()
+        assert(bounds.y + bounds.height <= dialogue.y + 1, `${node}: picture does not cover the dialogue`)
+        assert(bounds.height > 70, `${node}: figure remains visible on short screens`)
+        if (kind === 'document') assert(await figure.evaluate(element => element.scrollHeight <= element.clientHeight + 1),
+          'The short document is visible in full after centering, including landscape')
+        if (kind === 'question') {
+          const choices = page.locator('[data-dialogue-choice]')
+          await choices.first().waitFor()
+          for (const choice of await choices.all()) {
+            await choice.scrollIntoViewIfNeeded(); await fit(choice, 'question choice remains accessible', true)
+          }
+          await page.locator('.dialog-box').evaluate(element => { element.scrollTop = 0 })
+        }
+        if (size.width === 844 || size.width === 390 && ['document', 'object'].includes(kind) || size.width === 1920 && ['closeup-push', 'doppler'].includes(kind)) {
+          await shot(`center-${kind}-${size.width}`)
+        }
+        row.views.push({ node, kind, viewport: size, bounds })
+      }
+      await enter(fixture('c3_s4_doppler_0', 3)); await reveal()
+      assert.equal(await page.locator('.trilogy-story-image,.trilogy-story-object,.ldct-cinematic').count(), 0, 'Normal dialogue does not inherit a figure')
+      await imageIs(page.locator('.sprite-l,.sprite-r').first(), 'char_mei')
+    }
+  })
+
   await test('doppler-and-shared-office', async row => {
     row.views = []
     for (const size of [{ width: 1920, height: 1080 }, { width: 390, height: 844 }]) {
@@ -267,8 +313,8 @@ try {
         await imageIs(picture, image)
         const box = await fit(page.locator('.trilogy-story-image'), `${node} image`)
         const dialog = await page.locator('.dialog-wrap').boundingBox()
-        assert(box.y + box.height <= dialog.y + 1 || box.x + box.width <= dialog.x,
-          'Image stays clear of choices, above them or beside them on a short landscape screen')
+        assert(Math.abs(box.x + box.width / 2 - size.width / 2) < 2, 'Clinical image is centered in every orientation')
+        assert(box.y + box.height <= dialog.y + 1, 'Image stays above the original dialogue, including short landscape screens')
         assert(box.height > 90, 'There is an actual visible observation image')
         assert.equal(await page.locator('.sprite-l,.sprite-r').count(), 0, 'No patient portrait overlays the picture question')
         for (const button of await choices.all()) await fit(button, `${node} choice`, true)
