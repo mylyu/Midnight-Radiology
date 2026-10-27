@@ -33,7 +33,7 @@ function walkTo(s, target, visited = []) {
 assert(isTrilogyPlayable('ch3'))
 assert(!isTrilogyPlayable('ch4') && !isTrilogyPlayable('ch5'))
 assert.equal(Object.values(CH3.steps).filter(s => s.tool).length, 7, 'The author retired only the display-depth exercise')
-assert.equal(Object.values(CH3.steps).filter(s => s.scan).length, 7)
+assert.equal(Object.values(CH3.steps).filter(s => s.scan).length, 6)
 for (const step of Object.values(CH3.steps)) for (const c of step.choices ?? [])
   assert(!/[（(]\d+行动力[）)]/.test(c.text), 'No prose AP suffix on choices')
 
@@ -116,7 +116,6 @@ for (const flags of [{}, { c3_rotation_invited: true, c3_cousin_booking: true }]
 
 for (const [node, flag, field, delta] of [
   ['c3_s2_listen', 'c3_cousin_listened', 'heart', 0],
-  ['c3_s4_cost_right', 'c3_gel_ledger', 'wealth', 2],
   ['c3_s5_notice_desk', 'c3_xu_query_assisted', 'heart', 1],
 ]) {
   const newRun = fixture('c3_s1_hub'), earned = enterTrilogyNode(newRun, CH3, node)
@@ -129,7 +128,6 @@ for (const [node, flag, field, delta] of [
 // Ordinary mandatory dialogue keeps story receipts/collections, not stat rewards.
 for (const [from, target, flag, badge, card] of [
   ['c3_s2_arrive_13', 'c3_s2_listen', 'c3_cousin_listened'],
-  ['c3_s3_mirror_end_0', 'c3_s3_mirror_end_1', undefined, 'c3_second_angle', 'c3_mirror'],
   ['c3_s3_xu_7', 'c3_s3_xu_8', 'c3_xu_identity', 'c3_name_spoken'],
 ]) {
   const before = { ...fixture(from), skill: 12, heart: 17, wealth: 4 }
@@ -145,10 +143,12 @@ for (const [from, target, flag, badge, card] of [
 for (const borrowed of [false, true]) for (const met of [false, true]) {
   let s = fixture('c3_s5_hub', { ...(borrowed ? { c3_s4_lei_done: true } : {}), ...(met ? { c3_han_met: true } : {}) })
   const p = trilogyStep(s, CH3).choices.find(c => c.next === 'c3_s5_lei_0')
+  assert.equal(!!p, borrowed || met, 'The final Lei visit requires an actual earlier connection')
+  if (!p) continue
   assert.match(p.text, /休息室/, 'The hall offers a place, not a person or an invented prior action')
   const beforeAP = s.ap
   s = trilogyChoose(s, CH3, 'c3_s5_hub', p)
-  assert.equal(trilogyStep(s, CH3).text.includes('标签机还得'), borrowed, 'Returning an item requires actually borrowing it')
+  assert.equal(trilogyStep(s, CH3).text.includes('标签机拿回来了'), borrowed, 'Returning an item requires actually borrowing it')
   s = walkTo(s, 'c3_s5_hub')
   assert.equal(s.ap, beforeAP - 1)
   assert(s.flags.c3_s5_lei_done, 'Optional paper follow-up cannot overwrite exploration completion')

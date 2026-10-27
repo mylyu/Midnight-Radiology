@@ -193,7 +193,7 @@ for (const node of ['c3_s3_wang_8', 'c3_s3_wang_9', ...range('c3_s3_after_wang',
   assert.deepEqual(numbers(after), numbers(old))
 }
 
-// One lightweight session walk verifies the seven real cases remain in order.
+// One lightweight session walk verifies the six retained real cases remain in order.
 // This is state coverage, not a browser or full-interaction playthrough.
 let session = fixture(CH3.shifts[0].start, 0)
 const scans = [], tools = [], seen = new Set()
@@ -215,9 +215,9 @@ for (let count = 0; count < 500; count++) {
 assert.equal(progress(session).phase, 'settle')
 assert.equal(progress(session).shift, 4)
 assert.deepEqual(scans, ['c3_s1_aunt_scan', 'c3_s1_stone_scan', 'c3_s2_cousin_scan', 'c3_liver_scan',
-  'c3_s3_wang_scan', 'c3_s3_xu_scan', 'c3_s3_bedside_scan'])
-assert.equal(new Set(scans).size, 7, 'No second acquisition is introduced')
+  'c3_s3_wang_scan', 'c3_s3_xu_scan'])
+assert.equal(new Set(scans).size, 6, 'The retired bedside case does not introduce a substitute acquisition')
 assert.equal(tools.length, 7)
 assert.equal(new Set(tools).size, 7, 'Each retained tool appears once')
 assert(seen.has('c3_liver_observe') && seen.has('c3_wang_spectrum_2'))
-console.log('PASS CH3 liver TGC and B/M/D flow: exact paths, old cursors, saved tools, reward guards, two questions and seven ordered cases')
+console.log('PASS CH3 liver TGC and B/M/D flow: exact paths, old cursors, saved tools, reward guards, two questions and six ordered cases')

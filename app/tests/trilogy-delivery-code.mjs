@@ -13,7 +13,7 @@ assert(plugin?.generateBundle, 'Use the actual configured Rollup hook, not a cop
 const story = 'assets/trilogy-registry-test.js', index = 'assets/index-test.js', mixed = 'assets/mixed-test.js'
 const baseImage = 'assets/media/base.webp', newMedia = 'audio/vox_c3_test.mp3'
 const sources = ['src/game/ch3.ts', 'src/game/ch4.ts', 'src/game/ch5.ts', 'src/game/trilogy-registry.ts',
-  'src/game/ch3-places.ts', 'src/game/ch3-staging.ts', 'src/game/ch3-picture-observations.ts']
+  'src/game/ch3-places.ts', 'src/game/ch3-staging.ts', 'src/game/ch3-picture-observations.ts', 'src/game/ch3-retired-scenes.ts']
 const code = { [story]: 'export const chapter = "课程";\n' + ' '.repeat(25000), [index]: 'export const shared = 1;', [mixed]: 'export const mixed = 2;' }
 const chunk = (file, modules, extra = {}) => ({ type: 'chunk', fileName: file, code: code[file], isEntry: false,
   isDynamicEntry: true, modules: Object.fromEntries(modules.map(id => [id, { renderedLength: 0 }])), ...extra })
@@ -59,6 +59,7 @@ rejects({ modules: [...sources, 'src/App.tsx'] }, 'Mixed App source is protected
 rejects({ modules: [...sources, '\u0000vite/preload-helper.js'] }, 'Virtual helper source is protected')
 rejects({ modules: ['src/game/ch4.ts?instrumented'] }, 'Source query variants do not broaden the exact whitelist')
 rejects({ modules: ['src/game/trilogy-session.ts'] }, 'Common runtime is protected')
+rejects({ modules: ['src/game/trilogy-collections.ts'] }, 'Shared history helper is protected; only the CH3 retired-scene data module is dedicated story code')
 rejects({ isEntry: true }, 'Entry chunks are protected')
 rejects({ isDynamicEntry: false }, 'Non-dynamic chunks are protected')
 rejects({ type: 'asset' }, 'An ordinary JS asset cannot self-admit')

@@ -221,7 +221,17 @@ export async function buildChapterManifest() {
     assets[relative] = { sha256: sha256(bytes), bytes: bytes.length, type }
   }
   const chapters = Object.fromEntries(Object.entries(groups).map(([id, paths]) => [id, [...paths].sort()]))
-  return { version: 1, assets, chapters }
+  // Save-only card art stays indexed, but is never added to default chapter groups.
+  const legacyCardImages = {}
+  for (const chapter of Object.values(TRILOGY)) {
+    for (const [id, card] of Object.entries(chapter.legacyCards ?? {})) {
+      if (!card.image || TRILOGY_DOCUMENTS[card.image]) continue
+      assert(catalog[card.image], `Unknown historical card image ${id}: ${card.image}`)
+      assert(!legacyCardImages[id] || legacyCardImages[id] === card.image, `Conflicting historical card ${id}`)
+      legacyCardImages[id] = card.image
+    }
+  }
+  return { version: 1, assets, chapters, legacyCardImages }
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

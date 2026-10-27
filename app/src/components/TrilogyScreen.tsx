@@ -3,6 +3,7 @@ import { CHARACTERS, SHOP_ITEMS } from '../game/data'
 import { condOk, playSfx } from '../game/store'
 import type { GameState } from '../game/types'
 import type { TrilogyChapter } from '../game/trilogy-types'
+import { ownedTrilogyHistory } from '../game/trilogy-collections'
 import { trilogyProgress, trilogyStep, trilogyAdvance, trilogyChoose, trilogyGive, trilogyCheckin,
   nextTrilogyShift, trilogyBuy, trilogyReadBook, answerTrilogyQuiz, nextTrilogyQuiz,
   finishTrilogyQuiz, issueTrilogyCertificate, restartTrilogy, trilogyCredential, trilogyShopItems, trilogyHeardCue,
@@ -340,6 +341,7 @@ const CH3_SHOP_DESCRIPTIONS: Record<string, string> = {
 }
 function TrilogyOverlay({ overlay, state, chapter, update, close, renderText }: Omit<Props, 'onExit'> & { overlay: Overlay; close: () => void }) {
   const p = trilogyProgress(state, chapter.id)!, gate = useRef({ until: 0 })
+  const history = ownedTrilogyHistory(chapter, state)
   if (chapter.id === 'ch3' && overlay === 'book') return <Ch3Book chapter={chapter} shift={p.shift} renderText={renderText} onClose={close} />
   const titles: Record<Overlay, string> = { shop: '小卖部', book: '值班室旧书', manual: '夜班手册', badges: '勋章墙', bag: '背包与用途', replay: '重玩本章' }
   return <div className="trilogy-modal" onClick={e => e.stopPropagation()}><section className="trilogy-modal-sheet">
@@ -356,9 +358,11 @@ function TrilogyOverlay({ overlay, state, chapter, update, close, renderText }: 
     {overlay === 'book' && <><p>按班次开放 · {Math.min(20, (p.shift + 1) * 4)} / {chapter.book.length} 页</p>{chapter.book.slice(0, (p.shift + 1) * 4).map((page, i) => <details key={page.title} className="trilogy-book-page"><summary>第{i + 1}页 · {page.title}</summary><p>{renderText(page.body)}</p></details>)}</>}
     {overlay === 'manual' && <><p>已解锁 {Object.keys(chapter.cards).filter(id => state.cards?.includes(id)).length} / {Object.keys(chapter.cards).length} 张</p>
       {Object.entries(chapter.cards).filter(([id]) => state.cards?.includes(id)).map(([id, card]) => <article className="trilogy-book-page" key={id}><h3>{card.title}</h3>{card.image && (TRILOGY_DOCUMENTS[card.image] ? <TrilogyDocument id={card.image} /> : <img src={imageAsset(card.image)} alt="" className="max-h-40 mx-auto pixel" />)}<p>{renderText(card.body)}</p></article>)}
+      {history.cards.length > 0 && <section data-trilogy-legacy-collections="manual"><h3 className="mt-4 text-slate-400">历史收藏 · 已停颁</h3>{history.cards.map(([id, card]) => <article className="trilogy-book-page" key={id} data-collection-card={id}><h3>{card.title}</h3>{card.image && (TRILOGY_DOCUMENTS[card.image] ? <TrilogyDocument id={card.image} /> : <img src={imageAsset(card.image)} alt="" className="max-h-40 mx-auto pixel" />)}<p>{renderText(card.body)}</p></article>)}</section>}
       <h3 className="mt-4 text-sky-200">证物与线索回看</h3>{TRILOGY_EVIDENCE[chapter.id].filter(row => state.flags[row.flag]).map(row => <details className="trilogy-book-page" key={row.flag}><summary>{row.title}</summary>{row.image && <TrilogyDocument id={row.image} />}<p>{row.body}</p></details>)}
       <details className="trilogy-book-page"><summary>大事记 · 本章已经走过的片段</summary><p>{p.visited.filter(id => chapter.steps[id].caseId).map(id => chapter.steps[id].caseId!).filter((value, i, rows) => rows.indexOf(value) === i).map(id => TRILOGY_CASE_NAMES[id] ?? id).join(' · ') || '病例记录随剧情解锁。'}</p></details></>}
-    {overlay === 'badges' && <div className="trilogy-badge-grid">{Object.entries(chapter.badges).map(([id, badge]) => <section key={id} className={`trilogy-panel ${state.badges.includes(id) ? '' : 'opacity-40'}`}><span className="text-3xl">{badge.icon}</span><h3>{badge.name}</h3><p>{badge.desc}</p><small>{state.badges.includes(id) ? '已获得' : '尚未获得'}</small></section>)}</div>}
+    {overlay === 'badges' && <><div className="trilogy-badge-grid">{Object.entries(chapter.badges).map(([id, badge]) => <section key={id} className={`trilogy-panel ${state.badges.includes(id) ? '' : 'opacity-40'}`}><span className="text-3xl">{badge.icon}</span><h3>{badge.name}</h3><p>{badge.desc}</p><small>{state.badges.includes(id) ? '已获得' : '尚未获得'}</small></section>)}</div>
+      {history.badges.length > 0 && <section data-trilogy-legacy-collections="badges"><h3 className="my-3 text-slate-400">历史收藏 · 已停颁</h3><div className="trilogy-badge-grid">{history.badges.map(([id, badge]) => <section key={id} data-collection-badge={id} className="trilogy-panel"><span className="text-3xl">{badge.icon}</span><h3>{badge.name}</h3><p>{badge.desc}</p><small>已获得 · 历史勋章</small></section>)}</div></section>}</>}
     {overlay === 'bag' && <><p>{chapter.id === 'ch3' ? '遇到同事时，可以在闲聊中递奶茶或分享零食。' : '礼物只在同事在场的闲聊选项中使用，不在班后统一赠送。'}</p>{state.items.map(id => {
       const image = chapter.id === 'ch3' ? chapter.itemImages?.[id] ?? SHOP_ITEMS.find(item => item.id === id)?.image : undefined
       const content = <>🎒 {itemName(id, chapter)}<br /><small>{id === 'milktea' ? '递给在场同事；购买时人心＋2，送出不重复加。' : id === 'snack' ? '拆开分享，人心＋1。' : id === 'dosimeter' ? '工作人员个人受照监测，不测患者剂量。' : id === 'toolbox' ? chapter.id === 'ch3' ? '工具箱已收好，这次轮转暂时用不上。' : '保留给非医疗设备小修或教学展示，不拆修扫描仪。' : chapter.id === 'ch3' ? CH3_ITEM_USES[id] ?? '已收在背包中。' : '留存物品可在相应剧情中回响。'}</small></>

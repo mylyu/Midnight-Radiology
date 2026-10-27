@@ -8,28 +8,17 @@ const places: Record<string, Place> = {
   rest: { label: '☕ 休息室', bg: 'ch2_bg_breakroom_day', text: '热水壶刚跳了闸，桌边还空着一把椅子。几只写着名字的杯子挤在一起，谁的饭盒又忘了拿。' },
   waiting: { label: '🪑 候诊区', bg: 'bg_waiting_day_v2', text: '窗口边腾出一点空地方，资料和片袋都放在柜台内侧。你绕开等候的队伍，走过去看看。' },
   office: { label: '🗂️ 大办公室', bg: 'bg_c3_shared_office_day_v1', text: '大办公室里几张桌子拼成两排，打印机还在吐纸。你绕过椅背，找到同事留出的空位。' },
-  // Keep the old location key for saved cursors; this workstation is in the examination room.
-  reading: { label: '🖥️ 诊室工作站', bg: 'bg_us_room_day', text: '诊室里，工作站就在超声机旁。梅姐刚写完上一位的报告，留出的空当正好能找找教学图；屏幕上的文件夹却只叫“新建文件夹”。' },
-  corridor: { label: '🚪 科室走廊', bg: 'bg_waiting_day_v2', text: '走廊里有推车经过，电梯的到站声响了一下。你往边上让了让，没挡在门口。' },
-  parking: { label: '🔌 设备停放处', bg: 'bg_us_room_day', text: '移动机停在诊室门边，电源线收在侧袋。那只响轮子安静下来，倒像刚才什么也没发生。' },
-  supplies: { label: '📦 备物区', bg: 'bg_us_room_day', text: '诊室边的柜子刚打开，新箱子压着几张领用单。梅姐把纸从箱底抽出来，拍掉上面的灰。' },
+  corridor: { label: '🚪 科室走廊', bg: 'bg_waiting_day_v2', text: '窗边安静些。你避开诊室门口，在这里回电话。' },
 }
 
 // Existing events keep their IDs, costs and completion receipts. A location is
 // not itself a completed event: unfinished independent uses must stay reachable.
 const destinations: Record<string, [string, string]> = {
-  c3_s1_probes_0: ['teaching', '🔎 看看软垫上的三支探头'],
   c3_s1_tea_0: ['rest', '☕ 接杯热水，认认桌上的杯子'],
   c3_s1_wait_0: ['waiting', '📋 帮忙理一理柜台上的旧片和申请单'],
-  c3_s2_roster_0: ['office', '📅 看看墙上的排班表'],
   c3_s2_he_0: ['rest', '🍪 坐下来歇会儿'],
-  c3_s2_label_0: ['reading', '🖥️ 找找“最好的一张”教学图'],
-  c3_s3_tang_0: ['corridor', '🚪 看看去病区的路怎么走'],
-  c3_s3_cart_0: ['parking', '🔌 收好移动机的电源和备用线'],
   c3_s3_bag_0: ['waiting', '👜 看看寄存的布袋'],
   c3_s4_lei_0: ['rest', '🏷️ 借桌上那台标签机'],
-  c3_s4_pack_0: ['supplies', '📦 拆开新送来的耗材'],
-  c3_s4_cost_0: ['supplies', '🧾 核一核柜门上的用量单'],
   c3_s4_zhou_0: ['corridor', '📞 在安静处给老周回个电话'],
   c3_s4_han_0: ['office', '📄 把设备核对单递进去'],
   c3_s5_zhou_0: ['office', '🍵 歇会儿，聊聊这两周'],
@@ -68,7 +57,8 @@ export function installCh3Places(steps: Record<string, TrilogyStep>) {
   }
   const available = (actions: Choice[], state: GameState) => actions
     .filter(c => condOk(state, c.cond ? { ...c.cond, ap: undefined } : undefined))
-    .map(c => c.next === 'c3_s5_lei_0' && !state.flags.c3_s4_lei_done ? { ...c, text: '☕ 坐下来歇会儿' } : c)
+    .filter(c => c.next !== 'c3_s5_lei_0' || state.flags.c3_s4_lei_done || state.flags.c3_han_met)
+    .map(c => c.next === 'c3_s5_lei_0' && !state.flags.c3_s4_lei_done ? { ...c, text: '📄 问问厂家核对单的回信' } : c)
   return (id: string, step: TrilogyStep, state: GameState): TrilogyStep | undefined => {
     const hub = hubs.get(id)
     if (hub) return { ...step, choices: [

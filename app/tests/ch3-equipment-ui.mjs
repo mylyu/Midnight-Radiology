@@ -774,6 +774,104 @@ try {
     row.viewports = [{ width: 390, height: 844 }, { width: 390, height: 480 }]
     row.scrollExtent = extent; row.savedStateUnchanged = true
   })
+  await test('story-tighten-third-shift-handover', async row => {
+    await page.setViewportSize({ width: 1440, height: 900 })
+    // Start after the existing B/M/D examination. Only Xu's real scan remains.
+    await enter(fixture('c3_s3_after_wang_0', 2))
+    const before = await read(), nodes = [], scans = []
+    for (let i = 0; i < 35; i++) {
+      const state = await read(), p = progress(state)
+      if (p.phase === 'settle') break
+      const node = p.stepId, step = trilogyStep(state, chapter)
+      nodes.push(node)
+      assert(!/mirror|bedside|leave_clinic|_cart_/.test(node), `Retired case cannot return: ${node}`)
+      if (step.scan) {
+        scans.push(node)
+        await nodeIs(step.next) // The unchanged three-second acquisition finishes itself.
+      } else if (step.end) {
+        await reveal(); await page.waitForTimeout(950)
+        const settle = page.locator('[data-trilogy-settle]')
+        await fit(settle, 'explicit shift-end control', true); await settle.click()
+        await page.locator('[data-ch3-settlement]').waitFor()
+      } else if (step.choices?.length) {
+        await chooseNext(step.choices.find(choice => !choice.next.startsWith('@')).next)
+      } else await advance()
+    }
+    assert.equal(progress(await read()).phase, 'settle')
+    assert.equal(progress(await read()).shift, 2)
+    assert.deepEqual(scans, ['c3_s3_xu_scan'])
+    assert(nodes.includes('c3_s3_waiting_0') && nodes.includes('c3_s3_xu_8'))
+    assert.equal((await read()).gold, before.gold + 110)
+    const paid = await read()
+    await page.reload(); await loaded()
+    await page.locator('[data-ch3-settlement]').waitFor()
+    assert.deepEqual(await read(), paid, 'Reload cannot repay the third-shift wage')
+    await shot('story-tighten-third-shift-settlement')
+    row.nodes = nodes; row.scans = scans; row.salary = 110
+  })
+
+  await test('story-tighten-mobile-exploration-and-legacy', async row => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    row.menus = []
+    for (const shift of [1, 2, 3, 4]) {
+      await enter(fixture(`c3_s${shift + 1}_hub`, shift)); await reveal()
+      const choices = page.locator('[data-dialogue-choice]')
+      await page.waitForFunction(() => [...document.querySelectorAll('[data-dialogue-choice]')]
+        .every(button => button.getAttribute('aria-disabled') !== 'true'))
+      const labels = await choices.allTextContents()
+      assert(!/排班表|最好的一张|设备停放|去病区|备物|耗材|核账/.test(labels.join('\n')))
+      if (shift === 4) assert(!labels.some(text => /休息室/.test(text)), 'No Lei visit without loan/factory history')
+      for (const choice of await choices.all()) await fit(choice, `shift ${shift + 1} exploration choice`, true)
+      row.menus.push({ shift, labels })
+      if (shift === 2) await shot('story-tighten-third-shift-hub-390')
+    }
+    const activeCard = Object.keys(chapter.cards)[0], activeBadge = Object.keys(chapter.badges)[0]
+    const historical = patchTrilogy(fixture('c3_s3_xu_9', 2, { ...base(),
+      cards: [activeCard, 'c3_mirror', 'c3_bedside'],
+      badges: [activeBadge, 'c3_cart_ready', 'c3_second_angle', 'c3_gel_account'] }), 'ch3', { phase: 'settle' })
+    await enter(historical)
+    const before = await read(), settlement = page.locator('[data-ch3-settlement]')
+    assert.match(await settlement.textContent(), new RegExp(`📖 1/${Object.keys(chapter.cards).length} · 🏅 1/${Object.keys(chapter.badges).length}`))
+    assert.match(await page.locator('[data-trilogy-legacy-summary]').textContent(), /2 张卡片 · 3 枚勋章/)
+    await settlement.getByRole('button', { name: '📖 夜班手册', exact: true }).click()
+    let sheet = page.locator('.trilogy-modal-sheet')
+    const manual = sheet.locator('[data-trilogy-legacy-collections="manual"]')
+    await manual.waitFor()
+    assert.equal(await manual.locator('[data-collection-card]').count(), 2)
+    await imageIs(manual.locator('[data-collection-card="c3_mirror"] img'), 'us_mirror')
+    await sheet.locator('[data-trilogy-close-overlay]').click()
+    await settlement.getByRole('button', { name: '🏅 勋章墙', exact: true }).click()
+    sheet = page.locator('.trilogy-modal-sheet')
+    const badges = sheet.locator('[data-trilogy-legacy-collections="badges"]')
+    await badges.waitFor(); assert.equal(await badges.locator('[data-collection-badge]').count(), 3)
+    await badges.scrollIntoViewIfNeeded()
+    await fit(sheet.locator('[data-trilogy-close-overlay]'), 'history modal close after scrolling', true)
+    await shot('story-tighten-legacy-badges-390')
+    await sheet.locator('[data-trilogy-close-overlay]').click()
+    assert.deepEqual(await read(), before, 'Viewing legacy collections does not change saved rewards')
+    row.active = { cards: Object.keys(chapter.cards).length, badges: Object.keys(chapter.badges).length }
+    row.historical = { cards: 2, badges: 3 }
+  })
+
+  await test('story-tighten-old-cursor-bridges', async row => {
+    row.cursors = []
+    for (const [node, shift, target] of [
+      ['c3_s4_cost_right', 3, 'c3_s4_hub'], ['c3_s3_bedside_scan', 2, 'c3_s3_xu_9'],
+    ]) {
+      // Do not use enterTrilogyNode on the retired cursor: mimic an actual saved old position.
+      const old = patchTrilogy(fixture(`c3_s${shift + 1}_hub`, shift), 'ch3', { stepId: node })
+      await enter(old); await reveal()
+      assert.equal(await page.locator('[data-trilogy-scan]').count(), 0)
+      assert.equal(await page.locator('.trilogy-case-image img').count(), 0)
+      await advance(); await nodeIs(target)
+      const after = await read()
+      assert.equal(after.gold, old.gold + (target === 'c3_s3_xu_9' ? 110 : 0))
+      assert.equal(after.wealth, old.wealth)
+      assert(!after.badges.includes('c3_gel_account') && !after.badges.includes('c3_second_angle'))
+      row.cursors.push({ node, target, goldDelta: after.gold - old.gold })
+    }
+    await shot('story-tighten-retired-case-bridge-390')
+  })
   assert.equal(report.errors.length, 0, `Browser errors: ${report.errors.join('\n')}`)
   report.status = 'passed'
 } catch (error) {

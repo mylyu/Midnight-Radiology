@@ -3,6 +3,7 @@ import type { GameState } from '../game/types'
 import type { TrilogyChapter, TrilogyProgress } from '../game/trilogy-types'
 import { SceneBackground } from './SceneBackground'
 import { isTrilogyPlayable } from '../game/chapter-availability'
+import { ownedTrilogyHistory } from '../game/trilogy-collections'
 
 const panel = 'rounded-xl border border-slate-600/90 bg-slate-900/90 p-3 shadow-lg'
 const button = 'min-h-11 rounded-lg border border-slate-500 bg-slate-800/95 px-3 py-3 text-xs md:text-sm whitespace-nowrap text-slate-100 hover:border-teal-300'
@@ -19,6 +20,7 @@ export function Ch3Settlement({ state, chapter, progress: p, itemName, certifica
   const scans = Object.values(p.scans ?? {}).filter(scan => scan.completed).length
   const cards = Object.keys(chapter.cards).filter(id => state.cards?.includes(id)).length
   const badges = Object.keys(chapter.badges).filter(id => state.badges.includes(id)).length
+  const history = ownedTrilogyHistory(chapter, state)
   const status = (done?: boolean, started?: boolean) => done ? '已完成' : started ? '进行中' : '可从大厅进入'
   const dlcStatus = (id: string) => status(state.dlc?.[id]?.done, !!state.dlc?.[id]?.stepId)
   return <section data-ch3-settlement aria-label={p.done ? '第三章全章汇总' : '第三章班后经营'}
@@ -43,7 +45,7 @@ export function Ch3Settlement({ state, chapter, progress: p, itemName, certifica
               {key !== 'gold' && <span className="mt-1 w-full text-xs tracking-widest md:ml-auto md:mt-0 md:w-auto" aria-hidden="true">{Array.from({ length: 5 }, (_, i) => i < Math.max(0, Math.min(5, state[key])) ? '🟡' : '🟣').join(' ')}{state[key] > 5 ? ' ＋' : ''}</span>}
             </div>
           </section>)}
-          <section className={panel}><p className="text-xs text-slate-400">🗓️ 值班日志</p><p className="mt-1 text-xl">{p.shift + 1} / 5 班</p><p className="mt-1 text-xs text-slate-400">四个白班 · 一个床旁班</p></section>
+          <section className={panel}><p className="text-xs text-slate-400">🗓️ 值班日志</p><p className="mt-1 text-xl">{p.shift + 1} / 5 班</p><p className="mt-1 text-xs text-slate-400">五次门诊跟班</p></section>
           <section className={panel}><p className="text-xs text-slate-400">◉ 超声设备</p><p className="mt-1 text-lg text-teal-200">交班待机</p><p className="mt-1 text-xs text-slate-400">本轮留存 {scans} 组采集记录</p></section>
         </div>
         <section className={`${panel} mt-3`}>
@@ -62,6 +64,7 @@ export function Ch3Settlement({ state, chapter, progress: p, itemName, certifica
             <p>🔓 DR 白班 · {dlcStatus('dr')}</p><p>🔓 DSA 导管室 · {dlcStatus('dsa')}</p>
             <p>🔓 低剂量CT：噪声之外 · 大厅内需访问码</p>
             <p className="border-t border-slate-700 pt-3 text-xs text-slate-300">📖 {cards}/{Object.keys(chapter.cards).length} · 🏅 {badges}/{Object.keys(chapter.badges).length}</p>
+            {!!(history.cards.length || history.badges.length) && <p data-trilogy-legacy-summary className="text-xs text-slate-400">历史收藏 · {history.cards.length} 张卡片 · {history.badges.length} 枚勋章</p>}
           </div>
         </section>
       </div>

@@ -75,6 +75,9 @@ export interface TrilogyChapter {
   characters: Record<string, { name: string; color: string; sprite?: string }>
   badges: Record<string, { name: string; icon: string; desc: string }>
   cards: Record<string, TrilogyCard>
+  /** Retired rewards stay visible only to players who already earned them. */
+  legacyBadges?: TrilogyChapter['badges']
+  legacyCards?: Record<string, TrilogyCard>
   book: { title: string; body: string }[]
   quiz: { q: string; options: string[]; answer: number; explain: string }[]
   assets: string[]

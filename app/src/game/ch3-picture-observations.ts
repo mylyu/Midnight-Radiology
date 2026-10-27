@@ -67,16 +67,4 @@ export function installCh3PictureObservations(steps: Record<string, TrilogyStep>
   reply('c3_liver_gain', '那大片是**肝脏**。右肾在屏幕右下方，长椭圆，外圈是**肾皮质**。拿它跟旁边差不多深的肝比。', 'c3_liver_explain_0', liver)
   reply('c3_liver_help', '看屏幕右下方这个长椭圆，就是**右肾**。外圈是**肾皮质**，中间亮的是肾窦。用外圈跟旁边的肝比较。', 'c3_liver_explain_0', liver)
 
-  const mirror = view('us_mirror', '床旁超声 · 当前切面', 'bg_us_bedside')
-  Object.assign(steps.c3_s3_mirror_2, {
-    ...mirror, speaker: 'mei', text: '你也觉得怪？先指一下，**哪两处**看着特别像？', next: undefined,
-    choices: [
-      { text: '「弧形亮线两边，分叉的结构像重复了。」', next: 'c3_s3_mirror_check' },
-      { text: '「最上面的细亮线，像多画了一条边。」', next: 'c3_s3_mirror_wait' },
-      { text: '「有点眼熟，但我说不准。」', next: 'c3_mirror_help' },
-    ],
-  })
-  reply('c3_s3_mirror_check', '对，那两处分叉看着像**重复了一份**。先留这一帧，我换个声窗，你盯住它。', 'c3_s3_mirror_end_0', mirror, true)
-  reply('c3_s3_mirror_wait', '咱们往下看：**弧形亮线两边**的分叉，形状很像。我换个声窗，看看这份重复影像跟不跟着变。', 'c3_s3_mirror_end_0', mirror)
-  reply('c3_mirror_help', '看**弧形亮线两边**的分叉，像不像多了一份？我换个声窗再核对，先别急着给它起病名。', 'c3_s3_mirror_end_0', mirror)
 }

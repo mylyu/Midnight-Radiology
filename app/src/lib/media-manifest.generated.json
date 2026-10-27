@@ -221,16 +221,6 @@
       "bytes": 101000,
       "type": "image"
     },
-    "assets/media/bg_us_bedside_day_v2.9b96cb6b99da0569.webp": {
-      "sha256": "9b96cb6b99da0569b1c5a1eafa1ef3a44005976bca38f3289d6728627bd9d268",
-      "bytes": 125032,
-      "type": "image"
-    },
-    "assets/media/bg_us_bedside.65b0e5346b0444f3.webp": {
-      "sha256": "65b0e5346b0444f371efeca339e9b421e013acec8d07b074bab767796ef72c69",
-      "bytes": 101000,
-      "type": "image"
-    },
     "assets/media/bg_us_room_day.33d4b0ae483eea87.webp": {
       "sha256": "33d4b0ae483eea8749fdcd642c0bf450790f059e0774eaa6b35c70fbae9ffa6c",
       "bytes": 110824,
@@ -2204,8 +2194,6 @@
     "ch3": [
       "assets/media/bg_c3_shared_office_day_v1.ef850712677b87db.webp",
       "assets/media/bg_day.bb8e2f2392fbc58a.webp",
-      "assets/media/bg_us_bedside.65b0e5346b0444f3.webp",
-      "assets/media/bg_us_bedside_day_v2.9b96cb6b99da0569.webp",
       "assets/media/bg_us_room.59a9ab618e29e031.webp",
       "assets/media/bg_us_room_day.33d4b0ae483eea87.webp",
       "assets/media/bg_waiting_day_v2.30916f32479aad55.webp",
@@ -2258,7 +2246,6 @@
       "assets/media/us_echo.5521dd2242e64df2.webp",
       "assets/media/us_fetal.283f976a6db0630c.webp",
       "assets/media/us_gallstone.16c94bc2f11b498a.webp",
-      "assets/media/us_mirror.f4d29063b89ee908.webp",
       "audio/badge.mp3",
       "audio/ch2_mobile_call_v1.mp3",
       "audio/ch2_mobile_message_v1.mp3",
@@ -2492,5 +2479,8 @@
       "audio/ch2_ct_real_scan_20260924.mp3",
       "audio/ch2_mobile_call_v1.mp3"
     ]
+  },
+  "legacyCardImages": {
+    "c3_mirror": "us_mirror"
   }
 }

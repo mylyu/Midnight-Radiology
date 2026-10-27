@@ -33,7 +33,7 @@ function walk(s, target, visit = []) {
   assert.fail(`Short scene did not reach ${target}`)
 }
 
-assert.equal(Object.values(CH3.steps).filter(step => step.scan).length, 7)
+assert.equal(Object.values(CH3.steps).filter(step => step.scan).length, 6)
 assert.equal(CH3.steps.c3_s2_pause_2.next, 'c3_liver_arrive_0')
 assert.equal(CH3.steps.c3_s2_finish_2.next, 'c3_liver_observe')
 assert.equal(CH3.steps.c3_liver_arrive_4.next, 'c3_liver_scan')
@@ -114,5 +114,9 @@ for (const [before, prefix, last, after, shift] of [
     for (const key of ['gold', 'skill', 'heart', 'wealth', 'ap']) assert.equal(step.effect?.[key] ?? 0, 0)
   }
 }
-assert(CH3.steps.c3_s3_tang_0 && CH3.steps.c3_s3_tang_1 && CH3.steps.c3_s3_tang_2, 'Existing optional colleague scene is retained')
+for (let i = 0; i < 3; i++) {
+  const retired = trilogyStep(fixture(`c3_s3_tang_${i}`, 2), CH3)
+  assert.equal(retired.next, 'c3_s3_hub', 'Old ward-directions cursors return to the same shift')
+  assert(!retired.effect && !retired.giftTo, 'Removed errand does not manufacture a completed visit or gift')
+}
 console.log('PASS CH3 asymptomatic liver case, three observation routes, scan/card/handover receipts and three colleague bridges')

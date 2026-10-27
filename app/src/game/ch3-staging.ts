@@ -25,7 +25,6 @@ export function applyCh3Staging(steps: Record<string, TrilogyStep>) {
   cast(range('c3_s1_start', 1, 5), mei)
   cast(range('c3_tang_first', 0, 3), tang)
   // The last line explicitly sends Tang to the window; do not carry her into the hub.
-  cast(range('c3_s1_probes', 1, 2), mei)
   cast(range('c3_s1_tea', 0, 2), mei)
   cast(range('c3_s1_wait', 0, 2), aunt)
   cast(range('c3_s1_aunt', 0, 4), aunt, mei)
@@ -41,9 +40,7 @@ export function applyCh3Staging(steps: Record<string, TrilogyStep>) {
   cast(range('c3_s1_between_patients', 0, 1), mei)
 
   cast(range('c3_s2_start', 2, 3), mei) // The cousin is still texting from the car.
-  cast(range('c3_s2_roster', 0, 2), mei)
   cast(range('c3_s2_he', 0, 2), he)
-  cast(range('c3_s2_label', 1, 2), mei)
   cast(range('c3_s2_arrive', 0, 1), cousin)
   cast(range('c3_s2_arrive', 2, 13), cousin, mei)
   cast(['c3_s2_listen', 'c3_s2_promise', ...range('c3_s2_plan', 0, 2)], cousin, mei)
@@ -59,30 +56,20 @@ export function applyCh3Staging(steps: Record<string, TrilogyStep>) {
   cast(range('c3_tang_break', 0, 3), tang)
 
   cast(range('c3_s3_start', 1, 3), mei)
-  cast(range('c3_s3_tang', 0, 2), tang)
-  cast(range('c3_s3_cart', 0, 2), mei)
   cast(range('c3_s3_bag', 0, 2), aunt)
   cast(range('c3_s3_wang', 0, 7), wang, mei)
   cast(range('c3_s3_wang', 8, 9), wang)
   cast(range('c3_s3_motion', 0, 4), wang, mei)
   cast(range('c3_wang_finish_modes', 0, 2), wang, mei)
   cast(range('c3_s3_after_wang', 0, 1), mei)
-  cast(range('c3_s3_leave_clinic', 0, 2), mei) // Xu has left; Tang joins only if arranged.
   cast(range('c3_s3_waiting', 0, 5), xu)
   cast(range('c3_s3_xu', 0, 3), xu, mei)
   cast(range('c3_s3_xu', 4, 8), xu)
-  cast(range('c3_s3_mirror', 0, 3), mei)
-  cast(['c3_s3_mirror_check', 'c3_s3_mirror_wait', ...range('c3_s3_mirror_end', 0, 3)], mei)
 
   cast(range('c3_s4_start', 0, 3), mei)
   cast(range('c3_s4_clinic', 0, 2), mei)
   cast(range('c3_s4_open_clinic', 0, 2), mei)
   cast(range('c3_s4_lei', 0, 2), lei)
-  cast(range('c3_s4_pack', 0, 2), mei)
-  cast(range('c3_s4_cost', 0, 3), mei)
-  cast(['c3_s4_cost_right', 'c3_s4_cost_limit', 'c3_s4_cost_mix', ...range('c3_s4_cost_end', 0, 1)], mei)
-  cast(['c3_s4_cost_end_2'], han)
-  cast(range('c3_s4_cost_end', 3, 5), han, mei)
   cast(['c3_s4_han_0', 'c3_s4_han_3', 'c3_s4_han_4'], han)
   cast(['c3_s4_han_1', 'c3_s4_han_2', 'c3_s4_han_note', 'c3_s4_han_ask',
     ...range('c3_s4_han_end', 0, 1)], han, lei)

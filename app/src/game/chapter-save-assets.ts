@@ -1,4 +1,5 @@
 import catalog from '../lib/image-assets.catalog.json'
+import manifest from '../lib/media-manifest.generated.json'
 import { CARDS, EVIDENCE } from './dlc'
 import type { GameState } from './types'
 
@@ -15,6 +16,9 @@ export function chapterSaveAssets(state: GameState | null): string[] {
   }
   visit(state)
   for (const id of state.cards ?? []) visit(CARDS[id])
+  // Generated metadata avoids importing the deferred chapter story bundle in the hall.
+  const legacyCardImages = (manifest as { legacyCardImages?: Record<string, string> }).legacyCardImages
+  for (const id of state.cards ?? []) visit(legacyCardImages?.[id])
   for (const evidence of Object.values(EVIDENCE)) if (state.flags[evidence.flag]) visit(evidence)
   return [...found].sort()
 }
