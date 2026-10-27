@@ -289,13 +289,25 @@ function TrilogyQuiz({ state, chapter, update }: Omit<Props, 'onExit' | 'renderT
   const guard = useDialogueChoiceGuard(scope, ready)
   const act = (f: (s: GameState) => GameState, now: number) => { if (acceptInput(gate.current, now, 500)) update(f) }
   const score = quiz.questions.filter(r => r.selected === content[r.question].answer).length
+  const showAnswer = chapter.id === 'ch3' && row.selected !== undefined
   return <section className="trilogy-quiz" onClick={e => e.stopPropagation()} onPointerDownCapture={guard.pointerDown} onKeyDownCapture={guard.keyDown} onClickCapture={guard.click}>
     <div className="trilogy-panel"><h2>{quiz.completed ? `晨会结束 · ${quiz.grade}级` : `晨会 · ${quiz.index + 1} / 5`}</h2>
       {quiz.completed ? <><p>答对 {score} / 5。{chapter.id === 'ch3' ? '本次成绩已保存。' : '奖励与结果已保存，接下来还有尾声。'}</p><button className="trilogy-primary" data-trilogy-quiz-finish onClick={event => act(s => finishTrilogyQuiz(s, chapter), event.timeStamp)}>{chapter.id === 'ch3' ? '结束晨会 →' : '收好记录，回去看看 →'}</button></>
-        : <><p className="text-lg my-4">{question.q}</p><div className="flex flex-col gap-2">{row.order.map((answer, i) => <DialogueChoice key={answer} data-dialogue-choice={String(i)} disabled={row.selected !== undefined}
-          onClick={event => { if (guard.accept(i)) act(s => answerTrilogyQuiz(s, chapter, answer), event.timeStamp) }}>{question.options[answer]}</DialogueChoice>)}</div>
-          {row.selected !== undefined && <div className="mt-4"><p className={row.selected === question.answer ? 'text-teal-200' : 'text-amber-200'}>{question.explain}</p>
-            <button data-trilogy-quiz-next className={`${BTN} mt-3`} onClick={event => act(s => nextTrilogyQuiz(s, chapter), event.timeStamp)}>{quiz.index === 4 ? chapter.id === 'ch3' ? '查看成绩' : '收好成绩' : '下一题 →'}</button></div>}</>}
+        : <><p className="text-lg my-4">{question.q}</p><div className="flex flex-col gap-2">{row.order.map((answer, i) => {
+          // Persisted answer indices stay stable even when the displayed order is shuffled.
+          const result = showAnswer ? answer === question.answer ? 'correct' : answer === row.selected ? 'incorrect' : 'other' : undefined
+          return <DialogueChoice key={answer} data-dialogue-choice={String(i)} data-quiz-result={result} disabled={row.selected !== undefined}
+            aria-label={showAnswer ? `${question.options[answer]}${answer === question.answer ? '，正确答案' : ''}${answer === row.selected ? '，你的选择' : ''}` : undefined}
+            onClick={event => { if (guard.accept(i)) act(s => answerTrilogyQuiz(s, chapter, answer), event.timeStamp) }}>
+            {result === 'correct' ? '✓ ' : result === 'incorrect' ? '✗ ' : ''}{question.options[answer]}
+          </DialogueChoice>
+        })}</div>
+          {row.selected !== undefined && <div className="mt-4">
+            {chapter.id === 'ch3' ? <div className="trilogy-quiz-feedback" role="status" aria-live="polite">
+              <p className={row.selected === question.answer ? 'text-emerald-300' : 'text-amber-300'}>{row.selected === question.answer ? '✓ 答对了。' : '✗ 答错了。'}{question.explain}</p>
+              <p className="text-emerald-200 mt-2">正确答案：{question.options[question.answer]}</p>
+            </div> : <p className={row.selected === question.answer ? 'text-teal-200' : 'text-amber-200'}>{question.explain}</p>}
+            <button data-trilogy-quiz-next className={chapter.id === 'ch3' ? 'trilogy-primary mt-3 w-full' : `${BTN} mt-3`} onClick={event => act(s => nextTrilogyQuiz(s, chapter), event.timeStamp)}>{quiz.index === 4 ? chapter.id === 'ch3' ? '查看成绩' : '收好成绩' : '下一题 →'}</button></div>}</>}
     </div>
   </section>
 }

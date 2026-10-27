@@ -62,6 +62,10 @@
 .trilogy-badge-grid p { font-size:.8rem; }
 .trilogy-quiz { position:absolute; z-index:35; inset:55px 0 0; display:flex; align-items:center; justify-content:center; padding:1rem; background:#020617cc; overflow-y:auto; }
 .trilogy-quiz>.trilogy-panel { width:min(100%,700px); max-height:100%; overflow-y:auto; }
+.trilogy-root[data-trilogy=ch3] .trilogy-quiz [data-quiz-result=correct] { background:#064e3b99; border-color:#34d399; opacity:1; }
+.trilogy-root[data-trilogy=ch3] .trilogy-quiz [data-quiz-result=incorrect] { background:#7f1d1d80; border-color:#f87171; opacity:1; }
+.trilogy-root[data-trilogy=ch3] .trilogy-quiz [data-quiz-result=other] { background:#1e293b80; border-color:#334155; opacity:.5; }
+.trilogy-root[data-trilogy=ch3] .trilogy-quiz-feedback { font-size:.875rem; line-height:1.625; }
 .trilogy-certificate { max-width:500px; margin:1rem auto; border:4px solid #b45309; padding:1rem; border-radius:.65rem; background:#fffbeb; color:#78350f; position:relative; }
 .trilogy-certificate img { float:right; width:65px; height:65px; }
 .trilogy-certificate strong,.trilogy-certificate small,.trilogy-certificate code { display:block; margin-top:.65rem; overflow-wrap:anywhere; }
