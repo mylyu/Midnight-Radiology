@@ -27,7 +27,7 @@ function protectedProgress(s) {
 }
 const observations = [
   { id: 'c3_breast_observe', before: 'c3_s1_aunt_8', image: 'us_breast', shift: 0,
-    right: 'c3_breast_right', wrong: 'c3_breast_retry', help: 'c3_breast_help', after: 'c3_s1_aunt_9',
+    right: 'c3_breast_right', wrong: 'c3_breast_retry', help: 'c3_breast_help', after: 'c3_breast_compare_0',
     answer: /更亮|后方回声增强/ },
   { id: 'c3_s1_stone_4', before: 'c3_s1_stone_3', image: 'us_gallstone', shift: 0,
     right: 'c3_s1_shadow_good', wrong: 'c3_s1_shadow_miss', help: 'c3_s1_shadow_retry', after: 'c3_s1_shadow_0',
@@ -69,7 +69,7 @@ for (const row of observations) {
     sameSave(reloaded, answered, 'Restore does not restart the question or change other chapters')
     sameSave(enterTrilogyNode(clone(reloaded), CH3, target), answered, 'Entering the saved response does not grant again')
     const continued = trilogyAdvance(reloaded, CH3, target)
-    assert.equal(trilogyProgress(continued, 'ch3').stepId, row.after, `${target}: rejoins the original conversation`)
+    assert.equal(trilogyProgress(continued, 'ch3').stepId, row.after, `${target}: rejoins the post-observation conversation`)
     assert.deepEqual(numbers(continued), expected, 'Returning to mandatory dialogue adds no automatic point')
     assert.deepEqual(protectedProgress(continued), protectedProgress(start), 'Other chapters and first-chapter progress are preserved')
     // Even if an old view restores the question cursor, its already applied
@@ -78,6 +78,25 @@ for (const row of observations) {
     assert.deepEqual(numbers(trilogyChoose(oldView, CH3, row.id, choice)), expected)
   }
 }
+// All three breast answers reach the same short comparison; explanatory
+// graphics and diagnostic wording appear only after the existing question.
+assert(CH3.assets.includes('us_c3_breast_cyst_compare_v1'))
+let comparisonState = fixture('c3_breast_compare_0')
+const comparisonNumbers = numbers(comparisonState)
+for (let index = 0; index < 5; index++) {
+  const id = `c3_breast_compare_${index}`, step = trilogyStep(comparisonState, CH3)
+  assert.equal(trilogyProgress(comparisonState, 'ch3').stepId, id)
+  assert.equal(step.image, 'us_c3_breast_cyst_compare_v1')
+  assert(!step.sprite && !step.sprite2 && !step.scan && !step.tool && !step.effect && !step.card && !step.voice)
+  const restored = initializeTrilogy(clone(comparisonState), CH3)
+  sameSave(restored, comparisonState, 'Comparison reload keeps cursor and does not grant stats')
+  comparisonState = trilogyAdvance(restored, CH3, id)
+  assert.deepEqual(numbers(comparisonState), comparisonNumbers)
+}
+assert.equal(trilogyProgress(comparisonState, 'ch3').stepId, 'c3_s1_aunt_9')
+assert.equal(trilogyStep(comparisonState, CH3).image, undefined, 'Comparison exits to the original face-to-face conversation')
+assert.match(CH3.steps.c3_breast_compare_4.text, /单纯性囊肿.*良性/)
+assert(!/<1%|小于1%|恶变率/.test(CH3.steps.c3_breast_compare_4.text), 'No blanket cancer-transformation percentage')
 assert.equal(CH3.steps.c3_s1_shadow_1.effect.skill, undefined,
   'Gallstone point is relocated to the correct observation, not duplicated in its explanation')
 assert.equal(CH3.steps.c3_s1_shadow_1.effect.badge, 'c3_shadow_reader', 'Existing collection is preserved')

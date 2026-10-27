@@ -135,6 +135,33 @@ try {
   await page.goto(`${url}#/dlc`)
   await page.getByRole('heading', { name: /章节与番外/ }).waitFor({ timeout: 15000 })
 
+  await test('breast-cyst-comparison-after-observation', async row => {
+    row.views = []
+    for (const size of [{ width: 1920, height: 1080 }, { width: 390, height: 844 }]) {
+      await page.setViewportSize(size)
+      await enter(fixture('c3_breast_observe')); await reveal()
+      await imageIs(page.locator('.trilogy-story-image img'), 'us_breast')
+      await enter(fixture('c3_breast_compare_0')); await reveal()
+      const picture = page.locator('.trilogy-story-image img')
+      await imageIs(picture, 'us_c3_breast_cyst_compare_v1')
+      const bounds = await fit(picture, 'Mammography/ultrasound comparison')
+      assert(Math.abs(bounds.x + bounds.width / 2 - size.width / 2) < 2)
+      assert(bounds.y + bounds.height <= (await page.locator('.dialog-wrap').boundingBox()).y + 1)
+      await shot(`breast-comparison-${size.width}`)
+      const before = await read()
+      for (let i = 0; i < 5; i++) {
+        await nodeIs(`c3_breast_compare_${i}`)
+        await imageIs(picture, 'us_c3_breast_cyst_compare_v1')
+        await advance()
+      }
+      await nodeIs('c3_s1_aunt_9')
+      assert.equal(await page.locator('.trilogy-story-image').count(), 0, 'Comparison clears for the aunt’s report dialogue')
+      const after = await read()
+      for (const key of ['gold', 'skill', 'heart', 'wealth', 'ap']) assert.equal(after[key], before[key])
+      row.views.push({ viewport: size, bounds })
+    }
+  })
+
   await test('workflow-tgc-cardiac-xu', async row => {
     for (const size of [{ width: 1920, height: 1080 }, { width: 390, height: 844 }]) {
       await page.setViewportSize(size)

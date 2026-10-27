@@ -1496,6 +1496,11 @@
       "bytes": 47890,
       "type": "image"
     },
+    "assets/media/us_c3_breast_cyst_compare_v1.68a439c0a886f9b3.webp": {
+      "sha256": "68a439c0a886f9b3380bec0c99636f03b4d0c0165751ece82e8268fa8632b2ad",
+      "bytes": 125200,
+      "type": "image"
+    },
     "assets/media/us_c3_cardiac_color_v1.9ed8b34e5a45688e.webp": {
       "sha256": "9ed8b34e5a45688e905632816bf4287f41206ba4b157c23f8e7f8cf9ff86843a",
       "bytes": 26330,
@@ -2235,6 +2240,7 @@
       "assets/media/pat_wang_recovery.79373a8e9bf9b05f.webp",
       "assets/media/stamp.72cf222761ee91c0.webp",
       "assets/media/us_breast.6d5c0b7164110c12.webp",
+      "assets/media/us_c3_breast_cyst_compare_v1.68a439c0a886f9b3.webp",
       "assets/media/us_c3_cardiac_color_v1.9ed8b34e5a45688e.webp",
       "assets/media/us_c3_color_doppler_v1.aca91febb9925835.webp",
       "assets/media/us_c3_hepatorenal_v1.589c8d1e6b950279.webp",

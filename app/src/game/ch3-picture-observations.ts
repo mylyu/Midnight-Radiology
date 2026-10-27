@@ -22,9 +22,24 @@ export function installCh3PictureObservations(steps: Record<string, TrilogyStep>
       { text: '「我有点看不准，您指一下。」', next: 'c3_breast_help' },
     ],
   }
-  reply('c3_breast_right', '对，正下方这片**更亮**，这叫**后方回声增强**。前面衰减少些，后面留下的回声就相对强。', 'c3_s1_aunt_9', breast, true)
-  reply('c3_breast_retry', '黑的是椭圆里面。再往下看，底下这一带比两边**更亮**，叫**后方回声增强**。咱们看的是它后面。', 'c3_s1_aunt_9', breast)
-  reply('c3_breast_help', '从黑椭圆往屏幕下方看，再横着跟两边比：这一带**更亮**，叫**后方回声增强**。不是让你凭这一个变化猜病名。', 'c3_s1_aunt_9', breast)
+  reply('c3_breast_right', '对，正下方这片**更亮**，这叫**后方回声增强**。前面衰减少些，后面留下的回声就相对强。', 'c3_breast_compare_0', breast, true)
+  reply('c3_breast_retry', '黑的是椭圆里面。再往下看，底下这一带比两边**更亮**，叫**后方回声增强**。咱们看的是它后面。', 'c3_breast_compare_0', breast)
+  reply('c3_breast_help', '从黑椭圆往屏幕下方看，再横着跟两边比：这一带**更亮**，叫**后方回声增强**。不是让你凭这一个变化猜病名。', 'c3_breast_compare_0', breast)
+
+  // The comparison follows every observation response, never its question.
+  // It adds no acquisition, reward or new voice and keeps the old exit cursor.
+  const comparison = view('us_c3_breast_cyst_compare_v1', '同一处乳腺囊肿 · 左：钼靶｜右：B超')
+  const comparisonLines = [
+    ['me', '左边这团白影，跟右边这个黑椭圆，是同一个地方？'],
+    ['mei', '对。钼靶能看到这团**边界清楚的影子**，里面是液体还是实心，单靠它分不清。'],
+    ['mei', 'B超里这处壁薄、内部**无回声**，还有刚才的**后方回声增强**。这是**单纯性囊肿**，俗称乳房水泡、水囊。'],
+    ['aunt', '水囊？我一听长了东西，昨晚都没睡踏实。'],
+    ['mei', '您这个**单纯性囊肿是良性的**，不会增加患乳腺癌的风险。里面若有实心部分，就不是同一种情况了。'],
+  ] as const
+  comparisonLines.forEach(([speaker, text], index) => {
+    steps[`c3_breast_compare_${index}`] = { speaker, text, ...comparison, voice: undefined,
+      next: index + 1 < comparisonLines.length ? `c3_breast_compare_${index + 1}` : 'c3_s1_aunt_9' }
+  })
 
   const stone = view('us_gallstone', '腹部超声 · 刚才保存的切面')
   Object.assign(steps.c3_s1_stone_4, {

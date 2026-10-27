@@ -905,7 +905,7 @@ export const CH3: TrilogyChapter = {
   assets: [
     'bg_us_room', 'bg_us_room_day', 'bg_us_bedside', 'bg_us_bedside_day_v2', 'ch2_bg_breakroom_day', 'bg_waiting_day_v2', 'bg_c3_shared_office_day_v1', 'bg_day',
     'char_mei', 'pat_cousin', 'char_han', 'pat_aunt', 'pat_mystery', 'pat_wang_recovery', 'char_lei', 'char_zhou', 'ch2_pixel_char_he', 'char_tang',
-    'us_gallstone', 'us_breast', 'us_fetal', 'us_echo', 'us_c3_cardiac_color_v1', 'us_mirror', 'us_c3_color_doppler_v1', 'item_missing_notice', 'item_reunion_gifts', 'item_notebook',
+    'us_gallstone', 'us_breast', 'us_c3_breast_cyst_compare_v1', 'us_fetal', 'us_echo', 'us_c3_cardiac_color_v1', 'us_mirror', 'us_c3_color_doppler_v1', 'item_missing_notice', 'item_reunion_gifts', 'item_notebook',
     'pat_c3_young_liver_v1', 'us_c3_hepatorenal_v1',
     'cg_c3_mei_probe_v2', 'cg_c3_shared_lunch_v2', 'item_c3_towel_v2', 'item_c3_stickers_v2',
     'cg_c3_cousin_call_v3', 'cg_c3_us_visit_v3',
