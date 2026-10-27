@@ -219,10 +219,15 @@ try {
       await advance(); await nodeIs('c3_wang_color_question')
       await chooseNext('c3_wang_color_direction'); await reveal()
       await imageIs(image, 'us_c3_cardiac_color_v1')
+      for (const node of ['c3_wang_spectrum_0', 'c3_wang_spectrum_1', 'c3_wang_spectrum_2',
+        'c3_wang_finish_modes_0', 'c3_wang_finish_modes_1', 'c3_wang_finish_modes_2']) { await advance(); await nodeIs(node) }
       await advance(); await nodeIs('c3_s3_wang_8')
       assert.equal(await page.locator('.trilogy-story-image').count(), 0)
     }
-    await enter(fixture('c3_s2_plan_5', 1)); await advance(); await nodeIs('c3_s2_plan_6')
+    await enter(patchTrilogy(fixture('c3_s2_plan_6', 1), 'ch3', {
+      scans: { c3_liver_scan: { startedAt: Date.now() - 3000, completed: true } },
+    }))
+    await page.locator('[data-image-gain-state="ready"]').waitFor()
     const compensation = page.getByRole('slider', { name: '深处补偿', exact: true })
     await compensation.waitFor(); assert.equal(await compensation.inputValue(), '0')
     await shot('tgc-uncompensated-390')
@@ -243,6 +248,161 @@ try {
     await enter(fixture('c3_s3_waiting_2', 2, saved)); await reveal()
     assert.equal((await audioEvents()).filter(e => e.event === 'playing' && e.paths.includes(target)).length, 0)
     row.voice = 'One native playback, completed; later line/reload silent'
+  })
+
+  await test('echo-tgc-integrated', async row => {
+    row.scope = 'One desktop heart-mode path and one real liver acquisition/TGC path; mobile/landscape use named key-node fixtures. No full-chapter or voice-acceptance claim.'
+    row.views = []
+    const tgcNode = 'c3_s2_plan_6', picture = page.locator('.trilogy-story-image img')
+    const done = page.locator('[data-trilogy-tool-done]')
+    const compensation = page.getByRole('slider', { name: '深处补偿', exact: true })
+    const gain = page.getByRole('slider', { name: '总体增益', exact: true })
+    const acquiredFixture = node => patchTrilogy(fixture(node, 1), 'ch3', {
+      scans: { c3_liver_scan: { startedAt: Date.now() - 3000, completed: true } },
+    })
+    const attributes = state => Object.fromEntries(['gold', 'skill', 'heart', 'wealth', 'ap'].map(key => [key, state[key]]))
+    async function spectrumFits(label) {
+      await imageIs(picture, 'us_c3_cardiac_color_v1')
+      const image = await fit(picture, `${label} cardiac image`)
+      const spectrum = await fit(page.locator('[data-echo-spectrum]'), `${label} spectrum`)
+      const pair = await fit(page.locator('.trilogy-echo-pair'), `${label} combined view`)
+      assert(spectrum.y >= image.y + image.height - 1, 'Spectrum is below the cardiac image')
+      assert(pair.y + pair.height <= (await page.locator('.dialog-wrap').boundingBox()).y + 1, 'Combined view does not cover dialogue or choices')
+      assert(Math.abs(pair.x + pair.width / 2 - page.viewportSize().width / 2) < 2, 'Combined view stays centered')
+      assert.equal(await page.locator('[data-echo-spectrum] text').allTextContents().then(rows => rows.join('|')), '速度|时间 →')
+      return { image, spectrum, pair }
+    }
+    async function tgcFits(label) {
+      await page.locator('[data-image-gain-state="ready"]').waitFor()
+      const tool = trilogyStep(await read(), chapter).tool
+      assert.equal(tool.variant, 'liver'); assert.equal(tool.image, 'us_c3_hepatorenal_v1')
+      const image = await fit(page.locator('.trilogy-image-gain canvas'), `${label} liver image`)
+      const exit = await fit(done, `${label} exit`, true)
+      await fit(gain, `${label} overall-gain control`, true)
+      await fit(compensation, `${label} depth-compensation control`, true)
+      assert(image.y + image.height <= exit.y + 1, 'Liver image does not cover the exit')
+      return { image, exit }
+    }
+    async function pixels() {
+      return page.locator('.trilogy-image-gain canvas').evaluate(canvas => {
+        const { width, height } = canvas, data = canvas.getContext('2d').getImageData(0, 0, width, height).data
+        const hash = end => {
+          let value = 2166136261
+          for (let i = 0; i < end; i++) value = Math.imul(value ^ data[i], 16777619)
+          return value >>> 0
+        }
+        const mean = (from, to) => {
+          let sum = 0, count = 0
+          for (let y = Math.ceil(height * from); y < height * to; y++) for (let x = Math.ceil(width * .4); x < width * .7; x++) {
+            sum += data[(y * width + x) * 4]; count++
+          }
+          return sum / count
+        }
+        const x = Math.floor(width * .6), y = Math.floor(height * .75)
+        return { width, height, fullHash: hash(data.length), shallowHash: hash(Math.floor((height - 1) * .2) * width * 4),
+          shallow: mean(.08, .18), deep: mean(.65, .85), probe: { x, y, value: data[(y * width + x) * 4] } }
+      })
+    }
+    async function pixelBrighter(probe) {
+      await page.waitForFunction(({ x, y, value }) => {
+        const canvas = document.querySelector('.trilogy-image-gain canvas')
+        return canvas?.getContext('2d').getImageData(x, y, 1, 1).data[0] > value
+      }, probe)
+    }
+
+    await page.setViewportSize({ width: 1280, height: 900 })
+    await enter(fixture('c3_s3_wang_5', 2)); await reveal()
+    const cardiacBefore = await read()
+    await imageIs(picture, 'us_echo')
+    for (const node of ['c3_s3_wang_6', 'c3_s3_wang_7', 'c3_s3_motion_0', 'c3_s3_motion_1', 'c3_s3_motion_2']) {
+      await advance(); await nodeIs(node)
+    }
+    await page.getByRole('slider', { name: '沿时间回看', exact: true }).fill('75')
+    await fit(page.locator('[data-us-task="m_mode"] svg'), 'Desktop M-mode figure')
+    await fit(done, 'Desktop M-mode exit', true); await shot('echo-m-mode-1280')
+    await done.click(); await nodeIs('c3_s3_motion_3')
+    assert(progress(await read()).tools.c3_s3_motion_2.completed)
+    for (const node of ['c3_s3_motion_4', 'c3_wang_color_intro_0', 'c3_wang_color_intro_1', 'c3_wang_color_0', 'c3_wang_color_1', 'c3_wang_color_question']) {
+      await advance(); await nodeIs(node)
+    }
+    await chooseNext('c3_wang_color_direction')
+    await advance(); await nodeIs('c3_wang_spectrum_0'); await reveal()
+    const desktopSpectrum = await spectrumFits('Desktop'); await shot('echo-spectrum-1280')
+    // The figure retains the scene click target: one fresh click advances a completed line.
+    await page.waitForTimeout(350); await page.locator('[data-echo-spectrum]').click(); await nodeIs('c3_wang_spectrum_1')
+    for (const node of ['c3_wang_spectrum_2', 'c3_wang_finish_modes_0', 'c3_wang_finish_modes_1', 'c3_wang_finish_modes_2', 'c3_s3_wang_8']) {
+      await advance(); await nodeIs(node)
+    }
+    await reveal(); assert.equal(await page.locator('[data-echo-spectrum],.trilogy-story-image').count(), 0)
+    assert((await read()).flags.c3_wang_reviewed)
+    assert.deepEqual(attributes(await read()), attributes(cardiacBefore), 'Mode explanations add no mandatory-dialogue attributes')
+
+    await enter(fixture('c3_liver_scan', 1))
+    await page.locator('[data-trilogy-scan="c3_liver_scan"]').waitFor()
+    const scanStartedAt = progress(await read()).scans.c3_liver_scan.startedAt
+    await page.locator('[data-trilogy-scan="c3_liver_scan"]').click({ position: { x: 8, y: 8 } })
+    assert.equal(progress(await read()).stepId, 'c3_liver_scan', 'Clicking does not skip the real acquisition')
+    await nodeIs('c3_liver_tgc_intro_0')
+    assert(Date.now() - scanStartedAt >= 3000, 'Acquisition keeps its real three-second clock')
+    assert(progress(await read()).scans.c3_liver_scan.completed)
+    await advance(); await nodeIs('c3_liver_tgc_intro_1'); await advance(); await nodeIs(tgcNode)
+    const desktopTgc = await tgcFits('Desktop'), beforeTgc = await read()
+    assert.equal(await gain.inputValue(), '45'); assert.equal(await compensation.inputValue(), '0')
+    const initial = await pixels(); await shot('tgc-initial-1280')
+    await gain.fill('70'); await pixelBrighter(initial.probe)
+    const overall = await pixels()
+    assert(overall.shallow > initial.shallow * 1.3 && overall.deep > initial.deep * 1.3, 'Overall gain changes shallow and deep regions')
+    await gain.fill('45'); await compensation.fill('80'); await pixelBrighter(overall.probe)
+    const compensated = await pixels()
+    assert.equal(compensated.shallowHash, initial.shallowHash, 'Depth compensation leaves the shallow fifth byte-identical')
+    assert(compensated.deep > initial.deep * 2.5, 'Depth compensation makes the dark deep region visibly brighter')
+    await shot('tgc-compensated-1280')
+    const adjusted = await read()
+    await page.reload(); await loaded(); await nodeIs(tgcNode); await tgcFits('Reloaded desktop')
+    assert.equal(await gain.inputValue(), '45'); assert.equal(await compensation.inputValue(), '80')
+    assert.deepEqual(await pixels(), compensated, 'Reloading saved settings reproduces the same image pixels')
+    assert.deepEqual(await read(), adjusted)
+    await done.dblclick({ delay: 50 }); await nodeIs('c3_s2_finish_0')
+    const finished = await read()
+    assert(progress(finished).tools[tgcNode].completed)
+    assert.equal(finished.skill, beforeTgc.skill + 1)
+    assert.equal(progress(finished).applied.filter(id => id === 'c3_s2_finish_0').length, 1)
+    await page.reload(); await loaded(); await nodeIs('c3_s2_finish_0')
+    assert.deepEqual(await read(), finished, 'Reload after completing TGC does not repeat its reward')
+    for (const node of ['c3_s2_finish_1', 'c3_s2_finish_2', 'c3_liver_observe']) { await advance(); await nodeIs(node) }
+    await reveal(); await imageIs(picture, 'us_c3_hepatorenal_v1')
+    row.desktop = { spectrum: desktopSpectrum, tgc: desktopTgc, pixels: { initial, overall, compensated }, scanDurationAtLeastMs: 3000 }
+
+    for (const size of [{ width: 390, height: 844 }, { width: 844, height: 390 }]) {
+      await page.setViewportSize(size)
+      await enter(fixture('c3_s3_motion_2', 2))
+      const motion = await fit(page.locator('[data-us-task="m_mode"] svg'), `${size.width} M-mode figure`)
+      await fit(done, `${size.width} M-mode exit`, true); await shot(`echo-m-mode-${size.width}`)
+      await enter(fixture('c3_wang_spectrum_1', 2)); await reveal()
+      const spectrum = await spectrumFits(`${size.width}`); await shot(`echo-spectrum-${size.width}`)
+      await enter(acquiredFixture(tgcNode)); const tgc = await tgcFits(`${size.width}`)
+      await compensation.fill('80'); await shot(`tgc-compensated-${size.width}`)
+      row.views.push({ viewport: size, motion, spectrum, tgc })
+    }
+    await enter(fixture(tgcNode, 1))
+    assert.equal(trilogyStep(await read(), chapter).tool.variant, undefined)
+    assert.equal(await page.locator('.trilogy-image-gain').count(), 0, 'An old pre-patient TGC cursor keeps the phantom fallback')
+    await fit(page.locator('[data-us-task="tgc"] canvas'), 'Legacy phantom')
+    await fit(done, 'Legacy phantom exit', true)
+
+    // Inject only after chapter loading, so this tests exercise decoding rather than preload validation.
+    await enter(acquiredFixture('c3_liver_tgc_intro_1'))
+    await page.evaluate(() => {
+      window.__exerciseDecode = HTMLImageElement.prototype.decode
+      HTMLImageElement.prototype.decode = function () { return Promise.reject(new Error('Focused fixture: exercise image decode failure')) }
+    })
+    try {
+      await advance(); await nodeIs(tgcNode)
+      await page.locator('[data-image-gain-state="error"]').waitFor()
+      await fit(done, 'Decode-failure exit remains usable', true)
+      await done.click(); await nodeIs('c3_s2_finish_0')
+    } finally { await page.evaluate(() => { HTMLImageElement.prototype.decode = window.__exerciseDecode; delete window.__exerciseDecode }) }
+    row.fallback = 'Old cursor retains the original phantom; rejected exercise decode can still finish'
   })
 
   await test('mei-farewell-and-color-questions', async row => {
@@ -273,6 +433,8 @@ try {
       const target = size.width === 1920 ? 'c3_wang_color_direction' : 'c3_wang_color_vessel'
       await chooseNext(target); await reveal(); await imageIs(picture, 'us_c3_cardiac_color_v1')
       assert.match(await page.locator('.dialog-box > p').textContent(), size.width === 1920 ? /不是按动静脉分/ : /切面和设置/)
+      for (const node of ['c3_wang_spectrum_0', 'c3_wang_spectrum_1', 'c3_wang_spectrum_2',
+        'c3_wang_finish_modes_0', 'c3_wang_finish_modes_1', 'c3_wang_finish_modes_2']) { await advance(); await nodeIs(node) }
       await advance(); await nodeIs('c3_s3_wang_8'); await reveal()
       assert.equal(await page.locator('.trilogy-story-image').count(), 0, 'Color comparison clears before Wang collects the report')
       await imageIs(page.locator('.sprite-l,.sprite-r').first(), 'pat_wang_recovery')

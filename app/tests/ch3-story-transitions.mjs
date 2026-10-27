@@ -16,15 +16,37 @@ try {
   baseline = (await import(pathToFileURL(baselineFile).href)).CH3
 } finally { unlinkSync(baselineFile) }
 
-const newIds = Object.keys(CH3.steps).filter(id => !baseline.steps[id])
-assert.equal(newIds.length, 13, 'Only the thirteen agreed dialogue lines are new')
-for (const id of newIds) for (const key of ['effect', 'card', 'choices', 'tool', 'voice', 'scan'])
-  assert.equal(CH3.steps[id][key], undefined, `${id}: pure dialogue cannot introduce ${key}`)
+// These thirteen bridges remain the scope of this historical regression. Later
+// approved lessons/farewells have their own tests, not a new whole-chapter freeze.
+const bridgeIds = [
+  'c3_s1_between_patients_0', 'c3_s1_between_patients_1',
+  'c3_s2_pause_0', 'c3_s2_pause_1', 'c3_s2_pause_2',
+  'c3_s3_after_wang_0', 'c3_s3_after_wang_1',
+  'c3_s3_leave_clinic_0', 'c3_s3_leave_clinic_1', 'c3_s3_leave_clinic_2',
+  'c3_s4_open_clinic_0', 'c3_s4_open_clinic_1', 'c3_s4_open_clinic_2',
+]
+assert.equal(new Set(bridgeIds).size, 13, 'The original thirteen distinct bridges remain covered')
+for (const id of bridgeIds) {
+  assert(CH3.steps[id] && !baseline.steps[id], `${id}: original added bridge is retained`)
+  for (const key of ['effect', 'card', 'choices', 'tool', 'voice', 'scan'])
+    assert.equal(CH3.steps[id][key], undefined, `${id}: pure dialogue cannot introduce ${key}`)
+}
+// The retained TGC/M-mode IDs now teach beside the acquired clinical images.
+// Their approved display changes leave task identity and completion targets intact.
+const movedTools = {
+  c3_s2_plan_6: { ...baseline.steps.c3_s2_plan_6.tool, variant: 'liver', image: 'us_c3_hepatorenal_v1',
+    title: '肝肾图像 · 深处为什么更暗', prompt: '让深处的轮廓清楚些，同时保留浅处的层次。',
+    help: '深处的回波走得更远，衰减更多。总增益会整幅一起亮；TGC按深度补偿，能单独照顾偏暗的深处。调的是收到的信号，不是让探头再发强一点。' },
+  c3_s3_motion_2: { ...baseline.steps.c3_s3_motion_2.tool,
+    title: '心超工作站 · 沿一条线看运动', prompt: '拖动时间线，对照B超里的界面与M超里的轨迹。',
+    help: 'B超里先找准位置，M超反复看选中的同一条声线。竖着仍是深度，横着改为时间；界面一动，就留下位置变化的轨迹。' },
+}
 for (const [id, old] of Object.entries(baseline.steps)) {
   const step = CH3.steps[id]
   assert(step, `Legacy cursor retained: ${id}`)
   for (const key of ['effect', 'card', 'tool', 'voice', 'scan'])
-    assert.deepEqual(step[key], old[key], `${id}: existing ${key} unchanged`)
+    assert.deepEqual(step[key], key === 'tool' && movedTools[id] ? movedTools[id] : old[key],
+      `${id}: existing ${key} unchanged except the two approved tool presentations`)
   // A clinical exit is deliberately rerouted through dialogue, never re-rewarded.
   const payload = choices => choices?.map(({ next: _next, ...choice }) => choice)
   assert.deepEqual(payload(step.choices), payload(old.choices), `${id}: existing choice rewards/conditions retained`)
@@ -56,8 +78,8 @@ function chain(start, middle, end, shift = 0) {
   }
 }
 chain('c3_s1_aunt_13', ['c3_s1_between_patients_0', 'c3_s1_between_patients_1'], 'c3_s1_stone_0')
-chain('c3_s2_plan_5', ['c3_s2_pause_0', 'c3_s2_pause_1', 'c3_s2_pause_2'], 'c3_s2_plan_6', 1)
-chain('c3_s3_wang_9', ['c3_s3_after_wang_0', 'c3_s3_after_wang_1'], 'c3_s3_motion_0', 2)
+chain('c3_s2_plan_5', ['c3_s2_pause_0', 'c3_s2_pause_1', 'c3_s2_pause_2'], 'c3_liver_arrive_0', 1)
+chain('c3_s3_wang_9', ['c3_s3_after_wang_0', 'c3_s3_after_wang_1'], 'c3_s3_waiting_0', 2)
 chain('c3_s3_xu_8', ['c3_s3_leave_clinic_0', 'c3_s3_leave_clinic_1', 'c3_s3_leave_clinic_2'], 'c3_s3_mirror_0', 2)
 let hub = fixture('c3_s4_hub', {}, 3)
 const clinical = trilogyStep(hub, CH3).choices.at(-1)
@@ -93,4 +115,4 @@ for (const id of ['c3_s1_stone_0', 'c3_s2_plan_6', 'c3_s3_motion_0', 'c3_s3_mirr
   assert.equal(trilogyProgress(s, 'ch3').stepId, id)
   assert(trilogyStep(JSON.parse(JSON.stringify(s)), CH3))
 }
-console.log(`CH3 transitions passed: ${newIds.length} pure lines, five bridges, ${Object.keys(baseline.steps).length} preserved cursors/rewards, optional Tang and old-save staging.`)
+console.log(`CH3 transitions passed: ${bridgeIds.length} retained pure lines, five current bridges, ${Object.keys(baseline.steps).length} preserved cursors/rewards, optional Tang and old-save staging.`)

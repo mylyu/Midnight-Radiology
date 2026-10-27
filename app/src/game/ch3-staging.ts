@@ -53,6 +53,7 @@ export function applyCh3Staging(steps: Record<string, TrilogyStep>) {
   cast(range('c3_s2_pause', 0, 2), mei)
   cast(range('c3_s2_finish', 0, 2), mei)
   cast(range('c3_liver_arrive', 0, 4), 'pat_c3_young_liver_v1', mei)
+  cast(range('c3_liver_tgc_intro', 0, 1), mei)
   cast(range('c3_liver_explain', 2, 5), 'pat_c3_young_liver_v1', mei)
   cast(['c3_liver_explain_6'], mei) // The young patient has taken the report and left.
   cast(range('c3_tang_break', 0, 3), tang)
@@ -63,7 +64,8 @@ export function applyCh3Staging(steps: Record<string, TrilogyStep>) {
   cast(range('c3_s3_bag', 0, 2), aunt)
   cast(range('c3_s3_wang', 0, 7), wang, mei)
   cast(range('c3_s3_wang', 8, 9), wang)
-  cast(range('c3_s3_motion', 0, 4), mei) // Wang has returned to cardiology.
+  cast(range('c3_s3_motion', 0, 4), wang, mei)
+  cast(range('c3_wang_finish_modes', 0, 2), wang, mei)
   cast(range('c3_s3_after_wang', 0, 1), mei)
   cast(range('c3_s3_leave_clinic', 0, 2), mei) // Xu has left; Tang joins only if arranged.
   cast(range('c3_s3_waiting', 0, 5), xu)

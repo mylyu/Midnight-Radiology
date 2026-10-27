@@ -1,14 +1,16 @@
 import { useEffect, useRef, useState } from 'react'
 import { UltrasoundPhantom, renderUltrasoundPhantom } from './UltrasoundPhantom'
 import { ultrasoundEcho, ultrasoundResolutionFrame } from '../game/trilogy-ultrasound-numerics'
+import { UltrasoundImageGain } from './UltrasoundImageGain'
+import { imageAsset } from '../lib/image-assets'
 
-type Props = { task: string; value: number; secondary: number; choice: string;
+type Props = { task: string; variant?: string; image?: string; value: number; secondary: number; choice: string;
   onChange: (patch: { value?: number; secondary?: number; choice?: string }) => void }
 const clamp = (n: number, a: number, b: number) => Math.max(a, Math.min(b, n))
 
-/** All diagrams use the same fixed reflectors; a moved control changes the
- * propagation time, gain, sampling or Doppler frequency, not a cosmetic filter. */
-export function TrilogyUltrasoundLab({ task, value, secondary, choice, onChange }: Props) {
+/** Diagrams keep fixed reflectors; the liver variant applies display gain to
+ * a fixed case image without moving its structures or acquiring another scan. */
+export function TrilogyUltrasoundLab({ task, variant, image, value, secondary, choice, onChange }: Props) {
   const [pulse, setPulse] = useState(0)
   const canvas = useRef<HTMLCanvasElement>(null)
   const echo = ultrasoundEcho(value, secondary)
@@ -37,7 +39,9 @@ export function TrilogyUltrasoundLab({ task, value, secondary, choice, onChange 
   }).join(' ')
   return <div className="trilogy-course-work trilogy-ultrasound-work" data-us-task={task}>
     <div className="trilogy-course-view">
-      {task === 'tgc' ? <UltrasoundPhantom position={50} gain={value} depth={90} probe="凸阵" tgc={secondary * .32} depthLossDb={24} />
+      {task === 'tgc' ? variant === 'liver' && image
+        ? <UltrasoundImageGain key={image} src={imageAsset(image)} gain={value} compensation={secondary} />
+        : <UltrasoundPhantom position={50} gain={value} depth={90} probe="凸阵" tgc={secondary * .32} depthLossDb={24} />
         : task === 'resolution' || task === 'spatial_resolution' ? <canvas ref={canvas} aria-label={task === 'spatial_resolution' ? '位置不变的前后和左右两对细丝：改变脉冲长度与声束宽度' : '同一模体在不同扫描线数和深度下的B图'} role="img" style={{ imageRendering: 'pixelated' }} />
           : <svg viewBox={task === 'm_mode' ? '0 15 480 255' : '0 0 480 300'} role="img" aria-label={task === 'echo' ? '同一条声束的回波时间、深度和亮点对应' : task === 'm_mode' ? '运动界面从B超图的一条线展开成M超' : '血流相对探头的方向与频移'}>
             <rect width="480" height="300" fill="#07121e" />

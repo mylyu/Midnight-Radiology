@@ -5,7 +5,7 @@ import { CH3 } from '../src/game/ch3.ts'
 import { TRILOGY_CASE_NAMES } from '../src/game/trilogy-evidence.ts'
 import { freshState } from '../src/game/store.ts'
 import { initializeTrilogy, patchTrilogy, enterTrilogyNode, trilogyProgress,
-  trilogyStep, trilogyAdvance, trilogyChoose, beginTrilogyScan, completeTrilogyScan } from '../src/game/trilogy-session.ts'
+  trilogyStep, trilogyAdvance, trilogyChoose, completeTrilogyTool, beginTrilogyScan, completeTrilogyScan } from '../src/game/trilogy-session.ts'
 
 const copy = value => JSON.parse(JSON.stringify(value))
 const sameSave = (actual, expected, why) => assert.deepEqual(copy(actual), copy(expected), why)
@@ -22,8 +22,9 @@ function walk(s, target, visit = []) {
     visit.push(node)
     if (node === target) return s
     const step = trilogyStep(s, CH3)
-    assert(!step.tool && !step.choices?.length, `No unexplained activity before ${target}: ${node}`)
-    const next = step.scan
+    assert(!step.choices?.length, `No unexplained choice before ${target}: ${node}`)
+    if (step.tool) assert.equal(node, 'c3_s2_plan_6', 'Only the retained TGC exercise precedes observation')
+    const next = step.tool ? completeTrilogyTool(copy(s), CH3, node) : step.scan
       ? completeTrilogyScan(beginTrilogyScan(copy(s), CH3, node, 1000), CH3, node, 4000)
       : trilogyAdvance(s, CH3, node)
     assert.notEqual(trilogyProgress(next, 'ch3').stepId, node, `Continuation exists at ${node}`)
@@ -33,9 +34,11 @@ function walk(s, target, visit = []) {
 }
 
 assert.equal(Object.values(CH3.steps).filter(step => step.scan).length, 7)
-assert.equal(CH3.steps.c3_s2_finish_2.next, 'c3_liver_arrive_0')
+assert.equal(CH3.steps.c3_s2_pause_2.next, 'c3_liver_arrive_0')
+assert.equal(CH3.steps.c3_s2_finish_2.next, 'c3_liver_observe')
 assert.equal(CH3.steps.c3_liver_arrive_4.next, 'c3_liver_scan')
-assert.equal(CH3.steps.c3_liver_scan.next, 'c3_liver_observe')
+assert.equal(CH3.steps.c3_liver_scan.next, 'c3_liver_tgc_intro_0')
+assert.equal(CH3.steps.c3_liver_tgc_intro_1.next, 'c3_s2_plan_6')
 assert.equal(CH3.steps.c3_liver_scan.scan.kind, 'ultrasound')
 assert.equal(CH3.steps.c3_liver_scan.scan.durationMs, 3000)
 assert(!CH3.steps.c3_liver_scan.image, 'The examination finishes before its image is shown')
@@ -64,10 +67,11 @@ assert.equal(CH3.steps.c3_liver_observe.choices.length, 3)
 
 for (const target of ['c3_liver_compare', 'c3_liver_gain', 'c3_liver_help']) {
   const earnedSkill = target === 'c3_liver_compare' ? 1 : 0
-  const start = fixture('c3_s2_finish_2'), path = []
+  const start = fixture('c3_s2_plan_5'), path = []
   let s = walk(copy(start), 'c3_liver_observe', path)
   assert(path.includes('c3_liver_arrive_0') && path.includes('c3_liver_scan'))
-  assert.deepEqual(numbers(s), numbers(start), 'Patient arrival and acquisition grant no stats')
+  assert(path.indexOf('c3_liver_scan') < path.indexOf('c3_s2_plan_6'), 'The actual liver image is acquired before TGC')
+  assert.deepEqual(numbers(s), { ...numbers(start), skill: start.skill + 1 }, 'Only the retained TGC completion earns a point before observation')
   assert(!(s.cards ?? []).includes('c3_liver_compare'), 'No card reveals the observation answer')
   const choice = trilogyStep(s, CH3).choices.find(c => c.next === target)
   assert(choice, `${target}: reachable observation option`)
@@ -75,7 +79,7 @@ for (const target of ['c3_liver_compare', 'c3_liver_gain', 'c3_liver_help']) {
   assert.equal(trilogyProgress(s, 'ch3').stepId, target)
   sameSave(trilogyChoose(copy(s), CH3, 'c3_liver_observe', choice), s, 'Stale second choice cannot replay')
   s = walk(s, 'c3_liver_explain_6', path)
-  assert.deepEqual(numbers(s), { ...numbers(start), skill: start.skill + earnedSkill },
+  assert.deepEqual(numbers(s), { ...numbers(start), skill: start.skill + 1 + earnedSkill },
     'Correct observation earns one point; wrong/help responses have no penalty or automatic points')
   assert(s.flags.c3_liver_seen)
   assert.equal(s.cards.filter(id => id === 'c3_liver_compare').length, 1)
@@ -83,7 +87,7 @@ for (const target of ['c3_liver_compare', 'c3_liver_gain', 'c3_liver_help']) {
   sameSave(enterTrilogyNode(copy(atCard), CH3, 'c3_liver_explain_2'), atCard, 'Card entry resumes without duplicate reward')
   s = walk(copy(s), 'c3_s2_finish_3', path)
   assert(path.includes('c3_tang_break_0'), 'A short colleague pause precedes the handover')
-  assert.deepEqual(numbers(s), { ...numbers(start), gold: start.gold + 100, skill: start.skill + earnedSkill },
+  assert.deepEqual(numbers(s), { ...numbers(start), gold: start.gold + 100, skill: start.skill + 1 + earnedSkill },
     'Only the original handover wage is added after the observation')
   sameSave(enterTrilogyNode(copy(s), CH3, 'c3_s2_finish_3'), s, 'Original handover wage still grants once')
   assert.deepEqual(s.dlc.ch2, start.dlc.ch2)

@@ -37,14 +37,19 @@ assert.equal(Object.values(CH3.steps).filter(s => s.scan).length, 7)
 for (const step of Object.values(CH3.steps)) for (const c of step.choices ?? [])
   assert(!/[（(]\d+行动力[）)]/.test(c.text), 'No prose AP suffix on choices')
 
-// Current play takes a quiet handover before the retained gain/TGC exercise. Old cursors
+// Current play takes a quiet handover, then acquires the liver image before TGC. Old cursors
 // continue without the retired task, replayed rewards or lost collectibles.
 assert.equal(CH3.steps.c3_s2_plan_5.next, 'c3_s2_pause_0')
 assert.equal(CH3.steps.c3_s2_pause_0.next, 'c3_s2_pause_1')
 assert.equal(CH3.steps.c3_s2_pause_1.next, 'c3_s2_pause_2')
-assert.equal(CH3.steps.c3_s2_pause_2.next, 'c3_s2_plan_6')
+assert.equal(CH3.steps.c3_s2_pause_2.next, 'c3_liver_arrive_0')
+assert.equal(CH3.steps.c3_liver_scan.next, 'c3_liver_tgc_intro_0')
+assert.equal(CH3.steps.c3_liver_tgc_intro_1.next, 'c3_s2_plan_6')
 assert.equal(CH3.steps.c3_s2_plan_6.tool.task, 'tgc')
-assert.equal(CH3.steps.c3_s2_plan_6.tool.title, '教学台 · 深处为什么更暗')
+assert.equal(CH3.steps.c3_s2_plan_6.tool.title, '肝肾图像 · 深处为什么更暗')
+assert.equal(CH3.steps.c3_s2_plan_6.tool.variant, 'liver')
+assert.equal(CH3.steps.c3_s2_plan_6.tool.image, 'us_c3_hepatorenal_v1')
+assert.equal(trilogyStep(fixture('c3_s2_plan_6'), CH3).tool.title, '教学台 · 深处为什么更暗', 'An old pre-scan cursor retains its phantom')
 assert(!Object.values(CH3.steps).some(s => s.tool?.task === 'depth'))
 for (let i = 0; i < 4; i++) for (const completed of [false, true]) {
   const node = `c3_s2_depth_${i}`

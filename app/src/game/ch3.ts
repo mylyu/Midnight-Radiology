@@ -219,12 +219,12 @@ scene('c3_s2_plan', [
   ['sys', '你在报告袋上写好楼层和医师名字，带表姐走到电梯口。她又问了一遍往哪儿拐，你干脆给她画了个小箭头。', { effect: { badge: 'c3_stay_beside', flag: 'c3_cousin_plan' } }],
   ['cousin', '我先过去。你下班给我发消息，陪我吃点热的，别让我一个人瞎想。'],
   ['sys', '电梯门关上，表姐托你拿的外套还搭在胳膊上。你发消息问她找没找到产科，她回了张门牌照片：“找到了，衣服先放你那儿。”你回诊室挂好外套，总算坐了下来。'],
-  ['mei', '模体的范围已经放好了，可深处还是偏暗。先试试整体增益，再用深部补偿，看看浅处会不会一块儿变白。', {
-    tool: { kind: 'ultrasound', task: 'tgc', title: '教学台 · 深处为什么更暗', prompt: '调一调深部补偿，让深处清楚些，别把浅处调得发白。', help: '深部回波走得更远，衰减更多。总增益会把整幅图一起调亮；TGC可以按深度补偿。两者调整的都是接收到的信号，没有增加发射功率。', next: 'c3_s2_finish_0' },
+  ['mei', '我继续看其他切面，你在工作站调刚才存的这张。试试整体增益，再调深处，别把浅处弄得一片白。', {
+    tool: { kind: 'ultrasound', task: 'tgc', variant: 'liver', image: 'us_c3_hepatorenal_v1', title: '肝肾图像 · 深处为什么更暗', prompt: '让深处的轮廓清楚些，同时保留浅处的层次。', help: '深处的回波走得更远，衰减更多。总增益会整幅一起亮；TGC按深度补偿，能单独照顾偏暗的深处。调的是收到的信号，不是让探头再发强一点。', next: 'c3_s2_finish_0' },
   }],
 ])
 scene('c3_s2_finish', [
-  ['mei', '把调整前后的图放一起，看看深处，再看看浅处。**深度和补偿设置**也记上，下次才知道改了什么。', { card: 'c3_depth', effect: { skill: 1, badge: 'c3_depth_keeper' } }],
+  ['mei', '浅处的层次也得留着。**深度和补偿设置**记一下，我把这张核好，咱们再认认肝和肾。', { card: 'c3_depth', effect: { skill: 1, badge: 'c3_depth_keeper' } }],
   ['me', '以前看一片暗就想加**整体增益**。原来得先问，是整张暗，还是走到深处才暗。'],
   ['mei', '对。下回深处又暗，先看看探头贴合没有，再检查频率，别一上来就拧亮度。'],
   ['sys', '下午交班后，表姐发来“我在楼下”，后面跟着一家粥店的位置。你回复“等我换衣服”，把培训表放回柜子。', { end: true, effect: { gold: 100, flag: 'c3_shift2_done' } }],
@@ -232,14 +232,18 @@ scene('c3_s2_finish', [
 
 // The display lesson meets an actual examination, after a short pause. Older
 // saves already at the handover keep their position rather than being rewound.
-steps.c3_s2_finish_2.next = 'c3_liver_arrive_0'
+steps.c3_s2_finish_2.next = 'c3_liver_observe'
 scene('c3_liver_arrive', [
-  ['sys', '你把模体收回软垫，坐下来喝了两口水。窗口叫到下一位：二十七岁的年轻人，背着电脑包，把一张折了四折的体检单摊在桌上。', { sprite: 'pat_c3_young_liver_v1' }],
+  ['sys', '你刚喝了两口水，窗口叫到下一位：二十七岁的年轻人，背着电脑包，把一张折了四折的体检单摊在桌上。', { sprite: 'pat_c3_young_liver_v1' }],
   ['fatty_patient', '公司催第三遍了，我终于来了。再拖下去，明年的体检都能一起做了。'],
   ['mei', '先把包放椅子上。最近有没有哪儿不舒服？'],
   ['fatty_patient', '没什么感觉。就是天天坐着，外卖一到就算我下班了。'],
   ['mei', '躺这边，衣服往上挪一点。我先给你看看。'],
 ], 'c3_liver_scan')
+scene('c3_liver_tgc_intro', [
+  ['me', '刚存的图，底下黑了一截。把总增益拧大，能一起救回来吗？'],
+  ['mei', '你试试。浅处要是先白了，就把它退回来，用**TGC**单独补深处。'],
+], 'c3_s2_plan_6')
 put('c3_liver_observe', { speaker: 'mei', sprite: '', bg: 'bg_us_room_day',
   text: '肝脏和右肾在这张里都看得见。先不改设置，你想怎么比较？',
   image: 'us_c3_hepatorenal_v1', imageLabel: '肝脏与右肾 · 同一切面', caseId: 'c3_young_liver',
@@ -307,16 +311,16 @@ scene('c3_s3_wang', [
   ['me', '那摊烧饼确实香。我每次路过也想买。'],
   ['sys', '梅姐完成必要核对，持探头寻找心脏切面。屏幕里的瓣膜来回开合，你负责按指示留存图像。', { image: 'us_echo', imageLabel: '超声心动图 · 心脏结构与运动', caseId: 'c3_wang' }],
   ['wang', '这个能看见我支架里面通不通吗？'],
-  ['mei', '这次主要看心脏怎么收缩、瓣膜怎么动，不能直接看清支架里面。您看，这条线记录的就是瓣膜**一段时间里的运动**。'],
+  ['mei', '支架里面靠这次心超看不清。这回看心脏收缩、瓣膜和血流。先用**B超**把各处回声排成切面，心腔、室壁和瓣膜就都能找到了。'],
   ['sys', '王叔检查完先到门外等。梅姐留在诊室工作站写好报告，你叫他回来取。他又问了一遍心内科的楼层，你便写在袋口。', { effect: { flag: 'c3_wang_reviewed' } }],
   ['wang', '谢谢。走了，这回我先去门诊，不去菜场。'],
 ], 'c3_s3_motion_0')
-// Keep the acquired grayscale view, then briefly compare its color-flow view
-// before Mei writes the report and the separate M-mode teaching scene begins.
-steps.c3_s3_wang_7.next = 'c3_wang_color_intro_0'
+// One examination: grayscale structure, sampled motion, then Doppler flow.
+// The patient leaves only after all three views have been reviewed together.
+steps.c3_s3_wang_7.next = 'c3_s3_motion_0'
 scene('c3_wang_color_intro', [
-  ['me', '瓣膜开开合合已经看得见了，还要切彩色吗？', { image: 'us_echo', imageLabel: '心脏结构与运动', sprite: '', sprite2: '' }],
-  ['mei', '要。刚才看它怎么动，现在看看**血流经过瓣膜**时是什么样。你盯着这块，我把彩色取样框放上去。', { image: 'us_echo', imageLabel: '心脏结构与运动', sprite: '', sprite2: '' }],
+  ['me', '结构看过，运动也记下来了。接下来这个彩色，是看血往哪儿流？', { image: 'us_echo', imageLabel: '心脏结构与运动', sprite: '', sprite2: '' }],
+  ['mei', '对，该**D超，也就是多普勒**了。流动的血细胞会让回声的频率发生变化，机器用这个看血流。先把取样框放在这里。', { image: 'us_echo', imageLabel: '心脏结构与运动', sprite: '', sprite2: '' }],
 ], 'c3_wang_color_0')
 const cardiacColorView = { image: 'us_c3_cardiac_color_v1', imageLabel: '心脏彩色多普勒 · 结构与血流', sprite: '', sprite2: '' }
 scene('c3_wang_color', [
@@ -329,9 +333,19 @@ put('c3_wang_color_question', { speaker: 'sys', bg: 'bg_us_room_day', ...cardiac
     { text: '「查脖子上的血管，也是这么看的？」', next: 'c3_wang_color_vessel' },
   ] })
 put('c3_wang_color_direction', { speaker: 'mei', bg: 'bg_us_room_day', ...cardiacColorView,
-  text: '不是按动静脉分的。这里主要表示血流**朝向还是离开探头**，要按这张图的色标认。下回跟血管检查，你试着换个角度就明白了。', next: 'c3_s3_wang_8' })
+  text: '不是按动静脉分的。这里主要表示血流**朝向还是离开探头**，要按这张图的色标认。下回跟血管检查，你试着换个角度就明白了。', next: 'c3_wang_spectrum_0' })
 put('c3_wang_color_vessel', { speaker: 'mei', bg: 'bg_us_room_day', ...cardiacColorView,
-  text: '也是用**多普勒**看血流，不过切面和设置得跟着检查对象换。下回正好有血管检查，你看看探头角度一变，信号会怎样。', next: 'c3_s3_wang_8' })
+  text: '也是用**多普勒**看血流，不过切面和设置得跟着检查对象换。下回正好有血管检查，你看看探头角度一变，信号会怎样。', next: 'c3_wang_spectrum_0' })
+scene('c3_wang_spectrum', [
+  ['sys', '梅姐换了一个切面，选好血流的取样位置。颜色下方展开一排波形，一阵阵跟着心跳起伏。', { ...cardiacColorView, echoSpectrum: true }],
+  ['me', '也是横着看时间？不过这回起伏的不是瓣膜位置了？', { ...cardiacColorView, echoSpectrum: true }],
+  ['mei', '对，这是**频谱多普勒**，看血流速度怎样随时间变化。彩色先帮我找血流，频谱再看它怎么流，都是D超。', { ...cardiacColorView, echoSpectrum: true }],
+], 'c3_wang_finish_modes_0')
+scene('c3_wang_finish_modes', [
+  ['me', '**B超看结构，M超盯运动，D超看血流**。原来是同一次检查里换着看，不是做三遍。'],
+  ['wang', '三种都看了？那我这回躺得挺值。能起来了吧，胳膊都压麻了。'],
+  ['mei', '可以了，慢慢起。这几组图我放一起看，再把报告给您。'],
+], 'c3_s3_wang_8')
 scene('c3_s3_mirror', [
   ['sys', '六点多，电梯到了重症病区。接诊医师说明会诊问题，你把车侧身停好，让出床边，梅姐核对资料、拉好帘子。', { bg: 'bg_us_bedside' }],
   ['sys', '夜灯已经调暗。你保存好这一帧，刚准备抬头，又把目光移回了屏幕。', { bg: 'bg_us_bedside', image: 'us_mirror', imageLabel: '床旁超声 · 采集后的膈肌附近切面' }],
@@ -534,7 +548,7 @@ scene('c3_s5_notice_end', [
   ['sys', '两周跟班结束，梅姐收好交接表，把晨会时间写给你。眼下总算能歇一会儿，你拉开柜门，收拾这几天攒下的小东西。', { end: true, effect: { gold: 120, flag: 'c3_shift5_done' } }],
 ], undefined, 'bg_waiting_day_v2')
 
-// Course spine: all player-operated experiments use explicit teaching objects.
+// Course spine: short observations stay attached to the relevant examination.
 steps.c3_s1_aunt_5.next = 'c3_s1_signal_0'
 scene('c3_s1_signal', [
   ['me', '探头既发又收？我以为里面至少得分成喇叭和麦克风。'],
@@ -557,14 +571,14 @@ for (let index = 0; index < 4; index++) put(`c3_s2_depth_${index}`, {
 })
 
 scene('c3_s3_motion', [
-  ['sys', '王叔回心内科后，梅姐调出教学演示：两个界面来回移动。B超图你已经认得，旁边那条起起伏伏的记录却还看不惯。'],
-  ['me', '旁边这个像把运动拉成长条了，它还是一张断面吗？'],
-  ['mei', '观察线已经放在运动界面上了。沿时间回看，看看两边怎么对上。', {
-    tool: { kind: 'ultrasound', task: 'm_mode', title: '教学台 · 同一条线，怎样动', prompt: '拖动时间线，看看B超图里的界面和M超图里的轨迹如何对应。', help: 'B超把不同位置的声线排成切面；M超反复看同一条声线。M超图竖着看深度，横着看时间，亮度表示回波强弱。移动时间线，就能对上B超图里那一刻的位置。', next: 'c3_s3_motion_3' },
+  ['sys', '梅姐换好切面，在B超图上放下一条取样线。旁边多出一条长图，沿着时间留下室壁运动的轨迹。'],
+  ['me', '黑白图明明已经在动了。这个**M超**，是专门盯着那一条线？'],
+  ['mei', '对，我把运动画简单点，你来对一下：时间拖到哪儿，两边就对应哪一刻。', {
+    tool: { kind: 'ultrasound', task: 'm_mode', title: '心超工作站 · 沿一条线看运动', prompt: '拖动时间线，对照B超里的界面与M超里的轨迹。', help: 'B超里先找准位置，M超反复看选中的同一条声线。竖着仍是深度，横着改为时间；界面一动，就留下位置变化的轨迹。', next: 'c3_s3_motion_3' },
   }],
   ['me', '原来**横轴是时间**，不是身体的左右。界面一动，这条轨迹也跟着起伏。'],
-  ['mei', '对，先在B超里找准位置，再盯着这条线看它怎么动。回头看王叔刚才那张，就好认了。', { card: 'c3_echo' }],
-], 'c3_s3_waiting_0')
+  ['mei', '就是这个意思。**B超先定位，M超把运动展开**，收缩、舒张时的位置变化就好对照了。再接着看血流。', { card: 'c3_echo' }],
+], 'c3_wang_color_intro_0')
 steps.c3_s3_xu_5.next = 'c3_s3_xu_6'
 steps.c3_s3_xu_8.next = 'c3_s3_mirror_0'
 steps.c3_s3_xu_9.bg = 'bg_us_room'
@@ -631,7 +645,7 @@ const acquisitions: [string, string, string, string, string, string][] = [
   ['c3_s1_aunt_4', 'c3_s1_aunt_scan', 'c3_s1_aunt_8', 'bg_us_room_day', '乳腺超声 · 梅姐持探头扫查', '梅姐拉好帘子，在临床机上开始扫查。你站在显示器侧，等她确定要保存的切面。'],
   ['c3_s1_stone_2', 'c3_s1_stone_scan', 'c3_s1_stone_3', 'bg_us_room_day', '腹部超声 · 梅姐持探头扫查', '梅姐换好腹部探头，先问清疼痛位置，再沿着声窗扫查。你按她的示意记录切面，患者不舒服时她就停下来调整。'],
   ['c3_s2_arrive_6', 'c3_s2_cousin_scan', 'c3_s2_arrive_7', 'bg_us_room_day', '产科超声 · 梅姐持探头扫查', '表姐躺稳，梅姐开始检查，按顺序寻找需要观察的结构。你收好手机，留在工作站旁，等她保存测量切面。'],
-  ['c3_liver_arrive_4', 'c3_liver_scan', 'c3_liver_observe', 'bg_us_room_day', '腹部超声 · 梅姐采集肝肾切面', '梅姐在右上腹换了几个角度，找到同时显示肝脏与右肾的切面。你在工作站旁等她保存图像。'],
+  ['c3_liver_arrive_4', 'c3_liver_scan', 'c3_liver_tgc_intro_0', 'bg_us_room_day', '腹部超声 · 梅姐采集肝肾切面', '梅姐在右上腹换了几个角度，找到同时显示肝脏与右肾的切面。你在工作站旁等她保存图像。'],
   ['c3_s3_wang_4', 'c3_s3_wang_scan', 'c3_s3_wang_5', 'bg_us_room_day', '超声心动图 · 梅姐采集心脏切面', '王叔按梅姐的指示躺好。她从声窗寻找心脏切面，你帮忙标记、留存她选定的图像。'],
   ['c3_s3_mirror_0', 'c3_s3_bedside_scan', 'c3_s3_mirror_1', 'bg_us_bedside', '床旁超声 · 梅姐持探头采集', '床旁团队让出位置，梅姐在患者身边扫查。你看着移动机上的采集状态，保存她选定的膈肌附近切面。'],
   ['c3_s3_xu_2', 'c3_s3_xu_scan', 'c3_s3_xu_3', 'bg_us_room_day', '腹部超声 · 许建平本次检查', '许建平收好外套，梅姐核对开单问题后开始腹部扫查。你按她的指示留存切面，旧病历的话题等检查完成再接着谈。'],
@@ -734,14 +748,14 @@ for (const id of ['c3_s2_plan_3', 'c3_s2_plan_4']) steps[id].bg = 'bg_waiting_da
 scene('c3_s2_pause', [
   ['mei', '到了产科就好。水在桌上，先喝两口。'],
   ['me', '那天在电话里什么都敢答应。真陪她坐到这儿，我倒不知道说什么了。'],
-  ['sys', '梅姐没催你。你坐了一会儿，回完表姐的消息。等诊室空下来，才起身走到窗边，指着模体屏幕问：“这底下怎么还是黑一截？”'],
-], 'c3_s2_plan_6')
+  ['sys', '梅姐没催你。你坐了一会儿，回完表姐的消息。窗口那边叫了下一位，她把空椅子往你这边挪了挪。'],
+], 'c3_liver_arrive_0')
 
 steps.c3_s3_wang_9.next = 'c3_s3_after_wang_0'
 scene('c3_s3_after_wang', [
   ['me', '他一说烧饼，我现在也有点饿了。'],
-  ['mei', '抽屉里有饼干，垫两口。下一位还没到号，咱们回头看看刚才那条线。'],
-], 'c3_s3_motion_0')
+  ['mei', '抽屉里有饼干，垫两口。下一位还没到号，先把资料收好，我也喝口水。'],
+], 'c3_s3_waiting_0')
 
 steps.c3_s3_xu_8.next = 'c3_s3_leave_clinic_0'
 scene('c3_s3_leave_clinic', [
@@ -845,6 +859,36 @@ function adapt(id: string, step: TrilogyStep, state: GameState): TrilogyStep {
   if (place) return place
   const progress = state.dlc?.ch3?.chapter
   const tools = progress?.tools
+  const liverAcquired = !!progress?.scans?.c3_liver_scan?.completed
+    || !!progress?.visited.includes('c3_liver_observe')
+  // Keep the old exercise receipt/slider values. An old cursor before this
+  // patient still finishes its original phantom, then meets the patient once.
+  if (id === 'c3_s2_plan_6') {
+    if (tools?.c3_s2_plan_6?.completed) return { ...step, tool: undefined,
+      text: '深部补偿已经调过了。梅姐叫你把前后两张放在一起，再看看浅处的层次。', next: 'c3_s2_finish_0' }
+    if (!liverAcquired) return { ...step,
+      text: '模体深处还有些暗。先试试整体增益，再用深部补偿，看看浅处会不会一块儿变白。',
+      tool: { ...step.tool!, variant: undefined, image: undefined, title: '教学台 · 深处为什么更暗' } }
+  }
+  if (/^c3_s2_finish_[012]$/.test(id)) return { ...step,
+    ...(liverAcquired ? { image: 'us_c3_hepatorenal_v1', imageLabel: '肝脏与右肾 · 同一切面', sprite: '', sprite2: '' }
+      : id === 'c3_s2_finish_0' ? { text: '把调整前后的图放一起，看看深处，再看看浅处。**深度和补偿设置**也记上，下次才知道改了什么。' } : {}),
+    next: id === 'c3_s2_finish_2' ? liverAcquired ? 'c3_liver_observe' : 'c3_liver_arrive_0' : step.next }
+  if (/^c3_liver_tgc_intro_[01]$/.test(id) && tools?.c3_s2_plan_6?.completed) return { ...step,
+    text: '这张的深部补偿已经调好。梅姐把画面停住，让你先认一认里面的结构。', next: 'c3_liver_observe' }
+  // Older saves may already have sent Wang back to cardiology before the
+  // M-mode recap. Do not put him back on the bed or run his reporting twice.
+  if (/^c3_s3_motion_[0-4]$/.test(id)) {
+    const reviewed = !!state.flags.c3_wang_reviewed
+    return { ...step,
+      ...(reviewed ? { sprite: 'char_mei', sprite2: '', ...(id === 'c3_s3_motion_0'
+        ? { text: '王叔已经回心内科了。梅姐把刚才存的图调出来，指着旁边沿时间展开的运动轨迹，让你再对一对。' } : {}) } : {}),
+      ...(id === 'c3_s3_motion_2' && tools?.c3_s3_motion_2?.completed
+        ? { tool: undefined, text: '时间线已经对过了。梅姐指指刚才的取样线，等你说说看出来的变化。', next: 'c3_s3_motion_3' } : {}),
+      ...(id === 'c3_s3_motion_4' && reviewed
+        ? { text: '对，B超先找位置，M超再沿时间看。图收好了，下一位到号了。', next: 'c3_s3_waiting_0' } : {}),
+    }
+  }
   if (id === 'c3_s5_cousin_check_1' && state.flags.c3_cousin_followup_stable) return { ...step,
     text: '她按安排复查，最近踏实多了。不过有时候刷到网上的消息，还是会发过来问我。' }
   // Old saves inside the removed city-trip sequence resume with one bridge,
@@ -934,7 +978,7 @@ export const CH3: TrilogyChapter = {
   shifts: [
     { id: 'c3s1', title: '第一班 · 回声先回来', subtitle: '替表姐找人帮忙，顺道成了跟班 · 探头收发 / A型到B超 / 声影', date: '2026-10-30来电 → 11-02白班', start: 'c3_intro_call_0', checkinAt: 'c3_s1_start_0', background: 'bg_day' },
     { id: 'c3s2', title: '第二班 · 看多深，补哪里', subtitle: '白班 · 频率 / 深度 / TGC / 表姐', date: '2026-11-04 · 白班', start: 'c3_s2_start_0', background: 'bg_us_room_day' },
-    { id: 'c3s3', title: '第三班 · 跟着这一条线', subtitle: '下午至傍晚 · 心超 / M超 / 床旁', date: '2026-11-07 · 下午至晚间床旁班', start: 'c3_s3_start_0', background: 'bg_us_room_day' },
+    { id: 'c3s3', title: '第三班 · 跟着这一条线', subtitle: '下午至傍晚 · 心超的结构、运动与血流 / 床旁', date: '2026-11-07 · 下午至晚间床旁班', start: 'c3_s3_start_0', background: 'bg_us_room_day' },
     { id: 'c3s4', title: '第四班 · 颜色跟谁比', subtitle: '白班 · 血流方向 / 多普勒频移', date: '2026-11-10 · 白班', start: 'c3_s4_start_0', background: 'bg_us_room_day' },
     { id: 'c3s5', title: '第五班 · 分得开，跟得上', subtitle: '白班 · 轴向与侧向 / 采样与帧率 / 晨会', date: '2026-11-13 · 白班', start: 'c3_s5_start_0', background: 'bg_us_room_day' },
   ],

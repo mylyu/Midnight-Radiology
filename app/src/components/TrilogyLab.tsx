@@ -31,7 +31,7 @@ export function TrilogyLab({ state, chapter, tool, update }: { state: GameState;
   const probe = ultrasoundParameters({ position: saved.value, gain: 50, depth: 55, probe: saved.choice }).probe
   return <div data-trilogy-lab={tool.task} data-trilogy-kind={tool.kind} className="trilogy-lab" onClick={e => e.stopPropagation()}>
     <header><span className="text-teal-200 text-xs">{tool.kind === 'ultrasound' ? '探头与显示' : tool.kind === 'mri' ? '工作站 · 序列对照' : '核医学工作站'}</span><h2>{tool.title}</h2><p>{tool.prompt}</p></header>
-    {ultrasound ? <TrilogyUltrasoundLab {...courseProps} /> : nuclear ? <TrilogyNuclearLab {...courseProps} /> : magnetic ? <TrilogyMriLab {...courseProps} /> : <div className="trilogy-lab-work">
+    {ultrasound ? <TrilogyUltrasoundLab {...courseProps} image={image} /> : nuclear ? <TrilogyNuclearLab {...courseProps} /> : magnetic ? <TrilogyMriLab {...courseProps} /> : <div className="trilogy-lab-work">
       <div className="trilogy-lab-image">
         {tool.kind === 'ultrasound' ? <UltrasoundPhantom position={tool.task === 'probe' ? saved.value : 50} gain={tool.task === 'gain' ? saved.value : 50}
           depth={tool.task === 'depth' ? saved.value : 55} probe={tool.task === 'probe' ? saved.choice : '线阵'} /> : image && <img src={imageAsset(tool.task === 'fusion' ? tool.reference ?? image : image)} className="pixel" alt="当前图像" style={{

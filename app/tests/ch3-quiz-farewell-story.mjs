@@ -5,7 +5,7 @@ import { readFileSync, existsSync } from 'node:fs'
 import { CH3 } from '../src/game/ch3.ts'
 import { freshState } from '../src/game/store.ts'
 import { initializeTrilogy, patchTrilogy, enterTrilogyNode, trilogyStep,
-  trilogyProgress, trilogyAdvance, trilogyChoose } from '../src/game/trilogy-session.ts'
+  trilogyProgress, trilogyAdvance, trilogyChoose, completeTrilogyTool } from '../src/game/trilogy-session.ts'
 
 const numbers = s => Object.fromEntries(['gold', 'skill', 'heart', 'wealth', 'ap'].map(key => [key, s[key]]))
 function fixture(node, shift, flags = {}) {
@@ -29,10 +29,16 @@ function sameNumbersAndOtherChapters(before, after) {
   assert.deepEqual(after.badges, before.badges)
 }
 
-// Start before the transition: the explanation precedes the color frame.
+// Start before M-mode: it remains part of Wang's examination before color/spectrum.
 for (const target of ['c3_wang_color_direction', 'c3_wang_color_vessel']) {
   const start = fixture('c3_s3_wang_7', 2)
   let s = walk(start, ['c3_s3_wang_7'])
+  s = walk(s, ['c3_s3_motion_0', 'c3_s3_motion_1'])
+  assert.equal(trilogyProgress(s, 'ch3').stepId, 'c3_s3_motion_2')
+  assert.equal(trilogyStep(s, CH3).tool.task, 'm_mode')
+  s = completeTrilogyTool(s, CH3, 'c3_s3_motion_2')
+  s = walk(s, ['c3_s3_motion_3', 'c3_s3_motion_4'])
+  assert.equal(s.cards.filter(id => id === 'c3_echo').length, 1, 'The original M-mode card is retained')
   for (const id of ['c3_wang_color_intro_0', 'c3_wang_color_intro_1']) {
     assert.equal(trilogyProgress(s, 'ch3').stepId, id)
     assert.equal(trilogyStep(s, CH3).image, 'us_echo')
@@ -53,10 +59,17 @@ for (const target of ['c3_wang_color_direction', 'c3_wang_color_vessel']) {
   const resumed = JSON.parse(JSON.stringify(s))
   assert.equal(trilogyStep(resumed, CH3).text, trilogyStep(s, CH3).text, 'Saved response resumes in place')
   s = trilogyAdvance(resumed, CH3, target)
+  for (const id of ['c3_wang_spectrum_0', 'c3_wang_spectrum_1', 'c3_wang_spectrum_2']) {
+    assert.equal(trilogyProgress(s, 'ch3').stepId, id)
+    assert.equal(trilogyStep(s, CH3).echoSpectrum, true)
+    assert(!trilogyStep(s, CH3).scan && !trilogyStep(s, CH3).tool)
+    s = trilogyAdvance(s, CH3, id)
+  }
+  s = walk(s, ['c3_wang_finish_modes_0', 'c3_wang_finish_modes_1', 'c3_wang_finish_modes_2'])
   assert.equal(trilogyProgress(s, 'ch3').stepId, 'c3_s3_wang_8')
   assert(!trilogyStep(s, CH3).image, 'The color frame leaves before reporting/hand-over')
   assert(s.flags.c3_wang_reviewed, 'Original case-completion flag is still applied')
-  sameNumbersAndOtherChapters(start, s)
+  sameNumbersAndOtherChapters({ ...start, cards: [...(start.cards ?? []), 'c3_echo'] }, s)
 }
 assert.match(CH3.steps.c3_s4_start_2.text, /上回王叔心超/)
 assert.match(CH3.steps.c3_s4_clinic_1.text, /先认位置.*色标/)

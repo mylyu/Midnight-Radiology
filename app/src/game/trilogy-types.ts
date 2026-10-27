@@ -45,6 +45,8 @@ export interface TrilogyStep extends Step {
   closeup?: boolean
   /** Compact object illustration alongside the current characters. */
   imageKind?: 'object'
+  /** Optional velocity-over-time illustration below the CH3 cardiac image. */
+  echoSpectrum?: boolean
   cameraMotion?: 'push' | 'settle'
   caseId?: string
 }

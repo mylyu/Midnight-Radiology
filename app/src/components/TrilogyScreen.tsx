@@ -19,6 +19,7 @@ import { SceneBackground } from './SceneBackground'
 import { FullscreenBtn } from './FullscreenButton'
 import Ch2Checkin from './Ch2Checkin'
 import { TrilogyLab } from './TrilogyLab'
+import { EchoDopplerSpectrum } from './EchoDopplerSpectrum'
 import { TRILOGY_DOCUMENTS } from '../game/trilogy-documents'
 import { TrilogyDocument } from './TrilogyDocument'
 import { TRILOGY_COMMUNICATION_CUES } from '../game/trilogy-communications'
@@ -200,6 +201,7 @@ export function TrilogyScreen({ state, chapter, update, onExit, renderText }: Pr
   const background = savedBackground === 'bg_mri_room' ? 'bg_mri_room_day_v2'
     : savedBackground === 'bg_mri_corridor' ? 'bg_mri_corridor_day_v2' : savedBackground
   const objectImage = chapter.id === 'ch3' && raw.imageKind === 'object'
+  const echoSpectrum = chapter.id === 'ch3' && raw.echoSpectrum && !objectImage
   const optionsVisible = done && (choices.length + giftItems.length > 0 || settlementChoice)
   return <DialogueStage ref={stage} className="trilogy-root" data-trilogy={chapter.id} data-trilogy-node={node} data-trilogy-phase={p.phase}
     onPointerDownCapture={choiceGuard.pointerDown} onPointerCancelCapture={choiceGuard.cancel}
@@ -216,7 +218,12 @@ export function TrilogyScreen({ state, chapter, update, onExit, renderText }: Pr
     {['story', 'epilogue'].includes(p.phase) && <>
       {raw.image && !raw.tool && !raw.scan && (raw.closeup
         ? <LdctCinematic key={node} scene={{ id: node, image: raw.image, alt: raw.imageLabel ?? '剧情特写', motion: raw.cameraMotion ?? 'push' }} />
-        : <div className={objectImage ? 'trilogy-story-object' : 'trilogy-story-image'} data-two-portraits={objectImage && !!sprite && !!raw.sprite2 || undefined}>{TRILOGY_DOCUMENTS[raw.image] ? <TrilogyDocument id={raw.image} /> : <img src={imageAsset(raw.image)} alt={raw.imageLabel ?? (objectImage ? '物品' : '剧情图像')} className="pixel" />}{raw.imageLabel && <span>{raw.imageLabel}</span>}</div>)}
+        : <div className={objectImage ? 'trilogy-story-object' : 'trilogy-story-image'} data-two-portraits={objectImage && !!sprite && !!raw.sprite2 || undefined}>
+          {TRILOGY_DOCUMENTS[raw.image] ? <TrilogyDocument id={raw.image} /> : echoSpectrum
+            ? <div className="trilogy-echo-pair"><img src={imageAsset(raw.image)} alt={raw.imageLabel ?? '心脏彩色多普勒'} className="pixel" /><EchoDopplerSpectrum /></div>
+            : <img src={imageAsset(raw.image)} alt={raw.imageLabel ?? (objectImage ? '物品' : '剧情图像')} className="pixel" />}
+          {raw.imageLabel && <span>{raw.imageLabel}</span>}
+        </div>)}
       {sprite && !raw.closeup && <DialoguePortrait className="pointer-events-none" src={imageAsset(sprite === 'me' ? `char_${state.gender}` : sprite)} alt={person?.name ?? '人物'} />}
       {raw.sprite2 && !raw.closeup && <DialoguePortrait className="pointer-events-none" side="right" src={imageAsset(raw.sprite2)} alt="同场人物" />}
       {(raw.communication || phoneSprite) && <div className="trilogy-communication absolute top-12 right-4 portrait:top-[4.5rem] portrait:right-2 portrait:px-2 portrait:py-1 portrait:gap-2 z-30 flex items-center gap-3 bg-slate-900/90 border-2 border-emerald-600 rounded-xl px-3 py-2 shadow-2xl">

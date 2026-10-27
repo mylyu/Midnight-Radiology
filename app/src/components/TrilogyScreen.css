@@ -34,6 +34,10 @@
 .trilogy-root[data-trilogy=ch3] .trilogy-story-image { width:min(70vw,760px); height:max(0px,calc(100% - var(--trilogy-header-height,76px) - var(--trilogy-dialog-height,14rem) - 24px)); max-height:none; display:grid; grid-template-rows:minmax(0,1fr) auto; justify-items:center; gap:.35rem; }
 .trilogy-root[data-trilogy=ch3] .trilogy-story-image>img { width:100%; height:100%; min-height:0; }
 .trilogy-root[data-trilogy=ch3] .trilogy-story-image>span { max-width:100%; text-align:center; }
+/* Both views fit inside the measured free region above the dialogue. */
+.trilogy-echo-pair { display:grid; grid-template-rows:minmax(0,3.3fr) minmax(0,1fr); gap:.25rem; width:100%; height:100%; min-height:0; }
+.trilogy-echo-pair>img { width:100%; height:100%; min-height:0; object-fit:contain; }
+.trilogy-echo-spectrum { display:block; width:100%; height:100%; min-height:0; }
 /* All in-dialogue figures share the scene center, including paper keepsakes.
    Keep the closeup zoom, but do not drift the artwork sideways as it settles. */
 .trilogy-root[data-trilogy=ch3] :is(.trilogy-story-image,.trilogy-story-object) { left:50%; right:auto; transform:translateX(-50%); }
