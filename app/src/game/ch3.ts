@@ -49,7 +49,7 @@ const cousinPhone: Partial<TrilogyStep> = { communication: 'call', sprite: '', p
 const cousinSms: Partial<TrilogyStep> = { communication: 'sms', sprite: '', phone: 'pat_cousin', voice: undefined }
 scene('c3_intro_call', [
   ['sys', '2026年10月30日傍晚，天还亮着。你刚从放射科出来，手机就响了。是表姐。她先问你下班没，又在那头翻起了纸。', cousinPhone],
-  ['cousin', '下周该做大排畸了，二十四周。你们超声科有没有熟人？帮姐安排一下呗，我一想到去医院就头大。', { ...cousinPhone, voice: 'vox_c3_cousin_v2', image: 'cg_c3_cousin_call_v3', imageLabel: '表姐从家里打来电话', closeup: true, cameraMotion: 'push' }],
+  ['cousin', '帮姐姐个忙呗。下周该做大排畸了，二十四周。你们超声科有没有熟人？我一想到去医院就头大。', { ...cousinPhone, voice: 'vox_c3_cousin_v2', image: 'cg_c3_cousin_call_v3', imageLabel: '表姐从家里打来电话', closeup: true, cameraMotion: 'push' }],
   ['me', '包在我身上！单子发来，到时候我下楼接你。', cousinPhone],
   ['cousin', '哟，现在说话这么硬气了？行，我可指望你了。办好了，姐请你吃顿好的。', cousinPhone],
   ['me', '那我先想想吃什么。以前的检查单也拍来，别又只拍个右下角。', cousinPhone],
