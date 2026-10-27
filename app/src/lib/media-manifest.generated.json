@@ -1686,6 +1686,11 @@
       "bytes": 9165,
       "type": "audio"
     },
+    "audio/vox_c3_zhou_call_v1.mp3": {
+      "sha256": "305999eed7f552fa560bcab11adc5485ff2ffa964f7b5662a2c85f88600130bf",
+      "bytes": 16653,
+      "type": "audio"
+    },
     "audio/vox_c4_song_v2.mp3": {
       "sha256": "fb68df6d5e7bdfaf5e153ecca8220bd5c8fa000caed6d32b1b983cc90bba6b1f",
       "bytes": 7293,
@@ -2260,6 +2265,7 @@
       "audio/vox_c3_mei_v2.mp3",
       "audio/vox_c3_wang_v2.mp3",
       "audio/vox_c3_xu_greeting_v3.mp3",
+      "audio/vox_c3_zhou_call_v1.mp3",
       "audio/vox_ch2_natural_tang.mp3",
       "audio/vox_trilogy_aunt_v2.mp3",
       "audio/vox_trilogy_han_v2.mp3",

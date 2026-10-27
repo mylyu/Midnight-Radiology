@@ -386,10 +386,15 @@ exploration('c3_s4_pack', [
   ['mei', '这格够了，下一箱先别拆。每回堆满，有效期短的反而拿不到，最后拆箱的人还挨财务问。', { card: 'c3_gel' }],
 ], 'c3_s4_hub')
 exploration('c3_s4_zhou', [
-  ['zhou', '在超声科怎么样？还找得到食堂吗？', { communication: 'call', sprite: undefined, phone: 'char_zhou' }],
+  ['sys', '你走到安静的窗边，把电话回拨过去。响了两声，那边接了。', { communication: 'call', sprite: '', phone: 'char_zhou', next: 'c3_s4_zhou_connected' }],
   ['me', '找得到。就是他们那边的饭点，和饭点没什么关系。', { communication: 'call' }],
   ['zhou', '那就熟悉了。周末回来，给我讲讲那个轮子。后勤上回答应给我们修椅子，还欠着呢。', { communication: 'call', sprite: undefined, phone: 'char_zhou' }],
 ], 'c3_s4_hub', 'bg_waiting_day_v2')
+put('c3_s4_zhou_connected', {
+  speaker: 'zhou', text: '喂，在超声科怎么样？还找得到食堂吗？',
+  bg: 'bg_waiting_day_v2', communication: 'call', phone: 'char_zhou', sprite: '', sprite2: '',
+  voice: 'vox_c3_zhou_call_v1', next: 'c3_s4_zhou_1',
+})
 scene('c3_s4_cost', [
   ['sys', '你把三个月的数据摊开。总金额上去了，但门诊与床旁检查的人次也增加了。另有一批旧包装到了使用期限，报废单单独放着。'],
   ['mei', '财务把这两张加一起了。你看，报废那批还算在本月用量里，可不是我们一人多挤了半瓶。'],

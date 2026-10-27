@@ -1,0 +1,164 @@
+{
+  "date": "2026-10-27",
+  "base": "9c02b75",
+  "id": "vox_c3_zhou_call_v1",
+  "role": "老周",
+  "text": "喂，在超声科怎么样？",
+  "attempt": 1,
+  "performance_direction": "约60岁，松弛略粗粝，熟人电话关心，稍带笑意；实际表演由已批准参考引导，不把说明塞进模型台词。",
+  "instruction": "Say the following with the same voice: \"喂，在超声科怎么样？\"",
+  "seed": 2026102731,
+  "gen_seconds": 2.8,
+  "command": [
+    "C:\\Users\\lvmen\\Documents\\New project\\AuK\\.venv\\Scripts\\auk-infer.exe",
+    "--ckpt",
+    "C:\\Users\\lvmen\\Documents\\New project\\AuK\\ckpts\\AuK-Flash\\auk_flash.safetensors",
+    "--qwen_path",
+    "C:\\Users\\lvmen\\Documents\\New project\\AuK\\ckpts\\Qwen2.5-Omni-3B",
+    "--dtype",
+    "bf16",
+    "--device",
+    "cuda:0",
+    "--cpu_offload",
+    "--seed",
+    "2026102731",
+    "--gen_seconds",
+    "2.8",
+    "--instruction",
+    "Say the following with the same voice: \"喂，在超声科怎么样？\"",
+    "--audio",
+    "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-zhou-call-20261027\\vox_ch2_natural_zhou_v2.mp3",
+    "--output",
+    "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-zhou-call-20261027\\vox_c3_zhou_call_v1.a1.raw.wav"
+  ],
+  "reference_source": "C:\\Users\\lvmen\\Documents\\New project\\Midnight-Radiology\\app\\public\\audio\\vox_ch2_natural_zhou_v2.mp3",
+  "reference_snapshot": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-zhou-call-20261027\\vox_ch2_natural_zhou_v2.mp3",
+  "reference_sha256": "042f106009e33f7b3041b9129a8da6ea4954010543db547840912016b9eb76a1",
+  "offline": true,
+  "method": "Local auk-infer AuK-Flash official zero-shot same-voice template",
+  "raw": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-zhou-call-20261027\\vox_c3_zhou_call_v1.a1.raw.wav",
+  "raw_sha256": "802a221808856aba41212b20e6388fc3995a3bdaa90a8797a7082ec9d96cae96",
+  "wav": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-zhou-call-20261027\\vox_c3_zhou_call_v1.a1.wav",
+  "wav_sha256": "9e64fa77885004b3f38cda88768bb2a083aa75e2d8144d957da9883228808407",
+  "mp3": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-zhou-call-20261027\\vox_c3_zhou_call_v1.a1.mp3",
+  "mp3_sha256": "305999eed7f552fa560bcab11adc5485ff2ffa964f7b5662a2c85f88600130bf",
+  "bytes": 16653,
+  "processing": "silenceremove=start_periods=1:start_duration=0.03:start_threshold=-50dB:start_silence=0.06,loudnorm=I=-20:TP=-2:LRA=7",
+  "ffmpeg_commands": [
+    [
+      "ffmpeg",
+      "-y",
+      "-v",
+      "error",
+      "-i",
+      "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-zhou-call-20261027\\vox_c3_zhou_call_v1.a1.raw.wav",
+      "-af",
+      "silenceremove=start_periods=1:start_duration=0.03:start_threshold=-50dB:start_silence=0.06,loudnorm=I=-20:TP=-2:LRA=7",
+      "-map_metadata",
+      "-1",
+      "-ar",
+      "24000",
+      "-ac",
+      "1",
+      "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-zhou-call-20261027\\vox_c3_zhou_call_v1.a1.wav"
+    ],
+    [
+      "ffmpeg",
+      "-y",
+      "-v",
+      "error",
+      "-i",
+      "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-zhou-call-20261027\\vox_c3_zhou_call_v1.a1.wav",
+      "-map_metadata",
+      "-1",
+      "-c:a",
+      "libmp3lame",
+      "-b:a",
+      "48k",
+      "-ar",
+      "24000",
+      "-ac",
+      "1",
+      "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-zhou-call-20261027\\vox_c3_zhou_call_v1.a1.mp3"
+    ]
+  ],
+  "sample_rate": 24000,
+  "channels": 1,
+  "bitrate": 48000,
+  "speed_or_pitch_edit": false,
+  "generation_processing_seconds": 34.03,
+  "human_listened": false,
+  "limitations": "Automatic transcription and signal checks do not certify timbre identity, naturalness or author approval.",
+  "asr": "喂 在超声科 怎么样",
+  "asr_segments": [
+    {
+      "start": 0.0,
+      "end": 2.4,
+      "text": "喂 在超声科 怎么样",
+      "words": [
+        {
+          "start": 0.0,
+          "end": 0.56,
+          "word": "喂"
+        },
+        {
+          "start": 0.56,
+          "end": 1.1,
+          "word": " 在"
+        },
+        {
+          "start": 1.1,
+          "end": 1.28,
+          "word": "超"
+        },
+        {
+          "start": 1.28,
+          "end": 1.44,
+          "word": "声"
+        },
+        {
+          "start": 1.44,
+          "end": 1.94,
+          "word": "科"
+        },
+        {
+          "start": 2.26,
+          "end": 2.4,
+          "word": " 怎么样"
+        }
+      ]
+    }
+  ],
+  "asr_method": "faster-whisper-medium, local CPU int8, no transcript prompt",
+  "decoded_seconds": 2.6788,
+  "decoded_peak": 0.5506451725959778,
+  "clipping_samples": 0,
+  "measured_loudness": {
+    "input_i": "-20.41",
+    "input_tp": "-5.18",
+    "input_lra": "0.00",
+    "input_thresh": "-30.85",
+    "output_i": "-20.01",
+    "output_tp": "-4.78",
+    "output_lra": "0.00",
+    "output_thresh": "-30.45",
+    "normalization_type": "linear",
+    "target_offset": "0.01"
+  },
+  "independent_review": {
+    "method": "Local Qwen2.5-Omni-3B blind audio transcription; target not supplied",
+    "question": "逐字转写这段音频实际说出的全部内容，包含重复的字句。不要改写或补字。然后说有无重复、额外词或明显截断；听不清就说不确定。",
+    "answer": "喂，在超声科怎么样？嗯，有重复，就是“超声科”。不确定。如果还有其他问题，欢迎随时问我哦。",
+    "sha256": "305999eed7f552fa560bcab11adc5485ff2ffa964f7b5662a2c85f88600130bf",
+    "human_listened": false
+  },
+  "plain_transcript_review": {
+    "method": "Local Qwen2.5-Omni-3B blind audio transcription; target not supplied",
+    "question": "只输出这段音频实际说出的全部原话，不要添加任何解释或问候。",
+    "answer": "在超声科怎么样？",
+    "sha256": "305999eed7f552fa560bcab11adc5485ff2ffa964f7b5662a2c85f88600130bf",
+    "human_listened": false
+  },
+  "delivery": "C:\\Users\\lvmen\\Documents\\New project\\Midnight-Radiology\\app\\public\\audio\\vox_c3_zhou_call_v1.mp3",
+  "content_check_summary": "Whisper transcribes the complete target once. Qwen's first transcript is the complete target once, but its subsequent repetition comment is self-contradictory and uncertain. A final transcript-only query yields 在超声科怎么样？ without repeated words, omitting the opening interjection 喂. These automated observations are retained verbatim; they are not a human listening approval."
+}

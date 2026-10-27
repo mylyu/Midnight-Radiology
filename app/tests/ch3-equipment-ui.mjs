@@ -10,6 +10,8 @@ import { freshState } from '../src/game/store.ts'
 import { CH3 as chapter } from '../src/game/ch3.ts'
 import { initializeTrilogy, patchTrilogy, enterTrilogyNode, trilogyStep } from '../src/game/trilogy-session.ts'
 import { resolveMediaIdentities } from './media-identity-driver.mjs'
+import { trilogyVoice, trilogyVoiceAssets } from '../src/game/trilogy-audio.ts'
+import { TRILOGY_COMMUNICATION_CUES } from '../src/game/trilogy-communications.ts'
 
 assert.equal(process.env.TRILOGY_BUILD_READY, '1', 'Use the shared final production build; this test never builds')
 const require = createRequire(import.meta.url)
@@ -134,6 +136,36 @@ async function test(name, fn) {
 try {
   await page.goto(`${url}#/dlc`)
   await page.getByRole('heading', { name: /章节与番外/ }).waitFor({ timeout: 15000 })
+
+  await test('zhou-call-voice-after-ring-once', async row => {
+    const voiceId = 'vox_c3_zhou_call_v1', target = `audio/${voiceId}.mp3`
+    assert.deepEqual(Object.keys(chapter.steps).filter(id => trilogyVoice(chapter, chapter.steps[id]) === voiceId), ['c3_s4_zhou_connected'])
+    assert.equal(trilogyVoiceAssets(chapter).filter(id => id === voiceId).length, 1)
+    assert.equal(TRILOGY_COMMUNICATION_CUES.c3_s4_zhou_0, 'call')
+    assert.equal(TRILOGY_COMMUNICATION_CUES.c3_s4_zhou_connected, undefined, 'The connected line does not also start the ringtone')
+    await enter(fixture('c3_s4_zhou_0', 3)); await reveal()
+    assert.equal((await audioEvents()).filter(e => e.event === 'playing' && e.paths.includes(target)).length, 0)
+    const before = await read()
+    await advance(); await nodeIs('c3_s4_zhou_connected')
+    await imageIs(page.locator('img[alt="来电头像"]'), 'char_zhou')
+    assert.equal(await page.locator('.sprite-l,.sprite-r').count(), 0, 'Zhou is on the phone, not standing in the corridor')
+    await page.waitForFunction(({ key, voiceId }) => JSON.parse(localStorage.getItem(key)).dlc.ch3.chapter.heardCues?.includes(`voice:${voiceId}`), { key, voiceId })
+    const voices = (await audioEvents()).filter(e => e.event === 'playing' && e.paths.includes(target))
+    assert.equal(voices.length, 1)
+    await page.waitForFunction(id => window.__nativeAudioEvents.some(e => e.id === id && e.event === 'ended'), voices[0].id)
+    await reveal(); await shot('zhou-call-390')
+    const heard = await read()
+    await page.reload(); await loaded(); await nodeIs('c3_s4_zhou_connected'); await reveal()
+    assert.equal((await audioEvents()).filter(e => e.event === 'playing' && e.paths.includes(target)).length, 0, 'Same-node reload does not repeat voice')
+    assert.deepEqual(await read(), heard)
+    await advance(); await nodeIs('c3_s4_zhou_1'); await advance(); await nodeIs('c3_s4_zhou_2')
+    await reveal()
+    assert.equal((await audioEvents()).filter(e => e.event === 'playing' && e.paths.includes(target)).length, 0, 'Later dialogue stays silent')
+    const after = await read()
+    for (const key of ['gold', 'skill', 'heart', 'wealth', 'ap']) assert.equal(after[key], before[key])
+    assert(after.flags.c3_s4_zhou_done, 'Original event completion remains in place')
+    row.nativeVoice = 'Played once to completion; reveal/reload/later lines do not repeat'
+  })
 
   await test('breast-cyst-comparison-after-observation', async row => {
     row.views = []
