@@ -1637,8 +1637,8 @@
       "type": "audio"
     },
     "audio/vox_c3_cousin_v2.mp3": {
-      "sha256": "675cd7cd6ddd75988000442d96669cfdc0efe0ab1b04f11a0f5a15284214c7ee",
-      "bytes": 12045,
+      "sha256": "ae1cd6d8ecf6b3503aeb77cba4788c20cfaa5f9fc5863ea719696a1b8f8aba4b",
+      "bytes": 6285,
       "type": "audio"
     },
     "audio/vox_c3_gallstone_v2.mp3": {

@@ -1,0 +1,102 @@
+{
+  "date": "2026-10-27",
+  "base": "f27242c",
+  "branch": "codex/ch3-cousin-single-utterance",
+  "text": "帮姐姐个忙呗。",
+  "asset": "audio/vox_c3_cousin_v2.mp3",
+  "source_master": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-cousin-light-20261027\\cousin-light.wav",
+  "source_sha256": "c06ee1c2efde78a2e3c08d7c2fc5d739c74f9d57e70150e44f4d0383e276a998",
+  "source_window_seconds": [
+    0,
+    0.95
+  ],
+  "reason": "Original 1.916375s clip contained two complete utterances; independent 0–1s and .95–1.916375s ASR each transcribed the full line. Original native game trace had one playing/ended pair. Retain first complete utterance, cut within 140ms quiet gap before second onset.",
+  "old_sha256": "675cd7cd6ddd75988000442d96669cfdc0efe0ab1b04f11a0f5a15284214c7ee",
+  "sha256": "ae1cd6d8ecf6b3503aeb77cba4788c20cfaa5f9fc5863ea719696a1b8f8aba4b",
+  "bytes": 6285,
+  "decoded_seconds": 0.95,
+  "peak": 0.4086320400238037,
+  "commands": [
+    [
+      "ffmpeg",
+      "-y",
+      "-v",
+      "error",
+      "-i",
+      "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-cousin-light-20261027\\cousin-light.wav",
+      "-af",
+      "atrim=start=0:end=0.95,asetpts=PTS-STARTPTS",
+      "-map_metadata",
+      "-1",
+      "-ar",
+      "24000",
+      "-ac",
+      "1",
+      "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-cousin-single-20261027\\cousin-single.wav"
+    ],
+    [
+      "ffmpeg",
+      "-y",
+      "-v",
+      "error",
+      "-i",
+      "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-cousin-single-20261027\\cousin-single.wav",
+      "-map_metadata",
+      "-1",
+      "-c:a",
+      "libmp3lame",
+      "-b:a",
+      "48k",
+      "-ar",
+      "24000",
+      "-ac",
+      "1",
+      "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch3-cousin-single-20261027\\cousin-single.mp3"
+    ]
+  ],
+  "pitch_speed_or_loudness_changes": false,
+  "human_listened": false,
+  "evidence_dir": "C:\\Users\\lvmen\\Documents\\New project\\ch3-cousin-doubleplay-20261027",
+  "asr": "幫姐姐個忙唄",
+  "before_segment_asr": [
+    {
+      "part": "whole",
+      "start": 0,
+      "end": 1.916375,
+      "text": "幫姐姐個忙唄幫姐姐個忙唄"
+    },
+    {
+      "part": "first",
+      "start": 0,
+      "end": 1.0,
+      "text": "幫姐姐個忙唄"
+    },
+    {
+      "part": "last",
+      "start": 0.95,
+      "end": 1.916375,
+      "text": "幫姐姐個忙唄"
+    }
+  ],
+  "browser_validation": {
+    "before": {
+      "status": "passed",
+      "playing_events": 1,
+      "ended_at_seconds": [
+        1.916375
+      ],
+      "later_arrival": "named fixture preserving the real opening receipt",
+      "page_errors": []
+    },
+    "after": {
+      "status": "passed",
+      "playing_events": 1,
+      "ended_at_seconds": [
+        0.95
+      ],
+      "later_arrival": "named fixture preserving the real opening receipt",
+      "page_errors": []
+    }
+  },
+  "validation_limit": "Native browser playback and isolated-clip ASR; no human-listening claim. Playback receipt tests and type/production build passed. No gameplay source changed."
+}
