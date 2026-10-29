@@ -4,6 +4,7 @@ import { applyCh3Staging } from './ch3-staging'
 import { installCh3PictureObservations } from './ch3-picture-observations'
 import { installCh3Places } from './ch3-places'
 import { installCh3RetiredScenes } from './ch3-retired-scenes'
+import { adaptCh3LegacySave } from './ch3-legacy-save'
 
 /** Chapter-local graph. Clinical acquisition/reporting always belongs to Mei. */
 const steps: Record<string, TrilogyStep> = {}
@@ -224,8 +225,8 @@ scene('c3_liver_arrive', [
   ['mei', '躺这边，衣服往上挪一点。我先给你看看。'],
 ], 'c3_liver_scan')
 scene('c3_liver_tgc_intro', [
-  ['me', '刚存的图，底下黑了一截。把总增益拧大，能一起救回来吗？'],
-  ['mei', '你试试。浅处要是先白了，就把它退回来，用**TGC**单独补深处。'],
+  ['fatty_patient', '怎么样？不会真让我把肝吃坏了吧？您直说，我回去好跟公司请假复查。'],
+  ['mei', '先别急着替自己下结论。这张图下面有点暗，我们先把显示调清楚，再和其他切面一起看。'],
 ], 'c3_s2_plan_6')
 put('c3_liver_observe', { speaker: 'mei', sprite: '', bg: 'bg_us_room_day',
   text: '肝脏和右肾在这张里都看得见。先不改设置，你想怎么比较？',
@@ -290,8 +291,8 @@ scene('c3_s3_wang', [
 // The patient leaves only after all three views have been reviewed together.
 steps.c3_s3_wang_7.next = 'c3_s3_motion_0'
 scene('c3_wang_color_intro', [
-  ['me', '结构看过，运动也记下来了。接下来这个彩色，是看血往哪儿流？', { image: 'us_echo', imageLabel: '心脏结构与运动', sprite: '', sprite2: '' }],
-  ['mei', '对，该**D超，也就是多普勒**了。流动的血细胞会让回声的频率发生变化，机器用这个看血流。先把取样框放在这里。', { image: 'us_echo', imageLabel: '心脏结构与运动', sprite: '', sprite2: '' }],
+  ['wang', '这块红的是血往哪儿走吗？颜色不一样，不会是有好有坏吧？', { image: 'us_echo', imageLabel: '心脏结构与运动', sprite: '', sprite2: '' }],
+  ['mei', '红蓝先表示血流相对探头的方向，不直接等于好坏。**多普勒**利用流动血细胞带来的回声频率变化看血流，我把取样框放在这里。', { image: 'us_echo', imageLabel: '心脏结构与运动', sprite: '', sprite2: '' }],
 ], 'c3_wang_color_0')
 const cardiacColorView = { image: 'us_c3_cardiac_color_v1', imageLabel: '心脏彩色多普勒 · 结构与血流', sprite: '', sprite2: '' }
 scene('c3_wang_color', [
@@ -417,10 +418,10 @@ steps.c3_s5_start_0.next = 'c3_s5_cousin_check_0'
 scene('c3_s5_cousin_check', [
   ['mei', '对了，你表姐这几天怎么样？上回出去的时候，话都少了。'],
   ['me', '还惦记着那个十毫米。嘴上说不查，半夜给我转了五六个网页，看得我也睡不着。'],
-  ['mei', '别被网上那些吓着了。**轻度侧脑室增宽**的宝宝，很多后来都好好的，照样上学、到处跑。咱们再看看有没有别的问题。'],
-  ['me', '那**MRI**，就是把超声没看清的地方再看看？'],
-  ['mei', '对，**脑部结构**再看细一点。你陪她去，有个人搭话，总比她自己坐那儿胡思乱想强。'],
-  ['me', '行，我陪着。她要知道您还记着这事，肯定也高兴。'],
+  ['mei', '你先别陪她一起刷。把产科的安排和想问的事记在一张纸上，下次一条条问，省得夜里越看越乱。'],
+  ['me', '她还问我**MRI**是不是再查一遍。我怕又说快了，只敢陪她把问题记下来。'],
+  ['mei', '这次先听产科评估。需要时，MRI能补充看**脑部结构**；你陪她听安排，比替她下结论强。'],
+  ['me', '行，我陪她去，也先陪她吃顿热的。她要知道您还记着，肯定高兴。'],
 ], 'c3_s5_start_1', 'bg_us_room_day')
 hub('c3_s5_hub', '考核还没开始。走廊还是那些门，你这回已经知道哪间能找着热水，哪间的椅子坐下会响。', [
   ['跟老周聊聊这两周', 'c3_s5_zhou'],
@@ -484,10 +485,10 @@ scene('c3_s5_notice_end', [
 // Course spine: short observations stay attached to the relevant examination.
 steps.c3_s1_aunt_5.next = 'c3_s1_signal_0'
 scene('c3_s1_signal', [
-  ['me', '探头既发又收？我以为里面至少得分成喇叭和麦克风。'],
-  ['mei', '这块**压电材料**能两头干活。给电脉冲，它振动发声；回声回来，又变回电信号。'],
-  ['me', '所以得一发一等，不能光顾着喊。'],
-  ['mei', '对。前面**匹配层**帮声音进出，后面**背衬**让它快点停。胶里别留气泡，你贴上试试。'],
+  ['me', '刚才探头一贴上去就有图。它发完声音，也是自己听回来？'],
+  ['mei', '对，里面这块**压电材料**两头都能做：通电时振动发声，回声回来又变成电信号。'],
+  ['me', '难怪不是一直发。中间还得给回声留时间。'],
+  ['mei', '前面**匹配层**帮声音进出，后面**背衬**让振动快点停。胶里别留气泡，你贴上试试。'],
 ], 'c3_s1_aunt_6')
 steps.c3_s1_aunt_7.next = 'c3_s1_aunt_0'
 steps.c3_s1_signal_1.card = 'c3_probe'
@@ -506,9 +507,9 @@ for (let index = 0; index < 4; index++) put(`c3_s2_depth_${index}`, {
 })
 
 scene('c3_s3_motion', [
-  ['sys', '梅姐换好切面，在B超图上放下一条取样线。旁边多出一条长图，沿着时间留下室壁运动的轨迹。'],
-  ['me', '黑白图明明已经在动了。这个**M超**，是专门盯着那一条线？'],
-  ['mei', '对，我把运动画简单点，你来对一下：时间拖到哪儿，两边就对应哪一刻。', {
+  ['sys', '王叔盯着来回开合的瓣膜。梅姐在B超图上放下一条取样线，旁边多出一条沿时间展开的长图。'],
+  ['wang', '我这心脏不是已经在动了吗？怎么还拉出一条这么长的？'],
+  ['mei', '这条长图只看刚才选中的一条声线，把运动沿时间摊开，方便对照收缩和舒张。你帮我拖着时间线对一下。', {
     tool: { kind: 'ultrasound', task: 'm_mode', title: '心超工作站 · 沿一条线看运动', prompt: '拖动时间线，对照B超里的界面与M超里的轨迹。', help: 'B超里先找准位置，M超反复看选中的同一条声线。竖着仍是深度，横着改为时间；界面一动，就留下位置变化的轨迹。', next: 'c3_s3_motion_3' },
   }],
   ['me', '原来**横轴是时间**，不是身体的左右。界面一动，这条轨迹也跟着起伏。'],
@@ -520,8 +521,8 @@ steps.c3_s3_xu_9.bg = 'bg_us_room'
 
 scene('c3_s4_doppler', [
   ['sys', '午后轮休，接班同事守着临床机。你交好上午的图像，和梅姐回到窗边，打开血流演示。这回可以盯着同一段，慢慢换方向。'],
-  ['me', '看形状还是B超，红蓝这块又多看到了什么？'],
-  ['mei', '血流在动，反回来的**声波频率**就会变。来，把方向掉个头，看看颜色跟不跟着换。'],
+  ['me', '上午那段血管没换，探头一转，颜色却变了。我差点以为血流说停就停。'],
+  ['mei', '所以不能只认颜色。血流带来**回波频率的变化**，方向、角度和图例得一起看。来，把方向掉个头试试。'],
   ['mei', '一次先改探测角度，盯住同一条流动通道。', {
     tool: { kind: 'ultrasound', task: 'doppler', title: '教学台 · 血流往哪儿走', prompt: '转动声束方向，看看频移怎么变，再切换血流方向。', help: '按这里的图例，朝向探头是红色，远离是蓝色，不表示动脉和静脉。血流越接近与声束垂直，能测到的频移越小，但管道里的流动并没有停止。', next: 'c3_s4_doppler_4' },
   }],
@@ -788,69 +789,8 @@ function adapt(id: string, step: TrilogyStep, state: GameState): TrilogyStep {
   if (id === 'c3_s3_xu_9' && state.flags.c3_shift3_done) return { ...step, effect: undefined }
   const place = adaptPlaces(id, step, state)
   if (place) return place
-  const progress = state.dlc?.ch3?.chapter
-  const tools = progress?.tools
-  const liverAcquired = !!progress?.scans?.c3_liver_scan?.completed
-    || !!progress?.visited.includes('c3_liver_observe')
-  // Keep the old exercise receipt/slider values. An old cursor before this
-  // patient still finishes its original phantom, then meets the patient once.
-  if (id === 'c3_s2_plan_6') {
-    if (tools?.c3_s2_plan_6?.completed) return { ...step, tool: undefined,
-      text: '深部补偿已经调过了。梅姐叫你把前后两张放在一起，再看看浅处的层次。', next: 'c3_s2_finish_0' }
-    if (!liverAcquired) return { ...step,
-      text: '模体深处还有些暗。先试试整体增益，再用深部补偿，看看浅处会不会一块儿变白。',
-      tool: { ...step.tool!, variant: undefined, image: undefined, title: '教学台 · 深处为什么更暗' } }
-  }
-  if (/^c3_s2_finish_[012]$/.test(id)) return { ...step,
-    ...(liverAcquired ? { image: 'us_c3_hepatorenal_v1', imageLabel: '肝脏与右肾 · 同一切面', sprite: '', sprite2: '' }
-      : id === 'c3_s2_finish_0' ? { text: '把调整前后的图放一起，看看深处，再看看浅处。**深度和补偿设置**也记上，下次才知道改了什么。' } : {}),
-    next: id === 'c3_s2_finish_2' ? liverAcquired ? 'c3_liver_observe' : 'c3_liver_arrive_0' : step.next }
-  if (/^c3_liver_tgc_intro_[01]$/.test(id) && tools?.c3_s2_plan_6?.completed) return { ...step,
-    text: '这张的深部补偿已经调好。梅姐把画面停住，让你先认一认里面的结构。', next: 'c3_liver_observe' }
-  // Older saves may already have sent Wang back to cardiology before the
-  // M-mode recap. Do not put him back on the bed or run his reporting twice.
-  if (/^c3_s3_motion_[0-4]$/.test(id)) {
-    const reviewed = !!state.flags.c3_wang_reviewed
-    return { ...step,
-      ...(reviewed ? { sprite: 'char_mei', sprite2: '', ...(id === 'c3_s3_motion_0'
-        ? { text: '王叔已经回心内科了。梅姐把刚才存的图调出来，指着旁边沿时间展开的运动轨迹，让你再对一对。' } : {}) } : {}),
-      ...(id === 'c3_s3_motion_2' && tools?.c3_s3_motion_2?.completed
-        ? { tool: undefined, text: '时间线已经对过了。梅姐指指刚才的取样线，等你说说看出来的变化。', next: 'c3_s3_motion_3' } : {}),
-      ...(id === 'c3_s3_motion_4' && reviewed
-        ? { text: '对，B超先找位置，M超再沿时间看。图收好了，下一位到号了。', next: 'c3_s3_waiting_0' } : {}),
-    }
-  }
-  if (id === 'c3_s5_cousin_check_1' && state.flags.c3_cousin_followup_stable) return { ...step,
-    text: '她按安排复查，最近踏实多了。不过有时候刷到网上的消息，还是会发过来问我。' }
-  // Old saves inside the removed city-trip sequence resume with one bridge,
-  // then join the current follow-up; no new visit or reward is fabricated.
-  if (/^c3_epilogue_(?:[5-9]|1[0-3])$/.test(id)) return { ...step,
-    speaker: 'sys', sprite: '', sprite2: '', phone: undefined, image: undefined, imageLabel: undefined,
-    voice: undefined, effect: undefined, card: undefined, choices: undefined, closeup: false,
-    text: state.flags.c3_cousin_followup_stable
-      ? '你翻到表姐之前发来的消息，又把下次复查的时间标进日历。这次谁也没忘。'
-      : '表姐的补充检查安排在两周跟班结束之后。你把陪她去市里的那天圈出来，提前换好了休息。',
-    next: 'c3_epilogue_14' }
-  // The practice moved before the patient. Older in-patient cursors finish the
-  // same task then go straight to acquisition, never re-introducing the aunt.
-  const auntArrived = progress?.visited.includes('c3_s1_aunt_0') ?? false
-  if (id === 'c3_s1_aunt_5' && tools?.c3_s1_aunt_6?.completed) {
-    return { ...step, text: '教学探头已经放回软垫。梅姐核过上午的申请单，招呼你回临床机旁。', image: undefined, imageLabel: undefined, closeup: false,
-      next: auntArrived ? 'c3_s1_aunt_scan' : 'c3_s1_aunt_0' }
-  }
-  if (id === 'c3_s1_aunt_5' && auntArrived) {
-    return { ...step, text: '梅姐示范了一下探头贴合的手势。你在旁边的教学模体上试过后，就回到工作站看她检查。', imageLabel: '教学模体 · 探头接触与持握' }
-  }
-  if (id === 'c3_s1_aunt_7') {
-    const choice = tools?.c3_s1_aunt_6?.choice?.replace(/^assisted:/, '')
-    return { ...step, next: auntArrived ? 'c3_s1_aunt_scan' : 'c3_s1_aunt_0', text: choice && choice !== '线阵'
-      ? '你刚才那支看得更深，不代表它更差。这块目标浅，换这支**高频线阵**，边界会更容易分开。来，跟我对照一下。'
-      : step.text }
-  }
-  // Preserve receipts from former choices; optional assistance still pays
-  // once, while the mandatory cousin conversation now only records its flag.
-  if (id === 'c3_s2_listen' && state.flags.c3_cousin_listened
-    || id === 'c3_s5_notice_desk' && state.flags.c3_xu_query_assisted) return { ...step, effect: undefined }
+  const legacy = adaptCh3LegacySave(id, step, state)
+  if (legacy) return legacy
   if (id === 'c3_s1_start_1' && state.flags.c3_rotation_invited) {
     return { ...step, text: '来啦？这边。还真准点，柜子给你留好了。……别动，袖子夹门里了。' }
   }

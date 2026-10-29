@@ -4,6 +4,7 @@ import assert from 'node:assert/strict'
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { TRILOGY } from '../src/game/trilogy-registry.ts'
+import { trilogyToolDefaults } from '../src/game/trilogy-tool-defaults.ts'
 import { condOk } from '../src/game/store.ts'
 import { initializeTrilogy, resetTrilogy, restartTrilogy, enterTrilogyNode, trilogyProgress, trilogyStep,
   trilogyCheckin, trilogyAdvance, trilogyChoose, nextTrilogyShift, updateTrilogyTool,
@@ -144,8 +145,9 @@ function walk(chapter, all) {
     } else if (step.tool) {
       equalState(trilogyAdvance(clone(s), chapter, id), s, 'Ordinary advance cannot bypass the tool')
       const untouched = completeTrilogyTool(clone(s), chapter, id)
-      assert.equal(trilogyProgress(untouched, chapter.id).tools[id].value, 25, 'Untouched completion stores displayed default, not invented 50')
-      assert.equal(trilogyProgress(untouched, chapter.id).tools[id].choice, step.tool.kind === 'mri' ? 'T1' : '凸阵')
+      const displayedDefaults = trilogyToolDefaults(step.tool)
+      assert.deepEqual(trilogyProgress(untouched, chapter.id).tools[id], { ...displayedDefaults, completed: true },
+        'Untouched completion stores the exact defaults displayed by the lab')
       const values = { value: step.tool.task === 'decay' ? 110 : all ? 55 : 75, secondary: 50,
         choice: step.tool.kind === 'mri' ? Object.keys(step.tool.images ?? { T1: 0, T2: 0, FLAIR: 0 }).at(-1) : '线阵' }
       s = updateTrilogyTool(s, chapter.id, id, values)

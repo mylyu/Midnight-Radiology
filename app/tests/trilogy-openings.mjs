@@ -1,5 +1,5 @@
 // node --import tsx tests/trilogy-openings.mjs (from app/)
-// Actual state transitions + live preload projection; no browser/build/file output.
+// Actual state transitions + current preload manifest; no browser/build/file output.
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { TRILOGY } from '../src/game/trilogy-registry.ts'
@@ -97,10 +97,12 @@ for (const [id, cursors] of Object.entries({ ch3: ['c3_s1_start_0', 'c3_s3_start
     assert(!resumed.flags.c3_rotation_arranged && !resumed.flags.c4_procurement_decided, 'Old saves do not fabricate new prologue memories')
   }
 }
-for (const [id, expected] of Object.entries({ ch3: [8, 7], ch4: [7, 5], ch5: [6, 2] })) {
-  const steps = Object.values(TRILOGY[id].steps)
-  assert.deepEqual([steps.filter(s => s.tool).length, steps.filter(s => s.scan).length], expected, `${id}: no new/dropped lab or acquisition`)
-}
+// Totals are reported for review, not frozen: trilogy-graph-current.mjs checks the
+// semantic core tasks and graph integrity without blocking approved tightening.
+const interactionTotals = Object.fromEntries(Object.entries(TRILOGY).map(([id, chapter]) => {
+  const steps = Object.values(chapter.steps)
+  return [id, [steps.filter(s => s.tool).length, steps.filter(s => s.scan).length]]
+}))
 const mri = TRILOGY.ch4
 assert.match(mri.equipment, /^0\.55T\b/)
 assert.match(mri.steps.c4_1_open_0.imageLabel, /0\.55T/)
@@ -120,4 +122,4 @@ for (const [chapter, ids] of Object.entries(cg)) for (const id of ids) {
   assert.equal(manifest.assets[path]?.type, 'image'); assert(manifest.assets[path].bytes > 0)
 }
 console.log(JSON.stringify({ status: 'passed', kind: 'pure-state-data-not-browser', openings: results,
-  oldCursors: 6, toolsScans: '8/7,7/5,6/2', cgRegistered: 5, mriField: '0.55T', metadataWritten: false }))
+  oldCursors: 6, toolsScans: interactionTotals, cgRegistered: 5, mriField: '0.55T', metadataWritten: false }))

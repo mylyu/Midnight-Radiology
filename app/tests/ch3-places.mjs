@@ -44,23 +44,28 @@ const withStickers = fixture('c3_s1_hub', { items: ['c3_cup_stickers'] })
 assert(choices(withStickers).some(c => c.next === 'c3_s1_place_rest'))
 assert(!choices(withStickers).some(c => c.next === 'c3_s1_stickers_use_0'))
 
-// The former reading-location cursor is the same examination-room workstation.
-// Its existing teaching-file event keeps the original cost and completion flag.
-const workstationHub = fixture('c3_s2_hub')
-const workstationChoice = choices(workstationHub).find(c => c.next === 'c3_s2_label_0')
-assert.equal(workstationChoice.text, '🖥️ 诊室工作站')
-for (const node of ['c3_s2_place_reading', 'c3_s2_label_0', 'c3_s2_label_1', 'c3_s2_label_2'])
-  assert.equal(trilogyStep(fixture(node), CH3).bg, 'bg_us_room_day', 'The workstation shares the ultrasound examination room')
-let workstation = pick(workstationHub, 'c3_s2_label_0')
-assert.equal(workstation.ap, workstationHub.ap - 1)
-workstation = finishScene(workstation, 'c3_s2_hub')
-assert(workstation.flags.c3_s2_label_done)
-assert(workstation.cards.includes('c3_compare'))
-assert(!choices(workstation).some(c => /诊室工作站/.test(c.text)))
-const oldWorkstation = fixture('c3_s2_place_reading')
-const restoredWorkstation = finishScene(pick(oldWorkstation, 'c3_s2_label_0'), 'c3_s2_hub')
-assert.equal(restoredWorkstation.ap, oldWorkstation.ap - 1)
-assert(restoredWorkstation.flags.c3_s2_label_done)
+// Current contract: the second shift offers He's break-room conversation.
+// Retired workstation cursors remain free, reward-free bridges to the hub.
+const breakHub = fixture('c3_s2_hub')
+const breakChoice = choices(breakHub).find(c => c.next === 'c3_s2_he_0')
+assert.equal(breakChoice.text, '☕ 休息室')
+for (const node of ['c3_s2_he_0', 'c3_s2_he_1', 'c3_s2_he_2'])
+  assert.equal(trilogyStep(fixture(node), CH3).bg, 'ch2_bg_breakroom_day')
+let breakRoom = pick(breakHub, 'c3_s2_he_0')
+assert.equal(breakRoom.ap, breakHub.ap - 1)
+breakRoom = finishScene(breakRoom, 'c3_s2_hub')
+assert(breakRoom.flags.c3_s2_he_done)
+assert(breakRoom.items.includes('snack'))
+assert(!(breakRoom.cards ?? []).includes('c3_compare'), 'The retired workstation card is not re-awarded')
+assert(!choices(breakRoom).some(c => /休息室/.test(c.text)))
+for (const node of ['c3_s2_place_reading', 'c3_s2_label_0', 'c3_s2_label_1', 'c3_s2_label_2']) {
+  const legacy = fixture(node), before = numbers(legacy)
+  assert.equal(trilogyStep(legacy, CH3).bg, 'bg_waiting_day_v2')
+  const restored = finishScene(legacy, 'c3_s2_hub')
+  assert.deepEqual(numbers(restored), before)
+  assert(!restored.flags.c3_s2_label_done)
+  assert(!(restored.cards ?? []).includes('c3_compare'))
+}
 for (const step of Object.values(CH3.steps)) {
   assert(!/阅片室|阅片资料区/.test(step.text))
   for (const choice of step.choices ?? []) assert(!/阅片室|阅片资料区/.test(choice.text))
@@ -108,16 +113,14 @@ exhausted = finishScene(pick(exhausted, 'c3_s1_stickers_use_0'), 'c3_s1_hub')
 assert.equal(exhausted.ap, 0)
 assert(exhausted.flags.c3_stickers_used)
 
-// Two ordinary actions in the same supply area remain independent in either order.
-for (const order of [ ['c3_s4_pack_0', 'c3_s4_cost_0'], ['c3_s4_cost_0', 'c3_s4_pack_0'] ]) {
-  let s = fixture('c3_s4_hub')
-  s = pick(s, 'c3_s4_place_supplies')
-  s = finishScene(pick(s, order[0]), 'c3_s4_hub')
-  assert(choices(s).some(c => c.next === order[1]), 'Remaining supply activity opens directly')
-  s = finishScene(pick(s, order[1]), 'c3_s4_hub')
-  assert(s.flags.c3_s4_pack_done && s.flags.c3_gel_account_done)
-  assert.equal(s.ap, 1)
-  assert(!choices(s).some(c => c.next === 'c3_s4_place_supplies' || c.next === order[0] || c.next === order[1]))
+// Retired supply-area saves also return safely without reviving old AP costs,
+// completion flags or a second route through removed scenes.
+for (const node of ['c3_s4_pack_0', 'c3_s4_cost_0', 'c3_s4_place_supplies']) {
+  const legacy = fixture(node, { ap: 2 }), before = numbers(legacy)
+  const restored = finishScene(legacy, 'c3_s4_hub')
+  assert.deepEqual(numbers(restored), before)
+  assert(!restored.flags.c3_s4_pack_done && !restored.flags.c3_gel_account_done)
+  assert(!choices(restored).some(c => c.next === 'c3_s4_place_supplies'))
 }
 
 // Existing in-scene saves finish normally; the new menu does not reset old chapters.
@@ -132,7 +135,7 @@ assert.equal(completed.night, legacy.night)
 // Explicit cast, rather than previous-node inheritance, also works on fresh loads.
 for (const [node, sprite] of [
   ['c3_s1_tea_1', 'char_mei'], ['c3_s2_he_1', 'ch2_pixel_char_he'],
-  ['c3_s3_tang_1', 'char_tang'], ['c3_s4_lei_1', 'char_lei'], ['c3_s5_zhou_1', 'char_zhou'],
+  ['c3_tang_break_1', 'char_tang'], ['c3_s4_lei_1', 'char_lei'], ['c3_s5_zhou_1', 'char_zhou'],
 ]) assert.equal(trilogyStep(fixture(node), CH3).sprite, sprite, node)
 for (const node of ['c3_intro_call_2', 'c3_intro_confirm_1', 'c3_s2_start_1', 'c3_s4_zhou_1']) {
   const step = trilogyStep(fixture(node), CH3)

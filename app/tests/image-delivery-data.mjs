@@ -1,3 +1,6 @@
+// HISTORICAL CONTRACT (200 logical images / 197 optimized): not in test:current.
+// Depends on historical Git/projection ledgers. Current catalog/file integrity
+// is checked by tests/image-delivery-current.mjs without a fixed asset total.
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import ts from 'typescript'

@@ -13,19 +13,3 @@ simulation limitations, and file-specific terms. In particular, ImageCAS-based
 coronary previews use CC BY-NC 4.0 data and must be replaced or separately
 licensed before commercial use. KU Leuven wrist-derived previews retain
 CC BY-SA 4.0 independently; they are not relicensed under the project NC-SA terms.
-
-Chapter 3 uses "Steatosis hepatis - Sonographie 001" by Hellerhoff,
-licensed CC BY-SA 3.0. The ultrasound image retains that license independently.
-It has only been converted to WebP and compressed. Source, license links and
-the exact delivery file are listed in app/public/ch3-ultrasound-sources.txt
-(available as ch3-ultrasound-sources.txt on the published site).
-
-Chapter 3 also uses "Right common carotid artery without and with doppler flow"
-by Cerevisae (2023), licensed CC BY-SA 4.0, converted to WebP without cropping
-or altering flow colors. This image independently retains CC BY-SA 4.0.
-Source, license and delivery file: app/public/ch3-ultrasound-sources.txt.
-
-Chapter 3 uses a cardiac color-Doppler frame from "Ultrasound video of a human
-heart" by Alexander Ziegler et al. (2011), CC BY 2.0, independently retained.
-The identifying header was cropped and the image compressed to WebP.
-Full credits, source and changes: app/public/ch3-ultrasound-sources.txt.

@@ -5,6 +5,7 @@ import { imageAsset } from '../lib/image-assets'
 import { useRef } from 'react'
 import { acceptInput } from '../game/input-gate'
 import { trilogyToolDefaults } from '../game/trilogy-tool-defaults'
+import { trilogyToolActionCopy } from '../game/trilogy-tool-copy'
 import { UltrasoundPhantom, ultrasoundParameters } from './UltrasoundPhantom'
 import { TrilogyUltrasoundLab } from './TrilogyUltrasoundLab'
 import { TrilogyNuclearLab } from './TrilogyNuclearLab'
@@ -15,6 +16,8 @@ export function TrilogyLab({ state, chapter, tool, update }: { state: GameState;
   tool: TrilogyTool; update: (fn: (s: GameState) => GameState) => void }) {
   const p = trilogyProgress(state, chapter.id)!, node = p.stepId
   const ch3 = chapter.id === 'ch3'
+  const doneCopy = trilogyToolActionCopy(chapter.id, tool.task)
+  const assistedCopy = trilogyToolActionCopy(chapter.id, tool.task, true)
   const saved = p.tools[node] ?? trilogyToolDefaults(tool)
   const gate = useRef({ until: 0 })
   const set = (patch: Partial<typeof saved>) => update(s => updateTrilogyTool(s, chapter.id, node, { ...saved, ...patch }))
@@ -62,7 +65,7 @@ export function TrilogyLab({ state, chapter, tool, update }: { state: GameState;
         {!ch3 && <details><summary>请同事带我看看</summary><p>{tool.help}</p><button onClick={() => finish(true, performance.now())}>一起看过了，回到故事</button></details>}
       </aside>
     </div>}
-    {(course || ch3) && <details className="trilogy-course-help"><summary>{ch3 ? '请梅姐讲讲' : '请同事带我看看'}</summary><p>{tool.help}</p><button onClick={() => finish(true, performance.now())}>{ch3 ? '结束练习 →' : '一起看过了，回到故事'}</button></details>}
-    <footer><button data-trilogy-tool-done className="trilogy-primary" onClick={() => finish(false, performance.now())}>{ch3 ? '结束练习 →' : '留这一版，接着聊 →'}</button></footer>
+    {(course || ch3) && <details className="trilogy-course-help"><summary>{ch3 ? '请梅姐讲讲' : '请同事带我看看'}</summary><p>{tool.help}</p><button onClick={() => finish(true, performance.now())}>{assistedCopy}</button></details>}
+    <footer><button data-trilogy-tool-done className="trilogy-primary" onClick={() => finish(false, performance.now())}>{doneCopy}</button></footer>
   </div>
 }

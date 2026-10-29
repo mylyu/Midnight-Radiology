@@ -11,6 +11,7 @@
     "prebuild": "npm run images:prepare && npm run media:prepare",
     "build": "tsc -b && vite build",
     "postbuild": "node scripts/check-delivery-size.mjs",
+    "test:current": "node scripts/run-current-tests.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },

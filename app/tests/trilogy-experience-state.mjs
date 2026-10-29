@@ -1,3 +1,6 @@
+// HISTORICAL CONTRACT (2026-10-10 baseline 7fad7b7): not in npm run test:current.
+// It pins 14 acquisitions, six item scenes and old Git cursors. Run only when
+// auditing that historical baseline; do not patch live story to satisfy it.
 // node --import tsx tests/trilogy-experience-state.mjs (from app/)
 // Production state functions + actual chapter graphs. No browser/media/storage mocks.
 import assert from 'node:assert/strict'

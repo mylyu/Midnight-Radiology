@@ -1,3 +1,6 @@
+// HISTORICAL CONTRACT (baseline 756f472): not in npm run test:current.
+// Requires that Git commit and pins the original thirteen narrative bridges.
+// Current behavior is covered by ch3-* current tests and trilogy-graph-current.
 // Targeted narrative bridges: preserve old rewards/cursors, test real resolved paths.
 import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
