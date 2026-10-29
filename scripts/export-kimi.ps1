@@ -77,7 +77,7 @@ foreach ($file in (Invoke-RepoGit @('ls-files', '--cached', '-z')).Split([char]0
 $candidates = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
 foreach ($file in (Invoke-RepoGit @('ls-files', '--cached', '--others', '--exclude-standard', '-z')).Split([char]0, [StringSplitOptions]::RemoveEmptyEntries)) { [void]$candidates.Add($file) }
 
-$rootFiles = @('.gitignore', 'AGENTS.md', 'README.md', 'HANDOFF.md', 'LICENSE', 'NOTICE')
+$rootFiles = @('.gitignore', 'AGENTS.md', 'CURRENT_CONTRACT.md', 'VISUAL_CONTINUITY.md', 'README.md', 'HANDOFF.md', 'LICENSE', 'NOTICE')
 $voiceManuscripts = @('docs/voices/配音台词底稿.md', 'docs/voices/配音台词底稿.csv')
 $storyFiles = @('深夜影像科/全书剧情总线.md', '深夜影像科/第二章「快与狠」完整剧本.md', '深夜影像科/游戏设计文档.md')
 $appRootFiles = @('.gitignore', 'index.html', 'README.md', 'package.json', 'package-lock.json', 'components.json',
@@ -115,7 +115,7 @@ function Test-IncludedPath {
     if ($canonicalImages.Contains($File)) { return $true }
     if ($File -match '^app/public/assets/ct-sequences/[a-z0-9_.-]+\.webp$') { return $true }
     if ($File -match '^app/public/audio/[^/]+\.(mp3|ogg|wav)$') { return $true }
-    if ($File -eq 'app/public/ct-sequences-sources.txt') { return $true }
+    if ($File -in @('app/public/ct-sequences-sources.txt', 'app/public/ch3-ultrasound-sources.txt')) { return $true }
     if ($File -match '^docs/.+\.(md|json|txt|csv|png|webp)$') { return $true }
     if ($File -match '^scripts/.+\.(ps1|py|mjs|cjs|js|ts|md|json)$') { return $true }
     return $false
@@ -125,9 +125,9 @@ function Test-IncludedPath {
 [Array]::Sort($selected, [StringComparer]::Ordinal)
 $selectedSet = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
 foreach ($file in $selected) { [void]$selectedSet.Add($file) }
-$required = @('AGENTS.md', 'README.md', 'HANDOFF.md', 'LICENSE', 'NOTICE',
+$required = @('AGENTS.md', 'CURRENT_CONTRACT.md', 'VISUAL_CONTINUITY.md', 'README.md', 'HANDOFF.md', 'LICENSE', 'NOTICE',
     'app/index.html', 'app/package.json', 'app/package-lock.json', 'app/src/lib/image-assets.catalog.json',
-    'app/src/lib/image-previews.catalog.json', 'app/scripts/import-image.mjs', 'docs/media-import.md', 'app/public/ct-sequences-sources.txt') + $voiceManuscripts + $storyFiles + @($canonicalImages)
+    'app/src/lib/image-previews.catalog.json', 'app/scripts/import-image.mjs', 'docs/media-import.md', 'app/public/ct-sequences-sources.txt', 'app/public/ch3-ultrasound-sources.txt') + $voiceManuscripts + $storyFiles + @($canonicalImages)
 foreach ($file in $required) { if (-not $selectedSet.Contains($file)) { throw "Required tracked/nonignored file missing from export: $file" } }
 if (-not @($selected | Where-Object { $_ -match '^\.github/workflows/[^/]+\.ya?ml$' }).Count) { throw 'GitHub Pages workflow missing from export.' }
 $untrackedIncluded = @($selected | Where-Object { -not $tracked.Contains($_) })
@@ -170,7 +170,7 @@ try {
     $intro = @'
 # 给 Kimi 的项目导入与交接说明
 
-请以本包 `app/` 为唯一可运行源码，先读根目录 `AGENTS.md`、`HANDOFF.md` 顶部最新记录和 `REVISION.txt`，再按任务查 `README.md`、`深夜影像科/全书剧情总线.md` 及 `docs/validation-guide.md`。局部修改不默认反复完整通关或重跑全部历史冻结；按风险选择验证，未跑的范围如实注明。不要从旧压缩包、根目录旧稿或历史PNG恢复游戏。该包是源码交接，不是包含Git历史的仓库备份。
+请以本包 `app/` 为唯一可运行源码，先读根目录 `AGENTS.md`、`CURRENT_CONTRACT.md`、`VISUAL_CONTINUITY.md`、`HANDOFF.md` 顶部最新记录和 `REVISION.txt`，再按任务查 `README.md`、`深夜影像科/全书剧情总线.md` 及 `docs/validation-guide.md`。局部修改不默认反复完整通关或重跑全部历史冻结；按风险选择验证，未跑的范围如实注明。不要从旧压缩包、根目录旧稿或历史PNG恢复游戏。该包是源码交接，不是包含Git历史的仓库备份。
 
 配音底稿位于 `docs/voices/`。仓库的旧试听、图像备份和早期临时脚本已归入 `archive/`，不放入本包；当前回归测试在 `app/tests/`，归档脚本不是当前验证入口。
 
@@ -183,12 +183,13 @@ cd app
 npm ci
 npm run dev
 # 完成修改后
+npm run test:current
 npm run build
 ```
 
 请保留已有剧情、章节进度、存档键、奖励、调窗和已确认声音；按用户新要求最小修改，并更新交接文档。2026-09-26批次仅压缩媒体编码，没有重新配音：70条音频改为64/96 kbps，30条保留原件；采样率、声道、解码样本数、台词和表演不变。详见 `docs/media-compression-20260926.md` 与逐文件JSON，不要误按旧哈希回填大文件。
 
-2026-09-27作者已批准把22张背景统一替换为原分辨率的有损WebP（直接从最初PNG生成，q75/effort6；含日出横竖图），不是把低清图放大，也没有新增双档智能加载。立绘、病例图、调窗数据、音频、切片及剧情交互均保留上一版。完整部署约16.48 MB，预算已调整为17,000,000字节；**不要为凑旧15 MB目标再次缩小背景，也不要恢复大PNG**。本源码ZIP另含源码和文档，体积不等于部署体积。逐图源blob、前后哈希及回退见 `docs/hd-backgrounds-20260927.json` 与同名Markdown。首页“内容大厅”按钮同样保留。
+2026-09-27作者已批准把22张背景统一替换为原分辨率的有损WebP（直接从最初PNG生成，q75/effort6；含日出横竖图），不是把低清图放大，也没有新增双档智能加载。当前已有第一、二、三章及DR、DSA、LDCT；第四、五章保持隐藏草稿。17,000,000字节仅限制受保护的原有/共用内容，不是整包上限；完整包与各章体积以本次构建报告为准。新增章独占资源须通过既有归属校验，不能放宽共享预算。**不要为凑旧15 MB目标再次缩小背景，也不要恢复大PNG**。本源码ZIP另含源码和文档，体积不等于部署体积。逐图源blob、前后哈希及回退见 `docs/hd-backgrounds-20260927.json` 与同名Markdown。首页“内容大厅”按钮同样保留。
 
 新增素材须控制体积、重新生成章节清单；预算不足时先报告，不降低调窗原始数据精度，不靠删掉检查绕过。请先确认本包版本、汇总现状，再按作者下一条具体任务开发；不要自行回退既有优化。
 
@@ -204,10 +205,12 @@ npm run build
 
 - ZIP文件名显式使用UTF-8（bit 11），不是GBK；文本使用UTF-8，少量原CSV带UTF-8 BOM。用Python标准库 `zipfile.ZipFile` 默认方式解压即可，不强制GBK、不无条件进行cp437/GBK转码；若乱码，先提供实际包名、条目文件名及flag_bits定位。
 - `SHA256SUMS.txt` 覆盖包内每个文件（清单自身除外），路径采用相对路径和UTF-8。`REVISION.txt` 记录来源提交；若 WorkingTreeDirty 为 True，本包包含未提交修改，不能称为该提交的原样副本。
+- 先运行 `npm run test:current`：它覆盖当前状态与素材，不需要Git历史；不能把通过它称为完整浏览器通关。历史范围详见 `CURRENT_CONTRACT.md`。
 - `app/tests/` 中的LIVE冻结/历史投影审计需要完整Git历史。源码ZIP不含 `.git`，缺历史导致的测试失败不能用删测试、改宽断言或批量更新哈希解决；应在原仓库或完整克隆中验证。独立运行测试也要先查看各脚本的环境要求。
 - `.github/workflows/` 保留现有GitHub Pages部署配置，完整测试pipeline脚本也保留。旧测试输出JSON和进程日志不是测试源码，不放入本包。仅安装Node依赖并运行正常构建不需要Git历史。
 - 新素材须另记来源、作者/许可、生成参数、哈希和人工验收。不要篡改已经批准的历史认证manifest来自动接纳变化。
 - 冠脉连续切片使用 ImageCAS 的非商业许可素材；**未来商业化前必须替换或另获商业授权**。详见 `NOTICE`、`docs/ch2-ct-sequences.md` 及 `app/public/ct-sequences-sources.txt`。本包不包含原始医学体数据。
+- 超声图像的作者、许可和加工记录见 `app/public/ch3-ultrasound-sources.txt`，随包保留。
 - 项目许可见 `LICENSE` / `NOTICE`（CC BY-NC-SA 4.0，版权人 Mengye Lyu）；第三方权利仍分别适用。
 
 本包刻意不含依赖目录、构建目录、Git历史、内部试听/开发HTML、原始大图与历史配音备份、个人环境文件或进程日志。它们没有因为打包而从原仓库删除。更详细的逐轮修改、已知问题与回退说明以 `HANDOFF.md` 为准。

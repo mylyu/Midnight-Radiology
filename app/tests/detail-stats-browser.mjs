@@ -111,8 +111,10 @@ async function layout(page, file, imageRequired = false) {
   if (imageRequired) assert(boxes.image, 'The same observation image remains displayed')
   if (boxes.image) {
     assert(boxes.image.y >= 0 && boxes.image.y + boxes.image.height <= boxes.dialog.y + 1, 'CT image and dialogue do not overlap')
-    for (const b of boxes.notices) assert(b.x + b.width <= boxes.image.x || boxes.image.x + boxes.image.width <= b.x
-      || b.y + b.height <= boxes.image.y || boxes.image.y + boxes.image.height <= b.y, 'Feedback does not cover the CT image')
+    // 2026-09-27: author requests a conspicuous central upward float, so brief
+    // image overlap is intentional; it must stay on-screen and never catch input.
+    for (const b of boxes.notices) assert(b.x >= 0 && b.x + b.width <= boxes.width
+      && b.y >= 0 && b.y + b.height <= boxes.height, 'Central feedback remains inside the viewport')
   }
   await page.screenshot({ path: join(output, `${file}.png`) })
   return boxes

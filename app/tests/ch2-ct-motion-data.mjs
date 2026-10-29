@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict'
-import { inspectLiveImage } from './game-delivery-media.mjs'
 import { readFileSync } from 'node:fs'
+import { execFileSync } from 'node:child_process'
+import { createHash } from 'node:crypto'
+import sharp from 'sharp'
 import { CH2_CT_MOTION, CH2_CT_GANTRY_EDGE, CH2_CT_GANTRY_CLIP, ch2CtBedPosition } from '../src/game/ch2-ct-motion.ts'
 
 assert.deepEqual(ch2CtBedPosition(0), { travel: 0, x: 0, y: -0 })
@@ -25,11 +27,21 @@ for (const [x, y] of CH2_CT_GANTRY_EDGE) {
   assert(x >= 0 && x <= CH2_CT_MOTION.width && y >= 0 && y <= CH2_CT_MOTION.height)
 }
 assert(CH2_CT_GANTRY_CLIP.startsWith('polygon('))
+// Scope media protection to the two unchanged consumers. The old delivery helper
+// recursively freezes the entire catalog, so unrelated new LDCT assets cannot
+// be inspected through it without rewriting historical projection hashes.
+const catalog = JSON.parse(readFileSync('src/lib/image-assets.catalog.json', 'utf8'))
+const baselineCatalog = JSON.parse(execFileSync('git', ['show', 'abbd5b0:app/src/lib/image-assets.catalog.json'], { encoding: 'utf8' }))
 for (const key of ['room', 'bed']) {
-  const live = await inspectLiveImage(`app/public/assets/${CH2_CT_MOTION[key]}.png`)
-  assert.equal(live.width, CH2_CT_MOTION.width, 'Layers share an exact canvas width')
-  assert.equal(live.height, CH2_CT_MOTION.height, 'Layers share an exact canvas height')
-  if (key === 'bed') assert.equal(live.metadata.hasAlpha, true, 'Moving layer has an actual alpha channel')
+  const id = CH2_CT_MOTION[key], asset = catalog[id]
+  assert.equal(asset, baselineCatalog[id], `${id}: same approved second-chapter file`)
+  const bytes = readFileSync(`public/assets/${asset}`)
+  const original = execFileSync('git', ['show', `abbd5b0:app/public/assets/${asset}`])
+  assert.equal(createHash('sha256').update(bytes).digest('hex'), createHash('sha256').update(original).digest('hex'))
+  const metadata = await sharp(bytes).metadata()
+  assert.equal(metadata.width, CH2_CT_MOTION.width, 'Layers share an exact canvas width')
+  assert.equal(metadata.height, CH2_CT_MOTION.height, 'Layers share an exact canvas height')
+  if (key === 'bed') assert.equal(metadata.hasAlpha, true, 'Moving layer has an actual alpha channel')
 }
 const component = readFileSync('src/components/Ch2CtMotion.tsx', 'utf8')
 assert.doesNotMatch(component, /setTimeout|setInterval|requestAnimationFrame|animationend|onDone|\.play\(/, 'The visual layer cannot add a second lifecycle clock or sound')
@@ -38,6 +50,7 @@ assert.match(component, /data-ct-travel/)
 assert.match(component, /style=\{\{ clipPath: CH2_CT_GANTRY_CLIP \}\}/)
 assert.match(component, /CH2_SCAN_ILLUSTRATION/, 'Missing layers retain a static fallback without blocking the scan')
 const overlay = readFileSync('src/components/Ch2ScanOverlay.tsx', 'utf8')
-assert.match(overlay, /<Ch2CtMotion progress=\{frame\.progress\} \/>/)
+assert.match(overlay, /<Ch2CtMotion progress=\{frame\.progress\} subject=\{motionSubject\} \/>/,
+  'optional LDCT subject still receives the existing shared scan clock')
 assert.doesNotMatch(overlay, /ch2-camera-shift/)
 console.log('PASS aligned layered CT artwork; pure wall-clock-derived rail motion; fixed reconstruction position; fixed gantry clipping; no extra timer/audio/progression hook')

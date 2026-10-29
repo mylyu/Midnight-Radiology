@@ -50,7 +50,7 @@ export function applyCh3Staging(steps: Record<string, TrilogyStep>) {
   cast(range('c3_s2_pause', 0, 2), mei)
   cast(range('c3_s2_finish', 0, 2), mei)
   cast(range('c3_liver_arrive', 0, 4), 'pat_c3_young_liver_v1', mei)
-  cast(range('c3_liver_tgc_intro', 0, 1), mei)
+  cast(range('c3_liver_tgc_intro', 0, 1), 'pat_c3_young_liver_v1', mei)
   cast(range('c3_liver_explain', 2, 5), 'pat_c3_young_liver_v1', mei)
   cast(['c3_liver_explain_6'], mei) // The young patient has taken the report and left.
   cast(range('c3_tang_break', 0, 3), tang)

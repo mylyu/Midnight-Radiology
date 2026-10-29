@@ -290,11 +290,11 @@ scene('c3_s3_wang', [
 // One examination: grayscale structure, sampled motion, then Doppler flow.
 // The patient leaves only after all three views have been reviewed together.
 steps.c3_s3_wang_7.next = 'c3_s3_motion_0'
-scene('c3_wang_color_intro', [
-  ['wang', '这块红的是血往哪儿走吗？颜色不一样，不会是有好有坏吧？', { image: 'us_echo', imageLabel: '心脏结构与运动', sprite: '', sprite2: '' }],
-  ['mei', '红蓝先表示血流相对探头的方向，不直接等于好坏。**多普勒**利用流动血细胞带来的回声频率变化看血流，我把取样框放在这里。', { image: 'us_echo', imageLabel: '心脏结构与运动', sprite: '', sprite2: '' }],
-], 'c3_wang_color_0')
 const cardiacColorView = { image: 'us_c3_cardiac_color_v1', imageLabel: '心脏彩色多普勒 · 结构与血流', sprite: '', sprite2: '' }
+scene('c3_wang_color_intro', [
+  ['wang', '这块红的是血往哪儿走吗？颜色不一样，不会是有好有坏吧？', cardiacColorView],
+  ['mei', '红蓝先表示血流相对探头的方向，不直接等于好坏。**多普勒**利用流动血细胞带来的回声频率变化看血流，我把取样框放在这里。', cardiacColorView],
+], 'c3_wang_color_0')
 scene('c3_wang_color', [
   ['me', '原来不是整张换成彩色，是在刚才的结构上加了**血流信息**。这下知道您在看哪儿了。', cardiacColorView],
   ['mei', '嗯，位置还得靠黑白图。红蓝先对着**色标**看，再和瓣膜的运动一起核对。', cardiacColorView],

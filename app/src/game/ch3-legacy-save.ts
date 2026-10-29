@@ -25,6 +25,7 @@ export function adaptCh3LegacySave(id: string, step: TrilogyStep, state: GameSta
       : id === 'c3_s2_finish_0' ? { text: '把调整前后的图放一起，看看深处，再看看浅处。**深度和补偿设置**也记上，下次才知道改了什么。' } : {}),
     next: id === 'c3_s2_finish_2' ? liverAcquired ? 'c3_liver_observe' : 'c3_liver_arrive_0' : step.next }
   if (/^c3_liver_tgc_intro_[01]$/.test(id) && tools?.c3_s2_plan_6?.completed) return { ...step,
+    speaker: 'sys',
     text: '这张的深部补偿已经调好。梅姐把画面停住，让你先认一认里面的结构。', next: 'c3_liver_observe' }
   // Older saves may already have sent Wang back to cardiology before the
   // M-mode recap. Do not put him back on the bed or run his reporting twice.
@@ -33,6 +34,8 @@ export function adaptCh3LegacySave(id: string, step: TrilogyStep, state: GameSta
     return { ...step,
       ...(reviewed ? { sprite: 'char_mei', sprite2: '', ...(id === 'c3_s3_motion_0'
         ? { text: '王叔已经回心内科了。梅姐把刚才存的图调出来，指着旁边沿时间展开的运动轨迹，让你再对一对。' } : {}) } : {}),
+      ...(reviewed && id === 'c3_s3_motion_1'
+        ? { speaker: 'me', text: '刚才黑白图明明已经在动了。这个**M超**，是专门盯着那一条线？' } : {}),
       ...(id === 'c3_s3_motion_2' && tools?.c3_s3_motion_2?.completed
         ? { tool: undefined, text: '时间线已经对过了。梅姐指指刚才的取样线，等你说说看出来的变化。', next: 'c3_s3_motion_3' } : {}),
       ...(id === 'c3_s3_motion_4' && reviewed

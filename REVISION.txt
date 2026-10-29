@@ -1,6 +1,0 @@
-Repository: https://github.com/mylyu/Midnight-Radiology
-Commit: d1f3dc62899c8c039f3663c9aeaa1550559801fc
-Branch: codex/hd-backgrounds
-ExportedUTC: 2026-09-27T04:46:01Z
-WorkingTreeDirty: False
-IncludedUntracked: 0
