@@ -1,6 +1,6 @@
 # 开发交接
 
-## 2026-10-29：Kimi合并审阅修复（本地验收通过，已授权发布main与Pages）
+## 2026-10-29：Kimi合并审阅修复（已发布main与Pages）
 
 - 基点为已导入的 `facf652ece56d6d9710be2f7ad0c952bc91011a9`，修复分支 `codex/kimi-restore-merge-fixes`。作者本轮授权保留Kimi有效改动、修复审阅问题后合并并发布main/Pages；下方禁止main/Pages的记录仅描述此前独立分支导入阶段，不是本轮权限。
 - 保留Kimi对白/患者互动、情境化按钮、旧档桥接、现役合同与测试边界、favicon/viewport及三张英文背景原字节。恢复 `917b8d6` 中被旧快照覆盖的AGENTS规则、v4.5总线、完整近期交接与第三章素材署名；README按实际开放状态列出第一至三章及DR/DSA/LDCT，第四、五章继续隐藏。
@@ -9,7 +9,8 @@
 - 恢复main中数值事务/冒泡浏览器/CT动画的正确测试预期；导出白名单与必带检查补入两个新合同和超声署名文件，导入说明按当前章节及共享预算更新。移除误导版本的旧ZIP生成件 `KIMI_IMPORT.md`、`REVISION.txt`、`SHA256SUMS.txt`，原件仍可从 `facf652` 追溯；需要导出时脚本会重新生成，不把旧回执冒充现版。
 - 验证通过：`npm run test:current` 13项；`detail-transactions.mjs` 44组；`ch2-ct-motion-data.mjs`；5个受影响TS/TSX文件定向ESLint；一次 `npm run build`（含类型检查）。共享16,948,567 / 17,000,000字节，完整26,023,780字节，既有大chunk提示保留。PlanOnly确认两个合同及超声署名均包含；本轮未生成新ZIP。
 - 同一生产构建用隔离Edge存档检查桌面1366px与手机390px的三处问题（共6个定点场景），验证实际显示图片哈希、文本及无横向溢出，无pageerror；人工查看代表截图。不是全章通关，没有重复跑第一二章。主章保护、4/5隐藏配置、锁文件、所有正式媒体及Pages工作流与917b8d6无差异。
-- 本地验收完成，按本轮授权快进main并由既有push流水线发布；远端与Pages结果待本轮发布后补记。需要回退时对本轮实际提交用 `git revert`；若撤回整个Kimi整合，应同时评估导入提交 `facf652`，发布前基点是 `917b8d6`。不强推、不清玩家存档。
+- 已将游戏提交 `38e0fd9dd1643b2fbba71c9dba58b8d50b7e2a71` 快进并推送main，Pages push流水线 [40902463609](https://github.com/mylyu/Midnight-Radiology/actions/runs/40902463609) 已成功。正式站点390px隔离存档复核红蓝提问与心脏彩超同屏，预载完整、图片字节正确、无pageerror。游玩：https://mylyu.github.io/Midnight-Radiology/#/ch3 。本次回执是文档提交 `[skip ci]`，不重复发布相同游戏。
+- 回退修复用 `git revert 38e0fd9`；若撤回整个Kimi整合，应同时评估导入提交 `facf652`，发布前基点为 `917b8d6`。不强推、不清玩家存档。
 
 ## 2026-10-29：完整Kimi包导入独立分支（历史导入阶段：当时禁止Pages）
 
