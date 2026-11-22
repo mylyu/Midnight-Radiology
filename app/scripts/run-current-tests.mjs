@@ -18,6 +18,7 @@ const tests = [
   'tests/ch3-liver-story.mjs',
   'tests/ch3-story-tighten.mjs',
   'tests/ch3-places.mjs',
+  'tests/ch4-story-current.mjs',
   'tests/image-delivery-current.mjs',
 ]
 

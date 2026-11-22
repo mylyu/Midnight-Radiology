@@ -1,827 +1,1026 @@
-import type { TrilogyChapter, TrilogyStep } from './trilogy-types'
+import type { MriScannerModel, MriScanRegion, TrilogyChapter, TrilogyStep } from './trilogy-types'
 import type { Choice } from './types'
 
-/** Chapter-local data only. The trilogy runtime owns input, saves and settlement. */
+/** 第四章：一周进修、回县装机，以及三天把人和记录都接稳的日常。 */
 const characters: TrilogyChapter['characters'] = {
-  me: { name: '你', color: '#8ee0d1' },
-  sys: { name: '', color: '#cbd5e1' },
+  me: { name: '你', color: '#8ee0d1', sprite: 'me' }, sys: { name: '', color: '#cbd5e1' },
   zhou: { name: '老周', color: '#e7c58f', sprite: 'char_zhou' },
-  ning: { name: '许宁', color: '#a9d8ed', sprite: 'char_mri_colleague' },
-  tang: { name: '小唐', color: '#f2c1c8', sprite: 'char_tang' },
-  lei: { name: '小雷', color: '#a4c9ef', sprite: 'char_lei' },
   fan: { name: '老范', color: '#d8c699', sprite: 'char_fan' },
-  kai: { name: '小凯', color: '#cfb7ed', sprite: 'char_kai' },
-  director: { name: '主任', color: '#d0d6e9', sprite: 'char_director' },
-  han: { name: '韩经理', color: '#cab7b3', sprite: 'char_han' },
-  wrist: { name: '小程', color: '#d9c4a5', sprite: 'ch2_patient_wrist_student' },
-  luo: { name: '罗阿姨', color: '#ddb7bb', sprite: 'ch2_pat_luo_v1' },
-  anxious: { name: '老宋', color: '#c3c8d8', sprite: 'pat_mri_anxious' },
-  mystery: { name: '许建平', color: '#b6bbd0', sprite: 'pat_mystery' },
+  director: { name: '院长', color: '#d0d6e9', sprite: 'char_director' },
+  tang: { name: '小唐', color: '#f2c1c8', sprite: 'char_tang' },
+  shen: { name: '沈岚', color: '#a9d8ed', sprite: 'char_c4_shen_v3' },
+  cousin: { name: '表姐', color: '#efbfd0', sprite: 'pat_cousin' },
+  wrist: { name: '腕伤小伙', color: '#d9c4a5', sprite: 'ch2_patient_wrist_student' },
+  anxious: { name: '冯叔', color: '#c3c8d8', sprite: 'pat_c4_feng_v3' },
+  worker: { name: '疑似胆总管结石患者', color: '#d7bf9f', sprite: 'pat_c4_liu_v4' },
+  courier: { name: '设备送货员', color: '#d7bf9f', sprite: '' },
+  elder: { name: '急诊老人', color: '#c8c2b4', sprite: 'pat_c4_fang_v3' },
+  child: { name: '三岁女孩', color: '#c8d8ee', sprite: 'pat_c4_mother_child_pixel_v1' },
+  mother: { name: '孩子妈妈', color: '#d8c3b5', sprite: 'pat_c4_mother_child_pixel_v1' },
+  aunt: { name: '腹痛阿姨', color: '#ddb7bb', sprite: 'pat_c4_wu_v3' },
+  knee: { name: '拄拐老师', color: '#c3c8d8', sprite: 'pat_c4_chen_v3' },
+  mystery: { name: '许建平', color: '#b6bbd0', sprite: 'pat_c4_xu_v1' },
+  wen: { name: '雯雯', color: '#d7b9dc', sprite: 'char_wen' },
+  lei: { name: '小雷', color: '#a9c7e0', sprite: 'char_lei' },
+  bai: { name: '老白', color: '#d7bf9f', sprite: 'char_bai' },
 }
 const steps: Record<string, TrilogyStep> = {}
 type Row = [speaker: string, text: string, extra?: Partial<TrilogyStep>]
-function chain(prefix: string, rows: Row[], next: string, bg = 'bg_mri_control_day_v2'): void {
+function nodeVenue(id: string): 'city' | 'county' {
+  const n = Number(id.match(/^c4_(\d+)/)?.[1] ?? 1)
+  return n <= 2 ? 'city' : 'county'
+}
+function chain(prefix: string, rows: Row[], next: string, bg?: string): void {
+  const sceneBg = bg ?? (nodeVenue(prefix) === 'city' ? 'bg_c4_city_control_v1' : 'bg_c4_county_corridor_v1')
   rows.forEach(([speaker, text, extra], i) => {
-    steps[`${prefix}_${i}`] = { bg, speaker, sprite: characters[speaker]?.sprite ?? '', sprite2: '', image: '',
-      text, next: i + 1 < rows.length ? `${prefix}_${i + 1}` : next, ...extra }
+    steps[`${prefix}_${i}`] = { bg: sceneBg, speaker, sprite: speaker === 'me' ? 'me' : characters[speaker]?.sprite ?? '', sprite2: '', image: '', text,
+      next: i + 1 < rows.length ? `${prefix}_${i + 1}` : next, ...extra }
   })
 }
 function question(id: string, speaker: string, text: string, choices: Choice[], extra: Partial<TrilogyStep> = {}): void {
-  steps[id] = { bg: 'bg_mri_control_day_v2', speaker, sprite: characters[speaker]?.sprite ?? '', sprite2: '', image: '', text, choices, ...extra }
+  steps[id] = { bg: nodeVenue(id) === 'city' ? 'bg_c4_city_control_v1' : 'bg_c4_county_corridor_v1', speaker, sprite: speaker === 'me' ? 'me' : characters[speaker]?.sprite ?? '', sprite2: '', image: '', text, choices, shuffleChoices: true, ...extra }
 }
-function hub(n: number, visits: [string, string, string][], next: string): void {
-  question(`c4_${n}_hub`, 'sys', '上午的交班已经核对好，设备准备也完成了。第一位预约者还在报到，你可以先找同事说几句。', [
-    ...visits.map(([text, next, flag]) => ({ text: `${text}（⚡1）`, next, cond: { notFlag: flag, ap: 1 } })),
-    { text: '小卖部', next: '@shop' }, { text: '翻《共振二十页》', next: '@book' },
-    { text: '回控制室，开始本班工作', next },
-  ], { bg: 'bg_mri_corridor_day_v2' })
+type HubVisit = [label: string, target: string, flag: string, effect?: Choice['effect'], risk?: Choice['risk']]
+const placeNames: Record<string, string> = {
+  c4_1_route: '登记台与候诊走廊', c4_1_family: '妇产科分诊台', c4_1_help_shen: '准备区',
+  c4_2_repair: '准备区', c4_2_shen: '休息室',
+  c4_3_archive: '办公室', c4_3_door: '机房门口', c4_3_help_fan: '会议室',
+  c4_4_chair: '候诊区', c4_4_contacts: '控制室', c4_4_help_zhou: '走廊',
+  c4_5_adapter: '准备区', c4_5_waiting: '候诊区', c4_5_help_tang: '护士站',
+  c4_6_follow: '办公室', c4_6_shen: '休息室', c4_6_help_tang: '茶水间',
 }
-function settle(n: number, text: string, gold: number, badge?: string): void {
-  steps[`c4_${n}_end`] = { bg: 'ch2_bg_breakroom_day', speaker: 'sys', sprite: '', image: '', text,
+const hiddenFinds: Record<string, { flag: string; label: string; text: string; icon: string }> = {
+  c4_1_route: { flag: 'c4r7_hidden_referral', label: '登记台 · 核对退回的归档片袋', icon: '🗄️',
+    text: '登记员刚收下**旧片数字化退回件**，交接单写着“1998年转诊卷宗待复核”。沈岚请你帮忙核对袋号。你们在登记台按单开袋，在夹层找到一角转诊附件：编号还能辨认，姓名已经磨掉。你拍下编号，登记员把原件装回、重新封存，在交接单上记下这处发现。' },
+  c4_2_repair: { flag: 'c4r7_hidden_a17_ai', label: '看看线圈柜底层', icon: '🗄️',
+    text: '柜底贴着半张**维修标签**，后面只有批次和工号。你拍下来，又照着原样把标签压平。' },
+  c4_2_shen: { flag: 'c4r7_hidden_ai_activation', label: '帮忙收好休息室的杯子', icon: '☕',
+    text: '沈岚那只旧保温杯掉了漆，杯底还贴着她的名字。你把杯子挪进里层，免得明天又被谁当成公用杯拿走。' },
+  c4_3_help_fan: { flag: 'c4r7_hidden_official_ai', label: '翻翻报价夹的彩页', icon: '📑',
+    text: '原厂报价夹里写得很直白：**基本重建已含，AI重建单列**。你把这行指给老范看，他总算不用拿着两页总价反复猜。' },
+  c4_4_contacts: { flag: 'c4r7_hidden_remote_order', label: '看看交接信封', icon: '☎️',
+    text: '信封里是一张**急诊与工程师联络卡**：值班电话、机房分机和夜间报修入口都在同一页。小唐把它压到控制室玻璃板下，省得真有事时翻一沓装机单。' },
+  c4_5_adapter: { flag: 'c4r7_hidden_third_party_box', label: '看看准备柜里的支垫登记', icon: '📦',
+    text: '支垫按尺寸和检查部位分了格，最底下还压着一张**清洁更换登记**。你把卷起的页角压平，放回原处。' },
+  c4_6_follow: { flag: 'c4r7_hidden_transfer_copy', label: '看看记录夹封底', icon: '📁',
+    text: '封底夹着一张**旧转诊附件复印件**，编号与市院那张残页相互印证。它仍没有写出植入物型号，只让1998年的档案查询少走了弯路。' },
+}
+function hub(n: number, text: string, visits: HubVisit[], next: string, startLabel = '回到主线'): void {
+  const hubId = `c4_${n}_hub`
+  const bg = n <= 2 ? 'bg_c4_city_corridor_v1' : n === 3 ? 'bg_office_day' : 'bg_c4_county_corridor_v1'
+  const options: Choice[] = []
+  visits.forEach(([label, target, flag, effect, risk], index) => {
+    const key = target.replace(/_0$/, ''), placeId = `c4_${n}_place_${index}`, find = hiddenFinds[key]
+    const place = placeNames[key] ?? '准备区'
+    const firstSpace = label.indexOf(' '), icon = firstSpace > 0 ? label.slice(0, firstSpace) : '🧭'
+    const eventLabel = firstSpace > 0 ? label.slice(firstSpace + 1) : label
+    const activity: Choice = { icon, text: `${eventLabel}（⚡-1）`, next: target, cond: { notFlag: flag, ap: 1 }, effect: { ap: -1, ...effect },
+      ...(risk ? { risk, tag: 'good' as const } : {}), disabledReason: '行动力不足；可以先四处看看，主线仍可继续。' }
+    const legacyFind: Choice[] = find ? [{ icon: find.icon, text: find.label, next: `c4_${n}_find_${index}_0`, cond: { notFlag: find.flag }, tag: 'good' as const }] : []
+    question(placeId, 'sys', `${place}里一切如常。你可以做正事，也可以随便看看。`, [
+      activity, ...legacyFind, { icon: '↩️', text: '返回科室', next: hubId },
+    ], { bg, shuffleChoices: false })
+    options.push(activity, ...legacyFind)
+    if (find) chain(`c4_${n}_find_${index}`, [
+      ['sys', find.text, { effect: { flag: find.flag } }],
+    ], hubId, bg)
+  })
+  question(hubId, 'sys', text, [
+    ...options, { icon: '🛒', text: '小卖部', next: '@shop' }, { icon: '📖', text: '翻《磁共振笔记》', next: '@book' },
+    { icon: '▶️', text: startLabel, next },
+  ], { bg, shuffleChoices: false })
+}
+
+function settle(n: number, text: string, gold = 180, badge?: string): void {
+  steps[`c4_${n}_end`] = { bg: n <= 2 ? 'bg_c4_city_staff_room_v1' : n === 6 ? 'bg_office' : 'ch2_bg_breakroom_day', speaker: 'sys', sprite: '', image: '', text,
     effect: { gold, ...(badge ? { badge } : {}) }, end: true }
 }
+function scan(id: string, text: string, label: string, next: string, mriRegion: MriScanRegion, mriModel: MriScannerModel,
+  distress?: { atMs: number; stopAfterMs: number; text: string }): void {
+  steps[id] = { speaker: 'sys', bg: mriModel.startsWith('city-') ? 'bg_c4_city_control_v1' : 'bg_c4_county_control_v1', sprite: '', image: '', text,
+    scan: { kind: 'mri', label, mriRegion, mriModel, durationMs: 3000, sound: 'trilogy_mri_scan_v2', ...(distress ? { distress } : {}) }, next }
+}
 
-// June procurement precedes the November clinical shifts; no prologue check-in/pay.
+// 序章：进修不是去听一堂课，而是先把家里的班交接明白。
 chain('c4_pro', [
-  ['sys', '2027年6月，设备科把你叫去参加MRI选型讨论。去年那张“计划引进”终于摊上桌，旁边还压着县院转出去的检查种类和机房尺寸。'],
-  ['fan', '坐这儿。你天天碰图像，今天别只帮我搬资料，也说说咱们到底要它干什么。'],
-  ['director', '去年有人先写了三点零，这回把场强、梯度、口径和配套一起看。老周也来了，临床的事问他。'],
-  ['sys', '老范把三份候选资料推到你面前，杯子压住了最贵那份的一角。你把纸拉出来，他又把杯子往回挪了挪。', { image: 'cg_c4_procurement_v3', imageLabel: '设备科选型讨论｜场强、梯度、口径与配套', closeup: true }],
-  ['me', '您这是保护桌面，还是保护预算？'],
-  ['fan', '都保护。先说场强，你第一眼想看哪条路线？'],
-], 'c4_pro_field_q', 'bg_office_day')
-question('c4_pro_field_q', 'me', '三份资料分别列着0.55T、1.5T和3.0T。你先把哪份拿来问？', [
-  { text: '先看0.55T的大口径方案，问常规任务怎样做到位', next: 'c4_pro_field_low' },
-  { text: '先看1.5T方案，对照县院常做的部位和配套', next: 'c4_pro_field_mid' },
-  { text: '先看3.0T方案，问多出的信号机会和要求', next: 'c4_pro_field_high' },
-], { bg: 'bg_office_day' })
-steps.c4_pro_field_low = { bg: 'bg_office_day', speaker: 'zhou', sprite: characters.zhou.sprite, text: '这份值得看。场强低一些，信号和时间的取舍也要逐项看；孔大只是其中一项，不能替图像质量签字。', next: 'c4_pro_scope_0' }
-steps.c4_pro_field_mid = { bg: 'bg_office_day', speaker: 'zhou', sprite: characters.zhou.sprite, text: '把常做的头部、脊柱、关节放旁边比。别只比磁体那一行，线圈、能做的方案和有人维护也得对上。', next: 'c4_pro_scope_0' }
-steps.c4_pro_field_high = { bg: 'bg_office_day', speaker: 'zhou', sprite: characters.zhou.sprite, text: '信号方面的机会要看，均匀性、伪影、能量沉积和运行条件也要看。三点零有它的用途，不等于咱们每一项都得往最高配。', next: 'c4_pro_scope_0' }
-chain('c4_pro_scope', [
-  ['sys', '你们把候选方案放回县院的常规需求里：头部、脊柱、关节和部分软组织任务，复杂检查仍有上转衔接。科里复核后，0.55T的大口径路线留在首选栏。'],
-  ['fan', '这份口径80厘米。我们量过病房到机房的通道，床边操作也留得下位置。供电、改造和维护，后勤会接着算。'],
-  ['me', '孔大一点，老宋那样容易紧张的人可能舒服些。可不能跟人说孔大了就一定不怕，也不能说低场都比高场好。'],
-  ['zhou', '对，还得陪他试位置、留着呼叫。现在把梯度那两栏翻出来，别从0.55这几个字去猜。'],
-  ['sys', '本次两组候选梯度写成30mT/m、80T/m/s，与45mT/m、140T/m/s。前一项是最大强度，后一项是切换速率；两组都列在0.55T方案下。'],
-], 'c4_pro_gradient_q', 'bg_office_day')
-question('c4_pro_gradient_q', 'me', '你要把这两组梯度拿去问供应方。先追哪件事？', [
-  { text: '问30/80组合能完成哪些任务，再对照时间与分辨要求', next: 'c4_pro_gradient_task' },
-  { text: '问45/140组合省了哪里，也问声响、刺激限制与运行代价', next: 'c4_pro_gradient_fast' },
-], { bg: 'bg_office_day' })
-steps.c4_pro_gradient_task = { bg: 'bg_office_day', speaker: 'zhou', sprite: characters.zhou.sprite, text: '这就问到地方了。梯度强度关系到能建立多大的空间编码变化，切换速率关系到变化有多快；实际序列还要把这些条件合起来看。', next: 'c4_pro_gradient_done' }
-steps.c4_pro_gradient_fast = { bg: 'bg_office_day', speaker: 'fan', sprite: characters.fan.sprite, text: '我记下来。更强、切得更快有机会省时间，也有硬件、声响和刺激限制要顾，报价后面还有运行要求。让他们把两边都答出来。', next: 'c4_pro_gradient_done' }
-steps.c4_pro_gradient_done = { bg: 'bg_office_day', speaker: 'me', sprite: '', text: '主磁场用T，梯度强度用mT/m，切换速率用T/m/s。三栏分开，我先把能完成常规任务的30/80组合和配套报价留着。', next: 'c4_pro_terms_q' }
-question('c4_pro_terms_q', 'sys', '供应方把总报价发回来。老范把电话递给你：“这回别只替我问能不能便宜。”', [
-  { text: '请头部、脊柱、关节线圈和培训分别列价，再谈总价', next: 'c4_pro_terms_pack' },
-  { text: '先把改造、交付、安装验收与后续服务排清，再谈价', next: 'c4_pro_terms_schedule' },
-], { bg: 'bg_office_day', sprite: characters.fan.sprite })
-steps.c4_pro_terms_pack = { bg: 'bg_office_day', speaker: 'fan', sprite: characters.fan.sprite, text: '他们答应单列线圈和培训，原先那项捆着的升级也拆开了。你这电话打得值，终于知道钱花在哪儿了。', next: 'c4_pro_close_0' }
-steps.c4_pro_terms_schedule = { bg: 'bg_office_day', speaker: 'director', sprite: characters.director.sprite, text: '交付与服务分开写，现场培训也排上。设备到了才找人教，门诊就得跟着等。总价我再和他们谈。', next: 'c4_pro_close_0' }
-chain('c4_pro_close', [
-  ['sys', '修订报价把线圈、培训、安装与服务拆清。院方按流程选定0.55T、80厘米大口径方案，本次梯度采用30mT/m、80T/m/s组合。你参与的比较和问题留在选型记录里。', { card: 'c4_field', effect: { flag: 'c4_procurement_decided' } }],
-  ['fan', '日历拿来。接下来做机房、等交付、装好再调试，可不是今天谈完，明天就叫病人来。'],
-  ['me', '那我先把“已谈完”写上，后面几格留给您。杯子现在可以压回去了。'],
-  ['sys', '夏天，机房准备与采购衔接陆续完成；入秋后设备到货，安装、调试和验收分别留下记录。门诊排期确认后，日历终于翻到11月。'],
-], 'c4_1_open_0', 'bg_office_day')
+  ['sys', '夜班记录刚订好，老范就夹着一张采购表进来了，纸角还沾着食堂的辣椒油。', { bg: 'bg_office' }],
+  ['fan', '先别笑。院里真打算上MRI。你们天天跟患者打交道，缺什么，比我坐设备科猜强。', { bg: 'bg_office' }],
+  ['zhou', '机器我只在别家见过。真买回来，谁来接、怎么约、坏了找谁，都是咱们的事。', { bg: 'bg_office' }],
+  ['me', '要不我去市院跟几天？别光听销售讲，我看看人家一天怎么过。', { bg: 'bg_office' }],
+  ['zhou', '沈岚在市院带班。我们年会上认识，后来又一块做过培训。我给她打电话，有空位你就去，没空位别硬塞。', { bg: 'bg_office' }],
+  ['sys', '第二天上午，沈岚回了七个字：周三来，跟一周，管饭。', { bg: 'bg_office_day' }],
+], 'c4_apply_zhou_0', 'bg_office_day')
+chain('c4_apply_zhou', [
+  ['zhou', '你的夜班我接。老刘复查我来打电话。许建平那份腰椎申请先空着，他年轻时做过手术，自己还拿不定主意。', { bg: 'bg_office_day' }],
+  ['tang', '他的电话我留着。预约本我先不按日期写死，省得人家一犹豫，咱们倒像催债。你们去进修，家里的改约我来盯。', { bg: 'bg_office_day' }],
+  ['me', '行。许建平的资料先让他自己收着，回来我跟他慢慢核。', { bg: 'bg_office_day' }],
+], 'c4_apply_director_0', 'bg_office_day')
+chain('c4_apply_director', [
+  ['sys', '院长看完申请，又瞄了眼小唐递过去的替班表。', { bg: 'bg_office_day' }],
+  ['director', '人排开了就去。回来别只带一沓宣传页，把咱们照不照得起来也说明白。', { bg: 'bg_office_day', effect: { flag: 'c4_training_approved' } }],
+  ['tang', '这句我记下了。宣传页您留着垫桌脚也行，替班表可别给我弄丢。', { bg: 'bg_office_day' }],
+], 'c4_departure_0', 'bg_office_day')
+chain('c4_departure', [
+  ['sys', '老周当场拨电话。沈岚那边正叫号，背景里还有人问她饭盒放哪儿。', { bg: 'bg_office_day', communication: 'call', phone: 'char_c4_shen_v3', sprite: '' }],
+  ['shen', '别提前背说明书，来了先帮我接患者。有空再看机器。周三见。', { bg: 'bg_office_day', communication: 'call', phone: 'char_c4_shen_v3', sprite: '' }],
+], 'c4_city_arrival', 'bg_office_day')
+steps.c4_city_arrival = {
+  bg: 'bg_c4_city_corridor_v1', speaker: 'sys', sprite: '', sprite2: '',
+  text: '周三傍晚，你拖着箱子站在市院门口。进修证背面是沈岚的名字，还有一行小字：到了先吃饭。',
+  image: 'cg_c4_city_hospital_entrance', imageLabel: '市院报到｜一周跟班', closeup: true,
+  effect: { flag: 'c4_city_week_started' }, next: 'c4_1_open_0',
+}
 
-// 1. Installation/acceptance is complete before the first clinical check-in.
+// 第一段：市院第一晚。设备介绍夹在接患者之前，两个病例各有未收尾的生活问题。
 chain('c4_1_open', [
-  ['sys', '2027年11月16日，周二早上八点。六月参与选定的0.55T大口径MRI已经安装、调试并通过验收，正式进入门诊预约。你回到放射科，开始五个白班的设备跟班，也陪新来的许宁认本院交接。', { image: 'cg_c4_wide_bore_v3', imageLabel: '安装验收后｜0.55T、80厘米大口径MRI', closeup: true }],
-  ['fan', '真到了。别光站门口看，过来看看这份线圈清单，哪只放哪儿都重新定过了。'],
-  ['me', '设备清单年年写，我都快以为“计划引进”是它的名字了。'],
-  ['zhou', '现在把“计划”划掉。许宁用过类似设备，本院交班你熟，你带她认人认路。我还在备班，有问题叫我。'],
-  ['ning', '来，认个门。我先跟你走一遍。机器那边我在进修时用过，这科分机在哪儿倒还没找到。', { voice: 'vox_c4_xuning_v2' }],
-  ['me', '先掀主任那摞文件。昨天响了半天，他以为隔壁电话没人接。', { effect: { flag: 'c4_started' } }],
-], 'c4_1_hub', 'bg_mri_corridor_day_v2')
-hub(1, [['走廊找老范', 'c4_1_fan_0', 'c4_1_fan'], ['休息室找许宁', 'c4_1_ning_0', 'c4_1_ning'], ['控制室找小雷', 'c4_1_lei_0', 'c4_1_lei']], 'c4_1_wrist_0')
-chain('c4_1_fan', [
-  ['fan', '你六月盯过报价，今天再看看线圈和维护清单。别翻两页就告诉我都记住了。', { effect: { ap: -1 }, giftTo: 'fan' }],
-  ['me', '我才翻开，您就先查岗了。'],
-  ['fan', '这回来问的人都只问场强。我就把后面这几页订在最前头，先让他们翻过去。'],
-  ['me', '我看完还得问：场强高了，是不是图像就都好一倍？'],
-  ['fan', '哪有这等好事，线圈、部位、方案还得对。登记表拿一张，先学会哪个出了问题找谁。', { card: 'c4_field', effect: { flag: 'c4_1_fan' } }],
-], 'c4_1_hub', 'bg_mri_corridor_day_v2')
-chain('c4_1_ning', [
-  ['ning', '你们休息室连保温杯都写名字？', { effect: { ap: -1 }, giftTo: 'ning' }],
-  ['me', '不写，老周能把你的奶茶当自己的浓茶。'],
-  ['ning', '那我写杯底。正面写上去，喝一口像举一次牌。'],
-  ['me', '看来分机还没找到，杯子已经找到地方了。今天看腕部，专用线圈登记在柜子左边。'],
-  ['ning', '早上拿出来检查过，接头也对上了。就是柜子标签有点低，我找了半天才发现自己站在它前面。', { card: 'c4_coil', effect: { flag: 'c4_1_ning' } }],
-], 'c4_1_hub', 'ch2_bg_breakroom_day')
-chain('c4_1_lei', [
-  ['lei', '新工作站没接那个老盒子。你不用每次进来都先看网口。', { effect: { ap: -1 }, giftTo: 'lei' }],
-  ['me', '我看的是你饭盒。早上拿来还扎着带子，这都几点了？'],
-  ['lei', '刚收到一份旧项目回函。对方把前期的事都写成“接口联调”，说资料全删了，让我们确认结项。'],
-  ['me', '说删完就删完？'],
-  ['lei', '没法就这么确认。我先对删除日期和任务号；前头那些措辞，等他们把范围补齐再谈。', { effect: { flag: 'c4_1_lei' } }],
+  ['sys', '报到第一晚，你盯着英文门牌多看了两秒。里面的人笑了一声，替你扶住门。'],
+  ['shen', '县院来的吧？沈岚。老周把你夸了半天，总结起来就是“能熬夜”。箱子先放柜边，晚饭吃了没？', { voice: 'vox_c4_xuning_v3' }],
+  ['me', '车上吃了个面包。我跟着你们打下手，不懂就直接问。'],
+  ['shen', '那敢情好。腕伤小伙还有二十分钟到，先带你认认东西，省得一会儿让你拿支垫，你抱来个线圈。'],
+], 'c4_1_magnet_0', 'bg_c4_city_corridor_v1')
+chain('c4_1_magnet', [
+  ['shen', '这台3T，超导磁体。永磁、常导的也都有，别看见外壳长得差不多就当一回事。', { image: 'mri_c4_magnet_system', imageLabel: '磁体系统｜设备实物与常见类型', card: 'c4_magnet' }],
+  ['me', '老范那张表还问孔径和均匀度。场强我大概懂，后面两项跟患者有什么关系？'],
+  ['shen', '**场强用T表示**。别的条件差不多时，高场的信号潜力更好，细节和速度更有余地；可伪影、射频能量和价钱也跟着来，不是人人都非3T不可。'],
+  ['shen', '**孔径就是人躺进去那段空间，按厘米算**。宽一点，怕憋、块头大或者摆位麻烦的人能松快些。它治不了所有害怕，也不包图像一定漂亮。'],
+  ['me', '均匀度那个ppm呢？数字越大越好？'],
+  ['shen', '这回想反了。**看规定范围里的ppm差异，一般越小越均匀**。脂肪抑制、几何稳定、大范围成像都受影响。报价时别忘了问人家在哪个范围测的。'],
+  ['shen', '还有，磁体不跟咱们一块下班。兜里的钥匙、硬币都留外头，别拿它试吸力。'],
+], 'c4_1_rf_0', 'bg_c4_city_magnet_room_v1')
+chain('c4_1_rf', [
+  ['sys', '准备柜一开，头线圈、关节线圈、柔性线圈挤得满满当当。一个接头旁贴着窄标签：**A17转接件**，维修工号和日期快磨没了。你顺手把标签拍进手机。', { image: 'mri_c4_rf_system', imageLabel: '射频线圈实物｜头部、关节与柔性线圈', card: 'c4_rf' }],
+  ['shen', '射频这头既要发脉冲，也要收信号。**通道**你就先当多路一起听。跟部位、线圈和序列配得上才有用，不是数越大越神气。'],
+  ['me', '那为什么不弄个特大号，大家轮流用？'],
+  ['shen', '**得包得住要看的地方，形状也得合适**。拿头线圈套脚踝，你看患者答不答应。贴合些，离组织近，信号通常更有利，也好固定。'],
+  ['shen', '可贴合不是勒紧。人躺得难受，一会儿就得动，动了还得重扫。你少缠一圈胶带，可能反倒快些。'],
+], 'c4_1_gradient_0', 'bg_c4_city_preparation_v1')
+chain('c4_1_gradient', [
+  ['shen', '等会儿咚咚咚，不是楼下装修。X、Y、Z三组梯度线圈在给信号做空间定位，一干活动静就大。', { image: 'mri_c4_gradient_system', imageLabel: '梯度系统｜空间定位与关键参数', card: 'c4_gradient' }],
+  ['me', '表上还有最大梯度强度mT/m、爬升率T/m/s。简单说，一个管多强，一个管多快？'],
+  ['shen', '差不多。**最大梯度强度**影响小视野、薄层、高分辨和一些吃梯度的序列，DWI也算一个。别只挑最大数，得看整套序列能不能跟上。'],
+  ['shen', '**爬升率**看多快到目标强度，跟回波间隔、快速序列和采集效率有关。切得快，噪声和刺激限制也更得留心，不能为了让表好看让患者硬忍。'],
+  ['me', '行，这几项我知道怎么问了。腕伤小伙是不是该到了？'],
+], 'c4_1_hub', 'bg_c4_city_magnet_room_v1')
+hub(1, '设备看完，腕伤小伙还有几分钟到。附近还有点人气，也有沈岚刚拆到一半的箱子。', [
+  ['🧭 候诊长椅 · 跟沈岚走一遍接送路线', 'c4_1_route_0', 'c4r6_1_route', {}],
+  ['🌙 妇产科分诊台 · 替表姐问夜间入口', 'c4_1_family_0', 'c4r6_1_family', {}],
+  ['🧺 准备区 · 帮沈岚拆一箱新支垫', 'c4_1_help_shen_0', 'c4r6_1_help_shen', {},
+    { chance: 0.3, next: 'c4_1_help_shen_mishap_0', effect: { ap: -1, badge: 'good_intentions' } }],
+], 'c4_1_case_0', '到门口接腕伤小伙')
+chain('c4_1_route', [
+  ['sys', '沈岚带你从登记台走到准备区，又绕到检查后的恢复椅，顺手把路上挡道的空箱挪开了。', { giftTo: 'shen' }],
+  ['shen', '上回有个家属做完检查，绕了两圈才找着儿子。你记机器也记路，省得回头带人走丢。'],
+  ['me', '登记、筛查、准备、采集，最后还得把人送对地方。我在采购表边上画一笔，省得回去忘。', { card: 'c4_overview', effect: { flag: 'c4r6_1_route' } }],
 ], 'c4_1_hub')
-chain('c4_1_wrist', [
-  ['sys', '第一位预约者在门口甩了甩雨伞。年轻人抱着旧片袋，右手腕套了个护腕。'],
-  ['wrist', '最近又疼了。我毕业以后不写作业，改成给老板写报告，手还是没歇着。', { caseId: 'c4_wrist', voice: 'vox_c4_wrist_v2' }],
-  ['me', '报告也能开证明不写吗？'],
-  ['wrist', '要有这项服务，我介绍全办公室来。'],
-  ['sys', '小程把申请单递过来。两年前摔伤那次已经复诊处理过；最近打球后腕部又持续疼，骨科这次想进一步看软组织。'],
-  ['wrist', '骨头都看过了，怎么还要换台机器？不是同一只手吗？'],
-], 'c4_1_wrist_q')
-question('c4_1_wrist_q', 'me', '小程捏着片袋，等你接话。', [
-  { text: '「这次医生想看周围软组织，我先把旧片也调出来。」', next: 'c4_1_wrist_old_0' },
-  { text: '「你先说最近什么时候疼，我记给负责医师。」', next: 'c4_1_wrist_recent_0' },
-])
-chain('c4_1_wrist_old', [['wrist', '旧片没白带就行。我妈找它，翻得像家里进过贼。'], ['me', '没白带，但不能拿旧伤替这次先下结论。']], 'c4_1_prepare_0')
-chain('c4_1_wrist_recent', [['wrist', '拧瓶盖也疼。可不是两年都没好，最近这阵子才又闹的。'], ['me', '明白。我把时间分开记，免得看报告的人误会。']], 'c4_1_prepare_0')
-chain('c4_1_prepare', [
-  ['ning', '筛查确认好了，随身东西留在柜子里。小程，这个支垫往你手肘下放，先试试能不能躺稳。', { bg: 'bg_mri_room_day_v2' }],
-  ['wrist', '还行。这个圈不转吧？上回那个CT转得我挺服气。', { bg: 'bg_mri_room_day_v2' }],
-  ['me', '它不靠球管绕你转。待会儿声音会变，别跟着节拍晃手。', { bg: 'bg_mri_room_day_v2' }],
-  ['wrist', '你别说，我打字就爱跟着音乐敲。', { bg: 'bg_mri_room_day_v2' }],
-  ['sys', '许宁先在控制台旁拿着线圈，把摆放位置比给你看。随后你们安置小程，确认呼叫和耳部防护，回到控制室核对第一组序列。', { image: 'cg_c4_first_mri_v2', imageLabel: '许宁示范线圈与摆位准备', closeup: true }],
-], 'c4_1_tool')
-steps.c4_1_tool = { bg: 'bg_mri_control_day_v2', speaker: 'zhou', sprite: 'char_zhou', text: '刚才这次采集里的两组，放在同一位置看。你先切着比较，我坐旁边。',
-  tool: { kind: 'mri', task: 'sequence', title: '同一只手腕，两种看法', prompt: '切换序列，留意骨髓、液体及周围软组织怎样变化。', image: 'mri_wrist', images: { T1: 'mri_wrist', T2: 'mri_wrist_t2' }, help: '序列改变组织对比。亮不等于病；先把不同序列和相邻层对应起来。', next: 'c4_1_result_1' } }
-chain('c4_1_result', [
-  ['sys', '采集完成，腕部图组进入工作站。老周把骨科写的疼痛位置放在旁边，请你先对照同次采集的两种加权。', { image: 'mri_wrist' }],
-  ['ning', '刚才两组你都看了，液体信号和结构边界各有清楚的地方。交接怎么放？', { image: 'mri_wrist_t2' }],
-], 'c4_1_result_q')
-question('c4_1_result_q', 'me', '鼠标停在导出窗口。', [
-  { text: '两组按同一位置对照，完整序列一起留', next: 'c4_1_keep_0', effect: { skill: 1, badge: 'c4_two_views' } },
-  { text: '请老周带着看一遍，不凭亮度挑', next: 'c4_1_help_0' },
-], { image: 'mri_wrist' })
-chain('c4_1_keep', [['zhou', '对。骨科问的是哪处软组织，咱们得按位置回答，不是比谁那张漂亮。']], 'c4_1_close_0')
-chain('c4_1_help', [['zhou', '先把位置对齐。这是不同对比，不是前一张失败了，后一张把它救回来。']], 'c4_1_close_0')
+chain('c4_1_family', [
+  ['sys', '表姐把产检本和下次复查日期拍给你，问真要临时来市院，夜里该从哪个门进。你趁取支垫去了妇产科分诊台，值班护士把入口和随身资料写在便签上。'],
+  ['cousin', '你就帮我问入口和要带什么。要是真提前发动，我怕一家人光会在车里互相问。', { communication: 'call', phone: 'pat_cousin', sprite: '' }],
+  ['me', '问好了，便签现在拍你。产检本和近期资料放同一袋；真不舒服就联系你的产检医生或急诊，我这儿回消息未必及时。', { communication: 'call', effect: { flag: 'c4r6_1_family' } }],
+], 'c4_1_hub', 'bg_c4_city_triage_v1')
+chain('c4_1_help_shen', [
+  ['sys', '你帮沈岚拆开新到的一箱支垫，按大小和用途摆进准备柜。她把软一点的留在最外层，说晚上腕部要用。'],
+  ['shen', '这块最小的放左边。你摆得挺像样，就是包装别也给我收藏起来。', { effect: { flag: 'c4r6_1_help_shen' } }],
+], 'c4_1_hub', 'bg_c4_city_preparation_v1')
+chain('c4_1_help_shen_mishap', [
+  ['sys', '（**意外**）你抽外包装抽得太猛，几块小支垫从箱底滑出去，滚了半间准备区。'],
+  ['shen', '沈岚把脚边那块递回来：“拆包挺有气势，收拾也算你的。”你蹲着把支垫和包装分完，才回到候诊区。', { effect: { flag: 'c4r6_1_help_shen' } }],
+], 'c4_1_hub', 'bg_c4_city_preparation_v1')
+chain('c4_1_case', [
+  ['sys', '腕伤小伙拎着运动包来了，教练在门外打电话。他嘴上说只是扭了一下，右手却连矿泉水瓶都拧不开。', { caseId: 'c4_city_wrist' }],
+  ['wrist', '右手腕又肿了，拧瓶盖都疼。', { voice: 'vox_c4_wrist_r7' }],
+  ['wrist', '三个月前打球扭过一次，拍过**X光，没有骨折**。我喷了药、戴两周护腕，平时不动就还行；可一拧毛巾、撑地或挥拍，小指这边就刺痛。'],
+  ['me', '昨晚是不是又伤了一次？这次是还按老扭伤处理，还是想查点别的？'],
+  ['wrist', '昨晚没忍住又打了半场，今晨更肿。教练只知道三个月前那次。申请单写**TFCC**，我想知道是不是它伤了，还能不能继续练。'],
+  ['me', '是**三角纤维软骨复合体（TFCC）**：**一组位于手腕小指侧的软骨和韧带，帮助稳定腕关节、缓冲受力。**你把两次受伤和最疼的动作都告诉我，接诊医师才能对着这些问题看图。'],
+  ['wrist', '那检查会不会很疼？我最怕有人掰着它摆姿势。'],
+  ['me', '不硬掰。先试支垫高度，疼就换角度；你要能维持，咱们再固定腕部线圈。'],
+  ['sys', '他终于把手放到支垫上。你按他指的位置调低高度，让他试过能维持，再固定腕部线圈。']
+], 'c4_city_wrist_scan')
+scan('c4_city_wrist_scan', '腕部序列采集中。', '腕部 MRI · 运动伤采集', 'c4_1_case_result_0', 'wrist', 'city-3t')
+chain('c4_1_case_result', [
+  ['sys', '采集结束，沈岚调出文献参考图。黄圈圈住了原图白箭头所指的信号不连续处。', { image: 'mri_real_tfcc_v1', imageLabel: '腕部MRI｜TFCC外周信号不连续' }],
+  ['shen', '黄圈这块，你准备怎么记？'],
+  ['me', '写**TFCC外周信号不连续**。伤到什么程度，还得看完整图组和查体；三个月前和昨晚两次受伤，我也写进去。'],
+  ['wrist', '行。那教练问起来，你别替我说“只是扭了一下”。'],
+], 'c4_1_case_q')
+question('c4_1_case_q', 'shen', '教练过来了，他还有点藏事。你怎么接？', [
+  { text: '陪他向教练说清两次受伤', next: 'c4_1_case_full_0', effect: { skill: 1, badge: 'c4r_full_context' } },
+  { text: '让他自己说，我补充检查', next: 'c4_1_case_help_0' },
+  { text: '先给教练看交接单，让他自己解释', next: 'c4_1_case_help_0' },
+], { image: 'mri_real_tfcc_v1' })
+chain('c4_1_case_full', [
+  ['wrist', '教练，昨晚那场我也上了。检查做完了，接下来听医师怎么评估。'],
+  ['me', '图组已经传过去。他疼的位置和两次受伤经过都在这一页，训练安排不用靠猜。'],
+], 'c4_1_feng_0')
+chain('c4_1_case_help', [
+  ['wrist', '我自己说。你站我左边就行，教练看不见我瞪他。'],
+  ['me', '好。你说受伤经过，我补充检查。下周能不能上场，等医师评估完再说。'],
+], 'c4_1_feng_0')
+chain('c4_1_feng', [
+  ['sys', '晚上九点，冯叔和儿子一起来到3T检查室。他开了二十多年公交，刚才还在说笑，刚到孔口却停了下来。', { caseId: 'c4_city_claustrophobia' }],
+  ['anxious', '医生，我这阵子老是头晕。', { voice: 'vox_c4_feng_r7' }],
+  ['anxious', '上礼拜开始，一阵一阵的。前天早起还说话不利索，右手拿杯子没劲，几分钟又缓过来。门诊做了**CT没看出血**，让我尽快补头部MRI。'],
+  ['me', '这次主要想看看有没有**急性缺血**，以及问题出在哪里。除了这些，您以前做过头部检查或用过什么药吗？'],
+  ['anxious', '血压高，降压药吃着，别的检查没做过。其实我最怕的是这个孔——以前电梯里困了十分钟，从那以后，小空间一关门我就心慌。'],
+  ['shen', '这属于**幽闭恐惧症**常见的反应，不是您故意不配合。呼叫您拿着；捏一下，控制台马上回应。'],
+  ['me', '觉得不合适就出来，不用等“坚持到极限”才算数。真做不下去，还有换机、改约等办法。'],
+  ['anxious', '那我儿子能留在这儿吗？我听见他的声音，可能好一点。'],
+  ['shen', '让他在门外您看得见的地方。先试试呼叫，再决定进不进去。'],
+  ['sys', '冯叔试了两次呼叫，儿子也站到了他看得见的地方。可第一个序列刚响，他就猛地捏住了呼叫。']
+], 'c4_feng_basic_scan', 'bg_c4_city_corridor_v1')
+scan('c4_feng_basic_scan', '3T首个头部序列刚开始采集。', '3T 头部 MRI · 首个序列开始', 'c4_1_feng_stop_0', 'head', 'city-3t',
+  { atMs: 250, stopAfterMs: 3000, text: '冯叔：停一下！让我出去！我喘不上气！' })
+scan('c4_feng_city_scan', '0.55T大孔径下，T1、T2、FLAIR、DWI依次分段采集。', '市院0.55T 头部 MRI · T1／T2／FLAIR／DWI', 'c4_1_contrast_0', 'head', 'city-055-wide')
+chain('c4_1_feng_stop', [
+  ['anxious', '先让我出去！里面刚一响，我就找不着门了。', { bg: 'bg_c4_city_corridor_v1' }],
+  ['me', '已经停了，咱们先出来。**第一组刚开头，后面三组还没做**，我都记在交接单上。', { bg: 'bg_c4_city_corridor_v1' }],
+  ['shen', '您一捏呼叫，我们就回应并停止。害怕来得这么快，不是您故意耽误大家。', { bg: 'bg_c4_city_corridor_v1' }],
+  ['sys', '儿子把外套披到冯叔肩上，问他今晚是不是只能回去。冯叔捧着水，手还在抖。', { bg: 'bg_c4_city_corridor_v1' }],
+  ['anxious', '我这样子，是不是就做不了？刚才我真以为自己要憋死在里面。', { bg: 'bg_c4_city_corridor_v1' }],
+  ['shen', '不等于做不了。这层另一检查区还有一台**0.55T、80厘米大孔径**机器。您可以先去看一眼，也可以改约；今晚不继续，未完成项目还能按流程退费。', { bg: 'bg_c4_city_corridor_v1' }],
+], 'c4_1_feng_q', 'bg_c4_city_corridor_v1')
+question('c4_1_feng_q', 'shen', '他还捧着水。你先帮他理顺哪件事？', [
+  { text: '先陪他坐稳，再谈换机或改约', next: 'c4_1_feng_sit_0', effect: { heart: 1, badge: 'c4r_call_answered' } },
+  { text: '先把中止和换机需求写清楚', next: 'c4_1_feng_route_0', effect: { badge: 'c4r_call_answered' } },
+  { text: '先说明退费和换机后的费用', next: 'c4_1_feng_refund_0', effect: { badge: 'c4r_call_answered' } },
+], { bg: 'bg_c4_city_corridor_v1' })
+chain('c4_1_feng_refund', [
+  ['me', '如果今晚不再继续，**未完成项目可以退费**。要是愿意换机，收费处会按实际完成项目核，不让您为刚才那次中止重复买单。'],
+  ['anxious', '能退就好，我不是非得讨钱，是怕花了钱还给孩子添麻烦。那先别急着退，我去看看那台；真不行再改约或退。'],
+  ['sys', '你把退费、改约和换机都写在同一张后续单上。父子看完，决定先跟沈岚去另一检查区，费用等实际检查后再核。'],
+], 'c4_1_feng_transfer_0', 'bg_c4_city_corridor_v1')
+chain('c4_1_feng_sit', [
+  ['anxious', '水放着，我自己拿。刚才你听见我捏了？'],
+  ['me', '听见了，所以立刻停了。等您气顺一点再去看另一台；不想试就改约，门诊电话您和儿子都存一份。', { effect: { flag: 'c4_feng_waited' } }],
+], 'c4_1_feng_transfer_0', 'bg_c4_city_corridor_v1')
+chain('c4_1_feng_route', [
+  ['shen', '我把“3T首个序列开始即中止”和大孔径需求写清楚，换机以后也不让您从头再讲一遍。'],
+  ['anxious', '这张给我儿子也看看，省得他光替我拿主意。先去看看机器，我还没答应躺进去。'],
+], 'c4_1_feng_transfer_0', 'bg_c4_city_corridor_v1')
+chain('c4_1_feng_transfer', [
+  ['sys', '沈岚带父子来到同层**另一检查区**。冯叔站在门外，先看那台0.55T、80厘米大孔径机器；儿子挪了把椅子，坐在他看得见的地方。', { image: 'cg_c4_city_wide_bore_v1', imageLabel: '市院另一检查区｜0.55T、80厘米大孔径MRI', closeup: true, cameraMotion: 'settle' }],
+  ['shen', '这里宽一些，您躺着可能会松快些。噪声还是有的，呼叫也由您拿着；您说停，我们照样接您出来。', { image: 'cg_c4_city_wide_bore_v1', imageLabel: '换机说明｜孔口、噪声与呼叫' }],
+  ['me', '这台场强低一些。为了拿到够用的信号，有些序列可能要久一点，或者调整分辨率和参数。您先看看，觉得能试，咱们再谈下一步。', { image: 'cg_c4_city_wide_bore_v1', imageLabel: '换机说明｜信号、时间与耐受的取舍' }],
+  ['anxious', '就是时间可能长点，图也未必有原来那么利落，但人能好受些？', { image: 'cg_c4_city_wide_bore_v1', imageLabel: '冯叔亲自确认换机取舍' }],
+  ['shen', '对。今晚按门诊需要做**T1、T2、FLAIR、DWI**四组，咱们分段来，每组我都告诉您进度。', { image: 'cg_c4_city_wide_bore_v1', imageLabel: '四组序列｜分段采集，随时可以停止' }],
+  ['me', '先扫一组试试。做到一半不愿继续，您随时捏呼叫。'],
+  ['anxious', '我还是怕。可这孔口看着没那么压，儿子也在。先扫一组——你答应我，每次捏了都有人答。'],
+  ['sys', '冯叔把呼叫攥在掌心，躺上0.55T大孔径检查床。第一段开始时他的肩膀仍绷着，却没有再要求立刻出来。'],
+], 'c4_feng_city_scan', 'bg_c4_city_control_v1')
+chain('c4_1_contrast', [
+  ['shen', '冯叔，**T1、T2、FLAIR、DWI四组都采完了**。您先坐起来缓一缓。我考考你，这三张脑脊液怎么不一样？', { image: 'mri_c4_basic_contrast_v1', imageLabel: '基础序列对照｜同一脑部的T1、T2、FLAIR', card: 'c4_contrast' }],
+  ['me', '采集权重不一样。**脑脊液在T1偏暗、T2偏亮，FLAIR会把自由水信号压暗**；不能只凭亮暗判断好坏。'],
+  ['anxious', '我还是怕，就是这回知道喊了有人应，孔口也没那么压。'],
+  ['shen', '最后这组DWI高、ADC低，你又怎么理解？'],
+  ['sys', '医师看完完整图组，把初步意见告诉了父子：**脑桥区有一小灶异常信号，DWI高信号、ADC对应低信号，结合症状，疑似轻型缺血性卒中，也就是常说的轻微中风**。沈岚另调出一张同类型真实病例的四序列图，陪他们逐项对照。', { image: 'mri_real_stroke_sequences_v1', imageLabel: '头部MRI｜脑桥小灶的T1、T2、FLAIR、DWI与ADC', card: 'c4_stroke' }],
+  ['anxious', '可我就几分钟说话不清，这会儿不是好好的吗？这样也算中风？', { image: 'mri_real_stroke_sequences_v1' }],
+  ['me', '症状缓了是好事，但您这次的图和前天那阵表现都需要接着查。报告现在写的是**疑似**，今晚让神经内科医师结合查体和病史确认，再定用药和复查。', { image: 'mri_real_stroke_sequences_v1' }],
+  ['sys', '儿子把报告折痕抚平：“我陪您去，今晚先听神经内科怎么安排。”冯叔看了他一眼，这回没有说自己能行。', { image: 'mri_real_stroke_sequences_v1' }],
+  ['shen', '这四幅是同类型病例，帮您看清几组信号怎样互相对照。您的原始图组和报告都带过去，我已经联系神经内科，到了先评估。', { image: 'mri_real_stroke_sequences_v1' }],
+  ['anxious', '我还当缓过来就没事了。行，今晚把这个小灶弄明白。呼叫先还你，下回复查，我还得借它壮胆。'],
+  ['sys', '沈岚把检查记录和转诊交接装进同一只文件袋。父子离开时，儿子拿着袋子，冯叔自己记着要去哪里。'],
+], 'c4_1_close_0')
 chain('c4_1_close', [
-  ['sys', '老周核完全部序列，记录需结合骨科检查判断的软组织改变。小程自己走回候诊区，护腕攥在另一只手里。', { card: 'c4_weighting' }],
-  ['wrist', '能不能打球，还是回去问骨科对吧？'],
-  ['me', '对，别拿我刚才那句“图收到了”当复出通知。'],
-  ['wrist', '行。你们这通知，比公司群还严。'],
-  ['sys', '下午的预约全部完成。交班后，你换好衣服回来拿饭盒，控制室灯已关了一排，门后却传来很轻的“笃、笃”。停了一会儿，又是同样的节奏。', { bg: 'bg_mri_control' }],
-  ['ning', '等一下，你也听见了吧？我刚才整理的时候就有，没敢进去找。', { bg: 'bg_mri_control' }],
-  ['zhou', '我在值班室，听到了。记下时间，叫工程师核对状态，你们别自己进门找声源。', { bg: 'bg_mri_control' }],
-  ['sys', '值班同事接过便签，按流程联系工程支持。你看了一眼门，许宁已经提起两只饭盒：“这个才是咱俩该带走的。”', { bg: 'bg_mri_control' }],
+  ['shen', '今天用的0.55T、80厘米大孔径，还有分段做、每次答呼叫，我都记上了。复查带上这张单，省得从头再来。'],
+  ['anxious', '下回我还得先做心里建设。今天不是不怕了，是怕的时候真有人答，外头也没那么憋。'],
+  ['me', '我在调研表上也写“呼叫、陪伴、分段”。今天这几项都派上了用场。'],
 ], 'c4_1_end')
-settle(1, '本班交接完成。许宁把线圈放回原位，你检查了一遍登记。可以在休息室停留，准备好再进入下一班。', 200)
-steps.c4_1_end.bg = 'bg_breakroom'
+settle(1, '冯叔在市院另一台0.55T大孔径机器上完成四组头部序列。图组提示疑似轻型缺血性卒中，父子带着报告和原始图组前往神经内科；你的调研首页也多了几项真正用得上的取舍。', 120, 'c4r_city_start')
 
-// 2. Two different reasons to pause: unknown foreign bodies and anxiety.
+// 第二段：市院最后一晚。眼镜事故打断夜班，A17维修标签进入主线。
 chain('c4_2_open', [
-  ['sys', '11月18日，周四早上。工程支持的报告夹在交班本后面，前天下班听见的声音已经核过；窗外的阳光正落在你忘拿的饭盒上。'],
-  ['ning', '这套机器的制冷系统，状态正常。你看，报告里把那两次时间都对上了。'],
-  ['me', '前天那么安静，听着跟敲门似的。昨晚回家还惦记着。'],
-  ['ning', '惦记机器，不惦记饭盒？我昨天已经洗了，赶紧收起来，别再陪它过一晚。'],
-], 'c4_2_hub')
-hub(2, [['核对设备声记录', 'c4_2_sound_0', 'c4_2_sound'], ['走廊和小唐聊聊', 'c4_2_tang_0', 'c4_2_tang'], ['找老周看植入物资料', 'c4_2_label_0', 'c4_2_label']], 'c4_2_luo_0')
-chain('c4_2_sound', [
-  ['ning', '前天那种慢节奏，和扫描时敲得很密的声音，不是一回事。', { effect: { ap: -1 }, giftTo: 'ning' }],
-  ['me', '一个负责冷，一个负责吵？'],
-  ['ning', '扫描的敲击主要和梯度切换有关。别把所有响声都记成“机器坏了”。'],
-  ['me', '也不能一听有规律，就当正常。'],
-  ['ning', '对，这次有工程师的记录。以后听到新的，还得报。我要每个节拍都自己猜，饭都没空吃了。', { card: 'c4_sound', effect: { flag: 'c4_2_sound', badge: 'c4_night_sound' } }],
-], 'c4_2_hub')
-chain('c4_2_tang', [
-  ['tang', '有人传咱们MRI不用电费。理由是不发X光。', { effect: { ap: -1 }, giftTo: 'tang' }],
-  ['me', '那让他去跟财务解释。解释成了，省下的钱买微波炉。'],
-  ['tang', '先买个能转的托盘。小雷每回热饭还手动换个方向。'],
-  ['me', '那先让他修托盘，别修完我们轮着手动热饭。', { effect: { flag: 'c4_2_tang' } }],
-], 'c4_2_hub', 'bg_mri_corridor_day_v2')
-chain('c4_2_label', [
-  ['zhou', '这里有份厂家器械资料。写的是“MR条件安全”，后面还有好几行。', { effect: { ap: -1 }, giftTo: 'zhou' }],
-  ['me', '不是见到这四个字，就能进咱们这台零点五五？'],
-  ['zhou', '型号、场强、扫描条件，得一项项对上。型号都没确认，别拿相似照片顶替。'],
-  ['me', '我把条件页和型号页放一起。只有封面上这四个字，难怪您一直翻后面。', { card: 'c4_conditional', effect: { flag: 'c4_2_label' } }],
-], 'c4_2_hub')
-chain('c4_2_luo', [
-  ['sys', '候诊椅上那只分了两格的布袋让你多看了一眼。罗阿姨也抬头：“又换一间屋上班了？”', { sprite: 'ch2_pat_luo_v1' }],
-  ['luo', '我闺女让我把旧的全带来。装这么多，袋子再缝两道都不够。', { caseId: 'c4_luo_safety' }],
-  ['me', '这次还是肩背不舒服？'],
-  ['luo', '最近胳膊也麻。门诊想再看看。那十五根，我可没忘报。'],
-  ['sys', '罗阿姨一页页递来旧治疗记录和CT光盘，许宁把她指出的那页摊在桌上。记录解释了针怎么留下，却没有可靠的材料、型号或MR条件。', { image: 'cg_c4_luo_records_v2', imageLabel: '罗阿姨带来的留针记录与旧片袋', closeup: true }],
-], 'c4_2_luo_q', 'bg_mri_corridor_day_v2')
-question('c4_2_luo_q', 'me', '申请单在，旧记录也在。眼下怎么办？', [
-  { text: '先不进扫描间，把资料交安全评估医师核实', next: 'c4_2_luo_safe_0', effect: { skill: 1, badge: 'c4_pause' } },
-  { text: '问老周，CT看得见针能不能替代材料资料', next: 'c4_2_luo_ask_0' },
-], { bg: 'bg_mri_corridor_day_v2', sprite: 'ch2_pat_luo_v1' })
-chain('c4_2_luo_safe', [['luo', '我不是不配合。别让我从早上等到下午，最后才说今天做不了。'], ['me', '我现在就找负责医师，后面怎么接也给您问清楚。']], 'c4_2_luo_care_0', 'bg_mri_corridor_day_v2')
-chain('c4_2_luo_ask', [['zhou', 'CT能给位置，材料和磁场条件还得另查。您先坐外头这把椅子，我把开单医师也联系上。'], ['luo', '那我在这儿等，你跟他说，我闺女还带了旧票据。']], 'c4_2_luo_care_0', 'bg_mri_corridor_day_v2')
-chain('c4_2_luo_care', [
-  ['sys', '负责医师核看病情、旧影像和治疗记录，联系开单科室。今天暂不进行MRI，其他评估先接上，资料核实另留联系人。'],
-  ['luo', '不是说我这辈子都不能做吧？'],
-  ['zhou', '不是，以后有可靠资料还得重新评估。今天先把胳膊麻这件事接着看，门诊已经安排好了。'],
-  ['me', '这个号码是科里的，不是让您去网上找当年那个诊所。'],
-  ['luo', '行。要找旧票据，让我闺女找。她翻柜子比我利索。', { card: 'c4_foreign', effect: { flag: 'c4_luo_review' } }],
-  ['sys', '罗阿姨和门诊护士一起走了。你把资料装回布袋，留在本院的复印件另做了接收记录。'],
-  ['ning', '这个袋子真好用。我收线圈的标签总混成一团。', { giftTo: 'ning' }],
-  ['me', '你别想顺她袋子。她改裤脚还要收费呢。'],
-], 'c4_2_song_0', 'bg_mri_corridor_day_v2')
-chain('c4_2_song', [
-  ['sys', '罗阿姨离开后，你收好留存的复印件，许宁拿着申请单去候诊区叫下一位。老宋走来，把公交车钥匙倒出一大串，筛查都核好了，却在门口停住脚。'],
-  ['anxious', '我怕这个洞。平时开那么大的车，今天连门都不敢进，怪丢人的。', { caseId: 'c4_song_motion', voice: 'vox_c4_song_v2' }],
-  ['ning', '先不进。咱们就在这儿说，您是怕里面太窄，还是怕喊了没人听见？'],
-  ['anxious', '进去以后，喊你们听不见。'],
-], 'c4_2_song_q', 'bg_mri_corridor_day_v2')
-question('c4_2_song_q', 'me', '老宋盯着门，不肯往前。', [
-  { text: '先演示呼叫和中止方式，让他决定要不要试', next: 'c4_2_song_try_0', effect: { heart: 1 } },
-  { text: '请负责医师一起讨论能接受的检查安排', next: 'c4_2_song_help_0' },
-], { sprite: 'pat_mri_anxious', bg: 'bg_mri_corridor_day_v2' })
-chain('c4_2_song_try', [['anxious', '这个捏一下，你真就过来？'], ['ning', '我们能听到，也能回应。你现在试一次，不先把人送进去。']], 'c4_2_song_scan_0', 'bg_mri_corridor_day_v2')
-chain('c4_2_song_help', [['zhou', '先试试，受不了就停。如果真不能耐受，我再跟您一起商量其他安排。'], ['anxious', '那我先试，真不行我可要喊。']], 'c4_2_song_scan_0', 'bg_mri_corridor_day_v2')
-chain('c4_2_song_scan', [
-  ['sys', '试过呼叫，确认好耳部防护，老宋愿意先试一段。许宁替他把支垫调整好，你们回到控制台启动计划中的首段采集。'],
-  ['ning', '听到了，我们停下来。我先把您接出来坐一会儿，别硬忍。'],
-  ['anxious', '我刚才听见声音变了，怕是我把它弄坏了。', { bg: 'bg_mri_corridor_day_v2' }],
-  ['me', '不是您弄坏的，换采集段声音也会变。先在外头歇会儿，我们看清刚才哪段受影响，再跟您说。', { bg: 'bg_mri_corridor_day_v2' }],
-], 'c4_2_tool')
-steps.c4_2_tool = { bg: 'bg_mri_control_day_v2', speaker: 'ning', sprite: 'char_mri_colleague', text: '用刚才保存的片段看运动影响。先看清哪段需要重来，再回去跟老宋说。',
-  tool: { kind: 'mri', task: 'artifact', title: '不是又长出一层轮廓', prompt: '对照运动前后的轮廓，辨认重影，不用它猜疾病。', image: 'mri_brain_t2', help: '运动会破坏不同采样之间的一致性。先沟通、调整支持，再由团队决定必要补采。', next: 'c4_2_finish_0' } }
-chain('c4_2_finish', [
-  ['sys', '补采的必要片段已经进入工作站。老周核完整套，许宁帮老宋拿来外套，告诉他报告去哪个窗口取。', { image: 'mri_brain_t2', imageLabel: '必要片段补采后 · 头部MRI', card: 'c4_motion' }],
-  ['anxious', '你们真听见了。行，比我车上那个报站喇叭靠谱。'],
-  ['ning', '真有下回就提前告诉我们。今天您一捏，我们就听见了，不用忍到自己受不了。'],
-  ['sys', '交班时，小雷把那封“全部删除”的回函放到桌上。他指着删除日期。你往上看见“接口联调”四个字，他已经把原稿折回了文件夹。', { effect: { badge: 'c4_call_heard' } }],
-], 'c4_2_end')
-settle(2, '本班资料与后续联系人已交接。老宋自己拿着外套离开；罗阿姨的核实任务留在正式交班记录里。', 220)
+  ['sys', '一周后的最后一晚，你回到市院。一位疑似胆总管结石的患者还在做筛查，门外家属正替他收眼镜和钥匙。'],
+  ['shen', '收班以后你得回县院了。今晚先接这位患者，收班前再把维修登记核完；你回去还有采购要忙。'],
+], 'c4_2_hub', 'bg_c4_city_corridor_v1')
+hub(2, '夜班还没正式叫号。员工角有沈岚的旧保温杯，准备柜里还贴着上次维修留下的标签。', [
+  ['🗄️ 准备柜 · 对一下维修标签和登记', 'c4_2_repair_0', 'c4r6_2_repair', {}],
+  ['☕ 员工茶水角 · 看看沈岚的旧保温杯', 'c4_2_shen_0', 'c4r6_2_shen', {}],
+], 'c4_2_incident_0', '患者到了，跟他进准备区')
+chain('c4_2_repair', [
+  ['sys', '你把第一晚拍的照片翻出来。维修登记写着“接触不良，临换转接件”，批次对得上，供货人那格却空着。'],
+  ['shen', '插头松了能换，单子可不能就写个“那个黑插头”。下回再坏，维修上哪猜去？'],
+  ['me', '工号和日期我也补拍。回去真碰上同批的，至少知道该翻哪张维修单。', { effect: { flag: 'c4r6_2_repair' } }],
+], 'c4_2_hub', 'bg_c4_city_preparation_v1')
+chain('c4_2_shen', [
+  ['shen', '我刚工作时把一只保温杯放在门边，觉得离磁体还远。杯子飞过去的时候，我也跟你现在一个表情。', { giftTo: 'shen' }],
+  ['me', '那您后来怎么好意思留在这儿？'],
+  ['shen', '第二天还得上班，杯子归杯子，患者归患者。今晚接着跟。', { effect: { flag: 'c4r6_2_shen' } }],
+], 'c4_2_hub', 'bg_c4_city_staff_room_v1')
+chain('c4_2_incident', [
+  ['sys', '患者做完筛查，女儿把钥匙、手机和金属框眼镜收进物品袋，陪他进扫描间帮忙摆好支垫。你留在控制台核申请，沈岚站在床旁。'],
+  ['worker', '我的眼镜给我女儿就行，别耽误你们。', { voice: 'vox_c4_worker_r7', bg: 'bg_c4_city_magnet_room_v1' }],
+  ['sys', '女儿应了一声，把物品袋搭上肩头。袋口没封好，她转身让开床尾时，眼镜从袋里滑了出来。', { bg: 'bg_c4_city_magnet_room_v1' }],
+  ['sys', '她下意识低头去捡，眼镜却先擦过地面，“当”地吸在磁体外壳靠近孔口的位置。她的手停在半空。', { image: 'cg_c4_glasses_v3', imageLabel: '扫描间突发｜金属框眼镜吸附', closeup: true }],
+  ['me', '还好只是副轻眼镜。阿姨您别动，我小心试着把它拿下来。', { bg: 'bg_c4_city_magnet_room_v1' }],
+  ['shen', '**先停手，退回来。这是重要安全事故征候，不能因为眼镜轻就徒手拔。**', { bg: 'bg_c4_city_magnet_room_v1' }],
+  ['sys', '你赶紧收手退回门边，讪讪地说了句“差点帮倒忙”。沈岚请同事守住入口，陪患者和家属退到安全位置，联系工程人员处置。', { bg: 'bg_c4_city_magnet_room_v1' }]
+], 'c4_2_glasses_q', 'bg_c4_city_magnet_room_v1')
+question('c4_2_glasses_q', 'shen', '你留在门边，先帮哪头？', [
+  { text: '先答呼叫，核清人员再上报', next: 'c4_2_glasses_safe_0', effect: { skill: 1, badge: 'c4r_magnet_stop' } },
+  { text: '先陪家属退开，说明后续安排', next: 'c4_2_glasses_people_0', effect: { badge: 'c4r_magnet_stop' } },
+  { text: '守住入口，等工程人员到场', next: 'c4_2_glasses_safe_0', effect: { badge: 'c4r_magnet_stop' } },
+], { bg: 'bg_c4_city_magnet_room_v1', image: 'cg_c4_glasses_v3' })
+chain('c4_2_glasses_safe', [
+  ['shen', '今天要是**轮椅或剪刀**被吸过去，可能直接出人命。东西轻，不代表这事小。'],
+  ['sys', '你把刚才伸手尝试也如实写进事故征候记录。家属退到等候椅，工程人员到场处置并重新核查现场，夜班才恢复。']
+], 'c4_2_mrcp_0', 'bg_c4_city_magnet_room_v1')
+chain('c4_2_glasses_people', [
+  ['sys', '你把家属带到等候椅，同事守住入口。她先问你：“刚才没把你带过去吧？”'],
+  ['me', '没有，是我看它轻，差点想简单了。您父亲有人陪着，工程人员处置后还会核查现场。'],
+  ['sys', '夜班恢复前，事故征候记录写清了暂停时间、人员位置和你那次不恰当的尝试。沈岚又当着你的面点了一遍：**轮椅或剪刀一旦吸附，可能致命。**']
+], 'c4_2_mrcp_0', 'bg_c4_city_magnet_room_v1')
+chain('c4_2_xu', [
+  ['mystery', '老范把我的申请给你了？我是许建平。上次做超声那会儿，咱们见过。', { communication: 'call', phone: 'pat_c4_xu_v1', sprite: '', voice: 'vox_c4_xu_r7' }],
+  ['me', '我记得。你的腰椎申请和旧资料查询都在交接页。你现在最担心的是哪一步？', { communication: 'call' }],
+  ['mystery', '我年轻时做过手术，也不知道里面有没有留东西。今晚本来想问清楚……算了，还是先取消吧。', { communication: 'call' }],
+], 'c4_2_xu_q', 'bg_c4_city_corridor_v1')
+question('c4_2_xu_q', 'me', '电话还没挂。你怎么接？', [
+  { text: '先听他说完，日期让他自己定', next: 'c4_2_xu_listen_0', effect: { heart: 1, flag: 'c4_xu_listened', badge: 'c4r_xu_listened' } },
+  { text: '问手术医院和部位，先留个线索', next: 'c4_2_xu_records_0', effect: { flag: 'c4_xu_cancel' } },
+  { text: '告诉他资料可以先核，不催预约', next: 'c4_2_xu_listen_0', effect: { flag: 'c4_xu_cancel' } },
+], { bg: 'bg_c4_city_corridor_v1', sprite: 'me', communication: 'call' })
+chain('c4_2_xu_listen', [
+  ['mystery', '……那我再把纸袋翻一遍。你先别给我排日期，我准备好了自己打电话。', { communication: 'call', effect: { flag: 'c4_2_xu' } }],
+  ['sys', '他挂了电话。你记下“取消”，把来电时间和他刚才担心的事一并写进交接。', { effect: { flag: 'c4_xu_cancel' } }],
+], 'c4_2_close_0', 'bg_c4_city_corridor_v1')
+chain('c4_2_xu_records', [
+  ['mystery', '腰椎，老县医院。别的我真不知道，你先从这儿查吧。', { communication: 'call', effect: { flag: 'c4_2_xu' } }],
+  ['sys', '电话断了。你把这两个找资料的起点写进交接，日期仍然空着，等他自己再约。'],
+], 'c4_2_close_0', 'bg_c4_city_corridor_v1')
+chain('c4_2_mrcp', [
+  ['sys', '事故征候已经记录，工程人员处置并核过现场后，夜班恢复。这位疑似胆总管结石的患者眼白发黄，陪他来的女儿攥着车钥匙，说下午他疼得蹲在货梯边。', { caseId: 'c4_city_mrcp' }],
+  ['worker', '**右上腹疼了两天，今早眼白也黄了。**刚才那一下，不会算我头上吧？'],
+  ['me', '先顾您的检查，眼镜的事由我们记录。您这疼是一直疼，还是一阵一阵？吃东西和休息会影响吗？'],
+  ['worker', '前天吃了顿红烧肉，晚上开始绞痛，一阵一阵，还牵到右背。休息也不顶用，昨天在急诊挂水才轻一点。尿色跟浓茶似的，倒是没发烧。'],
+  ['sys', '女儿补充：昨天超声提示胆囊结石，胆总管可疑扩张；他今天按医嘱没吃饭，只按护士交代喝了少量水。'],
+  ['me', '这次**MRCP**主要看胆管里有没有结石、堵在哪里，以及胆管扩张到什么程度。昨天的超声、挂水情况和发热有没有，我都会一起交清。'],
+  ['worker', '那我屏气要是跟不上呢？'],
+  ['me', '听提示，跟不上就说，咱们再想办法。别硬憋到脸白。']
+], 'c4_city_mrcp_scan')
+scan('c4_city_mrcp_scan', '腹部序列采集中。', 'MRCP · 腹部采集', 'c4_2_mrcp_result_0', 'abdomen', 'city-3t')
+chain('c4_2_mrcp_result', [
+  ['sys', '图组传回后，沈岚给你看一张真实MRCP病例参考。原图b箭头指向胆总管，黄圈标出结石所在的充盈缺损。', { image: 'mri_real_mrcp_v1', imageLabel: 'MRCP｜胆总管结石' }],
+  ['shen', '胆管这么亮，黄圈里怎么反而是暗的？'],
+  ['me', 'MRCP突出胆管里的水，结石常留下暗的小缺口。能帮着看堵在哪里，还得和完整序列、化验一起看。'],
+  ['sys', '女儿问是不是一定要住院、今晚还能不能让他回去开车。'],
+  ['me', '住不住院要看疼痛、黄疸、发热和化验，急诊医师会一起判断；今晚先别让他开车送货。'],
+], 'c4_2_mrcp_q')
+question('c4_2_mrcp_q', 'shen', '女儿要送他回急诊，还惦记排班。你怎么帮？', [
+  { text: '把图和病情交急诊，钥匙给女儿', next: 'c4_2_mrcp_handoff_0', effect: { skill: 1 } },
+  { text: '让她先请假，你陪患者等交接', next: 'c4_2_mrcp_family_0' },
+  { text: '先写清急诊入口，再替她看行李', next: 'c4_2_mrcp_family_0' },
+], { image: 'mri_real_mrcp_v1' })
+chain('c4_2_mrcp_handoff', [
+  ['worker', '钥匙给她。明天那趟货谁爱送谁送，我先把这阵疼弄明白。'],
+  ['me', '该写的我都放进急诊交接单了。您先别惦记明天那趟货，咱们过去让医师接着看。'],
+], 'c4_2_xu_0')
+chain('c4_2_mrcp_family', [
+  ['sys', '女儿走到一边打电话，终于不再一边请假一边问父亲“你怎么不早说”。'],
+  ['worker', '她请一天假扣钱。你等会儿把去哪儿、找谁写给她，别让她又跑错门。'],
+], 'c4_2_xu_0')
+chain('c4_2_close', [
+  ['sys', '快收班时，老范发来两版报价。第二版多了一行“AI智能重建”，他在旁边画了个大大的问号。'],
+  ['shen', '那张维修标签有回话了：不是原厂编号。回县以后沿维修单找经手人就行，跟软件报价别搅一起。', { effect: { flag: 'c4_repair_tag' } }],
+  ['wen', '报价是我整理的。基本重建本来就有，AI重建是我们原厂的单列选配。名字写得含糊，这页我回去重出。', { communication: 'sms', phone: 'char_wen', sprite: '' }],
+  ['wen', '软件我按原厂单列说明。配件不属于这次报价，别再往里加。', { communication: 'sms', effect: { flag: 'c4_wenwen_contacted' } }],
+  ['shen', '行了，周二收班。你把人跟明白了，剩下的回去慢慢核。别在火车上还抱着报价看。', { effect: { flag: 'c4_city_week_completed' } }]
+], 'c4_2_end', 'bg_c4_city_staff_room_v1')
+settle(2, '进修证里多了张维修标签照片，手机里有雯雯重发的报价。两件事分开放，终于不用挤在同一句话里。', 160, 'c4r_city_finished')
 
-// 3. An unresolved present illness and a separate, verifiable family history.
+// 第三段：原厂软件报价与A17维修单分开，谁也不用替另一张纸解释。
 chain('c4_3_open', [
-  ['sys', '11月20日，周六早上。今天仍是预约白班，许建平的头部与颈部检查排在上午。你把两份申请分开，许宁端来的杯子底下，多了一张歪歪扭扭的姓名贴。'],
-  ['zhou', '谁把她杯子贴成“许老师”的？'],
-  ['me', '您。周四交班说字写大点，写完还挺满意。'],
-  ['zhou', '哦，那不用改了。许老师，上午这两份申请，你跟他一起核。'],
-], 'c4_3_hub', 'bg_mri_corridor_day_v2')
-hub(3, [['档案窗口找小唐', 'c4_3_tang_0', 'c4_3_tang'], ['控制室听许宁吐槽', 'c4_3_ning_0', 'c4_3_ning'], ['休息室找小雷', 'c4_3_lei_0', 'c4_3_lei']], 'c4_3_xu_0')
-chain('c4_3_tang', [
-  ['tang', '查旧档案先给姓名、年代和授权，别只给我一句“有个老头”。', { effect: { ap: -1 }, giftTo: 'tang' }],
-  ['me', '你这是骂谁呢？'],
-  ['tang', '不点名。有的人把档案窗口当许愿池，还不投币。'],
-  ['me', '我把需要的资料列好。查到同名的也不能直接算数。', { effect: { flag: 'c4_3_tang' }, card: 'c4_records' }],
-], 'c4_3_hub', 'bg_mri_corridor_day_v2')
-chain('c4_3_ning', [
-  ['ning', '昨天有人看见三套序列，问是不是前两套都拍坏了。解释完，他又问怎么知道第三套没坏。', { effect: { ap: -1 }, giftTo: 'ning' }],
-  ['me', '那你最后怎么说？'],
-  ['ning', '拿同一个位置给他看。T2里水亮，FLAIR里水压暗，他才知道我不是悄悄重来三次。'],
-  ['me', '这回我也记住了。光说“不同序列”，听着确实像我在拿名字糊弄人。', { effect: { flag: 'c4_3_ning' }, card: 'c4_flair' }],
-], 'c4_3_hub')
-chain('c4_3_lei', [
-  ['lei', '回函只列了一个任务号，可当年不止一个。前期那份样本条件，我也列过。', { effect: { ap: -1 }, giftTo: 'lei' }],
-  ['me', '那你前天为什么只说日期？'],
-  ['lei', '前头写了我名字，我怕他们顺势把后面那些全推过来。范围没核齐，我还想先等等。'],
-  ['me', '可你不交，他们怎么核？至少把前期文件登记进去，不确定的另写。', { effect: { flag: 'c4_3_lei' } }],
-], 'c4_3_hub', 'ch2_bg_breakroom_day')
-chain('c4_3_xu', [
-  ['sys', '许建平从候诊椅上起来，把申请单抹平。外套领口松着，左颈贴了门诊查体留下的位置标记。'],
-  ['mystery', '这块鼓起来有六个星期了。不怎么疼，我当时没管。', { caseId: 'c4_xu_neck' }],
-  ['zhou', '门诊的记录我们看了。这次颈部要进一步看，头痛也有单独的申请，两份我都跟您核一下。'],
-  ['mystery', '头疼的时候，我就想开车那会儿，找个服务区歇歇。退了休，倒不知道往哪歇。'],
-  ['me', '先坐会儿。您今天不用赶下一站。'],
-], 'c4_3_xu_q', 'bg_mri_corridor_day_v2')
-question('c4_3_xu_q', 'me', '他把片袋夹在膝盖中间，手还攥着带子。', [
-  { text: '「检查的事先说清，您有什么不放心的？」', next: 'c4_3_xu_listen_0', effect: { heart: 1 } },
-  { text: '「旧片先给我吧，我给您按日期排好。」', next: 'c4_3_xu_sort_0' },
-], { bg: 'bg_mri_corridor_day_v2', sprite: 'pat_mystery' })
-chain('c4_3_xu_listen', [['mystery', '我不怕机器。怕拍完，还是一句“再看看”。'], ['me', '我记下来，报告出来请医师跟您说清。下次去哪儿、找谁，也别让您回家才想起来问。']], 'c4_3_head_0', 'bg_mri_corridor_day_v2')
-chain('c4_3_xu_sort', [['mystery', '别弄混。我的片子，和我爸的资料，是两袋。'], ['me', '明白。先核这袋的姓名和日期，另一袋您自己收好。']], 'c4_3_head_0', 'bg_mri_corridor_day_v2')
-chain('c4_3_head', [
-  ['sys', '检查计划和安全筛查确认好后，许建平放下两只纸袋。许宁接好头部线圈，确认防护和呼叫，你们回控制台开始本次头部采集。'],
-  ['ning', '头部这几组到了。先找同一位置的脑脊液，刚好用来对照三种看法。', { image: 'mri_brain_t2', imageLabel: '本次头部 MRI｜采集后 T2 加权' }],
-], 'c4_3_tool')
-steps.c4_3_tool = { bg: 'bg_mri_control_day_v2', speaker: 'ning', sprite: 'char_mri_colleague', text: '这三组都是刚才那次检查。切着看就行，不用重新进机房。',
-  tool: { kind: 'mri', task: 'sequence', title: '同一层，不同对比', prompt: '轮流查看 T1、T2 与 FLAIR，比较脑脊液信号，不必猜疾病。', image: 'mri_brain_t1',
-    images: { T1: 'mri_brain_t1', T2: 'mri_brain_t2', FLAIR: 'mri_brain_flair' }, help: '常见头部方案中，脑脊液在 T1 较暗、T2 较亮；FLAIR抑制自由液体信号。灰度还受具体参数影响，不能单凭亮暗诊断。', next: 'c4_3_neck_0' } }
-chain('c4_3_neck', [
-  ['sys', '颈部采集随后完成。老周把标记位置、相邻层和多组序列放在一起，不把头部片子里的亮暗当成颈部问题的解释。', { image: 'mri_neck', imageLabel: '本次颈部 MRI｜待综合判读' }],
-  ['zhou', '颈部这组也到了。申请单写的是左侧，你先找位置，我把相邻层开在旁边。', { image: 'mri_neck' }],
-  ['me', '这儿两边不太一样，我再跟前后两层对一对。', { image: 'mri_neck' }],
-], 'c4_3_neck_q')
-question('c4_3_neck_q', 'me', '老周把鼠标让给你，等着看你先翻哪一组。', [
-  { text: '比较左右颈部软组织，再看相邻层是否延续', next: 'c4_3_neck_keep_0', effect: { skill: 1 } },
-  { text: '我还对不上，请老周指着相邻层一起看', next: 'c4_3_neck_ask_0' },
-], { image: 'mri_neck' })
-chain('c4_3_neck_keep', [['zhou', '这里，左侧深颈部是一组淋巴结样软组织异常。形态和范围先记清，性质不能光靠这组定。']], 'c4_3_neck_talk_0')
-chain('c4_3_neck_ask', [['zhou', '看我指的这里，左侧深颈部。相邻层能接上这组淋巴结样软组织异常；下一步还得结合临床。']], 'c4_3_neck_talk_0')
-chain('c4_3_neck_talk', [
-  ['sys', '医生向许建平解释目前的不确定性，安排耳鼻喉门诊继续评估；头痛的随访单独保留。', { effect: { flag: 'c4_neck_followup' }, card: 'c4_uncertain' }],
-  ['mystery', '这次不是让我回家干等，是吧？'],
-  ['zhou', '不是。这里是门诊预约和联系人，您跟着这张走；有变化及时回来，我把今天的发现交过去。'],
-  ['mystery', '好。还有个事……我爸叫许守义。1998年离家，最后有人在你们医院见过他。'],
-  ['sys', '他打开另一只旧纸袋。旧照片、户籍关系材料和一张过期的寻人启事，不是你方才看过的检查影像。'],
-  ['me', '您愿意的话，我们走正式查询。先从姓名、日期和身份关系核起。'],
-  ['mystery', '别帮我瞎认一个人。我认错过，难受得很。', { effect: { flag: 'c4_father_request' } }],
-], 'c4_3_end', 'bg_mri_corridor_day_v2')
-settle(3, '许建平的本次随访和父亲的档案查询分成两份记录。诊疗没有被寻人打断，旧资料也没有混进本次报告。', 240)
-
-// 4. The discrepancy is between documents about 2025 exports, not a live device.
-chain('c4_4_open', [
-  ['sys', '11月23日，周二上午交班。信息科送来2025年的旧任务索引，设备科也从自己的邮件档里找到《样本整理建议》。今天预约照常；主任把双方的材料登记好，约了下午患者检查结束后再谈。'],
-  ['lei', '索引里的接收端是**R-17**。另一份是前期联调时列的条件，文件上会留联系人。'],
-  ['me', '可建议书上写的是你起草，提交日期还在CT试运行前。你前面只说自己接过线。'],
-  ['lei', '前期列过些条件。具体拿去做什么，还得查他们那边。韩经理下午来，先让他把范围补齐。'],
-], 'c4_4_hub', 'bg_mri_corridor_day_v2')
-hub(4, [['休息室问问小凯', 'c4_4_kai_0', 'c4_4_kai'], ['走廊找老范', 'c4_4_fan_0', 'c4_4_fan'], ['控制室核对登记', 'c4_4_ning_0', 'c4_4_ning']], 'c4_4_han_0')
-chain('c4_4_kai', [
-  ['kai', '韩经理那句“我们一贯重视”，我听了三遍，前头那个“一贯”一遍比一遍长。', { effect: { ap: -1 }, giftTo: 'kai' }],
-  ['me', '你是来打听，还是来模仿的？'],
-  ['kai', '本来想打听。聊完只记住他领带上有只小鹿。'],
-  ['me', '那你先别替他转述，下午让他把原话写在回复里。领带的事留着吃饭说。', { effect: { flag: 'c4_4_kai' }, card: 'c4_privacy' }],
-], 'c4_4_hub', 'ch2_bg_breakroom_day')
-chain('c4_4_fan', [
-  ['fan', '新设备验收是验收，旧数据项目是旧项目。谁也别拿一张新合同盖掉旧事。', { effect: { ap: -1 }, giftTo: 'fan' }],
-  ['me', '您这回说话很像开会。'],
-  ['fan', '我这是防他们把两笔账订成一本。钉书机有时比嘴快。'],
-  ['me', '两份各开一个夹子吧。您按着这页，我把编号贴上，钉书机先收起来。', { effect: { flag: 'c4_4_fan' } }],
-], 'c4_4_hub', 'bg_mri_corridor_day_v2')
-chain('c4_4_ning', [
-  ['ning', '有人打电话问能不能导几套新片给工程师“顺便看看”。我让他把申请发正式渠道了。', { effect: { ap: -1 }, giftTo: 'ning' }],
-  ['me', '他说什么？'],
-  ['ning', '说别人都这么发。我说那你别选我。'],
-  ['me', '没给就好。等会儿把这通电话登记一下，他要再来问，直接找负责的人。', { effect: { flag: 'c4_4_ning' } }],
-], 'c4_4_hub')
-chain('c4_4_han', [
-  ['sys', '下午四点半，最后一位预约者取走衣物，临床工作交给下一班。你洗过手到办公室，主任把韩经理请到谈话桌，旧邮件、任务索引和现在的回函都已摊开。'],
-  ['han', '旧项目的回函各位都收到了。我们清理完成，院方签个回执就行。'],
-  ['director', '收到文件，我可以签。全部清理完成，这里还有一批你没回答，我现在拿什么确认？'],
-  ['han', '是公司统一模板，不必把每个字——'],
-  ['lei', '那请把“全部”对应的任务清单补上。'],
-  ['sys', '主任翻到《样本整理建议》的日期页：“这份也请贵方核实接收记录。不能只回现在这张清单。”韩经理应了一声，没再催签字。'],
-], 'c4_4_receipt_q', 'bg_office_day')
-question('c4_4_receipt_q', 'me', '回函写“本项目数据全部删除”；院方独立留存的旧任务索引，还列着R-17对应的另一批次。', [
-  { text: '请他逐项对照任务号和删除范围', next: 'c4_4_receipt_scope_0', effect: { skill: 1 } },
-  { text: '先登记差异，交信息科正式追问', next: 'c4_4_receipt_record_0' },
+  ['sys', '回县第一天，老范把两版报价摊在办公桌上。小唐抱着预约本进来，顺手把压在“AI智能重建”那行上的茶杯挪开。', { effect: { flag: 'c4_old_contract' } }],
+  ['fan', '院长就问了一句：这东西不买，机器还能不能扫？我答不上来，先找你们。'],
+  ['tang', '机器什么时候装我还没排到患者。你们先把这个答明白，别今天说能，明天又让我挨个打电话改口。'],
+  ['lei', '我上次拒签也不是跟AI有仇。没写清试用多久、以后怎么收钱，我哪敢替信息科点头。', { effect: { flag: 'c4_old_contract' } }]
+], 'c4_3_quotes_0', 'bg_office_day')
+chain('c4_3_quotes', [
+  ['wen', '我重说：**基本重建已经包含，AI重建是原厂单列选配**。不买AI，常规检查照做。上一版写成“数据服务”，是我图省事。', { effect: { flag: 'c4_contract_split' }, image: 'item_c4_quote_folder_v1', imageLabel: '采购报价夹｜基本重建与选配分列', closeup: true }],
+  ['me', '那这页就留三件事：原厂AI、单列价格、授权期限。别再把基本功能算一遍钱。'],
+  ['wen', '行，我改。还有一张30天试用单，装机时愿意试再开，账号和到期日都写上；不采购就不收正式授权费。'],
+  ['lei', '这样我能核。试用是试用，买不买等咱们用完再谈。'],
+  ['wen', '采购配置就按这版写，试用账号和期限单独列，不相关的东西别塞进来。']
+], 'c4_3_quote_q', 'bg_office_day')
+question('c4_3_quote_q', 'me', '采购首页还空着。你先写哪句？', [
+  { text: '基本重建已含，原厂AI单列', next: 'c4_3_quote_clear_0', effect: { skill: 1, badge: 'c4r_need_first' } },
+  { text: '先列原厂AI报价，基本功能后补', next: 'c4_3_quote_wrong_0' },
+  { text: '先列试用账号和到期日', next: 'c4_3_quote_wrong_0' },
 ], { bg: 'bg_office_day' })
-chain('c4_4_receipt_scope', [['han', '这个可能是另一服务单，未必属于那份回函。'], ['me', '那您写的“全部”到底到哪一批？要是两张服务单，就两张都对一下。']], 'c4_4_conflict_0', 'bg_office_day')
-chain('c4_4_receipt_record', [['director', '把未覆盖的编号列出，请贵方书面回复。今天不签“全部已核实”。'], ['han', '我回去向公司再核一下。']], 'c4_4_conflict_0', 'bg_office_day')
-chain('c4_4_conflict', [
-  ['sys', '信息科把未覆盖的批次逐项登记。你核了一遍：都是2025年断网前的历史任务，当前终端仍离线，问题在此前那些资料的去向。', { effect: { flag: 'c4_receipt_conflict', badge: 'c4_receipt' } }],
-  ['han', '小雷，样本筛选条件也是你发过来的，不只有接口。这份建议我们会查。'],
-  ['lei', '我列过条件，后面怎么用，我没有替你们签。该交的原稿，我会交。'],
-  ['director', '两边各交自己的原始记录。提过什么、接收过什么、后来用到哪里，分别核，别把一件事全塞进“联调”两个字。'],
-  ['sys', '韩经理收好文件离开。门关上后，休息室那台坏转盘的微波炉“叮”了一声，谁也没动。'],
-], 'c4_4_lei_0', 'bg_office_day')
-chain('c4_4_lei', [
-  ['lei', '那份建议是我写的。前期他们问院里能整理什么，我就列了条件。'],
-  ['me', '可那份原稿一直没在你交的审计材料里。为什么？'],
-  ['lei', '回执副本和原稿一直在我这儿。我报了外传记录，没交这份建议。我怕一交，就把后面的事也全算到我头上。'],
-  ['me', '你跟我们讲接过线，我们就按接线查。今天是设备科从自己的邮箱翻出来，才知道还有这份。'],
-  ['lei', '对，这件我没说全。断线的记录都在，我也没删。这份现在交，后面的用途我得跟原始记录一起核。'],
-], 'c4_4_lei_q', 'ch2_bg_breakroom_day')
-question('c4_4_lei_q', 'me', '小雷把筷子掰开，又放回饭盒上。', [
-  { text: '「先把记录正式交齐。其他的，之后再谈。」', next: 'c4_4_lei_file_0' },
-  { text: '「我有点生气。今天你别再漏一件。」', next: 'c4_4_lei_angry_0' },
-], { sprite: 'char_lei', bg: 'ch2_bg_breakroom_day' })
-chain('c4_4_lei_file', [['lei', '我现在去交。你不用替我送，登记的人还在办公室。']], 'c4_4_late_0', 'ch2_bg_breakroom_day')
-chain('c4_4_lei_angry', [['lei', '我知道。记得的写时间，不确定的单列。我先去交，你吃饭，不用在这儿等我。']], 'c4_4_late_0', 'ch2_bg_breakroom_day')
-chain('c4_4_late', [
-  ['sys', '信息科分别签收小雷交出的原稿、副本，以及设备科独立留存的邮件。起草日期一致，样本后续用途仍待接收方核验。你们没有删文件，也没有追进外部系统。'],
-  ['ning', '你们的饭我热了。转盘不动，我中间手转过一次。'],
-  ['me', '谢谢，今天居然是饭先等我。'],
-  ['sys', '窗外已经是傍晚。你刚把饭吃完，收件箱弹出档案窗口的回信：许守义，1998年，找到一项转诊登记，身份仍需复核。你把回信留给原受理窗口，约明天跟进。'],
-], 'c4_4_end', 'ch2_bg_breakroom_day')
-settle(4, '旧任务索引、回函、设备科留存邮件和小雷补交的原稿已分别登记。他在试运行前参与样本方案的记录留下了，后续用途仍由院方核查。', 260)
+chain('c4_3_quote_clear', [
+  ['zhou', '这就能看了。要不要买以后再说，至少今天知道没它也开得起来。'],
+  ['wen', '我按这句重出附件。试用单另放，账号和期限不藏在报价小字里。']
+], 'c4_3_bai_0', 'bg_office_day')
+chain('c4_3_quote_wrong', [
+  ['lei', '首页还漏了“基本重建已含”。原厂AI单列，试用另放，也补上。'],
+  ['wen', '我按这三项重出附件，账号和期限放试用单，不藏在小字里。']
+], 'c4_3_bai_0', 'bg_office_day')
+chain('c4_3_bai', [
+  ['bai', '我是老白，卖线圈转接件和常用备件的。老范把A17标签照片转给我了。以后缺备用件可以问我，批次、兼容机型和质保我会写清。', { communication: 'sms', phone: 'char_bai', sprite: '', image: 'item_c4_a17_parts_v1', imageLabel: 'A17标签与线圈转接件｜老白发来的配件照片', closeup: true }],
+  ['me', '资料先发来。今天只核采购配置，不买配件。', { effect: { flag: 'c4_a17_batch' } }],
+], 'c4_3_hub', 'bg_office_day')
+// 旧存档可能停在已压缩的短信中段；保留原节点ID并直接接回采购主线。
+for (const id of ['c4_3_bai_2', 'c4_3_bai_3', 'c4_3_bai_4']) {
+  steps[id] = { bg: 'bg_office_day', speaker: 'sys', sprite: '', sprite2: '', image: '',
+    text: '配件资料已收进采购夹，今天只核采购配置。', next: 'c4_3_hub' }
+}
+hub(3, '采购会还没开始。旧合同夹在桌角，门口设备送货员正拿卷尺比划机房路线。', [
+  ['📁 旧合同夹 · 找第二章那张远程支持附件', 'c4_3_archive_0', 'c4r6_3_archive', {}],
+  ['📏 机房门口 · 跟设备送货员走一遍转弯路线', 'c4_3_door_0', 'c4r6_3_door', {}],
+  ['🪑 会议室 · 帮老范扶正那条旧长椅', 'c4_3_help_fan_0', 'c4r6_3_help_fan', {},
+    { chance: 0.3, next: 'c4_3_help_fan_mishap_0', effect: { gold: -25, badge: 'good_intentions' } }],
+], 'c4_3_tender_0', '带着两版附件进采购会')
+chain('c4_3_archive', [
+  ['sys', '旧合同夹里还留着第二章见过的远程支持附件。小雷翻到最后一页，把这次的原厂AI试用单放在旁边。'],
+  ['lei', '以前那句“远程支持”太能装了。这次就写明白：原厂AI，30天，哪个账号，谁批准。'],
+  ['me', '试用单留账号和期限，和维修记录分开放。以后真看见登录，也知道先翻哪张纸。', { effect: { flag: 'c4r6_3_archive' } }]
+], 'c4_3_hub', 'bg_office_day')
+chain('c4_3_door', [
+  ['sys', '设备送货员把卷尺拉到门框外，又让你在转角站一下。担架床推过去时，他抬手护住床尾那只输液架。'],
+  ['courier', '纸上八十厘米，拐弯可不会自己变宽。你们买机器，也顺手看看我们怎么把东西送进去。'],
+  ['me', '门框、转角和床尾都记。真等货车到了再量，今天站这儿的人就得变成门柱。', { effect: { flag: 'c4r6_3_door' } }],
+], 'c4_3_hub', 'bg_c4_county_corridor_preinstall_v1')
+chain('c4_3_help_fan', [
+  ['sys', '你和老范把旧长椅抬正，顺手把松动的椅脚垫稳。来开会的人终于不用轮流坐那条“会思考的椅子”。'],
+  ['fan', '行，至少今天没人一边谈预算一边滑到桌子底下。', { effect: { flag: 'c4r6_3_help_fan' } }],
+], 'c4_3_hub', 'bg_office_day')
+chain('c4_3_help_fan_mishap', [
+  ['sys', '（**意外**）椅脚刚垫好，长椅另一头翘起，碰翻了老范放在地上的收纳盒。你蹲着捡了半天，还赔了一瓶新胶水。'],
+  ['fan', '扶椅子送地面整理，划算。就是下回先告诉我盒盖没扣。', { effect: { flag: 'c4r6_3_help_fan' } }],
+], 'c4_3_hub', 'bg_office_day')
+chain('c4_3_tender', [
+  ['sys', '采购办核配置、压价，老范把科研展示软件和额外赠品划到一边，会议室终于不再每页都出现“赠送”。'],
+  ['director', '预算还得收。第一刀砍哪里，你说。'],
+], 'c4_3_budget_q', 'bg_office_day')
+question('c4_3_budget_q', 'director', '预算还得收。第一刀落哪儿？', [
+  { text: '先保线圈、机房、人手和维修', next: 'c4_3_budget_keep_0', effect: { skill: 1, flag: 'c4_budget_right' } },
+  { text: '先保机房，线圈以后按任务再添', next: 'c4_3_budget_wrong_0' },
+  { text: '先保人员和维修，展示软件也留', next: 'c4_3_budget_wrong_0' },
+], { bg: 'bg_office_day' })
+chain('c4_3_budget_keep', [
+  ['fan', '冯叔那份换机记录也夹进去。3T刚响就中止，换0.55T大孔径后完成了四组。大孔径不是宣传词，咱们真碰见过用得上的人。'],
+  ['director', '那就按这个重写。机器回来要天天用，不是先来拍一张合影。'],
+], 'c4_3_decision_0', 'bg_office_day')
+chain('c4_3_budget_wrong', [
+  ['zhou', '机房和日常检查先排前面。展示软件往后排，线圈也别等接了患者再借。'],
+  ['me', '那首页先写常规线圈、机房、接班人员和维修。'],
+], 'c4_3_decision_0', 'bg_office_day')
+chain('c4_3_decision', [
+  ['sys', '最后定的是0.55T、80厘米孔径，常规线圈、机房改造和维修都留着。**基本重建不重复收费，原厂AI不捆绑购买**；那张30天试用单单独装进了交接袋。', { effect: { flag: 'c4_procurement_decided' }, card: 'c4_field' }],
+  ['wen', '试用单我重写，账号、开启日、到期日都印清楚。屏蔽门要晚十天，我也不再说“尽快”，哪天能装写哪天。'],
+  ['tang', '其他联系方式先放采购夹最后。以后真需要另开单，不跟今天的配置混在一起。'],
+  ['tang', '晚十天这句我先拿走。预约本现在改，比患者到门口再改强。']
+], 'c4_3_delay_q', 'bg_office_day')
+question('c4_3_delay_q', 'tang', '六个人已经约了。先打哪通电话？', [
+  { text: '先核准装机日，再逐个改约', next: 'c4_3_delay_call_0', effect: { skill: 1, flag: 'c4_delay_handled', badge: 'c4r_no_shortcut' } },
+  { text: '先通知延期，日期核准后再回电', next: 'c4_3_delay_people_0', effect: { flag: 'c4_delay_handled', badge: 'c4r_no_shortcut' } },
+  { text: '先问谁愿意改外院，再统一改约', next: 'c4_3_delay_people_0', effect: { flag: 'c4_delay_handled', badge: 'c4r_no_shortcut' } },
+], { bg: 'bg_office_day' })
+chain('c4_3_delay_call', [
+  ['wen', '11月6日能装。我把这句话写进交接单，改了我再提前说。', { communication: 'call', phone: 'char_wen', sprite: '' }],
+  ['tang', '行，我按这天往后排。想改到别家的也给人留选择，别光顾着把咱们的本子填满。'],
+], 'c4_3_install_0', 'bg_office_day')
+chain('c4_3_delay_people', [
+  ['sys', '第一位阿姨听完就问：“晚一些是哪天？我公交车票也不是刮风捡的。”小唐看了你一眼，把电话开了免提。', { communication: 'call' }],
+  ['me', '您说得对，没核准就不该让您等空话。雯雯，今天把能装机的日期写给我们，再由小唐逐个回电话。'],
+], 'c4_3_install_0', 'bg_office_day')
+chain('c4_3_install', [
+  ['sys', '十一月，货车进场。门框差两指宽，设备送货员掏出卷尺：“看吧，那天我就说转弯也要量。”'],
+  ['sys', '上午的吊装区拉起警戒带。吊车把磁体缓慢托起，安装工程师分守两侧，所有人等指挥手势，没有人从悬吊物下面穿过。', { image: 'cg_c4_magnet_lift_v1', imageLabel: '装机特写｜白天吊装MRI磁体', closeup: true, cameraMotion: 'pan' }],
+  ['zhou', '以前只在报价单上看见一个方框，真吊到门口，才知道这玩意儿有多沉。你站黄线外，别光顾着拍。'],
+  ['sys', '磁体落位后，工程师重新核水平、屏蔽、线圈与工作站。午后，检查床和控制系统都就位，交接单逐项签完，机房终于像间能接患者的检查室了。', { image: 'cg_c4_install_complete_v1', imageLabel: '装机特写｜MRI安装完成', closeup: true, cameraMotion: 'settle', bg: 'bg_c4_county_corridor_v1' }],
+  ['shen', '亮机了。市院那台是你认门，县院这台以后是患者认你们。', { communication: 'call', phone: 'char_c4_shen_v3', sprite: '', bg: 'bg_c4_county_control_v1' }],
+  ['bai', '交接做完我才进来。备用件和升级件以后可以问我，型号、兼容机型和质保我写清；今天不催你们买。', { image: 'item_c4_a17_parts_v1', imageLabel: '装机交接后｜老白上门介绍备用件', bg: 'bg_c4_county_preparation_v1' }],
+  ['tang', '报价先放准备柜，今天不采购，也不拿它签验收。兼容型号写全就行。患者改约电话还没打完，谁也别拉我去机房门口站排。', { bg: 'bg_c4_county_preparation_v1' }],
+  ['sys', '交接快做完，院长却在一楼机房门口抖开红绸，剪刀已经举起来。门内工程师还在核查，你赶紧从控制室跑过去拦住。', { image: 'cg_c4_ribbon_stop_v1', imageLabel: '一楼机房门口｜阻止剪彩', closeup: true, cameraMotion: 'push', bg: 'bg_c4_county_corridor_v1' }],
+  ['me', '院长，先别剪！**磁场没有下班键**，机房门口不能聚着人剪彩。剪刀先收好，咱们换个地方。', { image: 'cg_c4_ribbon_stop_v1', bg: 'bg_c4_county_corridor_v1' }],
+  ['director', '是我把安全想简单了。红绸挪到**医院正门**，这里只留工程师核查。老周，先带大家退开。', { image: 'cg_c4_ribbon_stop_v1', bg: 'bg_c4_county_corridor_v1' }]
+], 'c4_3_ribbon_outside_0', 'bg_c4_county_corridor_preinstall_v1')
+chain('c4_3_ribbon_outside', [
+  ['sys', '老周收好剪刀，设备科抬起红绸和隔离墩，跟你一起撤到警戒区外。机房门重新清净下来，工程师接着核完开机项目。'],
+  ['sys', '红绸重新挂在县医院正门外，院长在台阶前剪断它。科室和后勤的人站在台阶前道贺，机房那边工程师仍按交接单核查。', { image: 'cg_c4_ribbon_cutting_v1', imageLabel: '装机特写｜院长在县医院正门剪彩', closeup: true, cameraMotion: 'push' }],
+  ['director', '行，照片就在这儿拍。机房那边别围人，让工程师把活干完。'],
+  ['zhou', '照片有了，表也签了。小唐，明早别排太满，给第一天留点喘气的时间。', { effect: { flag: 'c4_installed_ready' } }]
+], 'c4_3_end', 'bg_c4_county_corridor_v1')
+settle(3, '红绸在正门收好，机房的交接项也签完了。小唐把新预约表贴在休息室，第一天空着两格，留给出错和喘口气。', 220, 'c4r_procurement_done')
 
-// 5. Growth means an accountable handover, not a magical diagnosis or shortcut.
+// 第四段：开机首日，小唐接来一位脑积水儿童；原厂AI试用单也有了用处。
+chain('c4_4_open', [
+  ['sys', '11月15日07:50，老范还惦记着补张工作照。小唐已经把预约表贴到休息室，第一格写着“三岁，头痛，妈妈陪”。'],
+  ['tang', '孩子来得早，在走廊数地砖呢。许建平刚也来过，预约单拿走，日期还空着。我没催他，档案窗口的地址写背面了。'],
+  ['zhou', '行，先接孩子。老范你要拍就拍这个，别又让我们站成一排说茄子。']
+], 'c4_4_hub', 'bg_c4_county_corridor_v1')
+hub(4, '孩子还在候诊区，妈妈抱着一叠门诊资料。合影的事，老范已经不敢再提了。', [
+  ['🪑 空预约椅 · 陪第一位家属坐一会儿', 'c4_4_chair_0', 'c4r6_4_chair', {}],
+  ['📇 控制室联络表 · 把急诊和工程师号码挪到同一页', 'c4_4_contacts_0', 'c4r6_4_contacts', {}],
+  ['🧯 候诊区 · 帮老周摆正轮椅和提示牌', 'c4_4_help_zhou_0', 'c4r6_4_help_zhou', {},
+    { chance: 0.3, next: 'c4_4_help_zhou_mishap_0', effect: { ap: -1, badge: 'good_intentions' } }],
+], 'c4_4_emergency_0', '跟小唐去接孩子')
+chain('c4_4_chair', [
+  ['sys', '第一位家属来得太早，手里攥着旧片袋，又不好意思问还要等多久。你把她安排到能看见叫号屏的位置。'],
+  ['me', '您前面就一位。真到了急诊插队，我会来告诉您，不让您坐着猜。'],
+  ['sys', '她把片袋放到腿上，终于腾出手喝了口水。', { effect: { flag: 'c4r6_4_chair' } }],
+], 'c4_4_hub', 'bg_c4_county_corridor_v1')
+chain('c4_4_contacts', [
+  ['sys', '急诊、值班医师、工程师原本散在三张纸上。你把号码并成一页，小唐又补上夜间报修入口。'],
+  ['tang', '这张贴控制台。真有事先能找着人，比翻一沓装机资料强。'],
+  ['me', '我再把急诊那格描粗一点。号码核过，今天就算没白整理。', { effect: { flag: 'c4r6_4_contacts' } }],
+], 'c4_4_hub', 'bg_c4_county_control_v1')
+chain('c4_4_help_zhou', [
+  ['sys', '你帮老周把轮椅停在黄线外，又把提示牌转向候诊椅。第一位家属不用再横着脖子找入口。'],
+  ['zhou', '牌摆得不错。就是“急诊优先”这四个字，等会儿别真把咱们合影挤没了。', { effect: { flag: 'c4r6_4_help_zhou' } }],
+], 'c4_4_hub', 'bg_c4_county_corridor_v1')
+chain('c4_4_help_zhou_mishap', [
+  ['sys', '（**意外**）你把提示牌转得太猛，底座滑出去，老周追了两步才捞回来。你又重新摆了一遍轮椅。'],
+  ['zhou', '牌子比患者先进急诊了。来，咱俩把它押回去。', { effect: { flag: 'c4r6_4_help_zhou' } }],
+], 'c4_4_hub', 'bg_c4_county_corridor_v1')
+chain('c4_4_emergency', [
+  ['sys', '小唐牵着女孩过来，孩子另一只手抱着只掉了一只角的布恐龙。妈妈跟在后面，门诊资料装在一个买菜袋里。'],
+  ['tang', '资料我核过了，筛查也问完。她怕一个人躺着，你先跟她讲讲，我去把儿童支垫拿来。'],
+  ['me', '恐龙可以在玻璃外陪小唐。你进去以后能听见我们说话，不舒服就捏呼叫。']
+], 'c4_4_head_0', 'bg_c4_county_corridor_v1')
+chain('c4_4_head', [
+  ['sys', '女孩三岁，进准备区还惦记她的恐龙。妈妈抱着她，话说得很急。', { caseId: 'c4_county_hydrocephalus', sprite: 'pat_c4_mother_child_pixel_v1' }],
+  ['mother', '这两周她老说头疼，早上起来吐过三回。最近走路也有点歪，幼儿园老师说她排队老撞人。'],
+  ['me', '以前脑袋受过伤吗？发热有没有？门诊医师看过以后，这次主要想查什么？'],
+  ['mother', '没摔过，也没发烧。门诊查体后让做头部MRI，说看看脑室。是不是脑子里长东西了？'],
+  ['child', '要躺多久呀？我想尿尿的时候怎么办？'],
+  ['me', '现在想去就先去，回来再扫。躺的时候别乱动，难受就告诉我们。小唐在外面拿着恐龙，出来就能看见。'],
+  ['tang', '恐龙借我抱一会儿。做完给你贴张新贴纸，它那张旧的我可不赔。']
+], 'c4_county_hydrocephalus_scan', 'bg_c4_county_preparation_v1')
+scan('c4_county_hydrocephalus_scan', '儿童头部T2轴位采集中。', '儿童头部 MRI · T2轴位采集', 'c4_4_head_result_0', 'head', 'county-055-wide')
+steps.c4_county_hydrocephalus_scan.scan!.positioningImage = 'trilogy_mri_scan_county_child_v1'
+// 旧存档若停在原扫描入口，也进入现役儿童病例，不恢复退役DWI病例。
+steps.c4_county_dwi_scan = { ...steps.c4_county_hydrocephalus_scan }
+chain('c4_4_head_result', [
+  ['sys', '轴位T2图出来了。老周把门诊申请和图一起发给接诊医师。', { image: 'mri_real_hydrocephalus_v1', imageLabel: '儿童头部轴位T2｜双侧侧脑室明显扩大' }],
+  ['zhou', '你先看图。脑室怎么样，交接里写什么？'],
+  ['me', '**双侧侧脑室明显扩大**，脑脊液在T2上很亮。写脑室扩大，结合晨起呕吐和步态不稳，提示脑积水可能。'],
+  ['mother', '孩子才三岁，真要是脑积水，是不是可能得做**脑室腹腔分流术**？'],
+  ['me', '若专科评估确有需要，**分流术可以把脑脊液引到腹腔，减轻积聚和颅内压，为孩子争取正常发育的机会**。病因、要不要手术和时机，还得接诊团队定。'],
+  ['child', '恐龙会不会也被淹？'],
+  ['me', '恐龙在外面，安全得很。你先跟小唐去穿鞋，妈妈跟我们走。']
+], 'c4_4_head_q')
+question('c4_4_head_q', 'zhou', '妈妈等着住院的答复。你怎么安排？', [
+  { text: '请小唐带她们去儿科接续评估', next: 'c4_4_head_handoff_0', effect: { heart: 1, badge: 'c4r_first_day' } },
+  { text: '先打印图组，再联系儿科', next: 'c4_4_head_route_0' },
+  { text: '让妈妈坐着等，你去送图和病史', next: 'c4_4_head_route_0' },
+], { image: 'mri_real_hydrocephalus_v1' })
+chain('c4_4_head_handoff', [
+  ['tang', '儿科那边我联系过了，他们现在就看图。你们跟我走，别在这儿等打印片。'],
+  ['me', '检查所见和这两周的变化我都写进去了。住不住院让接诊团队查完再定，您不用一个人在走廊猜。'],
+], 'c4_4_sequence_0', 'bg_c4_county_corridor_v1')
+chain('c4_4_head_route', [
+  ['tang', '图你送，人我留着。她早上又吐又走不稳，不能光拿报告回去等。'],
+  ['me', '症状都写上了。儿科回话说现在看，您跟小唐过去，住不住院由接诊团队评估。'],
+], 'c4_4_sequence_0', 'bg_c4_county_corridor_v1')
+chain('c4_4_sequence', [
+  ['tang', '孩子到儿科还问我贴纸贴衣服上会不会掉。这边先不用你，我把他们送稳就回来。'],
+  ['zhou', '行，等她们那边接上。你再看这张T2图，脑室里的水怎么这么亮？']
+], 'c4_4_sequence_q', 'bg_c4_county_corridor_v1')
+question('c4_4_sequence_q', 'zhou', '这张T2图上，脑脊液为什么亮？', [
+  { text: 'T2较长，接回波时信号还比较强', next: 'c4_4_sequence_right_0', effect: { skill: 1 } },
+  { text: 'T1较短，纵向磁化恢复得更快', next: 'c4_4_sequence_wrong_0' },
+  { text: '只要含水多，换哪种序列都会亮', next: 'c4_4_sequence_wrong_0' },
+], { image: 'mri_real_hydrocephalus_v1' })
+chain('c4_4_sequence_right', [
+  ['zhou', '对，等到接回波，水的横向信号还没衰减掉多少。同一处换成T1图，亮暗就不一样了。'],
+  ['me', '那我去看看控制台。刚才弹了个账号，跟试用单上的一样。'],
+], 'c4_4_remote_0')
+chain('c4_4_sequence_wrong', [
+  ['zhou', '这张主要看T2差异。水的横向信号衰减慢，到接回波时还比较强；换成T1图，可就不这么亮了。'],
+  ['me', '想起来了，市院那几张同一部位的图。诶，控制台又弹了个账号，我去看看。'],
+], 'c4_4_remote_0')
+chain('c4_4_remote', [
+  ['sys', '控制台右上角弹出远程授权校验。账号跟交接信封里的**原厂AI重建30天试用单**一模一样，不是陌生账号。'],
+  ['lei', '先别同意，账号和时间截个图。我问雯雯为什么装机第一天就开了试用。', { communication: 'sms', phone: 'char_lei', sprite: '' }]
+], 'c4_4_remote_q', 'bg_c4_county_control_v1')
+question('c4_4_remote_q', 'lei', '授权弹窗还在。你先怎么处理？', [
+  { text: '先拒绝，截图和试用单发小雷', next: 'c4_4_remote_log_0', effect: { skill: 1, flag: 'c4_remote_log' } },
+  { text: '先截屏，等厂家回话再处理', next: 'c4_4_remote_watch_0', effect: { flag: 'c4_remote_log' } },
+  { text: '先关试用，远程记录稍后补齐', next: 'c4_4_remote_log_0', effect: { flag: 'c4_remote_log' } },
+], { communication: 'sms', bg: 'bg_c4_county_control_v1' })
+chain('c4_4_remote_log', [
+  ['lei', '收到了。先断着，常规重建不受影响。雯雯没解释清试用，我让她自己回话。', { communication: 'sms' }],
+  ['me', '截图和试用单都留在交接夹。患者图像照常传，没人需要等这个弹窗点头。']
+], 'c4_4_wen_0', 'bg_c4_county_control_v1')
+chain('c4_4_remote_watch', [
+  ['lei', '别留着等。先拒绝，把截图和试用单发我，账号、期限、批准记录都得核。', { communication: 'sms' }],
+  ['me', '远程已拒绝，截图也发了。常规检查不受影响。']
+], 'c4_4_wen_0', 'bg_c4_county_control_v1')
+chain('c4_4_wen', [
+  ['wen', '是我装机时勾了**原厂AI重建30天试用**，以为试用单给你们就算说过。今天系统自动发起授权校验，确实该先跟你们讲。', { communication: 'sms', phone: 'char_wen', sprite: '' }],
+  ['me', '那现在就按试用单办：关掉试用和远程授权。我们没采购，也别到期后悄悄变成收费项目。'],
+  ['wen', '已经关了，小雷能查到记录。不采购、不收费。以后再用，重新申请、重新说清。', { communication: 'sms', effect: { flag: 'c4_ai_trial_closed' } }]
+], 'c4_4_close_0', 'bg_c4_county_control_v1')
+chain('c4_4_close', [
+  ['sys', '小唐回来时，白大褂口袋上多了一枚恐龙贴纸——孩子非要给“保管员”也贴一张。'],
+  ['fan', '工作照还拍吗？我看小唐这张脸比昨天的红绸喜庆。'],
+  ['zhou', '拍吧，别排队形了。谁手里有活就接着干，拍到什么算什么。']
+], 'c4_4_end', 'bg_c4_county_corridor_v1')
+settle(4, '首日合影里，小唐举着恐龙，老范的牌子还是反的。孩子已由儿科接走，妈妈没再一个人抱着资料猜；照片背面，小唐画了一只很圆的恐龙。', 200, 'c4r_first_day')
+
+// 第五段：运动伪影、膝部伪征与设备故障分开处理；证据按纸张和时间排列。
 chain('c4_5_open', [
-  ['sys', '11月25日，周四早上，最后一个设备学习白班。今天的加速方案评估安排在空闲工作站上，预约采集由当班同事负责。许宁给旧椅子贴了张纸：“轻坐，别旋转起飞。”'],
-  ['ning', '今天有个加速方案评估。主任说让你带我过一遍资料，别拿患者临时试。'],
-  ['me', '你来第一天说只要我教分机，现在连试飞都归我管。'],
-  ['ning', '放心，椅子目前还没获准起飞。'],
-], 'c4_5_hub', 'bg_mri_corridor_day_v2')
-hub(5, [['看表姐发来的消息', 'c4_5_family_0', 'c4_5_family'], ['走廊找老范', 'c4_5_fan_0', 'c4_5_fan'], ['休息室陪老周喝杯茶', 'c4_5_zhou_0', 'c4_5_zhou']], 'c4_5_research_0')
-chain('c4_5_family', [
-  ['sys', '表姐发来一段语音：“八个月，能把袜子藏三个地方。你说这孩子像谁？”', { effect: { ap: -1 }, communication: 'sms' }],
-  ['me', '像你。小时候藏作业也是这个路子。'],
-  ['sys', '她回了一个拖鞋表情，再发来宝宝的小视频：八个月的孩子靠着软垫，一手抓住一只袜子。随访稳定后的这几个月，家里的群聊已经被辅食和小衣服占满。'],
-  ['me', '袜子我下班再帮你找。上班呢，别一口气发十段，把重点先告诉我。', { effect: { flag: 'c4_5_family' } }],
+  ['sys', '第二天，小唐把候诊椅按检查时间排了排。腹痛阿姨先到，拄拐老师在门口慢慢收拐杖，冯叔的复查单压在下午那页。'],
+  ['tang', '阿姨先做，拄拐老师在后头。冯叔的旧片和后续单我也找出来了，今天别让人来了再满柜子翻。'],
+  ['zhou', '行，先看人。谁疼、谁怕、谁躺不住，先问清再开机。'],
+], 'c4_5_hub', 'bg_c4_county_corridor_v1')
+hub(5, '腹痛阿姨已经在候诊区，拄拐老师还在门外挪拐杖。准备柜里还压着一张备用件报价。', [
+  ['🔌 准备柜 · 核对备用件报价', 'c4_5_adapter_0', 'c4r6_5_adapter', {}],
+  ['🧭 候诊长椅 · 帮拄拐老师找个放拐杖的位置', 'c4_5_waiting_0', 'c4r6_5_waiting', {}],
+  ['✂️ 护士站 · 帮小唐裁一叠候诊提示卡', 'c4_5_help_tang_0', 'c4r6_5_help_tang', {},
+    { chance: 0.3, next: 'c4_5_help_tang_mishap_0', effect: { gold: -15, badge: 'good_intentions' } }],
+], 'c4_5_motion_0', '先接腹痛阿姨')
+chain('c4_5_adapter', [
+  ['sys', '备用件报价上只有型号、批次、兼容机型和“尚未采购”。你看完就放回柜里。', { image: 'item_c4_a17_parts_v1', imageLabel: '备用件报价｜尚未采购' }],
+  ['tang', '先放回去，今天不签采购单。阿姨还等着呢。'],
+  ['me', '型号留着，我回候诊区。', { effect: { flag: 'c4r6_5_adapter' } }],
+], 'c4_5_hub', 'bg_c4_county_preparation_v1')
+chain('c4_5_waiting', [
+  ['sys', '拄拐老师的拐杖总往椅子底下滑。你找来一个靠墙的位置，让他伸手能拿到，又不会绊到经过的人。'],
+  ['knee', '这拐杖，总往椅子底下跑。', { voice: 'vox_c4_knee_wait_r9' }],
+  ['me', '那今天不扣分。您坐这儿，叫号时我来帮您。', { effect: { flag: 'c4r6_5_waiting' } }],
+], 'c4_5_hub', 'bg_c4_county_corridor_v1')
+chain('c4_5_help_tang', [
+  ['sys', '你帮小唐把提示卡裁好，正面写候诊位置，背面留着改约电话。她拿走一半，压在护士站玻璃板下。'],
+  ['tang', '这张给刚才那位阿姨。她问第三遍“还要多久”了，不是难缠，是家里人还在等她回话。', { effect: { flag: 'c4r6_5_help_tang' } }],
 ], 'c4_5_hub', 'ch2_bg_breakroom_day')
-chain('c4_5_fan', [
-  ['fan', '储藏柜别堆到门口。能留下的老物件有老物件的位置，不能拿进磁体间当镇纸。', { effect: { ap: -1 }, giftTo: 'fan' }],
-  ['me', '您怎么老觉得我会拿奇怪的东西进去。'],
-  ['fan', '我防的是你们所有人，不只防你。昨天有人想拿普通工具箱进门，被拦在外头了。'],
-  ['me', '好，柜子我整理。工具该走什么审核就走什么审核。', { effect: { flag: 'c4_5_fan' } }],
-], 'c4_5_hub', 'bg_mri_corridor_day_v2')
-chain('c4_5_zhou', [
-  ['zhou', '给，茶叶蛋。不是病人送的，我楼下买的，最后两个。', { effect: { ap: -1 }, giftTo: 'zhou' }],
-  ['me', '您以前不是让我自己找吃的？'],
-  ['zhou', '那会儿你不知道把活交明白才走。现在会了，奖励一个。'],
-  ['me', '第二个呢？'],
-  ['zhou', '我的。别因为我夸你，就打我饭的主意。', { effect: { flag: 'c4_5_zhou' } }],
+chain('c4_5_help_tang_mishap', [
+  ['sys', '（**意外**）你把一叠纸裁歪了，最上面那张只剩“候”字。小唐笑完，让你用边角料重做一叠小便签。'],
+  ['tang', '这张“候”留着贴你电脑上。剩下的我裁，你负责把改约电话写全。', { effect: { flag: 'c4r6_5_help_tang' } }],
 ], 'c4_5_hub', 'ch2_bg_breakroom_day')
-chain('c4_5_research', [
-  ['sys', '办公室工作站里打开了批准用于这次评估的脱敏旧数据。许宁把来源和条件页放在屏幕旁，临床预约仍由当班同事照常完成，你们不另叫患者进来。'],
-  ['ning', '方案A快一些，方案B细节和噪声表现更稳。宣传页只写少等多少分钟。'],
-  ['me', '先看同一任务能不能完成。不是秒表赢了就算图像赢了。'],
-], 'c4_5_research_q')
-question('c4_5_research_q', 'me', '许宁把两组采集与重建记录摆好，等你选比较方式。', [
-  { text: '同样部位、同样任务，一起看时间和图像代价', next: 'c4_5_research_pair_0', effect: { skill: 1, badge: 'c4_safe_research' } },
-  { text: '先核对线圈、加速方式和重建条件是否一致', next: 'c4_5_research_coil_0', effect: { wealth: 1, badge: 'c4_safe_research' } },
-])
-chain('c4_5_research_pair', [['ning', '这组快了，但噪声和残留伪影也要算。不能把代价剪掉只留用时。']], 'c4_5_research_close_0')
-chain('c4_5_research_coil', [['ning', '用到多个线圈接收通道，还得看采样与重建。换个条件，不能直接照抄那一个加速数。']], 'c4_5_research_close_0')
-chain('c4_5_research_close', [
-  ['zhou', '把噪声和伪影那两栏也写上，我要看代价。今天交的是评估表，临床怎么用还得团队另审。', { card: 'c4_acceleration' }],
-  ['ning', '行。那我标题就不写“一键告别漫长检查”了。'],
-  ['me', '标题先空着，您那两栏还没填完。填完再看看好不好意思这么写。'],
-  ['sys', '小唐敲了敲外门。档案窗口完成了本院这段记录的身份复核，许建平也到了。'],
-], 'c4_5_transfer_0')
-chain('c4_5_transfer', [
-  ['tang', '姓名、年龄信息和当年的转诊登记能互相对应。是许守义，不是只撞了个同名。', { effect: { badge: 'c4_same_person' } }],
-  ['mystery', '那他那时候，真来过这里。'],
-  ['tang', '来过。记录是**1998年正式转往外地省院**，这有接收医院与转诊编号。后面怎样，本院这份不能替外院说。', { image: 'item_transfer_record', imageLabel: '经核验的本院转诊登记｜1998年' }],
-  ['sys', '许建平看了很久，没有去碰那张留在桌上的复印件。'],
-  ['mystery', '我以前跑长途，路过那个城市好多趟。每次都想着，下一趟再去问。'],
-], 'c4_5_transfer_q', 'bg_mri_corridor_day_v2')
-question('c4_5_transfer_q', 'me', '走廊只剩空调声。他终于松开攥着片袋的手。', [
-  { text: '等他缓一缓，再一起核对外院查询材料', next: 'c4_5_transfer_wait_0', effect: { heart: 1 } },
-  { text: '「我把现在能确认的，和还不知道的分开写。」', next: 'c4_5_transfer_write_0' },
-], { bg: 'bg_mri_corridor_day_v2', sprite: 'pat_mystery' })
-chain('c4_5_transfer_wait', [['mystery', '让我坐两分钟。你们先别走，我还想问问外院要带哪些资料。']], 'c4_5_transfer_done_0', 'bg_mri_corridor_day_v2')
-chain('c4_5_transfer_write', [['mystery', '给我吧。接收医院和编号写清，这回我不用一家家从头问了。']], 'c4_5_transfer_done_0', 'bg_mri_corridor_day_v2')
-chain('c4_5_transfer_done', [
-  ['sys', '在许建平授权下，档案窗口登记外院后续查询。你留下正式联系方法，没有把陌生人的旧胶片交给他认亲。', { effect: { flag: 'c4_father_transfer', badge: 'c4_transfer' } }],
-  ['mystery', '我颈上这个，也会按约再去看。别为找我爸，把眼前的事耽误了。'],
-  ['me', '两份事情都记着。您下回来，不用再从头讲。'],
-  ['sys', '他走后，小雷把补充材料的接收凭证放进柜子。韩经理还没交来逐项回复；前期建议如何对应R-17及后续独立批次，核查单上仍留着一个空格。'],
-  ['zhou', '下午交接你来讲。许宁在旁边听，下回她讲，你查漏。'],
-  ['me', '我现在算能带人了？'],
-  ['zhou', '算。但茶叶蛋没有按带教人数发。', { effect: { badge: 'c4_teacher' } }],
-], 'c4_5_end', 'bg_mri_corridor_day_v2')
-settle(5, '本班结束。研究比较、临床交接和两条后续查询各归各档。留下的是明确联系人和下一步，不是替未知写好的结论。', 280, 'c4_survivor')
+chain('c4_5_motion', [
+  ['sys', '腹痛阿姨扶着上腹进来，刚躺下就挪了两次。她先问的不是图，而是如果做不成会不会还得再跑一趟。', { caseId: 'c4_county_abdominal_motion' }],
+  ['aunt', '**上腹又胀又疼，躺久了更难受。**', { voice: 'vox_c4_aunt_r8' }],
+  ['aunt', '等下要是扫坏了，是不是又得花钱重拍？'],
+  ['me', '这种胀疼多久了？跟吃饭有关系吗？之前做过什么、用过什么药，这次医师主要想查什么？'],
+  ['aunt', '一个多月了，饭后更胀，右侧有时扯着疼。社区超声说肝上可能有个**血管瘤**，让我来MRI看清。我吃过胃药，没见效；没有发烧，也没眼黄。'],
+  ['me', '这次主要看超声说的那处肝内病变，同时把上腹其他情况一起交代。真要因为移动重扫，我会把原因、时间和下一步说清，费用问题陪您去窗口核。'],
+  ['aunt', '我店里忙，推拿时趴着还能忍，仰卧久了就想动。不是我不配合。'],
+  ['tang', '这个软垫放膝下，您试试。别为了不动硬憋，难受就捏呼叫；我们先做最需要的几组。'],
+  ['sys', '她点头后，你固定好支垫，让她在真正开始前先试躺片刻。']
+], 'c4_county_abdominal_motion_scan')
+scan('c4_county_abdominal_motion_scan', '腹部首段序列采集中。', '腹部 MRI · 首段采集', 'c4_5_motion_result_0', 'abdomen', 'county-055-wide')
+chain('c4_5_motion_result', [
+  ['sys', '她的首段图因挪动出现模糊。老周另调出一幅真实文献参考：黄圈里的亮圆是主动脉，沿着**相位编码方向**留下了一串重复鬼影。', { image: 'mri_real_motion_ghost_v1', imageLabel: '运动伪影｜主动脉搏动鬼影与相位编码方向', card: 'c4_quality' }],
+  ['zhou', '这一串圆影子是什么？和她的模糊是一回事吗？'],
+  ['me', '这张文献图是**血管搏动**留下的鬼影，她刚才是挪动造成模糊。都是运动伪影，表现不一样，也都不是多出一排病灶。'],
+  ['aunt', '那还得多久？我怕自己又躺不住。'],
+  ['me', '先做最必要的几组，中间让您缓一下。哪张能用、哪张要补，我们分开看。']
+], 'c4_5_motion_q')
+question('c4_5_motion_q', 'zhou', '首段糊了。下一组你怎么排？', [
+  { text: '换短序列，加支垫后再试', next: 'c4_5_motion_retry_0', effect: { skill: 1, flag: 'c4_motion_explained', badge: 'c4r_motion_answer' } },
+  { text: '先坐两分钟，由她定重扫或改约', next: 'c4_5_motion_rest_0', effect: { flag: 'c4_motion_explained', badge: 'c4r_motion_answer' } },
+  { text: '先做必要组，中间让她缓一缓', next: 'c4_5_motion_retry_0', effect: { flag: 'c4_motion_explained', badge: 'c4r_motion_answer' } },
+], { image: 'mri_real_motion_ghost_v1' })
+chain('c4_5_motion_retry', [
+  ['aunt', '短一点好。你再跟我说一次什么时候开始，我不跟机器抢节奏。'],
+  ['me', '好。咱们只做必要组，中间我报进度。您疼就说，不用靠忍着不动来帮我。'],
+], 'c4_county_abdominal_retry_scan')
+chain('c4_5_motion_rest', [
+  ['aunt', '我坐两分钟。今天能做完就今天做，家里店还开着，我不想明天再关一回门。'],
+  ['me', '那先缓一缓，您自己点头咱们再试。真做不完，改约也不用重新排队。'],
+], 'c4_county_abdominal_retry_scan')
+scan('c4_county_abdominal_retry_scan', '腹部必要序列重新采集中。', '腹部 MRI · 必要序列重采', 'c4_5_motion_after_0', 'abdomen', 'county-055-wide')
+chain('c4_5_motion_after', [
+  ['sys', '必要序列完成，新图组与首段分开标记。老周另打开同一真实病例的中等、重T2参考图。', { image: 'mri_real_hemangioma_t2_v1', imageLabel: '腹部MRI文献图组｜中等与重T2的肝血管瘤', card: 'c4_hemangioma' }],
+  ['zhou', '这两幅都很亮，你能直接替阿姨下诊断吗？', { image: 'mri_real_hemangioma_t2_v1' }],
+  ['me', '不能。典型肝血管瘤在重T2上常很亮，这组图只作参考。她的诊断要结合自己的完整图组、超声和病史。', { image: 'mri_real_hemangioma_t2_v1' }],
+  ['sys', '老周又翻到同一病例的动态增强MRI：动脉期可见结节样强化，门静脉期与平衡期逐渐向内填充。', { image: 'mri_real_hemangioma_dynamic_v1', imageLabel: '同一病例动态增强MRI｜动脉期、门静脉期、平衡期' }],
+  ['aunt', '要真是血管瘤，我这胀疼就是它弄的吗？', { image: 'mri_real_hemangioma_dynamic_v1' }],
+  ['me', '不一定，要结合病灶位置、大小和其他检查。领取方式和复诊科室我写在单子上，需要补查也会写清。']
+], 'c4_5_knee_0', 'bg_c4_county_corridor_v1')
+chain('c4_5_knee', [
+  ['sys', '拄拐老师坐到检查床旁，先把拐杖递给你，才慢慢把右腿抬上去。', { caseId: 'c4_county_knee_mimic' }],
+  ['knee', '**膝盖卡住了，下楼最疼。**', { voice: 'vox_c4_knee_r9' }],
+  ['me', '什么时候开始卡的？有没有受过伤，之前检查和治疗做到哪一步？'],
+  ['knee', '三个月前下公交车扭了一下，**X光没骨折**。休息、贴膏药好过一阵；上周上讲台转身又卡住，伸直费劲，下楼最疼，走平路稍缓。'],
+  ['me', '这次主要看**韧带、半月板和关节内结构**，把“卡住、伸不直”这些表现一起交给医师。没有发热和明显红肿，我也记下了。'],
+  ['knee', '我上课站惯了，躺着倒不紧张。就是怕听见“半月板”三个字就直接被拉去开刀。'],
+  ['me', '图上像什么、还要区分什么，我都会说清；治疗不能只凭一个征象。支垫不合适您就说，不用为了赶时间硬撑。']
+], 'c4_county_knee_scan')
+scan('c4_county_knee_scan', '膝关节序列采集中。', '膝关节 MRI · 外伤评估', 'c4_5_knee_result_0', 'knee', 'county-055-wide')
+chain('c4_5_knee_result', [
+  ['sys', '这张膝部图上，白箭头指向半月板体部和后角上方的楔形软组织，黄圈把同一位置标得更清楚。', { image: 'mri_real_knee_mimic_v1', imageLabel: '膝部T2W｜易误认的楔形软组织' }],
+  ['zhou', '黄圈这块像半月板。你就这么写？'],
+  ['me', '先不定。移位的韧带也能长成这种样子，要把前后图连起来，追每块组织走到哪儿，再结合完整图组和查体。'],
+  ['knee', '那我下周还能不能带学生爬山？'],
+  ['me', '现在还拄着拐，就先别拿爬山试膝盖。恢复安排等医师结合图组查体后再定。'],
+], 'c4_5_knee_q')
+question('c4_5_knee_q', 'zhou', '他追问是不是半月板。你怎么答？', [
+  { text: '逐层对照韧带和半月板，再交接', next: 'c4_5_knee_review_0', effect: { skill: 1 } },
+  { text: '把两种可能写清，再当面答他', next: 'c4_5_knee_explain_0' },
+  { text: '先让他等完整图组，你再复核', next: 'c4_5_knee_explain_0' },
+], { image: 'mri_real_knee_mimic_v1' })
+chain('c4_5_knee_explain', [
+  ['knee', '行，至少你没拿“等着”两个字把我打发了。'],
+  ['me', '黄圈只是标出这儿有疑问，不是最后结论。报告出来后，您就问医师“韧带还是半月板”，别自己先把它想成手术。'],
+], 'c4_5_feng_0')
+chain('c4_5_knee_review', [
+  ['zhou', '这才对。楔形软组织只是长得像，别看见一个征象就把半月板搬走。我就在现场，咱俩逐层对照。'],
+  ['me', '图组和疑点一起交接。患者那边我也答了，不让他只拿到一句“等报告”。']
+], 'c4_5_feng_0')
+const legacyEvidenceIds = [
+  'c4_5_evidence_0', 'c4_5_evidence_1', 'c4_5_evidence_2', 'c4_5_evidence_q',
+  'c4_5_chain_right_0', 'c4_5_chain_right_1', 'c4_5_chain_right_2',
+  'c4_5_chain_wrong_0', 'c4_5_chain_wrong_1', 'c4_5_chain_price_0', 'c4_5_chain_price_1',
+  'c4_5_chain_recover_0', 'c4_5_chain_recover_1', 'c4_5_chain_recover_2', 'c4_5_chain_recover_3',
+]
+legacyEvidenceIds.forEach(id => {
+  steps[id] = { bg: 'bg_c4_county_corridor_v1', speaker: 'sys', sprite: '', sprite2: '', image: '',
+    text: '小唐把下午复查单递给你：冯叔已经到了。厂家旧话不再重提，先接患者。', next: 'c4_5_feng_0' }
+})
+chain('c4_5_feng', [
+  ['sys', '下午，小唐把冯叔和儿子领进来。许建平跟在最后，仍抱着旧纸袋，站在能看见检查床又不挡路的位置。', { caseId: 'c4_county_claustrophobia' }],
+  ['tang', '冯叔的旧片和后续单我都找出来了。许建平说想先看看，我让他别替自己提前害怕，看完再决定。'],
+  ['anxious', '市院那次3T刚响就犯了**幽闭恐惧症**，后来换0.55T大孔径，四组都做完了。报告说疑似轻型缺血性卒中，当晚去了神经内科，现在按医嘱用药。这几天没再说话不清，今天按约定复查，旧片也带来了。'],
+  ['me', '今天复查会跟市院旧片对比。现在头晕怎么样？进到孔口前，最担心哪一步？'],
+  ['anxious', '头晕好多了，就是怕自己又喊停。今天这组多久？我捏呼叫，你们真听得见？'],
+  ['me', '还是分段做，每组几分钟，我报进度。呼叫现在先试，您捏一下，我答一句；进去以后也一样。'],
+  ['sys', '冯叔捏了两次，你答了两次。他看了眼儿子：“这回你别替我点头，我自己来。”']
+], 'c4_feng_county_scan', 'bg_c4_county_corridor_v1')
+scan('c4_feng_county_scan', '0.55T大孔径头部序列采集中。', '0.55T 头部 MRI · 分段采集', 'c4_5_feng_after_0', 'head', 'county-055-wide')
+chain('c4_5_feng_after', [
+  ['sys', '冯叔坐起来时，儿子在门外举着后续单，鞋都替他摆好了。'],
+  ['anxious', '做完了？你刚才还真句句都答。'],
+  ['me', '做完了。您刚才捏了我就答，后面几段也一样。后续安排让小唐再跟您和儿子说一遍，哪句没听清，现在问。'],
+  ['tang', '药和下次复查都按神经内科那张单来，我不另外给您排一套。水在门外，慢慢喝。'],
+  ['mystery', '他刚才捏呼叫，你们真听见了？'],
+  ['anxious', '我捏两次都有人应。明天还有位置，你就来试试，别老站门外替自己先害怕。', { effect: { flag: 'c4_xu_witness', badge: 'c4r_witness' } }],
+], 'c4_5_receipt_q', 'bg_c4_county_corridor_v1')
+question('c4_5_receipt_q', 'sys', '冯叔走后，许建平从纸袋底抽出一张旧手术收据，递到你面前。老周凑过来看：“编号缺了两位，医院和年份还能认。你先怎么留这条线索？”', [
+  { text: '和老周登记，原件让他收好', next: 'c4_5_receipt_register_0', effect: { skill: 1, flag: 'c4_xu_receipt', badge: 'c4r_receipt_returned' } },
+  { text: '抄下医院和日期，当场还原件', next: 'c4_5_receipt_return_0', effect: { flag: 'c4_xu_receipt', badge: 'c4r_receipt_returned' } },
+  { text: '拍张照留线索，原件让他带走', next: 'c4_5_receipt_return_0', effect: { flag: 'c4_xu_receipt', badge: 'c4r_receipt_returned' } },
+], { bg: 'bg_c4_county_corridor_v1', image: 'mri_c4_implant_v3', imageLabel: '旧手术收据｜档案线索' })
+chain('c4_5_receipt_return', [
+  ['mystery', '这张在袋底压了好多年。我还是自己拿着，查到什么，你先告诉我。'],
+  ['me', '原件您收好。缺的那两位我们走档案查询，不拿您的纸袋当抵押。'],
+], 'c4_5_close_0', 'bg_c4_county_corridor_v1')
+chain('c4_5_receipt_register', [
+  ['zhou', '医院、年份和收据样式都登记。原件还你，复印件跟我们走档案流程。'],
+  ['mystery', '行。明天我做腰椎，左颈那张旧单子你们也别给我弄丢了。'],
+], 'c4_5_close_0', 'bg_c4_county_corridor_v1')
+chain('c4_5_close', [
+  ['sys', '许建平自己在预约单上写了名字和日期。冯叔嫌他字太瘦，小唐看了半天，只说能认出来就行。'],
+  ['tang', '明早我把旧资料夹和申请单分开摆。你来了不用先把当年的事从头讲一遍，我们接着今天查。'],
+  ['zhou', '听见没？别一进门又问得跟审账似的。先让人把检查做完。'],
+], 'c4_5_end', 'bg_c4_county_corridor_v1')
+settle(5, '腹痛阿姨完成必要重采，拄拐老师把疑点带去了门诊。冯叔复查完，许建平也把明天的日期写上了；小唐在预约名后面画了个很小的勾。', 220, 'c4r_wide_bore_return')
 
+// 第六段：许建平腰椎大片信号丢失。黑影与左颈旧问题分开，旧手术记录继续追人。
+chain('c4_6_open', [
+  ['sys', '第三天一早，许建平抱着旧纸袋来了。小唐接过申请单，把左颈资料另夹一册，纸袋仍让他自己拿着。'],
+  ['tang', '植入物资料今早调到了，老周核过今天的扫描条件。许建平当年那份完整病历还在找，签字页也在里面。'],
+  ['zhou', '对，先听他说。资料慢慢核，别一早就把人问得想回家。'],
+], 'c4_6_hub', 'bg_c4_county_corridor_v1')
+hub(6, '许建平还在准备区外喝水。门诊记录夹、沈岚的早班消息和小唐订的午饭都等着你。', [
+  ['📋 门诊记录夹 · 看旧手术与左颈资料', 'c4_6_follow_0', 'c4r6_6_follow', {}],
+  ['☕ 员工茶水角 · 回沈岚一句冯叔复查完成', 'c4_6_shen_0', 'c4r6_6_shen', {}],
+  ['🍚 员工茶水角 · 帮小唐把订的午饭分好', 'c4_6_help_tang_0', 'c4r6_6_help_tang', {},
+    { chance: 0.3, next: 'c4_6_help_tang_mishap_0', effect: { gold: -30, badge: 'good_intentions' } }],
+], 'c4_6_xu_0', '陪许建平进准备区')
+chain('c4_6_follow', [
+  ['sys', '旧门诊记录里有一句“否认植入物”，许建平指着它摇头。你改成“本人不清楚”，与今早调到的植入物资料放在一起。左颈资料另夹一册。'],
+  ['mystery', '那时候忙着出院，家里说收拾好了，我也没再问。这些纸倒比我记得清楚。'],
+  ['me', '今天怎么扫已经核好了。完整病历接着找，您父亲的查询也沿原来的受理号走。', { effect: { flag: 'c4r6_6_follow' } }],
+], 'c4_6_hub', 'bg_c4_county_corridor_v1')
+chain('c4_6_shen', [
+  ['shen', '冯叔复查做完了？', { communication: 'sms', phone: 'char_c4_shen_v3', sprite: '' }],
+  ['me', '做完了。出来先冲儿子扬后续单，后来还嫌我夸多了。'],
+  ['shen', '嫌你夸多了？这句像他。今天这个要是也喊停，你照样先答人，再查纸。', { communication: 'sms', phone: 'char_c4_shen_v3', sprite: '', effect: { flag: 'c4r6_6_shen' } }],
+], 'c4_6_hub', 'ch2_bg_breakroom_day')
+chain('c4_6_help_tang', [
+  ['sys', '你把小唐订的午饭按名字摆开，老周那份少辣，你自己那份被压在最下面。小唐把一双干净筷子递给你。'],
+  ['tang', '先吃两口。老周那份我盯着，你再不去，他又要说不饿。', { effect: { flag: 'c4r6_6_help_tang' } }],
+], 'c4_6_hub', 'ch2_bg_breakroom_day')
+chain('c4_6_help_tang_mishap', [
+  ['sys', '（**意外**）你把两份标签看反，老周那份少辣成了加辣。你重新订了一份，小唐把加辣那份推给能吃辣的老范。'],
+  ['tang', '还好老范在。你去跟老周说声“再等等”，别让他以为自己那份又被忘了。', { effect: { flag: 'c4r6_6_help_tang' } }],
+], 'c4_6_hub', 'ch2_bg_breakroom_day')
+chain('c4_6_xu', [
+  ['sys', '许建平把纸袋留在准备区外，收据自己拿着。进门前他停了两次，小唐没催，只把支垫又往床尾挪了挪。', { caseId: 'c4_county_xu_lumbar' }],
+  ['mystery', '腰痛十几年了，最近两个月往左臀上扯。坐久、弯腰搬东西都疼，热敷能缓点。推拿没用，旧X光就写了个“腰椎术后改变”。'],
+  ['me', '这次看腰椎和神经受压。那份**金属植入物**资料老周已经核过，今天按确认的条件扫。1998年的完整病历，档案室还在找。'],
+  ['mystery', '原来真留了东西？这么多年，我一直以为全拆完了。'],
+  ['me', '您不清楚就照实记，资料现在对上了。当年怎么交代的，等完整病历来了咱们再看。', { card: 'c4_conditional' }],
+  ['mystery', '那要是看见一大片黑呢？是不是癌？'],
+  ['me', '不一定。**金属也能让那一片变黑、变形**，主要是影响图像质量。真出现了，我们把原图留下，核资料，看还能不能答临床问题，不先吓您。']
+], 'c4_xu_lumbar_scan', 'bg_c4_county_preparation_v1')
+scan('c4_xu_lumbar_scan', '腰椎首段序列采集中。', '腰椎 MRI · 异常信号丢失', 'c4_6_artifact_intro_0', 'lumbar', 'county-055-wide')
+chain('c4_6_artifact_intro', [
+  ['sys', '首组已经采完。黄圈内是金属相关的信号丢失和变形，周围结构被遮住了一部分。', { image: 'mri_real_metal_artifact_v1', imageLabel: '腰椎MRI｜金属植入物伪影' }],
+  ['zhou', '后面建议换**SE序列**。它采用**180°重聚脉冲**，能补偿部分因磁场不均匀导致的相位离散。', { image: 'mri_real_metal_artifact_v1' }],
+  ['zhou', '**回波时间（TE）与回波间隔（Echo Spacing）尽量缩短**，有助于减少相位散失。能减轻伪影，不保证全消。', { image: 'mri_real_metal_artifact_v1' }],
+], 'c4_6_artifact_q', 'bg_c4_county_control_v1')
+question('c4_6_artifact_q', 'zhou', '黑影挡住了一部分结构。下一步怎么排？', [
+  { text: '留原图，改短TE的SE补扫', next: 'c4_6_stop_0', effect: { skill: 1, badge: 'c4r_black_shadow' } },
+  { text: '先评现有图，再决定是否补扫', next: 'c4_6_wrong_0' },
+  { text: '对照已核过的植入物资料，再排后续序列', next: 'c4_6_wrong_0', effect: { flag: 'c4_xu_implant_query' } },
+], { image: 'mri_real_metal_artifact_v1', imageLabel: '腰椎MRI｜金属植入物伪影' })
+chain('c4_6_wrong', [
+  ['zhou', '原图留下，早上核过的植入物资料也调出来。看看还缺哪部分结构，再决定补哪一组。'],
+], 'c4_6_stop_0')
+chain('c4_6_stop', [
+  ['sys', '首组原图保留着。你和老周逐幅看：植入物周围信号丢失、变形明显，部分目标结构被挡住。老周把需要补看的位置记下来。', { card: 'c4_foreign' }],
+  ['zhou', '早上核的是能不能扫，现在看怎么把这一片看清。换种序列，黑影兴许能收小一些。'],
+  ['me', '原图留下。补扫还是按早上核定的条件来，先换短TE的SE。'],
+  ['mystery', '那我这还能接着做吗？别扫半天，最后全是一片黑。'],
+  ['me', '先按SE、短TE和短Echo Spacing补必要组，再看目标结构能不能评。实在答不了申请上的问题，也会写清图像质量。'],
+  ['sys', '后续采集按调整后的方案继续。原始图、图像质量评价和资料查询分别记录，许建平也知道每一步在等什么。', { effect: { flag: 'c4_xu_implant_query' } }],
+], 'c4_6_close_0', 'bg_c4_county_preparation_v1')
+chain('c4_6_close', [
+  ['sys', '小唐把腰椎原图、筛查表和旧档案查询分夹放好。许建平坐在旁边，没再抱着纸袋来回翻。'],
+  ['tang', '档案窗口说下午给回话。你把后续采集和图像质量评价写完，我带他过去，省得他又跑错楼。'],
+  ['fan', '档案窗口找到1998年的完整病历了，家属签字那页也在。明天送来，我先跟你们说一声。', { communication: 'call', phone: 'char_fan', sprite: '' }],
+], 'c4_6_end', 'bg_c4_county_corridor_v1')
+settle(6, '天黑后，许建平的图组与后续方案已经交接。档案窗口找到了旧病历所在的卷宗，小唐在明天的交接单上又添了一项。', 260, 'c4r_survivor')
+// 第六段工资与勋章仍在原节点结算，但收班不再立刻切进考核。
+// 旧的 c4_6_end 游标继续有效；完整收束后才由 c4_wrap_end 进入最终日程结算。
+steps.c4_6_end.next = 'c4_wrap_0'
+delete steps.c4_6_end.end
+chain('c4_wrap', [
+  ['sys', '小唐把三天的预约单按日期收好，在最新那页写下“原始图、筛查记录、旧档案，明早一并交接”。老周没催你们下班，只把许建平留下的资料又点了一遍。'],
+  ['anxious', '我儿子非让我报个平安：今晚头不晕，饭也吃了。小许那个旧记录要是有消息，你们先告诉他，别让他一个人瞎猜。', { communication: 'sms', phone: 'pat_c4_feng_v3', sprite: '' }],
+  ['me', '替我谢谢他。您也早点休息，用药和复查按神经内科的安排来；小许这边，查到什么我们都会跟他说。'],
+  ['tang', '你们还互相惦记上了。冯叔那份后续单我放在门诊交接夹，小许这份另放。明早谁来，都不用从纸袋最底下翻。'],
+  ['fan', '明早的交接就按小唐这页来。今晚都到这儿吧，谁再把饭盒带回办公室，我就没收谁的筷子。'],
+], 'c4_wrap_research_0', 'bg_office')
+chain('c4_wrap_research', [
+  ['shen', '还没睡？先别关电脑。市院研究组今天给了我两份合作封面：一份快速成像，一份任务态fMRI。都还在论证，离常规检查还有一段路。', { communication: 'sms', phone: 'char_c4_shen_v3', sprite: '' }],
+  ['shen', '快速成像那个，起因很家常：有人躺不住，一动就得重采。大家想让人少熬会儿，又怕快是快了，细节也丢了。', { communication: 'sms', phone: 'char_c4_shen_v3', sprite: '' }],
+  ['me', '这事咱们这几天没少碰。可不能只掐秒表，还得看快完以后，图还够不够用。'],
+  ['shen', '对，所以得把原始采样、重建和完整图组放一块看。你要愿意，交接完来听次方案会，不用现在啃。', { communication: 'sms', phone: 'char_c4_shen_v3', sprite: '', effect: { flag: 'c4_fast_imaging_dlc_hook' } }],
+  ['shen', '另一份是**任务态fMRI**：志愿者做任务，研究团队看脑活动相关的信号怎么变化。方案还在论证，离县院常规检查远着呢。', { communication: 'sms', phone: 'char_c4_shen_v3', sprite: '', effect: { flag: 'c4_task_fmri_dlc_hook' } }],
+  ['me', '一个想让人少躺会儿，一个想看人做事时脑子怎么变，都挺有意思。等我考完、把交接做完，再听你细说。'],
+  ['shen', '行，封面给你留着。今晚先吃饭，别又抱着手机看到半夜。', { communication: 'sms', phone: 'char_c4_shen_v3', sprite: '' }],
+], 'c4_wrap_exam_0', 'bg_office')
+chain('c4_wrap_exam', [
+  ['sys', '手机终于安静了。老周从抽屉里摸出考核表，小唐把最后一只饭盒盖上，顺手给你们留了两把椅子。'],
+  ['zhou', '五道基础题：磁场、脉冲、参数和图像。别背彩页，想清图是怎么来的。'],
+  ['tang', '答完叫我，我把错题本给你留着。今晚可不许拿“还要交接”当借口溜了。'],
+  ['me', '行，早点答完早点吃。许建平的资料已经收好，来吧。'],
+], 'c4_wrap_end', 'bg_office')
+steps.c4_wrap_end = { bg: 'bg_office', speaker: 'sys', sprite: '', image: '', end: true,
+  text: '你翻开考核表，拿起笔。第一题问的是：90°射频脉冲究竟做了什么。' }
+
+// 考核后的尾声：先收厂家与配件线，再收许建平的父亲线与左颈转诊。
 chain('c4_epilogue', [
-  ['director', '晨会题过了。许宁说你交接讲得清，我下午还要抽看两份，别一领凭证就把记录收了。'],
-  ['me', '那晨会能不能也短一点？'],
-  ['director', '可以。从你少这一句开始。'],
-  ['sys', '许宁递来一个新杯垫，背面写着分机号码。“怕你哪天忘了。”你把它放在自己杯子下面。'],
-  ['ning', '就放休息室。你教的分机我找到了，现在轮到提醒你别压在杯底忘了。', { effect: { item: 'c4_gift_coaster' } }],
-  ['lei', '新回复还没来。补交的东西已经签收，后续找我核对，我会到场。'],
-  ['sys', '几天后，许建平带着本次影像回门诊，颈部评估继续。外地省院也回复已受理寻档，给出了下一次联系时间，你分别记在两张表上。'],
-  ['zhou', '明年的PET/CT进修名单在报。去省院两周，回来还得写转诊联络方案，想好了把名字报上。'],
-  ['me', '先报吧。今年探头和线圈都认过了，明年总得再认识点新的。'],
-  ['sys', '你把杯垫放到自己的杯子底下。隔壁有人叫下一个预约号，许宁应了一声，往控制室走去。你把她没带的登记夹递到门口。'],
-], 'c4_epilogue_end', 'ch2_bg_breakroom_day')
-steps.c4_epilogue_end = { bg: 'bg_mri_corridor_day_v2', speaker: 'sys', sprite: '', image: '', text: '第四章·共振，完。下一章：微光。', end: true }
+  ['sys', '第二天，小唐把试用关闭记录收进夹子，桌上终于又能摆下早饭。', { bg: 'bg_office_day', effect: { flag: 'c4_vendor_line_closed' } }],
+  ['tang', '豆浆在左边，别又拿老周那杯无糖的。许建平的档案袋我放窗边，吃完一起等他。', { bg: 'bg_office_day' }],
+  ['fan', '我总算能在自己桌上看见桌面了。谁再拿我的杯子压报价，我就把报价贴他电脑上。', { bg: 'bg_office_day' }],
+  ['me', '先吃饭。下午档案送到，咱们陪许建平一页一页看，不催他。', { bg: 'bg_office_day' }],
+  ['sys', '下午，完整的旧手术记录送到。此前核过的植入物信息、当年的手术经过和签字页终于凑齐。老周把腰椎图与病历摊在许建平面前。', { bg: 'bg_c4_county_corridor_v1', image: 'mri_real_metal_artifact_v1', effect: { flag: 'c4_implant_identified' } }],
+  ['mystery', '总算看见当年这几页了。那阵子一心想着出院，后面的事就没再问。', { bg: 'bg_c4_county_corridor_v1' }],
+  ['me', '留在里面的是什么、当年做了什么，这回能对上了。左颈那份另夹着，咱们接着查。', { bg: 'bg_c4_county_corridor_v1' }],
+  ['sys', '下一页是家属签字，后面另夹着许守义的转诊存根。许建平刚碰到纸边，手就停了。手术签名栏里三个字：许守义。', { bg: 'bg_c4_county_corridor_v1', image: 'item_transfer_record' }],
+  ['mystery', '他给我签的？', { bg: 'bg_c4_county_corridor_v1' }],
+  ['zhou', '你的病历编号、家属关系都对得上。后面那张是你父亲自己的转诊存根，外院也核到了。', { bg: 'bg_c4_county_corridor_v1' }],
+  ['sys', '1998年，父亲曾在他的手术单上签字；父亲自己的转诊存根，则留下了外院的下一站。那以后的下落仍要查。许建平把两张纸看了很久，最后问能不能给他一份复印件。', { bg: 'bg_c4_county_corridor_v1', effect: { flag: 'c4_father_transfer', badge: 'c4r_formal_record' } }],
+  ['mystery', '原件留你们这儿，别让我弄丢。复印件给我，往后去哪儿查也有个凭据。', { bg: 'bg_c4_county_corridor_v1' }],
+  ['sys', '窗口还捎来流浪老人的复查回执。姓名、出生年份都对不上，许建平只扫了一眼便推回去：这不是我爸。', { bg: 'bg_c4_county_corridor_v1', card: 'c4_records' }],
+  ['sys', '老周把左颈那一页单独夹出来。黑影有了来路，这块改变还没有；他把转诊单和这次资料装在一起，交给许建平。', { bg: 'bg_c4_county_corridor_v1', card: 'c4_uncertain', effect: { flag: 'c4_neck_followup' } }],
+  ['director', '还有一封回函。澜江市三甲医院核医学中心，2028年11月，两周、五次跟班，γ相机和PET/CT。', { bg: 'bg_office_day', effect: { flag: 'c4_nuclear_training_place' } }],
+  ['me', '我想去。许建平的正式转诊也一起接上，省得他再抱着纸袋到处问。', { bg: 'bg_office_day', effect: { flag: 'c4_nuclear_training_interest' } }],
+  ['zhou', '先把替班和回县衔接写清。出去学习这件事，你现在熟门熟路了。', { bg: 'bg_office_day' }],
+  ['sys', '后来，通知写清了报到日期、宿舍和带教联系人。你把车票、通知和换乘路线分袋收好；工作日志最后一页仍记着沈岚那两份研究合作，**快速成像**和**任务态fMRI**都还没有开始。许建平那份复印件则在他自己的旧纸袋里，签名朝上。', { bg: 'bg_office_day', effect: { flag: 'c4_nuclear_training_ready' } }],
+], 'c4_epilogue_end', 'bg_office_day')
+steps.c4_epilogue_end = { bg: 'bg_c4_county_corridor_v1', speaker: 'sys', sprite: '', image: '', text: '第四章·共振，完。研究合作待续：快速成像、任务态fMRI。下一章：微光。', end: true }
 
-// Acquisition and reviewing existing sequences are different actions. No scan
-// node awards a clinical result; each raw next reveals only acquired data.
-steps.c4_1_prepare_4.next = 'c4_1_wrist_scan'
-steps.c4_1_wrist_scan = {
-  speaker: 'sys', bg: 'bg_mri_control_day_v2', sprite: '', image: '',
-  text: '小程的手腕放在线圈里，防护、支垫和呼叫已确认。许宁按既定计划开始采集，你在控制台核对本次图组。',
-  scan: { kind: 'mri', label: '腕部 MRI · 计划内序列采集', durationMs: 3000, sound: 'trilogy_mri_scan_v2' }, next: 'c4_1_result_0',
-}
-steps.c4_1_result_0.next = 'c4_1_tool'
-steps.c4_2_song_scan_0.next = 'c4_2_song_first_scan'
-steps.c4_2_song_first_scan = {
-  speaker: 'sys', bg: 'bg_mri_control_day_v2', sprite: '', image: '',
-  text: '首段采集开始，梯度声按序列变化。你们盯着控制台，也听着老宋的呼叫；这一段中，他捏了呼叫装置。',
-  scan: { kind: 'mri', label: '头部 MRI · 首段尝试采集', durationMs: 3000, sound: 'trilogy_mri_scan_v2' }, next: 'c4_2_song_scan_1',
-}
-steps.c4_2_tool.tool!.next = 'c4_2_song_repeat_scan'
-steps.c4_2_song_repeat_scan = {
-  speaker: 'sys', bg: 'bg_mri_control_day_v2', sprite: '', image: '',
-  text: '老周核清受影响的片段，许宁把后面会听到的声音解释给老宋。他愿意再试，你们调整好支持，按原计划补采必要片段。',
-  scan: { kind: 'mri', label: '头部 MRI · 必要片段补采', durationMs: 3000, sound: 'trilogy_mri_scan_v2' }, next: 'c4_2_finish_0',
-}
-steps.c4_3_head_0.next = 'c4_3_head_scan'
-steps.c4_3_head_scan = {
-  speaker: 'sys', bg: 'bg_mri_control_day_v2', sprite: '', image: '',
-  text: '头部计划内采集开始。许宁核对各段状态，头痛这份检查的图组独立保存，许守义的查询材料留在外面的纸袋里。',
-  scan: { kind: 'mri', label: '头部 MRI · T1 / T2 / FLAIR 采集', durationMs: 3000, sound: 'trilogy_mri_scan_v2' }, next: 'c4_3_head_1',
-}
-steps.c4_3_tool.tool!.next = 'c4_3_neck_scan'
-steps.c4_3_neck_scan = {
-  speaker: 'sys', bg: 'bg_mri_control_day_v2', sprite: '', image: '',
-  text: '头部采集完成，团队按颈部申请核对下一段计划和线圈准备。许建平确认能继续，你们开始颈部采集，再把两份检查分组交接。',
-  scan: { kind: 'mri', label: '颈部 MRI · 计划内采集', durationMs: 3000, sound: 'trilogy_mri_scan_v2' }, next: 'c4_3_neck_0',
-}
-
-for (let shift = 1; shift <= 5; shift++) {
-  const hubId = `c4_${shift}_hub`
-  const postcard = `c4_${shift}_postcard_use`
-  steps[hubId].choices!.splice(-1, 0,
-    { text: '在休息室把明信片递给许宁', next: `${postcard}_0`, cond: { item: 'c4_postcard', notFlag: 'c4_postcard_used' } },
-  )
-  chain(postcard, [
-    ['sys', '你在明信片上写了科室分机和食堂位置，夹一句“欢迎，别再绕去住院部”，到休息室递给许宁。她看了两遍，笑着翻到背面。'],
-    ['ning', '我进修时也收过一张。带教老师画的路线，只有三道箭头，我还是走错了。'],
-    ['me', '三道还能错？'],
-    ['ning', '他说“看见花就右拐”。保洁把花搬走，我一路走到器械库，还问为什么病人在那儿领拖把。'],
-    ['me', '那我加一句：食堂不卖拖把。明天花搬了，你就找门牌。'],
-    ['ning', '行。下回有新人，我先带着走一遍，不给他画花了。这张我贴休息室柜门里。', { effect: { loseItem: 'c4_postcard', flag: 'c4_postcard_used', badge: 'c4_postcard_story' } }],
-  ], hubId, 'ch2_bg_breakroom_day')
-
-  const endId = `c4_${shift}_end`
-  const restId = `c4_${shift}_after_shift`
-  // Only existing incoming story edges move; the old end cursor remains valid.
-  for (const step of Object.values(steps)) if (step.next === endId) step.next = restId
-  question(restId, 'sys', '交班完成，当班同事已接手。你在受控区外的休息室收好私人物品，可以歇一会儿再回去。', [
-    { text: '下班后用新眼罩眯一会儿', next: `c4_${shift}_mask_use_0`, cond: { item: 'c4_sleep_mask', notFlag: 'c4_sleep_mask_used' } },
-    { text: '收好东西，查看本班结算', next: endId },
-  ], { bg: shift === 1 ? 'bg_breakroom' : 'ch2_bg_breakroom_day' })
-  chain(`c4_${shift}_mask_use`, [
-    ['sys', '你把眼罩从私人物品柜拿出来，只在受控区外的休息室戴上。外套搭在椅背，闹钟调好，临床工作已经交给当班同事。'],
-    ['ning', '桌边这盏灯我关了。要我出门也轻一点？'],
-    ['me', '门轻一点就行，椅子别替我推。这把一推能把我摇醒。'],
-    ['sys', '你闭眼歇了十来分钟。醒来时，许宁在桌上留了一张纸，画着一把椅子，旁边写“已申请检修，请继续轻坐”。'],
-    ['me', '眼罩还行，椅子问题终于有人替我报了。收柜子里，下次下班再用。', { effect: { loseItem: 'c4_sleep_mask', flag: 'c4_sleep_mask_used', badge: 'c4_rest_corner' } }],
-  ], endId, shift === 1 ? 'bg_breakroom' : 'ch2_bg_breakroom_day')
+// 远程角色留在通信头像中；主角的接话仍使用现场站位。
+for (const step of Object.values(steps)) {
+  if (!step.communication || !step.speaker || step.speaker === 'me' || step.speaker === 'sys') continue
+  step.phone ||= characters[step.speaker]?.sprite
+  step.sprite = ''
+  step.sprite2 = ''
 }
 
 const cards: TrilogyChapter['cards'] = {
-  c4_field: { title: '场强、梯度、口径分开看', body: '场强影响磁化、信号及相关取舍；梯度最大强度和切换速率是另外的性能，不能从T值直接推出。口径、线圈、任务与运行条件一起参与选型。本院选0.55T大口径，不代表它普遍优于1.5T或3T。', image: 'cg_c4_procurement_v3' },
-  c4_coil: { title: '腕部旁边的那个圈', body: '合适的接收线圈与部位、覆盖范围和采集任务匹配。检查线缆、连接及放置条件，不拿“差不多大小”代替核对。', image: 'mri_wrist' },
-  c4_weighting: { title: '同一只手，不同对比', body: '不同序列和参数突出不同组织对比。T1、T2不是两种疾病，也不表示两次受伤。图像亮暗要放回序列、位置和临床问题里看。', image: 'mri_wrist' },
-  c4_sound: { title: '两种声音，两个来处', body: '采集时变化明显的敲击声主要与快速切换的梯度相关；部分超导MRI的低温系统也有规律运行声。新的异常声仍应按流程检查，不能只听节奏就说正常。' },
-  c4_conditional: { title: '“有条件”四个字', body: 'MR Conditional只在标明的条件全部满足时适用。要准确识别物品型号与条件；某人曾经扫描过、某物不是铁，都不能直接替本次放行。' },
-  c4_foreign: { title: '先补足资料', body: '罗阿姨的金属异物记录不足，本次MRI先暂停并由负责团队评估。CT提供位置等信息，但不自动给出材料或完整MR条件。未知不等于一生禁做，暂停也不等于停止诊疗。' },
-  c4_motion: { title: '听得见，才能一起配合', body: '运动会使采样不一致而产生模糊或重影。先沟通、让呼叫可用、改善耐受，必要补采由团队决定；不能为了赶时间自行把所有序列和参数推到最快。', image: 'mri_brain_t2' },
-  c4_flair: { title: '为什么这组水不亮', body: '常见脑部方案中，T2里的脑脊液较亮，FLAIR抑制自由液体信号。它帮助不同组织更容易分开，但“在FLAIR上亮”本身不是诊断。', image: 'mri_brain_flair' },
-  c4_records: { title: '姓名相同，还不够', body: '旧资料核查需要身份关系、日期、编号、来源和合法查询授权。无名旧片、其他老人的故事，不能因为年份接近就交给许建平认亲。', image: 'item_transfer_record' },
-  c4_privacy: { title: '盖章没有替代范围', body: '“删除完成”应对应可核验的任务和数据范围。设备服务也不是无限取得病例的许可。差异正式登记，原始记录保存；不私传、私删，也不越权闯入外部系统。' },
-  c4_uncertain: { title: '没有替未知写好答案', body: '许建平左颈的淋巴结样软组织异常仍需临床与后续评估。MRI能帮助显示部位和范围，不能仅凭一处信号确定性质。BME主角负责设备、图像和交接，不签报告。', image: 'mri_neck' },
-  c4_acceleration: { title: '少等几分钟的代价', body: '利用多通道线圈、采样安排与重建可以加速。收益必须与噪声、伪影、分辨细节和任务完成度一起评估；不是把时间缩短的数字单独拿去验收。' },
+  c4_contrast: { title: '磁共振对比度｜不是换滤镜', body: 'T1、T2、FLAIR的采集权重与抑制目标不同，同一组织会呈现不同对比。脑脊液常在T1偏暗、T2偏亮，FLAIR则抑制自由水信号使其变暗；DWI、MRCP等专项应用应在此基础上理解。', image: 'mri_c4_basic_contrast_v1' },
+  c4_stroke: { title: '疑似轻型缺血性卒中｜当晚接续评估', body: '冯叔的完整图组提示脑桥区小灶异常信号，DWI高信号、ADC对应低信号。医师结合短暂言语不清和右手无力给出疑似意见，父子当晚带原始图组与报告前往神经内科。四序列合成图来自公开同类型病例，仅作参考。', image: 'mri_real_stroke_sequences_v1' },
+  c4_overview: { title: '一台机器，也是一条检查链', body: 'MRI不用X射线。磁体、梯度、射频是三大子系统，计算机负责控制与重建；患者还要经过筛查、摆位、配合、图像评估和交接。' },
+  c4_magnet: { title: '磁体系统｜场强之外', body: '永磁、常导、超导是常见实现方式。磁体提供均匀、稳定的静磁场；场强、孔径、均匀度与维护条件要和患者任务一起看。', image: 'mri_c4_magnet_system' },
+  c4_gradient: { title: '梯度系统｜空间定位与噪声', body: 'X／Y／Z三组梯度线圈协同完成空间定位。最大梯度强度与爬升率影响速度和序列能力；扫描噪声来自梯度线圈快速切换。', image: 'mri_c4_gradient_system' },
+  c4_rf: { title: '射频系统｜发射与接收', body: '射频链路负责激发共振并接收MR信号。体线圈、部位专用线圈和多通道相控阵各有任务，通道、覆盖、贴合与部位匹配直接影响采集。', image: 'mri_c4_rf_system' },
+  c4_sequences: { title: '头部四序列｜图组各有任务', body: '头部常规图组重点看T1、T2、FLAIR、DWI：解剖、水分、脑脊液抑制和扩散信息互相补充。MRCP用于胆胰管等专项评估；完整图组要结合临床问题看。', image: 'mri_c4_sequence_atlas' },
+  c4_quality: { title: '运动伪影｜重影不是新病灶', body: '采集中位置变化会造成模糊或重影。它和设备故障、真实病变需要分开判断；患者疼痛与耐受、支垫、序列时间和必要重采都属于实际检查。', image: 'mri_real_motion_ghost_v1' },
+  c4_field: { title: '设备没有脱离人的排行榜', body: '场强、孔径、线圈、软件、维护和团队各自解决不同问题。本院选择0.55T大口径，是匹配常规任务与部分患者耐受条件，不代表它普遍优于1.5T或3T。', image: 'cg_c4_procurement_v3' },
+  c4_conditional: { title: '“不知道”也是一条真实资料', body: '外部铁磁性物品严禁进入机房和磁体区域。体内植入物能否进行MRI，要看准确型号、MR安全标识和厂家条件；确认符合条件的植入物可按规定换到MRI检查床扫描，资料不清时不能替他写“没有”。', image: 'mri_c4_implant_v3' },
+  c4_foreign: { title: '黑影先看够不够用', body: '金属可造成信号丢失和几何变形，首先影响图像质量。SE的180°重聚脉冲可补偿部分相位离散；短TE与短Echo Spacing有助于减少相位散失，但不能消除所有伪影。保留原图并评价目标结构，安全筛查另按植入物型号和MR条件核查。', image: 'mri_real_metal_artifact_v1' },
+  c4_records: { title: '姓名相同，还不够', body: '旧资料核查需要身份关系、日期、编号和来源。无名旧片、其他老人的故事，不能因为年份接近就交给许建平认亲。', image: 'item_transfer_record' },
+  c4_uncertain: { title: '没有替未知写好答案', body: '植入物记录解释了腰椎黑影，左颈改变仍需临床与后续评估。不同部位、不同资料各自接续，不能仅凭一处信号确定性质。' },
+  c4_hemangioma: { title: '腹部图组｜参考不代替诊断', body: '典型肝血管瘤可在重T2上呈明显高信号，动态增强可见结节样强化及逐渐填充。文献图组只帮助理解影像表现，具体诊断和症状来源仍需结合患者完整图组、病史与其他检查。', image: 'mri_real_hemangioma_dynamic_v1' },
 }
-const badges: TrilogyChapter['badges'] = {
-  c4_two_views: { name: '不只挑最亮的', icon: '🌓', desc: '腕部检查保留互补序列和完整上下文。' },
-  c4_night_sound: { name: '听见机器，不瞎猜', icon: '🎧', desc: '核对梯度与低温系统的声音记录。' },
-  c4_pause: { name: '暂停也算负责', icon: '🛑', desc: '资料不全时先停在MRI安全评估之外。' },
-  c4_call_heard: { name: '你喊，我们在', icon: '🔔', desc: '老宋的呼叫得到回应，检查没有变成忍耐比赛。' },
-  c4_same_person: { name: '同名之外', icon: '📁', desc: '按身份资料和转诊编号核验许守义的记录。' },
-  c4_receipt: { name: '全部是哪一部分', icon: '🧾', desc: '登记删除回函与独立任务清单之间的范围矛盾。' },
-  c4_safe_research: { name: '没有一键', icon: '🧩', desc: '在获准的数据范围内比较加速收益与代价。' },
-  c4_transfer: { name: '下一站有名字', icon: '🚌', desc: '找到1998年的正式转诊线索，没有替外院补结局。' },
-  c4_teacher: { name: '换你带一班', icon: '📋', desc: '完成同事交接，由被带教者走向带教者。' },
-  c4_survivor: { name: '共振的五班', icon: '🌙', desc: '完成第四章五个班次。' },
-  c4_postcard_story: { name: '花搬走以后', icon: '✉', desc: '递出明信片，听许宁讲进修时认错路的旧事。' },
-  c4_rest_corner: { name: '下班眯一会', icon: '☾', desc: '交班后在受控区外使用眼罩休息，发现许宁留下的椅子便条。' },
+const legacyCards: TrilogyChapter['cards'] = {
+  c4_evidence: { title: '旧版线索卡｜两张单', body: '历史存档保留：旧版第四章曾要求分别签收A17维修与AI试用关闭回执；现役主线不再重复播放这段厂家流程。' },
+  c4_signal: { title: '旧版研究卡｜共振与射频', body: '旧版第四章高级原理卡，保留给已经获得的玩家；主线不再要求完成对应实验。' },
+  c4_timing: { title: '旧版研究卡｜TR与TE', body: '旧版第四章高级序列卡，后续研究DLC再展开。' },
+  c4_encoding: { title: '旧版研究卡｜空间编码', body: '旧版第四章空间编码卡，后续研究DLC再展开。' },
+  c4_sampling: { title: '旧版研究卡｜采样取舍', body: '旧版第四章采样卡，后续快速成像DLC再展开。' },
+  c4_motion: { title: '旧版研究卡｜运动与配合', body: '旧版第四章运动采样卡，后续研究DLC再展开。' },
+  c4_acceleration: { title: '旧版研究卡｜加速成像', body: '旧版第四章加速研究卡，后续快速成像DLC再展开。' },
+  c4_clinical: { title: '旧版知识卡｜优势与边界', body: '旧版第四章收藏。MRI常用于脑、脊髓、关节软组织、骨髓和许多腹部病变；皮质骨、钙化与肺部细节常需CT。' },
+  c4_coil: { title: '旧版知识卡｜部位与线圈', body: '旧版第四章收藏。接收线圈要与检查部位和任务匹配，合适的位置、支撑与连接能帮助患者配合。' },
 }
+
 const book: TrilogyChapter['book'] = [
-  { title: '01｜四个部分各干什么', body: '主磁体建立静磁场；射频系统激发并接收信号；梯度系统给信号编码位置；计算机控制时序并重建图像。MRI不靠X射线球管绕人旋转。' },
-  { title: '02｜小磁矩与净磁化', body: '核自旋是量子属性，小箭头只是帮助理解的模型。许多核磁矩的矢量和形成宏观净磁化，不能说人体里的质子全被摆成同一个方向或停止进动。' },
-  { title: '03｜共振要对频率', body: '氢核的拉莫频率随磁场改变，使用频率单位时约为42.58 MHz/T。RF要匹配相应进动频率；开着射频不等于有效激发，场强也不是所有图像质量自动翻倍的按钮。' },
-  { title: '04｜脉冲怎样翻转磁化', body: '合适的RF脉冲将净磁化从纵向翻转，产生横向分量。翻转角与脉冲条件有关；90度是理解过程的例子，不是所有序列都只发90度。线圈检测变化的横向信号。' },
-  { title: '05｜两个弛豫同时发生', body: 'T1描述纵向净磁化恢复，T2描述横向净磁化衰减。理想90度激发后，一个T1时恢复约63%，一个T2时横向余约37%；它们不是先后两个步骤。' },
-  { title: '06｜FID与T2星', body: '自由感应衰减FID来自自由进动中的横向信号。实际场不均匀还引起额外去相位，观察到的T2*衰减通常比T2快。不要把接收信号说成质子在耳边敲响。' },
-  { title: '07｜180度没有把时间倒回去', body: '自旋回波中的180度RF脉冲重聚可逆去相位，形成回波；并不撤销真正的T2衰减。梯度回波不使用同样的180度重聚机制，通常更易受场不均匀影响。' },
-  { title: '08｜TR管下一次什么时候来', body: 'TR是重复时间，影响再次激发前纵向恢复到什么程度。在简化SE比较中，较短TR能突出不同T1恢复速度的差异；长TR减弱这类差异，但时间也增加。' },
-  { title: '09｜TE管这次什么时候接', body: 'TE是回波时间。晚接会让更多横向信号衰减；不同T2的差异更明显，也可能信号太弱。TE不是病人等报告的时间，TR和TE不要一起乱拖后只说“亮了”。' },
-  { title: '10｜同一组织的不同对比', body: '简化SE中，短TR/短TE常用于T1加权，长TR/短TE减弱弛豫差异以看质子密度，长TR/长TE突出T2差异。实际对比仍取决于序列和条件，不是固定滤镜。' },
-  { title: '11｜为什么FLAIR能压暗自由液体', body: '反转恢复先翻转纵向磁化，再等到TI时激发。选择合适TI可让目标组织恢复经过零点时信号受抑；STIR常压脂肪，FLAIR常压自由液体。TI不能不看条件照抄一个数。' },
-  { title: '12｜先挑一层', body: 'RF中心频率与层选梯度一起决定激发层的位置，RF带宽和梯度共同影响层厚。射频线圈并不是把无线电波像光学镜头那样聚焦到某个像素。' },
-  { title: '13｜频率与相位各编码一个方向', body: '读出梯度让不同位置具有不同频率；相位编码在读出前引入不同位置相关的相位。重复不同相位编码收行，才能把二维位置区分开。这里的坐标方向是示例，不是病人的固定左右。' },
-  { title: '14｜k空间不是照片缩略图', body: 'k空间是原始傅里叶数据，含幅度与相位。一个数据点和一个体内像素不一一对应；低频多反映整体轮廓和缓慢变化，高频帮助表达细边缘，不能把中心当成图像中心那一块。' },
-  { title: '15｜重建真正在算什么', body: '常规笛卡尔二维采样可用二维逆傅里叶变换重建。教学中从同一数字样品计算数据，再改变进入重建的样本；显示缩放或给照片叠影不能替代采样与重建。' },
-  { title: '16｜视野、矩阵与细节', body: '固定视野时，更密的矩阵能表达更小的像素，但信号、采样时间与实际分辨能力都要考虑。缩小视野不等于单纯把照片放大；对象超出可区分范围可能折叠进来。' },
-  { title: '17｜丢边缘与隔行不是一回事', body: '限制高频覆盖会损失细节，也可能在高对比边界出现截断振铃；隔行采样会使不同位置混叠。看到整幅轮廓不代表信息完整，文件少一半不代表病人只拍了一半。' },
-  { title: '18｜运动为何影响整幅图', body: '不同时间收的k空间行应对应同一个对象。运动破坏位置与相位一致性，伪影通过重建影响整幅图，常沿相位编码方向明显。门控、舒适支持、技术调整及必要补采应结合实际团队核查。' },
-  { title: '19｜更快的几条不同路', body: '普通单回波教学模型的时间随相位编码行数、TR与平均次数变化。GRE可以缩短TR，FSE一轮收多个回波，并行成像利用多通道空间信息减少采样；它们的信号、噪声和伪影代价不同。' },
-  { title: '20｜可选的新信息', body: 'DWI对水分子扩散敏感，并与ADC及其他信息一起看；常见BOLD fMRI反映血氧相关T2*信号变化，不是读心；MRS利用化学位移提供波谱信息。教学样品的漂亮结果不自动成为临床方案。' },
+  { title: '01｜没有球管绕着你转', body: 'MRI不使用X射线。磁体、梯度、射频是三大子系统，计算机负责控制、重建与显示；最显眼的磁体只是整套系统的一部分。' },
+  { title: '02｜磁体系统', body: '作用是产生均匀、稳定的静磁场，使人体内的氢质子被磁化。常见类型包括永磁、常导和超导。关键看场强（T）、孔径（cm）、磁场均匀度（ppm），也要看屏蔽、制冷和维护。场强影响信号潜力，不能单独决定整台机器是否合适。' },
+  { title: '03｜梯度系统', body: '作用是空间定位。X、Y、Z三组梯度线圈协同完成选层与空间编码，让接收到的信号能够重建为图像。最大梯度强度（mT/m）与爬升率（T/m/s）影响速度和序列能力；快速切换也是扫描噪声的重要来源。' },
+  { title: '04｜射频系统', body: '射频链路像天线：发射脉冲以激发共振，接收微弱的MR信号。常见有体线圈、头膝等部位专用线圈、多通道相控阵与柔性表面线圈；有些收发一体，有些只接收。通道数、覆盖范围、部位匹配和贴合固定都会影响到手的信号。' },
+  { title: '05｜常用序列与对比', body: 'SE／FSE、GRE、IR是常见序列家族；临床图组还常用T1WI、T2WI、FLAIR、DWI、脂肪抑制和MRCP等对比或专项方案。T1常重解剖，T2让水分更醒目，FLAIR抑制游离水信号，DWI反映扩散，MRCP突出胆胰管内的静态液体。' },
+  { title: '06｜TR、TE与完整图组', body: 'TR、TE及脂肪／水抑制等设置会改变图像对比，不是给同一张图换滤镜。不同序列回答不同问题，医师结合完整图组和临床资料判断，不能只挑一张最亮或最黑的图。高级脉冲时序留待研究DLC。' },
+  { title: '07｜图像质量的软硬件账', body: '硬件看场强、磁场均匀度、梯度强度与爬升率、线圈通道和贴合、设备维护。软件看序列、FOV、矩阵、层厚、层间距、TR／TE、NEX／NSA、接收带宽和加速设置。分辨率、信噪比、时间与伪影要一起权衡。' },
+  { title: '08｜MRI擅长什么', body: '脑梗死、脑肿瘤与其他神经系统病变，脊髓和神经受压，韧带、半月板、软骨与骨髓病变，以及许多肝胆胰和盆腔病变，常能从MRI的软组织对比中获益。具体仍需按临床问题选择序列和完整检查路径。' },
+  { title: '09｜不擅长不等于不能看', body: '皮质骨、钙化与含气肺部的细节，很多情况下CT更直接；但MRI仍能显示骨髓、软组织及部分CT不易发现的病变，不能简化成“骨折和肺病都不能做”。急性创伤、病情不稳或无法安全配合时，也要先选择及时、可监护的检查。' },
+  { title: '10｜从一个人到一张图', body: '申请与筛查、摆位和线圈、采集、重建、医师评估与临床交接连在一起。腹部检查可能需要呼吸配合，关节检查更依赖体位与局部线圈。任何一环卡住，都可能让检查延期或暂停。' },
+  { title: '11｜伪影与未知都要分开查', body: '运动可造成重影，金属可造成信号丢失与变形。SE的180°重聚脉冲可补偿部分磁场不均匀造成的相位离散，短TE与短Echo Spacing有助于减少相位散失。先辨认现象，再决定重采、调整序列或继续评估。' },
+  { title: '12｜场强不是全部，高级研究以后再做', body: '采购要看常见任务、三大子系统、线圈、软件、机房、维护、培训和人员。k空间、快速采样、fMRI与波谱等高级内容留待研究DLC，主章先建立完整检查与临床使用的宏观认识。' },
 ]
 const quiz: TrilogyChapter['quiz'] = [
-  { q: '只有静磁场，尚未施加合适RF时，净磁化主要是什么状态？', options: ['主要沿纵向，尚无要接收的净横向分量', '已经有一张完整MRI图', '所有质子都静止了'], answer: 0, explain: '静磁场建立纵向净磁化；匹配RF激发后才能产生用于接收的横向信号。' },
-  { q: '为什么RF不能只开着就算有效激发？', options: ['RF和X射线是同一种射线', '需要匹配相应拉莫频率等脉冲条件', '接收线圈会自动替射频改频率'], answer: 1, explain: '进动频率与磁场有关，共振与脉冲条件影响激发。' },
-  { q: 'T1与T2分别描述什么？', options: ['病人的两个检查部位', '同一张图片的两种缩放', '纵向恢复与横向衰减'], answer: 2, explain: '两种弛豫同时发生；T1纵向恢复，T2横向衰减。' },
-  { q: '简化SE中，想突出T2衰减差异，应怎样理解TR与TE？', options: ['TR较长减弱T1差异，TE较长突出T2差异但损失信号', 'TR和TE越短，所有对比都越好', '只把图像亮度拉高'], answer: 0, explain: 'TR、TE影响信号形成的不同阶段，对比与可用信号需要一起考虑。' },
-  { q: '自旋回波的180度脉冲主要做什么？', options: ['把真正T2衰减完全倒回去', '重聚可逆去相位，形成回波', '替代所有空间编码'], answer: 1, explain: '重聚不等于撤销内在弛豫；SE与GRE的重聚机制不同。' },
-  { q: '梯度系统在MRI中怎样帮助得到位置？', options: ['让球管绕病人转', '直接把无线电波聚焦成一个像素', '使信号获得位置相关的频率或相位'], answer: 2, explain: '层选、频率编码和相位编码配合完成空间编码。' },
-  { q: '为什么普通二维单回波模型需要多次相位编码？', options: ['收不同编码的行，区分另一个方向', '重复同一句病例介绍', '每次都必须换一个病人'], answer: 0, explain: '一行读出不能区分完整二维位置，多次相位编码形成二维k空间。' },
-  { q: 'k空间中的一个点对应什么？', options: ['病人体内一个固定像素', '参与整幅图重建的傅里叶样本', '相同位置的旧片日期'], answer: 1, explain: 'k空间坐标和体内像素不一一对应，一个数据点变化可能影响整幅图。' },
-  { q: '隔行采集后直接做普通逆傅里叶重建，可能发生什么？', options: ['自动补齐所有缺行', '仅把文件名变短', '不同位置混叠，不能只看节省时间'], answer: 2, explain: '欠采样会造成混叠；特殊重建需要相应额外信息和条件。' },
-  { q: '多通道并行成像候选更快，评估时还要保留什么？', options: ['线圈空间信息、噪声、细节与重建条件', '只保留最快那一张的秒数', '任何病例都直接换用'], answer: 0, explain: '加速收益有条件，也有信噪比和重建代价；教学或研究比较不直接替代临床方案。' },
+  { q: '在常用SE序列中，90°射频脉冲的主要作用是什么？', options: ['把纵向磁化翻向横向平面', '把横向磁化重聚成回波', '把静磁场方向转90°'], answer: 0, explain: '90°脉冲使纵向磁化转入横向平面，产生可检测的横向磁化。' },
+  { q: 'SE序列里的180°重聚脉冲主要解决什么？', options: ['抑制自由水信号', '重聚部分相位离散', '加快纵向磁化恢复'], answer: 1, explain: '180°重聚脉冲可补偿部分静磁场不均匀造成的相位离散，形成自旋回波。' },
+  { q: 'T1弛豫与T2弛豫分别描述什么？', options: ['T1看横向衰减，T2看纵向恢复', 'T1看纵向恢复，T2看扩散', 'T1看纵向恢复，T2看横向衰减'], answer: 2, explain: 'T1是纵向磁化恢复的时间常数，T2是横向磁化衰减的时间常数。' },
+  { q: '其他条件相近时，哪组TR／TE更偏T1加权？', options: ['短TR、短TE', '长TR、长TE', '长TR、短TE'], answer: 0, explain: '短TR突出不同组织的T1恢复差异，短TE减少T2衰减对对比度的影响。' },
+  { q: '面对金属或磁敏感伪影，SE与GRE通常有什么差别？', options: ['GRE通常更轻，SE通常更明显', 'SE通常更轻，GRE通常更明显', '两者相同，只看静磁场强度'], answer: 1, explain: 'SE的180°重聚脉冲可补偿部分相位离散；GRE没有这一重聚机制，通常更敏感。' },
+  { q: '梯度系统在MRI成像中的核心任务是什么？', options: ['完成选层和空间编码', '提供稳定的静磁场', '产生射频激发脉冲'], answer: 0, explain: '梯度使磁场随位置变化，用于选层、频率编码和相位编码等空间定位。' },
+  { q: '其他条件相近时，提高接收带宽通常带来什么？', options: ['SNR常提高，几何失真增大', 'SNR不变，只缩短回波间隔', 'SNR常下降，几何失真减小'], answer: 2, explain: '更高接收带宽通常纳入更多噪声，使SNR下降，但可减轻部分带宽相关的几何失真。' },
+  { q: '急性缺血性病变出现真性扩散受限时，常见哪组表现？', options: ['DWI高、ADC高', 'DWI高、ADC低', 'DWI低、ADC高'], answer: 1, explain: 'DWI高信号需结合ADC判断；ADC对应低信号支持真性扩散受限。' },
 ]
 
-// Latest author direction: the five lectures determine the main learning spine.
-// Long legacy audit/archive chains remain valid saved cursors, while their new
-// entry points are brief optional conversations. Numerical kernels live in the
-// common lab; these nodes never change a patient's clinical acquisition plan.
-chain('c4_1_signal_intro', [
-  ['ning', '柜子认完了，换你帮我一个忙。教学记录里只有“进磁体、出图”，中间像丢了一页。'],
-  ['me', '我也刚想问。不转球管，信号从哪儿来？'],
-  ['zhou', '先看两个量：一堆氢核的小磁矩，和它们加起来的净磁化。别把画出来的箭头当成真的小陀螺。'],
-  ['ning', '样品在静磁场里有了纵向净磁化，可接收线圈还没等到我们要的横向信号。现在试射频。'],
-], 'c4_1_signal_lab')
-steps.c4_1_signal_lab = { bg: 'bg_mri_control_day_v2', speaker: 'ning', sprite: 'char_mri_colleague',
-  text: '这是桌面教学样品。先对准共振频率，再发一个脉冲，看纵向和横向怎样分别变化。',
-  tool: { kind: 'mri', task: 'mri-relax', variant: 'signal', title: '静磁场有了，为什么还没信号？',
-    prompt: '比较射频有没有对准拉莫频率；激发后移动时间点，看纵向恢复与横向衰减。',
-    help: '静磁场建立净磁化；匹配频率的RF脉冲能翻转它。RF停止后，T1描述纵向恢复，T2描述横向衰减；线圈接收变化的横向信号。', next: 'c4_1_signal_after_0' } }
-chain('c4_1_signal_after', [
-  ['me', '我把频率拧到另一边，脉冲还在，响应却小了。原来不是把功率开大就行。'],
-  ['ning', '场强换了，质子的进动频率也跟着换。主磁体、射频发射和接收，各有各的活。'],
-  ['zhou', '再看关掉脉冲之后。纵向在恢复，横向同时在衰减，别写成“先恢复完才开始衰减”。'],
-  ['me', '记好了。我刚才差点给它们排成两个工序。'],
-  ['sys', '你把“磁化—激发—接收”补进培训记录。许宁收到第一位预约者报到的消息，把教学样品收回桌边。', { card: 'c4_signal', effect: { flag: 'c4_signal_seen', skill: 1 } }],
-], 'c4_1_wrist_0')
-steps.c4_1_hub.choices!.at(-1)!.next = 'c4_1_signal_intro_0'
-// Keep this saved ID and both acquired wrist images, without adding an eighth lab.
-steps.c4_1_tool = { bg: 'bg_mri_control_day_v2', speaker: 'ning', sprite: 'char_mri_colleague',
-  text: '这一张先看结构。下面那张换了对比，还是同一只手、同一个位置；不是把前一张失败的照片补亮。', image: 'mri_wrist', next: 'c4_1_result_1' }
+const badges: TrilogyChapter['badges'] = {
+  c4r_city_start: { name: '第一晚有人喊停', icon: '🧭', desc: '首晚3T即时中止后，在另一检查区换0.55T大孔径完成四组序列。' },
+  c4r_full_context: { name: '完整图组', icon: '🌓', desc: '把完整图组和临床问题一起交接。' },
+  c4r_call_answered: { name: '呼叫有人应', icon: '🔔', desc: '冯叔3T首个序列刚开始的呼叫得到立即停止与后续安排。' },
+  c4r_magnet_stop: { name: '侥幸停手', icon: '🧲', desc: '试图取下轻眼镜时被叫停，随后如实上报事故征候。' },
+  c4r_xu_listened: { name: '先把电话听完', icon: '📞', desc: '许建平退缩时没有继续逼问。' },
+  c4r_city_finished: { name: '一周有成稿', icon: '📘', desc: '完成市院进修与机型调研。' },
+  c4r_need_first: { name: '把两版附件拆开', icon: '🧾', desc: '用旧合同和患者任务写出采购首页。' },
+  c4r_no_shortcut: { name: '回复要有日期', icon: '📞', desc: '开机延期时，把厂家和患者两头都接住。' },
+  c4r_procurement_done: { name: '从卷尺到开机', icon: '🏗️', desc: '预算、门框、人手和设备终于落到了同一天。' },
+  c4r_first_day: { name: '开机第一天', icon: '🌅', desc: '接好装机首日的三岁儿童病例，陪妈妈完成后续交接。' },
+  c4r_motion_answer: { name: '重影先答人', icon: '💬', desc: '向患者说清运动伪影与实际重采安排。' },
+  c4r_receipt_returned: { name: '原件还给他', icon: '🧾', desc: '查看旧收据后抄下线索，把决定权留给许建平。' },
+  c4r_wide_bore_return: { name: '我还敢试', icon: '🌗', desc: '冯叔在县院0.55T大口径完成门诊复查。' },
+  c4r_witness: { name: '他在门外看见了', icon: '👁️', desc: '许建平目睹冯叔完成复查后主动预约。' },
+  c4r_black_shadow: { name: '黑影也能评', icon: '⬛', desc: '保留金属伪影原图，评估图像质量并调整后续方案。' },
+  c4r_survivor: { name: '黑影里的签名', icon: '🌙', desc: '完成两晚进修、采购装机与三段县院日程。' },
+  c4r_formal_record: { name: '回执上的下一站', icon: '📁', desc: '找到许守义签名的旧手术与转诊记录。' },
+}
+const legacyBadges: TrilogyChapter['badges'] = {
+  c4r_chain_solved: { name: '旧版勋章｜两张单各自归档', icon: '🧩', desc: '历史存档保留：旧版第四章曾分别签收A17维修与AI试用关闭回执。' },
+  c4r_safe_pause: { name: '旧版勋章｜暂停也有下一站', icon: '⏸️', desc: '旧版第四章历史勋章。' },
+  c4r_patient_clock: { name: '患者的钟也算', icon: '🕰️', desc: '第三版第四章历史勋章。' },
+  c4r_research_honest: { name: '快与代价同页', icon: '🧩', desc: '第三版高级研究勋章，相关实验已移出主章。' },
+  c4_two_views: { name: '不只挑最亮的', icon: '🌓', desc: '旧版第四章历史勋章。' },
+  c4_night_sound: { name: '听见机器，不瞎猜', icon: '🎧', desc: '旧版第四章历史勋章。' },
+  c4_pause: { name: '暂停也算负责', icon: '🛑', desc: '旧版第四章历史勋章。' },
+  c4_call_heard: { name: '你喊，我们在', icon: '🔔', desc: '旧版第四章历史勋章。' },
+  c4_same_person: { name: '同名之外', icon: '📁', desc: '旧版第四章历史勋章。' },
+  c4_receipt: { name: '全部是哪一部分', icon: '🧾', desc: '旧版第四章历史勋章。' },
+  c4_safe_research: { name: '没有一键', icon: '🧩', desc: '旧版第四章历史勋章。' },
+  c4_transfer: { name: '下一站有名字', icon: '🚌', desc: '旧版第四章历史勋章。' },
+  c4_teacher: { name: '换你带一班', icon: '📋', desc: '旧版第四章历史勋章。' },
+  c4_survivor: { name: '共振的五班', icon: '🌙', desc: '旧版第四章历史勋章。' },
+  c4_postcard_story: { name: '花搬走以后', icon: '✉', desc: '旧版第四章历史勋章。' },
+  c4_rest_corner: { name: '下班眯一会', icon: '☾', desc: '旧版第四章历史勋章。' },
+}
 
-chain('c4_2_timing_intro', [
-  ['ning', '昨晚我重写了培训页。只写“T1一张、T2一张”，像是按两个按钮买套餐。'],
-  ['me', '那今天把按钮后面的时间拆开看。'],
-  ['zhou', '这两种教学样品的恢复和衰减不同。TR管多久再来一次，TE管多久去接这一回的回波。'],
-  ['ning', '先把TE留短，只改TR。然后留够恢复时间，再晚一点接回波。两个旋钮别一起乱拖。'],
-], 'c4_2_timing_lab')
-steps.c4_2_timing_lab = { bg: 'bg_mri_control_day_v2', speaker: 'zhou', sprite: 'char_zhou',
-  text: '这次比较的是相同教学样品。你看信号和曲线一起变，病人的计划不跟着这两个滑块变。',
-  tool: { kind: 'mri', task: 'mri-relax', variant: 'contrast', title: '等多久再激发，等多久接回波',
-    prompt: '分开调TR和TE，观察两种样品的信号差；比较短TR/短TE、长TR/短TE与长TR/长TE。',
-    help: '简化SE信号由质子密度、纵向恢复和横向衰减一起决定。长TR减弱T1差异，短TE减弱T2差异；长TE能突出衰减差异，也会丢信号。', next: 'c4_2_timing_after_0' } }
-chain('c4_2_timing_after', [
-  ['me', '我一味把TE拉长，两边都快没信号了。差别大，不等于图就够用。'],
-  ['zhou', '先往回拉一点。你是要比出差别，不是把两边都等黑。'],
-  ['ning', '这版留着吧。刚才那张也别删，免得我下回又觉得“等久点总没错”。'],
-  ['sys', '你们留下三组教学比较。候诊区的罗阿姨把布袋放上空椅子，许宁去接她的资料。', { card: 'c4_timing', effect: { flag: 'c4_timing_seen', skill: 1 } }],
-], 'c4_2_luo_0')
-steps.c4_2_hub.choices!.at(-1)!.next = 'c4_2_timing_intro_0'
-steps.c4_2_tool.text = '先保留老宋的原始片段。许宁在另一份数字教学样品上重演一次位移：不是给照片叠一层影子，而是改变采到的行。'
-steps.c4_2_tool.tool = { kind: 'mri', task: 'mri-sampling', variant: 'motion', title: '只动了一会儿，为什么整幅图都有影子？',
-  prompt: '让教学样品在部分行采集期间发生一次位移，对照这些行重建出来的图。',
-  help: '不同k空间行在不同时间采集。物体移动后，各行的相位关系对不上，重建时整幅图都会受影响。把位移调回零，留一份对照看看。', next: 'c4_2_song_repeat_scan' }
-
-chain('c4_3_encoding_intro', [
-  ['ning', '今天头部和颈部各有申请。我知道怎么排图组，可一直没给你讲清信号怎么带上地址。'],
-  ['me', '接收线圈一收一大片，难道它自己认识哪块是左、哪块是右？'],
-  ['ning', '不认识。选层时，射频和梯度一起挑一层；读出时，不同横向位置有不同频率。'],
-  ['zhou', '另一个方向靠相位编码。每次让不同位置积累不同相位，收来的才不只是一列的总和。'],
-], 'c4_3_encoding_lab')
-steps.c4_3_encoding_lab = { bg: 'bg_mri_control_day_v2', speaker: 'ning', sprite: 'char_mri_colleague',
-  text: '先用几个教学亮区认地址。原始行不是一条照片，收成k空间后才做二维逆傅里叶重建。',
-  tool: { kind: 'mri', task: 'mri-encoding', variant: 'kspace', title: '同一个信号，怎么分出两个方向？',
-    prompt: '看频率读出的一行，再改变相位编码，逐行收进k空间；比较行不够与收齐后的重建。',
-    help: '层选决定被激发的层；频率编码与读出同时进行，相位编码区分另一方向。每一行包含全层的信息，k空间坐标不是病人体内的像素地址。', next: 'c4_3_encoding_after_0' } }
-chain('c4_3_encoding_after', [
-  ['me', '第一行看着只有一串数。补上不同相位的行，两个方向才分开。'],
-  ['ning', '所以那串数不能贴在图像上当“这一排病人”。k空间和照片不是一格对一格。'],
-  ['zhou', '记住这个，下午有人问能不能只丢一行，你就知道不能只看照片边上有没有少一条。'],
-  ['sys', '许宁保存教学重建。许建平已在窗口报到，你们把他的头部与颈部申请按计划分别准备。', { card: 'c4_encoding', effect: { flag: 'c4_encoding_seen', skill: 1 } }],
-], 'c4_3_xu_0')
-steps.c4_3_hub.choices!.at(-1)!.next = 'c4_3_encoding_intro_0'
-steps.c4_3_neck_talk_2.next = 'c4_3_course_close_0'
-chain('c4_3_course_close', [
-  ['ning', '头部三种对比，颈部另有一组。今天终于能把“信号地址”和“片袋地址”都讲清了。'],
-  ['me', '还有明天那份少行的数据。您别先把它叫“快速完整版”。'],
-  ['ning', '我叫它“候选”，省得主任问完整版是谁批准的。', { effect: { flag: 'c4_course_locations_done' } }],
-], 'c4_training_plan_0')
-chain('c4_training_plan', [
-  ['sys', '你们把教学样品收好，主任在门外等着，手里夹着澜江市三甲医院核医学中心的进修安排。'],
-  ['director', '明年想从县里派一个人，跟γ相机和PET/CT两周。你这次MRI从信号看到重建，有没有兴趣接着去？'],
-  ['ning', '我帮你守分机，你回来可得告诉我，环上那一对光子怎么认。'],
-], 'c4_training_interest_q', 'bg_mri_corridor_day_v2')
-question('c4_training_interest_q', 'me', '这次不是临时换一间屋跟班。你看了看进修安排，想清楚要去学什么。', [
-  { text: '想去，看体内示踪信号怎样接到探测与重建', next: 'c4_training_yes' },
-  { text: '愿意，先问清带教、轮班与回县后的衔接', next: 'c4_training_ask' },
-], { bg: 'bg_mri_corridor_day_v2' })
-steps.c4_training_yes = { bg: 'bg_mri_corridor_day_v2', speaker: 'director', sprite: characters.director.sprite, text: '那我把你的名字报上。名额回函后再定日期，别一听去市里，就先把票买了。', effect: { flag: 'c4_nuclear_training_interest' }, next: 'c4_3_after_shift' }
-steps.c4_training_ask = { bg: 'bg_mri_corridor_day_v2', speaker: 'director', sprite: characters.director.sprite, text: '安排在这页。我和那边带教确认，也把县里替班排好，再给你回话。名字先报上。', effect: { flag: 'c4_nuclear_training_interest' }, next: 'c4_3_after_shift' }
-steps.c4_3_hub.choices!.splice(-1, 0, { text: '窗口：看许建平的旧查询材料', next: 'c4_3_record_note_0', cond: { notFlag: 'c4_father_request', ap: 1 }, effect: { ap: -1 } })
-chain('c4_3_record_note', [
-  ['tang', '许建平托窗口收着另一袋材料。父亲叫许守义，要查的是1998年的记录，不是今天这两份MRI。'],
-  ['me', '我沿原来的受理号补材料；身份关系核清了再查，不把没名字的片子塞给他认。'],
-  ['tang', '登记好了。后续找这个窗口，今天的门诊随访另走医生留下的联系方式。', { card: 'c4_records', effect: { flag: 'c4_father_request' } }],
-], 'c4_3_hub', 'bg_mri_corridor_day_v2')
-
-steps.c4_4_open_0.text = '11月23日，周二上午。许宁比你早到十分钟，桌上已经摆了两杯豆浆。她把同一份样品开在两个窗口里，一边收齐，一边少收几行：“昨晚想的，今早试试。”'
-steps.c4_4_open_1.speaker = 'ning'; steps.c4_4_open_1.sprite = characters.ning.sprite
-steps.c4_4_open_1.text = '我给文件起名“少行候选”。昨天叫“快速漂亮最终版”，老周让我先把“最终版”删了。'
-steps.c4_4_open_2.text = '他没让你把“漂亮”也删了？'
-steps.c4_4_open_3.text = '你们先试，我去交这几页材料。许宁，别把文件又命名成“最终版二”啊。'
-steps.c4_4_hub.text = '上午的患者由当班同事按预约接诊。教学工作站空出来了，你可以先找同事，再回来比较同一份采样数据。'
-steps.c4_4_hub.choices!.at(-1)!.text = '回教学工作站，看看少掉的行'
-steps.c4_4_hub.choices!.at(-1)!.next = 'c4_4_sampling_intro_0'
-steps.c4_4_hub.choices!.splice(-1, 0, { text: '办公室：看旧项目补充说明', next: 'c4_4_optional_audit_0', cond: { notFlag: 'c4_receipt_conflict', ap: 1 }, effect: { ap: -1 } })
-chain('c4_4_sampling_intro', [
-  ['ning', '先别急着隔行。我要问另一件：只留中心，这些格子看着很亮，是不是就够了？'],
-  ['me', '我先收一版，再拿细边缘和间隔跟完整的比。'],
-  ['zhou', '同样数量，再换隔行收。两次结果都留着，我们看是不是同一种后果。'],
-  ['ning', '那我不拿两张缩略图比“哪个更清楚”了。先把同一视野、同一大小摆好。'],
-], 'c4_4_sampling_lab')
-steps.c4_4_sampling_lab = { bg: 'bg_mri_control_day_v2', speaker: 'ning', sprite: 'char_mri_colleague',
-  text: '教学数据的完整k空间留在旁边。这里改变真正进入逆傅里叶重建的样本，不改变窗口里的图片大小。',
-  tool: { kind: 'mri', task: 'mri-sampling', variant: 'undersample', title: '少收同样多，为什么后果不同？',
-    prompt: '分别只留中心行、隔行采集，再与完整采样对照；看细节损失与混叠怎样不同。',
-    help: '固定视野时，足够的高频覆盖支持细节；采样间隔过大又会产生混叠。减少矩阵、缩小视野、跳行和图像缩放不是同一件事。', next: 'c4_4_sampling_after_0' } }
-chain('c4_4_sampling_after', [
-  ['me', '我把细节弄没了，还以为“没重影”就算好了。另一种却把不同位置折到一起。'],
-  ['zhou', '分辨细节和不混叠，都得看。高对比边界旁的振铃，也可能来自有限采样，不是又长出一圈组织。'],
-  ['ning', '少收行真省了时间，欠的信息可没因为文件名里有“最终”就回来。'],
-  ['sys', '三种结果并排留好。许宁给最模糊的那张加了个文件名：“省过头了”。门外叫到下一位，你们收起本子，让出工作台。', { card: 'c4_sampling', effect: { flag: 'c4_sampling_seen', skill: 1 } }],
-], 'c4_4_after_shift')
-chain('c4_4_optional_audit', [
-  ['sys', '主任把旧项目的补充说明留在办公室。回函、独立任务索引和设备科留存邮件各有编号。'],
-  ['director', '回函写“全部”，另一个任务却还没答。今天登记收到文件，不确认全部已经核实。'],
-  ['han', '我回去补任务清单和接收记录，把范围写清。'],
-  ['lei', '前期样本建议是我写的，不能只说接过线。原稿和回执副本今天交齐。'],
-  ['me', '起草、接收、后续用途，分别按原始记录核。断线和留证也不能漏掉。'],
-  ['sys', '信息科签收原稿与独立邮件，登记未覆盖的R-17历史批次；都是2025年断网前的任务，后续用途仍待核验。'],
-  ['director', '这页我接着查。你们的设备学习照常，不用在这儿替谁猜结论。'],
-  ['sys', '你记下负责窗口，回到教学工作站。许宁把“少行候选”那一页留着，等你一起看。', { card: 'c4_privacy', effect: { flag: 'c4_receipt_conflict', badge: 'c4_receipt' } }],
-], 'c4_4_hub', 'bg_office_day')
-
-steps.c4_5_open_0.text = '11月25日，周四早上，最后一个学习白班。今天由你陪许宁做采样与重建的对照交接，预约患者仍交给当班团队。她给旧椅子贴了张纸：“轻坐，别旋转起飞。”'
-steps.c4_5_open_1.text = '前几天你都替我拖完了。今天让我先做，你帮我看有没有把条件漏掉。'
-steps.c4_5_hub.choices!.splice(-1, 0,
-  { text: '档案窗口：看看转诊查询的短回复', next: 'c4_5_record_reply_0', cond: { notFlag: 'c4_father_transfer', ap: 1 }, effect: { ap: -1 } },
-  { text: '休息室：问许宁课件后面的三种新信息', next: 'c4_5_advanced_q', cond: { notFlag: 'c4_advanced_seen', ap: 1 }, effect: { ap: -1 } },
-)
-steps.c4_5_hub.choices!.at(-1)!.text = '回教学工作站，让许宁先做一版'
-steps.c4_5_research_0.text = '许宁重新打开昨天的样品，先把完整采样锁在旁边：“这次你别提醒我。我自己试一份，你挑毛病。”'
-steps.c4_5_research_1.text = '相位编码要重复收行，普通单回波模型里少一半行能省循环。可我不能只写用了多久。'
-steps.c4_5_research_2.text = '对。把你留的行和重建出来的图一起给我看，我先不碰你的鼠标。'
-steps.c4_5_research_q = { bg: 'bg_mri_control_day_v2', speaker: 'ning', sprite: 'char_mri_colleague',
-  text: '许宁准备先做候选，再回完整数据核对。你在旁边看采样记录，不帮她把缺掉的行悄悄补回去。',
-  tool: { kind: 'mri', task: 'mri-sampling', variant: 'undersample', title: '许宁先做一版：快到哪里，代价在哪儿',
-    prompt: '比较完整采样与省行候选的循环数、细节和混叠；同一任务下保留能说明取舍的一版。',
-    help: '普通单回波模型的时间随相位编码行数、TR和平均次数变化；FSE可一轮收多个回波，GRE可缩短TR。并行成像还要利用不同线圈的空间信息，缺行后直接IFFT不会自行解开混叠。', next: 'c4_5_research_close_0' } }
-steps.c4_5_research_close_0.text = '省行不是白省。多通道接收可以为解混叠提供不同的空间信息，重建也有条件；线圈不独立、噪声变大，都得留在比较里。'
-steps.c4_5_research_close_1.text = '那我写“候选省了循环”，不写“所有病人都能缩短一半”。图里缺什么也写上。'
-steps.c4_5_research_close_2.text = '还有用了什么重建。FSE多回波、GRE短TR、并行成像少行，别全混成“换个快速序列”。'
-steps.c4_5_research_close_3.text = '临床交班已经完成。老周让你们把采样、重建与尚未证实的地方放在一张培训页上，许宁先讲，你来查漏。'
-steps.c4_5_research_close_3.next = 'c4_5_course_handover_0'
-chain('c4_5_course_handover', [
-  ['ning', '我以前交接总说“这组快一点”。现在还得说清楚怎么收的，和怎么重建的。'],
-  ['me', '先讲你这一页。我忍住不替你按鼠标。'],
-  ['ning', '少采样的候选有折叠；完整那份留下作对照。要继续加速，得看线圈信息和重建条件，不能先把缺点删了。'],
-  ['zhou', '这回没漏。回去把第一天那页翻出来，你俩当时还在问这个圈转不转。', { effect: { badge: 'c4_safe_research' } }],
-  ['me', '那页也留着，不叫“最终版”。'],
-  ['sys', '许宁把结果存好，终于合上本子。交班的同事进来了，你端起早就凉透的茶，跟她回休息室收东西。', { card: 'c4_acceleration', effect: { flag: 'c4_course_complete', badge: 'c4_teacher' } }],
-], 'c4_5_after_shift')
-chain('c4_5_record_reply', [
-  ['sys', '档案窗口完成了本院转诊登记的身份复核。许建平授权查的许守义，姓名、年龄和转诊编号能互相对应。'],
-  ['tang', '记录是1998年正式转往外地省院。这里仅能确认本院这一段，外院的后续要沿接收院继续核。', { effect: { badge: 'c4_same_person' } }],
-  ['me', '我把受理号和联系人记给他。他自己的颈部随访另留一张，不把两件事混进同一个片袋。'],
-  ['sys', '回复交到原受理窗口，许建平按约继续查询。你回到休息室，教学比较那页还等着许宁开讲。', { card: 'c4_records', effect: { flag: 'c4_father_transfer', badge: 'c4_transfer' } }],
-], 'c4_5_hub', 'bg_mri_corridor_day_v2')
-question('c4_5_advanced_q', 'ning', '课件后半本还有三种“不是只换个灰度”的信息。饭没热好，挑一个聊两句？', [
-  { text: 'DWI看水分子怎样动？', next: 'c4_5_dwi_0' },
-  { text: 'fMRI那个活动图从哪来？', next: 'c4_5_fmri_0' },
-  { text: 'MRS为什么像一排山峰？', next: 'c4_5_mrs_0' },
-], { bg: 'ch2_bg_breakroom_day' })
-chain('c4_5_dwi', [
-  ['ning', '扩散敏感梯度让移动的水分子产生不同去相位。比较不同b值，能估计表观扩散系数ADC。'],
-  ['me', '所以不是看一张DWI亮就喊“扩散受限”，还要对ADC和其他信息。'],
-  ['ning', '对，先别光看哪张漂亮。哎，微波炉响了，这页夹住，饭再热一遍就没法吃了。', { effect: { flag: 'c4_advanced_seen' } }],
-], 'c4_5_hub', 'ch2_bg_breakroom_day')
-chain('c4_5_fmri', [
-  ['ning', '常见BOLD fMRI利用血氧变化带来的T2*信号差，连续采集，再比较任务和休息时段。'],
-  ['me', '手指敲一会儿、停一会儿那种？可不是给想法拍张照片。'],
-  ['ning', '不是读心，运动和生理变化也要处理。先吃饭，别把我没吃饱的信号算成思考。', { effect: { flag: 'c4_advanced_seen' } }],
-], 'c4_5_hub', 'ch2_bg_breakroom_day')
-chain('c4_5_mrs', [
-  ['ning', '不同化学环境让同一种核的共振频率略有不同，FID做傅里叶变换能得到波谱。'],
-  ['me', '图上的峰给的是成分相关信息，不是把某块组织画得更亮。'],
-  ['ning', '对，频谱和解剖图各回答不同问题。这个也得看条件，不是一峰定病。', { effect: { flag: 'c4_advanced_seen' } }],
-], 'c4_5_hub', 'ch2_bg_breakroom_day')
-steps.c4_4_end.text = '交班完毕。许宁把“省过头了”那张也存下来，说下次谁只夸速度，就先给他看这个。明天轮到她自己配一版。'
-steps.c4_5_end.text = '五次设备学习白班完成。采样、对比、空间编码与重建的培训记录已交接；可以整理物品、翻书，准备好再参加晨会。'
-steps.c4_epilogue_7.text = '市三甲核医学中心回函了，你的进修名额确定。明年11月两周，带教和跟班范围都写清了，县里的替班也能安排。'
-steps.c4_epilogue_7.effect = { flag: 'c4_nuclear_training_place' }
-steps.c4_epilogue_8.text = '我想去。头一回进机房只顾着看那个圈，这回我把信号从哪儿来、怎么变成图像也带着问。'
-steps.c4_epilogue_9.next = 'c4_training_ready_0'
-chain('c4_training_ready', [
-  ['sys', '到下一年秋天，进修日期终于临近。澜江市三甲医院核医学中心发来11月3日报到、两周五次跟班的通知，宿舍和带教联系人也确认了。'],
-  ['sys', '科里把这两周的县院班次交给小吴接，提前留好临时调班的人选。你按报到时间订了去澜江市的车票，把医院地址和换乘路线存在手机里。'],
-  ['zhou', '票、通知、行李别塞成一团。你到了市里，先跟人家认路。食堂也认，回来我要问。'],
-  ['me', '知道了。我主动报的名，不至于到了门口又找不着自己去哪儿。', { effect: { flag: 'c4_nuclear_training_ready' } }],
-], 'c4_epilogue_end', 'bg_office_day')
-
-cards.c4_signal = { title: '先有磁化，再有可接收信号', body: '静磁场建立纵向净磁化；匹配进动频率的RF脉冲翻转磁化，接收线圈检测变化的横向分量。T1纵向恢复和T2横向衰减同时发生。' }
-cards.c4_timing = { title: '同样品，两个等待时间', body: 'TR影响再次激发前的纵向恢复，TE影响接回波时留下的横向信号。简化SE模型中，质子密度、T1恢复和T2衰减共同决定信号，不能只比哪张亮。' }
-cards.c4_encoding = { title: '信号怎样带上地址', body: '层选用RF与梯度配合；读出时频率编码区分一个方向，相位编码区分另一个方向。原始数据形成k空间，二维逆傅里叶变换得到图像。' }
-cards.c4_sampling = { title: '丢高频与跳行，后果不同', body: '固定视野时，高频覆盖关系到边界细节；采样间隔关系到是否混叠。k空间与像素不一一对应，局部数据变化会影响整幅重建。' }
 export const CH4: TrilogyChapter = {
-  id: 'ch4', title: '共振', subtitle: '从磁化到重建，陪新同事认清信号', icon: '🧲', year: 2027,
-  equipment: '0.55T · 80厘米大口径MRI', background: 'bg_mri_corridor_day_v2',
+  id: 'ch4', title: '共振', subtitle: '一周跟班，和三天慢慢顺起来的班', icon: '🧲', year: 2027,
+  equipment: '0.55T · 80厘米大口径MRI', background: 'bg_c4_county_corridor_v1',
   shifts: [
-    { id: 'c4_1', title: '序章与第一班·从选型到信号', subtitle: '六月选型 → 十一月白班 · 磁化、射频与小程', date: '2027年6月选型 → 11月16日白班', start: 'c4_pro_0', checkinAt: 'c4_1_open_0', background: 'bg_office_day' },
-    { id: 'c4_2', title: '第二班·两个等待时间', subtitle: '白班 · TR、TE与老宋的运动片段', date: '2027-11-18 · 白班', start: 'c4_2_open_0', background: 'bg_mri_corridor_day_v2' },
-    { id: 'c4_3', title: '第三班·给信号一个地址', subtitle: '白班 · 空间编码、k空间与同次对比', date: '2027-11-20 · 白班', start: 'c4_3_open_0', background: 'bg_mri_corridor_day_v2' },
-    { id: 'c4_4', title: '第四班·少掉的行', subtitle: '白班 · 分辨细节、采样与重建', date: '2027-11-23 · 白班', start: 'c4_4_open_0', background: 'bg_mri_corridor_day_v2' },
-    { id: 'c4_5', title: '第五班·让她先做一版', subtitle: '白班 · 加速取舍与带教交接', date: '2027-11-25 · 白班', start: 'c4_5_open_0', background: 'bg_mri_corridor_day_v2' },
-  ], steps, afterQuiz: 'c4_epilogue_0', characters, badges, cards, book, quiz,
-  shopItems: [
-    { id: 'c4_sleep_mask', name: '柔软眼罩', price: 30, desc: '只在下班后的休息室用。躺稳之前，最好先看看那把旧椅子。', image: 'item_c4_sleepmask_v2', use: 'c4_sleep_mask_used' },
-    { id: 'c4_postcard', name: '科室明信片', price: 35, desc: '给新同事写个欢迎便条，再问问她以前怎么认路。放在受控区外。', image: 'item_c4_postcard_v2', use: 'c4_postcard_used' },
+    { id: 'c4_city1', title: '市院第一晚·怕也还能再试', subtitle: '腕伤跟班 · 3T即停 · 0.55T换机完成', date: '2027年3月3日 · 晚间接诊', start: 'c4_pro_0', checkinAt: 'c4_1_open_0', background: 'bg_office' },
+    { id: 'c4_city2', title: '市院最后一晚·那声脆响以后', subtitle: '眼镜吸附 · MRCP · 维修记录', date: '2027年3月9日 · 晚间接诊', start: 'c4_2_open_0', background: 'bg_c4_city_control_v1' },
+    { id: 'c4_procurement', title: '回县·把配置和日子写明白', subtitle: '原厂AI单列 · 采购交接 · 小唐改约', date: '2027年4月—11月 · 项目日程', start: 'c4_3_open_0', background: 'bg_office_day' },
+    { id: 'c4_day1', title: '装机第一天·恐龙也要上班', subtitle: '儿童脑积水 · 原厂试用 · 小唐接诊', date: '2027年11月15日 · 预约白班', start: 'c4_4_open_0', background: 'bg_c4_county_corridor_v1' },
+    { id: 'c4_day2', title: '装机第二天·先把患者接稳', subtitle: '腹部图组 · 运动伪影 · 膝部伪征 · 冯叔复查', date: '2027年11月16日 · 预约白班', start: 'c4_5_open_0', background: 'bg_c4_county_corridor_v1' },
+    { id: 'c4_day3', title: '装机第三天·黑影里的签名', subtitle: '腰椎金属伪影 · 旧手术记录 · 左颈另评估', date: '2027年11月17日 · 预约白班', start: 'c4_6_open_0', background: 'bg_c4_county_corridor_v1' },
   ],
+  steps, afterQuiz: 'c4_epilogue_0', characters, badges, legacyBadges, cards, legacyCards, book, quiz,
   assets: [...new Set([
-    ...Object.values(characters).flatMap(c => c.sprite ? [c.sprite] : []),
-    'bg_mri_room_day_v2', 'bg_mri_control_day_v2', 'bg_mri_corridor_day_v2', 'bg_mri_control', 'bg_breakroom', 'ch2_bg_breakroom_day', 'bg_office_day',
-    'mri_wrist', 'mri_wrist_t2', 'mri_brain_t1', 'mri_brain_t2', 'mri_brain_flair', 'mri_neck', 'item_transfer_record',
-    'cg_c4_luo_records_v2', 'cg_c4_first_mri_v2', 'cg_c4_procurement_v3', 'cg_c4_wide_bore_v3', 'item_c4_sleepmask_v2', 'item_c4_postcard_v2',
+    ...Object.values(characters).flatMap(c => c.sprite && c.sprite !== 'me' ? [c.sprite] : []),
+    'char_m', 'char_f',
+    'bg_c4_city_control_v1', 'bg_c4_city_magnet_room_v1', 'bg_c4_city_corridor_v1', 'bg_c4_city_preparation_v1', 'bg_c4_city_staff_room_v1', 'bg_c4_city_triage_v1',
+    'bg_c4_county_control_v1', 'bg_c4_county_magnet_room_v1', 'bg_c4_county_corridor_v1', 'bg_c4_county_corridor_preinstall_v1', 'bg_c4_county_preparation_v1',
+    'bg_mri_room_day_v2', 'bg_mri_control_day_v2', 'bg_mri_corridor_day_v2', 'bg_waiting_day_v2', 'bg_office_day', 'bg_office', 'ch2_bg_breakroom_day',
+    'item_notebook', 'mri_c4_implant_v3', 'cg_c4_glasses_v3', 'item_c4_a17_parts_v1', 'item_c4_quote_folder_v1',
+    'mri_real_tfcc_v1', 'mri_real_mrcp_v1', 'mri_real_hydrocephalus_v1', 'mri_real_motion_ghost_v1', 'mri_real_knee_mimic_v1', 'mri_real_metal_artifact_v1', 'mri_real_stroke_sequences_v1', 'mri_real_hemangioma_t2_v1', 'mri_real_hemangioma_dynamic_v1',
+    'mri_c4_magnet_system', 'mri_c4_gradient_system', 'mri_c4_rf_system', 'mri_c4_sequence_atlas', 'mri_c4_basic_contrast_v1',
+    'cg_c4_magnet_lift_v1', 'cg_c4_install_complete_v1', 'cg_c4_ribbon_stop_v1', 'cg_c4_ribbon_cutting_v1', 'cg_c4_city_wide_bore_v1',
+    'trilogy_mri_scan_acquire_v3', 'trilogy_mri_scan_wrist_v1', 'trilogy_mri_scan_knee_v1', 'trilogy_mri_scan_shoulder_v1',
+    'trilogy_mri_scan_cervical_v1', 'trilogy_mri_scan_lumbar_v1', 'trilogy_mri_scan_abdomen_v1', 'trilogy_mri_scan_city_wide_head_v1',
+    'trilogy_mri_scan_county_head_v1', 'trilogy_mri_scan_county_wrist_v1', 'trilogy_mri_scan_county_knee_v1', 'trilogy_mri_scan_county_shoulder_v1',
+    'trilogy_mri_scan_county_cervical_v1', 'trilogy_mri_scan_county_lumbar_v1', 'trilogy_mri_scan_county_abdomen_v1',
+    'cg_c4_procurement_v3', 'cg_c4_city_hospital_entrance', 'cg_c4_city_hospital_entrance_female',
+    // 退役剧情不再引用；保留旧存档背景、历史CG与既得纪念物的媒体注册。
+    'bg_breakroom', 'bg_mri_control', 'bg_corridor', 'bg_c4_county_corridor_v1', 'cg_c4_luo_records_v2', 'item_c4_postcard_v2', 'item_c4_sleepmask_v2',
   ])],
   adapt(id, step, state) {
-    const flags = state.flags
-    if (id === 'c4_1_open_0' && !flags.c4_procurement_decided) return { ...step, text: '2027年11月16日，周二早上八点。经过此前选型、机房准备、安装调试与验收，县院的0.55T大口径MRI正式进入门诊预约。你回到放射科，开始五个设备跟班白班，也陪新来的许宁认本院交接。' }
-    if (id === 'c4_1_fan_0' && !flags.c4_procurement_decided) return { ...step, text: '今天看线圈和维护清单。你别翻两页就告诉我都记住了，摆放位置又重新定过。' }
-    if (id === 'c4_2_luo_0' && !flags.c2_needle_seen) return { ...step, text: '候诊椅上坐着一位提着双层布袋的女士。申请单写着“罗女士”，袋子里旧片和票据分得整整齐齐。' }
-    if (id === 'c4_2_luo_1' && !flags.c2_needle_seen) return { ...step, text: '我姓罗。以前查到过留下来的针，资料都带来了，你们先看看。' }
-    if (id === 'c4_2_luo_2' && !flags.c2_needle_seen) return { ...step, text: '申请单写肩背不适。这次还有哪里不舒服？' }
-    if (id === 'c4_2_luo_care_7' && !flags.c2_needle_seen) return { ...step, text: '你别想顺她袋子。资料装好，我去把联系人再核一遍。' }
-    if (id === 'c4_2_luo_care_6' && flags.c2_payoff_luo_gift) return { ...step, text: '她以前送你的那个光盘袋，还在柜子里吧？我一看这针脚就认出来了。' }
-    if (id === 'c4_5_fan_0' && flags.n5_fan) return { ...step, text: '当年给你的报废铅眼镜，还在柜子里吧？留着当纪念，别当防护用品，更别拿进磁体间。' }
-    if (id === 'c4_5_zhou_1' && flags.n5_qian) return { ...step, text: '以前工地大叔托人送苹果，现在您给茶叶蛋。别人一夸我就给吃的，我倒不太好意思空着手走了。' }
-    if (id === 'c4_5_family_2' && !flags.c3_cousin_followup_stable) return { ...step, text: '她回了一个拖鞋表情，接着发来八个月大的孩子笑得直往后仰的小视频。家里人聊着辅食和袜子，没再拿工作时间催你看手机。' }
-    if (id === 'c4_3_neck_talk_3' && flags.c3_xu_query_started) return { ...step, text: '好。还有我爸许守义那件事，上次登记以后，我又把家里剩的旧资料找齐了。' }
-    if (id === 'c4_3_neck_talk_4' && flags.c3_xu_query_started) return { ...step, text: '他打开另一只旧纸袋。上次受理的回执在最上面，下面是这次补来的关系材料；不是方才检查的那一袋影像。' }
-    if (id === 'c4_3_neck_talk_5' && flags.c3_xu_query_started) return { ...step, text: '我交给原来的受理窗口，记在同一件查询下面。不会让您重新排一次。' }
+    if (id === 'c4_city_arrival') return { ...step, image: state.gender === 'f' ? 'cg_c4_city_hospital_entrance_female' : 'cg_c4_city_hospital_entrance' }
+    if (id === 'c4_3_quotes_2' && state.flags.c3_wen_copy_kept) return { ...step, text: '第三章那份核对联还在院里，正好照着改。原厂AI单列，30天试用另放一页，账号和到期日都写明白。' }
+    if (id === 'c4_6_follow_0' && state.flags.c3_xu_query_started) return { ...step, text: '父亲查询沿第三章受理号走。许建平年轻时的手术资料另放一册，今早已核完本次扫描条件；完整病历和当年签字页还在找。左颈资料则夹在门诊申请后面。' }
+    if (id === 'c4_epilogue_5' && state.flags.c4_xu_listened) return { ...step, text: '你那时候没逼我。要不然，我早就连这张纸都不肯找了。' }
     return step
   },
 }

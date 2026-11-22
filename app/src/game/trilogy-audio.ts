@@ -5,11 +5,12 @@ import type { TrilogyChapter, TrilogyStep } from './trilogy-types'
 const entrances: Record<string, string> = {
   mei: 'vox_c3_mei_v2', aunt: 'vox_trilogy_aunt_v2',
   xu: 'vox_trilogy_mystery_v2', mystery: 'vox_trilogy_mystery_v2', han: 'vox_trilogy_han_v2',
-  luo: 'vox_trilogy_luo_v2', wrist: 'vox_c4_wrist_v2', anxious: 'vox_c4_song_v2',
 }
 export function trilogyVoice(_chapter: TrilogyChapter, step: TrilogyStep) {
   if (Object.hasOwn(step, 'voice')) return step.voice
-  // The new CH3 greeting is bound explicitly; CH4/5 keep their previous voice.
+  // Rewritten CH4 dialogue never inherits a recording from an older script.
+  // Only clips explicitly bound to the current line may play in this chapter.
+  if (_chapter.id === 'ch4') return undefined
   if (_chapter.id === 'ch3' && step.speaker === 'xu') return undefined
   if (step.tool || step.scan || step.communication || step.closeup || step.speaker === 'sys') return undefined
   return entrances[step.speaker ?? '']

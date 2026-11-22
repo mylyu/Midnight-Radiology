@@ -56,6 +56,7 @@ import type { TrilogyId } from './game/trilogy-types'
 import { trilogyVisibleChanges } from './game/trilogy-feedback'
 import { initializeTrilogy, resetTrilogy } from './game/trilogy-session'
 import { isTrilogyPlayable } from './game/chapter-availability'
+import { mriUnlocked, unlockMri } from './game/mri-access'
 const TrilogyEntry = lazy(() => import('./components/TrilogyEntry'))
 const TrilogyVerifier = lazy(() => import('./components/TrilogyScreen').then(module => ({ default: module.TrilogyVerify })))
 const TrilogyCollections = lazy(() => import('./components/TrilogyCollections'))
@@ -111,6 +112,11 @@ export default function App() {
       const trilogyRoute = h.match(/^#\/(ch[345])$/)?.[1] as TrilogyId | undefined
       if (trilogyRoute) {
         if (!isTrilogyPlayable(trilogyRoute)) {
+          window.history.replaceState(null, '', '#/dlc')
+          requestEntry('shell', extras, () => { setState(s); setScreen('dlcHall'); setBooted(true) }, true)
+          return
+        }
+        if (trilogyRoute === 'ch4' && !mriUnlocked()) {
           window.history.replaceState(null, '', '#/dlc')
           requestEntry('shell', extras, () => { setState(s); setScreen('dlcHall'); setBooted(true) }, true)
           return
@@ -198,7 +204,7 @@ export default function App() {
   }
   const enterTrilogy = (id: TrilogyId, s: GameState) => {
     const epoch = ++routeEpoch.current
-    if (!isTrilogyPlayable(id)) {
+    if (!isTrilogyPlayable(id) || (id === 'ch4' && !mriUnlocked())) {
       window.history.replaceState(null, '', '#/dlc')
       requestEntry('shell', chapterSaveAssets(s), () => { setState(s); setScreen('dlcHall') }, true)
       return
@@ -2638,6 +2644,9 @@ function DlcHallScreen({ onEnter, onEnterCh2, onEnterTrilogy, onBack }: { onEnte
   const [ch2Ok, setCh2Ok] = useState(ch2Unlocked())
   const [pwd, setPwd] = useState('')
   const [pwdErr, setPwdErr] = useState(false)
+  const [mriOk, setMriOk] = useState(mriUnlocked)
+  const [mriCode, setMriCode] = useState('')
+  const [mriErr, setMriErr] = useState(false)
 
   const startTemplate = (g: 'm' | 'f') => {
     const s = freshState(g)
@@ -2750,17 +2759,33 @@ function DlcHallScreen({ onEnter, onEnterCh2, onEnterTrilogy, onBack }: { onEnte
               )
             })()}
             {([{ id: 'ch3', title: '第三章 · 回声', icon: '〰️', desc: '2026年 · 表姐一通电话，你拍胸脯答应帮忙。本想去超声科找个熟人，没想到自己也成了跟班。' },
-              { id: 'ch4', title: '第四章 · 共振', icon: '🧲', desc: '2027年 · 从MRI选型谈判，到0.55T大口径新机的日间跟班。报价里的数字，终于变成眼前的机器。' },
-              { id: 'ch5', title: '第五章 · 微光', icon: '✨', desc: '2028年 · 接到进修名额，带着县院的问题去市三甲核医学中心。两周，认识另一种成像。' }] as const).filter(chapter => isTrilogyPlayable(chapter.id)).map(chapter => <section key={chapter.id} className="bg-slate-900/90 border-2 border-teal-500/60 rounded-2xl p-5">
-                <div className="flex items-center gap-3"><span className="text-3xl">{chapter.icon}</span><h3 className="text-lg text-teal-100 font-bold">{chapter.title}</h3><span className="ml-auto text-xs text-slate-400">{save.dlc?.[chapter.id]?.chapter?.done ? '已完成' : save.dlc?.[chapter.id]?.chapter ? '进行中' : '未开始'}</span></div>
+              { id: 'ch4', title: '第四章 · 共振', icon: '🧲', desc: '2027年 · 去市院进修，自由探查检查室内外。冯叔终于完成检查，许建平片上的黑影却牵出一份旧手术记录。' },
+              { id: 'ch5', title: '第五章 · 微光', icon: '✨', desc: '2028年 · 接到进修名额，带着县院的问题去市三甲核医学中心。两周，认识另一种成像。' }] as const).filter(chapter => isTrilogyPlayable(chapter.id)).map(chapter => {
+              const locked = chapter.id === 'ch4' && !mriOk
+              const progress = save.dlc?.[chapter.id]?.chapter
+              const tryMriCode = () => {
+                if (unlockMri(mriCode)) { setMriOk(true); setMriCode(''); setMriErr(false); playSfx('badge') }
+                else { setMriErr(true); playSfx('buzz') }
+              }
+              return <section key={chapter.id} data-trilogy-entry={chapter.id} className={`bg-slate-900/90 border-2 rounded-2xl p-5 ${locked ? 'border-slate-700' : 'border-teal-500/60'}`}>
+                <div className="flex items-center gap-3"><span className="text-3xl">{locked ? '🔒' : chapter.icon}</span><h3 className="text-lg text-teal-100 font-bold">{chapter.title}</h3><span className="ml-auto text-xs text-slate-400">{progress?.done ? '已完成' : progress ? '进行中' : locked ? '访问码锁定' : '未开始'}</span></div>
                 <p className="text-sm text-slate-300 my-3">{chapter.desc}</p>
-                <div className="flex gap-2 mt-1">
-                  <button data-enter-trilogy={chapter.id} className="min-h-11 flex-1 rounded-lg bg-teal-400 text-slate-950 font-bold" onClick={() => onEnterTrilogy(chapter.id, save)}>{save.dlc?.[chapter.id]?.chapter ? '继续 / 回看 →' : '开始 →'}</button>
-                  {save.dlc?.[chapter.id]?.chapter && (confirmReset === chapter.id
+                {locked ? <>
+                  <form className="flex gap-2" onSubmit={event => { event.preventDefault(); tryMriCode() }}>
+                    <input aria-label="MRI章节访问码" autoComplete="off" value={mriCode} onChange={event => { setMriCode(event.target.value); setMriErr(false) }} placeholder="输入访问码"
+                      className={`min-w-0 flex-1 min-h-11 rounded-lg bg-slate-800 border px-3 py-2 text-slate-100 outline-none ${mriErr ? 'border-red-400' : 'border-slate-600 focus:border-teal-400'}`} />
+                    <button className="min-h-11 rounded-lg bg-teal-500 px-4 py-2 font-bold text-slate-950 disabled:opacity-40" disabled={!mriCode.trim()}>解锁</button>
+                  </form>
+                  {mriErr && <p role="alert" className="text-sm text-rose-300 mt-2">访问码不对，请核对后再试。</p>}
+                  <p className="text-[11px] text-slate-500 mt-2">访问码仅控制本机章节入口，与前三章进度无关。</p>
+                </> : <div className="flex gap-2 mt-1">
+                  <button data-enter-trilogy={chapter.id} className="min-h-11 flex-1 rounded-lg bg-teal-400 text-slate-950 font-bold" onClick={() => onEnterTrilogy(chapter.id, save)}>{progress ? '继续 / 回看 →' : '开始 →'}</button>
+                  {progress && (confirmReset === chapter.id
                     ? <button onClick={() => resetDlc(chapter.id)} className="px-3 py-2.5 rounded-lg bg-red-700/80 text-red-50 text-sm animate-pulse">确认重置</button>
                     : <button onClick={() => { playSfx('click'); setConfirmReset(chapter.id) }} className="px-3 py-2.5 rounded-lg bg-slate-800 border border-slate-600 text-slate-400 text-sm hover:border-red-400">重置</button>)}
-                </div>
-              </section>)}
+                </div>}
+              </section>
+            })}
           </div>
         )}
 

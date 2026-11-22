@@ -2,7 +2,7 @@ export type LdctCinematic = {
   id: 'meal' | 'table-explain' | 'phantom' | 'father-scan' | 'locked' | 'locked-phantom' | 'director-caught' | 'director-review'
   image: string
   alt: string
-  motion: 'push' | 'settle'
+  motion: 'push' | 'settle' | 'pan'
   locked?: boolean
 }
 

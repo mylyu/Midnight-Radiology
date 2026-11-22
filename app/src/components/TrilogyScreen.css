@@ -34,6 +34,14 @@
 .trilogy-root[data-trilogy=ch3] .trilogy-story-image { width:min(70vw,760px); height:max(0px,calc(100% - var(--trilogy-header-height,76px) - var(--trilogy-dialog-height,14rem) - 24px)); max-height:none; display:grid; grid-template-rows:minmax(0,1fr) auto; justify-items:center; gap:.35rem; }
 .trilogy-root[data-trilogy=ch3] .trilogy-story-image>img { width:100%; height:100%; min-height:0; }
 .trilogy-root[data-trilogy=ch3] .trilogy-story-image>span { max-width:100%; text-align:center; }
+/* CH4 clinical references use the complete measured scene region, not a small desktop thumbnail. */
+.trilogy-root[data-trilogy=ch4] .trilogy-story-image:is([data-story-image-id^="mri_real"],[data-story-image-id="mri_c4_basic_contrast_v1"]) {
+  top:calc(var(--trilogy-header-height,76px) + 8px); width:min(calc(100% - 2rem),1200px);
+  height:max(0px,calc(100% - var(--trilogy-header-height,76px) - var(--trilogy-dialog-height,14rem) - 16px));
+  max-height:none; display:grid; grid-template-rows:minmax(0,1fr) auto; justify-items:center; gap:6px; pointer-events:none;
+}
+.trilogy-root[data-trilogy=ch4] .trilogy-story-image:is([data-story-image-id^="mri_real"],[data-story-image-id="mri_c4_basic_contrast_v1"])>img { width:100%; height:100%; min-height:0; object-fit:contain; }
+.trilogy-root[data-trilogy=ch4] .trilogy-story-image:is([data-story-image-id^="mri_real"],[data-story-image-id="mri_c4_basic_contrast_v1"])>span { max-width:100%; text-align:center; line-height:1.35; }
 /* Both views fit inside the measured free region above the dialogue. */
 .trilogy-echo-pair { display:grid; grid-template-rows:minmax(0,3.3fr) minmax(0,1fr); gap:.25rem; width:100%; height:100%; min-height:0; }
 .trilogy-echo-pair>img { width:100%; height:100%; min-height:0; object-fit:contain; }
@@ -103,6 +111,8 @@
 .trilogy-decay-dots i { width:20px; height:20px; border-radius:50%; background:#2dd4bf; margin:auto; }
 @media (max-width:600px) and (orientation:portrait) {
  .trilogy-story-image { top:90px; height:calc(50% - 95px); width:75%; }
+ .trilogy-story-image[data-story-image-id="mri_real_stroke_sequences_v1"] { width:calc(100% - 1rem); }
+ .trilogy-root[data-trilogy=ch4] .trilogy-story-image:is([data-story-image-id^="mri_real"],[data-story-image-id="mri_c4_basic_contrast_v1"]) { width:calc(100% - 1rem); }
  .trilogy-story-object { width:calc(100% - 2rem); height:max(0px,calc(100% - var(--trilogy-header-height,76px) - var(--trilogy-dialog-height,14rem) - 140px)); }
  .trilogy-root[data-trilogy=ch3]:has(.trilogy-story-object) .sprite-l,
  .trilogy-root[data-trilogy=ch3]:has(.trilogy-story-object) .sprite-r { height:104px !important; bottom:calc(var(--trilogy-dialog-height,14rem) + 8px) !important; }
@@ -112,6 +122,7 @@
  .trilogy-story-object>span { font-size:.7rem; }
  .trilogy-closeup { width:95%; }
  .trilogy-settlement { top:80px; padding:.8rem; }
+ .trilogy-bottom-menu { position:static; background:none; padding-bottom:0; }
  .trilogy-stats strong { font-size:1.1rem; }
  .trilogy-stats span { display:block; }
  .trilogy-lab { inset:95px .5rem .5rem; padding:.75rem; }
@@ -145,3 +156,10 @@
  .trilogy-lab-controls label { font-size:.75rem; }
  .trilogy-lab footer button { min-height:36px; padding:.4rem 1rem; }
 }
+
+/* CH4 free-time entries: clear, uniform pictograms with no extra menu level. */
+.trilogy-choice-with-icon { display: flex; align-items: flex-start; gap: .65rem; }
+.trilogy-choice-icon { flex: 0 0 1.75rem; width: 1.75rem; height: 1.75rem; display: inline-flex; align-items: center; justify-content: center;
+  margin-top: -.1rem; border: 1px solid rgb(100 116 139 / .55); border-radius: .5rem; background: rgb(15 23 42 / .55); font-size: 1rem; line-height: 1; }
+.trilogy-choice-label { flex: 1; min-width: 0; }
+@media (max-width: 640px) { .trilogy-choice-icon { flex-basis: 1.6rem; width: 1.6rem; height: 1.6rem; font-size: .95rem; } }

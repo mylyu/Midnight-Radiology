@@ -1,0 +1,18 @@
+{
+  "date": "2026-11-23",
+  "tool": "built-in image_gen__imagegen",
+  "prompt": "Use case: precise-object-edit.\nAsset type: full-screen pixel-art story background for the game Midnight Radiology.\nInput image 1 is the edit target: the county hospital MRI head-scan scene. Input image 2 is identity reference only: the mother holding her 3-year-old black-haired daughter.\nEdit image 1 ONLY by replacing the adult patient lying on the scanner table with that same three-year-old girl. She is asleep for her head MRI, lying supine; her small head remains at the exact same head-coil position in the scanner opening. Clearly toddler proportions, petite limbs and short torso. Her body reaches only about halfway down the visible table, leaving much more empty teal mattress at the foot end. Black bangs and a small ponytail, recognizable as the reference girl; do not bring the mother, green toy or shoes into the scanning scene. Plain hospital clothes, a light small blanket may cover her lower body, small socked feet. Keep head coil around her head, naturally supporting and fitting the child.\nPreserve the entire original machine shape, scanner size, room, perspective, patient-table dimensions, teal and cream palette, equipment placements, window, warm lights, and overall composition. Match the existing deliberately pixelated outlined game-art texture. The key correction is child age and body scale, not a new room. No text, labels, captions, watermark or warning. No extra people. Wide landscape composition identical to image 1.",
+  "editTarget": "app/public/assets/media/trilogy_mri_scan_county_head_v1.8537fdee9abac3a5.webp",
+  "identityReference": "app/public/assets/media/pat_c4_mother_child_pixel_v1.8a2b6fd4707d2443.webp",
+  "originalPath": "review-20261123/generated-originals/trilogy_mri_scan_county_child_v1.png (outside repository)",
+  "sourceSha256": "b6e047e46c93ee78d15b26447b4e8ce01bfb103ea8e784a1bc2b3578a972b9af",
+  "deliveryPath": "app/public/assets/media/trilogy_mri_scan_county_child_v1.4ac6edfaec7129d1.webp",
+  "deliverySha256": "4ac6edfaec7129d173d6218c1b35b6a107f2e41fd9d532b26b3f704f01b7a05b",
+  "deliveryBytes": 92612,
+  "dimensions": [
+    1721,
+    914
+  ],
+  "compression": "import-image.mjs WebP q78 alpha100 effort6",
+  "inspection": "Child body now reaches only midpoint of visible mattress, head stays in head coil. Existing scanner room/layout/palette match. No mother or text. Compressed WebP visually inspected."
+}

@@ -1,12 +1,27 @@
 import type { GameState, Step, Ch2QuizProgress } from './types'
 
 export type TrilogyId = 'ch3' | 'ch4' | 'ch5'
+export type MriScanRegion = 'head' | 'wrist' | 'knee' | 'shoulder' | 'cervical' | 'lumbar' | 'abdomen'
+export type MriScannerModel = 'city-3t' | 'city-055-wide' | 'county-055-wide'
 export interface TrilogyScanConfig {
   kind: 'ultrasound' | 'mri' | 'pet'
   label: string
+  /** Workstation result image; never reused as the patient's positioning illustration. */
   image?: string
+  /** Selects the matching MRI positioning/coil illustration for this acquisition. */
+  mriRegion?: MriScanRegion
+  /** City 3T, the city's other 0.55T room, and the later county 0.55T installation stay distinct. */
+  mriModel?: MriScannerModel
+  /** A patient-specific positioning picture, e.g. a child rather than the adult default. */
+  positioningImage?: string
   durationMs?: number
   sound?: string
+  /** A visible patient call can end the interaction without completing the clinical acquisition. */
+  distress?: {
+    atMs: number
+    stopAfterMs: number
+    text: string
+  }
 }
 export interface TrilogyShopItem {
   id: string
@@ -47,8 +62,10 @@ export interface TrilogyStep extends Step {
   imageKind?: 'object'
   /** Optional velocity-over-time illustration below the CH3 cardiac image. */
   echoSpectrum?: boolean
-  cameraMotion?: 'push' | 'settle'
+  cameraMotion?: 'push' | 'settle' | 'pan'
   caseId?: string
+  /** Story decisions only: stable per-save choice order, shuffled by seed/run/node. */
+  shuffleChoices?: boolean
 }
 export interface TrilogyShift {
   id: string
@@ -89,6 +106,10 @@ export interface TrilogyChapter {
 }
 export interface TrilogyProgress {
   version: 1
+  /** CH4 story generation; every older revision restarts at the current prologue. */
+  storyRevision?: number
+  /** CH4 exploration rewards are chosen at entry; revision 1 migrates old in-flight saves once. */
+  choiceRewardRevision?: number
   runId: string
   shift: number
   stepId: string
@@ -108,5 +129,12 @@ export interface TrilogyProgress {
   done?: boolean
   viewBg?: string
   heardCues?: string[]
-  scans?: Record<string, { startedAt: number; completed?: boolean }>
+  scans?: Record<string, {
+    startedAt: number
+    /** The scan modal has ended; this alone never proves clinical completion. */
+    ended?: boolean
+    /** The full intended acquisition completed. Interrupted studies remain false. */
+    completed?: boolean
+    interrupted?: boolean
+  }>
 }

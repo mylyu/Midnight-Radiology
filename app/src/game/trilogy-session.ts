@@ -18,8 +18,16 @@ function hash(seed: number, text: string): number {
 }
 export function trilogyStep(s: GameState, chapter: TrilogyChapter): TrilogyStep {
   const p = trilogyProgress(s, chapter.id)
-  const raw = chapter.steps[p?.stepId ?? chapter.shifts[0].start]
-  return raw ? chapter.adapt?.(p?.stepId ?? chapter.shifts[0].start, raw, s) ?? raw : { text: '进度暂时无法读取，请返回本章入口继续。' }
+  const id = p?.stepId ?? chapter.shifts[0].start
+  const raw = chapter.steps[id]
+  if (!raw) return { text: '进度暂时无法读取，请返回本章入口继续。' }
+  const adapted = chapter.adapt?.(id, raw, s) ?? raw
+  if (chapter.id === 'ch4' && p && adapted.shuffleChoices && adapted.choices?.length === 3) {
+    const choices = adapted.choices
+    const order = shuffled(choices.length, hash(s.seed, `${p.runId}:${id}:story-choices`))
+    return { ...adapted, choices: order.map(index => choices[index]) }
+  }
+  return adapted
 }
 /** Entry effects, cursor and receipts are one state value, never a render-side effect. */
 export function enterTrilogyNode(s: GameState, chapter: TrilogyChapter, target: string): GameState {
@@ -45,10 +53,103 @@ export function enterTrilogyNode(s: GameState, chapter: TrilogyChapter, target: 
   return patchTrilogy(next, chapter.id, { applied: [...current.applied, target],
     visited: current.visited.includes(target) ? current.visited : [...current.visited, target] })
 }
+/** Current-revision saves may be inside a place event when its entry-choice reward migrates. */
+function migrateCh4ChoiceRewards(s: GameState, chapter: TrilogyChapter): GameState {
+  const p = trilogyProgress(s, 'ch4')
+  if (!p || p.choiceRewardRevision === 1) return s
+  const next = patchTrilogy(s, 'ch4', { choiceRewardRevision: 1 })
+  if (p.phase !== 'story') return next
+  for (const [sourceId, source] of Object.entries(chapter.steps)) {
+    for (const choice of source.choices ?? []) {
+      const flag = choice.cond?.notFlag
+      const reward = {
+        ...(choice.effect?.skill !== undefined ? { skill: choice.effect.skill } : {}),
+        ...(choice.effect?.heart !== undefined ? { heart: choice.effect.heart } : {}),
+        ...(choice.effect?.wealth !== undefined ? { wealth: choice.effect.wealth } : {}),
+      }
+      if (!flag || s.flags[flag] || !Object.keys(reward).length) continue
+      const pending = [choice.next], seen = new Set<string>()
+      let inFlight = false
+      while (pending.length) {
+        const id = pending.pop()!
+        // A place event ends at its hub. Do not walk back out through unrelated
+        // places and mistake another event's cursor for this choice's in-flight save.
+        if (!id || id === sourceId || /^c4_\d+_hub$/.test(id) || seen.has(id)) continue
+        if (id === p.stepId) { inFlight = true; break }
+        seen.add(id)
+        const step = chapter.steps[id]
+        if (!step) continue
+        pending.push(step.next ?? '', ...(step.choices ?? []).flatMap(option => [option.next, option.risk?.next ?? '']))
+      }
+      if (inFlight) return applyEffect(next, reward)
+    }
+  }
+  return next
+}
+
 export function initializeTrilogy(s: GameState, chapter: TrilogyChapter, runId = `${chapter.id}-${s.seed}`): GameState {
-  if (trilogyProgress(s, chapter.id)) return s
-  const progress: TrilogyProgress = { version: 1, runId, shift: 0, stepId: chapter.shifts[0].start,
-    phase: 'story', applied: [], visited: [], tools: {}, snapshots: { '0': snapshot(s) }, gifts: [],
+  const existing = trilogyProgress(s, chapter.id)
+  if (existing) {
+    if (chapter.id !== 'ch4') return s
+    if (existing.storyRevision === 7 && chapter.steps[existing.stepId]) {
+      // Normalize the former three-basic-then-stop flow without restarting CH4.
+      // New receipts mean: 3T stopped at the first sequence; the city's other
+      // 0.55T room completed T1/T2/FLAIR/DWI. Players parked mid-decision keep
+      // their cursor and earned choice rewards; later saves keep their history.
+      const basic = existing.scans?.c4_feng_basic_scan
+      const city = existing.scans?.c4_feng_city_scan
+      const contrastCursor = /^c4_1_contrast_[0-5]$/.test(existing.stepId)
+      let moved = s
+      if (contrastCursor && !city?.completed) {
+        if (basic?.completed) {
+          const scans: NonNullable<TrilogyProgress['scans']> = { ...existing.scans, c4_feng_basic_scan: { ...basic, ended: true, completed: false, interrupted: true } }
+          delete scans.c4_feng_city_scan
+          moved = enterTrilogyNode(patchTrilogy(s, chapter.id, { scans }), chapter, 'c4_1_feng_stop_0')
+        } else moved = enterTrilogyNode(s, chapter, 'c4_1_feng_0')
+      } else if (basic?.completed || city?.interrupted) {
+        const scans = { ...existing.scans }
+        if (existing.stepId === 'c4_feng_basic_scan') {
+          delete scans.c4_feng_basic_scan; delete scans.c4_feng_city_scan
+          moved = enterTrilogyNode(patchTrilogy(s, chapter.id, { scans }), chapter, 'c4_feng_basic_scan')
+        } else {
+          if (basic) scans.c4_feng_basic_scan = { ...basic, ended: true, completed: false, interrupted: true }
+          const deciding = /^c4_1_feng_(?:stop|q|refund|sit|route)/.test(existing.stepId) || existing.stepId === 'c4_feng_city_scan'
+          if (deciding) {
+            delete scans.c4_feng_city_scan
+            moved = existing.stepId === 'c4_feng_city_scan'
+              ? enterTrilogyNode(patchTrilogy(s, chapter.id, { scans }), chapter, 'c4_1_feng_stop_0')
+              : patchTrilogy(s, chapter.id, { scans })
+          } else {
+            if (city) scans.c4_feng_city_scan = { startedAt: city.startedAt, ended: true, completed: true }
+            moved = patchTrilogy(s, chapter.id, { scans })
+          }
+        }
+      }
+      // Saves parked on the old final settlement had already received its salary.
+      // Reopen only the new closing scene, never the quiz, epilogue or a finished chapter.
+      const current = trilogyProgress(moved, chapter.id)
+      const unfinishedClosing = current?.shift === chapter.shifts.length - 1 && current.phase === 'settle' && current.stepId === 'c4_6_end'
+      const resumed = unfinishedClosing
+        ? enterTrilogyNode(patchTrilogy(moved, chapter.id, { phase: 'story' }), chapter, 'c4_wrap_0')
+        : moved
+      return migrateCh4ChoiceRewards(resumed, chapter)
+    }
+    // Sixth-generation and older cursors, or an invalid current cursor, reopen
+    // only CH4. Other DLC, history, cards, badges and the old certificate survive.
+    // Page-based book receipts cannot leak into the new once-per-schedule rule.
+    const flags = Object.fromEntries(Object.entries(s.flags)
+      .filter(([key]) => !/^c4_book_(?:page_\d+|shift_\d+|\d+)$/.test(key)))
+    const progress: TrilogyProgress = { ...existing, storyRevision: 7, choiceRewardRevision: 1, runId: `${chapter.id}-rewrite7-${s.seed}`,
+      shift: 0, stepId: chapter.shifts[0].start, phase: 'story', applied: [], visited: [], tools: {}, scans: {},
+      snapshots: { '0': snapshot(s) }, gifts: [], giftReply: undefined, shop: { shift: 0, lotteryCount: 0, buyCount: 0 },
+      pendingCoffee: undefined, quiz: undefined, quizContent: undefined, done: false, heardCues: [], viewBg: chapter.shifts[0].background }
+    const next = { ...s, ap: 3, flags: { ...flags, c4_rewrite_migrated: true, c4_rewrite7_migrated: true },
+      dlc: { ...s.dlc, [chapter.id]: { ...s.dlc?.[chapter.id], chapter: progress } } }
+    return enterTrilogyNode(next, chapter, progress.stepId)
+  }
+  const initialRunId = chapter.id === 'ch4' && runId === `${chapter.id}-${s.seed}` ? `${chapter.id}-rewrite7-${s.seed}` : runId
+  const progress: TrilogyProgress = { version: 1, ...(chapter.id === 'ch4' ? { storyRevision: 7, choiceRewardRevision: 1 } : {}), runId: initialRunId,
+    shift: 0, stepId: chapter.shifts[0].start, phase: 'story', applied: [], visited: [], tools: {}, snapshots: { '0': snapshot(s) }, gifts: [],
     shop: { shift: 0, lotteryCount: 0, buyCount: 0 } }
   const next = { ...s, ap: 3, dlc: { ...s.dlc, [chapter.id]: { ...s.dlc?.[chapter.id], chapter: progress } } }
   return enterTrilogyNode(next, chapter, progress.stepId)
@@ -75,7 +176,8 @@ export function trilogyAdvance(s: GameState, chapter: TrilogyChapter, expected: 
   if (p.giftReply) return patchTrilogy(s, chapter.id, { giftReply: undefined })
   const step = trilogyStep(s, chapter)
   if (step.tool && !p.tools[expected]?.completed) return s
-  if (step.scan && !p.scans?.[expected]?.completed) return s
+  const scanReceipt = p.scans?.[expected]
+  if (step.scan && !scanReceipt?.ended && !scanReceipt?.completed) return s
   if (step.end) return patchTrilogy(s, chapter.id, p.phase === 'epilogue'
     ? { phase: 'done', done: true } : { phase: 'settle' })
   return step.next && !step.choices?.length ? enterTrilogyNode(s, chapter, step.next) : s
@@ -119,7 +221,8 @@ export function trilogyGive(s: GameState, chapter: TrilogyChapter, node: string,
   const key = `${p?.shift}:${step.giftTo}`
   if (!p || p.stepId !== node || !step.giftTo || p.giftReply || p.gifts.includes(key) || !s.items.includes(item)) return s
   const person = chapter.characters[step.giftTo]?.name ?? step.giftTo
-  const next = applyEffect(s, { loseItem: item, ...(item === 'snack' ? { heart: 1 } : {}) })
+  const next = applyEffect(s, { loseItem: item,
+    ...(chapter.id !== 'ch4' && item === 'snack' ? { heart: 1 } : {}) })
   const replies: Record<string, string> = chapter.id === 'ch3' ? item === 'milktea' ? {
     mei: '先放桌上，我擦个手。谢谢啊。', lei: '给我的？正好，杯子里那点早凉透了。',
     zhou: '行，今天换个口味。谢谢你啊。', he: '谢谢，跑一趟正口渴呢。', tang: '谢谢！我刚才还惦记着买一杯。',
@@ -131,9 +234,28 @@ export function trilogyGive(s: GameState, chapter: TrilogyChapter, node: string,
   return patchTrilogy(next, chapter.id, { gifts: [...p.gifts, key], giftReply: { node, person: step.giftTo,
     text: replies[step.giftTo] ?? `${person}接过去，把另一把椅子拉开：「坐，别站着吃。」` } })
 }
-export function trilogyReadBook(s: GameState, chapter: TrilogyChapter): GameState {
+export function trilogyBookUnlocked(chapter: TrilogyChapter, shift: number): number {
+  const boundedShift = Math.max(0, Math.min(Math.floor(shift), chapter.shifts.length - 1))
+  return Math.min(chapter.book.length, (boundedShift + 1) * (chapter.id === 'ch4' ? 2 : 4))
+}
+
+export function trilogyBookPageRead(s: GameState, chapter: TrilogyChapter, page: number): boolean {
+  const p = trilogyProgress(s, chapter.id)
+  if (chapter.id !== 'ch4' || !p) return false
+  const unlocked = trilogyBookUnlocked(chapter, p.shift)
+  if (!Number.isInteger(page) || page < 0 || page >= unlocked) return false
+  // One receipt covers the whole schedule: paging, reopening and refreshing
+  // cannot create another reward. A later schedule uses a new receipt.
+  return !!s.flags[`c4_book_shift_${p.shift}`]
+}
+export function trilogyReadBook(s: GameState, chapter: TrilogyChapter, page?: number): GameState {
   const p = trilogyProgress(s, chapter.id)
   if (!p) return s
+  if (chapter.id === 'ch4') {
+    const unlocked = trilogyBookUnlocked(chapter, p.shift)
+    if (page === undefined || !Number.isInteger(page) || page < 0 || page >= unlocked || trilogyBookPageRead(s, chapter, page)) return s
+    return applyEffect(s, { flag: `c4_book_shift_${p.shift}` })
+  }
   const flag = `${chapter.id.replace('ch', 'c')}_book_${p.shift}`
   return s.flags[flag] ? s : applyEffect(s, { skill: 1, flag })
 }
@@ -149,10 +271,12 @@ export function beginTrilogyScan(s: GameState, chapter: TrilogyChapter, node: st
 }
 export function completeTrilogyScan(s: GameState, chapter: TrilogyChapter, node: string, now = Date.now()): GameState {
   const p = trilogyProgress(s, chapter.id), scan = chapter.steps[node]?.scan, receipt = p?.scans?.[node]
-  if (!p || p.stepId !== node || !scan || !receipt) return s
-  const duration = scan.durationMs ?? 3000
+  if (!p || p.stepId !== node || !scan || !receipt || receipt.ended || receipt.completed) return s
+  const interrupted = !!scan.distress
+  const duration = scan.distress ? scan.distress.atMs + scan.distress.stopAfterMs : scan.durationMs ?? 3000
   if (Number.isFinite(receipt.startedAt) && receipt.startedAt <= now + duration && now - receipt.startedAt < duration) return s
-  const next = patchTrilogy(s, chapter.id, { scans: { ...p.scans, [node]: { ...receipt, completed: true } } })
+  const next = patchTrilogy(s, chapter.id, { scans: { ...p.scans,
+    [node]: { ...receipt, ended: true, completed: !interrupted, ...(interrupted ? { interrupted: true } : {}) } } })
   return trilogyAdvance(next, chapter, node)
 }
 export function trilogyBuy(s: GameState, chapter: TrilogyChapter, itemId: string): GameState {
@@ -160,13 +284,14 @@ export function trilogyBuy(s: GameState, chapter: TrilogyChapter, itemId: string
   if (!p || !item || s.gold < item.price) return s
   if (!['coffee', 'lottery'].includes(itemId) && s.items.includes(itemId)) return s
   if ((itemId === 'milktea' || itemId === 'snack') && ['done', 'epilogue', 'quiz'].includes(p.phase)) return s
-  if (itemId === 'coffee' && (['quiz', 'done', 'epilogue'].includes(p.phase) || p.phase === 'settle' && p.shift === 4 || p.pendingCoffee)) return s
+  if (itemId === 'coffee' && (['quiz', 'done', 'epilogue'].includes(p.phase) || p.phase === 'settle' && p.shift === chapter.shifts.length - 1 || p.pendingCoffee)) return s
   if (itemId === 'lottery' && p.shop.lotteryCount >= 5) return s
   const shop = { ...p.shop, buyCount: p.shop.buyCount + 1, lotteryCount: p.shop.lotteryCount + (itemId === 'lottery' ? 1 : 0) }
   const lotteryRoll = hash(s.seed, `${p.runId}:${p.shift}:lottery:${p.shop.lotteryCount}`) / 0x100000000
   const prize = lotteryRoll < .42 ? 0 : lotteryRoll < .70 ? 20 : lotteryRoll < .88 ? 50 : lotteryRoll < .96 ? 120 : 250
   let next = applyEffect(s, { gold: -item.price + (itemId === 'lottery' ? prize : 0),
-    ...(itemId === 'milktea' ? { heart: 2 } : {}), ...(itemId === 'book' ? { skill: 2 } : {}),
+    ...(chapter.id !== 'ch4' && itemId === 'milktea' ? { heart: 2 } : {}),
+    ...(chapter.id !== 'ch4' && itemId === 'book' ? { skill: 2 } : {}),
     ...(!['coffee', 'lottery'].includes(itemId) ? { item: itemId } : {}) })
   if (itemId === 'coffee' && p.phase === 'story') next = applyEffect(next, { ap: 1 })
   return patchTrilogy(next, chapter.id, { shop, ...(itemId === 'coffee' && p.phase === 'settle' ? { pendingCoffee: true } : {}) })
@@ -181,8 +306,8 @@ export function trilogyShopItems(chapter: TrilogyChapter, state?: GameState) {
   const standard = SHOP_ITEMS.filter(item => ['coffee', 'milktea', 'snack', 'book', 'lottery'].includes(item.id) || uses.has(item.id))
   const p = state && trilogyProgress(state, chapter.id)
   const added = (chapter.shopItems ?? []).filter(item => !state || !p ||
-    !(item.use && state.flags[item.use]) && p.shift <= (item.lastShift ?? 4)
-    && !(p.shift === (item.lastShift ?? 4) && ['settle', 'quiz', 'epilogue', 'done'].includes(p.phase)))
+    !(item.use && state.flags[item.use]) && p.shift <= (item.lastShift ?? chapter.shifts.length - 1)
+    && !(p.shift === (item.lastShift ?? chapter.shifts.length - 1) && ['settle', 'quiz', 'epilogue', 'done'].includes(p.phase)))
   return [...standard, ...added]
 }
 export function startTrilogyQuiz(s: GameState, chapter: TrilogyChapter): GameState {
@@ -210,7 +335,7 @@ export function nextTrilogyQuiz(s: GameState, chapter: TrilogyChapter): GameStat
   const content = trilogyQuizContent(s, chapter)
   const score = q.questions.filter(row => row.selected === content[row.question].answer).length
   const grade = score === 5 ? 'S' : score >= 4 ? 'A' : score >= 3 ? 'B' : 'C'
-  return patchTrilogy(applyEffect(s, { gold: score * 20, skill: 1 }), chapter.id,
+  return patchTrilogy(applyEffect(s, { gold: score * 20, skill: chapter.id === 'ch4' ? score : 1 }), chapter.id,
     { quiz: { ...q, completed: true, rewarded: true, grade } })
 }
 export function finishTrilogyQuiz(s: GameState, chapter: TrilogyChapter): GameState {

@@ -1,4 +1,21 @@
-.trilogy-scan .ch2-scan-panel{width:min(100%,820px)}
+.trilogy-scan .ch2-scan-panel{position:relative;width:min(100%,820px)}
+.trilogy-scan-distress{position:absolute;z-index:6;top:50%;left:50%;width:min(88%,430px);transform:translate(-50%,-50%);padding:20px 22px;border:2px solid #f2c078;background:#101a29f5;box-shadow:0 0 0 5px #301c16cc,0 14px 40px #000a;text-align:center}
+.trilogy-scan[data-scan-distress=active] .ch2-scan-panel{animation:trilogy-distress-shake .28s ease-out 2}
+.trilogy-scan-distress-call{position:relative;display:grid;place-items:center;width:58px;height:58px;margin:0 auto 12px;border:2px solid #ffd58e;border-radius:50%;color:#ffe0a8;background:#512b25;animation:trilogy-distress-call .62s ease-in-out infinite alternate}
+.trilogy-scan-distress-call:before,.trilogy-scan-distress-call:after{content:"";position:absolute;inset:-2px;border:2px solid #ffc870;border-radius:50%;animation:trilogy-distress-ring 1.15s ease-out infinite}
+.trilogy-scan-distress-call:after{animation-delay:.55s}
+.trilogy-scan-distress-call i{position:absolute;inset:7px;border:1px dashed #ffd58e;border-radius:50%}
+.trilogy-scan-distress-call b{font-size:23px;line-height:1}
+.trilogy-scan-distress>strong{display:block;color:#ffdc9c;font-size:20px;letter-spacing:.12em}
+.trilogy-scan-distress>p{margin:9px 0 0;color:#fff1d4;font-size:18px;font-weight:700;line-height:1.55}
+.trilogy-scan .trilogy-scan-distress>small{margin-top:9px;color:#e7bf92;font-size:12px}
+.trilogy-scan-distress>button{display:block;width:100%;min-height:44px;margin-top:14px;border:1px solid #f2c078;border-radius:.5rem;background:#f2c078;color:#17120d;font-weight:700;cursor:pointer;transition:transform .16s ease-out,background .16s ease-out,opacity .16s ease-out}
+.trilogy-scan-distress>button:hover:not(:disabled){background:#ffdc9c;transform:translateY(-1px)}
+.trilogy-scan-distress>button:focus-visible{outline:3px solid #fff1d4;outline-offset:3px}
+.trilogy-scan-distress>button:disabled{border-color:#7d715f;background:#4a443b;color:#d4c9b7;cursor:not-allowed;opacity:.72}
+@keyframes trilogy-distress-call{from{transform:scale(.96)}to{transform:scale(1.04)}}
+@keyframes trilogy-distress-shake{0%,100%{transform:translate(0)}25%{transform:translate(-3px,1px)}50%{transform:translate(3px,-1px)}75%{transform:translate(-2px,0)}}
+@keyframes trilogy-distress-ring{from{transform:scale(.82);opacity:.85}to{transform:scale(1.65);opacity:0}}
 .trilogy-scan-pictures{display:grid;grid-template-columns:1.15fr .85fr;gap:16px;align-items:center;margin:12px 0}
 .trilogy-device-picture{display:block;width:100%;border:2px solid #536c83;background:#142637;image-rendering:pixelated}
 .trilogy-scan .ch2-ct-motion{position:relative;inset:auto;aspect-ratio:1672/941}
@@ -8,5 +25,10 @@
 .trilogy-scan-sweep{position:absolute;left:0;right:0;height:2px;background:#66d8ca;box-shadow:0 0 8px #7cdacf}
 .trilogy-scan-data-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:15%;height:100%}
 .trilogy-scan-data-grid i{border:3px solid #547383;background:repeating-radial-gradient(ellipse at center,#9bb9be 0 5px,#1d3f50 6px 12px);transition:opacity .12s}
+.trilogy-scan .trilogy-mri-static{position:relative;aspect-ratio:1672/888;overflow:hidden}
+.trilogy-mri-acquisition-image{display:block;width:100%;height:100%;object-fit:cover;transform:none}
+.trilogy-mri-fixed-label i{width:7px;height:7px;border-radius:50%;background:#7de0c5;box-shadow:0 0 8px #7de0c5;animation:trilogy-mri-status 1.1s steps(2,end) infinite}
+@keyframes trilogy-mri-status{50%{opacity:.35}}
+@media(prefers-reduced-motion:reduce){.trilogy-mri-fixed-label i,.trilogy-scan-distress-call,.trilogy-scan-distress-call:before,.trilogy-scan-distress-call:after,.trilogy-scan[data-scan-distress=active] .ch2-scan-panel{animation:none}}
 @media(max-width:600px){.trilogy-scan-pictures{grid-template-columns:1.05fr .95fr;gap:8px}.trilogy-scan .ch2-scan-panel{padding:16px 12px}}
 @media(max-height:500px){.trilogy-scan-pictures{max-width:430px;margin:5px auto;grid-template-columns:1.35fr .65fr}.trilogy-scan-monitor{max-height:130px}.trilogy-scan .ch2-scan-phase{margin:5px 0}.trilogy-scan .ch2-scan-controls{margin:0}}

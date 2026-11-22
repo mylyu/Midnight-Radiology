@@ -8,7 +8,7 @@ import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { TRILOGY } from '../src/game/trilogy-registry.ts'
 import { TRILOGY_DOCUMENTS } from '../src/game/trilogy-documents.ts'
-import { trilogyStep, trilogyCredential } from '../src/game/trilogy-session.ts'
+import { trilogyStep, trilogyCredential, trilogyBookUnlocked } from '../src/game/trilogy-session.ts'
 import { condOk } from '../src/game/store.ts'
 import { awaitChapterEntry } from './chapter-entry-driver.mjs'
 import { waitForImageAsset } from './media-identity-driver.mjs'
@@ -44,6 +44,7 @@ function fixture(history) {
 
 async function walk({ chapter, variant }) {
   const mobile = variant === 'mobile', all = !mobile, label = `${chapter.id}-${variant}`
+  const hasTools = Object.values(chapter.steps).some(step => step.tool)
   const resumePath = process.env.TRILOGY_RESUME_DIR && resolve(process.env.TRILOGY_RESUME_DIR, `${label}-flow.json`)
   const prior = resumePath ? JSON.parse(readFileSync(resumePath, 'utf8')) : undefined
   if (prior) assert(prior.status === 'failed' && prior.chapter === chapter.id && prior.variant === variant && prior.lastState?.dlc?.[chapter.id]?.chapter,
@@ -52,15 +53,22 @@ async function walk({ chapter, variant }) {
     started: new Date().toISOString(), nodes: [], screenshots: [], errors: [], settlements: [], tools: [], scans: [], gifts: [], quizzes: [] }
   if (prior) {
     for (const field of ['nodes', 'screenshots', 'settlements', 'tools', 'scans', 'gifts', 'quizzes']) log[field] = [...prior[field]]
+    if (prior.lastState.dlc[chapter.id].chapter.phase === 'settle') {
+      const activeShift = prior.lastState.dlc[chapter.id].chapter.shift
+      log.settlements = log.settlements.filter(shift => shift !== activeShift) // Incomplete settlement is rechecked, not counted twice.
+    }
     log.resumedFrom = { path: resumePath, node: prior.lastState.dlc[chapter.id].chapter.stepId, originalFailure: prior.error }
   }
   const context = await browser.newContext({ viewport: mobile ? { width: 390, height: 844 } : { width: 1280, height: 900 },
     isMobile: mobile, hasTouch: mobile, deviceScaleFactor: 1 })
   const initial = prior?.lastState ?? fixture(all), untouched = JSON.parse(JSON.stringify(initial.dlc))
   delete untouched[chapter.id]
-  await context.addInitScript(({ initial, key }) => {
+  await context.addInitScript(({ initial, key, chapterId }) => {
     if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(initial))
-  }, { initial, key: storageKey })
+    // The separate admission test covers the real access-code form. A full
+    // chapter walk starts after that local gate, without bypassing game state.
+    if (chapterId === 'ch4') localStorage.setItem('mr-ch4-unlock', '1')
+  }, { initial, key: storageKey, chapterId: chapter.id })
   const page = await context.newPage()
   page.setDefaultTimeout(12000)
   page.on('pageerror', error => log.errors.push({ kind: 'pageerror', message: error.message }))
@@ -168,12 +176,19 @@ async function walk({ chapter, variant }) {
     await progressbar.waitFor()
     assert(Number(await progressbar.getAttribute('aria-valuenow')) < 100, 'Saw the actual acquisition before completion')
     if (!captured.has(`scan:${step.scan.kind}`)) { await screen(`scan-${step.scan.kind}`); captured.add(`scan:${step.scan.kind}`) }
+    // The interrupted scan requires the actual call-response button, never a timer skip.
+    if (step.scan.distress) {
+      await page.locator('[data-scan-distress-ready="true"]').waitFor({ timeout: duration + 5000 })
+      await screen('scan-patient-call')
+      await click(scan.getByRole('button', { name: '接出患者，继续', exact: true }))
+    }
     // Observe the production timer. Never alter wall clocks, receipts or cursor.
     await scan.waitFor({ state: 'detached', timeout: duration + 5000 })
     await transition(p)
     const after = progress(await read()), receipt = after.scans[p.stepId]
-    assert.equal(receipt.completed, true)
-    assert(Date.now() - receipt.startedAt >= duration, 'Full real acquisition duration elapsed')
+    assert.equal(receipt.completed, !step.scan.distress)
+    if (step.scan.distress) assert.equal(receipt.interrupted, true)
+    assert(Date.now() - receipt.startedAt >= (step.scan.distress ? step.scan.distress.atMs + step.scan.distress.stopAfterMs : duration), 'Full real acquisition duration elapsed')
     assert.equal(after.stepId, step.next, 'Finished acquisition reveals its configured result')
     log.scans.push({ node: p.stepId, kind: step.scan.kind, duration, next: after.stepId })
   }
@@ -290,14 +305,12 @@ async function walk({ chapter, variant }) {
     if (!captured.has(`tool:${task}`)) { await screen(`tool-${task}`); captured.add(`tool:${task}`) }
     if (!refreshedTool) { await refreshUnchanged('tool-parameters'); refreshedTool = true }
     const beforeDone = progress(await read())
-    if (mobile && log.tools.length === 0) {
-      await click(lab.locator('summary'))
-      await click(lab.locator('details').getByRole('button', { name: chapter.id === 'ch3' ? '结束练习 →' : '一起看过了，回到故事', exact: true }))
-    } else await click(page.locator('[data-trilogy-tool-done]'))
+    // Exercise the visible primary completion control on every viewport. The
+    // optional assisted details route is independent and not required to finish.
+    await click(page.locator('[data-trilogy-tool-done]'))
     await transition(beforeDone)
     const saved = progress(await read()).tools[p.stepId]
     assert.equal(saved.completed, true)
-    if (mobile && log.tools.length === 0) assert(saved.choice.startsWith('assisted:'))
     log.tools.push({ node: p.stepId, task, saved })
   }
   async function storyChoice(s, step) {
@@ -368,7 +381,23 @@ async function walk({ chapter, variant }) {
         if (p.shift === 0 || p.shift === 4) {
           await screen(`settlement-${p.shift + 1}`)
           await click(page.locator('.trilogy-bottom-menu').getByRole('button', { name: '📚 旧书', exact: true }))
-          assert.equal(await page.locator('.trilogy-modal .trilogy-book-page').count(), (p.shift + 1) * 4)
+          if (chapter.id === 'ch3' || chapter.id === 'ch4') {
+            const book = page.locator(`[data-paper-book="${chapter.id}"]`)
+            await book.waitFor()
+            const unlocked = trilogyBookUnlocked(chapter, p.shift)
+            const expectedPage = chapter.id === 'ch3' ? Math.max(1, unlocked - 3) : unlocked
+            assert.equal(await book.getAttribute('data-paper-unlocked'), String(unlocked))
+            assert.equal(await book.getAttribute('data-paper-page'), String(expectedPage))
+            assert.equal(await book.locator('h4').textContent(), chapter.book[expectedPage - 1].title)
+            assert.equal(await book.locator('details').count(), 0, 'Shared paper book never falls back to the retired accordion')
+            assert(!(await book.textContent()).includes('**'), 'Paper book renders rich text without raw markers')
+            if (expectedPage > 1) {
+              await click(book.getByRole('button', { name: '← 上一页', exact: true }))
+              assert.equal(await book.getAttribute('data-paper-page'), String(expectedPage - 1))
+              await click(book.getByRole('button', { name: '下一页 →', exact: true }))
+              assert.equal(await book.getAttribute('data-paper-page'), String(expectedPage))
+            }
+          } else assert.equal(await page.locator('.trilogy-modal .trilogy-book-page').count(), Math.min((p.shift + 1) * 4, chapter.book.length))
           await click(page.locator('[data-trilogy-close-overlay]'))
         }
         if (all && p.shift === 0) {
@@ -425,11 +454,14 @@ async function walk({ chapter, variant }) {
     assert(count < 1100, `${label}: complete story reached without loop`)
     const done = await read(), p = progress(done)
     assert.equal(p.phase, 'done'); assert.equal(p.done, true)
-    assert.deepEqual(log.settlements, [0, 1, 2, 3, 4]); assert.equal(log.quizzes.length, 5)
-    assert.equal(p.applied.filter(key => key.startsWith('checkin:')).length, 5, 'All five actual arrival gestures were completed')
+    const expectedShifts = chapter.shifts.map((_, index) => index)
+    assert.deepEqual(log.settlements, expectedShifts); assert.equal(log.quizzes.length, 5)
+    assert.equal(p.applied.filter(key => key.startsWith('checkin:')).length, chapter.shifts.length, 'Every actual arrival gesture was completed')
     assert.equal(p.quiz.grade, all ? 'S' : 'C')
     assert(p.visited.includes(chapter.afterQuiz), 'Whole post-quiz ending was traversed')
-    assert(checkedGuard); assert(refreshedTool); assert(log.tools.length > 0)
+    assert(checkedGuard)
+    if (hasTools) { assert(refreshedTool); assert(log.tools.length > 0) }
+    else assert.equal(log.tools.length, 0, `${chapter.id}: no retired lab may re-enter the main chapter`)
     for (const [id, other] of Object.entries(untouched)) assert.deepEqual(done.dlc[id], other, `Other save ${id} untouched`)
     await page.locator('.trilogy-settlement').waitFor()
     await page.getByLabel('姓名', { exact: true }).fill(`试玩${chapter.id}${mobile ? '移动' : '桌面'}`)
@@ -443,7 +475,7 @@ async function walk({ chapter, variant }) {
     await refreshUnchanged('issued-certificate')
     assert.deepEqual(progress(await read()).certificate, certificate)
     log.status = 'passed'; log.certificate = certificate; log.finished = new Date().toISOString()
-    console.log(`PASS real browser ${label}: 5 shifts, ${log.tools.length} tools, 5 quiz answers, ending and certificate`)
+    console.log(`PASS real browser ${label}: ${chapter.shifts.length} shifts, ${log.tools.length} tools, 5 quiz answers, ending and certificate`)
   } catch (error) {
     log.status = 'failed'; log.error = error.stack ?? String(error)
     log.lastState = await read().catch(() => null)

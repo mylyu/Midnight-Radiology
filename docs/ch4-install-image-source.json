@@ -1,0 +1,34 @@
+{
+  "date": "2026-11-23",
+  "tool": "built-in image_gen__imagegen",
+  "prompt": "Use case: precise-object-edit.\nEdit the supplied game illustration. SINGLE tiny change only: remove the white \"AI生成\" lettering in the extreme bottom-left corner and seamlessly restore the beige speckled floor behind it. The typography is an unwanted extra note on this game's own material.\nKeep EVERYTHING ELSE unchanged: exact MRI scanner geometry, bed and coil, room and cabinets, two people through the glass, monitors, lighting, colors, framing, existing illustration style, floor reflections and curved teal floor stripe. Do not redesign or repaint the room. Do not add any new text, watermark, caption, symbol, or people. Preserve the 16:9 composition and original scene.",
+  "name": "cg_c4_install_complete_v1",
+  "replaced": true,
+  "sourcePath": "C:\\Users\\lvmen\\Documents\\ChatGPT\\深夜影像科游戏\\review-20261123\\generated-originals\\cg_c4_install_complete_v1_no_note.png",
+  "sourceSha256": "ebec274fd3a139c471b5adb3d135940eb5f0c833da6e6ed3eabfffb68b326290",
+  "sourceBytes": 1996972,
+  "pipeline": "manual-import-webp-q78-alpha100-v1",
+  "encoder": {
+    "sharp": "0.35.3",
+    "webp": "1.6.0"
+  },
+  "mode": "lossy-webp",
+  "quality": 78,
+  "width": 1672,
+  "height": 941,
+  "alphaExact": true,
+  "visibleRgbExact": false,
+  "rgbaExact": false,
+  "visibleRgbMeanAbsoluteError": 1.9276,
+  "deliveryPath": "app/public/assets/media/cg_c4_install_complete_v1.c6a2fb271d46571f.webp",
+  "deliverySha256": "c6a2fb271d46571fcabb54f69ad2b8a17cbc631369a16f3c88d110988763fb3c",
+  "deliveryBytes": 84582,
+  "previewUpdated": false,
+  "previousDeliveryPath": "media/cg_c4_install_complete_v1.813558659eccdcc6.webp",
+  "stalePathCandidates": [
+    "app/public/assets/media/cg_c4_install_complete_v1.813558659eccdcc6.webp"
+  ],
+  "notice": "原图和旧压缩文件均未删除；历史认证manifest未修改。请人工记录来源/许可/参数并复核后运行 npm run build 和相关测试。",
+  "inspection": "Removed bottom-left AI生成 text. Floor continuous; original scanner, table, two people, window, room layout and colors remain visually consistent. Both generated PNG and compressed WebP inspected. No other image edited.",
+  "oldAssetStatus": "Not deleted: generated media manifest and image mapping still contain previous path until parent rebuilds."
+}

@@ -7,7 +7,7 @@ import { ownedTrilogyHistory } from '../game/trilogy-collections'
 import { trilogyProgress, trilogyStep, trilogyAdvance, trilogyChoose, trilogyGive, trilogyCheckin,
   nextTrilogyShift, trilogyBuy, trilogyReadBook, answerTrilogyQuiz, nextTrilogyQuiz,
   finishTrilogyQuiz, issueTrilogyCertificate, restartTrilogy, trilogyCredential, trilogyShopItems, trilogyHeardCue,
-  beginTrilogyScan, completeTrilogyScan, trilogyQuizContent } from '../game/trilogy-session'
+  beginTrilogyScan, completeTrilogyScan, trilogyQuizContent, trilogyBookUnlocked } from '../game/trilogy-session'
 import { trilogyVoice } from '../game/trilogy-audio'
 import { imageAsset } from '../lib/image-assets'
 import { assetUrl } from '../lib/chapter-assets'
@@ -23,14 +23,16 @@ import { TrilogyLab } from './TrilogyLab'
 import { EchoDopplerSpectrum } from './EchoDopplerSpectrum'
 import { TRILOGY_DOCUMENTS } from '../game/trilogy-documents'
 import { TrilogyDocument } from './TrilogyDocument'
-import { TRILOGY_COMMUNICATION_CUES } from '../game/trilogy-communications'
+import { ch4ContactName, TRILOGY_COMMUNICATION_CUES } from '../game/trilogy-communications'
 import { TRILOGY_EVIDENCE, TRILOGY_CASE_NAMES } from '../game/trilogy-evidence'
 import { isTrilogyPlayable } from '../game/chapter-availability'
 import { TrilogyScan } from './TrilogyScan'
 import { LdctCinematic } from './LdctCinematic'
 import { ch3ContactName, ch3NeedsSettlementChoice, ch3PurchaseButton } from './ch3-presentation'
 import { Ch3Book } from './Ch3Book'
+import { PaperBookOverlay } from './PaperBookOverlay'
 import { Ch3Settlement } from './Ch3Settlement'
+import { ChapterQuizView } from './ChapterQuizView'
 import './TrilogyScreen.css'
 
 type Overlay = 'shop' | 'book' | 'manual' | 'badges' | 'bag' | 'replay'
@@ -133,29 +135,50 @@ export function TrilogyScreen({ state, chapter, update, onExit, renderText }: Pr
     sounds.current.add(node)
     const cue = TRILOGY_COMMUNICATION_CUES[node]
     const audio: HTMLAudioElement[] = []
-    let canceled = false
-    if (cue) {
-      if (!p.heardCues?.includes(node)) {
-        update(s => trilogyHeardCue(s, chapter.id, node))
-        const ring = new Audio(assetUrl(cue === 'call' ? 'audio/ch2_mobile_call_v1.mp3' : 'audio/ch2_mobile_message_v1.mp3'))
-        audio.push(ring); ring.volume = .25; void ring.play().catch(() => {})
-      }
+    let canceled = false, voiceTimer: number | undefined
+    let ring: HTMLAudioElement | undefined
+    if (cue && !p.heardCues?.includes(node)) {
+      update(s => trilogyHeardCue(s, chapter.id, node))
+      ring = new Audio(assetUrl(cue === 'call' ? 'audio/ch2_mobile_call_v1.mp3' : 'audio/ch2_mobile_message_v1.mp3'))
+      audio.push(ring); ring.volume = .25
     }
     const voiceId = trilogyVoice(chapter, raw)
     const voiceKey = `voice:${voiceId}`
+    let startVoice: (() => void) | undefined
     if (voiceId && !p.heardCues?.includes(voiceKey) && !p.heardCues?.includes(`voice:${node}`)) {
       const voiceScope = scope
       const voice = new Audio(assetUrl(`audio/${voiceId}.mp3`)); audio.push(voice); voice.volume = .42
-      const play = () => {
+      startVoice = () => {
         if (canceled || document.hidden) return
         void voice.play().then(() => {
           if (canceled) return
           pendingVoice.current = null; update(s => trilogyProgress(s, chapter.id)?.stepId === node ? trilogyHeardCue(s, chapter.id, voiceKey) : s)
-        }, () => { if (!canceled) pendingVoice.current = { scope: voiceScope, play } })
+        }, () => { if (!canceled) pendingVoice.current = { scope: voiceScope, play: startVoice! } })
       }
-      play()
     } else if (raw.sfx) void playSfx(raw.sfx === 'vox_luzhou' ? `vox_luzhou_${state.gender}` : raw.sfx)
-    return () => { canceled = true; pendingVoice.current = null; audio.forEach(sound => { sound.pause(); sound.src = '' }) }
+    if (ring) {
+      const playback = ring.play()
+      if (startVoice && chapter.id === 'ch4') {
+        let started = false
+        const start = () => {
+          if (started) return
+          started = true
+          if (voiceTimer !== undefined) window.clearTimeout(voiceTimer)
+          startVoice!()
+        }
+        // A voice on the arrival node starts after the cue, not underneath it.
+        // Rejected/blocked ring playback releases the voice immediately; the
+        // fallback also covers an interrupted or decoder-stalled notification.
+        void playback.then(() => { if (!canceled) ring!.addEventListener('ended', start, { once: true }) }, start)
+        voiceTimer = window.setTimeout(start, cue === 'call' ? 2300 : 900)
+      } else { void playback.catch(() => {}); startVoice?.() }
+    } else startVoice?.()
+    return () => {
+      canceled = true
+      if (voiceTimer !== undefined) window.clearTimeout(voiceTimer)
+      pendingVoice.current = null
+      audio.forEach(sound => { sound.pause(); sound.src = '' })
+    }
   })
   useEffect(() => { if (!blocked) return playSceneCue() }, [node, blocked, muted])
   const advance = (now: number) => {
@@ -175,7 +198,7 @@ export function TrilogyScreen({ state, chapter, update, onExit, renderText }: Pr
     if (index < choices.length && ['@shop', '@book'].includes(choices[index].next)) {
       if (!muted) void playSfx('click')
       changeOverlay(choices[index].next === '@shop' ? 'shop' : 'book')
-      if (choices[index].next === '@book') update(s => trilogyReadBook(s, chapter))
+      if (choices[index].next === '@book' && chapter.id !== 'ch4') update(s => trilogyReadBook(s, chapter))
     }
     else if (index < choices.length) {
       const choice = choices[index]
@@ -197,7 +220,8 @@ export function TrilogyScreen({ state, chapter, update, onExit, renderText }: Pr
   const sprite = reply ? chapter.characters[reply.person]?.sprite : raw.phone || raw.radio ? undefined
     : raw.sprite ?? (speakerKey !== 'sys' && speakerKey !== 'me' ? chapter.characters[speakerKey]?.sprite : undefined)
   const phoneSprite = raw.phone
-  const contactName = chapter.id === 'ch3' ? ch3ContactName(chapter, raw) : person?.name || '手机消息'
+  const contactName = chapter.id === 'ch3' ? ch3ContactName(chapter, raw)
+    : chapter.id === 'ch4' ? ch4ContactName(chapter, node, raw) : person?.name || '手机消息'
   const savedBackground = raw.bg ?? p.viewBg ?? shift.background
   const background = savedBackground === 'bg_mri_room' ? 'bg_mri_room_day_v2'
     : savedBackground === 'bg_mri_corridor' ? 'bg_mri_corridor_day_v2' : savedBackground
@@ -212,14 +236,14 @@ export function TrilogyScreen({ state, chapter, update, onExit, renderText }: Pr
       <span>💰 {state.gold}</span><span className={state.ap > 0 ? 'text-sky-300' : 'text-slate-600'}>⚡×{state.ap}</span>
       <button className={HEADER_BTN} onClick={e => { e.stopPropagation(); changeOverlay('manual') }}>📖 手册</button>
       <button className={HEADER_BTN} onClick={e => { e.stopPropagation(); changeOverlay('badges') }}>🏅 勋章</button>
-      <button className={HEADER_BTN} onClick={e => { e.stopPropagation(); changeOverlay('book'); update(s => trilogyReadBook(s, chapter)) }}>📚 旧书</button>
+      <button className={HEADER_BTN} onClick={e => { e.stopPropagation(); changeOverlay('book'); if (chapter.id !== 'ch4') update(s => trilogyReadBook(s, chapter)) }}>📚 旧书</button>
       <button className={HEADER_BTN} onClick={e => { e.stopPropagation(); const value = !muted; setMuted(value); try { localStorage.setItem('mr-trilogy-muted', value ? '1' : '0') } catch { /* Session-only preference remains usable. */ } }}>{muted ? '🔇 声音关' : '🔊 声音开'}</button>
       <FullscreenBtn /><button className={HEADER_BTN} title="进度已自动保存，可随时离开" onClick={e => { e.stopPropagation(); onExit() }}>💾 回大厅</button>
     </DialogueHeader>
     {['story', 'epilogue'].includes(p.phase) && <>
       {raw.image && !raw.tool && !raw.scan && (raw.closeup
         ? <LdctCinematic key={node} scene={{ id: node, image: raw.image, alt: raw.imageLabel ?? '剧情特写', motion: raw.cameraMotion ?? 'push' }} />
-        : <div className={objectImage ? 'trilogy-story-object' : 'trilogy-story-image'} data-two-portraits={objectImage && !!sprite && !!raw.sprite2 || undefined}>
+        : <div className={objectImage ? 'trilogy-story-object' : 'trilogy-story-image'} data-story-image-id={raw.image} data-two-portraits={objectImage && !!sprite && !!raw.sprite2 || undefined}>
           {TRILOGY_DOCUMENTS[raw.image] ? <TrilogyDocument id={raw.image} /> : echoSpectrum
             ? <div className="trilogy-echo-pair"><img src={imageAsset(raw.image)} alt={raw.imageLabel ?? '心脏彩色多普勒'} className="pixel" /><EchoDopplerSpectrum /></div>
             : <img src={imageAsset(raw.image)} alt={raw.imageLabel ?? (objectImage ? '物品' : '剧情图像')} className="pixel" />}
@@ -235,14 +259,17 @@ export function TrilogyScreen({ state, chapter, update, onExit, renderText }: Pr
       </div>}
       {!raw.tool && !raw.scan && !checkin && <DialoguePanel dialogRef={dialog} speaker={person} textKey={scope} text={renderText(text, shown)} arrow={done && !optionsVisible}>
         {optionsVisible && <DialogueChoices>{choices.map((choice, index) => <DialogueChoice key={`${choice.next}:${index}`} data-dialogue-choice={String(index)}
-          className={chapter.id === 'ch3' ? CH3_CHOICE_CLASS : ''}
-          disabled={!condOk(state, choice.cond)} aria-disabled={!ready || !condOk(state, choice.cond)} onClick={event => choose(index, event.timeStamp)}>{renderText(chapter.id === 'ch3' ? ch3ChoiceLabel(choice.text) : choice.text)}</DialogueChoice>)}
+          className={`${chapter.id === 'ch3' ? CH3_CHOICE_CLASS : ''}${choice.icon ? ' trilogy-choice-with-icon' : ''}`}
+          disabled={!condOk(state, choice.cond)} aria-disabled={!ready || !condOk(state, choice.cond)} onClick={event => choose(index, event.timeStamp)}>
+            {choice.icon && <span className="trilogy-choice-icon" aria-hidden="true">{choice.icon}</span>}
+            {chapter.id === 'ch4' ? <span className="trilogy-choice-label">{renderText(choice.text)}</span> : renderText(chapter.id === 'ch3' ? ch3ChoiceLabel(choice.text) : choice.text)}
+          </DialogueChoice>)}
           {giftItems.map((item, index) => <DialogueChoice key={item} className={chapter.id === 'ch3' ? CH3_CHOICE_CLASS : ''} data-dialogue-choice={String(choices.length + index)} aria-disabled={!ready}
             onClick={event => choose(choices.length + index, event.timeStamp)}>{item === 'milktea' ? '🧋 把奶茶递过去' : '🍪 拆开零食一起吃'}</DialogueChoice>)}
           {giftItems.length > 0 && !choices.length && !settlementChoice && <DialogueChoice className={chapter.id === 'ch3' ? CH3_CHOICE_CLASS : ''} data-dialogue-choice={String(giftItems.length)} aria-disabled={!ready} onClick={event => choose(giftItems.length, event.timeStamp)}>{chapter.id === 'ch3' ? '💬 继续交谈 →' : '接着聊 →'}</DialogueChoice>}
           {settlementChoice && <button data-trilogy-settle data-dialogue-choice={String(choices.length + giftItems.length)} aria-disabled={!ready}
             className="w-full shrink-0 rounded-lg bg-teal-500/90 py-3 font-bold tracking-widest text-slate-950 hover:bg-teal-400 transition-all"
-            onClick={event => choose(choices.length + giftItems.length, event.timeStamp)}>🌅 本班结束 · 结算 →</button>}
+            onClick={event => choose(choices.length + giftItems.length, event.timeStamp)}>🌅 {chapter.id === 'ch4' ? '本段结束' : '本班结束'} · 结算 →</button>}
         </DialogueChoices>}
         {optionsVisible && choices.some(choice => !condOk(state, choice.cond)) && <small className="block mt-2 text-amber-200">行动力不足，可以先去小卖部喝杯咖啡。</small>}
         {chapter.id !== 'ch3' && /hub$/.test(node) && done && <button className="mt-2 text-xs text-amber-200" onClick={e => { e.stopPropagation(); changeOverlay('shop') }}>🛒 去小卖部 · 咖啡可补行动力</button>}
@@ -250,7 +277,10 @@ export function TrilogyScreen({ state, chapter, update, onExit, renderText }: Pr
       {raw.tool && !checkin && <TrilogyLab state={state} chapter={chapter} tool={raw.tool} update={update} />}
       {raw.scan && p.scans?.[node] && <TrilogyScan key={`${p.runId}:${node}`} scan={raw.scan} node={node} startedAt={p.scans[node].startedAt}
         muted={muted} onDone={() => update(s => completeTrilogyScan(s, chapter, node))} />}
-      {checkin && <Ch2Checkin title={`${shift.date} · ${shift.title}`} rewardText="打卡上岗 · 金币＋50" onComplete={() => { if (!muted) void playSfx('stamp'); update(s => trilogyCheckin(s, chapter)) }} />}
+      {checkin && <Ch2Checkin title={`${shift.date} · ${shift.title}`} rewardText="打卡上岗 · 金币＋50"
+        model={chapter.id === 'ch4' ? 'MRI · 04' : undefined}
+        ariaLabel={chapter.id === 'ch4' ? `${chapter.title}日程打卡` : undefined}
+        onComplete={() => { if (!muted) void playSfx('stamp'); update(s => trilogyCheckin(s, chapter)) }} />}
     </>}
     {(p.phase === 'settle' || p.phase === 'done') && <TrilogySettlement state={state} chapter={chapter} update={update}
       onNext={() => update(s => nextTrilogyShift(s, chapter))} onOverlay={changeOverlay} onExit={onExit} />}
@@ -269,19 +299,19 @@ function TrilogySettlement({ state, chapter, update, onNext, onOverlay, onExit }
   const names = { gold: '💰 科室存款', skill: '🩺 医术', heart: '🧡 人心', wealth: '🏠 家业' }
   return <main className="trilogy-settlement" onClick={e => e.stopPropagation()}>
     <p className="text-teal-200 tracking-widest">第{chapter.id.slice(2)}章 · {chapter.title}</p>
-    <h1>{p.done ? '这一班，交给你了' : `${chapter.shifts[p.shift].title} · 班后经营`}</h1>
-    <p className="text-slate-300 text-sm">{p.done ? '晨会与尾声已完成，领取凭证，或再看看留下的东西。' : '进度已保存。先歇一会儿，下一班等你亲自开始。'}</p>
+    <h1>{p.done ? chapter.id === 'ch4' ? '这一章，交给你了' : '这一班，交给你了' : `${chapter.shifts[p.shift].title} · ${chapter.id === 'ch4' ? '日程结算' : '班后经营'}`}</h1>
+    <p className="text-slate-300 text-sm">{p.done ? chapter.id === 'ch4' ? '考核与尾声已完成，领取凭证，或再看看留下的东西。' : '晨会与尾声已完成，领取凭证，或再看看留下的东西。' : `进度已保存。先歇一会儿，${chapter.id === 'ch4' ? '下一段' : '下一班'}等你亲自开始。`}</p>
     <div className="trilogy-stats">{(Object.keys(names) as (keyof typeof names)[]).map(key => <section key={key}><small>{names[key]}</small><strong>{state[key]}{key === 'gold' ? ' 金币' : ' 点'}</strong>
       <span className={state[key] > (base?.[key] ?? state[key]) ? 'text-teal-300' : 'text-slate-400'}>本班 {state[key] - (base?.[key] ?? state[key]) > 0 ? '+' : ''}{state[key] - (base?.[key] ?? state[key])}</span></section>)}
-      <section><small>📅 值班日志</small><strong>{p.shift + 1} / 5 班</strong><span>晨会另行记入</span></section><section><small>设备交接</small><strong className="text-teal-200">交班待机</strong><span>{chapter.equipment}</span></section></div>
+      <section><small>{chapter.id === 'ch4' ? '📅 学习日志' : '📅 值班日志'}</small><strong>{p.shift + 1} / {chapter.shifts.length} {chapter.id === 'ch4' ? '段' : '班'}</strong><span>{chapter.id === 'ch4' ? '考核与尾声另行记入' : '晨会另行记入'}</span></section><section><small>设备交接</small><strong className="text-teal-200">交班待机</strong><span>{chapter.equipment}</span></section></div>
     <section className="trilogy-panel"><h3 className="text-amber-200">设备间 · {chapter.equipment}</h3><p>图像与记录已交接，设备运行按本科室安排，不新增耐久或维修费用。</p>
       <div className="my-3 border-y border-slate-600 py-3 text-sm">🎒 {state.items.length ? state.items.map(id => itemName(id, chapter)).join('、') : '背包暂时空着'}<button className={`${BTN} ml-2`} onClick={() => onOverlay('bag')}>查看用途</button></div>
       <ul className="space-y-2 text-sm"><li>🔓 老伙计 · 第一章 · CR / X光</li><li>🔓 快与狠 · 第二章 · CT</li><li>🔓 回声 · 第三章 · 超声</li><li>{isTrilogyPlayable('ch4') ? '🔓' : '🔒'} 共振 · 第四章 · MRI · {isTrilogyPlayable('ch4') ? '可从大厅进入' : '尚未开放'}</li><li>{isTrilogyPlayable('ch5') ? '🔓' : '🔒'} 微光 · 第五章 · PET/CT · {isTrilogyPlayable('ch5') ? '可从大厅进入' : '尚未开放'}</li><li>🔓 DR / DSA / 低剂量CT · 番外篇 · 可从大厅进入</li></ul>
     </section>
     {p.done && <TrilogyCertificate state={state} chapter={chapter} update={update} />}
-    <div className="trilogy-bottom-menu">{!p.done && <button className="trilogy-primary" data-trilogy-next-shift onClick={onNext}>{p.shift === 4 ? '前往晨会 →' : '进入下一班 →'}</button>}
+    <div className="trilogy-bottom-menu">{!p.done && <button className="trilogy-primary" data-trilogy-next-shift onClick={onNext}>{p.shift === chapter.shifts.length - 1 ? chapter.id === 'ch4' ? '前往考核 →' : '前往晨会 →' : chapter.id === 'ch4' ? '进入下一段 →' : '进入下一班 →'}</button>}
       <button className={BTN} onClick={() => onOverlay('shop')}>🛒 小卖部</button><button className={BTN} onClick={() => onOverlay('manual')}>📖 手册</button>
-      <button className={BTN} onClick={() => onOverlay('badges')}>🏅 勋章墙</button><button className={BTN} onClick={() => { onOverlay('book'); update(s => trilogyReadBook(s, chapter)) }}>📚 旧书</button>
+      <button className={BTN} onClick={() => onOverlay('badges')}>🏅 勋章墙</button><button className={BTN} onClick={() => { onOverlay('book'); if (chapter.id !== 'ch4') update(s => trilogyReadBook(s, chapter)) }}>📚 旧书</button>
       {p.done && <button className={BTN} onClick={() => onOverlay('replay')}>重玩本章</button>}<button className={BTN} onClick={onExit}>💾 回大厅</button></div>
   </main>
 }
@@ -298,8 +328,31 @@ function TrilogyQuiz({ state, chapter, update }: Omit<Props, 'onExit' | 'renderT
   const act = (f: (s: GameState) => GameState, now: number) => { if (acceptInput(gate.current, now, 500)) update(f) }
   const score = quiz.questions.filter(r => r.selected === content[r.question].answer).length
   const showAnswer = chapter.id === 'ch3' && row.selected !== undefined
+  if (chapter.id === 'ch4') {
+    const questions = quiz.questions.map(item => {
+      const source = content[item.question]
+      return { q: source.q, explain: source.explain, options: item.order.map(answer => source.options[answer]), answer: item.order.indexOf(source.answer) }
+    })
+    const gradeInfo = {
+      S: { title: 'S级 · 全对', line: '老周把卷子折好塞回你手里：「行，明天你先看一圈，有拿不准的再喊我。」' },
+      A: { title: 'A级 · 稳当', line: '老周指着那道错题：「这个回去再看看。别的先放着，今天没掉链子。」' },
+      B: { title: 'B级 · 能用', line: '「及格是及格了。」老周把错题圈出来，「下次碰上，别光靠印象。」' },
+      C: { title: 'C级 · 还得补', line: '小唐把错题本推过来：「先吃饭。吃完我陪你把这几道过一遍，明天再问老周。」' },
+    }
+    return <section className="trilogy-quiz" onClick={e => e.stopPropagation()} onPointerDownCapture={guard.pointerDown} onKeyDownCapture={guard.keyDown} onClickCapture={guard.click}>
+      <ChapterQuizView chapter="ch4" overlay eyebrow="县医院 · 上岗前考核"
+        intro="小唐把门带上，老周抽出五道题。答完还得回去收尾，谁也没打算留你到天黑。"
+        questions={questions} index={quiz.index} picked={row.selected === undefined ? null : row.order.indexOf(row.selected)}
+        score={score} finished={quiz.completed} grade={quiz.grade ?? 'C'} gradeInfo={gradeInfo}
+        onPick={() => {}} onChoiceClick={(index, event) => { if (guard.accept(index)) act(s => answerTrilogyQuiz(s, chapter, row.order[index]), event.timeStamp) }}
+        onNext={() => act(s => nextTrilogyQuiz(s, chapter), performance.now())} choiceDisabled={!ready || row.selected !== undefined}
+        onDone={() => act(s => finishTrilogyQuiz(s, chapter), performance.now())} doneLabel="收好记录，回去看看 →"
+        reward={<p className="mt-4 text-slate-300">答对 {score} / 5。医术 +{score}，金币 +{score * 20}。</p>}
+        resultNote={<p className="mt-2 text-slate-400 text-sm">成绩已经记下，回去把这三天收个尾。</p>} />
+    </section>
+  }
   return <section className="trilogy-quiz" onClick={e => e.stopPropagation()} onPointerDownCapture={guard.pointerDown} onKeyDownCapture={guard.keyDown} onClickCapture={guard.click}>
-    <div className="trilogy-panel"><h2>{quiz.completed ? `晨会结束 · ${quiz.grade}级` : `晨会 · ${quiz.index + 1} / 5`}</h2>
+    <div className="trilogy-panel"><h2>{quiz.completed ? `${chapter.id === 'ch3' ? '晨会' : '考核'}结束 · ${quiz.grade}级` : `${chapter.id === 'ch3' ? '晨会' : '考核'} · ${quiz.index + 1} / 5`}</h2>
       {quiz.completed ? <><p>答对 {score} / 5。{chapter.id === 'ch3' ? '本次成绩已保存。' : '奖励与结果已保存，接下来还有尾声。'}</p><button className="trilogy-primary" data-trilogy-quiz-finish onClick={event => act(s => finishTrilogyQuiz(s, chapter), event.timeStamp)}>{chapter.id === 'ch3' ? '结束晨会 →' : '收好记录，回去看看 →'}</button></>
         : <><p className="text-lg my-4">{question.q}</p><div className="flex flex-col gap-2">{row.order.map((answer, i) => {
           // Persisted answer indices stay stable even when the displayed order is shuffled.
@@ -339,23 +392,44 @@ const CH3_SHOP_DESCRIPTIONS: Record<string, string> = {
   milktea: '购买时人心＋2；闲聊时可以送给同事。',
   lottery: '本班最多买五张，输赢看运气。',
 }
+const CH4_SHOP_DESCRIPTIONS: Record<string, string> = {
+  milktea: '请全科夜班同事喝一轮；闲聊时可以送给同事。',
+  book: '前任主人的笔记密密麻麻，留作纪念。',
+}
 function TrilogyOverlay({ overlay, state, chapter, update, close, renderText }: Omit<Props, 'onExit'> & { overlay: Overlay; close: () => void }) {
   const p = trilogyProgress(state, chapter.id)!, gate = useRef({ until: 0 })
   const history = ownedTrilogyHistory(chapter, state)
   if (chapter.id === 'ch3' && overlay === 'book') return <Ch3Book chapter={chapter} shift={p.shift} renderText={renderText} onClose={close} />
+  if (chapter.id === 'ch4' && overlay === 'book') {
+    const unlocked = trilogyBookUnlocked(chapter, p.shift)
+    return <PaperBookOverlay
+      id="ch4"
+      title="📖 《磁共振笔记》"
+      subtitle={`封面夹着市院跟班日程。按日程开放，现已解锁 ${unlocked} 页。`}
+      pages={chapter.book}
+      unlocked={unlocked}
+      initialPage={Math.max(0, unlocked - 1)}
+      lockedText={() => '🔒 后续两页：下一日程解锁'}
+      closeText="合上书，回科室"
+      renderText={renderText}
+      trilogy
+      onPageChange={page => update(s => trilogyReadBook(s, chapter, page))}
+      onClose={close}
+    />
+  }
   const titles: Record<Overlay, string> = { shop: '小卖部', book: '值班室旧书', manual: '夜班手册', badges: '勋章墙', bag: '背包与用途', replay: '重玩本章' }
   return <div className="trilogy-modal" onClick={e => e.stopPropagation()}><section className="trilogy-modal-sheet">
     <header><h2>{titles[overlay]}</h2><button className={BTN} data-trilogy-close-overlay onClick={close}>关闭 ×</button></header>
     {overlay === 'shop' && <><p className="text-sm text-slate-300">金币 {state.gold} · {chapter.id === 'ch3' ? '奶茶、零食可以送同事。咖啡在探索时补行动力，班后购买留到下一班。' : '消耗品在同事在场时送出。咖啡在探索时补行动力，班后购买留给下一班。'}</p>
       {trilogyShopItems(chapter, state).map(item => {
         const offer = chapter.id === 'ch3' ? ch3PurchaseButton(state, p, item) : undefined
-        return <div key={item.id} className="trilogy-shop-row"><img src={imageAsset(item.image!)} alt="" className="pixel" /><div><strong>{item.name}</strong><p>{chapter.id === 'ch3' && CH3_SHOP_DESCRIPTIONS[item.id] ? CH3_SHOP_DESCRIPTIONS[item.id] : item.id === 'toolbox' ? '可用于固定非医疗设备的松动部件，剧情中有用途。' : item.id === 'dosimeter' ? '个人职业受照监测；并非测量患者检查剂量。' : item.desc}</p>{offer?.reason && <p className="text-amber-200">{offer.reason}</p>}</div>
+        return <div key={item.id} className="trilogy-shop-row"><img src={imageAsset(item.image!)} alt="" className="pixel" /><div><strong>{item.name}</strong><p>{chapter.id === 'ch3' && CH3_SHOP_DESCRIPTIONS[item.id] ? CH3_SHOP_DESCRIPTIONS[item.id] : chapter.id === 'ch4' && CH4_SHOP_DESCRIPTIONS[item.id] ? CH4_SHOP_DESCRIPTIONS[item.id] : item.id === 'toolbox' ? '可用于固定非医疗设备的松动部件，剧情中有用途。' : item.id === 'dosimeter' ? '个人职业受照监测；并非测量患者检查剂量。' : item.desc}</p>{offer?.reason && <p className="text-amber-200">{offer.reason}</p>}</div>
           <button data-trilogy-buy={item.id} className={BTN} disabled={offer?.disabled ?? (state.gold < item.price || !['coffee', 'lottery'].includes(item.id) && state.items.includes(item.id)
             || item.id === 'lottery' && p.shop.lotteryCount >= 5 || ['quiz', 'epilogue', 'done'].includes(p.phase) && ['coffee', 'milktea', 'snack'].includes(item.id))}
             onClick={() => { if (acceptInput(gate.current, performance.now(), 500)) update(s => trilogyBuy(s, chapter, item.id)) }}>{offer?.label ?? (state.items.includes(item.id) ? '已持有' : `${item.price} 金币`)}</button></div>
       })}
       <small>刮刮乐本班 {p.shop.lotteryCount} / 5 张；刷新不会重置。</small></>}
-    {overlay === 'book' && <><p>按班次开放 · {Math.min(20, (p.shift + 1) * 4)} / {chapter.book.length} 页</p>{chapter.book.slice(0, (p.shift + 1) * 4).map((page, i) => <details key={page.title} className="trilogy-book-page"><summary>第{i + 1}页 · {page.title}</summary><p>{renderText(page.body)}</p></details>)}</>}
+    {overlay === 'book' && chapter.id === 'ch5' && <><p>按班次开放 · {Math.min(20, (p.shift + 1) * 4)} / {chapter.book.length} 页</p>{chapter.book.slice(0, (p.shift + 1) * 4).map((page, i) => <details key={page.title} className="trilogy-book-page"><summary>第{i + 1}页 · {page.title}</summary><p>{renderText(page.body)}</p></details>)}</>}
     {overlay === 'manual' && <><p>已解锁 {Object.keys(chapter.cards).filter(id => state.cards?.includes(id)).length} / {Object.keys(chapter.cards).length} 张</p>
       {Object.entries(chapter.cards).filter(([id]) => state.cards?.includes(id)).map(([id, card]) => <article className="trilogy-book-page" key={id}><h3>{card.title}</h3>{card.image && (TRILOGY_DOCUMENTS[card.image] ? <TrilogyDocument id={card.image} /> : <img src={imageAsset(card.image)} alt="" className="max-h-40 mx-auto pixel" />)}<p>{renderText(card.body)}</p></article>)}
       {history.cards.length > 0 && <section data-trilogy-legacy-collections="manual"><h3 className="mt-4 text-slate-400">历史收藏 · 已停颁</h3>{history.cards.map(([id, card]) => <article className="trilogy-book-page" key={id} data-collection-card={id}><h3>{card.title}</h3>{card.image && (TRILOGY_DOCUMENTS[card.image] ? <TrilogyDocument id={card.image} /> : <img src={imageAsset(card.image)} alt="" className="max-h-40 mx-auto pixel" />)}<p>{renderText(card.body)}</p></article>)}</section>}
@@ -365,7 +439,7 @@ function TrilogyOverlay({ overlay, state, chapter, update, close, renderText }: 
       {history.badges.length > 0 && <section data-trilogy-legacy-collections="badges"><h3 className="my-3 text-slate-400">历史收藏 · 已停颁</h3><div className="trilogy-badge-grid">{history.badges.map(([id, badge]) => <section key={id} data-collection-badge={id} className="trilogy-panel"><span className="text-3xl">{badge.icon}</span><h3>{badge.name}</h3><p>{badge.desc}</p><small>已获得 · 历史勋章</small></section>)}</div></section>}</>}
     {overlay === 'bag' && <><p>{chapter.id === 'ch3' ? '遇到同事时，可以在闲聊中递奶茶或分享零食。' : '礼物只在同事在场的闲聊选项中使用，不在班后统一赠送。'}</p>{state.items.map(id => {
       const image = chapter.id === 'ch3' ? chapter.itemImages?.[id] ?? SHOP_ITEMS.find(item => item.id === id)?.image : undefined
-      const content = <>🎒 {itemName(id, chapter)}<br /><small>{id === 'milktea' ? '递给在场同事；购买时人心＋2，送出不重复加。' : id === 'snack' ? '拆开分享，人心＋1。' : id === 'dosimeter' ? '工作人员个人受照监测，不测患者剂量。' : id === 'toolbox' ? chapter.id === 'ch3' ? '工具箱已收好，这次轮转暂时用不上。' : '保留给非医疗设备小修或教学展示，不拆修扫描仪。' : chapter.id === 'ch3' ? CH3_ITEM_USES[id] ?? '已收在背包中。' : '留存物品可在相应剧情中回响。'}</small></>
+      const content = <>🎒 {itemName(id, chapter)}<br /><small>{id === 'milktea' ? chapter.id === 'ch4' ? '递给在场同事，一起歇口气。' : '递给在场同事；购买时人心＋2，送出不重复加。' : id === 'snack' ? chapter.id === 'ch4' ? '拆开分享，和同事一起吃点。' : '拆开分享，人心＋1。' : id === 'dosimeter' ? '工作人员个人受照监测，不测患者剂量。' : id === 'toolbox' ? chapter.id === 'ch3' ? '工具箱已收好，这次轮转暂时用不上。' : '保留给非医疗设备小修或教学展示，不拆修扫描仪。' : chapter.id === 'ch3' ? CH3_ITEM_USES[id] ?? '已收在背包中。' : '留存物品可在相应剧情中回响。'}</small></>
       return image ? <div className="trilogy-book-page flex items-center gap-3" key={id}><img src={imageAsset(image)} alt="" className="h-16 w-16 shrink-0 object-contain pixel" /><p className="min-w-0 flex-1">{content}</p></div>
         : <p className="trilogy-book-page" key={id}>{content}</p>
     })}</>}
@@ -377,7 +451,7 @@ function TrilogyCertificate({ state, chapter, update }: Omit<Props, 'onExit' | '
   const certificate = trilogyProgress(state, chapter.id)?.certificate
   const [name, setName] = useState(state.playerName ?? ''), [sid, setSid] = useState(state.playerId ?? '')
   return certificate ? <section data-trilogy-certificate className="trilogy-certificate"><img src={imageAsset('stamp')} alt="通关盖章" className="pixel" /><h3>深夜影像科 · 第{chapter.id.slice(2)}章通关凭证</h3>
-    <h2>{chapter.title}</h2><strong>{certificate.name}</strong><p>学号 {certificate.studentId}</p><p>五班、晨会与尾声已完成 · {certificate.grade}级</p><p>盖章时 {certificate.gold}金币 · {certificate.badgeCount}枚本章勋章</p><code>{certificate.code}</code><small>截图提交；凭证保留盖章时的记录。</small></section>
+    <h2>{chapter.title}</h2><strong>{certificate.name}</strong><p>学号 {certificate.studentId}</p><p>全部日程、考核与尾声已完成 · {certificate.grade}级</p><p>盖章时 {certificate.gold}金币 · {certificate.badgeCount}枚本章勋章</p><code>{certificate.code}</code><small>截图提交；凭证保留盖章时的记录。</small></section>
     : <section className="trilogy-panel"><h3>📜 领取本章通关凭证</h3><form className="grid gap-2" onSubmit={e => { e.preventDefault(); update(s => issueTrilogyCertificate(s, chapter, name, sid)); void playSfx('stamp') }}>
       <label>姓名<input aria-label="姓名" value={name} maxLength={32} required onChange={e => setName(e.target.value)} /></label>
       <label>学号<input aria-label="学号" value={sid} maxLength={64} required onChange={e => setSid(e.target.value)} /></label>

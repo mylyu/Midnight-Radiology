@@ -197,6 +197,7 @@ export async function buildChapterManifest() {
     collect(group, SHOP_ITEMS)
     for (const image of [chapter.background, ...chapter.shifts.map(shift => shift.background), ...chapter.assets, ...Object.values(chapter.itemImages ?? {}), 'stamp']) addImage(group, image, false)
     for (const step of Object.values(chapter.steps)) {
+      if (step.scan?.positioningImage) addImage(group, step.scan.positioningImage, false)
       for (const image of Object.values(step.tool?.images ?? {})) addImage(group, image, false)
       for (const image of Object.values(step.tool?.objectImages ?? {})) addImage(group, image, false)
       if (step.tool?.reference) addImage(group, step.tool.reference, false)
@@ -205,8 +206,8 @@ export async function buildChapterManifest() {
     for (const sound of trilogyVoiceAssets(chapter)) addSound(group, sound)
     addSound(group, `trilogy_${group === 'ch3' ? 'us' : group === 'ch4' ? 'mri' : 'pet'}_scan_v2`)
     if (group !== 'ch3') {
-      addImage(group, group === 'ch4' ? 'trilogy_mri_scan_room_v2' : 'trilogy_pet_scan_room_v2', false)
-      addImage(group, CH2_CT_MOTION.bed, false)
+      addImage(group, group === 'ch4' ? 'trilogy_mri_scan_acquire_v3' : 'trilogy_pet_scan_room_v2', false)
+      if (group !== 'ch4') addImage(group, CH2_CT_MOTION.bed, false)
     }
     for (const audio of Object.values(CH2_COMMUNICATION_AUDIO)) addPath(group, audio, 'audio')
   }

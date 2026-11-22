@@ -31,7 +31,8 @@ function walkTo(s, target, visited = []) {
 }
 
 assert(isTrilogyPlayable('ch3'))
-assert(!isTrilogyPlayable('ch4') && !isTrilogyPlayable('ch5'))
+assert(isTrilogyPlayable('ch4'), 'MRI now has a public hall entry guarded by its local access code')
+assert(!isTrilogyPlayable('ch5'))
 assert.equal(Object.values(CH3.steps).filter(s => s.tool).length, 7, 'The author retired only the display-depth exercise')
 assert.equal(Object.values(CH3.steps).filter(s => s.scan).length, 6)
 for (const step of Object.values(CH3.steps)) for (const c of step.choices ?? [])

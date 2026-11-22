@@ -135,7 +135,10 @@ async function importImage(options) {
     const deliveryHash = sha(encoded)
     const relative = `media/${name}.${deliveryHash.slice(0, 16)}.webp`
     const destination = assetPath(relative)
-    const needsPreview = name.includes('bg_') || name.includes('ch2_dawn_window') || Object.hasOwn(previews, name)
+    // Chapters 3–5 and LDCT preload their admitted scenes before display; keep their
+    // full WebP art without duplicating tiny placeholders into the shared entry bundle.
+    const chapterPreloaded = /^(?:bg_c3_|bg_c4_|bg_mri_|bg_pet_|ldct_)/.test(name)
+    const needsPreview = !chapterPreloaded && (name.includes('bg_') || name.includes('ch2_dawn_window') || Object.hasOwn(previews, name))
     const updatedPreviews = { ...previews }
     if (needsPreview) {
       const tiny = await sharp(encoded).resize({ width: 48, withoutEnlargement: true })

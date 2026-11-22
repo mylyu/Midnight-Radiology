@@ -86,6 +86,61 @@
       "bytes": 164042,
       "type": "image"
     },
+    "assets/media/bg_c4_city_control_v1.0f577edceafc7843.webp": {
+      "sha256": "0f577edceafc78438e7c2b3d445fd94358e7231aa2faf4ae086ddb8e14c5ca14",
+      "bytes": 133962,
+      "type": "image"
+    },
+    "assets/media/bg_c4_city_corridor_v1.c8f524ad1578fefc.webp": {
+      "sha256": "c8f524ad1578fefc154a2e697d64757b9e0264965542e71a389f810ab5790ab6",
+      "bytes": 114928,
+      "type": "image"
+    },
+    "assets/media/bg_c4_city_magnet_room_v1.6128e72078126136.webp": {
+      "sha256": "6128e72078126136d440cf6296120848e004183e4c890914a7923efe95b27fc4",
+      "bytes": 91866,
+      "type": "image"
+    },
+    "assets/media/bg_c4_city_preparation_v1.aa06f31e6399e23b.webp": {
+      "sha256": "aa06f31e6399e23bf5e733c5a488c869d54d498f5b3111c55e00b3783f3591e3",
+      "bytes": 121118,
+      "type": "image"
+    },
+    "assets/media/bg_c4_city_staff_room_v1.c787ab82bce01baa.webp": {
+      "sha256": "c787ab82bce01baac989794816eb1cd8f92cb66d89788b6cef13328751a2f27c",
+      "bytes": 66802,
+      "type": "image"
+    },
+    "assets/media/bg_c4_city_triage_v1.66159cf9ccc4b566.webp": {
+      "sha256": "66159cf9ccc4b56676aa714faee4711259513eec1f492f0c2d73e0bc2282a2b2",
+      "bytes": 107786,
+      "type": "image"
+    },
+    "assets/media/bg_c4_county_control_v1.db463ca2af29c268.webp": {
+      "sha256": "db463ca2af29c26851e5db915c13d3ed97bcbdc8b78da0b7a388821386045c1e",
+      "bytes": 91150,
+      "type": "image"
+    },
+    "assets/media/bg_c4_county_corridor_preinstall_v1.13184b91e8d075f6.webp": {
+      "sha256": "13184b91e8d075f61f435db35777da920d644db6b4e152f769e690f30ca234de",
+      "bytes": 99516,
+      "type": "image"
+    },
+    "assets/media/bg_c4_county_corridor_v1.6800cace04f51083.webp": {
+      "sha256": "6800cace04f510838895f0ca4b093050114b6ab64998e51cc00ddadf133f4913",
+      "bytes": 117722,
+      "type": "image"
+    },
+    "assets/media/bg_c4_county_magnet_room_v1.38c512c8b72c4db3.webp": {
+      "sha256": "38c512c8b72c4db3b25b7726ee429215fe12d8b11240b6d2906469cf1857beb2",
+      "bytes": 104496,
+      "type": "image"
+    },
+    "assets/media/bg_c4_county_preparation_v1.7019ce8f8a756559.webp": {
+      "sha256": "7019ce8f8a7565598dd477074661716364a4b203e367114b3d9c878351c464e5",
+      "bytes": 113026,
+      "type": "image"
+    },
     "assets/media/bg_cathlab.820b4679ce3afe6d.webp": {
       "sha256": "820b4679ce3afe6d5af8e98e708ab10d2793fcc6d815a4379c7eddbecfc24549",
       "bytes": 127320,
@@ -271,9 +326,29 @@
       "bytes": 107060,
       "type": "image"
     },
-    "assets/media/cg_c4_first_mri_v2.586da62385ee8335.webp": {
-      "sha256": "586da62385ee8335bc602d2adc7c6b632ade43af586eaeb1d4d4bc75e10c3f49",
-      "bytes": 149748,
+    "assets/media/cg_c4_city_hospital_entrance_female.2d4706cc3a13ea38.webp": {
+      "sha256": "2d4706cc3a13ea38fe40bd233996ac891c94b49fe80d580e7b81727c75c6cd7c",
+      "bytes": 161036,
+      "type": "image"
+    },
+    "assets/media/cg_c4_city_hospital_entrance.2f01387d73ac1a8c.webp": {
+      "sha256": "2f01387d73ac1a8c4828067f83ac75521d1bf87a083d110c29159868e5d7e9c9",
+      "bytes": 206052,
+      "type": "image"
+    },
+    "assets/media/cg_c4_city_wide_bore_v1.54ba5d293bc673ba.webp": {
+      "sha256": "54ba5d293bc673bafecc445a01abf9e4069dbe4e47704128d9363e0ef825b8b5",
+      "bytes": 88822,
+      "type": "image"
+    },
+    "assets/media/cg_c4_glasses_v3.7977fc9b6375c39d.webp": {
+      "sha256": "7977fc9b6375c39d7f51bd42d733255fd8263d8752f0700e646e27455e9293e5",
+      "bytes": 15962,
+      "type": "image"
+    },
+    "assets/media/cg_c4_install_complete_v1.c6a2fb271d46571f.webp": {
+      "sha256": "c6a2fb271d46571fcabb54f69ad2b8a17cbc631369a16f3c88d110988763fb3c",
+      "bytes": 84582,
       "type": "image"
     },
     "assets/media/cg_c4_luo_records_v2.5c9aa4441a82f444.webp": {
@@ -281,14 +356,24 @@
       "bytes": 177934,
       "type": "image"
     },
+    "assets/media/cg_c4_magnet_lift_v1.bfdd0a57868cea6d.webp": {
+      "sha256": "bfdd0a57868cea6dcaacc9d7f0e906032a04f94a9ede7f1c1c86afac27c9ae5f",
+      "bytes": 207342,
+      "type": "image"
+    },
     "assets/media/cg_c4_procurement_v3.cde277f2df467dbd.webp": {
       "sha256": "cde277f2df467dbdc93c57d4615e6ea854d30055131a0d1809b91990fac0272e",
       "bytes": 161932,
       "type": "image"
     },
-    "assets/media/cg_c4_wide_bore_v3.af900b27b3e818ab.webp": {
-      "sha256": "af900b27b3e818ab09e9a8cc2db03a8fc3355898221d994bf58435f1a44a7d85",
-      "bytes": 104256,
+    "assets/media/cg_c4_ribbon_cutting_v1.22c10a54b7f0fef6.webp": {
+      "sha256": "22c10a54b7f0fef6d6a96f7db62fdabfb5846bff1431523c951303341261880f",
+      "bytes": 218888,
+      "type": "image"
+    },
+    "assets/media/cg_c4_ribbon_stop_v1.0d135e719b32b2e7.webp": {
+      "sha256": "0d135e719b32b2e7a1fb59bbe76cce88bef034ce5b3a7a99fcec914728cdb64c",
+      "bytes": 167528,
       "type": "image"
     },
     "assets/media/cg_c5_father_letter_v2.3339007d3ea5ee82.webp": {
@@ -626,6 +711,11 @@
       "bytes": 37092,
       "type": "image"
     },
+    "assets/media/char_c4_shen_v3.b2abd8aada4da211.webp": {
+      "sha256": "b2abd8aada4da2116408b072881d3a2fe18b89f9dbf50e05f467d4a55df32927",
+      "bytes": 31924,
+      "type": "image"
+    },
     "assets/media/char_director.2ef1885993e5b0e7.webp": {
       "sha256": "2ef1885993e5b0e78c2127506947faeaba919bafd17a9bd0f2295096bd2d7a51",
       "bytes": 38126,
@@ -699,11 +789,6 @@
     "assets/media/char_mei.c765a0bad23431c7.webp": {
       "sha256": "c765a0bad23431c72bfdf3bced3223d5b771f8c723c01a0b234957f38dc4710d",
       "bytes": 37504,
-      "type": "image"
-    },
-    "assets/media/char_mri_colleague.f2761d4951dbebf1.webp": {
-      "sha256": "f2761d4951dbebf15eb2245a91417b6cfdfbec8f5f13fefd0f4b024e8f9ae359",
-      "bytes": 35240,
       "type": "image"
     },
     "assets/media/char_new_trainee.94fd959ef79053ab.webp": {
@@ -1051,9 +1136,19 @@
       "bytes": 19098,
       "type": "image"
     },
+    "assets/media/item_c4_a17_parts_v1.77d9f7ef69dce383.webp": {
+      "sha256": "77d9f7ef69dce383ec109ba1d390d06910a23f656c8d5012b72faabcaa8d7af0",
+      "bytes": 140276,
+      "type": "image"
+    },
     "assets/media/item_c4_postcard_v2.d263f500ee425af9.webp": {
       "sha256": "d263f500ee425af97e14670a762b50b473510e65d76a4cb374e442df09008eda",
       "bytes": 6092,
+      "type": "image"
+    },
+    "assets/media/item_c4_quote_folder_v1.d24daa7aa245bc56.webp": {
+      "sha256": "d24daa7aa245bc56c8a80ad2afd2ed9ece7018fe035244b5e44ef0f743ed2417",
+      "bytes": 122884,
       "type": "image"
     },
     "assets/media/item_c4_sleepmask_v2.a7ef5bb4ad5aa4b2.webp": {
@@ -1296,34 +1391,79 @@
       "bytes": 46206,
       "type": "image"
     },
-    "assets/media/mri_brain_flair.06d3c6bc803ab660.webp": {
-      "sha256": "06d3c6bc803ab660cac8b825e734d6c120e104dc164e2047d5c41600c9425d6f",
-      "bytes": 22718,
+    "assets/media/mri_c4_basic_contrast_v1.1b808566902556c5.webp": {
+      "sha256": "1b808566902556c5249e6f426f886175b7f37ba984a393f211082a458f8686db",
+      "bytes": 47538,
       "type": "image"
     },
-    "assets/media/mri_brain_t1.8688a9efd3c103bf.webp": {
-      "sha256": "8688a9efd3c103bfc2cee065c3259ecf06095dcc183459f8f885317561aa787d",
-      "bytes": 21914,
+    "assets/media/mri_c4_gradient_system.c47d9acde4008e06.webp": {
+      "sha256": "c47d9acde4008e06a7c74fb9f8e2dfb5ba2ffd6dccdfabaf77caf504903e3d29",
+      "bytes": 68322,
       "type": "image"
     },
-    "assets/media/mri_brain_t2.0be7f5696bb51fb4.webp": {
-      "sha256": "0be7f5696bb51fb446f30ae742fa4031076edd3d1e25777270d16b2c8d0dd30c",
-      "bytes": 26080,
+    "assets/media/mri_c4_implant_v3.58bb06a8169181dc.webp": {
+      "sha256": "58bb06a8169181dc2adc095f6a57ed947034a6ac6918619da0fc440c8f2305ba",
+      "bytes": 16718,
       "type": "image"
     },
-    "assets/media/mri_neck.9085b544919133ee.webp": {
-      "sha256": "9085b544919133ee921eff4748901c7a36acd466ad098529bc11a001023c60d5",
-      "bytes": 23164,
+    "assets/media/mri_c4_magnet_system.b0a0fc7d7775ff7a.webp": {
+      "sha256": "b0a0fc7d7775ff7a6932d3ceca50bedc94792eeafc29ecd243f8322c6eaebdd2",
+      "bytes": 41410,
       "type": "image"
     },
-    "assets/media/mri_wrist_t2.c58beb0bb6b2f2a9.webp": {
-      "sha256": "c58beb0bb6b2f2a9e4218ca2e5052d5afa830d2b4e203ce72ab3d872c2470367",
-      "bytes": 34186,
+    "assets/media/mri_c4_rf_system.93606ef092f2a6b4.webp": {
+      "sha256": "93606ef092f2a6b4cef523bc71965d265d2cca38d53b149e37c7bfcfb3a4bd86",
+      "bytes": 35146,
       "type": "image"
     },
-    "assets/media/mri_wrist.c62c95836814b042.webp": {
-      "sha256": "c62c95836814b042820139acf3a0b463dc6eb109e26597934d2ab44e92b3a52b",
-      "bytes": 32000,
+    "assets/media/mri_c4_sequence_atlas.c2f1bf311ae1cf00.webp": {
+      "sha256": "c2f1bf311ae1cf009f56f9fb356c416de17feae159517ae7ceab3f1436357487",
+      "bytes": 44376,
+      "type": "image"
+    },
+    "assets/media/mri_real_hemangioma_dynamic_v1.111517a9689d5a00.webp": {
+      "sha256": "111517a9689d5a007bc4ce28a06fc0bbba2ad689adb546a855fb4e6924ea53b9",
+      "bytes": 23594,
+      "type": "image"
+    },
+    "assets/media/mri_real_hemangioma_t2_v1.3f230357388acd3d.webp": {
+      "sha256": "3f230357388acd3dceb98aa6e450bc81827ea6ab688454dbea55821c0160af7a",
+      "bytes": 32662,
+      "type": "image"
+    },
+    "assets/media/mri_real_hydrocephalus_v1.c5b308a21b709412.webp": {
+      "sha256": "c5b308a21b70941287982ebad51b8d126db578609f037cbc825ba135b0cde3b2",
+      "bytes": 40304,
+      "type": "image"
+    },
+    "assets/media/mri_real_knee_mimic_v1.3be8e2be3b4bb61d.webp": {
+      "sha256": "3be8e2be3b4bb61d37ab4860b26d101747c61e59706a8f483a1a1452d50b6a22",
+      "bytes": 23290,
+      "type": "image"
+    },
+    "assets/media/mri_real_metal_artifact_v1.f92f72e59d06dd94.webp": {
+      "sha256": "f92f72e59d06dd943fd5a0edc52f40bbd055f7cd964f7f66b8636cb64f17b6fc",
+      "bytes": 51904,
+      "type": "image"
+    },
+    "assets/media/mri_real_motion_ghost_v1.f2e888afa9191834.webp": {
+      "sha256": "f2e888afa91918344ecc1cdd7ed6702fbbf99ffe6ce79435808e33fc844c7550",
+      "bytes": 44382,
+      "type": "image"
+    },
+    "assets/media/mri_real_mrcp_v1.3614059f45a56618.webp": {
+      "sha256": "3614059f45a56618464e108989913959a96d45c3c9360e97067909071c16f999",
+      "bytes": 16112,
+      "type": "image"
+    },
+    "assets/media/mri_real_stroke_sequences_v1.53f99c9711f895b3.webp": {
+      "sha256": "53f99c9711f895b3d73878732257d5d99d13e60282f7597e00734c8a01a8f4c3",
+      "bytes": 48014,
+      "type": "image"
+    },
+    "assets/media/mri_real_tfcc_v1.4ae11629db1a2917.webp": {
+      "sha256": "4ae11629db1a291784b33e366673829442d236980c3e8f3b2d4eeead01f0c5ac",
+      "bytes": 31854,
       "type": "image"
     },
     "assets/media/pat_aunt.dd68f06e263bc0e6.webp": {
@@ -1334,6 +1474,41 @@
     "assets/media/pat_c3_young_liver_v1.ad144dd257425807.webp": {
       "sha256": "ad144dd2574258079f15587093cee67db46bc9e315c644018a524fe71e3bdeac",
       "bytes": 39212,
+      "type": "image"
+    },
+    "assets/media/pat_c4_chen_v3.324d12aeb9e6d178.webp": {
+      "sha256": "324d12aeb9e6d17898e7d5399fd39317d8a84dd7475c752c1b222258abc9439c",
+      "bytes": 40768,
+      "type": "image"
+    },
+    "assets/media/pat_c4_fang_v3.79db7d703982b0c4.webp": {
+      "sha256": "79db7d703982b0c4fafc2064a7e369f1a8cc0d07ffa1fa6f97c61d63615de043",
+      "bytes": 65180,
+      "type": "image"
+    },
+    "assets/media/pat_c4_feng_v3.31f5d0926e06911d.webp": {
+      "sha256": "31f5d0926e06911d4cd195bb64b3c34d4f3480d29a4ebc76fb23ed8f78d6cef9",
+      "bytes": 30596,
+      "type": "image"
+    },
+    "assets/media/pat_c4_liu_v4.26a928faca8f136c.webp": {
+      "sha256": "26a928faca8f136ccf1bf13a5716e9cabd6ca2b7878013aed60f4008f1c95558",
+      "bytes": 44630,
+      "type": "image"
+    },
+    "assets/media/pat_c4_mother_child_pixel_v1.8a2b6fd4707d2443.webp": {
+      "sha256": "8a2b6fd4707d24437f374cd14812ebcca11337aab7d86bf78b8f61f4fb7b1f22",
+      "bytes": 35758,
+      "type": "image"
+    },
+    "assets/media/pat_c4_wu_v3.24bae8a520e64edc.webp": {
+      "sha256": "24bae8a520e64edc0ad504eceb1bbb893ec6e9b0d322716097fce31802f63c0e",
+      "bytes": 42562,
+      "type": "image"
+    },
+    "assets/media/pat_c4_xu_v1.238d7c59ee17e892.webp": {
+      "sha256": "238d7c59ee17e8922690aa8ff70065b93e1e8203dc2bfcf7c2e4f4150ec115d2",
+      "bytes": 29624,
       "type": "image"
     },
     "assets/media/pat_child.e64c8c6e0972db69.webp": {
@@ -1389,11 +1564,6 @@
     "assets/media/pat_mom.e52d60ad68bda5c4.webp": {
       "sha256": "e52d60ad68bda5c41a32cb812958b62519786313ecace6d57e5d08455d04fae2",
       "bytes": 35180,
-      "type": "image"
-    },
-    "assets/media/pat_mri_anxious.e27e873b67b80e9c.webp": {
-      "sha256": "e27e873b67b80e9c73c43d8cf9dc47019ebef98358d627adee6a9cfefcc39a70",
-      "bytes": 30250,
       "type": "image"
     },
     "assets/media/pat_mystery.f083d78a5f6faebb.webp": {
@@ -1476,9 +1646,84 @@
       "bytes": 106542,
       "type": "image"
     },
-    "assets/media/trilogy_mri_scan_room_v2.9a88aedeec7a2d16.webp": {
-      "sha256": "9a88aedeec7a2d1667f06cab3681c255318f88102dfb056527f9fcdb468fb664",
-      "bytes": 77834,
+    "assets/media/trilogy_mri_scan_abdomen_v1.8114b2ee050d58ed.webp": {
+      "sha256": "8114b2ee050d58edf2c889db57d84bde99569c62c9e3f67bc3957419b43b1b79",
+      "bytes": 70978,
+      "type": "image"
+    },
+    "assets/media/trilogy_mri_scan_acquire_v3.d3d6474bf98a3f5d.webp": {
+      "sha256": "d3d6474bf98a3f5d31f400737e5729b519230fcf7f2ffb8df0003ccc5c67faae",
+      "bytes": 77706,
+      "type": "image"
+    },
+    "assets/media/trilogy_mri_scan_cervical_v1.1c45dd04e47e46e6.webp": {
+      "sha256": "1c45dd04e47e46e6e80ac20fbed52b2ddbb2757d2758d5507e4ebfbf7b09b7b5",
+      "bytes": 71350,
+      "type": "image"
+    },
+    "assets/media/trilogy_mri_scan_city_wide_head_v1.f89595a1a7709a6c.webp": {
+      "sha256": "f89595a1a7709a6cbeac1be9c69267cc75312e8b1c719c0b4b1eb4289f8a6e56",
+      "bytes": 97596,
+      "type": "image"
+    },
+    "assets/media/trilogy_mri_scan_county_abdomen_v1.a0fa2e57c201862c.webp": {
+      "sha256": "a0fa2e57c201862c033be9ea44019a9fe6b9213d0ae6a74ecebb7526c345c787",
+      "bytes": 87060,
+      "type": "image"
+    },
+    "assets/media/trilogy_mri_scan_county_cervical_v1.13db20747f7f1b5e.webp": {
+      "sha256": "13db20747f7f1b5e614f873d6af9a6d911d05bdef2d228a02b5d87cb04c9a1e9",
+      "bytes": 92512,
+      "type": "image"
+    },
+    "assets/media/trilogy_mri_scan_county_child_v1.4ac6edfaec7129d1.webp": {
+      "sha256": "4ac6edfaec7129d173d6218c1b35b6a107f2e41fd9d532b26b3f704f01b7a05b",
+      "bytes": 92612,
+      "type": "image"
+    },
+    "assets/media/trilogy_mri_scan_county_head_v1.8537fdee9abac3a5.webp": {
+      "sha256": "8537fdee9abac3a512257881bbe2e907ff015fc28fb45d69944e49b0b9d19bb3",
+      "bytes": 92920,
+      "type": "image"
+    },
+    "assets/media/trilogy_mri_scan_county_knee_v1.f58cfccfcc72edf9.webp": {
+      "sha256": "f58cfccfcc72edf92e5aebfd4eb3c15ac43d38610e25252acbd2a7ecbc452324",
+      "bytes": 96032,
+      "type": "image"
+    },
+    "assets/media/trilogy_mri_scan_county_lumbar_v1.9f84cb1e729f799a.webp": {
+      "sha256": "9f84cb1e729f799a6b27ad91e6c20fb8ef850b6d9d0a9eaf4dfca1647b069143",
+      "bytes": 89160,
+      "type": "image"
+    },
+    "assets/media/trilogy_mri_scan_county_shoulder_v1.be5fd74614b1a999.webp": {
+      "sha256": "be5fd74614b1a9990737c0b896f47ca995f37bfc2bc1a482237c7dbba4c1c347",
+      "bytes": 88298,
+      "type": "image"
+    },
+    "assets/media/trilogy_mri_scan_county_wrist_v1.5319bb827b425e4c.webp": {
+      "sha256": "5319bb827b425e4c720690e7ff25c13c862e4f7238b3d18394f00f8cec09b6df",
+      "bytes": 93230,
+      "type": "image"
+    },
+    "assets/media/trilogy_mri_scan_knee_v1.d6d250edbe12ff59.webp": {
+      "sha256": "d6d250edbe12ff59f9c8e6f97314efe732059f974cb3b1241a7bf0c27de71d64",
+      "bytes": 77254,
+      "type": "image"
+    },
+    "assets/media/trilogy_mri_scan_lumbar_v1.0564d78c8fe73f7e.webp": {
+      "sha256": "0564d78c8fe73f7ece3335e0fbbc54aa02c7c89ce90599971aad0b022c43e6fe",
+      "bytes": 69320,
+      "type": "image"
+    },
+    "assets/media/trilogy_mri_scan_shoulder_v1.78d0067069417362.webp": {
+      "sha256": "78d00670694173621fe2be5105091163831bb1c71be77b2e91176ef6be53a6ca",
+      "bytes": 68104,
+      "type": "image"
+    },
+    "assets/media/trilogy_mri_scan_wrist_v1.79d8334e7cf1d3a1.webp": {
+      "sha256": "79d8334e7cf1d3a1b18371230c3423141176f44e88adeba3aaba2a1608f2715e",
+      "bytes": 66556,
       "type": "image"
     },
     "assets/media/trilogy_pet_scan_room_v2.5523d54bf0e65221.webp": {
@@ -1686,19 +1931,44 @@
       "bytes": 16653,
       "type": "audio"
     },
-    "audio/vox_c4_song_v2.mp3": {
-      "sha256": "fb68df6d5e7bdfaf5e153ecca8220bd5c8fa000caed6d32b1b983cc90bba6b1f",
-      "bytes": 7293,
+    "audio/vox_c4_aunt_r8.mp3": {
+      "sha256": "3ae46878cd5cd5cf39f6b58ae583da992a3f0a162e63c600ce62a0a07f65fb71",
+      "bytes": 23421,
       "type": "audio"
     },
-    "audio/vox_c4_wrist_v2.mp3": {
-      "sha256": "8f19c41dcedf1100d3d70d22c94ec5e281f4cca5dfc9ea010341176d53ae5358",
-      "bytes": 10893,
+    "audio/vox_c4_feng_r7.mp3": {
+      "sha256": "716faa3e19a4085e16013ffd27d6a6c181f7a267149656d3185bb79b37888471",
+      "bytes": 15357,
       "type": "audio"
     },
-    "audio/vox_c4_xuning_v2.mp3": {
-      "sha256": "c99c9df04d487a2b047101d45f27793817096fa994698f423cf7f0ae26ea6903",
-      "bytes": 10029,
+    "audio/vox_c4_knee_r9.mp3": {
+      "sha256": "465c90bdf10fdac380352c8694989b0a05ee2a2c2fd68107b9cb1c82fd00db1a",
+      "bytes": 23421,
+      "type": "audio"
+    },
+    "audio/vox_c4_knee_wait_r9.mp3": {
+      "sha256": "145f28fbdbfee4d12a649895479d0b3f20b0750ad6b22c8428ff4516d6fa9f65",
+      "bytes": 23853,
+      "type": "audio"
+    },
+    "audio/vox_c4_worker_r7.mp3": {
+      "sha256": "a97494f01ac186eda590febb1df7142e0c4c0e0dac644275138735e6ab12ce68",
+      "bytes": 15357,
+      "type": "audio"
+    },
+    "audio/vox_c4_wrist_r7.mp3": {
+      "sha256": "17ba2d49c7d19dafcfbe07e3e9a7a2661bd3932717e964ec7af29b5b2537a1f6",
+      "bytes": 14061,
+      "type": "audio"
+    },
+    "audio/vox_c4_xu_r7.mp3": {
+      "sha256": "6b121b2584570f91627dc108a062baffca4b119b6a4fdc794a243e7939da5990",
+      "bytes": 45165,
+      "type": "audio"
+    },
+    "audio/vox_c4_xuning_v3.mp3": {
+      "sha256": "ad201064a01d95b223a48c0e2aaa8bee7d420f80df3a9dd62d680bf8fdae6016",
+      "bytes": 9741,
       "type": "audio"
     },
     "audio/vox_c5_gu_v2.mp3": {
@@ -1889,11 +2159,6 @@
     "audio/vox_trilogy_he_v2.mp3": {
       "sha256": "400b63f35957998d11d0baeb7144ed0f4e14b89590d27fcea926c28d9f40bade",
       "bytes": 10605,
-      "type": "audio"
-    },
-    "audio/vox_trilogy_luo_v2.mp3": {
-      "sha256": "e1a6ea193c09d27172f6848b29064d2edd7c4ca46778a155cf3ce4e8d4a46221",
-      "bytes": 11757,
       "type": "audio"
     },
     "audio/vox_trilogy_mystery_v2.mp3": {
@@ -2267,47 +2532,100 @@
     ],
     "ch4": [
       "assets/media/bg_breakroom.6e71e372d1ef1b9d.webp",
+      "assets/media/bg_c4_city_control_v1.0f577edceafc7843.webp",
+      "assets/media/bg_c4_city_corridor_v1.c8f524ad1578fefc.webp",
+      "assets/media/bg_c4_city_magnet_room_v1.6128e72078126136.webp",
+      "assets/media/bg_c4_city_preparation_v1.aa06f31e6399e23b.webp",
+      "assets/media/bg_c4_city_staff_room_v1.c787ab82bce01baa.webp",
+      "assets/media/bg_c4_city_triage_v1.66159cf9ccc4b566.webp",
+      "assets/media/bg_c4_county_control_v1.db463ca2af29c268.webp",
+      "assets/media/bg_c4_county_corridor_preinstall_v1.13184b91e8d075f6.webp",
+      "assets/media/bg_c4_county_corridor_v1.6800cace04f51083.webp",
+      "assets/media/bg_c4_county_magnet_room_v1.38c512c8b72c4db3.webp",
+      "assets/media/bg_c4_county_preparation_v1.7019ce8f8a756559.webp",
+      "assets/media/bg_corridor.970560e65398bdf4.webp",
       "assets/media/bg_mri_control.a7a487b3b338c023.webp",
       "assets/media/bg_mri_control_day_v2.433d4fc168a68d35.webp",
       "assets/media/bg_mri_corridor_day_v2.f51979fbd08e5b37.webp",
       "assets/media/bg_mri_room_day_v2.39a786d764c27e95.webp",
+      "assets/media/bg_office.a9e1a85d95a882a3.webp",
       "assets/media/bg_office_day.c715845d3a833f50.webp",
-      "assets/media/cg_c4_first_mri_v2.586da62385ee8335.webp",
+      "assets/media/bg_waiting_day_v2.30916f32479aad55.webp",
+      "assets/media/cg_c4_city_hospital_entrance.2f01387d73ac1a8c.webp",
+      "assets/media/cg_c4_city_hospital_entrance_female.2d4706cc3a13ea38.webp",
+      "assets/media/cg_c4_city_wide_bore_v1.54ba5d293bc673ba.webp",
+      "assets/media/cg_c4_glasses_v3.7977fc9b6375c39d.webp",
+      "assets/media/cg_c4_install_complete_v1.c6a2fb271d46571f.webp",
       "assets/media/cg_c4_luo_records_v2.5c9aa4441a82f444.webp",
+      "assets/media/cg_c4_magnet_lift_v1.bfdd0a57868cea6d.webp",
       "assets/media/cg_c4_procurement_v3.cde277f2df467dbd.webp",
-      "assets/media/cg_c4_wide_bore_v3.af900b27b3e818ab.webp",
+      "assets/media/cg_c4_ribbon_cutting_v1.22c10a54b7f0fef6.webp",
+      "assets/media/cg_c4_ribbon_stop_v1.0d135e719b32b2e7.webp",
       "assets/media/ch2_bg_breakroom_day.194c9d3ccafbe9ff.webp",
-      "assets/media/ch2_ct_motion_bed_v1.f1eaee8617eb5678.webp",
-      "assets/media/ch2_pat_luo_v1.485cd9f1d333d7eb.webp",
       "assets/media/ch2_patient_wrist_student.dd19e6bcc5ef8cc6.webp",
+      "assets/media/char_bai.aae1555459768a4a.webp",
+      "assets/media/char_c4_shen_v3.b2abd8aada4da211.webp",
       "assets/media/char_director.2ef1885993e5b0e7.webp",
+      "assets/media/char_f.aa652822daf1d5e4.webp",
       "assets/media/char_fan.ae19f9b4035d454f.webp",
-      "assets/media/char_han.16470d2a0c45282b.webp",
-      "assets/media/char_kai.6d316a4e32e7b024.webp",
       "assets/media/char_lei.a046af659f74363b.webp",
-      "assets/media/char_mri_colleague.f2761d4951dbebf1.webp",
+      "assets/media/char_m.7fd8c4d18c105c36.webp",
       "assets/media/char_tang.d53f4bc08dedd1cd.webp",
+      "assets/media/char_wen.afb4dcae9314954d.webp",
       "assets/media/char_zhou.6654ff12eb3e23ca.webp",
       "assets/media/item_book.9b32669caa358e79.webp",
+      "assets/media/item_c4_a17_parts_v1.77d9f7ef69dce383.webp",
       "assets/media/item_c4_postcard_v2.d263f500ee425af9.webp",
+      "assets/media/item_c4_quote_folder_v1.d24daa7aa245bc56.webp",
       "assets/media/item_c4_sleepmask_v2.a7ef5bb4ad5aa4b2.webp",
       "assets/media/item_coffee.4368d5294285e799.webp",
       "assets/media/item_dosimeter.ff4a9ed3f7f6e3e3.webp",
       "assets/media/item_key.ddbc01d45ea7ded3.webp",
       "assets/media/item_lottery.995d593f793713b0.webp",
       "assets/media/item_milktea.52cc8d6958e2f14b.webp",
+      "assets/media/item_notebook.d2d4179f08903ea1.webp",
       "assets/media/item_snack.f16943baf3b6bdb3.webp",
       "assets/media/item_toolbox.c7f80a4945342224.webp",
-      "assets/media/mri_brain_flair.06d3c6bc803ab660.webp",
-      "assets/media/mri_brain_t1.8688a9efd3c103bf.webp",
-      "assets/media/mri_brain_t2.0be7f5696bb51fb4.webp",
-      "assets/media/mri_neck.9085b544919133ee.webp",
-      "assets/media/mri_wrist.c62c95836814b042.webp",
-      "assets/media/mri_wrist_t2.c58beb0bb6b2f2a9.webp",
-      "assets/media/pat_mri_anxious.e27e873b67b80e9c.webp",
-      "assets/media/pat_mystery.f083d78a5f6faebb.webp",
+      "assets/media/mri_c4_basic_contrast_v1.1b808566902556c5.webp",
+      "assets/media/mri_c4_gradient_system.c47d9acde4008e06.webp",
+      "assets/media/mri_c4_implant_v3.58bb06a8169181dc.webp",
+      "assets/media/mri_c4_magnet_system.b0a0fc7d7775ff7a.webp",
+      "assets/media/mri_c4_rf_system.93606ef092f2a6b4.webp",
+      "assets/media/mri_c4_sequence_atlas.c2f1bf311ae1cf00.webp",
+      "assets/media/mri_real_hemangioma_dynamic_v1.111517a9689d5a00.webp",
+      "assets/media/mri_real_hemangioma_t2_v1.3f230357388acd3d.webp",
+      "assets/media/mri_real_hydrocephalus_v1.c5b308a21b709412.webp",
+      "assets/media/mri_real_knee_mimic_v1.3be8e2be3b4bb61d.webp",
+      "assets/media/mri_real_metal_artifact_v1.f92f72e59d06dd94.webp",
+      "assets/media/mri_real_motion_ghost_v1.f2e888afa9191834.webp",
+      "assets/media/mri_real_mrcp_v1.3614059f45a56618.webp",
+      "assets/media/mri_real_stroke_sequences_v1.53f99c9711f895b3.webp",
+      "assets/media/mri_real_tfcc_v1.4ae11629db1a2917.webp",
+      "assets/media/pat_c4_chen_v3.324d12aeb9e6d178.webp",
+      "assets/media/pat_c4_fang_v3.79db7d703982b0c4.webp",
+      "assets/media/pat_c4_feng_v3.31f5d0926e06911d.webp",
+      "assets/media/pat_c4_liu_v4.26a928faca8f136c.webp",
+      "assets/media/pat_c4_mother_child_pixel_v1.8a2b6fd4707d2443.webp",
+      "assets/media/pat_c4_wu_v3.24bae8a520e64edc.webp",
+      "assets/media/pat_c4_xu_v1.238d7c59ee17e892.webp",
+      "assets/media/pat_cousin.5ffdd237fc117e80.webp",
       "assets/media/stamp.72cf222761ee91c0.webp",
-      "assets/media/trilogy_mri_scan_room_v2.9a88aedeec7a2d16.webp",
+      "assets/media/trilogy_mri_scan_abdomen_v1.8114b2ee050d58ed.webp",
+      "assets/media/trilogy_mri_scan_acquire_v3.d3d6474bf98a3f5d.webp",
+      "assets/media/trilogy_mri_scan_cervical_v1.1c45dd04e47e46e6.webp",
+      "assets/media/trilogy_mri_scan_city_wide_head_v1.f89595a1a7709a6c.webp",
+      "assets/media/trilogy_mri_scan_county_abdomen_v1.a0fa2e57c201862c.webp",
+      "assets/media/trilogy_mri_scan_county_cervical_v1.13db20747f7f1b5e.webp",
+      "assets/media/trilogy_mri_scan_county_child_v1.4ac6edfaec7129d1.webp",
+      "assets/media/trilogy_mri_scan_county_head_v1.8537fdee9abac3a5.webp",
+      "assets/media/trilogy_mri_scan_county_knee_v1.f58cfccfcc72edf9.webp",
+      "assets/media/trilogy_mri_scan_county_lumbar_v1.9f84cb1e729f799a.webp",
+      "assets/media/trilogy_mri_scan_county_shoulder_v1.be5fd74614b1a999.webp",
+      "assets/media/trilogy_mri_scan_county_wrist_v1.5319bb827b425e4c.webp",
+      "assets/media/trilogy_mri_scan_knee_v1.d6d250edbe12ff59.webp",
+      "assets/media/trilogy_mri_scan_lumbar_v1.0564d78c8fe73f7e.webp",
+      "assets/media/trilogy_mri_scan_shoulder_v1.78d0067069417362.webp",
+      "assets/media/trilogy_mri_scan_wrist_v1.79d8334e7cf1d3a1.webp",
       "audio/badge.mp3",
       "audio/ch2_mobile_call_v1.mp3",
       "audio/ch2_mobile_message_v1.mp3",
@@ -2315,12 +2633,14 @@
       "audio/ring.mp3",
       "audio/stamp.mp3",
       "audio/trilogy_mri_scan_v2.mp3",
-      "audio/vox_c4_song_v2.mp3",
-      "audio/vox_c4_wrist_v2.mp3",
-      "audio/vox_c4_xuning_v2.mp3",
-      "audio/vox_trilogy_han_v2.mp3",
-      "audio/vox_trilogy_luo_v2.mp3",
-      "audio/vox_trilogy_mystery_v2.mp3"
+      "audio/vox_c4_aunt_r8.mp3",
+      "audio/vox_c4_feng_r7.mp3",
+      "audio/vox_c4_knee_r9.mp3",
+      "audio/vox_c4_knee_wait_r9.mp3",
+      "audio/vox_c4_worker_r7.mp3",
+      "audio/vox_c4_wrist_r7.mp3",
+      "audio/vox_c4_xu_r7.mp3",
+      "audio/vox_c4_xuning_v3.mp3"
     ],
     "ch5": [
       "assets/media/bg_breakroom.6e71e372d1ef1b9d.webp",

@@ -10,7 +10,7 @@ import { initializeTrilogy, resetTrilogy, restartTrilogy, enterTrilogyNode, tril
   trilogyCheckin, trilogyAdvance, trilogyChoose, nextTrilogyShift, updateTrilogyTool,
   completeTrilogyTool, trilogyGive, trilogyReadBook, trilogyBuy, startTrilogyQuiz,
   answerTrilogyQuiz, nextTrilogyQuiz, finishTrilogyQuiz, issueTrilogyCertificate,
-  trilogyCredential, beginTrilogyScan, completeTrilogyScan } from '../src/game/trilogy-session.ts'
+  trilogyCredential, beginTrilogyScan, completeTrilogyScan, trilogyBookPageRead, trilogyBookUnlocked } from '../src/game/trilogy-session.ts'
 
 const clone = value => JSON.parse(JSON.stringify(value))
 const output = resolve(process.env.TRILOGY_OUTPUT || '../../trilogy-review-20261010')
@@ -62,9 +62,13 @@ function walk(chapter, all) {
       settlements.push(p.shift)
       const before = s
       equalState(enterTrilogyNode(clone(s), chapter, p.stepId), s, 'Settlement entry cannot repay salary')
-      s = trilogyReadBook(s, chapter)
-      assert.equal(s.skill, before.skill + 1)
-      equalState(trilogyReadBook(clone(s), chapter), s, 'Book reward once per shift')
+      const latestPage = trilogyBookUnlocked(chapter, p.shift) - 1
+      const alreadyRead = chapter.id === 'ch4' && trilogyBookPageRead(s, chapter, latestPage)
+      s = trilogyReadBook(s, chapter, chapter.id === 'ch4' ? latestPage : undefined)
+      assert.equal(s.skill, before.skill + (chapter.id === 'ch4' || alreadyRead ? 0 : 1),
+        chapter.id === 'ch4' ? 'CH4 reading records progress without a direct attribute reward' : 'Book reward once per shift')
+      equalState(trilogyReadBook(clone(s), chapter, chapter.id === 'ch4' ? latestPage : undefined), s,
+        chapter.id === 'ch4' ? 'Repeated CH4 page cannot repay' : 'Book reward once per shift')
       if (p.shift === 0 && all) {
         const beforeCoffee = s
         s = trilogyBuy(s, chapter, 'coffee')
@@ -74,7 +78,7 @@ function walk(chapter, all) {
       }
       const beforeNext = s
       s = nextTrilogyShift(s, chapter)
-      if (p.shift < 4) {
+      if (p.shift < chapter.shifts.length - 1) {
         assert.equal(trilogyProgress(s, chapter.id).shift, p.shift + 1)
         assert.equal(s.ap, 3)
         assert.deepEqual(trilogyProgress(s, chapter.id).snapshots[String(p.shift + 1)], stats(beforeNext))
@@ -89,7 +93,8 @@ function walk(chapter, all) {
       equalState(startTrilogyQuiz(clone(s), chapter), s, 'Refresh does not resample quiz or option order')
       if (q.completed) {
         assert.equal(s.gold, quizBefore.gold + expectedScore * 20)
-        assert.equal(s.skill, quizBefore.skill + 1)
+        assert.equal(s.skill, quizBefore.skill + (chapter.id === 'ch4' ? expectedScore : 1),
+          chapter.id === 'ch4' ? 'CH4 quiz grants one skill point per correct answer, with no participation point' : 'Legacy quiz reward remains unchanged')
         equalState(nextTrilogyQuiz(clone(s), chapter), s, 'Repeated final submit cannot repay quiz')
         s = finishTrilogyQuiz(s, chapter)
         assert.equal(trilogyProgress(s, chapter.id).phase, 'epilogue')
@@ -123,7 +128,8 @@ function walk(chapter, all) {
       const before = s
       s = trilogyGive(s, chapter, id, 'snack')
       assert.equal(s.items.includes('snack'), false)
-      assert.equal(s.heart, before.heart + 1)
+      assert.equal(s.heart, before.heart + (chapter.id === 'ch4' ? 0 : 1),
+        chapter.id === 'ch4' ? 'CH4 gift shares the item without a direct attribute reward' : 'Legacy gift reward remains unchanged')
       assert.equal(trilogyProgress(s, chapter.id).stepId, id)
       assert.equal(trilogyProgress(s, chapter.id).giftReply.person, step.giftTo)
       equalState(trilogyGive(clone(s), chapter, id, 'milktea'), s, 'One person cannot receive two gifts in one shift')
@@ -135,11 +141,16 @@ function walk(chapter, all) {
       equalState(trilogyAdvance(clone(s), chapter, id), s, 'Ordinary advance cannot bypass an unfinished scan')
       const at = p.scans?.[id]?.startedAt ?? 1000000 + iterations * 4000
       s = beginTrilogyScan(s, chapter, id, at)
-      const duration = step.scan.durationMs ?? 3000
+      const duration = step.scan.distress
+        ? step.scan.distress.atMs + step.scan.distress.stopAfterMs
+        : step.scan.durationMs ?? 3000
       equalState(completeTrilogyScan(clone(s), chapter, id, at + duration - 1), s, 'Scan cannot finish before its duration')
       s = completeTrilogyScan(clone(s), chapter, id, at + duration)
       assert.equal(trilogyProgress(s, chapter.id).stepId, step.next)
-      assert.equal(trilogyProgress(s, chapter.id).scans[id].completed, true)
+      const receipt = trilogyProgress(s, chapter.id).scans[id]
+      assert.equal(receipt.ended, true)
+      assert.equal(receipt.completed, !step.scan.distress)
+      assert.equal(receipt.interrupted, step.scan.distress ? true : undefined)
       equalState(completeTrilogyScan(clone(s), chapter, id, at + duration + 1), s, 'Stale scan callback cannot reward twice')
       scans.push(id)
     } else if (step.tool) {
@@ -162,10 +173,12 @@ function walk(chapter, all) {
       s = trilogyChoose(s, chapter, id, choice)
       assert.notEqual(trilogyProgress(s, chapter.id).stepId, id, `${id}: selected enabled route is actionable: ${choice.text}`)
       const target = trilogyProgress(s, chapter.id).stepId
-      assert.equal(target, choice.next, 'Choice effect and target are one saved result')
+      const riskTaken = !!choice.risk && target === choice.risk.next
+      assert([choice.next, choice.risk?.next].filter(Boolean).includes(target), 'Choice effect and deterministic target are one saved result')
+      const riskEffect = riskTaken ? choice.risk.effect ?? {} : {}
       const entry = p.applied.includes(target) ? {} : trilogyStep(s, chapter).effect ?? {}
-      assert.equal(s.gold, Math.max(0, Math.max(0, before.gold + (choice.effect?.gold ?? 0)) + (entry.gold ?? 0)))
-      assert.equal(s.ap, Math.max(0, Math.max(0, before.ap + (choice.effect?.ap ?? 0)) + (entry.ap ?? 0)))
+      assert.equal(s.gold, Math.max(0, Math.max(0, Math.max(0, before.gold + (choice.effect?.gold ?? 0)) + (riskEffect.gold ?? 0)) + (entry.gold ?? 0)))
+      assert.equal(s.ap, Math.max(0, Math.max(0, Math.max(0, before.ap + (choice.effect?.ap ?? 0)) + (riskEffect.ap ?? 0)) + (entry.ap ?? 0)))
       if (choice.effect?.flag) assert.equal(s.flags[choice.effect.flag], true)
       equalState(trilogyChoose(clone(s), chapter, id, choice), s, 'Stale double click cannot reapply choice')
       if (/hub$/.test(id)) {
@@ -185,7 +198,7 @@ function walk(chapter, all) {
   assert(iterations < 1000, `${chapter.id}: finite story progression`)
   const p = trilogyProgress(s, chapter.id)
   assert.equal(p.done, true); assert.equal(p.phase, 'done'); assert.equal(p.quiz.completed, true)
-  assert.deepEqual(settlements, [0, 1, 2, 3, 4]); assert.equal(checkins.size, 5)
+  assert.deepEqual(settlements, chapter.shifts.map((_, index) => index)); assert.equal(checkins.size, chapter.shifts.length)
   assert(p.visited.includes(chapter.afterQuiz), 'Actual after-quiz ending was played')
   equalState(issueTrilogyCertificate(s, chapter, ' ', 'ID'), s, 'Blank identity cannot issue certificate')
   s = issueTrilogyCertificate(s, chapter, ' 测试同学 ', ' TEST-20261010 ')
@@ -212,7 +225,7 @@ function walk(chapter, all) {
   for (const [key, value] of Object.entries(s.flags)) if (!key.startsWith(prefix)) assert.equal(restarted.flags[key], value)
   report.routes.push({ chapter: chapter.id, route: all ? 'all-exploration/history/first' : 'direct/no-history/alternate',
     iterations, nodes: [...new Set(visited)].length, settlements, tools, scans, gifts, choices, grade: p.quiz.grade, certificate })
-  console.log(`PASS pure state ${chapter.id}: ${all ? 'full-history' : 'direct-neutral'}, ${visited.length} story visits, 5 settlements, full quiz/ending/certificate`)
+  console.log(`PASS pure state ${chapter.id}: ${all ? 'full-history' : 'direct-neutral'}, ${visited.length} story visits, ${settlements.length} settlements, full quiz/ending/certificate`)
 }
 
 function archiveReturn(order) {

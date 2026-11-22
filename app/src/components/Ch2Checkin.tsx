@@ -5,6 +5,8 @@ import './Ch2Checkin.css'
 export interface Ch2CheckinProps {
   title: string
   rewardText?: string
+  model?: string
+  ariaLabel?: string
   onComplete: () => void
 }
 
@@ -20,7 +22,7 @@ function releasePointer(session: DragSession | null) {
 }
 
 /** A completed swipe is the only pointer action that acknowledges a Chapter 2 shift. */
-export function Ch2Checkin({ title, rewardText, onComplete }: Ch2CheckinProps) {
+export function Ch2Checkin({ title, rewardText, model = 'CT · 02', ariaLabel = '第二章值班打卡', onComplete }: Ch2CheckinProps) {
   const [progress, setProgress] = useState(0)
   const [dragging, setDragging] = useState(false)
   const [confirmed, setConfirmed] = useState(false)
@@ -136,7 +138,7 @@ export function Ch2Checkin({ title, rewardText, onComplete }: Ch2CheckinProps) {
   const style = { '--checkin-progress': progress } as CSSProperties
   return <section className={`ch2-checkin${dragging ? ' is-dragging' : ''}${ready ? ' is-ready' : ''}${confirmed ? ' is-confirmed' : ''}`}
     data-ch2-checkin data-checkin-state={confirmed ? 'complete' : ready ? 'ready' : dragging ? 'dragging' : 'idle'}
-    aria-label="第二章值班打卡" style={style}
+    aria-label={ariaLabel} style={style}
     onPointerDown={event => event.stopPropagation()} onClick={event => event.stopPropagation()}
     onKeyDown={event => event.stopPropagation()}>
     <div className="ch2-checkin-content">
@@ -148,7 +150,7 @@ export function Ch2Checkin({ title, rewardText, onComplete }: Ch2CheckinProps) {
         <i className="ch2-checkin-screw bottom-right" aria-hidden="true" />
         <header className="ch2-checkin-machine-header">
           <div className="ch2-checkin-brand"><span className="ch2-checkin-cross" aria-hidden="true" />影像科考勤终端</div>
-          <span className="ch2-checkin-model">CT · 02</span>
+          <span className="ch2-checkin-model">{model}</span>
         </header>
         <div className="ch2-checkin-display">
           <div className="ch2-checkin-display-top"><span>值班登记</span><span className="ch2-checkin-led"><i />{confirmed ? '已登记' : ready ? '待确认' : '待打卡'}</span></div>

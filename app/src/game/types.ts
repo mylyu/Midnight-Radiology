@@ -36,6 +36,8 @@ export interface Cond {
 export interface Choice {
   text: string
   next: string
+  /** Optional compact destination/activity icon, separate from the label text. */
+  icon?: string
   /** Keep a locked exploration entry visible, with an actionable explanation. */
   disabledReason?: string
   effect?: Effect

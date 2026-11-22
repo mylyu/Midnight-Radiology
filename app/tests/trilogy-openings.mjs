@@ -20,8 +20,8 @@ const results = []
 for (const spec of [
   { id: 'ch3', start: 'c3_intro_call_0', stop: 'c3_s1_start_0', prefix: 'c3_intro_',
     flags: ['c3_rotation_invited', 'c3_cousin_booking', 'c3_rotation_arranged'], cards: [] },
-  { id: 'ch4', start: 'c4_pro_0', stop: 'c4_1_open_0', prefix: 'c4_pro_',
-    flags: ['c4_procurement_decided'], cards: ['c4_field'] },
+  { id: 'ch4', start: 'c4_pro_0', stop: 'c4_1_open_0', prefix: ['c4_pro_', 'c4_apply_', 'c4_departure_', 'c4_city_arrival'],
+    flags: ['c4_training_approved', 'c4_city_week_started'], cards: [] },
 ]) {
   const chapter = TRILOGY[spec.id], initial = base()
   assert.equal(chapter.shifts[0].start, spec.start)
@@ -62,8 +62,9 @@ for (const spec of [
   // CH3's two equivalent invitation responses were deliberately collapsed.
   // The old question node remains a valid resume connector, not a new-run branch.
   const resumeOnly = spec.id === 'ch3' ? ['c3_intro_ask'] : []
-  assert.equal(endpoints.length, spec.id === 'ch3' ? 1 : 12, 'Approved opening routes converge without redundant invitation choices')
-  assert.deepEqual([...reached].sort(), Object.keys(chapter.steps).filter(id => id.startsWith(spec.prefix) && !resumeOnly.includes(id)).sort(), 'All current prelude nodes are reachable and converge')
+  assert.equal(endpoints.length, 1, 'Approved opening routes converge without redundant invitation choices')
+  const prefixes = Array.isArray(spec.prefix) ? spec.prefix : [spec.prefix]
+  assert.deepEqual([...reached].sort(), Object.keys(chapter.steps).filter(id => prefixes.some(prefix => id.startsWith(prefix)) && !resumeOnly.includes(id)).sort(), 'All current prelude nodes are reachable and converge')
   for (const id of resumeOnly) {
     const legacy = patchTrilogy(initializeTrilogy(base(), chapter, 'legacy-invitation'), spec.id, { stepId: id })
     assert.equal(trilogyProgress(legacy, spec.id).stepId, id, 'Legacy cursor is retained')
@@ -83,7 +84,7 @@ for (const spec of [
 
 // A saved formal opening or mid-chapter cursor must not be dragged into new history.
 for (const [id, cursors] of Object.entries({ ch3: ['c3_s1_start_0', 'c3_s3_start_0'],
-  ch4: ['c4_1_open_0', 'c4_3_open_0'], ch5: ['c5_s1_0', 'c5_s3_0'] })) {
+  ch5: ['c5_s1_0', 'c5_s3_0'] })) {
   const chapter = TRILOGY[id]
   for (const [i, cursor] of cursors.entries()) {
     assert(chapter.steps[cursor], `${id}: old save cursor remains valid`)
@@ -105,21 +106,28 @@ const interactionTotals = Object.fromEntries(Object.entries(TRILOGY).map(([id, c
 }))
 const mri = TRILOGY.ch4
 assert.match(mri.equipment, /^0\.55T\b/)
-assert.match(mri.steps.c4_1_open_0.imageLabel, /0\.55T/)
-const oldMri = patchTrilogy(initializeTrilogy(base(), mri), 'ch4', { stepId: 'c4_1_open_0' })
-assert.match(trilogyStep(oldMri, mri).text, /0\.55T/, 'Old-save narration also names the installed field correctly')
+assert.match(mri.steps.c4_3_decision_0.text, /0\.55T.*80厘米孔径/)
+assert.match(mri.steps.c4_3_install_3.text, /磁体落位后.*午后.*检查床和控制系统都就位/)
+assert.match(mri.steps.c4_3_install_7.text, /交接快做完.*跑过去拦住/)
+assert.match(mri.steps.c4_3_install_9.text, /红绸挪到.*医院正门/)
+assert.match(mri.steps.c4_3_ribbon_outside_1.text, /县医院正门外.*剪断/)
+assert.equal(mri.steps.c4_3_ribbon_outside_3.effect.flag, 'c4_installed_ready')
 
 const catalog = JSON.parse(readFileSync(new URL('../src/lib/image-assets.catalog.json', import.meta.url), 'utf8'))
 const cg = { ch3: ['cg_c3_cousin_call_v3', 'cg_c3_us_visit_v3'],
-  ch4: ['cg_c4_procurement_v3', 'cg_c4_wide_bore_v3'], ch5: ['cg_c5_training_notice_v3'] }
+  ch4: ['cg_c4_city_hospital_entrance', 'cg_c4_city_hospital_entrance_female', 'cg_c4_procurement_v3'], ch5: ['cg_c5_training_notice_v3'] }
 const manifest = await buildChapterManifest() // Existing read-only API; does not save generated metadata.
 for (const [chapter, ids] of Object.entries(cg)) for (const id of ids) {
   assert(catalog[id], `${id}: stable catalog entry`)
   assert(TRILOGY[chapter].assets.includes(id), `${id}: explicit chapter preload registration`)
-  assert(Object.values(TRILOGY[chapter].steps).some(step => step.image === id), `${id}: actual story use, not an orphan`)
+  const storyUse = Object.entries(TRILOGY[chapter].steps).some(([node, step]) =>
+    step.image === id || ['m', 'f'].some(gender =>
+      (TRILOGY[chapter].adapt?.(node, step, { gender, flags: {} }) ?? step).image === id)) ||
+    Object.values(TRILOGY[chapter].cards ?? {}).some(card => card.image === id)
+  assert(storyUse, `${id}: actual story or learning-card use, not an orphan`)
   const path = `assets/${catalog[id]}`
   assert(manifest.chapters[chapter].includes(path), `${id}: real preload builder admits it`)
   assert.equal(manifest.assets[path]?.type, 'image'); assert(manifest.assets[path].bytes > 0)
 }
 console.log(JSON.stringify({ status: 'passed', kind: 'pure-state-data-not-browser', openings: results,
-  oldCursors: 6, toolsScans: interactionTotals, cgRegistered: 5, mriField: '0.55T', metadataWritten: false }))
+  oldCursors: 4, toolsScans: interactionTotals, cgRegistered: 6, mriField: '0.55T', metadataWritten: false }))
