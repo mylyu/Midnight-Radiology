@@ -272,7 +272,7 @@ assert.match(text('c4_1_feng_transfer_1'), /宽一些.*噪声还是有.*呼叫.*
 assert.match(text('c4_1_feng_transfer_2'), /场强低一些.*久一点.*调整分辨率和参数/)
 assert.match(text('c4_1_feng_transfer_4'), /T1、T2、FLAIR、DWI.*四组.*分段/)
 assert.match(text('c4_1_feng_transfer_6'), /我还是怕.*先扫一组.*每次捏了都有人答/)
-assert.match(text('c4_5_feng_2'), /四组都做完了.*疑似轻型缺血性卒中.*神经内科.*按医嘱用药.*按约定复查/)
+assert.match(text('c4_5_feng_2'), /四组都做完了.*疑似轻型缺血性卒中.*神经内科.*按医嘱用药.*今天来复查/)
 assert.doesNotMatch(text('c4_5_feng_2'), /没做完|没做成|检查补上/)
 assert.doesNotMatch(text('c4_5_feng_3'), /不是补上市院/)
 assert.match(text('c4_3_budget_keep_0'), /3T刚响就中止.*0\.55T大孔径后完成了四组/)
@@ -525,7 +525,10 @@ assert.equal(s.c4_2_mrcp_handoff_1.next, 'c4_2_xu_0')
 assert.equal(s.c4_2_mrcp_family_1.next, 'c4_2_xu_0')
 assert.equal(s.c4_2_xu_listen_1.next, 'c4_2_close_0')
 assert.equal(s.c4_2_xu_records_1.next, 'c4_2_close_0')
-assert.match(text('c4_2_xu_0'), /老范把我的申请给你了.*我是许建平.*上次做超声/)
+assert.match(text('c4_2_xu_0'), /老范把我的申请给你了.*我是许建平/)
+assert.doesNotMatch(text('c4_2_xu_0'), /上次做超声|咱们见过/)
+assert.match(CH4.adapt('c4_2_xu_0', s.c4_2_xu_0, { flags: { c3_xu_third_visit: true } }).text, /上次做超声.*咱们见过/)
+assert.equal(CH4.adapt('c4_2_xu_0', s.c4_2_xu_0, { flags: {} }).voice, s.c4_2_xu_0.voice)
 assert.match(text('c4_2_xu_2'), /年轻时做过手术.*不知道里面有没有留东西.*先取消/)
 assert.doesNotMatch([0, 1, 2].map(index => text(`c4_2_xu_${index}`)).join(''), /刚才是不是有东西吸上去了|老范告诉你.*眼镜/)
 assert.match(text('c4_4_open_1'), /孩子来得早.*妈妈怕迟到/)
@@ -583,7 +586,7 @@ for (const id of ['c4_5_evidence_0', 'c4_5_evidence_1', 'c4_5_evidence_2', 'c4_5
 assert.equal(s.c4_5_knee_explain_1.next, 'c4_5_feng_0')
 assert.equal(s.c4_5_knee_review_1.next, 'c4_5_feng_0')
 assert.match(text('c4_3_bai_0'), /以后缺备用件可以问我.*批次、兼容机型和质保/)
-assert.match(text('c4_3_install_5'), /交接做完我才进来.*备用件和升级件.*不催你们买/)
+assert.match(text('c4_3_install_5'), /趁你们核交接单.*备用件和升级件.*型号、兼容机型和质保/)
 assert.doesNotMatch(text('c4_3_archive_2'), /A17|老白/)
 assert.doesNotMatch(text('c4_3_decision_2'), /A17|老白/)
 assert.match(text('c4_3_quotes_3'), /试用是试用.*买不买/)
@@ -600,7 +603,7 @@ for (const [id, pattern] of [
   ['c4_4_head_result_2', /双侧侧脑室明显扩大.*晨起呕吐.*步态不稳.*脑积水可能/],
   ['c4_4_head_result_4', /分流术.*引到腹腔.*正常发育.*接诊团队定/],
   ['c4_5_motion_result_2', /血管搏动.*鬼影.*挪动造成模糊.*不是多出一排病灶/],
-  ['c4_5_motion_after_2', /典型肝血管瘤.*重T2.*完整图组.*超声和病史/],
+  ['c4_5_motion_after_2', /典型肝血管瘤.*很亮.*阿姨的图.*超声一起对着看/],
   ['c4_5_motion_after_5', /不一定.*领取方式和复诊科室.*需要补查/],
   ['c4_5_knee_result_2', /移位的韧带.*前后图.*完整图组和查体/],
   ['c4_6_xu_6', /金属也能让那一片变黑、变形.*图像质量.*原图留下/],
@@ -666,6 +669,17 @@ assert.equal(s.c4_wrap_research_1.next, 'c4_wrap_exam_0')
 assert.equal(s.c4_wrap_exam_3.next, 'c4_wrap_end')
 assert.equal(s.c4_wrap_end.end, true)
 assert.equal(s.c4_wrap_end.effect, undefined)
+assert.doesNotMatch(s.c4_wrap_end.text, /第一题问的是|90°/, 'Random quiz order is not announced as a fixed first question')
+assert.equal(s.c4_5_receipt_q.image, 'item_c4_surgery_receipt', 'The old receipt shows a document, not unrelated abdominal metal')
+assert(TRILOGY_DOCUMENTS[s.c4_5_receipt_q.image])
+for (const id of ['c4_epilogue_baby_1', 'c4_epilogue_baby_2']) {
+  assert.equal(s[id].image, 'cg_c4_cousin_baby_v1')
+  assert.equal(s[id].closeup, true)
+  assert.equal(s[id].communication, 'sms')
+  assert.equal(s[id].sprite, id === 'c4_epilogue_baby_1' ? '' : 'me', 'The cousin remains remote; the closeup also hides the local protagonist')
+  assert.equal(s[id].effect?.gold, undefined)
+  assert.equal(s[id].effect?.heart, undefined)
+}
 assert.match(text('c4_wrap_1'), /报个平安.*头不晕.*饭也吃了/)
 assert.doesNotMatch(text('c4_wrap_1'), /小许|许建平|档案/)
 assert.equal(s.c4_wrap_1.communication, 'sms')

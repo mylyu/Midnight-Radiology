@@ -31,4 +31,10 @@
 @keyframes trilogy-mri-status{50%{opacity:.35}}
 @media(prefers-reduced-motion:reduce){.trilogy-mri-fixed-label i,.trilogy-scan-distress-call,.trilogy-scan-distress-call:before,.trilogy-scan-distress-call:after,.trilogy-scan[data-scan-distress=active] .ch2-scan-panel{animation:none}}
 @media(max-width:600px){.trilogy-scan-pictures{grid-template-columns:1.05fr .95fr;gap:8px}.trilogy-scan .ch2-scan-panel{padding:16px 12px}}
+@media(max-width:600px) and (orientation:portrait){
+  .trilogy-root[data-trilogy=ch4] .trilogy-scan-pictures{grid-template-columns:1fr}
+  .trilogy-root[data-trilogy=ch4] .trilogy-scan-monitor{aspect-ratio:auto;height:58px}
+  .trilogy-root[data-trilogy=ch4] .trilogy-scan-data-grid{grid-template-columns:repeat(12,1fr);gap:4px;padding:5px 8px 25px}
+  .trilogy-root[data-trilogy=ch4] .trilogy-scan-data-grid i{border-width:1px}
+}
 @media(max-height:500px){.trilogy-scan-pictures{max-width:430px;margin:5px auto;grid-template-columns:1.35fr .65fr}.trilogy-scan-monitor{max-height:130px}.trilogy-scan .ch2-scan-phase{margin:5px 0}.trilogy-scan .ch2-scan-controls{margin:0}}

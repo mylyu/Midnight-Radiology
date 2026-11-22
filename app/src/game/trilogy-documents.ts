@@ -1,5 +1,6 @@
 /** Native document/keepsake illustrations: readable type, no generated lettering. */
 export const TRILOGY_DOCUMENTS: Record<string, { icon: string; title: string; lines: string[]; kind: 'paper' | 'gift' }> = {
+  item_c4_surgery_receipt: { kind: 'paper', icon: '🧾', title: '旧手术收费收据', lines: ['许建平', '医院、年份仍可辨认', '收据编号：……□□', '边角已经磨破'] },
   item_missing_notice: { kind: 'paper', icon: '📄', title: '寻人启事 · 留存副本', lines: ['许守义', '1998年11月 · 禾川县', '提供人：许建平', '经本人许可，用于查询旧记录'] },
   item_transfer_record: { kind: 'paper', icon: '📑', title: '旧转诊索引 · 核验回复', lines: ['许守义 · 1998年', '本院转出 → 外地省院', '身份与登记编号已核对', '后续情况，仍需接收医院核验'] },
   item_father_film: { kind: 'paper', icon: '🎞️', title: '旧影像复制件', lines: ['许守义', '身份、转诊索引与留存记录一致', '复制件已交家属', '不是县医院那张无名胶片'] },

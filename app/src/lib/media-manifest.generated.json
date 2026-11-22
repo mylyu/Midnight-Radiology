@@ -336,9 +336,14 @@
       "bytes": 65046,
       "type": "image"
     },
-    "assets/media/cg_c4_city_wide_bore_v1.7995c5b7badbba03.webp": {
-      "sha256": "7995c5b7badbba036d68f6d87ab6b31c53627f974f755405cbfe713698e8c118",
-      "bytes": 37024,
+    "assets/media/cg_c4_city_wide_bore_v1.a59347f9a2fe044c.webp": {
+      "sha256": "a59347f9a2fe044cf4069402505f533b8bdb31fc77569ac5cc14815d979975ca",
+      "bytes": 77628,
+      "type": "image"
+    },
+    "assets/media/cg_c4_cousin_baby_v1.11da8e33938bd97c.webp": {
+      "sha256": "11da8e33938bd97c3025b3ba3e8765007dc0fcde23720cb40a39c24e5b5f4e58",
+      "bytes": 39078,
       "type": "image"
     },
     "assets/media/cg_c4_glasses_v3.def8720c2c61f8e5.webp": {
@@ -346,9 +351,9 @@
       "bytes": 13462,
       "type": "image"
     },
-    "assets/media/cg_c4_install_complete_v1.cdc5986ab50b82fb.webp": {
-      "sha256": "cdc5986ab50b82fb38632ebde2187049ca55e233aad93dc653c5c5cfa945779f",
-      "bytes": 29474,
+    "assets/media/cg_c4_install_complete_v1.6d45cc40b41403cd.webp": {
+      "sha256": "6d45cc40b41403cdb4fcae04d500e1b6d04d373ce3b8ec5dfc4094ff3230517b",
+      "bytes": 83404,
       "type": "image"
     },
     "assets/media/cg_c4_luo_records_v2.bd16c3adc90c58c8.webp": {
@@ -356,9 +361,9 @@
       "bytes": 76680,
       "type": "image"
     },
-    "assets/media/cg_c4_magnet_lift_v1.5b24d74656ba7186.webp": {
-      "sha256": "5b24d74656ba718669edd59beb106bbbf0b52e55fddbf40675f827a214d594e8",
-      "bytes": 65694,
+    "assets/media/cg_c4_magnet_lift_v1.b556f53e793f90ad.webp": {
+      "sha256": "b556f53e793f90adabf8dd4ea7c56ba6a2b2092db46cd894cd8e088759b2147b",
+      "bytes": 155258,
       "type": "image"
     },
     "assets/media/cg_c4_procurement_v3.3b3f90f1143b481b.webp": {
@@ -366,14 +371,14 @@
       "bytes": 75752,
       "type": "image"
     },
-    "assets/media/cg_c4_ribbon_cutting_v1.31505eeb4ac2681c.webp": {
-      "sha256": "31505eeb4ac2681c3a5dd9b1eeecc617a07e14b86b0e5fb479df5e67b6889f43",
-      "bytes": 65822,
+    "assets/media/cg_c4_ribbon_cutting_v1.9eb7b20fd902219a.webp": {
+      "sha256": "9eb7b20fd902219afc4458f5acd15ef6f8ea54d9c94a2a7621a47ec884a60b91",
+      "bytes": 123646,
       "type": "image"
     },
-    "assets/media/cg_c4_ribbon_stop_v1.70701d1fe8129417.webp": {
-      "sha256": "70701d1fe812941775d317ca9ace0ed3a293b33a6f56fdaffa9b51d87115cc16",
-      "bytes": 49484,
+    "assets/media/cg_c4_ribbon_stop_v1.8f49932e3520f91a.webp": {
+      "sha256": "8f49932e3520f91a8de5b4f5893824e1313ef7a3a8e056153408201741c185d4",
+      "bytes": 123802,
       "type": "image"
     },
     "assets/media/cg_c5_father_letter_v2.3339007d3ea5ee82.webp": {
@@ -1136,9 +1141,9 @@
       "bytes": 19098,
       "type": "image"
     },
-    "assets/media/item_c4_a17_parts_v1.d1a6651b7c70bdbe.webp": {
-      "sha256": "d1a6651b7c70bdbe5a0da26a0812c2cba3a9a8f5d254ce0965bd4e86d0885ed4",
-      "bytes": 25208,
+    "assets/media/item_c4_a17_parts_v1.3bfd1c0d3a8c3ff0.webp": {
+      "sha256": "3bfd1c0d3a8c3ff0c1faa6f902fb66672315503221bc3fcb6f5c11395f9d5e78",
+      "bytes": 54546,
       "type": "image"
     },
     "assets/media/item_c4_postcard_v2.464b519d3f070f2e.webp": {
@@ -1146,9 +1151,9 @@
       "bytes": 5752,
       "type": "image"
     },
-    "assets/media/item_c4_quote_folder_v1.464227e7a0c674d8.webp": {
-      "sha256": "464227e7a0c674d8c6eb91f73c4e5572238a5513549abc36409971e1ea69e8c0",
-      "bytes": 24994,
+    "assets/media/item_c4_quote_folder_v1.d71b6c3b657a19b3.webp": {
+      "sha256": "d71b6c3b657a19b3d08815d31061dcad7a5b7d89035b1a4982b635d43eb26e46",
+      "bytes": 71784,
       "type": "image"
     },
     "assets/media/item_c4_sleepmask_v2.9353ef6b0b719d81.webp": {
@@ -2553,14 +2558,15 @@
       "assets/media/bg_waiting_day_v2.30916f32479aad55.webp",
       "assets/media/cg_c4_city_hospital_entrance.5801291106572c43.webp",
       "assets/media/cg_c4_city_hospital_entrance_female.f6b2d84948010c32.webp",
-      "assets/media/cg_c4_city_wide_bore_v1.7995c5b7badbba03.webp",
+      "assets/media/cg_c4_city_wide_bore_v1.a59347f9a2fe044c.webp",
+      "assets/media/cg_c4_cousin_baby_v1.11da8e33938bd97c.webp",
       "assets/media/cg_c4_glasses_v3.def8720c2c61f8e5.webp",
-      "assets/media/cg_c4_install_complete_v1.cdc5986ab50b82fb.webp",
+      "assets/media/cg_c4_install_complete_v1.6d45cc40b41403cd.webp",
       "assets/media/cg_c4_luo_records_v2.bd16c3adc90c58c8.webp",
-      "assets/media/cg_c4_magnet_lift_v1.5b24d74656ba7186.webp",
+      "assets/media/cg_c4_magnet_lift_v1.b556f53e793f90ad.webp",
       "assets/media/cg_c4_procurement_v3.3b3f90f1143b481b.webp",
-      "assets/media/cg_c4_ribbon_cutting_v1.31505eeb4ac2681c.webp",
-      "assets/media/cg_c4_ribbon_stop_v1.70701d1fe8129417.webp",
+      "assets/media/cg_c4_ribbon_cutting_v1.9eb7b20fd902219a.webp",
+      "assets/media/cg_c4_ribbon_stop_v1.8f49932e3520f91a.webp",
       "assets/media/ch2_bg_breakroom_day.194c9d3ccafbe9ff.webp",
       "assets/media/ch2_patient_wrist_student.dd19e6bcc5ef8cc6.webp",
       "assets/media/char_bai.aae1555459768a4a.webp",
@@ -2574,9 +2580,9 @@
       "assets/media/char_wen.afb4dcae9314954d.webp",
       "assets/media/char_zhou.6654ff12eb3e23ca.webp",
       "assets/media/item_book.9b32669caa358e79.webp",
-      "assets/media/item_c4_a17_parts_v1.d1a6651b7c70bdbe.webp",
+      "assets/media/item_c4_a17_parts_v1.3bfd1c0d3a8c3ff0.webp",
       "assets/media/item_c4_postcard_v2.464b519d3f070f2e.webp",
-      "assets/media/item_c4_quote_folder_v1.464227e7a0c674d8.webp",
+      "assets/media/item_c4_quote_folder_v1.d71b6c3b657a19b3.webp",
       "assets/media/item_c4_sleepmask_v2.9353ef6b0b719d81.webp",
       "assets/media/item_coffee.4368d5294285e799.webp",
       "assets/media/item_dosimeter.ff4a9ed3f7f6e3e3.webp",
