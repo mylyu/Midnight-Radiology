@@ -1,6 +1,6 @@
 # 第四章体验细修：两轮试玩后的局部调整
 
-日期：2026-11-23。基点：`e78dacd`；分支：`codex/ch4-experience-polish`。第四章已随 `4f0f996` 发布，仍需 `mri2027` 进入。本轮已获作者授权发布；本文记录实施与验证，最终提交、Pages回执和素材体积待收尾补齐，不能据此称本轮已上线。
+日期：2026-11-23。基点：`e78dacd`；分支：`codex/ch4-experience-polish`。本轮游戏提交 `af4be93eded453b6ea8591637d04c9735e497c31` 已推送main与修复分支，Pages部署成功，第四章仍需 `mri2027` 进入。
 
 ## 玩家能感受到的变化
 
@@ -40,9 +40,10 @@
 
 ## 发布回执与回退
 
-- 最终提交SHA、GitHub推送结果：待补。
-- Pages部署及正式站点第四章访问码/改动画面核验：待补。
+- 最终游戏提交：`af4be93eded453b6ea8591637d04c9735e497c31`；main与修复分支均已推送，无强推、依赖升级或工作流修改。
+- [Pages运行45057342333](https://github.com/mylyu/Midnight-Radiology/actions/runs/45057342333) 成功；正式入口为 https://mylyu.github.io/Midnight-Radiology/#/ch4 。
+- 正式站新档密码错误/正确、第五章隐藏、115项预载响应共5,405,575字节及全部SHA-256通过；390px宝宝短信和县院装机图均核对实际字节并目视确认，网页及HTTP无错误。证据为仓外 `ch4-polish-fixes/live-report.json` 和 `live-baby-message-390.png`、`live-county-install-390.png`。初次截图被正常横屏建议弹层遮挡，关闭后补取两张；补截图沿用的响应采样器出现三次导航后读body失败，属于驱动记录，不算页面或资源失败，未据此修改产品或重跑全章。
 - 最终素材清单、生成来源/参数与压缩/加载量：见上节及素材JSON。
 - 现役测试、类型检查及生产构建：通过；最终图片浏览器核对另记发布回执。
 
-发布后按实际提交逆序执行 `git revert <本轮提交>`；`e78dacd` 用于前后对照，不使用hard reset，不清玩家存档。Git回退不等于浏览器存档回退。
+游戏回退使用 `git revert af4be93`；`e78dacd` 用于前后对照，不使用hard reset，不清玩家存档。Git回退不等于浏览器存档回退。发布回执另用 `[skip ci]` 文档提交保存，不重复部署相同游戏。
