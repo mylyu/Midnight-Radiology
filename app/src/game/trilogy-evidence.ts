@@ -18,7 +18,7 @@ export const TRILOGY_EVIDENCE: Record<TrilogyId, { flag: string; title: string; 
     { flag: 'c4_xu_receipt', title: '许建平保管的旧收据', body: '腰椎、老县医院、1998年是档案查询的起点。原件仍由许建平自己保管，院里只登记必要线索。' },
     { flag: 'c4_implant_identified', title: '腰椎黑影有了来路', body: '旧手术记录确认当年腰椎留有金属植入物，名称和位置能够解释这次信号丢失与变形。原图和图像质量评价均已交接。' },
     { flag: 'c4_neck_followup', title: '左颈资料另走评估', body: '左颈改变来自另一份旧资料，不能用腰椎金属伪影一并解释。相关记录和转诊单已单独交接。' },
-    { flag: 'c4_father_transfer', title: '监护人签名与转诊存根', body: '1998年手术记录中的监护人签名为许守义，日期、身份关系和原病历编号均能核对。它证明那次签字与转诊，不虚构他后来的生活。', image: 'item_transfer_record' },
+    { flag: 'c4_father_transfer', title: '家属签字与转诊存根', body: '许建平1998年的手术单由父亲许守义签字，旁边另附许守义自己的转诊存根。编号、日期与家属关系已核对，复印件已分别交给许建平，父亲转诊后的去向继续查询。', image: 'item_transfer_record' },
     { flag: 'c4_receipt_conflict', title: '旧版线索｜回函与旧任务范围不同', body: '历史存档保留：2025旧任务索引与2027“全部删除”回函存在范围缺口；原件已登记，不等于盒子恢复联网。' },
   ],
   ch5: [

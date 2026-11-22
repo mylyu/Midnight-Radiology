@@ -9,6 +9,7 @@ import { trilogyVoice, trilogyVoiceAssets } from '../src/game/trilogy-audio.ts'
 import { TRILOGY_DOCUMENTS } from '../src/game/trilogy-documents.ts'
 import { MRI_SCAN_ART } from '../src/game/mri-scan-art.ts'
 import { TRILOGY_CASE_NAMES } from '../src/game/trilogy-evidence.ts'
+import { ch4ContactName, TRILOGY_COMMUNICATION_CUES } from '../src/game/trilogy-communications.ts'
 import { access, readFile } from 'node:fs/promises'
 import { spawnSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
@@ -300,14 +301,15 @@ for (const license of ['CC BY 4.0', 'CC BY-NC-SA 3.0', 'CC BY-SA 3.0', 'CC BY-NC
 assert(visualContinuity.includes('3614059f45a56618464e108989913959a96d45c3c9360e97067909071c16f999'))
 assert(visualContinuity.includes('c5b308a21b70941287982ebad51b8d126db578609f037cbc825ba135b0cde3b2'))
 
-// The rotation and procurement prelude remains fourteen concise nodes. Tang stays a nurse.
+// The original rotation/procurement prelude is retained; the family payoff now
+// follows city arrival before the unchanged formal check-in. Tang stays a nurse.
 const preludeIds = Object.keys(s).filter(id => /^c4_(pro|apply|departure)_/.test(id) || id === 'c4_city_arrival')
 assert.equal(preludeIds.length, 15)
 assert.match(text('c4_pro_5'), /周三来，跟一周/)
 assert.equal(s.c4_pro_5.next, 'c4_apply_zhou_0')
 assert.match(text('c4_apply_director_1'), /人排开了就去.*照不照得起来/)
 assert.equal(s.c4_apply_director_1.effect.flag, 'c4_training_approved')
-assert.match(text('c4_apply_zhou_1'), /电话我留着.*预约本.*改约我来盯/)
+assert.match(text('c4_apply_zhou_1'), /改约的电话我来盯.*排班/)
 assert.equal(s.c4_apply_zhou_1.speaker, 'tang')
 assert.equal(s.c4_apply_director_2.speaker, 'tang')
 for (const id of preludeIds) {
@@ -322,8 +324,8 @@ assert.match(text('c4_1_open_1'), /县院来的吧.*能熬夜/)
 assert.deepEqual(CH4.shifts.slice(0, 2).map(shift => shift.date), [
   '2027年3月3日 · 晚间接诊', '2027年3月9日 · 晚间接诊',
 ])
-assert.match(text('c4_apply_zhou_0'), /许建平.*腰椎申请.*拿不定主意/)
-assert.match(text('c4_apply_zhou_1'), /预约本我先不按日期写死.*改约我来盯/)
+assert.match(text('c4_apply_zhou_0'), /许建平还没定检查日期.*先别排/)
+assert.doesNotMatch(text('c4_apply_zhou_1'), /许建平|预约本.*日期/)
 assert.match(text('c4_2_close_4'), /周二收班/)
 assert.equal(s.c4_2_close_4.effect.flag, 'c4_city_week_completed')
 
@@ -525,7 +527,8 @@ assert.equal(s.c4_2_xu_records_1.next, 'c4_2_close_0')
 assert.match(text('c4_2_xu_0'), /老范把我的申请给你了.*我是许建平.*上次做超声/)
 assert.match(text('c4_2_xu_2'), /年轻时做过手术.*不知道里面有没有留东西.*先取消/)
 assert.doesNotMatch([0, 1, 2].map(index => text(`c4_2_xu_${index}`)).join(''), /刚才是不是有东西吸上去了|老范告诉你.*眼镜/)
-assert.match(text('c4_4_open_1'), /许建平刚也来过.*预约单拿走.*日期还空着.*档案窗口/)
+assert.match(text('c4_4_open_1'), /孩子来得早.*妈妈怕迟到/)
+assert.doesNotMatch(text('c4_4_open_1'), /许建平|档案窗口/)
 assert.match(text('c4_5_feng_0'), /许建平跟在最后.*旧纸袋.*不挡路/)
 assert.match(text('c4_2_incident_3'), /吸在磁体外壳/)
 assert.doesNotMatch([0,1,2,3,4,5,6].map(i => text(`c4_2_incident_${i}`)).join(''), /掏出眼镜|扬了扬|往前跨/)
@@ -617,9 +620,9 @@ assert.equal(s.c4_5_feng_after_5.effect.flag, 'c4_xu_witness')
 assert.equal(s.c4_5_feng_after_5.effect.badge, 'c4r_witness')
 assert.match(text('c4_5_close_0'), /自己在预约单上写了名字和日期/)
 assert.equal(s.c4_5_receipt_q.choices[0].effect.flag, 'c4_xu_receipt')
-assert.match(text('c4_6_stop_5'), /后续采集按调整后的方案继续.*原始图、图像质量评价和资料查询分别记录/)
+assert.match(text('c4_6_stop_5'), /后续采集按调整后的方案继续.*呼叫球/)
 assert.match(CH4.adapt('c4_epilogue_5', s.c4_epilogue_5, { flags: { c4_xu_listened: true } }).text, /没逼我/)
-assert.match(CH4.adapt('c4_6_follow_0', s.c4_6_follow_0, { flags: { c3_xu_query_started: true } }).text, /第三章受理号/)
+assert.match(CH4.adapt('c4_6_follow_0', s.c4_6_follow_0, { flags: { c3_xu_query_started: true } }).text, /上次的受理号/)
 const stopChoice = s.c4_6_artifact_q.choices.find(choice => choice.next === 'c4_6_stop_0')
 const wrongChoice = s.c4_6_artifact_q.choices.find(choice => choice.next === 'c4_6_wrong_0')
 assert.match(stopChoice.text, /留原图.*短TE的SE补扫/)
@@ -630,47 +633,56 @@ assert.equal(s.c4_6_stop_5.effect.flag, 'c4_xu_implant_query')
 assert.match(text('c4_6_artifact_intro_1'), /SE序列.*180°重聚脉冲.*磁场不均匀.*相位离散/)
 assert.match(text('c4_6_artifact_intro_2'), /回波时间（TE）.*回波间隔（Echo Spacing）.*尽量缩短.*减少相位散失.*不保证全消/)
 assert.match(text('c4_6_stop_1'), /早上核的是能不能扫.*怎么把这一片看清.*换种序列/)
-assert.match(text('c4_epilogue_4'), /此前核过的植入物信息.*手术经过和签字页.*腰椎图与病历/)
+assert.match(text('c4_epilogue_4'), /完整旧病历与腰椎图.*手术记录.*此前核过的植入物资料/)
 assert.equal(s.c4_epilogue_4.effect.flag, 'c4_implant_identified')
-assert.match(text('c4_epilogue_7'), /家属签字.*许守义的转诊存根/)
-assert.match(text('c4_epilogue_10'), /1998年.*父亲曾在他的手术单上签字.*父亲自己的转诊存根.*那以后的下落仍要查/)
-assert.equal(s.c4_epilogue_10.effect.flag, 'c4_father_transfer')
-assert.match(text('c4_epilogue_12'), /流浪老人.*姓名、出生年份都对不上.*这不是我爸/)
-assert.match(text('c4_epilogue_13'), /左颈.*这块改变还没有.*转诊单/)
-assert.equal(s.c4_epilogue_13.effect.flag, 'c4_neck_followup')
-assert.match(text('c4_epilogue_14'), /两周、五次跟班|PET\/CT/)
-assert.equal(s.c4_epilogue_17.effect.flag, 'c4_nuclear_training_ready')
-assert.match(text('c4_epilogue_17'), /快速成像.*任务态fMRI.*都还没有开始/)
-assert.match(s.c4_epilogue_end.text, /研究合作待续：快速成像、任务态fMRI/)
+assert.match(text('c4_epilogue_6'), /手术单.*父亲.*许守义.*另夹着他自己的.*转诊存根/)
+assert.match(text('c4_epilogue_7'), /两份复印件分开放好.*父亲转诊后的去向还要继续查/)
+assert.equal(s.c4_epilogue_8.effect.flag, 'c4_father_transfer')
+assert.equal(s.c4_epilogue_8.effect.badge, 'c4r_formal_record')
+assert.match(text('c4_6_close_0'), /左颈.*另交门诊接着评估/)
+assert.equal(s.c4_6_close_0.effect.flag, 'c4_neck_followup')
+assert.equal(s.c4_6_close_0.card, 'c4_uncertain')
+assert.equal(s.c4_epilogue_end.text, '第四章·共振，完。')
 assert.equal(s.c4_epilogue_end.end, true)
+assert.match(text('c4_epilogue_learning_1'), /三月在市院学的.*回来一直用到现在.*还想再去跟一段/)
+assert.match(CH4.shifts.at(-1).title, /看清黑影之后/)
+for (const [id, step] of Object.entries(s)) {
+  assert(!/^c4_nuclear_training_/.test(step.effect?.flag ?? ''), `${id}: no new PET approval or booking history`)
+  if (/^c4_(?:wrap|epilogue)/.test(id)) assert.doesNotMatch(step.text, /PET|核医学|γ相机|2028|研究合作待续|下一章|流浪老人/,
+    `${id}: ending belongs to this chapter, not repeated future teasers`)
+}
 
-// The last salary is still paid at the legacy cursor, but seventeen closing beats
-// now separate the final workday from the assessment. Research remains a remote
-// invitation: no patient, scan or advanced tool is smuggled into the main chapter.
+// The last salary is still paid at its legacy cursor. The research conversation
+// is now just a message and reply; retired cursors resume without extra rewards.
 assert.equal(s.c4_6_end.next, 'c4_wrap_0')
 assert.equal(s.c4_6_end.end, undefined)
 assert.equal(s.c4_6_end.effect.gold, 260)
 assert.equal(s.c4_6_end.effect.badge, 'c4r_survivor')
 assert.equal(s.c4_wrap_4.next, 'c4_wrap_research_0')
-assert.equal(s.c4_wrap_research_6.next, 'c4_wrap_exam_0')
+assert.equal(s.c4_wrap_research_1.next, 'c4_wrap_exam_0')
 assert.equal(s.c4_wrap_exam_3.next, 'c4_wrap_end')
 assert.equal(s.c4_wrap_end.end, true)
 assert.equal(s.c4_wrap_end.effect, undefined)
-assert.match(text('c4_wrap_1'), /报个平安.*小许.*先告诉他/)
+assert.match(text('c4_wrap_1'), /报个平安.*头不晕.*饭也吃了/)
+assert.doesNotMatch(text('c4_wrap_1'), /小许|许建平|档案/)
 assert.equal(s.c4_wrap_1.communication, 'sms')
 assert.equal(s.c4_wrap_1.sprite, '')
 assert.match(text('c4_wrap_4'), /明早的交接.*今晚都到这儿.*饭盒/)
 assert.doesNotMatch(text('c4_wrap_4'), /AI|A17|厂家/)
-for (const id of ['c4_wrap_research_0', 'c4_wrap_research_1', 'c4_wrap_research_3', 'c4_wrap_research_4', 'c4_wrap_research_6']) {
+for (const id of ['c4_wrap_research_0', 'c4_wrap_research_1']) {
   assert.equal(s[id].communication, 'sms', `${id}: every Shen line stays in the same remote conversation`)
   assert.equal(s[id].phone, 'char_c4_shen_v3')
-  assert.equal(s[id].sprite, '', `${id}: Shen never appears physically in the county office`)
 }
-assert.match(text('c4_wrap_research_0'), /快速成像.*任务态fMRI.*还在论证.*离常规检查/)
-assert.match(text('c4_wrap_research_1'), /有人躺不住.*一动就得重采.*细节也丢了/)
-assert.equal(s.c4_wrap_research_3.effect.flag, 'c4_fast_imaging_dlc_hook')
-assert.equal(s.c4_wrap_research_4.effect.flag, 'c4_task_fmri_dlc_hook')
-assert.match(text('c4_wrap_research_4'), /志愿者做任务.*脑活动相关的信号.*方案还在论证/)
+assert.equal(s.c4_wrap_research_0.sprite, '', 'Shen remains remote')
+assert.equal(s.c4_wrap_research_1.sprite, 'me', 'The local protagonist replies in place')
+assert.match(text('c4_wrap_research_0'), /扫得更快.*看脑活动.*有空再.*聊/)
+for (let i = 2; i <= 6; i++) {
+  const id = `c4_wrap_research_${i}`
+  assert.equal(s[id].next, 'c4_wrap_exam_0')
+  assert.equal(s[id].effect, undefined)
+  assert.equal(s[id].communication, undefined)
+  assert.equal(TRILOGY_COMMUNICATION_CUES[id], undefined)
+}
 assert.match(text('c4_wrap_exam_1'), /五道基础题.*磁场、脉冲、参数和图像.*图是怎么来的/)
 const closingIds = Object.keys(s).filter(id => /^c4_wrap(?:_|$)/.test(id))
 assert.equal(closingIds.length, 17)
@@ -821,6 +833,122 @@ assert.equal(trilogyProgress(recovered, 'ch4').storyRevision, 7)
 const fresh = initializeTrilogy({ ...old, dlc: { ch2: otherCh2 } }, CH4)
 assert.equal(trilogyProgress(fresh, 'ch4').storyRevision, 7)
 assert.equal(trilogyProgress(fresh, 'ch4').runId, 'ch4-rewrite7-42')
+
+// Author-approved family payoff and optional archive routes. These are state
+// transitions, not fixed prose totals: skipping a side story must remain safe.
+const payoffFixture = (node, flags = {}) => {
+  const state = structuredClone(fresh)
+  state.flags = { ...state.flags, ...flags }
+  Object.assign(state.dlc.ch4.chapter, { stepId: node, phase: node.startsWith('c4_epilogue') ? 'epilogue' : 'story',
+    shift: node.startsWith('c4_epilogue') ? 5 : 0, applied: [], visited: [] })
+  return enterTrilogyNode(state, CH4, node)
+}
+const continueTo = (initial, target) => {
+  let state = initial
+  for (let guard = 0; guard < 40; guard++) {
+    const id = trilogyProgress(state, 'ch4').stepId
+    if (id === target) return state
+    assert(!trilogyStep(state, CH4).choices?.length, `${id}: expected a direct continuation`)
+    const next = trilogyAdvance(state, CH4, id)
+    assert.notEqual(trilogyProgress(next, 'ch4').stepId, id, `${id}: a continuation must advance`)
+    state = next
+  }
+  assert.fail(`Did not reach ${target}`)
+}
+assert.equal(s.c4_city_arrival.next, 'c4_cousin_report_0')
+assert.equal(s.c4_cousin_report_3.next, 'c4_1_open_0')
+assert.match(text('c4_cousin_report_1'), /轻度侧脑室增宽.*没有发现其他脑部结构异常.*复查也稳定/)
+assert.match(text('c4_cousin_report_2'), /喂完奶.*不让全家睡觉/)
+for (const experienced of [false, true]) {
+  const initial = payoffFixture('c4_cousin_report_0', experienced ? { c3_cousin_mri_pending: true } : {})
+  const line = trilogyStep(initial, CH4).text
+  if (experienced) assert.match(line, /去年陪表姐等报告.*外套/)
+  else { assert.match(line, /去年表姐产检.*补做的MRI/); assert.doesNotMatch(line, /陪表姐等报告|还记得/) }
+  const finished = continueTo(initial, 'c4_1_open_0')
+  assert.equal(finished.flags.c4_cousin_mri_resolved, true)
+  assert.deepEqual(attributeStatsForMigration(finished), attributeStatsForMigration(initial))
+  assert.equal(finished.ap, initial.ap)
+  assert.deepEqual(finished.badges, initial.badges)
+}
+for (const id of ['c4_cousin_report_2', 'c4_cousin_report_3', 'c4_1_family_1', 'c4_1_family_2', 'c4_epilogue_baby_1', 'c4_epilogue_baby_2']) {
+  assert.equal(ch4ContactName(CH4, id, s[id]), '表姐', `${id}: replies do not change the remote contact`)
+  assert.equal(s[id].phone, 'pat_cousin')
+  assert.equal(s[id].sprite, s[id].speaker === 'me' ? 'me' : '', `${id}: no pregnant full-body sprite in the current scene`)
+  assert.equal(s[id].voice, undefined, `${id}: no new or reused character voice`)
+}
+for (const prefix of ['c4_cousin_report_', 'c4_1_family_', 'c4_epilogue_baby_']) {
+  assert.equal(Object.keys(TRILOGY_COMMUNICATION_CUES).filter(id => id.startsWith(prefix)).length, 1,
+    `${prefix}: one arrival sound per conversation`)
+}
+for (const node of ['c4_5_receipt_offer', 'c4_epilogue_3']) {
+  assert.equal(s[node].choices.length, 2)
+  assert.equal(s[node].shuffleChoices, false)
+  for (const choice of s[node].choices) assert.equal(choice.effect, undefined, `${node}: choosing to look or leave costs no AP`)
+}
+{
+  const before = payoffFixture('c4_5_receipt_offer')
+  const skip = trilogyChoose(before, CH4, 'c4_5_receipt_offer', s.c4_5_receipt_offer.choices[1])
+  assert.equal(trilogyProgress(skip, 'ch4').stepId, 'c4_5_close_0')
+  assert.equal(skip.flags.c4_xu_receipt, undefined)
+  assert.equal(skip.ap, before.ap)
+  assert.deepEqual(attributeStatsForMigration(skip), attributeStatsForMigration(before))
+  let looked = trilogyChoose(before, CH4, 'c4_5_receipt_offer', s.c4_5_receipt_offer.choices[0])
+  const choice = trilogyStep(looked, CH4).choices.find(option => option.effect?.skill === 1)
+  looked = trilogyChoose(looked, CH4, 'c4_5_receipt_q', choice)
+  assert.equal(looked.flags.c4_xu_receipt, true)
+  assert.equal(looked.skill, before.skill + 1)
+  assert.equal(looked.ap, before.ap)
+  const persisted = initializeTrilogy(structuredClone(looked), CH4)
+  assert.equal(trilogyChoose(persisted, CH4, 'c4_5_receipt_q', choice), persisted, 'Repeated receipt submit after refresh does not pay twice')
+  assert.equal(continueTo(persisted, 'c4_5_close_0').skill, before.skill + 1)
+}
+for (const look of [false, true]) {
+  const before = payoffFixture('c4_epilogue_3')
+  let continued = trilogyChoose(before, CH4, 'c4_epilogue_3', s.c4_epilogue_3.choices[look ? 0 : 1])
+  continued = continueTo(continued, 'c4_epilogue_baby_0')
+  assert.equal(!!continued.flags.c4_father_transfer, look, 'Only the archive visitor acquires the transfer lead')
+  assert.equal(continued.badges.includes('c4r_formal_record'), look)
+  assert.equal(continued.cards.includes('c4_records'), look)
+  assert.equal(continued.ap, before.ap)
+  assert.deepEqual(attributeStatsForMigration(continued), attributeStatsForMigration(before))
+  const resumed = initializeTrilogy(structuredClone(continued), CH4)
+  assert.equal(trilogyProgress(resumed, 'ch4').stepId, 'c4_epilogue_baby_0')
+  assert.match(trilogyStep(resumed, CH4).text, /胎儿MRI.*没有发现其他脑部结构异常.*复查也稳定/,
+    'Mid-chapter old saves still receive the missed family conclusion at the ending')
+  const ending = continueTo(resumed, 'c4_epilogue_end')
+  assert.equal(ending.flags.c4_cousin_baby_update, true)
+  assert(!Object.keys(ending.flags).some(flag => /^c4_nuclear_training_/.test(flag)))
+  assert.deepEqual(attributeStatsForMigration(ending), attributeStatsForMigration(before))
+  const done = trilogyAdvance(ending, CH4, 'c4_epilogue_end')
+  assert.equal(trilogyProgress(done, 'ch4').phase, 'done')
+  assert.equal(trilogyAdvance(done, CH4, 'c4_epilogue_end'), done)
+  if (look) {
+    const again = enterTrilogyNode(done, CH4, 'c4_epilogue_8')
+    assert.deepEqual(again.badges, done.badges)
+    assert.deepEqual(again.cards, done.cards)
+  }
+}
+assert.doesNotMatch(trilogyStep(payoffFixture('c4_epilogue_baby_0', { c4_cousin_mri_resolved: true }), CH4).text,
+  /没有发现其他脑部结构异常/, 'A player who heard the report gets a short callback, not the full explanation again')
+for (const [prefix, start, last, next] of [['c4_wrap_research_', 2, 6, 'c4_wrap_exam_0'], ['c4_epilogue_', 9, 17, 'c4_epilogue_baby_0']]) {
+  for (let index = start; index <= last; index++) {
+    const id = `${prefix}${index}`
+    const before = payoffFixture(id, { c4_nuclear_training_ready: true, c4_father_transfer: true })
+    const resumed = initializeTrilogy(structuredClone(before), CH4)
+    assert.equal(trilogyProgress(resumed, 'ch4').storyRevision, 7)
+    assert.equal(trilogyProgress(resumed, 'ch4').stepId, id, `${id}: old cursor is not restarted`)
+    assert.equal(s[id].effect, undefined)
+    assert.equal(s[id].card, undefined)
+    assert.equal(s[id].communication, undefined)
+    const advanced = trilogyAdvance(resumed, CH4, id)
+    assert.equal(trilogyProgress(advanced, 'ch4').stepId, next)
+    assert.equal(advanced.flags.c4_nuclear_training_ready, true, 'Old PET history is retained, not rewritten')
+    assert.equal(advanced.flags.c4_father_transfer, true)
+    assert.deepEqual(attributeStatsForMigration(advanced), attributeStatsForMigration(before))
+    assert.deepEqual(advanced.badges, before.badges)
+    assert.deepEqual(advanced.cards, before.cards)
+  }
+}
 
 // Story answers use a deterministic per-save Fisher-Yates order. Refresh is stable;
 // across seeds, each unique rewarded answer visits all three displayed positions.

@@ -2759,7 +2759,7 @@ function DlcHallScreen({ onEnter, onEnterCh2, onEnterTrilogy, onBack }: { onEnte
               )
             })()}
             {([{ id: 'ch3', title: '第三章 · 回声', icon: '〰️', desc: '2026年 · 表姐一通电话，你拍胸脯答应帮忙。本想去超声科找个熟人，没想到自己也成了跟班。' },
-              { id: 'ch4', title: '第四章 · 共振', icon: '🧲', desc: '2027年 · 去市院进修，自由探查检查室内外。冯叔终于完成检查，许建平片上的黑影却牵出一份旧手术记录。' },
+              { id: 'ch4', title: '第四章 · 共振', icon: '🧲', desc: '2027年 · 去市院进修，自由探查检查室内外。从跟班到回县装机，和同事一起把新机器用起来，也接住熟面孔的牵挂。' },
               { id: 'ch5', title: '第五章 · 微光', icon: '✨', desc: '2028年 · 接到进修名额，带着县院的问题去市三甲核医学中心。两周，认识另一种成像。' }] as const).filter(chapter => isTrilogyPlayable(chapter.id)).map(chapter => {
               const locked = chapter.id === 'ch4' && !mriOk
               const progress = save.dlc?.[chapter.id]?.chapter

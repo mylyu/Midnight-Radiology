@@ -20,8 +20,8 @@ const results = []
 for (const spec of [
   { id: 'ch3', start: 'c3_intro_call_0', stop: 'c3_s1_start_0', prefix: 'c3_intro_',
     flags: ['c3_rotation_invited', 'c3_cousin_booking', 'c3_rotation_arranged'], cards: [] },
-  { id: 'ch4', start: 'c4_pro_0', stop: 'c4_1_open_0', prefix: ['c4_pro_', 'c4_apply_', 'c4_departure_', 'c4_city_arrival'],
-    flags: ['c4_training_approved', 'c4_city_week_started'], cards: [] },
+  { id: 'ch4', start: 'c4_pro_0', stop: 'c4_1_open_0', prefix: ['c4_pro_', 'c4_apply_', 'c4_departure_', 'c4_city_arrival', 'c4_cousin_report_'],
+    flags: ['c4_training_approved', 'c4_city_week_started', 'c4_cousin_mri_resolved'], cards: [] },
 ]) {
   const chapter = TRILOGY[spec.id], initial = base()
   assert.equal(chapter.shifts[0].start, spec.start)

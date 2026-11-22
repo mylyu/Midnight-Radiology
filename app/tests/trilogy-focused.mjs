@@ -322,7 +322,7 @@ try {
     await t.page.locator('[data-scene-background="bg_breakroom"]').waitFor()
     await t.advance('ch4')
     const { p, text } = await t.reveal('ch4')
-    assert.equal(p.stepId, 'c4_epilogue_end'); assert.match(text, /下一章：微光/); assert(!text.includes('下一章：示踪'))
+    assert.equal(p.stepId, 'c4_epilogue_end'); assert.match(text, /第四章·共振，完。/); assert(!/下一章|研究合作待续/.test(text))
     await t.page.locator('[data-scene-background="bg_mri_corridor"]').waitFor(); await t.media('bg_mri_corridor')
     await t.screen('correct-next-title')
   }, patchTrilogy(fixture('ch4', beforeCh4End, 4), 'ch4', { phase: 'epilogue' }))
