@@ -56,19 +56,20 @@ for (const [model, regions] of Object.entries(MRI_SCAN_ART)) {
 }
 assert.notEqual(MRI_SCAN_ART['city-3t'].head, MRI_SCAN_ART['county-055-wide'].head,
   'The city 3T and county 0.55T must not share the same machine-room illustration')
+// Author-approved 2026-11-23 positioning redraw + CH4 compression; other IDs remain protected.
 const expectedCountyVisualPaths = {
-  trilogy_mri_scan_county_head_v1: 'media/trilogy_mri_scan_county_head_v1.8537fdee9abac3a5.webp',
-  trilogy_mri_scan_county_abdomen_v1: 'media/trilogy_mri_scan_county_abdomen_v1.a0fa2e57c201862c.webp',
-  trilogy_mri_scan_county_knee_v1: 'media/trilogy_mri_scan_county_knee_v1.f58cfccfcc72edf9.webp',
-  trilogy_mri_scan_county_lumbar_v1: 'media/trilogy_mri_scan_county_lumbar_v1.9f84cb1e729f799a.webp',
-  trilogy_mri_scan_county_wrist_v1: 'media/trilogy_mri_scan_county_wrist_v1.5319bb827b425e4c.webp',
-  trilogy_mri_scan_county_shoulder_v1: 'media/trilogy_mri_scan_county_shoulder_v1.be5fd74614b1a999.webp',
-  trilogy_mri_scan_county_cervical_v1: 'media/trilogy_mri_scan_county_cervical_v1.13db20747f7f1b5e.webp',
-  pat_c4_mother_child_pixel_v1: 'media/pat_c4_mother_child_pixel_v1.8a2b6fd4707d2443.webp',
+  trilogy_mri_scan_county_head_v1: 'media/trilogy_mri_scan_county_head_v1.7c075797501609d6.webp',
+  trilogy_mri_scan_county_abdomen_v1: 'media/trilogy_mri_scan_county_abdomen_v1.3a8699b58d3eeef3.webp',
+  trilogy_mri_scan_county_knee_v1: 'media/trilogy_mri_scan_county_knee_v1.789553e374169d18.webp',
+  trilogy_mri_scan_county_lumbar_v1: 'media/trilogy_mri_scan_county_lumbar_v1.ddb347a50342269f.webp',
+  trilogy_mri_scan_county_wrist_v1: 'media/trilogy_mri_scan_county_wrist_v1.8c2fc4507a00c9d3.webp',
+  trilogy_mri_scan_county_shoulder_v1: 'media/trilogy_mri_scan_county_shoulder_v1.cbb99cc64aa0a192.webp',
+  trilogy_mri_scan_county_cervical_v1: 'media/trilogy_mri_scan_county_cervical_v1.00516961ae0a3c0c.webp',
+  pat_c4_mother_child_pixel_v1: 'media/pat_c4_mother_child_pixel_v1.1d9994e009e241b3.webp',
   pat_c4_xu_v1: 'media/pat_c4_xu_v1.238d7c59ee17e892.webp',
-  bg_c4_county_magnet_room_v1: 'media/bg_c4_county_magnet_room_v1.38c512c8b72c4db3.webp',
-  bg_c4_county_corridor_v1: 'media/bg_c4_county_corridor_v1.6800cace04f51083.webp',
-  bg_c4_county_control_v1: 'media/bg_c4_county_control_v1.db463ca2af29c268.webp',
+  bg_c4_county_magnet_room_v1: 'media/bg_c4_county_magnet_room_v1.1b703cf8255f8ac9.webp',
+  bg_c4_county_corridor_v1: 'media/bg_c4_county_corridor_v1.e940b48897d758a3.webp',
+  bg_c4_county_control_v1: 'media/bg_c4_county_control_v1.7e8a358401e65e6f.webp',
 }
 for (const [id, relative] of Object.entries(expectedCountyVisualPaths)) assert.equal(catalog[id], relative, `${id}: approved visual-continuity WebP`)
 assert.notEqual(MRI_SCAN_ART['city-055-wide'].head, MRI_SCAN_ART['county-055-wide'].head,
@@ -610,6 +611,8 @@ for (const [id, pattern] of [
   assert.match(text(id), pattern)
 }
 
+assert.match(text('c4_5_motion_result_0'), /黄框.*AP方向.*画面上下.*相位编码方向/)
+
 // Feng's later success causes Xu's appointment. The black shadow converges on stopping,
 // the old operation record explains only the lumbar finding, and the neck gets its own route.
 assert.equal(s.c4_feng_city_scan.text, '0.55T大孔径下，T1、T2、FLAIR、DWI依次分段采集。')
@@ -705,7 +708,7 @@ for (const [speaker, sprite] of Object.entries(expectedPortraits)) {
   if (sprite) assert(catalog[sprite], `${speaker}: ${sprite} is imported`)
 }
 // The male teacher portrait stays on the established logical ID; his two live voice takes use the older r9 read.
-assert.equal(catalog.pat_c4_chen_v3, 'media/pat_c4_chen_v3.324d12aeb9e6d178.webp')
+assert.equal(catalog.pat_c4_chen_v3, 'media/pat_c4_chen_v3.aea6005f443e954c.webp')
 assert.equal(CH4.characters.wrist.sprite, 'ch2_patient_wrist_student')
 assert.equal(CH4.characters.mystery.sprite, 'pat_c4_xu_v1')
 const activePatientSpeakers = ['wrist', 'anxious', 'worker', 'child', 'aunt', 'knee', 'mystery']

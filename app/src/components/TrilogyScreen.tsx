@@ -21,6 +21,7 @@ import { FullscreenBtn } from './FullscreenButton'
 import Ch2Checkin from './Ch2Checkin'
 import { TrilogyLab } from './TrilogyLab'
 import { EchoDopplerSpectrum } from './EchoDopplerSpectrum'
+import { MriPulsationImage } from './MriPulsationImage'
 import { TRILOGY_DOCUMENTS } from '../game/trilogy-documents'
 import { TrilogyDocument } from './TrilogyDocument'
 import { ch4ContactName, TRILOGY_COMMUNICATION_CUES } from '../game/trilogy-communications'
@@ -244,7 +245,7 @@ export function TrilogyScreen({ state, chapter, update, onExit, renderText }: Pr
       {raw.image && !raw.tool && !raw.scan && (raw.closeup
         ? <LdctCinematic key={node} scene={{ id: node, image: raw.image, alt: raw.imageLabel ?? '剧情特写', motion: raw.cameraMotion ?? 'push' }} />
         : <div className={objectImage ? 'trilogy-story-object' : 'trilogy-story-image'} data-story-image-id={raw.image} data-two-portraits={objectImage && !!sprite && !!raw.sprite2 || undefined}>
-          {TRILOGY_DOCUMENTS[raw.image] ? <TrilogyDocument id={raw.image} /> : echoSpectrum
+          {TRILOGY_DOCUMENTS[raw.image] ? <TrilogyDocument id={raw.image} /> : raw.image === 'mri_real_motion_ghost_v1' ? <MriPulsationImage /> : echoSpectrum
             ? <div className="trilogy-echo-pair"><img src={imageAsset(raw.image)} alt={raw.imageLabel ?? '心脏彩色多普勒'} className="pixel" /><EchoDopplerSpectrum /></div>
             : <img src={imageAsset(raw.image)} alt={raw.imageLabel ?? (objectImage ? '物品' : '剧情图像')} className="pixel" />}
           {raw.imageLabel && <span>{raw.imageLabel}</span>}
@@ -431,8 +432,8 @@ function TrilogyOverlay({ overlay, state, chapter, update, close, renderText }: 
       <small>刮刮乐本班 {p.shop.lotteryCount} / 5 张；刷新不会重置。</small></>}
     {overlay === 'book' && chapter.id === 'ch5' && <><p>按班次开放 · {Math.min(20, (p.shift + 1) * 4)} / {chapter.book.length} 页</p>{chapter.book.slice(0, (p.shift + 1) * 4).map((page, i) => <details key={page.title} className="trilogy-book-page"><summary>第{i + 1}页 · {page.title}</summary><p>{renderText(page.body)}</p></details>)}</>}
     {overlay === 'manual' && <><p>已解锁 {Object.keys(chapter.cards).filter(id => state.cards?.includes(id)).length} / {Object.keys(chapter.cards).length} 张</p>
-      {Object.entries(chapter.cards).filter(([id]) => state.cards?.includes(id)).map(([id, card]) => <article className="trilogy-book-page" key={id}><h3>{card.title}</h3>{card.image && (TRILOGY_DOCUMENTS[card.image] ? <TrilogyDocument id={card.image} /> : <img src={imageAsset(card.image)} alt="" className="max-h-40 mx-auto pixel" />)}<p>{renderText(card.body)}</p></article>)}
-      {history.cards.length > 0 && <section data-trilogy-legacy-collections="manual"><h3 className="mt-4 text-slate-400">历史收藏 · 已停颁</h3>{history.cards.map(([id, card]) => <article className="trilogy-book-page" key={id} data-collection-card={id}><h3>{card.title}</h3>{card.image && (TRILOGY_DOCUMENTS[card.image] ? <TrilogyDocument id={card.image} /> : <img src={imageAsset(card.image)} alt="" className="max-h-40 mx-auto pixel" />)}<p>{renderText(card.body)}</p></article>)}</section>}
+      {Object.entries(chapter.cards).filter(([id]) => state.cards?.includes(id)).map(([id, card]) => <article className="trilogy-book-page" key={id}><h3>{card.title}</h3>{card.image && (TRILOGY_DOCUMENTS[card.image] ? <TrilogyDocument id={card.image} /> : card.image === 'mri_real_motion_ghost_v1' ? <MriPulsationImage compact /> : <img src={imageAsset(card.image)} alt="" className="max-h-40 mx-auto pixel" />)}<p>{renderText(card.body)}</p></article>)}
+      {history.cards.length > 0 && <section data-trilogy-legacy-collections="manual"><h3 className="mt-4 text-slate-400">历史收藏 · 已停颁</h3>{history.cards.map(([id, card]) => <article className="trilogy-book-page" key={id} data-collection-card={id}><h3>{card.title}</h3>{card.image && (TRILOGY_DOCUMENTS[card.image] ? <TrilogyDocument id={card.image} /> : card.image === 'mri_real_motion_ghost_v1' ? <MriPulsationImage compact /> : <img src={imageAsset(card.image)} alt="" className="max-h-40 mx-auto pixel" />)}<p>{renderText(card.body)}</p></article>)}</section>}
       <h3 className="mt-4 text-sky-200">证物与线索回看</h3>{TRILOGY_EVIDENCE[chapter.id].filter(row => state.flags[row.flag]).map(row => <details className="trilogy-book-page" key={row.flag}><summary>{row.title}</summary>{row.image && <TrilogyDocument id={row.image} />}<p>{row.body}</p></details>)}
       <details className="trilogy-book-page"><summary>大事记 · 本章已经走过的片段</summary><p>{p.visited.filter(id => chapter.steps[id].caseId).map(id => chapter.steps[id].caseId!).filter((value, i, rows) => rows.indexOf(value) === i).map(id => TRILOGY_CASE_NAMES[id] ?? id).join(' · ') || '病例记录随剧情解锁。'}</p></details></>}
     {overlay === 'badges' && <><div className="trilogy-badge-grid">{Object.entries(chapter.badges).map(([id, badge]) => <section key={id} className={`trilogy-panel ${state.badges.includes(id) ? '' : 'opacity-40'}`}><span className="text-3xl">{badge.icon}</span><h3>{badge.name}</h3><p>{badge.desc}</p><small>{state.badges.includes(id) ? '已获得' : '尚未获得'}</small></section>)}</div>

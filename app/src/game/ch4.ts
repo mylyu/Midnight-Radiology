@@ -668,7 +668,7 @@ chain('c4_5_motion', [
 ], 'c4_county_abdominal_motion_scan')
 scan('c4_county_abdominal_motion_scan', '腹部首段序列采集中。', '腹部 MRI · 首段采集', 'c4_5_motion_result_0', 'abdomen', 'county-055-wide')
 chain('c4_5_motion_result', [
-  ['sys', '她的首段图因挪动出现模糊。老周另调出一幅真实文献参考：黄圈里的亮圆是主动脉，沿着**相位编码方向**留下了一串重复鬼影。', { image: 'mri_real_motion_ghost_v1', imageLabel: '运动伪影｜主动脉搏动鬼影与相位编码方向', card: 'c4_quality' }],
+  ['sys', '她的首段图因挪动出现模糊。老周调出一张参考图：黄框里，主动脉的影子沿着**AP方向，也就是画面上下**重复出现。这张图的**相位编码方向**就在这里。', { image: 'mri_real_motion_ghost_v1', imageLabel: '主动脉搏动鬼影｜AP相位编码方向：画面上下', card: 'c4_quality' }],
   ['zhou', '这一串圆影子是什么？和她的模糊是一回事吗？'],
   ['me', '这张文献图是**血管搏动**留下的鬼影，她刚才是挪动造成模糊。都是运动伪影，表现不一样，也都不是多出一排病灶。'],
   ['aunt', '那还得多久？我怕自己又躺不住。'],
@@ -930,7 +930,7 @@ const cards: TrilogyChapter['cards'] = {
   c4_gradient: { title: '梯度系统｜空间定位与噪声', body: 'X／Y／Z三组梯度线圈协同完成空间定位。最大梯度强度与爬升率影响速度和序列能力；扫描噪声来自梯度线圈快速切换。', image: 'mri_c4_gradient_system' },
   c4_rf: { title: '射频系统｜发射与接收', body: '射频链路负责激发共振并接收MR信号。体线圈、部位专用线圈和多通道相控阵各有任务，通道、覆盖、贴合与部位匹配直接影响采集。', image: 'mri_c4_rf_system' },
   c4_sequences: { title: '头部四序列｜图组各有任务', body: '头部常规图组重点看T1、T2、FLAIR、DWI：解剖、水分、脑脊液抑制和扩散信息互相补充。MRCP用于胆胰管等专项评估；完整图组要结合临床问题看。', image: 'mri_c4_sequence_atlas' },
-  c4_quality: { title: '运动伪影｜重影不是新病灶', body: '采集中位置变化会造成模糊或重影。它和设备故障、真实病变需要分开判断；患者疼痛与耐受、支垫、序列时间和必要重采都属于实际检查。', image: 'mri_real_motion_ghost_v1' },
+  c4_quality: { title: '运动伪影｜重影不是新病灶', body: '图中主动脉搏动产生的重复鬼影沿AP相位编码方向排列，在这张横断图上就是上下方向。它与患者挪动造成的模糊表现不同；支垫、序列时间和必要重采要按实际情况安排。', image: 'mri_real_motion_ghost_v1' },
   c4_field: { title: '设备没有脱离人的排行榜', body: '场强、孔径、线圈、软件、维护和团队各自解决不同问题。本院选择0.55T大口径，是匹配常规任务与部分患者耐受条件，不代表它普遍优于1.5T或3T。', image: 'cg_c4_procurement_v3' },
   c4_conditional: { title: '“不知道”也是一条真实资料', body: '外部铁磁性物品严禁进入机房和磁体区域。体内植入物能否进行MRI，要看准确型号、MR安全标识和厂家条件；确认符合条件的植入物可按规定换到MRI检查床扫描，资料不清时不能替他写“没有”。', image: 'mri_c4_implant_v3' },
   c4_foreign: { title: '黑影先看够不够用', body: '金属可造成信号丢失和几何变形，首先影响图像质量。SE的180°重聚脉冲可补偿部分相位离散；短TE与短Echo Spacing有助于减少相位散失，但不能消除所有伪影。保留原图并评价目标结构，安全筛查另按植入物型号和MR条件核查。', image: 'mri_real_metal_artifact_v1' },
