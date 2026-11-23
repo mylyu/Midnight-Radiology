@@ -132,10 +132,16 @@ steps.c4_city_arrival = {
 }
 chain('c4_cousin_report', [
   ['sys', '经过候诊区，你看了一眼靠窗那排椅子。去年表姐产检发现胎儿侧脑室有点增宽，后来就是在这家医院补做的MRI。'],
-  ['sys', '报告仍写着**轻度侧脑室增宽**，但**没有发现其他脑部结构异常**。后来的复查也稳定。那阵子一家人悬着的心，总算慢慢放了下来。', { effect: { flag: 'c4_cousin_mri_resolved' } }],
+  ['sys', '你翻出手机里保存的检查图。报告仍写着**轻度侧脑室增宽**，但**没有发现其他脑部结构异常**。后来的复查也稳定。那阵子一家人悬着的心，总算慢慢放了下来。', { image: 'case_c4_fetal_mri_v1', imageLabel: '表姐留存的胎儿MRI', effect: { flag: 'c4_cousin_mri_resolved' }, next: 'c4_cousin_report_compare' }],
   ['cousin', '又去市院啦？我这边刚喂完奶，现在轮到他不让全家睡觉了。', { communication: 'sms', phone: 'pat_cousin' }],
   ['me', '你趁他睡着也眯会儿，我先去报到。', { communication: 'sms', phone: 'pat_cousin' }],
 ], 'c4_1_open_0', 'bg_c4_city_corridor_v1')
+steps.c4_cousin_report_compare = {
+  bg: 'bg_c4_city_corridor_v1', speaker: 'sys', sprite: '', sprite2: '',
+  image: 'case_c4_fetal_us_mri_v1', imageLabel: '胎儿脑部｜左：超声 · 右：MRI',
+  text: '你又翻到当时医生给你看的对照图。左边是**超声**，右边是**MRI**。去年光顾着紧张，现在才有心思把里面的结构对上。',
+  next: 'c4_cousin_report_2',
+}
 
 // 第一段：市院第一晚。设备介绍夹在接患者之前，两个病例各有未收尾的生活问题。
 chain('c4_1_open', [
@@ -1040,6 +1046,7 @@ export const CH4: TrilogyChapter = {
     'bg_c4_county_control_v1', 'bg_c4_county_magnet_room_v1', 'bg_c4_county_corridor_v1', 'bg_c4_county_corridor_preinstall_v1', 'bg_c4_county_preparation_v1',
     'bg_mri_room_day_v2', 'bg_mri_control_day_v2', 'bg_mri_corridor_day_v2', 'bg_waiting_day_v2', 'bg_office_day', 'bg_office', 'ch2_bg_breakroom_day',
     'item_notebook', 'mri_c4_implant_v3', 'cg_c4_glasses_v3', 'item_c4_a17_parts_v1', 'item_c4_quote_folder_v1',
+    'case_c4_fetal_mri_v1', 'case_c4_fetal_us_mri_v1',
     'mri_real_tfcc_v1', 'mri_real_mrcp_v1', 'mri_real_hydrocephalus_v1', 'mri_real_motion_ghost_v1', 'mri_real_knee_mimic_v1', 'mri_real_metal_artifact_v1', 'mri_real_stroke_sequences_v1', 'mri_real_hemangioma_t2_v1', 'mri_real_hemangioma_dynamic_v1',
     'mri_c4_magnet_system', 'mri_c4_gradient_system', 'mri_c4_rf_system', 'mri_c4_sequence_atlas', 'mri_c4_basic_contrast_v1',
     'cg_c4_magnet_lift_v1', 'cg_c4_install_complete_v1', 'cg_c4_ribbon_stop_v1', 'cg_c4_ribbon_cutting_v1', 'cg_c4_city_wide_bore_v1',

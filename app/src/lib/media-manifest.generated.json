@@ -301,6 +301,16 @@
       "bytes": 90068,
       "type": "image"
     },
+    "assets/media/case_c4_fetal_mri_v1.07beb95bb404fbf1.webp": {
+      "sha256": "07beb95bb404fbf1d3f0c6924cd96eb218918914cb495f966e56779c488dc4e6",
+      "bytes": 10256,
+      "type": "image"
+    },
+    "assets/media/case_c4_fetal_us_mri_v1.c2b1561e274273cf.webp": {
+      "sha256": "c2b1561e274273cf7c4b1c5b731164c558aa68a24f46a5e7e1791d024e894bf4",
+      "bytes": 33668,
+      "type": "image"
+    },
     "assets/media/cg_c3_cousin_call_v3.93c016e84a49e539.webp": {
       "sha256": "93c016e84a49e5397d95c71445fda8bce9a1e1b8033d4bb80314c30812ead71a",
       "bytes": 127174,
@@ -2556,6 +2566,8 @@
       "assets/media/bg_office.a9e1a85d95a882a3.webp",
       "assets/media/bg_office_day.c715845d3a833f50.webp",
       "assets/media/bg_waiting_day_v2.30916f32479aad55.webp",
+      "assets/media/case_c4_fetal_mri_v1.07beb95bb404fbf1.webp",
+      "assets/media/case_c4_fetal_us_mri_v1.c2b1561e274273cf.webp",
       "assets/media/cg_c4_city_hospital_entrance.5801291106572c43.webp",
       "assets/media/cg_c4_city_hospital_entrance_female.f6b2d84948010c32.webp",
       "assets/media/cg_c4_city_wide_bore_v1.a59347f9a2fe044c.webp",

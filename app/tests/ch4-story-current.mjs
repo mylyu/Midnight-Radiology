@@ -874,6 +874,12 @@ const continueTo = (initial, target) => {
 }
 assert.equal(s.c4_city_arrival.next, 'c4_cousin_report_0')
 assert.equal(s.c4_cousin_report_3.next, 'c4_1_open_0')
+assert.equal(s.c4_cousin_report_1.image, 'case_c4_fetal_mri_v1')
+assert.equal(s.c4_cousin_report_1.next, 'c4_cousin_report_compare')
+assert.equal(s.c4_cousin_report_compare.image, 'case_c4_fetal_us_mri_v1')
+assert.match(s.c4_cousin_report_compare.imageLabel, /左：超声.*右：MRI/)
+assert.equal(s.c4_cousin_report_compare.next, 'c4_cousin_report_2')
+assert.equal(s.c4_cousin_report_compare.effect, undefined, 'Looking at the comparison does not award attributes')
 assert.match(text('c4_cousin_report_1'), /轻度侧脑室增宽.*没有发现其他脑部结构异常.*复查也稳定/)
 assert.match(text('c4_cousin_report_2'), /喂完奶.*不让全家睡觉/)
 for (const experienced of [false, true]) {
