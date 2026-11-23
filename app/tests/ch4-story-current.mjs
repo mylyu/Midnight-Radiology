@@ -1200,9 +1200,10 @@ assert.equal(giftPlayed.items.includes('snack'), false)
 assert.deepEqual(attributeStats(giftPlayed), giftBefore, 'CH4 snack sharing consumes the item without adding attributes')
 
 // The final assessment tests only MRI physics and imaging fundamentals.
-assert.equal(CH4.quiz.length, 8)
+assert.equal(CH4.quiz.length, 16)
 const quizPlotTerms = /冯叔|许建平|小唐|老周|沈岚|院长|眼镜|教练|妈妈|阿姨|拄拐|采购|退费|事故征候|收据|排班/
-const quizTopics = [/90°射频脉冲/, /180°重聚脉冲/, /T1弛豫与T2弛豫/, /TR／TE.*T1加权/, /金属或磁敏感伪影.*SE与GRE/, /梯度系统/, /接收带宽/, /扩散受限/]
+const quizTopics = [/90°射频脉冲/, /180°重聚脉冲/, /T1弛豫与T2弛豫/, /TR／TE.*T1加权/, /金属或磁敏感伪影.*SE与GRE/, /梯度系统/, /接收带宽/, /扩散受限/,
+  /哪种原子核/, /与CT相比/, /平衡.*净磁化/, /B0加倍.*拉莫尔频率/, /激发氢核磁共振.*频率/, /接收线圈.*机制/, /k空间数据/, /减小体素/]
 CH4.quiz.forEach((question, index) => {
   assert.match(question.q, quizTopics[index])
   assert.equal(question.options.length, 3)
