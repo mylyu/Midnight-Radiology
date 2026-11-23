@@ -58,7 +58,8 @@ for (const [model, regions] of Object.entries(MRI_SCAN_ART)) {
 }
 assert.notEqual(MRI_SCAN_ART['city-3t'].head, MRI_SCAN_ART['county-055-wide'].head,
   'The city 3T and county 0.55T must not share the same machine-room illustration')
-// Author-approved 2026-11-23 positioning redraw + CH4 compression; other IDs remain protected.
+// Author-approved 2026-11-23 positioning redraw + CH4 compression; two county backgrounds
+// additionally replaced by the wide-bore correction in docs/ch4-county-wide-bore.md.
 const expectedCountyVisualPaths = {
   trilogy_mri_scan_county_head_v1: 'media/trilogy_mri_scan_county_head_v1.7c075797501609d6.webp',
   trilogy_mri_scan_county_abdomen_v1: 'media/trilogy_mri_scan_county_abdomen_v1.3a8699b58d3eeef3.webp',
@@ -70,8 +71,8 @@ const expectedCountyVisualPaths = {
   pat_c4_mother_child_pixel_v1: 'media/pat_c4_mother_child_pixel_v1.1d9994e009e241b3.webp',
   pat_c4_xu_v1: 'media/pat_c4_xu_v1.238d7c59ee17e892.webp',
   bg_c4_county_magnet_room_v1: 'media/bg_c4_county_magnet_room_v1.1b703cf8255f8ac9.webp',
-  bg_c4_county_corridor_v1: 'media/bg_c4_county_corridor_v1.e940b48897d758a3.webp',
-  bg_c4_county_control_v1: 'media/bg_c4_county_control_v1.7e8a358401e65e6f.webp',
+  bg_c4_county_corridor_v1: 'media/bg_c4_county_corridor_v1.d6a39f6e4b3a8d70.webp',
+  bg_c4_county_control_v1: 'media/bg_c4_county_control_v1.cd91838159ea3254.webp',
 }
 for (const [id, relative] of Object.entries(expectedCountyVisualPaths)) assert.equal(catalog[id], relative, `${id}: approved visual-continuity WebP`)
 assert.notEqual(MRI_SCAN_ART['city-055-wide'].head, MRI_SCAN_ART['county-055-wide'].head,

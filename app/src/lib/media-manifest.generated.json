@@ -116,9 +116,9 @@
       "bytes": 75704,
       "type": "image"
     },
-    "assets/media/bg_c4_county_control_v1.7e8a358401e65e6f.webp": {
-      "sha256": "7e8a358401e65e6ff8a0351abc10df3bf4a3deee815f2168b298e59fdab95bb9",
-      "bytes": 62906,
+    "assets/media/bg_c4_county_control_v1.cd91838159ea3254.webp": {
+      "sha256": "cd91838159ea325469c37885ceee3d1afb35a2ecb50898cf7ea1a04b454e58e9",
+      "bytes": 87518,
       "type": "image"
     },
     "assets/media/bg_c4_county_corridor_preinstall_v1.866ac5e5b2d612e5.webp": {
@@ -126,9 +126,9 @@
       "bytes": 71766,
       "type": "image"
     },
-    "assets/media/bg_c4_county_corridor_v1.e940b48897d758a3.webp": {
-      "sha256": "e940b48897d758a3a3d4afd466c98aa70909bda5adaca410e4e6b788b6696cfb",
-      "bytes": 84424,
+    "assets/media/bg_c4_county_corridor_v1.d6a39f6e4b3a8d70.webp": {
+      "sha256": "d6a39f6e4b3a8d70e6f99031241eb15a3e147aeda4871913e2b3f8ed32db8764",
+      "bytes": 104920,
       "type": "image"
     },
     "assets/media/bg_c4_county_magnet_room_v1.1b703cf8255f8ac9.webp": {
@@ -2573,9 +2573,9 @@
       "assets/media/bg_c4_city_preparation_v1.5709eaa8e612e3e7.webp",
       "assets/media/bg_c4_city_staff_room_v1.3ca7271a4f05bac3.webp",
       "assets/media/bg_c4_city_triage_v1.f12868e4cc2f556f.webp",
-      "assets/media/bg_c4_county_control_v1.7e8a358401e65e6f.webp",
+      "assets/media/bg_c4_county_control_v1.cd91838159ea3254.webp",
       "assets/media/bg_c4_county_corridor_preinstall_v1.866ac5e5b2d612e5.webp",
-      "assets/media/bg_c4_county_corridor_v1.e940b48897d758a3.webp",
+      "assets/media/bg_c4_county_corridor_v1.d6a39f6e4b3a8d70.webp",
       "assets/media/bg_c4_county_magnet_room_v1.1b703cf8255f8ac9.webp",
       "assets/media/bg_c4_county_preparation_v1.98b4b28f836047e3.webp",
       "assets/media/bg_corridor.970560e65398bdf4.webp",

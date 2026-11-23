@@ -1,0 +1,52 @@
+{
+  "date": "2026-11-23",
+  "base": "c6ca665963c2b91855098a2b8d8748890c6a8c42",
+  "tool": "built-in image_gen (edit, two rounds)",
+  "reason": "作者指出县院控制室孔径偏小、走廊机器颜色老旧且型号不一致。统一新装奶油白/薄荷绿0.55T宽孔机型，保留空间构图。",
+  "reference": "bg_c4_county_magnet_room_v1.1b703cf8255f8ac9.webp",
+  "prompts": [
+    {
+      "asset": "bg_c4_county_control_v1",
+      "initial": "Use case: precise-object-edit. Edit Image 1, the pixel-art MRI control room background. Image 2 is the approved exact identity reference for the county hospital MRI. Output a single landscape game background at the same 16:9 composition as Image 1. Preserve the entire control room composition: viewing window, console desk, two brain-image monitors, chair, shelves, wall colors, lighting and pixel-art texture. Change the MRI seen THROUGH the viewing window to the SAME NEW scanner shown in Image 2: clean cream-white casing, mint-green trim around the front, TWO small mint square control buttons at either side, teal patient couch, compact short cylindrical tunnel, visibly generous 80 cm WIDE BORE. The open clear bore must be about 60 percent of the outer magnet front diameter and noticeably wider than the couch, with realistic perspective; do NOT draw a tiny hole inside a huge shell. Machine must look newly installed, never yellowed, scratched or obsolete. Keep scanner location and the room's window perspective; maintain believable tunnel depth and couch alignment. The reference is a modern 0.55T wide-bore MRI, not a CT scanner or an open C-shaped magnet. Match the approved reference's fine pixel-art style and consistent edges. No added text, no labels, no Chinese, no watermark, no people, no game UI. Do not modify foreground objects.",
+      "refinement": "Precise-object-edit: keep this entire 16:9 pixel-art hospital background and all furnishings unchanged. Correct ONLY the MRI bore geometry. The current clear bore is still too small. Enlarge the actual OPEN TUNNEL, not merely the decorative lip, by about 35 percent in diameter while retaining the same overall scanner outer dimensions and the same patient couch width. Thin the cream-white annular face to make room. The clear opening must occupy 65-70 percent of the outer front diameter; at the mouth of the bore its clear width is at least 1.7 times the couch width. It is a newly installed ultra-wide 80cm short-bore MRI with generous head/shoulder clearance, cream-white shell, mint-green trim around outer front, two small mint square control buttons, teal couch. Preserve circular geometry in the existing perspective, with a visibly wide short tunnel open at the far end. Keep lighting, camera, room layout and pixel-art edges exactly. No text, no label, no UI, no people. Do not enlarge the couch or whole scanner. The opening itself must be substantially larger, visually unmistakable."
+    },
+    {
+      "asset": "bg_c4_county_corridor_v1",
+      "initial": "Use case: precise-object-edit. Edit Image 1, the pixel-art hospital corridor and reception background. Image 2 is the approved exact machine identity and style reference. Output one landscape game background, keeping the original 16:9 framing and same corridor composition. Preserve the blue waiting chairs, left reception desk/window, doors, noticeboard, wall picture, handrails, floor boundary and lighting. Replace ONLY the obsolete yellowish narrow-bore MRI visible in the open doorway at the far center with the SAME NEW scanner shown in Image 2: fresh clean cream-white shell, mint-green front trim, two mint square control buttons at either side, teal patient couch with pillow, short cylindrical tunnel, visibly generous 80 cm WIDE BORE. Its clear bore should occupy about 60 percent of the magnet front diameter; couch substantially narrower than bore with generous clearance. Keep natural frontal perspective in the doorway and plausible installed size. The equipment must look recently installed, not worn, yellowed or old. Match Image 2's distinctive casing, mint ring and teal couch exactly, adapted to this frontal corridor viewpoint. Preserve hospital corridor style and fine pixel-art texture, but the scanner is new. No text, labels, Chinese, watermark, people or UI. Do not add an open C magnet or CT; do not leave a tiny dark hole or beige couch.",
+      "refinement": "Precise-object-edit: keep this entire 16:9 pixel-art hospital background and all furnishings unchanged. Correct ONLY the MRI bore geometry. The current clear bore is still too small. Enlarge the actual OPEN TUNNEL, not merely the decorative lip, by about 35 percent in diameter while retaining the same overall scanner outer dimensions and the same patient couch width. Thin the cream-white annular face to make room. The clear opening must occupy 65-70 percent of the outer front diameter; at the mouth of the bore its clear width is at least 1.7 times the couch width. It is a newly installed ultra-wide 80cm short-bore MRI with generous head/shoulder clearance, cream-white shell, mint-green trim around outer front, two small mint square control buttons, teal couch. Preserve circular geometry in the existing perspective, with a visibly wide short tunnel open at the far end. Keep lighting, camera, room layout and pixel-art edges exactly. No text, no label, no UI, no people. Do not enlarge the couch or whole scanner. The opening itself must be substantially larger, visually unmistakable."
+    }
+  ],
+  "delivery": {
+    "format": "webp",
+    "quality": 78,
+    "alphaQuality": 100,
+    "effort": 6,
+    "resize": false,
+    "crop": false
+  },
+  "referenceSha256": "1b703cf8255f8ac94c22729236c6fa198083fd7d40726ed54365a698943f615b",
+  "assets": [
+    {
+      "id": "bg_c4_county_control_v1",
+      "sourceArchive": "exec-ec7c2caf-f3c2-4ec9-acdb-fb7d039edc4c.png",
+      "sourceSha256": "c3e91bfc7b8400529365ea4569b14574fde85f9e47ce6747bab6e22b902234cb",
+      "sourceBytes": 1873795,
+      "path": "app/public/assets/media/bg_c4_county_control_v1.cd91838159ea3254.webp",
+      "sha256": "cd91838159ea325469c37885ceee3d1afb35a2ecb50898cf7ea1a04b454e58e9",
+      "bytes": 87518,
+      "width": 1671,
+      "height": 941
+    },
+    {
+      "id": "bg_c4_county_corridor_v1",
+      "sourceArchive": "exec-bde9cbd5-49f3-48c8-a2da-f2f8e0a4a90c.png",
+      "sourceSha256": "095273f8527376e3bf097bd3a5ead80420b9ed64afbce30d22d20bbcb55d70de",
+      "sourceBytes": 2109635,
+      "path": "app/public/assets/media/bg_c4_county_corridor_v1.d6a39f6e4b3a8d70.webp",
+      "sha256": "d6a39f6e4b3a8d70e6f99031241eb15a3e147aeda4871913e2b3f8ed32db8764",
+      "bytes": 104920,
+      "width": 1672,
+      "height": 941
+    }
+  ]
+}
