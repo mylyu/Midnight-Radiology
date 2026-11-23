@@ -5,7 +5,7 @@
 - 基点 `369e518`，分支 `codex/ch4-hemangioma-reassurance`。按作者要求，在阿姨的动态增强图之后加一句主角安慰：“阿姨，别被这个‘瘤’字吓着。肝血管瘤不是真正的肿瘤，其实就是一种血管畸形。”两处关键词沿用普通对白高亮；随后阿姨问胀疼原因，接回原解释。措辞核对参考 [武汉市第三医院科普](https://www.whsyy.net/view_6073.html)，来源仅记开发文档。
 - 新增独立节点 `c4_5_hemangioma_reassure_0`，原 `_0`—`_5` ID不变，无奖励或配音。图片、其他章节、存档revision7和访问码不变；总线原病例结构保持。
 - 第四章现役测试、类型检查、生产构建通过。桌面前后3处与390px新对白定点通过，高亮与原增强图正常，零页面/HTTP错误，已看手机截图；证据在仓外 `review-20261123/ch4-hemangioma-reassurance/local.json`。共享16,997,525/17,000,000字节，总包28,271,476字节。既有Vite大chunk提示不变。
-- 作者已明确要求直接部署；正式回执随后追加。回退用本轮游戏提交的git revert，不清存档。
+- 已发布游戏提交 **`b127fad64f73c36ce9eb65f16f3954bb61ae6707`** 至main与修复分支；[Pages运行45173864142](https://github.com/mylyu/Midnight-Radiology/actions/runs/45173864142)成功。正式站桌面前后节点与390px新对白共四项定点通过，实际高亮与原增强图正常，零页面/HTTP错误，证据 `review-20261123/ch4-hemangioma-reassurance/live.json`。回退 `git revert b127fad`；本回执 `[skip ci]` 不重复部署。
 
 ## 2026-11-23：批准两张县院MRI适中孔径背景
 
