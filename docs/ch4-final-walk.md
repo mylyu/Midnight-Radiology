@@ -24,3 +24,7 @@
 现役测试仅增加实际讲图节点与离场负例、远程小唐及日期检查；MRCP重复文本断言移到实际交代核查恢复的两个分支，保留这一语义。通信清单精确增加这一条短信，不放宽整体检查。历史测试不改。
 
 回退使用本轮游戏提交的 `git revert`，不hard reset，不清玩家存档。发布按既有main触发Pages流程；未完成推送或部署时不称已上线。
+
+## 发布回执
+
+游戏提交 `c385b06c5590c1da8accb4d9d35e12f0a47dfe78` 已推送main与 `codex/ch4-final-walk`；[Pages运行45120922553](https://github.com/mylyu/Midnight-Radiology/actions/runs/45120922553) 构建、部署均成功。正式站四项桌面/390px定点通过：腕部与儿童讲图、短信不在场立绘/一次音效/刷新不重播、夜间考核，零页面/HTTP错误，报告在 `fixes/live-report.json`。原密码保持mri2027，第五章入口配置未改。未在线重复通关。回退用 `git revert c385b06`；发布回执以 `[skip ci]` 提交，不再次部署。
