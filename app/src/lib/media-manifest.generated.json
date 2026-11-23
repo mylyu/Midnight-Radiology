@@ -1986,29 +1986,14 @@
       "bytes": 23853,
       "type": "audio"
     },
-    "audio/vox_c4_lei_first_v1.mp3": {
-      "sha256": "1fd240c7005fd43b210af22e062ca839bd6d3b619f518a491721f5e4ba3ebbf0",
-      "bytes": 7228,
-      "type": "audio"
-    },
     "audio/vox_c4_tang_first_v1.mp3": {
       "sha256": "e99d0264ec0d6d48be8a2fd8dbd4357498ef1fca81e2f4e8732bc257570f3e34",
       "bytes": 6601,
       "type": "audio"
     },
-    "audio/vox_c4_worker_r7.mp3": {
-      "sha256": "a97494f01ac186eda590febb1df7142e0c4c0e0dac644275138735e6ab12ce68",
-      "bytes": 15357,
-      "type": "audio"
-    },
     "audio/vox_c4_wrist_r7.mp3": {
       "sha256": "17ba2d49c7d19dafcfbe07e3e9a7a2661bd3932717e964ec7af29b5b2537a1f6",
       "bytes": 14061,
-      "type": "audio"
-    },
-    "audio/vox_c4_xu_r7.mp3": {
-      "sha256": "6b121b2584570f91627dc108a062baffca4b119b6a4fdc794a243e7939da5990",
-      "bytes": 45165,
       "type": "audio"
     },
     "audio/vox_c4_xuning_v3.mp3": {
@@ -2694,11 +2679,8 @@
       "audio/vox_c4_feng_r7.mp3",
       "audio/vox_c4_knee_r9.mp3",
       "audio/vox_c4_knee_wait_r9.mp3",
-      "audio/vox_c4_lei_first_v1.mp3",
       "audio/vox_c4_tang_first_v1.mp3",
-      "audio/vox_c4_worker_r7.mp3",
       "audio/vox_c4_wrist_r7.mp3",
-      "audio/vox_c4_xu_r7.mp3",
       "audio/vox_c4_xuning_v3.mp3",
       "audio/vox_c4_zhou_first_v1.mp3"
     ],

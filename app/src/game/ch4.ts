@@ -320,7 +320,7 @@ chain('c4_2_shen', [
 ], 'c4_2_hub', 'bg_c4_city_staff_room_v1')
 chain('c4_2_incident', [
   ['sys', '患者做完筛查，女儿把钥匙、手机和金属框眼镜收进物品袋，陪他进扫描间帮忙摆好支垫。你留在控制台核申请，沈岚站在床旁。'],
-  ['worker', '我的眼镜给我女儿就行，别耽误你们。', { voice: 'vox_c4_worker_r7', bg: 'bg_c4_city_magnet_room_v1' }],
+  ['worker', '我的眼镜给我女儿就行，别耽误你们。', { bg: 'bg_c4_city_magnet_room_v1' }],
   ['sys', '女儿应了一声，把物品袋搭上肩头。袋口没封好，她转身让开床尾时，眼镜从袋里滑了出来。', { bg: 'bg_c4_city_magnet_room_v1' }],
   ['sys', '她下意识低头去捡，眼镜却先擦过地面，“当”地吸在磁体外壳靠近孔口的位置。她的手停在半空。', { image: 'cg_c4_glasses_v3', imageLabel: '扫描间突发｜金属框眼镜吸附', closeup: true }],
   ['me', '还好只是副轻眼镜。阿姨您别动，我小心试着把它拿下来。', { bg: 'bg_c4_city_magnet_room_v1' }],
@@ -342,7 +342,7 @@ chain('c4_2_glasses_people', [
   ['sys', '工程人员核查完现场，夜班才恢复。你补齐暂停时间、人员位置和刚才伸手的记录。沈岚又点了一遍：**轮椅或剪刀一旦吸附，可能致命。**']
 ], 'c4_2_mrcp_0', 'bg_c4_city_magnet_room_v1')
 chain('c4_2_xu', [
-  ['mystery', '老范把我的申请给你了？我是许建平。', { communication: 'call', phone: 'pat_c4_xu_v1', sprite: '', voice: 'vox_c4_xu_r7' }],
+  ['mystery', '老范把我的申请给你了？我是许建平。', { communication: 'call', phone: 'pat_c4_xu_v1', sprite: '' }],
   ['me', '腰椎那张申请我看过。怎么，还拿不定主意？', { communication: 'call' }],
   ['mystery', '我年轻时做过手术，也不知道里面有没有留东西。今晚本来想问清楚……算了，还是先取消吧。', { communication: 'call' }],
 ], 'c4_2_xu_q', 'bg_c4_city_corridor_v1')
@@ -404,7 +404,7 @@ chain('c4_3_open', [
   ['sys', '回县后的采购碰头会上，老范把两版报价摊在办公桌上。小唐抱着预约本进来，顺手把压在“AI智能重建”那行上的茶杯挪开。', { effect: { flag: 'c4_old_contract' } }],
   ['fan', '院长就问了一句：这东西不买，机器还能不能扫？我答不上来，先找你们。'],
   ['tang', '机器什么时候装我还没排到患者。你们先把这个答明白，别今天说能，明天又让我挨个打电话改口。'],
-  ['lei', '我上次拒签也不是跟AI有仇。没写清试用多久、以后怎么收钱，我哪敢替信息科点头。', { voice: 'vox_c4_lei_first_v1', effect: { flag: 'c4_old_contract' } }]
+  ['lei', '我上次拒签也不是跟AI有仇。没写清试用多久、以后怎么收钱，我哪敢替信息科点头。', { effect: { flag: 'c4_old_contract' } }]
 ], 'c4_3_quotes_0', 'bg_office_day')
 chain('c4_3_quotes', [
   ['wen', '我重说：**基本重建已经包含，AI重建是原厂单列选配**。不买AI，常规检查照做。上一版写成“数据服务”，是我图省事。', { effect: { flag: 'c4_contract_split' }, image: 'item_c4_quote_folder_v1', imageLabel: '采购报价夹｜基本重建与选配分列' }],

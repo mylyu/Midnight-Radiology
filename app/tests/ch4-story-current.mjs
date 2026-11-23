@@ -750,11 +750,12 @@ for (const [speaker, sprite] of Object.entries(expectedPortraits)) {
   assert.equal(CH4.characters[speaker].sprite, sprite)
   if (sprite) assert(catalog[sprite], `${speaker}: ${sprite} is imported`)
 }
-// Explicit on-site introductions show the same person before the first voice.
+// Introductions retain their portraits, including the now-unvoiced MRCP patient.
 for (const id of ['c4_1_open_0', 'c4_1_case_0', 'c4_1_feng_0', 'c4_2_incident_0',
   'c4_5_waiting_0', 'c4_5_motion_0', 'c4_5_knee_0']) {
   const spoken = s[s[id].next]
-  assert(spoken.voice, `${id}: followed by the approved entrance voice`)
+  if (id === 'c4_2_incident_0') assert.equal(spoken.voice, undefined, 'MRCP entrance voice is disabled')
+  else assert(spoken.voice, `${id}: followed by the approved entrance voice`)
   assert.equal(s[id].sprite, spoken.sprite, `${id}: the person is already visible before speaking`)
   assert(!s[id].closeup && !spoken.closeup, `${id}: no cinematic hides the portrait`)
 }
@@ -823,9 +824,8 @@ const colleagueEntrances = {
   zhou: ['c4_pro_2', 'vox_c4_zhou_first_v1'],
   tang: ['c4_apply_zhou_1', 'vox_c4_tang_first_v1'],
   director: ['c4_apply_director_1', 'vox_c4_director_first_v1'],
-  lei: ['c4_3_open_3', 'vox_c4_lei_first_v1'],
 }
-const expectedVoices = ['vox_c4_aunt_r8', 'vox_c4_feng_r7', 'vox_c4_knee_r9', 'vox_c4_knee_wait_r9', 'vox_c4_worker_r7', 'vox_c4_wrist_r7', 'vox_c4_xu_r7', 'vox_c4_xuning_v3',
+const expectedVoices = ['vox_c4_aunt_r8', 'vox_c4_feng_r7', 'vox_c4_knee_r9', 'vox_c4_knee_wait_r9', 'vox_c4_wrist_r7', 'vox_c4_xuning_v3',
   ...Object.values(colleagueEntrances).map(([, voice]) => voice)].sort()
 assert.deepEqual([...new Set(voices)].sort(), expectedVoices)
 assert.deepEqual(trilogyVoiceAssets(CH4).sort(), expectedVoices)
@@ -844,8 +844,12 @@ assert.equal(trilogyVoice(CH4, s.c4_departure_1), undefined, 'Do not add a secon
 assert.equal(trilogyVoice(CH4, s.c4_2_close_2), undefined, 'Wen’s earlier SMS stays a text message')
 assert.equal(trilogyVoice(CH4, s.c4_3_quotes_0), undefined, 'The new colleague voices do not include supplier Wen')
 const firstPatientVoice = {
-  wrist: 'vox_c4_wrist_r7', anxious: 'vox_c4_feng_r7', worker: 'vox_c4_worker_r7',
-  aunt: 'vox_c4_aunt_r8', knee: 'vox_c4_knee_wait_r9', mystery: 'vox_c4_xu_r7',
+  wrist: 'vox_c4_wrist_r7', anxious: 'vox_c4_feng_r7', worker: undefined,
+  aunt: 'vox_c4_aunt_r8', knee: 'vox_c4_knee_wait_r9', mystery: undefined,
+}
+for (const [id, step] of Object.entries(s).filter(([, step]) => ['worker', 'mystery', 'lei'].includes(step.speaker))) {
+  assert.equal(trilogyVoice(CH4, step), undefined, `${id}: author disabled Xu, MRCP patient and Lei voices`)
+  assert(!step.sfx?.startsWith('vox'), `${id}: no alternate patient voice trigger`)
 }
 for (const [speaker, voice] of Object.entries(firstPatientVoice)) {
   const [id, firstSpoken] = Object.entries(s).find(([, step]) => step.speaker === speaker) ?? []
