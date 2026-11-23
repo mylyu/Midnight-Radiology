@@ -698,10 +698,13 @@ chain('c4_5_motion_after', [
   ['sys', '必要序列完成，新图组与首段分开标记。老周把阿姨的中等、重T2图并排放在屏幕上。', { image: 'mri_real_hemangioma_t2_v1', imageLabel: '阿姨的腹部MRI｜中等与重T2对照', card: 'c4_hemangioma' }],
   ['zhou', '同一处，换成重T2就亮得这么扎眼。你想到了什么？', { image: 'mri_real_hemangioma_t2_v1' }],
   ['me', '想到了**肝血管瘤**。重T2上很亮，位置也和她的超声对得上，再看增强怎么变。', { image: 'mri_real_hemangioma_t2_v1' }],
-  ['sys', '老周翻到阿姨的动态增强图：动脉期可见结节样强化，门静脉期与平衡期逐渐向内填充。', { image: 'mri_real_hemangioma_dynamic_v1', imageLabel: '阿姨的动态增强MRI｜动脉期、门静脉期、平衡期' }],
-  ['aunt', '要真是血管瘤，我这胀疼就是它弄的吗？', { image: 'mri_real_hemangioma_dynamic_v1' }],
+  ['sys', '老周翻到阿姨的动态增强图：动脉期可见结节样强化，门静脉期与平衡期逐渐向内填充。', { image: 'mri_real_hemangioma_dynamic_v1', imageLabel: '阿姨的动态增强MRI｜动脉期、门静脉期、平衡期', next: 'c4_5_hemangioma_reassure_0' }],
+  ['aunt', '那我这胀疼，就是它弄的吗？', { image: 'mri_real_hemangioma_dynamic_v1' }],
   ['me', '不一定，要结合病灶位置、大小和其他检查。领取方式和复诊科室我写在单子上，需要补查也会写清。']
 ], 'c4_5_knee_0', 'bg_c4_county_corridor_v1')
+chain('c4_5_hemangioma_reassure', [
+  ['me', '阿姨，别被这个“瘤”字吓着。**肝血管瘤不是真正的肿瘤**，其实就是一种**血管畸形**。', { image: 'mri_real_hemangioma_dynamic_v1' }],
+], 'c4_5_motion_after_4', 'bg_c4_county_corridor_v1')
 chain('c4_5_knee', [
   ['sys', '拄拐老师坐到检查床旁，先把拐杖递给你，才慢慢把右腿抬上去。', { caseId: 'c4_county_knee_mimic' }],
   ['knee', '**膝盖卡住了，下楼最疼。**', { voice: 'vox_c4_knee_r9' }],
