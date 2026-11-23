@@ -13,7 +13,7 @@ const characters: TrilogyChapter['characters'] = {
   wrist: { name: '腕伤小伙', color: '#d9c4a5', sprite: 'ch2_patient_wrist_student' },
   anxious: { name: '冯叔', color: '#c3c8d8', sprite: 'pat_c4_feng_v3' },
   worker: { name: '疑似胆总管结石患者', color: '#d7bf9f', sprite: 'pat_c4_liu_v4' },
-  courier: { name: '设备送货员', color: '#d7bf9f', sprite: '' },
+  courier: { name: '设备送货员', color: '#d7bf9f', sprite: 'char_c4_courier_v1' },
   elder: { name: '急诊老人', color: '#c8c2b4', sprite: 'pat_c4_fang_v3' },
   child: { name: '三岁女孩', color: '#c8d8ee', sprite: 'pat_c4_mother_child_pixel_v1' },
   mother: { name: '孩子妈妈', color: '#d8c3b5', sprite: 'pat_c4_mother_child_pixel_v1' },
@@ -407,7 +407,7 @@ chain('c4_3_open', [
   ['lei', '我上次拒签也不是跟AI有仇。没写清试用多久、以后怎么收钱，我哪敢替信息科点头。', { effect: { flag: 'c4_old_contract' } }]
 ], 'c4_3_quotes_0', 'bg_office_day')
 chain('c4_3_quotes', [
-  ['wen', '我重说：**基本重建已经包含，AI重建是原厂单列选配**。不买AI，常规检查照做。上一版写成“数据服务”，是我图省事。', { effect: { flag: 'c4_contract_split' }, image: 'item_c4_quote_folder_v1', imageLabel: '采购报价夹｜基本重建与选配分列', closeup: true }],
+  ['wen', '我重说：**基本重建已经包含，AI重建是原厂单列选配**。不买AI，常规检查照做。上一版写成“数据服务”，是我图省事。', { effect: { flag: 'c4_contract_split' }, image: 'item_c4_quote_folder_v1', imageLabel: '采购报价夹｜基本重建与选配分列' }],
   ['me', '那这页就留三件事：原厂AI、单列价格、授权期限。别再把基本功能算一遍钱。'],
   ['wen', '行，我改。还有一张30天试用单，装机时愿意试再开，账号和到期日都写上；不采购就不收正式授权费。'],
   ['lei', '这样我能核。试用是试用，买不买等咱们用完再谈。'],
@@ -919,6 +919,18 @@ for (let i = 2; i <= 6; i++) steps[`c4_wrap_research_${i}`] = {
 for (let i = 9; i <= 17; i++) steps[`c4_epilogue_${i}`] = {
   bg: 'bg_office_day', speaker: 'sys', sprite: '', image: '', text: '老周留在窗口接着核对，你回办公室收拾东西。', next: 'c4_epilogue_baby_0',
 }
+
+// Explicit arrivals and quoted on-site speech: show the person in the introduction,
+// before their first voiced line. Never inherit a portrait into hubs or remote calls.
+for (const [id, sprite] of Object.entries({
+  c4_pro_0: 'char_fan', c4_1_open_0: 'char_c4_shen_v3',
+  c4_1_case_0: 'ch2_patient_wrist_student', c4_1_feng_0: 'pat_c4_feng_v3',
+  c4_2_incident_0: 'pat_c4_liu_v4', c4_2_mrcp_0: 'pat_c4_liu_v4',
+  c4_3_door_0: 'char_c4_courier_v1', c4_5_waiting_0: 'pat_c4_chen_v3',
+  c4_5_motion_0: 'pat_c4_wu_v3', c4_5_knee_0: 'pat_c4_chen_v3',
+  c4_5_feng_0: 'pat_c4_feng_v3', c4_6_xu_0: 'pat_c4_xu_v1',
+  c4_5_receipt_q: 'char_zhou', c4_2_glasses_people_2: 'char_c4_shen_v3',
+})) steps[id].sprite = sprite
 
 // 远程角色留在通信头像中；主角的接话仍使用现场站位。
 for (const step of Object.values(steps)) {

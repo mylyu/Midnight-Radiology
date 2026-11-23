@@ -1,4 +1,8 @@
 .trilogy-root { overflow:hidden; color:#e2e8f0; }
+.trilogy-root[data-trilogy=ch4] :is(.sprite-l,.sprite-r) {
+  bottom:max(12rem,calc(var(--trilogy-dialog-height,14rem) + 8px)) !important;
+  max-height:max(64px,calc(100% - var(--trilogy-header-height,76px) - var(--trilogy-dialog-height,14rem) - 16px));
+}
 /* Ordinary dialogue inherits DialogueScene and the same responsive rules as CH2. */
 .trilogy-root button { touch-action:manipulation; }
 .trilogy-root .ldct-cinematic{top:calc(var(--trilogy-header-height,76px) + 8px);bottom:calc(var(--trilogy-dialog-height,14rem) + 8px)}
@@ -116,8 +120,8 @@
  .trilogy-root[data-trilogy=ch4] .trilogy-story-image { width:calc(100% - 1rem); }
  .trilogy-root[data-trilogy=ch4] .trilogy-story-image:is([data-story-image-id^="mri_real"],[data-story-image-id="mri_c4_basic_contrast_v1"]) { width:calc(100% - 1rem); }
  /* On a phone, keep a small colleague below the medical image, never over it. */
- .trilogy-root[data-trilogy=ch4]:has(.sprite-l,.sprite-r) .trilogy-story-image:is([data-story-image-id^="mri_real"],[data-story-image-id="mri_c4_basic_contrast_v1"]) { height:max(0px,calc(100% - var(--trilogy-header-height,76px) - var(--trilogy-dialog-height,14rem) - 118px)); }
- .trilogy-root[data-trilogy=ch4]:has(.trilogy-story-image:is([data-story-image-id^="mri_real"],[data-story-image-id="mri_c4_basic_contrast_v1"])) :is(.sprite-l,.sprite-r) { height:90px !important; bottom:calc(var(--trilogy-dialog-height,14rem) + 8px) !important; }
+ .trilogy-root[data-trilogy=ch4]:has(.sprite-l,.sprite-r) .trilogy-story-image { height:max(0px,calc(100% - var(--trilogy-header-height,76px) - var(--trilogy-dialog-height,14rem) - 118px)); }
+ .trilogy-root[data-trilogy=ch4]:has(.trilogy-story-image) :is(.sprite-l,.sprite-r) { height:90px !important; bottom:calc(var(--trilogy-dialog-height,14rem) + 8px) !important; }
  .trilogy-story-object { width:calc(100% - 2rem); height:max(0px,calc(100% - var(--trilogy-header-height,76px) - var(--trilogy-dialog-height,14rem) - 140px)); }
  .trilogy-root[data-trilogy=ch3]:has(.trilogy-story-object) .sprite-l,
  .trilogy-root[data-trilogy=ch3]:has(.trilogy-story-object) .sprite-r { height:104px !important; bottom:calc(var(--trilogy-dialog-height,14rem) + 8px) !important; }

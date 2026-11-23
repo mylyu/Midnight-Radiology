@@ -1,0 +1,41 @@
+{
+  "date": "2026-11-23",
+  "id": "char_c4_courier_v1",
+  "source": {
+    "kind": "built-in image_gen",
+    "archive": "review-20261123/ch4-portrait-timing/char_c4_courier_v1-source.png",
+    "sha256": "78f4675db0e360ad61169ee711e9d1fefbdb7c9505c04ca4e62aa6cbf10c28c9",
+    "bytes": 1228791,
+    "width": 1024,
+    "height": 1536,
+    "hasAlpha": true
+  },
+  "compression": {
+    "sharp": "0.35.3",
+    "webp": "1.6.0",
+    "width": 320,
+    "height": 480,
+    "kernel": "nearest",
+    "quality": 78,
+    "alphaQuality": 100,
+    "effort": 6
+  },
+  "import": {
+    "pipeline": "reviewed-webp-passthrough-v1",
+    "mode": "reviewed-webp-unchanged",
+    "alphaExact": true,
+    "visibleRgbExact": true,
+    "rgbaExact": true,
+    "replaced": false,
+    "previewUpdated": false,
+    "stalePathCandidates": []
+  },
+  "delivery": {
+    "path": "app/public/assets/media/char_c4_courier_v1.d2fb25c7abc4b289.webp",
+    "sha256": "d2fb25c7abc4b289db957c7ca943173daf69acf6d4d6f7beb0e0e37436bc3b3a",
+    "bytes": 15518,
+    "width": 320,
+    "height": 480
+  },
+  "promptDocument": "ch4-courier-portrait.md"
+}

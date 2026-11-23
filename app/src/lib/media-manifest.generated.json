@@ -726,6 +726,11 @@
       "bytes": 37092,
       "type": "image"
     },
+    "assets/media/char_c4_courier_v1.d2fb25c7abc4b289.webp": {
+      "sha256": "d2fb25c7abc4b289db957c7ca943173daf69acf6d4d6f7beb0e0e37436bc3b3a",
+      "bytes": 15518,
+      "type": "image"
+    },
     "assets/media/char_c4_shen_v3.2be68ef94319e25f.webp": {
       "sha256": "2be68ef94319e25f7eef187f658d517f4589f15f3e1b1825c854509983b9ab57",
       "bytes": 26046,
@@ -2582,6 +2587,7 @@
       "assets/media/ch2_bg_breakroom_day.194c9d3ccafbe9ff.webp",
       "assets/media/ch2_patient_wrist_student.dd19e6bcc5ef8cc6.webp",
       "assets/media/char_bai.aae1555459768a4a.webp",
+      "assets/media/char_c4_courier_v1.d2fb25c7abc4b289.webp",
       "assets/media/char_c4_shen_v3.2be68ef94319e25f.webp",
       "assets/media/char_director.2ef1885993e5b0e7.webp",
       "assets/media/char_f.aa652822daf1d5e4.webp",

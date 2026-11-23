@@ -743,13 +743,31 @@ for (const id of closingIds) {
 const expectedPortraits = {
   wrist: 'ch2_patient_wrist_student', anxious: 'pat_c4_feng_v3', worker: 'pat_c4_liu_v4',
   child: 'pat_c4_mother_child_pixel_v1', mother: 'pat_c4_mother_child_pixel_v1', aunt: 'pat_c4_wu_v3', knee: 'pat_c4_chen_v3',
-  mystery: 'pat_c4_xu_v1', courier: '', elder: 'pat_c4_fang_v3',
+  mystery: 'pat_c4_xu_v1', courier: 'char_c4_courier_v1', elder: 'pat_c4_fang_v3',
   wen: 'char_wen', lei: 'char_lei', bai: 'char_bai',
 }
 for (const [speaker, sprite] of Object.entries(expectedPortraits)) {
   assert.equal(CH4.characters[speaker].sprite, sprite)
   if (sprite) assert(catalog[sprite], `${speaker}: ${sprite} is imported`)
 }
+// Explicit on-site introductions show the same person before the first voice.
+for (const id of ['c4_1_open_0', 'c4_1_case_0', 'c4_1_feng_0', 'c4_2_incident_0',
+  'c4_5_waiting_0', 'c4_5_motion_0', 'c4_5_knee_0']) {
+  const spoken = s[s[id].next]
+  assert(spoken.voice, `${id}: followed by the approved entrance voice`)
+  assert.equal(s[id].sprite, spoken.sprite, `${id}: the person is already visible before speaking`)
+  assert(!s[id].closeup && !spoken.closeup, `${id}: no cinematic hides the portrait`)
+}
+assert.equal(s.c4_pro_0.sprite, 'char_fan')
+assert.equal(s.c4_3_door_0.sprite, CH4.characters.courier.sprite)
+assert.equal(s.c4_3_door_1.sprite, CH4.characters.courier.sprite)
+assert(CH4.assets.includes(CH4.characters.courier.sprite), 'Delivery worker is fully preloaded')
+assert.equal(s.c4_3_quotes_0.sprite, 'char_wen')
+assert(!s.c4_3_quotes_0.closeup, 'Quote folder must not hide Wen while she speaks')
+assert.equal(s.c4_5_receipt_q.sprite, 'char_zhou')
+assert.equal(s.c4_2_glasses_people_2.sprite, 'char_c4_shen_v3')
+for (const id of ['c4_1_hub', 'c4_5_hub', 'c4_2_xu_0', 'c4_4_sequence_0'])
+  assert.equal(s[id].sprite, '', `${id}: no inherited on-site character in hubs or messages`)
 // The male teacher portrait stays on the established logical ID; his two live voice takes use the older r9 read.
 assert.equal(catalog.pat_c4_chen_v3, 'media/pat_c4_chen_v3.aea6005f443e954c.webp')
 assert.equal(CH4.characters.wrist.sprite, 'ch2_patient_wrist_student')
