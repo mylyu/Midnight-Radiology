@@ -71,8 +71,8 @@ const expectedCountyVisualPaths = {
   pat_c4_mother_child_pixel_v1: 'media/pat_c4_mother_child_pixel_v1.1d9994e009e241b3.webp',
   pat_c4_xu_v1: 'media/pat_c4_xu_v1.238d7c59ee17e892.webp',
   bg_c4_county_magnet_room_v1: 'media/bg_c4_county_magnet_room_v1.1b703cf8255f8ac9.webp',
-  bg_c4_county_corridor_v1: 'media/bg_c4_county_corridor_v1.d6a39f6e4b3a8d70.webp',
-  bg_c4_county_control_v1: 'media/bg_c4_county_control_v1.cd91838159ea3254.webp',
+  bg_c4_county_corridor_v1: 'media/bg_c4_county_corridor_v1.6c93c78a481b0412.webp',
+  bg_c4_county_control_v1: 'media/bg_c4_county_control_v1.46d1d3ea6e4b20a6.webp',
 }
 for (const [id, relative] of Object.entries(expectedCountyVisualPaths)) assert.equal(catalog[id], relative, `${id}: approved visual-continuity WebP`)
 assert.notEqual(MRI_SCAN_ART['city-055-wide'].head, MRI_SCAN_ART['county-055-wide'].head,

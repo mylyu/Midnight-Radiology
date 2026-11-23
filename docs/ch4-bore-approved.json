@@ -1,0 +1,57 @@
+{
+  "date": "2026-11-23",
+  "status": "Author approved both candidate images for GitHub and Pages on 2026-11-23.",
+  "mode": "built-in image_gen; precise-object-edit",
+  "outputs": [
+    "control-room-candidate.png",
+    "corridor-candidate.png"
+  ],
+  "prompts": [
+    {
+      "name": "control",
+      "path": "bg_c4_county_control_v1.cd91838159ea3254.webp",
+      "prompt": "Use case: precise-object-edit. Edit image 1 only. Image 2 is the approved identity and proportions of this same county-hospital MRI scanner, to guide the edit; do not reproduce image 2's room or camera angle. Preserve the exact room composition, camera, furniture, lights, cream-white and mint-green machine palette, teal patient couch, fine pixel-art game-background style and landscape 16:9 framing of image 1. The clear bore in image 1 is much too large and the magnet face too thin. Redraw ONLY the scanner with a moderately wide, credible patient opening, a substantial thick cream annular face, and a short enclosed cylindrical tunnel matching image 2. Target actual clear opening about 55% of the front magnet outer diameter, with clear opening about 1.4 times couch width at the same depth. Keep the overall outer machine size and couch width unchanged. Couch aligned into lower part of bore, correct perspective, cylindrical housing not a thin CT ring. Preserve two mint square buttons and mint trim. New clean modern equipment, not yellowed or aged. No people, new text, Chinese characters, branding, captions, watermarks or UI. Output one complete background, not a montage. In this control-room scene, reduce the current oversized clear mouth diameter by approximately 28 percent, growing the cream face inward. Retain the desk, both brain MRI screens and viewing window exactly; retain three-quarter perspective of the scanner behind glass."
+    },
+    {
+      "name": "corridor",
+      "path": "bg_c4_county_corridor_v1.d6a39f6e4b3a8d70.webp",
+      "prompt": "Use case: precise-object-edit. Edit image 1 only. Image 2 is the approved identity and proportions of this same county-hospital MRI scanner, to guide the edit; do not reproduce image 2's room or camera angle. Preserve the exact room composition, camera, furniture, lights, cream-white and mint-green machine palette, teal patient couch, fine pixel-art game-background style and landscape 16:9 framing of image 1. The clear bore in image 1 is much too large and the magnet face too thin. Redraw ONLY the scanner with a moderately wide, credible patient opening, a substantial thick cream annular face, and a short enclosed cylindrical tunnel matching image 2. Target actual clear opening about 55% of the front magnet outer diameter, with clear opening about 1.4 times couch width at the same depth. Keep the overall outer machine size and couch width unchanged. Couch aligned into lower part of bore, correct perspective, cylindrical housing not a thin CT ring. Preserve two mint square buttons and mint trim. New clean modern equipment, not yellowed or aged. No people, new text, Chinese characters, branding, captions, watermarks or UI. Output one complete background, not a montage. In this corridor scene, reduce the current oversized clear mouth diameter by approximately 20 percent, growing the cream face inward. Retain the open doorway, reception counter, seats, doors, wall picture and floor line exactly. The scanner stands inside the room seen front-on through the door; opening must look like the approved machine rather than a huge empty tunnel."
+    }
+  ],
+  "baseCommit": "ce428fbb1a7c0a8ee149b77a5b9b607e88b13599",
+  "encoding": {
+    "alphaQuality": 100,
+    "format": "webp",
+    "quality": 78,
+    "webp": "1.6.0",
+    "resize": false,
+    "sharp": "0.35.3",
+    "effort": 6
+  },
+  "assets": [
+    {
+      "width": 1670,
+      "sha256": "46d1d3ea6e4b20a68a86d58f46f74a1258f51671a63226f7cba3d37881e67101",
+      "sourceBytes": 1842020,
+      "source": "control-room-candidate.png",
+      "id": "bg_c4_county_control_v1",
+      "height": 941,
+      "path": "media/bg_c4_county_control_v1.46d1d3ea6e4b20a6.webp",
+      "bytes": 92654,
+      "sourceSha256": "97635274b8aedbce237167dbd1f7cbe09ac40ebdc7d083171c825c064026a827",
+      "previous": "media/bg_c4_county_control_v1.cd91838159ea3254.webp"
+    },
+    {
+      "width": 1672,
+      "sha256": "6c93c78a481b0412ffa6d4df7fe60fffe751c032e1ea00ab81019e2b48fb657f",
+      "sourceBytes": 2053068,
+      "source": "corridor-candidate.png",
+      "id": "bg_c4_county_corridor_v1",
+      "height": 941,
+      "path": "media/bg_c4_county_corridor_v1.6c93c78a481b0412.webp",
+      "bytes": 110318,
+      "sourceSha256": "ab74d439208b78c60a09ab4db81f6b8afac6952e9e405c6a3486bcc7829b2084",
+      "previous": "media/bg_c4_county_corridor_v1.d6a39f6e4b3a8d70.webp"
+    }
+  ]
+}
