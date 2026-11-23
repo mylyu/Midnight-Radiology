@@ -23,7 +23,7 @@ export const TRILOGY_COMMUNICATION_CUES: Record<string, 'call' | 'sms'> = {
 
   c4_departure_0: 'call', c4_cousin_report_2: 'sms', c4_1_family_1: 'call', c4_2_xu_0: 'call', c4_2_close_2: 'sms',
   c4_3_bai_0: 'sms', c4_3_delay_call_0: 'call', c4_3_delay_people_0: 'call', c4_3_install_4: 'call',
-  c4_4_remote_1: 'sms', c4_4_wen_0: 'sms',
+  c4_4_sequence_0: 'sms', c4_4_remote_1: 'sms', c4_4_wen_0: 'sms',
   c4_6_shen_0: 'sms', c4_epilogue_baby_1: 'sms',
   c4_wrap_1: 'sms', c4_wrap_research_0: 'sms',
 

@@ -53,7 +53,7 @@ const expectedCommunicationCues = {
   ch3: ['c3_intro_call_0', 'c3_s2_start_1', 'c3_s4_wen_0', 'c3_s4_zhou_0'],
   ch4: [
     'c4_1_family_1', 'c4_2_close_2', 'c4_2_xu_0', 'c4_3_bai_0', 'c4_3_delay_call_0', 'c4_3_delay_people_0', 'c4_3_install_4',
-    'c4_4_remote_1', 'c4_4_wen_0',
+    'c4_4_remote_1', 'c4_4_sequence_0', 'c4_4_wen_0',
     'c4_6_shen_0', 'c4_cousin_report_2', 'c4_departure_0', 'c4_epilogue_baby_1',
     'c4_wrap_1', 'c4_wrap_research_0',
   ],

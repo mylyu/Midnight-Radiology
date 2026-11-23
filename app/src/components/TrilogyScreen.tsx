@@ -341,8 +341,8 @@ function TrilogyQuiz({ state, chapter, update }: Omit<Props, 'onExit' | 'renderT
       C: { title: 'C级 · 还得补', line: '小唐把错题本推过来：「先吃饭。吃完我陪你把这几道过一遍，明天再问老周。」' },
     }
     return <section className="trilogy-quiz" onClick={e => e.stopPropagation()} onPointerDownCapture={guard.pointerDown} onKeyDownCapture={guard.keyDown} onClickCapture={guard.click}>
-      <ChapterQuizView chapter="ch4" overlay eyebrow="县医院 · 上岗前考核"
-        intro="小唐把门带上，老周抽出五道题。答完还得回去收尾，谁也没打算留你到天黑。"
+      <ChapterQuizView chapter="ch4" overlay eyebrow="县医院 · 跟班小考"
+        intro="小唐把门带上，老周抽出五道题。答完收工，饭盒还给你留着。"
         questions={questions} index={quiz.index} picked={row.selected === undefined ? null : row.order.indexOf(row.selected)}
         score={score} finished={quiz.completed} grade={quiz.grade ?? 'C'} gradeInfo={gradeInfo}
         onPick={() => {}} onChoiceClick={(index, event) => { if (guard.accept(index)) act(s => answerTrilogyQuiz(s, chapter, row.order[index]), event.timeStamp) }}

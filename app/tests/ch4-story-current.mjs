@@ -34,6 +34,8 @@ assert.match(screenSource, /if \(chapter\.id === 'ch4' && overlay === 'book'\)[\
 assert.match(screenSource, /id="ch4"/)
 assert.match(screenSource, /if \(chapter\.id === 'ch4'\) \{[\s\S]*?<ChapterQuizView chapter="ch4"/)
 assert.match(screenSource, /<ChapterQuizView chapter="ch4"/)
+assert.match(screenSource, /eyebrow="县医院 · 跟班小考"/)
+assert.doesNotMatch(screenSource, /谁也没打算留你到天黑|上岗前考核/)
 assert.match(quizViewSource, /<SceneBackground name="bg_day" fixed/)
 assert.match(quizViewSource, /bg-slate-950\/60/)
 assert.match(quizViewSource, /bg-emerald-900\/60 border-emerald-400/)
@@ -478,6 +480,30 @@ for (const [id, speaker] of [
   ['c4_6_artifact_intro_1', 'zhou'], ['c4_6_artifact_intro_2', 'zhou'],
 ]) assert.equal(s[id].speaker, speaker, `${id}: mentor questions replace another patient-doctor explanation`)
 
+// Keep the referenced image visible throughout the actual explanation, without
+// carrying it into the following patient or unrelated conversation.
+for (const [image, ids] of [
+  ['mri_real_tfcc_v1', ['c4_1_case_result_1', 'c4_1_case_result_2']],
+  ['mri_c4_basic_contrast_v1', ['c4_1_contrast_1']],
+  ['mri_real_stroke_sequences_v1', ['c4_1_contrast_3']],
+  ['mri_real_mrcp_v1', ['c4_2_mrcp_result_1', 'c4_2_mrcp_result_2']],
+  ['mri_real_hydrocephalus_v1', ['c4_4_head_result_1', 'c4_4_head_result_2', 'c4_4_sequence_1', 'c4_4_sequence_right_0', 'c4_4_sequence_wrong_0']],
+  ['mri_real_motion_ghost_v1', ['c4_5_motion_result_1', 'c4_5_motion_result_2']],
+  ['mri_real_knee_mimic_v1', ['c4_5_knee_result_1', 'c4_5_knee_result_2', 'c4_5_knee_explain_1']],
+]) for (const id of ids) assert.equal(s[id].image, image, `${id}: the image being discussed is visible`)
+for (const id of ['c4_1_case_result_3', 'c4_1_feng_0', 'c4_2_mrcp_result_3', 'c4_4_head_result_3', 'c4_4_sequence_right_1', 'c4_4_sequence_wrong_1', 'c4_5_motion_result_3', 'c4_5_knee_result_3', 'c4_5_feng_0'])
+  assert.equal(s[id].image, '', `${id}: the unrelated follow-up does not inherit the previous image`)
+assert.match(text('c4_1_contrast_10'), /临走前.*下次复查/)
+assert.doesNotMatch(text('c4_3_ribbon_outside_3'), /明早/)
+assert.doesNotMatch(text('c4_4_close_1'), /昨天/)
+for (const shift of CH4.shifts.slice(3)) assert.match(shift.title, /^开诊第/, 'First patient days are separate from the installation date')
+assert.match(text('c4_4_end'), /口袋上的恐龙贴纸/)
+assert.match(text('c4_wrap_1'), /昨天多谢/)
+assert.equal(s.c4_4_sequence_0.communication, 'sms')
+assert.equal(s.c4_4_sequence_0.sprite, '')
+assert.equal(ch4ContactName(CH4, 'c4_4_sequence_0', s.c4_4_sequence_0), '小唐')
+assert.equal(TRILOGY_COMMUNICATION_CUES.c4_4_sequence_0, 'sms')
+
 const rewardedChoices = []
 for (const [id, step] of Object.entries(s)) {
   const rewarded = (step.choices ?? []).filter(choice => attributeKeys.some(key => (choice.effect?.[key] ?? 0) > 0))
@@ -545,7 +571,10 @@ for (const choice of s.c4_2_glasses_q.choices) assert.equal(choice.effect.badge,
 assert.match(text('c4_2_glasses_safe_0'), /轮椅或剪刀.*可能直接出人命/)
 assert.match(text('c4_2_glasses_safe_1'), /伸手尝试.*事故征候记录/)
 assert.match(text('c4_2_glasses_people_2'), /轮椅或剪刀一旦吸附，可能致命/)
-assert.match(text('c4_2_mrcp_0'), /事故征候已经记录.*工程人员处置并核过现场后，夜班恢复/)
+assert.match(text('c4_2_glasses_safe_1'), /工程人员到场处置并重新核查现场，夜班才恢复/)
+assert.match(text('c4_2_glasses_people_2'), /工程人员核查完现场，夜班才恢复/)
+for (const id of ['c4_2_glasses_safe_1', 'c4_2_glasses_people_2']) assert.equal(s[id].next, 'c4_2_mrcp_0')
+assert.match(text('c4_2_mrcp_0'), /^这位疑似胆总管结石的患者眼白发黄/)
 assert.equal(CH4.characters.worker.name, '疑似胆总管结石患者')
 assert.equal(CH4.characters.courier.name, '设备送货员')
 assert.equal(s.c4_3_door_1.speaker, 'courier')
@@ -554,7 +583,7 @@ assert.equal(s.c4_3_open_0.effect.flag, 'c4_old_contract')
 assert.equal(s.c4_3_open_3.effect.flag, 'c4_old_contract')
 assert.equal(s.c4_3_quotes_0.effect.flag, 'c4_contract_split')
 assert.equal(s.c4_3_bai_1.effect.flag, 'c4_a17_batch')
-assert.match(CH4.adapt('c4_3_quotes_2', s.c4_3_quotes_2, { flags: { c3_wen_copy_kept: true } }).text, /第三章.*核对联.*原厂AI单列.*30天试用/)
+assert.match(CH4.adapt('c4_3_quotes_2', s.c4_3_quotes_2, { flags: { c3_wen_copy_kept: true } }).text, /上回.*核对联.*原厂AI单列.*30天试用/)
 // 小唐加入采购交接后仍沿原节点顺序推进，旧游标保持有效。
 assert.equal(s.c4_3_open_1.next, 'c4_3_open_2')
 assert.equal(s.c4_3_open_3.next, 'c4_3_quotes_0')
