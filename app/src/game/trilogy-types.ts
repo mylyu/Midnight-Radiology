@@ -21,6 +21,7 @@ export interface TrilogyScanConfig {
     atMs: number
     stopAfterMs: number
     text: string
+    voice?: string
   }
 }
 export interface TrilogyShopItem {

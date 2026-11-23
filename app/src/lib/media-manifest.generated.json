@@ -1956,6 +1956,21 @@
       "bytes": 23421,
       "type": "audio"
     },
+    "audio/vox_c4_director_first_v1.mp3": {
+      "sha256": "ed66eb6d465868dd251a3090be656a43ab0b59e90c6b0fff7860def9ea381d36",
+      "bytes": 7541,
+      "type": "audio"
+    },
+    "audio/vox_c4_fan_first_v1.mp3": {
+      "sha256": "605ed9b4ad0c295cb02888191db93fd828c21bebec13971be11d78ac9e1a9c91",
+      "bytes": 8482,
+      "type": "audio"
+    },
+    "audio/vox_c4_feng_help_v1.mp3": {
+      "sha256": "1894f7cb275d29b1c1a00cfbf098c465aafa4ff4e38f4e4d601c3b87c722045e",
+      "bytes": 6078,
+      "type": "audio"
+    },
     "audio/vox_c4_feng_r7.mp3": {
       "sha256": "716faa3e19a4085e16013ffd27d6a6c181f7a267149656d3185bb79b37888471",
       "bytes": 15357,
@@ -1969,6 +1984,16 @@
     "audio/vox_c4_knee_wait_r9.mp3": {
       "sha256": "145f28fbdbfee4d12a649895479d0b3f20b0750ad6b22c8428ff4516d6fa9f65",
       "bytes": 23853,
+      "type": "audio"
+    },
+    "audio/vox_c4_lei_first_v1.mp3": {
+      "sha256": "1fd240c7005fd43b210af22e062ca839bd6d3b619f518a491721f5e4ba3ebbf0",
+      "bytes": 7228,
+      "type": "audio"
+    },
+    "audio/vox_c4_tang_first_v1.mp3": {
+      "sha256": "e99d0264ec0d6d48be8a2fd8dbd4357498ef1fca81e2f4e8732bc257570f3e34",
+      "bytes": 6601,
       "type": "audio"
     },
     "audio/vox_c4_worker_r7.mp3": {
@@ -1989,6 +2014,11 @@
     "audio/vox_c4_xuning_v3.mp3": {
       "sha256": "ad201064a01d95b223a48c0e2aaa8bee7d420f80df3a9dd62d680bf8fdae6016",
       "bytes": 9741,
+      "type": "audio"
+    },
+    "audio/vox_c4_zhou_first_v1.mp3": {
+      "sha256": "e99d3f3a8c4694472eb0cbd50ccc0a64a3ff100ba9b98dbe3bd72cbf94e98409",
+      "bytes": 8900,
       "type": "audio"
     },
     "audio/vox_c5_gu_v2.mp3": {
@@ -2658,13 +2688,19 @@
       "audio/stamp.mp3",
       "audio/trilogy_mri_scan_v2.mp3",
       "audio/vox_c4_aunt_r8.mp3",
+      "audio/vox_c4_director_first_v1.mp3",
+      "audio/vox_c4_fan_first_v1.mp3",
+      "audio/vox_c4_feng_help_v1.mp3",
       "audio/vox_c4_feng_r7.mp3",
       "audio/vox_c4_knee_r9.mp3",
       "audio/vox_c4_knee_wait_r9.mp3",
+      "audio/vox_c4_lei_first_v1.mp3",
+      "audio/vox_c4_tang_first_v1.mp3",
       "audio/vox_c4_worker_r7.mp3",
       "audio/vox_c4_wrist_r7.mp3",
       "audio/vox_c4_xu_r7.mp3",
-      "audio/vox_c4_xuning_v3.mp3"
+      "audio/vox_c4_xuning_v3.mp3",
+      "audio/vox_c4_zhou_first_v1.mp3"
     ],
     "ch5": [
       "assets/media/bg_breakroom.6e71e372d1ef1b9d.webp",

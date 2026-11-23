@@ -204,6 +204,7 @@ export async function buildChapterManifest() {
     }
     for (const sound of ['click', 'badge', 'stamp']) addSound(group, sound)
     for (const sound of trilogyVoiceAssets(chapter)) addSound(group, sound)
+    for (const step of Object.values(chapter.steps)) if (step.scan?.distress?.voice) addSound(group, step.scan.distress.voice)
     addSound(group, `trilogy_${group === 'ch3' ? 'us' : group === 'ch4' ? 'mri' : 'pet'}_scan_v2`)
     if (group !== 'ch3') {
       addImage(group, group === 'ch4' ? 'trilogy_mri_scan_acquire_v3' : 'trilogy_pet_scan_room_v2', false)

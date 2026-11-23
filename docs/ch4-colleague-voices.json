@@ -1,0 +1,778 @@
+{
+  "date": "2026-11-23",
+  "base": "b68cc15",
+  "scope": "CH4 five new hospital colleague greetings and Feng's one-off scanner distress cry; Shen's approved in-person greeting and all existing media unchanged; supplier Wen excluded",
+  "auk_root": "C:\\Users\\lvmen\\Documents\\New project\\AuK",
+  "source_root": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch4-colleague-first-20261123",
+  "human_listened": false,
+  "limitation": "Automated transcription, signal checks and a second audio model are not a direct human listening approval.",
+  "total_bytes": 44830,
+  "lines": [
+    {
+      "id": "vox_c4_director_first_v1",
+      "role": "院长",
+      "text": "人排开了就去。",
+      "attempt": 1,
+      "intended_performance": "日常交代，不训话",
+      "instruction": "Say the following with the same voice: \"人排开了就去。\"",
+      "seed": 2026112323,
+      "gen_seconds": 1.9,
+      "reference_source": "app\\public\\audio\\vox_ch2_natural_director_day_v3.mp3",
+      "reference_snapshot": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch4-colleague-first-20261123\\references\\vox_ch2_natural_director_day_v3.mp3",
+      "reference_sha256": "5c89a70379b4c4e9fc380f39af9dd352777737b42aaf346961b33d282ad8e633",
+      "raw": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch4-colleague-first-20261123\\vox_c4_director_first_v1.a1.raw.wav",
+      "raw_sha256": "b2406c2fbbc72028125a43201b5871d141f06670911cb8b11c031e3b955f20e8",
+      "raw_sample_rate": 24000,
+      "output": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch4-colleague-first-20261123\\vox_c4_director_first_v1.a1.mp3",
+      "output_sha256": "ed66eb6d465868dd251a3090be656a43ab0b59e90c6b0fff7860def9ea381d36",
+      "output_bytes": 7541,
+      "processing": "silenceremove=start_periods=1:start_duration=0.03:start_threshold=-50dB:start_silence=0.06,loudnorm=I=-20:TP=-2:LRA=7",
+      "ffmpeg_command": [
+        "ffmpeg",
+        "-y",
+        "-v",
+        "error",
+        "-i",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch4-colleague-first-20261123\\vox_c4_director_first_v1.a1.raw.wav",
+        "-af",
+        "silenceremove=start_periods=1:start_duration=0.03:start_threshold=-50dB:start_silence=0.06,loudnorm=I=-20:TP=-2:LRA=7",
+        "-map_metadata",
+        "-1",
+        "-c:a",
+        "libmp3lame",
+        "-b:a",
+        "32k",
+        "-ar",
+        "22050",
+        "-ac",
+        "1",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch4-colleague-first-20261123\\vox_c4_director_first_v1.a1.mp3"
+      ],
+      "channels": 1,
+      "sample_rate": 22050,
+      "bitrate": 32000,
+      "pitch_or_speed_change": false,
+      "human_listened": false,
+      "elapsed_seconds": 7.06,
+      "method": "Installed official AukInfer.generate API; local approved-reference synthesis; no remote API",
+      "model": "AuK-Flash",
+      "model_license": "Installed AuK LICENSE: MIT",
+      "torch_version": "2.7.1+cu128",
+      "decode": {
+        "nfe": 4,
+        "cfg": 0,
+        "dtype": "bf16",
+        "cpu_offload": true
+      },
+      "qa": {
+        "asr": "人排開了就去",
+        "segments": [
+          {
+            "start": 0.0,
+            "end": 1.58,
+            "text": "人排開了就去",
+            "words": [
+              {
+                "start": 0.0,
+                "end": 0.26,
+                "word": "人"
+              },
+              {
+                "start": 0.26,
+                "end": 0.52,
+                "word": "排"
+              },
+              {
+                "start": 0.52,
+                "end": 0.72,
+                "word": "開"
+              },
+              {
+                "start": 0.72,
+                "end": 1.12,
+                "word": "了"
+              },
+              {
+                "start": 1.12,
+                "end": 1.36,
+                "word": "就"
+              },
+              {
+                "start": 1.36,
+                "end": 1.58,
+                "word": "去"
+              }
+            ]
+          }
+        ],
+        "method": "Local faster-whisper-medium; CPU int8; no target transcription prompt",
+        "decoded_seconds": 1.7729,
+        "peak": 0.44317740201950073,
+        "clipping_samples": 0,
+        "loudness": {
+          "input_i": "-20.39",
+          "input_tp": "-7.05",
+          "input_lra": "0.00",
+          "input_thresh": "-30.70",
+          "output_i": "-20.02",
+          "output_tp": "-6.66",
+          "output_lra": "0.00",
+          "output_thresh": "-30.34",
+          "normalization_type": "linear",
+          "target_offset": "0.02"
+        }
+      },
+      "independent_review": {
+        "method": "Local Qwen2.5-Omni blind audio transcription and style; target not supplied",
+        "question": "只根据实际音频逐字转写全部原话。有没有重复、额外词或截断？说了几遍？简短描述语气是否像随口交谈。听不清就说不确定，不要复述本问题。",
+        "answer": "不确定。",
+        "sha256": "ed66eb6d465868dd251a3090be656a43ab0b59e90c6b0fff7860def9ea381d36",
+        "human_listened": false
+      },
+      "transcript_review": {
+        "method": "Local Qwen2.5-Omni blind audio transcription; target not supplied",
+        "question": "只转写这段音频的全部原话。",
+        "answer": "人排开了就去。",
+        "sha256": "ed66eb6d465868dd251a3090be656a43ab0b59e90c6b0fff7860def9ea381d36",
+        "human_listened": false
+      },
+      "delivery": "app\\public\\audio\\vox_c4_director_first_v1.mp3",
+      "selected": true
+    },
+    {
+      "id": "vox_c4_fan_first_v1",
+      "role": "老范",
+      "text": "先别笑，真要买。",
+      "attempt": 1,
+      "intended_performance": "老成、略带无奈的熟人闲谈",
+      "instruction": "Say the following with the same voice: \"先别笑，真要买。\"",
+      "seed": 2026112320,
+      "gen_seconds": 2.1,
+      "reference_source": "app\\public\\audio\\vox_ch1_fan_mature_20260923.mp3",
+      "reference_snapshot": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch4-colleague-first-20261123\\references\\vox_ch1_fan_mature_20260923.mp3",
+      "reference_sha256": "78ee86fd94080a8812dceaaf0a34e53b083f73e7eb01103da5fb3cdb7020807c",
+      "raw": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch4-colleague-first-20261123\\vox_c4_fan_first_v1.a1.raw.wav",
+      "raw_sha256": "dfcaa4f5c814c86cf0081579a051f2d6beee7df5838061a3689e5104757f4099",
+      "raw_sample_rate": 24000,
+      "output": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch4-colleague-first-20261123\\vox_c4_fan_first_v1.a1.mp3",
+      "output_sha256": "605ed9b4ad0c295cb02888191db93fd828c21bebec13971be11d78ac9e1a9c91",
+      "output_bytes": 8482,
+      "processing": "silenceremove=start_periods=1:start_duration=0.03:start_threshold=-50dB:start_silence=0.06,loudnorm=I=-20:TP=-2:LRA=7",
+      "ffmpeg_command": [
+        "ffmpeg",
+        "-y",
+        "-v",
+        "error",
+        "-i",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch4-colleague-first-20261123\\vox_c4_fan_first_v1.a1.raw.wav",
+        "-af",
+        "silenceremove=start_periods=1:start_duration=0.03:start_threshold=-50dB:start_silence=0.06,loudnorm=I=-20:TP=-2:LRA=7",
+        "-map_metadata",
+        "-1",
+        "-c:a",
+        "libmp3lame",
+        "-b:a",
+        "32k",
+        "-ar",
+        "22050",
+        "-ac",
+        "1",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch4-colleague-first-20261123\\vox_c4_fan_first_v1.a1.mp3"
+      ],
+      "channels": 1,
+      "sample_rate": 22050,
+      "bitrate": 32000,
+      "pitch_or_speed_change": false,
+      "human_listened": false,
+      "elapsed_seconds": 39.36,
+      "method": "Installed official AukInfer.generate API; local approved-reference synthesis; no remote API",
+      "model": "AuK-Flash",
+      "model_license": "Installed AuK LICENSE: MIT",
+      "torch_version": "2.7.1+cu128",
+      "decode": {
+        "nfe": 4,
+        "cfg": 0,
+        "dtype": "bf16",
+        "cpu_offload": true
+      },
+      "qa": {
+        "asr": "先別笑真要買",
+        "segments": [
+          {
+            "start": 0.0,
+            "end": 0.88,
+            "text": "先別笑",
+            "words": [
+              {
+                "start": 0.0,
+                "end": 0.28,
+                "word": "先"
+              },
+              {
+                "start": 0.28,
+                "end": 0.44,
+                "word": "別"
+              },
+              {
+                "start": 0.44,
+                "end": 0.88,
+                "word": "笑"
+              }
+            ]
+          },
+          {
+            "start": 0.88,
+            "end": 1.86,
+            "text": "真要買",
+            "words": [
+              {
+                "start": 0.88,
+                "end": 1.42,
+                "word": "真"
+              },
+              {
+                "start": 1.42,
+                "end": 1.62,
+                "word": "要"
+              },
+              {
+                "start": 1.62,
+                "end": 1.86,
+                "word": "買"
+              }
+            ]
+          }
+        ],
+        "method": "Local faster-whisper-medium; CPU int8; no target transcription prompt",
+        "decoded_seconds": 1.9874,
+        "peak": 0.5038834810256958,
+        "clipping_samples": 0,
+        "loudness": {
+          "input_i": "-20.37",
+          "input_tp": "-5.88",
+          "input_lra": "0.00",
+          "input_thresh": "-31.03",
+          "output_i": "-20.00",
+          "output_tp": "-5.51",
+          "output_lra": "0.00",
+          "output_thresh": "-30.66",
+          "normalization_type": "linear",
+          "target_offset": "-0.00"
+        }
+      },
+      "independent_review": {
+        "method": "Local Qwen2.5-Omni blind audio transcription and style; target not supplied",
+        "question": "只根据实际音频逐字转写全部原话。有没有重复、额外词或截断？说了几遍？简短描述语气是否像随口交谈。听不清就说不确定，不要复述本问题。",
+        "answer": "嗯…你得把音频给我呀，这样我才能转写呢。",
+        "sha256": "605ed9b4ad0c295cb02888191db93fd828c21bebec13971be11d78ac9e1a9c91",
+        "human_listened": false
+      },
+      "transcript_review": {
+        "method": "Local Qwen2.5-Omni blind audio transcription; target not supplied",
+        "question": "只转写这段音频的全部原话。",
+        "answer": "先别笑，真要买。",
+        "sha256": "605ed9b4ad0c295cb02888191db93fd828c21bebec13971be11d78ac9e1a9c91",
+        "human_listened": false
+      },
+      "delivery": "app\\public\\audio\\vox_c4_fan_first_v1.mp3",
+      "selected": true
+    },
+    {
+      "id": "vox_c4_feng_help_v1",
+      "role": "冯叔（检查中呼救）",
+      "text": "救命啊！",
+      "attempt": 1,
+      "intended_performance": "幽闭紧张的短呼救，不循环、不演讲",
+      "instruction": "Say the following with the same voice: \"救命啊！\"",
+      "seed": 2026112327,
+      "gen_seconds": 1.5,
+      "reference_source": "app\\public\\audio\\vox_c4_feng_r7.mp3",
+      "reference_snapshot": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch4-colleague-first-20261123\\references\\vox_c4_feng_r7.mp3",
+      "reference_sha256": "716faa3e19a4085e16013ffd27d6a6c181f7a267149656d3185bb79b37888471",
+      "raw": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch4-colleague-first-20261123\\vox_c4_feng_help_v1.a1.raw.wav",
+      "raw_sha256": "a2510a938312903ad4a382158f4c14a20565105d9884b211e59bb85dd21c7dd9",
+      "raw_sample_rate": 24000,
+      "output": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch4-colleague-first-20261123\\vox_c4_feng_help_v1.a1.mp3",
+      "output_sha256": "1894f7cb275d29b1c1a00cfbf098c465aafa4ff4e38f4e4d601c3b87c722045e",
+      "output_bytes": 6078,
+      "processing": "silenceremove=start_periods=1:start_duration=0.03:start_threshold=-50dB:start_silence=0.06,loudnorm=I=-20:TP=-2:LRA=7",
+      "ffmpeg_command": [
+        "ffmpeg",
+        "-y",
+        "-v",
+        "error",
+        "-i",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch4-colleague-first-20261123\\vox_c4_feng_help_v1.a1.raw.wav",
+        "-af",
+        "silenceremove=start_periods=1:start_duration=0.03:start_threshold=-50dB:start_silence=0.06,loudnorm=I=-20:TP=-2:LRA=7",
+        "-map_metadata",
+        "-1",
+        "-c:a",
+        "libmp3lame",
+        "-b:a",
+        "32k",
+        "-ar",
+        "22050",
+        "-ac",
+        "1",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch4-colleague-first-20261123\\vox_c4_feng_help_v1.a1.mp3"
+      ],
+      "channels": 1,
+      "sample_rate": 22050,
+      "bitrate": 32000,
+      "pitch_or_speed_change": false,
+      "human_listened": false,
+      "elapsed_seconds": 27.31,
+      "method": "Installed official AukInfer.generate API; local approved-reference synthesis; no remote API",
+      "model": "AuK-Flash",
+      "model_license": "Installed AuK LICENSE: MIT",
+      "torch_version": "2.7.1+cu128",
+      "decode": {
+        "nfe": 4,
+        "cfg": 0,
+        "dtype": "bf16",
+        "cpu_offload": true
+      },
+      "qa": {
+        "asr": "救命啊",
+        "segments": [
+          {
+            "start": 0.0,
+            "end": 1.26,
+            "text": "救命啊",
+            "words": [
+              {
+                "start": 0.0,
+                "end": 0.54,
+                "word": "救"
+              },
+              {
+                "start": 0.54,
+                "end": 0.84,
+                "word": "命"
+              },
+              {
+                "start": 0.84,
+                "end": 1.26,
+                "word": "啊"
+              }
+            ]
+          }
+        ],
+        "method": "Local faster-whisper-medium; CPU int8; no target transcription prompt",
+        "decoded_seconds": 1.3986,
+        "peak": 0.3783372640609741,
+        "clipping_samples": 0,
+        "loudness": {
+          "input_i": "-20.34",
+          "input_tp": "-7.41",
+          "input_lra": "0.00",
+          "input_thresh": "-30.34",
+          "output_i": "-20.03",
+          "output_tp": "-7.07",
+          "output_lra": "0.00",
+          "output_thresh": "-30.03",
+          "normalization_type": "linear",
+          "target_offset": "0.03"
+        }
+      },
+      "transcript_review": {
+        "method": "Local Qwen2.5-Omni blind audio transcription; target not supplied",
+        "question": "只转写这段音频的全部原话。",
+        "answer": "救命啊。",
+        "sha256": "1894f7cb275d29b1c1a00cfbf098c465aafa4ff4e38f4e4d601c3b87c722045e",
+        "human_listened": false
+      },
+      "delivery": "app\\public\\audio\\vox_c4_feng_help_v1.mp3",
+      "selected": true
+    },
+    {
+      "id": "vox_c4_lei_first_v1",
+      "role": "小雷",
+      "text": "我可不敢乱签。",
+      "attempt": 1,
+      "intended_performance": "轻微吐槽，不阴沉",
+      "instruction": "Say the following with the same voice: \"我可不敢乱签。\"",
+      "seed": 2026112325,
+      "gen_seconds": 1.9,
+      "reference_source": "app\\public\\audio\\vox_ch2_natural_lei_v2.mp3",
+      "reference_snapshot": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch4-colleague-first-20261123\\references\\vox_ch2_natural_lei_v2.mp3",
+      "reference_sha256": "865307b761227b569ca0129f89bed5976923b50c5f2dfaa8402312f3cc4324e5",
+      "raw": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch4-colleague-first-20261123\\vox_c4_lei_first_v1.a1.raw.wav",
+      "raw_sha256": "209a20f9e1b62cc8f824c4cd79791e9ee739ac24d669d8fa0022578e730fc8be",
+      "raw_sample_rate": 24000,
+      "output": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch4-colleague-first-20261123\\vox_c4_lei_first_v1.a1.mp3",
+      "output_sha256": "1fd240c7005fd43b210af22e062ca839bd6d3b619f518a491721f5e4ba3ebbf0",
+      "output_bytes": 7228,
+      "processing": "silenceremove=start_periods=1:start_duration=0.03:start_threshold=-50dB:start_silence=0.06,loudnorm=I=-20:TP=-2:LRA=7",
+      "ffmpeg_command": [
+        "ffmpeg",
+        "-y",
+        "-v",
+        "error",
+        "-i",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch4-colleague-first-20261123\\vox_c4_lei_first_v1.a1.raw.wav",
+        "-af",
+        "silenceremove=start_periods=1:start_duration=0.03:start_threshold=-50dB:start_silence=0.06,loudnorm=I=-20:TP=-2:LRA=7",
+        "-map_metadata",
+        "-1",
+        "-c:a",
+        "libmp3lame",
+        "-b:a",
+        "32k",
+        "-ar",
+        "22050",
+        "-ac",
+        "1",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch4-colleague-first-20261123\\vox_c4_lei_first_v1.a1.mp3"
+      ],
+      "channels": 1,
+      "sample_rate": 22050,
+      "bitrate": 32000,
+      "pitch_or_speed_change": false,
+      "human_listened": false,
+      "elapsed_seconds": 6.86,
+      "method": "Installed official AukInfer.generate API; local approved-reference synthesis; no remote API",
+      "model": "AuK-Flash",
+      "model_license": "Installed AuK LICENSE: MIT",
+      "torch_version": "2.7.1+cu128",
+      "decode": {
+        "nfe": 4,
+        "cfg": 0,
+        "dtype": "bf16",
+        "cpu_offload": true
+      },
+      "qa": {
+        "asr": "我可不敢乱签",
+        "segments": [
+          {
+            "start": 0.0,
+            "end": 1.48,
+            "text": "我可不敢乱签",
+            "words": [
+              {
+                "start": 0.0,
+                "end": 0.4,
+                "word": "我"
+              },
+              {
+                "start": 0.4,
+                "end": 0.6,
+                "word": "可"
+              },
+              {
+                "start": 0.6,
+                "end": 0.8,
+                "word": "不"
+              },
+              {
+                "start": 0.8,
+                "end": 0.88,
+                "word": "敢"
+              },
+              {
+                "start": 0.88,
+                "end": 1.2,
+                "word": "乱"
+              },
+              {
+                "start": 1.2,
+                "end": 1.48,
+                "word": "签"
+              }
+            ]
+          }
+        ],
+        "method": "Local faster-whisper-medium; CPU int8; no target transcription prompt",
+        "decoded_seconds": 1.6868,
+        "peak": 0.5633586645126343,
+        "clipping_samples": 0,
+        "loudness": {
+          "input_i": "-20.44",
+          "input_tp": "-4.91",
+          "input_lra": "0.00",
+          "input_thresh": "-30.44",
+          "output_i": "-19.98",
+          "output_tp": "-4.47",
+          "output_lra": "0.00",
+          "output_thresh": "-29.98",
+          "normalization_type": "linear",
+          "target_offset": "-0.02"
+        }
+      },
+      "independent_review": {
+        "method": "Local Qwen2.5-Omni blind audio transcription and style; target not supplied",
+        "question": "只根据实际音频逐字转写全部原话。有没有重复、额外词或截断？说了几遍？简短描述语气是否像随口交谈。听不清就说不确定，不要复述本问题。",
+        "answer": "不确定。",
+        "sha256": "1fd240c7005fd43b210af22e062ca839bd6d3b619f518a491721f5e4ba3ebbf0",
+        "human_listened": false
+      },
+      "transcript_review": {
+        "method": "Local Qwen2.5-Omni blind audio transcription; target not supplied",
+        "question": "只转写这段音频的全部原话。",
+        "answer": "我可不敢乱签。",
+        "sha256": "1fd240c7005fd43b210af22e062ca839bd6d3b619f518a491721f5e4ba3ebbf0",
+        "human_listened": false
+      },
+      "delivery": "app\\public\\audio\\vox_c4_lei_first_v1.mp3",
+      "selected": true
+    },
+    {
+      "id": "vox_c4_tang_first_v1",
+      "role": "小唐",
+      "text": "电话我来盯。",
+      "attempt": 1,
+      "intended_performance": "熟络干脆地接替工作",
+      "instruction": "Say the following with the same voice: \"电话我来盯。\"",
+      "seed": 2026112322,
+      "gen_seconds": 1.7,
+      "reference_source": "app\\public\\audio\\vox_ch2_natural_tang.mp3",
+      "reference_snapshot": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch4-colleague-first-20261123\\references\\vox_ch2_natural_tang.mp3",
+      "reference_sha256": "6a9cf485df0d0846d3a2bc88b3db114789dd9b2254523e827e2254bc7171f449",
+      "raw": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch4-colleague-first-20261123\\vox_c4_tang_first_v1.a1.raw.wav",
+      "raw_sha256": "f87333bcead537d1cf4531fea54183976fe777e6e312dfdeaf38c6c4b6c78459",
+      "raw_sample_rate": 24000,
+      "output": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch4-colleague-first-20261123\\vox_c4_tang_first_v1.a1.mp3",
+      "output_sha256": "e99d0264ec0d6d48be8a2fd8dbd4357498ef1fca81e2f4e8732bc257570f3e34",
+      "output_bytes": 6601,
+      "processing": "silenceremove=start_periods=1:start_duration=0.03:start_threshold=-50dB:start_silence=0.06,loudnorm=I=-20:TP=-2:LRA=7",
+      "ffmpeg_command": [
+        "ffmpeg",
+        "-y",
+        "-v",
+        "error",
+        "-i",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch4-colleague-first-20261123\\vox_c4_tang_first_v1.a1.raw.wav",
+        "-af",
+        "silenceremove=start_periods=1:start_duration=0.03:start_threshold=-50dB:start_silence=0.06,loudnorm=I=-20:TP=-2:LRA=7",
+        "-map_metadata",
+        "-1",
+        "-c:a",
+        "libmp3lame",
+        "-b:a",
+        "32k",
+        "-ar",
+        "22050",
+        "-ac",
+        "1",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch4-colleague-first-20261123\\vox_c4_tang_first_v1.a1.mp3"
+      ],
+      "channels": 1,
+      "sample_rate": 22050,
+      "bitrate": 32000,
+      "pitch_or_speed_change": false,
+      "human_listened": false,
+      "elapsed_seconds": 7.08,
+      "method": "Installed official AukInfer.generate API; local approved-reference synthesis; no remote API",
+      "model": "AuK-Flash",
+      "model_license": "Installed AuK LICENSE: MIT",
+      "torch_version": "2.7.1+cu128",
+      "decode": {
+        "nfe": 4,
+        "cfg": 0,
+        "dtype": "bf16",
+        "cpu_offload": true
+      },
+      "qa": {
+        "asr": "電話我來盯",
+        "segments": [
+          {
+            "start": 0.0,
+            "end": 1.3,
+            "text": "電話我來盯",
+            "words": [
+              {
+                "start": 0.0,
+                "end": 0.38,
+                "word": "電"
+              },
+              {
+                "start": 0.38,
+                "end": 0.6,
+                "word": "話"
+              },
+              {
+                "start": 0.6,
+                "end": 0.84,
+                "word": "我"
+              },
+              {
+                "start": 0.84,
+                "end": 1.08,
+                "word": "來"
+              },
+              {
+                "start": 1.08,
+                "end": 1.3,
+                "word": "盯"
+              }
+            ]
+          }
+        ],
+        "method": "Local faster-whisper-medium; CPU int8; no target transcription prompt",
+        "decoded_seconds": 1.5259,
+        "peak": 0.4269113540649414,
+        "clipping_samples": 0,
+        "loudness": {
+          "input_i": "-20.44",
+          "input_tp": "-7.26",
+          "input_lra": "0.00",
+          "input_thresh": "-30.44",
+          "output_i": "-19.99",
+          "output_tp": "-6.82",
+          "output_lra": "0.00",
+          "output_thresh": "-29.99",
+          "normalization_type": "linear",
+          "target_offset": "-0.01"
+        }
+      },
+      "independent_review": {
+        "method": "Local Qwen2.5-Omni blind audio transcription and style; target not supplied",
+        "question": "只根据实际音频逐字转写全部原话。有没有重复、额外词或截断？说了几遍？简短描述语气是否像随口交谈。听不清就说不确定，不要复述本问题。",
+        "answer": "电话我来盯。",
+        "sha256": "e99d0264ec0d6d48be8a2fd8dbd4357498ef1fca81e2f4e8732bc257570f3e34",
+        "human_listened": false
+      },
+      "delivery": "app\\public\\audio\\vox_c4_tang_first_v1.mp3",
+      "selected": true
+    },
+    {
+      "id": "vox_c4_zhou_first_v1",
+      "role": "老周",
+      "text": "这事得好好想想。",
+      "attempt": 2,
+      "intended_performance": "沉稳务实，随口商量",
+      "instruction": "Say the following with the same voice: \"这事得好好想想。\"",
+      "seed": 2026112341,
+      "gen_seconds": 2.2,
+      "reference_source": "app\\public\\audio\\vox_ch2_natural_zhou_v2.mp3",
+      "reference_snapshot": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch4-colleague-first-20261123\\references\\vox_ch2_natural_zhou_v2.mp3",
+      "reference_sha256": "042f106009e33f7b3041b9129a8da6ea4954010543db547840912016b9eb76a1",
+      "raw": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch4-colleague-first-20261123\\vox_c4_zhou_first_v1.a2.raw.wav",
+      "raw_sha256": "9d72e6795250f17e6a3b4adab307237b3615470defa20aecba5ebced0dd78d1b",
+      "raw_sample_rate": 24000,
+      "output": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch4-colleague-first-20261123\\vox_c4_zhou_first_v1.a2.mp3",
+      "output_sha256": "e99d3f3a8c4694472eb0cbd50ccc0a64a3ff100ba9b98dbe3bd72cbf94e98409",
+      "output_bytes": 8900,
+      "processing": "silenceremove=start_periods=1:start_duration=0.03:start_threshold=-50dB:start_silence=0.06,loudnorm=I=-20:TP=-2:LRA=7",
+      "ffmpeg_command": [
+        "ffmpeg",
+        "-y",
+        "-v",
+        "error",
+        "-i",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch4-colleague-first-20261123\\vox_c4_zhou_first_v1.a2.raw.wav",
+        "-af",
+        "silenceremove=start_periods=1:start_duration=0.03:start_threshold=-50dB:start_silence=0.06,loudnorm=I=-20:TP=-2:LRA=7",
+        "-map_metadata",
+        "-1",
+        "-c:a",
+        "libmp3lame",
+        "-b:a",
+        "32k",
+        "-ar",
+        "22050",
+        "-ac",
+        "1",
+        "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch4-colleague-first-20261123\\vox_c4_zhou_first_v1.a2.mp3"
+      ],
+      "channels": 1,
+      "sample_rate": 22050,
+      "bitrate": 32000,
+      "pitch_or_speed_change": false,
+      "human_listened": false,
+      "elapsed_seconds": 32.38,
+      "method": "Installed official AukInfer.generate API; local approved-reference synthesis; no remote API",
+      "model": "AuK-Flash",
+      "model_license": "Installed AuK LICENSE: MIT",
+      "torch_version": "2.7.1+cu128",
+      "decode": {
+        "nfe": 4,
+        "cfg": 0,
+        "dtype": "bf16",
+        "cpu_offload": true
+      },
+      "qa": {
+        "asr": "這事得好好想想",
+        "segments": [
+          {
+            "start": 0.0,
+            "end": 1.96,
+            "text": "這事得好好想想",
+            "words": [
+              {
+                "start": 0.0,
+                "end": 0.28,
+                "word": "這"
+              },
+              {
+                "start": 0.28,
+                "end": 0.76,
+                "word": "事"
+              },
+              {
+                "start": 0.76,
+                "end": 1.22,
+                "word": "得"
+              },
+              {
+                "start": 1.22,
+                "end": 1.52,
+                "word": "好好"
+              },
+              {
+                "start": 1.52,
+                "end": 1.76,
+                "word": "想"
+              },
+              {
+                "start": 1.76,
+                "end": 1.96,
+                "word": "想"
+              }
+            ]
+          }
+        ],
+        "method": "Local faster-whisper-medium; CPU int8; no target transcription prompt",
+        "decoded_seconds": 2.1044,
+        "peak": 0.6722965240478516,
+        "clipping_samples": 0,
+        "loudness": {
+          "input_i": "-20.46",
+          "input_tp": "-3.45",
+          "input_lra": "0.00",
+          "input_thresh": "-30.97",
+          "output_i": "-20.01",
+          "output_tp": "-2.99",
+          "output_lra": "0.00",
+          "output_thresh": "-30.52",
+          "normalization_type": "linear",
+          "target_offset": "0.01"
+        }
+      },
+      "transcript_review": {
+        "method": "Local Qwen2.5-Omni blind audio transcription; target not supplied",
+        "question": "只转写这段音频的全部原话。",
+        "answer": "这是得好好想想。",
+        "sha256": "e99d3f3a8c4694472eb0cbd50ccc0a64a3ff100ba9b98dbe3bd72cbf94e98409",
+        "human_listened": false
+      },
+      "delivery": "app\\public\\audio\\vox_c4_zhou_first_v1.mp3",
+      "selected": true,
+      "rejected_previous_take": {
+        "text": "这可得合计合计。",
+        "asr": "這可得和解和解",
+        "independent_review": {
+          "method": "Local Qwen2.5-Omni blind audio transcription and style; target not supplied",
+          "question": "只根据实际音频逐字转写全部原话。有没有重复、额外词或截断？说了几遍？简短描述语气是否像随口交谈。听不清就说不确定，不要复述本问题。",
+          "answer": "不确定。",
+          "sha256": "80268b692dd39d90966b6cbf7c4fd1787f3cdac6095a136855b4fed9933a29d4",
+          "human_listened": false
+        },
+        "raw": "C:\\Users\\lvmen\\Documents\\New project\\AuK\\outputs\\ch4-colleague-first-20261123\\vox_c4_zhou_first_v1.a1.raw.wav",
+        "raw_sha256": "71377b28584a683fa454e207d777c49e0e35d173ae1d4dd6aea5fcf2477b2abe",
+        "reason": "Whisper heard 和解和解 instead of the intended 合计合计; replaced the ambiguous wording, not accepted as a match."
+      }
+    }
+  ]
+}

@@ -96,7 +96,7 @@ function settle(n: number, text: string, gold = 180, badge?: string): void {
     effect: { gold, ...(badge ? { badge } : {}) }, end: true }
 }
 function scan(id: string, text: string, label: string, next: string, mriRegion: MriScanRegion, mriModel: MriScannerModel,
-  distress?: { atMs: number; stopAfterMs: number; text: string }): void {
+  distress?: { atMs: number; stopAfterMs: number; text: string; voice?: string }): void {
   steps[id] = { speaker: 'sys', bg: mriModel.startsWith('city-') ? 'bg_c4_city_control_v1' : 'bg_c4_county_control_v1', sprite: '', image: '', text,
     scan: { kind: 'mri', label, mriRegion, mriModel, durationMs: 3000, sound: 'trilogy_mri_scan_v2', ...(distress ? { distress } : {}) }, next }
 }
@@ -104,20 +104,20 @@ function scan(id: string, text: string, label: string, next: string, mriRegion: 
 // 序章：进修不是去听一堂课，而是先把家里的班交接明白。
 chain('c4_pro', [
   ['sys', '夜班记录刚订好，老范就夹着一张采购表进来了，纸角还沾着食堂的辣椒油。', { bg: 'bg_office' }],
-  ['fan', '先别笑。院里真打算上MRI。你们天天跟患者打交道，缺什么，比我坐设备科猜强。', { bg: 'bg_office' }],
-  ['zhou', '机器我只在别家见过。真买回来，谁来接、怎么约、坏了找谁，都是咱们的事。', { bg: 'bg_office' }],
+  ['fan', '先别笑。院里真打算上MRI。你们天天跟患者打交道，缺什么，比我坐设备科猜强。', { bg: 'bg_office', voice: 'vox_c4_fan_first_v1' }],
+  ['zhou', '机器我只在别家见过。真买回来，谁来接、怎么约、坏了找谁，都是咱们的事。', { bg: 'bg_office', voice: 'vox_c4_zhou_first_v1' }],
   ['me', '要不我去市院跟几天？别光听销售讲，我看看人家一天怎么过。', { bg: 'bg_office' }],
   ['zhou', '沈岚在市院带班。我们年会上认识，后来又一块做过培训。我给她打电话，有空位你就去，没空位别硬塞。', { bg: 'bg_office' }],
   ['sys', '第二天上午，沈岚回了消息：周三来，跟一周，管饭。', { bg: 'bg_office_day' }],
 ], 'c4_apply_zhou_0', 'bg_office_day')
 chain('c4_apply_zhou', [
   ['zhou', '你的夜班我接。许建平还没定检查日期，先别排。老刘复查我来打电话。', { bg: 'bg_office_day' }],
-  ['tang', '改约的电话我来盯。你把市院怎么排班看明白，回来别只给我们讲食堂。', { bg: 'bg_office_day' }],
+  ['tang', '改约的电话我来盯。你把市院怎么排班看明白，回来别只给我们讲食堂。', { bg: 'bg_office_day', voice: 'vox_c4_tang_first_v1' }],
   ['me', '那食堂我也得看，不能漏项。', { bg: 'bg_office_day' }],
 ], 'c4_apply_director_0', 'bg_office_day')
 chain('c4_apply_director', [
   ['sys', '院长看完申请，又瞄了眼小唐递过去的替班表。', { bg: 'bg_office_day' }],
-  ['director', '人排开了就去。回来别只带一沓宣传页，把咱们照不照得起来也说明白。', { bg: 'bg_office_day', effect: { flag: 'c4_training_approved' } }],
+  ['director', '人排开了就去。回来别只带一沓宣传页，把咱们照不照得起来也说明白。', { bg: 'bg_office_day', voice: 'vox_c4_director_first_v1', effect: { flag: 'c4_training_approved' } }],
   ['tang', '这句我记下了。宣传页您留着垫桌脚也行，替班表可别给我弄丢。', { bg: 'bg_office_day' }],
 ], 'c4_departure_0', 'bg_office_day')
 chain('c4_departure', [
@@ -241,7 +241,7 @@ chain('c4_1_feng', [
   ['sys', '冯叔试了两次呼叫，儿子也站到了他看得见的地方。可第一个序列刚响，他就猛地捏住了呼叫。']
 ], 'c4_feng_basic_scan', 'bg_c4_city_corridor_v1')
 scan('c4_feng_basic_scan', '3T首个头部序列刚开始采集。', '3T 头部 MRI · 首个序列开始', 'c4_1_feng_stop_0', 'head', 'city-3t',
-  { atMs: 250, stopAfterMs: 3000, text: '冯叔：停一下！让我出去！我喘不上气！' })
+  { atMs: 250, stopAfterMs: 3000, text: '冯叔：救命啊！让我出去！我喘不上气！', voice: 'vox_c4_feng_help_v1' })
 scan('c4_feng_city_scan', '0.55T大孔径下，T1、T2、FLAIR、DWI依次分段采集。', '市院0.55T 头部 MRI · T1／T2／FLAIR／DWI', 'c4_1_contrast_0', 'head', 'city-055-wide')
 chain('c4_1_feng_stop', [
   ['anxious', '先让我出去！里面刚一响，我就找不着门了。', { bg: 'bg_c4_city_corridor_v1' }],
@@ -404,7 +404,7 @@ chain('c4_3_open', [
   ['sys', '回县后的采购碰头会上，老范把两版报价摊在办公桌上。小唐抱着预约本进来，顺手把压在“AI智能重建”那行上的茶杯挪开。', { effect: { flag: 'c4_old_contract' } }],
   ['fan', '院长就问了一句：这东西不买，机器还能不能扫？我答不上来，先找你们。'],
   ['tang', '机器什么时候装我还没排到患者。你们先把这个答明白，别今天说能，明天又让我挨个打电话改口。'],
-  ['lei', '我上次拒签也不是跟AI有仇。没写清试用多久、以后怎么收钱，我哪敢替信息科点头。', { effect: { flag: 'c4_old_contract' } }]
+  ['lei', '我上次拒签也不是跟AI有仇。没写清试用多久、以后怎么收钱，我哪敢替信息科点头。', { voice: 'vox_c4_lei_first_v1', effect: { flag: 'c4_old_contract' } }]
 ], 'c4_3_quotes_0', 'bg_office_day')
 chain('c4_3_quotes', [
   ['wen', '我重说：**基本重建已经包含，AI重建是原厂单列选配**。不买AI，常规检查照做。上一版写成“数据服务”，是我图省事。', { effect: { flag: 'c4_contract_split' }, image: 'item_c4_quote_folder_v1', imageLabel: '采购报价夹｜基本重建与选配分列' }],

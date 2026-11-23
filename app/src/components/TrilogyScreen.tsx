@@ -182,6 +182,33 @@ export function TrilogyScreen({ state, chapter, update, onExit, renderText }: Pr
     }
   })
   useEffect(() => { if (!blocked) return playSceneCue() }, [node, blocked, muted])
+  const distressStartedAt = raw.scan?.distress?.voice ? p.scans?.[node]?.startedAt : undefined
+  const playDistress = useEffectEvent(() => {
+    const distress = raw.scan?.distress
+    if (!distress?.voice || muted || distressStartedAt === undefined) return
+    const receipt = `voice:${distress.voice}`
+    if (p.heardCues?.includes(receipt)) return
+    const voice = new Audio(assetUrl(`audio/${distress.voice}.mp3`))
+    voice.volume = .42
+    let ready = false, pending = false, canceled = false
+    const play = () => {
+      if (!ready || pending || canceled || document.hidden) return
+      pending = true
+      void voice.play().then(() => {
+        if (canceled) return
+        update(s => trilogyProgress(s, chapter.id)?.stepId === node ? trilogyHeardCue(s, chapter.id, receipt) : s)
+      }, () => { pending = false })
+    }
+    const visibility = () => { if (document.hidden) voice.pause(); else play() }
+    const timer = window.setTimeout(() => { ready = true; play() }, Math.max(0, distressStartedAt + distress.atMs - Date.now()))
+    const events = ['pointerdown', 'keydown', 'visibilitychange']
+    events.forEach(event => document.addEventListener(event, visibility))
+    return () => {
+      canceled = true; window.clearTimeout(timer); voice.pause(); voice.removeAttribute('src'); voice.load()
+      events.forEach(event => document.removeEventListener(event, visibility))
+    }
+  })
+  useEffect(() => playDistress(), [node, distressStartedAt, muted])
   const advance = (now: number) => {
     if (blocked || !acceptInput(nav.current, now, 300)) return
     if (!done) {

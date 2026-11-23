@@ -239,7 +239,7 @@ assert.equal(s.c4_feng_basic_scan.scan.durationMs, 3000)
 assert.equal(s.c4_feng_basic_scan.scan.mriRegion, 'head')
 assert.equal(s.c4_feng_basic_scan.scan.mriModel, 'city-3t')
 assert.deepEqual(s.c4_feng_basic_scan.scan.distress,
-  { atMs: 250, stopAfterMs: 3000, text: '冯叔：停一下！让我出去！我喘不上气！' })
+  { atMs: 250, stopAfterMs: 3000, text: '冯叔：救命啊！让我出去！我喘不上气！', voice: 'vox_c4_feng_help_v1' })
 assert.equal(s.c4_feng_city_scan.scan.mriModel, 'city-055-wide')
 assert.equal(s.c4_feng_city_scan.scan.distress, undefined)
 assert.match(s.c4_feng_city_scan.scan.label, /T1／T2／FLAIR／DWI/)
@@ -818,9 +818,31 @@ assert.match(text('c4_1_case_result_2'), /\*\*TFCC外周信号不连续\*\*/)
 const highlighted = Object.values(s).filter(step => step.text.includes('**'))
 for (const step of highlighted) assert.equal((step.text.match(/\*\*/g) ?? []).length % 2, 0, step.text)
 const voices = Object.values(s).map(step => trilogyVoice(CH4, step)).filter(Boolean)
-const expectedVoices = ['vox_c4_aunt_r8', 'vox_c4_feng_r7', 'vox_c4_knee_r9', 'vox_c4_knee_wait_r9', 'vox_c4_worker_r7', 'vox_c4_wrist_r7', 'vox_c4_xu_r7', 'vox_c4_xuning_v3']
+const colleagueEntrances = {
+  fan: ['c4_pro_1', 'vox_c4_fan_first_v1'],
+  zhou: ['c4_pro_2', 'vox_c4_zhou_first_v1'],
+  tang: ['c4_apply_zhou_1', 'vox_c4_tang_first_v1'],
+  director: ['c4_apply_director_1', 'vox_c4_director_first_v1'],
+  lei: ['c4_3_open_3', 'vox_c4_lei_first_v1'],
+}
+const expectedVoices = ['vox_c4_aunt_r8', 'vox_c4_feng_r7', 'vox_c4_knee_r9', 'vox_c4_knee_wait_r9', 'vox_c4_worker_r7', 'vox_c4_wrist_r7', 'vox_c4_xu_r7', 'vox_c4_xuning_v3',
+  ...Object.values(colleagueEntrances).map(([, voice]) => voice)].sort()
 assert.deepEqual([...new Set(voices)].sort(), expectedVoices)
 assert.deepEqual(trilogyVoiceAssets(CH4).sort(), expectedVoices)
+for (const [speaker, [node, voice]] of Object.entries(colleagueEntrances)) {
+  const first = Object.entries(s).find(([, step]) => step.speaker === speaker && step.communication !== 'sms')
+  assert.equal(first?.[0], node, `${speaker}: voice belongs to the first spoken appearance, not a text message`)
+  assert.equal(s[node].voice, voice)
+  assert.equal(Object.values(s).filter(step => step.voice === voice).length, 1)
+  if (s[node].communication) {
+    assert.equal(s[node].phone, CH4.characters[speaker].sprite)
+    assert.equal(s[node].sprite, '')
+  } else assert.equal(s[node].sprite, CH4.characters[speaker].sprite)
+}
+assert.equal(s.c4_1_open_1.voice, 'vox_c4_xuning_v3', 'Keep Shen’s approved in-person welcome unchanged')
+assert.equal(trilogyVoice(CH4, s.c4_departure_1), undefined, 'Do not add a second Shen greeting to the earlier phone call')
+assert.equal(trilogyVoice(CH4, s.c4_2_close_2), undefined, 'Wen’s earlier SMS stays a text message')
+assert.equal(trilogyVoice(CH4, s.c4_3_quotes_0), undefined, 'The new colleague voices do not include supplier Wen')
 const firstPatientVoice = {
   wrist: 'vox_c4_wrist_r7', anxious: 'vox_c4_feng_r7', worker: 'vox_c4_worker_r7',
   aunt: 'vox_c4_aunt_r8', knee: 'vox_c4_knee_wait_r9', mystery: 'vox_c4_xu_r7',

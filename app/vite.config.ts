@@ -16,7 +16,7 @@ export function chunkSourcesPlugin(root = __dirname): Plugin {
           bytes: Buffer.byteLength(chunk.code, 'utf8'), sha256: createHash('sha256').update(chunk.code).digest('hex'), modules }]
       }))
       this.emitFile({ type: 'asset', fileName: 'chunk-sources.generated.json',
-        source: JSON.stringify({ version: 1, kind: 'rollup-output-chunks', chunks }, null, 2) + '\n' })
+        source: JSON.stringify({ version: 1, kind: 'rollup-output-chunks', chunks }) + '\n' })
     },
   }
 }
