@@ -165,8 +165,9 @@ assert.equal(s.c4_4_sequence_0.image, '', 'The child case does not reopen a mult
 assert.match(text('c4_4_head_handoff_1'), /这两周/)
 assert.match(text('c4_4_head_result_1'), /老周|你先看图/)
 assert.match(text('c4_4_head_result_2'), /双侧侧脑室明显扩大.*脑积水可能/)
-assert.match(text('c4_4_head_result_3'), /三岁.*脑室腹腔分流术/)
-assert.match(text('c4_4_head_result_4'), /引到腹腔.*减轻积聚和颅内压.*正常发育.*接诊团队定/)
+assert.match(text('c4_4_head_result_3'), /三岁.*会不会很严重.*正常走路/)
+assert.doesNotMatch(text('c4_4_head_result_3'), /分流术/)
+assert.match(text('c4_4_head_result_4'), /儿科.*分流术.*引到腹腔.*减轻脑内压力.*陪您过去/)
 assert.equal(CH4.characters.child.name, '三岁女孩')
 assert.doesNotMatch(text('c4_4_head_handoff_1'), /这三周/)
 for (const [id, step] of Object.entries(s)) {
@@ -248,14 +249,14 @@ assert.match(s.c4_feng_city_scan.text, /T1、T2、FLAIR、DWI依次分段采集/
 assert.match(text('c4_1_contrast_0'), /T1、T2、FLAIR、DWI四组都采完了/)
 assert.equal(s.c4_1_contrast_1.speaker, 'me')
 assert.match(text('c4_1_contrast_1'), /采集权重不一样.*脑脊液在T1偏暗、T2偏亮，FLAIR会把自由水信号压暗/)
-assert.match(text('c4_1_contrast_2'), /我还是怕.*喊了有人应.*孔口也没那么压/)
+assert.match(text('c4_1_contrast_2'), /总算出来了.*心里数秒/)
 assert.equal(s.c4_1_contrast_3.speaker, 'shen')
 assert.match(text('c4_1_contrast_3'), /DWI高、ADC低.*怎么理解/)
-assert.match(text('c4_1_contrast_4'), /脑桥区.*DWI高信号、ADC对应低信号.*疑似轻型缺血性卒中.*轻微中风.*同类型真实病例/)
+assert.match(text('c4_1_contrast_4'), /脑桥区.*DWI高信号、ADC对应低信号.*疑似轻型缺血性卒中.*轻微中风/)
 assert.match(text('c4_1_contrast_5'), /几分钟说话不清.*这样也算中风/)
 assert.match(text('c4_1_contrast_6'), /疑似.*今晚.*神经内科.*用药和复查/)
 assert.match(text('c4_1_contrast_7'), /我陪您去.*神经内科/)
-assert.match(text('c4_1_contrast_8'), /同类型病例.*原始图组和报告.*联系神经内科/)
+assert.match(text('c4_1_contrast_8'), /原始图组和报告.*联系神经内科.*儿子陪着/)
 assert.match(text('c4_1_feng_stop_1'), /第一组刚开头，后面三组还没做.*交接单/)
 assert.match(text('c4_1_feng_stop_4'), /是不是就做不了.*憋死/)
 assert.equal(s.c4_1_feng_q.choices.length, 3)
@@ -265,7 +266,7 @@ assert.match(refundChoice.text, /退费.*换机后的费用/)
 assert.deepEqual(refundChoice.effect, { badge: 'c4r_call_answered' })
 for (const id of ['c4_1_feng_refund_2', 'c4_1_feng_sit_1', 'c4_1_feng_route_1']) assert.equal(s[id].next, 'c4_1_feng_transfer_0')
 assert.match(text('c4_1_feng_refund_0'), /今晚不再继续.*未完成项目可以退费.*实际完成项目核/)
-assert.match(text('c4_1_feng_refund_1'), /能退就好.*孩子添麻烦.*先别急着退/)
+assert.match(text('c4_1_feng_refund_1'), /能退.*放心.*先带我看看.*怕躺上去又得出来/)
 assert.match(text('c4_1_feng_refund_2'), /退费、改约和换机.*另一检查区.*费用等实际检查后再核/)
 assert.match(text('c4_1_feng_transfer_0'), /同层.*另一检查区.*0\.55T、80厘米大孔径/)
 assert.doesNotMatch(text('c4_1_feng_transfer_0'), /县院后来采购|把3T的孔/)
@@ -275,7 +276,8 @@ assert.match(text('c4_1_feng_transfer_1'), /宽一些.*噪声还是有.*呼叫.*
 assert.match(text('c4_1_feng_transfer_2'), /场强低一些.*久一点.*调整分辨率和参数/)
 assert.match(text('c4_1_feng_transfer_4'), /T1、T2、FLAIR、DWI.*四组.*分段/)
 assert.match(text('c4_1_feng_transfer_6'), /我还是怕.*先扫一组.*每次捏了都有人答/)
-assert.match(text('c4_5_feng_2'), /四组都做完了.*疑似轻型缺血性卒中.*神经内科.*按医嘱用药.*今天来复查/)
+assert.match(text('c4_5_feng_2'), /药一直吃着.*没再犯.*没睡踏实/)
+assert.doesNotMatch(text('c4_5_feng_2'), /3T|0\.55T|四组|轻型缺血性卒中/)
 assert.doesNotMatch(text('c4_5_feng_2'), /没做完|没做成|检查补上/)
 assert.doesNotMatch(text('c4_5_feng_3'), /不是补上市院/)
 assert.match(text('c4_3_budget_keep_0'), /3T刚响就中止.*0\.55T大孔径后完成了四组/)
@@ -287,7 +289,7 @@ assert.equal(s.c4_county_abdominal_retry_scan.scan.mriRegion, 'abdomen')
 assert.equal(s.c4_county_abdominal_retry_scan.scan.mriModel, 'county-055-wide')
 assert.equal(s.c4_county_abdominal_retry_scan.next, 'c4_5_motion_after_0')
 assert.equal(s.c4_5_motion_after_0.image, 'mri_real_hemangioma_t2_v1')
-assert.match(text('c4_5_motion_after_0'), /必要序列完成.*新图组与首段分开标记.*中等、重T2参考图/)
+assert.match(text('c4_5_motion_after_0'), /必要序列完成.*新图组与首段分开标记.*阿姨的中等、重T2图/)
 const caseSteps = Object.values(s).filter(step => step.caseId)
 const caseIds = [...new Set(caseSteps.map(step => step.caseId))]
 assert.equal(caseIds.length, 8)
@@ -631,12 +633,12 @@ for (const [id, pattern] of [
   ['c4_2_mrcp_result_4', /住不住院.*疼痛、黄疸、发热和化验.*别让他开车/],
   ['c4_4_head_5', /想去就先去.*难受就告诉我们/],
   ['c4_4_head_result_2', /双侧侧脑室明显扩大.*晨起呕吐.*步态不稳.*脑积水可能/],
-  ['c4_4_head_result_4', /分流术.*引到腹腔.*正常发育.*接诊团队定/],
-  ['c4_5_motion_result_2', /血管搏动.*鬼影.*挪动造成模糊.*不是多出一排病灶/],
-  ['c4_5_motion_after_2', /典型肝血管瘤.*很亮.*阿姨的图.*超声一起对着看/],
+  ['c4_4_head_result_4', /分流术.*引到腹腔.*减轻脑内压力.*老周已经联系好了/],
+  ['c4_5_motion_result_2', /血管搏动.*鬼影.*挪动造成的模糊.*不是多出一排病灶/],
+  ['c4_5_motion_after_2', /肝血管瘤.*重T2上很亮.*超声对得上.*增强/],
   ['c4_5_motion_after_5', /不一定.*领取方式和复诊科室.*需要补查/],
   ['c4_5_knee_result_2', /移位的韧带.*前后图.*完整图组和查体/],
-  ['c4_6_xu_6', /金属也能让那一片变黑、变形.*图像质量.*原图留下/],
+  ['c4_6_xu_6', /图像质量.*金属.*变黑、变形.*原图留下.*调整序列/],
   ['c4_6_stop_2', /原图留下.*早上核定的条件.*短TE的SE/],
   ['c4_6_stop_4', /SE、短TE和短Echo Spacing.*目标结构能不能评.*图像质量/],
 ]) {
@@ -815,7 +817,14 @@ for (const line of playerLines) {
   assert.doesNotMatch(line, /不再只抄数字|看对比，不背|隐藏线索.*已收入证据夹/)
   assert.doesNotMatch(line, /^送货师傅/)
 }
-assert.match(text('c4_1_case_5'), /是\*\*三角纤维软骨复合体（TFCC）\*\*：\*\*一组位于手腕小指侧的软骨和韧带，帮助稳定腕关节、缓冲受力。\*\*/)
+assert.match(text('c4_1_case_5'), /\*\*三角纤维软骨复合体（TFCC）\*\*.*手腕小指侧.*稳住、缓冲受力.*软骨和韧带.*两次受伤/)
+for (const line of [...playerLines, ...Object.values(s).map(step => step.imageLabel ?? ''),
+  ...Object.values(CH4.cards).map(card => card.body)]) {
+  assert.doesNotMatch(line, /参考图|文献图|同类型病例|同类型真实病例|仅作参考/,
+    'Case images belong to the current patient in the story; sources stay in development records')
+}
+assert.match(text('c4_6_xu_5'), /没拆的东西.*会不会碍事/)
+assert.doesNotMatch(text('c4_6_xu_5'), /看见.*黑|是不是癌/)
 assert.match(text('c4_1_case_result_2'), /\*\*TFCC外周信号不连续\*\*/)
 const highlighted = Object.values(s).filter(step => step.text.includes('**'))
 for (const step of highlighted) assert.equal((step.text.match(/\*\*/g) ?? []).length % 2, 0, step.text)
